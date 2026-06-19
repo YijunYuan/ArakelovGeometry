@@ -10,6 +10,7 @@ import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 import Mathlib.MeasureTheory.Function.L1Space.Integrable
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.Algebra.Order.Ring.Basic
+import ArakelovGeometry.ExternalResults.Ostrowski
 
 namespace ArakelovGeometry
 
