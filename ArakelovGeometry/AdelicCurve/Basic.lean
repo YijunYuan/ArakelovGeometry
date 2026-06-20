@@ -42,9 +42,8 @@ private theorem Ωinf_empty_of_not_charZero {K : Type u_1} [Field K] (AS : Adeli
 identically. -/
 private theorem κ_eq_zero_of_not_charZero {K : Type u_1} [Field K] (AS : AdelicStructure K)
     (hC : ¬ CharZero K) : AS.κ = fun _ => (0 : ℝ) := by
-  have hempty := Ωinf_empty_of_not_charZero AS hC
   funext ω
-  have hω : ω ∉ AS.Ωinf := by rw [hempty]; exact Set.notMem_empty ω
+  have hω : ω ∉ AS.Ωinf := by rw [Ωinf_empty_of_not_charZero AS hC]; exact Set.notMem_empty ω
   simp [κ, hω]
 
 /-- Bridge identity: for every `ω`, in every characteristic,
@@ -53,13 +52,12 @@ integrability of `κ` to that of `ω ↦ log (ϕ ω 2)`, supplied by `hφ1` / `h
 private theorem κ_eq_log_div {K : Type u_1} [Field K] (AS : AdelicStructure K) (ω : AS.Ω) :
     AS.κ ω = max 0 (Real.log ((AS.ϕ ω) 2)) / Real.log 2 := by
   have hlog2pos : 0 < Real.log 2 := Real.log_pos one_lt_two
-  have hlog2 : Real.log 2 ≠ 0 := ne_of_gt hlog2pos
   by_cases hω : ω ∈ AS.Ωinf
   · -- archimedean: log (ϕ ω 2) = κ ω * log 2 ≥ 0.
     rw [log_ϕ_two_of_Ωinf AS hω]
     have hκnn : 0 ≤ AS.κ ω := (AS.κ_mem_Icc ω).1
     rw [max_eq_right (mul_nonneg hκnn (le_of_lt hlog2pos)),
-      mul_div_cancel_right₀ _ hlog2]
+      mul_div_cancel_right₀ _ <| ne_of_gt hlog2pos]
   · -- non-archimedean: κ ω = 0 and log (ϕ ω 2) ≤ 0.
     have hκ0 : AS.κ ω = 0 := by simp [κ, hω]
     have hlognonpos : Real.log ((AS.ϕ ω) 2) ≤ 0 :=
@@ -71,23 +69,18 @@ theorem Ωinf_measurable {K : Type u_1} [Field K] (AS : AdelicStructure K) :
   AS.A.MeasurableSet' AS.Ωinf := by
   by_cases hC : CharZero K
   · -- char 0: Ωinf is the set where `log (ϕ ω 2) > 0`, a preimage of an open ray.
-    haveI := hC
-    have h2 : (2 : K) ≠ 0 := two_ne_zero
     have hlog2pos : 0 < Real.log 2 := Real.log_pos one_lt_two
     have hset : AS.Ωinf = (fun ω => Real.log ((AS.ϕ ω) 2)) ⁻¹' Set.Ioi 0 := by
       ext ω
       simp only [Set.mem_preimage, Set.mem_Ioi]
-      constructor
-      · intro hω
-        rw [log_ϕ_two_of_Ωinf AS hω]
-        exact mul_pos (κ_pos_of_Ωinf AS hω) hlog2pos
-      · intro hlog
-        by_contra hω
+      refine ⟨fun hω => ?_, fun hlog => ?_⟩
+      · simpa [log_ϕ_two_of_Ωinf AS hω] using mul_pos (κ_pos_of_Ωinf AS hω) hlog2pos
+      · by_contra hω
         have : Real.log ((AS.ϕ ω) 2) ≤ 0 :=
           Real.log_nonpos (AbsoluteValue.nonneg _ _) (ϕ_two_le_one_of_not_Ωinf AS hω)
         linarith
     rw [show AS.A.MeasurableSet' AS.Ωinf ↔ MeasurableSet AS.Ωinf from Iff.rfl, hset]
-    exact (AS.hφ1 (2 : K) h2) measurableSet_Ioi
+    exact (AS.hφ1 (2 : K) two_ne_zero) measurableSet_Ioi
   · -- not char 0: Ωinf = ∅.
     rw [show AS.A.MeasurableSet' AS.Ωinf ↔ MeasurableSet AS.Ωinf from Iff.rfl,
       Ωinf_empty_of_not_charZero AS hC]
@@ -97,32 +90,24 @@ theorem Ωinf_measurable {K : Type u_1} [Field K] (AS : AdelicStructure K) :
 theorem κ_measurable {K : Type u_1} [Field K] (AS : AdelicStructure K) : Measurable AS.κ := by
   by_cases hC : CharZero K
   · -- char 0: rewrite κ by the bridge; `ω ↦ log (ϕ ω 2)` is measurable via `hφ1`.
-    haveI := hC
-    have h2 : (2 : K) ≠ 0 := two_ne_zero
     have hκ : AS.κ = fun ω => max 0 (Real.log ((AS.ϕ ω) 2)) / Real.log 2 :=
       funext (κ_eq_log_div AS)
-    rw [hκ]
-    exact (measurable_const.max (AS.hφ1 (2 : K) h2)).div_const (Real.log 2)
+    simpa [hκ] using (measurable_const.max (AS.hφ1 (2 : K) two_ne_zero)).div_const (Real.log 2)
   · -- not char 0: Ωinf = ∅, so κ is identically 0.
-    rw [κ_eq_zero_of_not_charZero AS hC]
-    exact measurable_const
+    simp [κ_eq_zero_of_not_charZero AS hC]
 
 -- Proposition 3.1.2 (2)
 theorem κ_integrable {K : Type u_1} [Field K] (AS : AdelicStructure K) : Integrable AS.κ AS.v := by
   by_cases hC : CharZero K
   · -- char 0: κ = (log (ϕ · 2))⁺ / log 2; positive part of an integrable fn, scaled.
-    haveI := hC
-    have h2 : (2 : K) ≠ 0 := two_ne_zero
     rw [show AS.κ = fun ω => max 0 (Real.log ((AS.ϕ ω) 2)) / Real.log 2 from
       funext (κ_eq_log_div AS)]
     have heq : (fun ω => max 0 (Real.log ((AS.ϕ ω) 2)) / Real.log 2)
         = (fun ω => max (Real.log ((AS.ϕ ω) 2)) 0 / Real.log 2) := by
       funext ω; rw [max_comm]
-    rw [heq]
-    exact ((AS.hφ2 (2 : K) h2).pos_part).div_const (Real.log 2)
+    simpa [heq] using ((AS.hφ2 (2 : K) two_ne_zero).pos_part).div_const (Real.log 2)
   · -- not char 0: κ is identically 0.
-    rw [κ_eq_zero_of_not_charZero AS hC]
-    exact integrable_zero _ _ _
+    simp [κ_eq_zero_of_not_charZero AS hC]
 
 -- Proposition 3.1.2 (3)
 theorem v_Ωinf_finite_of_κ_bddBelow {K : Type u_1} [Field K] (AS : AdelicStructure K)
@@ -130,11 +115,9 @@ theorem v_Ωinf_finite_of_κ_bddBelow {K : Type u_1} [Field K] (AS : AdelicStruc
   obtain ⟨ε, hε_pos, hlb⟩ := hκ
   -- `κ` is bounded below by `ε > 0` on `Ωinf`, so `Ωinf ⊆ {ω | ε ≤ κ ω}`.
   have hsub : AS.Ωinf ⊆ {ω | ε ≤ AS.κ ω} := by
-    intro ω hω
-    exact hlb (Set.mem_image_of_mem AS.κ hω)
+    exact fun ω hω => hlb (Set.mem_image_of_mem AS.κ hω)
   -- The latter set has finite measure since `κ` is integrable and `ε > 0`.
-  have hfin : AS.v {ω | ε ≤ AS.κ ω} < ⊤ := (AS.κ_integrable).measure_ge_lt_top hε_pos
-  exact lt_of_le_of_lt (measure_mono hsub) hfin
+  exact lt_of_le_of_lt (measure_mono hsub) <| (AS.κ_integrable).measure_ge_lt_top hε_pos
 
 open Classical in
 -- Proposition 3.1.3
@@ -155,28 +138,25 @@ theorem measurable_of_trivial_abs {K : Type u_1} [Field K] [Countable K] (AS : A
       have hnt : ¬ (AS.ϕ ω).IsNontrivial := by
         rw [AbsoluteValue.not_isNontrivial_iff]
         intro x hx
-        have := h (Units.mk0 x hx)
-        simpa using this
+        simpa using h (Units.mk0 x hx)
       by_contra hne
       exact hnt ((AbsoluteValue.isNontrivial_iff_ne_trivial (AS.ϕ ω)).mpr hne)
   -- Each factor is measurable: `ϕ ω a = 1 ↔ log (ϕ ω a) = 0` (since `ϕ ω a > 0`).
   have hmeas : ∀ a : Kˣ, MeasurableSet {ω : AS.Ω | (AS.ϕ ω) (a : K) = 1} := by
     intro a
-    have ha : (a : K) ≠ 0 := a.ne_zero
     have hset_a : {ω : AS.Ω | (AS.ϕ ω) (a : K) = 1}
         = (fun ω => Real.log ((AS.ϕ ω) (a : K))) ⁻¹' {0} := by
       ext ω
       simp only [Set.mem_setOf_eq, Set.mem_preimage, Set.mem_singleton_iff]
-      have hpos : 0 < (AS.ϕ ω) (a : K) := (AbsoluteValue.pos_iff _).mpr ha
+      have hpos : 0 < (AS.ϕ ω) (a : K) := (AbsoluteValue.pos_iff _).mpr a.ne_zero
       constructor
-      · intro h; rw [h]; exact Real.log_one
+      · intro h; simp [h]
       · intro h
         rcases Real.log_eq_zero.mp h with h0 | h1 | hneg
         · exact absurd h0 (ne_of_gt hpos)
         · exact h1
         · linarith
-    rw [hset_a]
-    exact (AS.hφ1 (a : K) ha) (measurableSet_singleton 0)
+    simpa [hset_a] using (AS.hφ1 (a : K) a.ne_zero) (measurableSet_singleton 0)
   rw [show AS.A.MeasurableSet' {ω : AS.Ω | AS.ϕ ω = AbsoluteValue.trivial}
       ↔ MeasurableSet {ω : AS.Ω | AS.ϕ ω = AbsoluteValue.trivial} from Iff.rfl, hset]
   exact MeasurableSet.iInter hmeas
