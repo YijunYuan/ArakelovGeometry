@@ -37,6 +37,33 @@ theorem Ωinf_measurable {K : Type u_1} [Field K] (AS : AdelicStructure K) :
   AS.A.MeasurableSet' AS.Ωinf := by
   sorry
 
+open Classical in
+noncomputable def κ {K : Type u_1} [Field K] (AS : AdelicStructure K) (ω : AS.Ω) : ℝ :=
+  if hω : ω ∈ AS.Ωinf then (ExternalResults.exists_s (AS.ϕ ω) hω.out).choose
+  else 0
+
+theorem κ_mem_Icc {K : Type u_1} [Field K] (AS : AdelicStructure K) (ω : AS.Ω) :
+  AS.κ ω ∈ Set.Icc 0 1 := by
+  by_cases hω : ω ∈ AS.Ωinf
+  · unfold κ
+    rw [dif_pos hω]
+    exact Set.mem_Icc_of_Ioc (ExternalResults.exists_s (AS.ϕ ω) hω.out).choose_spec.1
+  · simp [κ,hω]
+
+theorem κ_eq_zero_iff {K : Type u_1} [Field K] (AS : AdelicStructure K) (ω : AS.Ω) :
+  AS.κ ω = 0 ↔ ω ∈ AS.Ωfin := by
+  refine ⟨fun h => ?_, fun h => ?_⟩
+  · suffices h : ¬ ω ∈ AS.Ωinf by
+      simp only [Ωinf, Set.mem_setOf_eq, not_not, Ωfin] at *
+      exact h
+    by_contra hc
+    unfold κ at h
+    rw [dif_pos hc] at h
+    have := (ExternalResults.exists_s (AS.ϕ ω) hc.out).choose_spec.1.out.1
+    linarith
+  · have : ¬ ω ∈ AS.Ωinf := id fun hc ↦ hc h
+    simp [κ, this]
+
 end AdelicStructure
 
 structure AdelicCurve where
