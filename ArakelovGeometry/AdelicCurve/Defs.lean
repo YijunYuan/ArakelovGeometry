@@ -3,14 +3,8 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.MeasureTheory.Measure.MeasureSpaceDef
-import Mathlib.Algebra.Order.AbsoluteValue.Basic
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.MeasureTheory.Measure.Haar.OfBasis
-import Mathlib.MeasureTheory.Function.L1Space.Integrable
-import Mathlib.MeasureTheory.Integral.Bochner.Basic
-import Mathlib.Algebra.Order.Ring.Basic
 import ArakelovGeometry.ExternalResults.Ostrowski
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
 namespace ArakelovGeometry
 
@@ -26,16 +20,14 @@ structure AdelicStructure (K : Type u_1) [Field K] where
 
 namespace AdelicStructure
 
+instance instMeasurableSpaceΩ {K : Type u_1} [Field K] (AS : AdelicStructure K) :
+  MeasurableSpace AS.Ω := AS.A
+
 def Ωfin {K : Type u_1} [Field K] (AS : AdelicStructure K) : Set AS.Ω :=
   { ω : AS.Ω | IsNonarchimedean (AS.ϕ ω) }
 
 def Ωinf {K : Type u_1} [Field K] (AS : AdelicStructure K) : Set AS.Ω :=
   { ω : AS.Ω | ¬ IsNonarchimedean (AS.ϕ ω) }
-
--- Proposition 3.1.1
-theorem Ωinf_measurable {K : Type u_1} [Field K] (AS : AdelicStructure K) :
-  AS.A.MeasurableSet' AS.Ωinf := by
-  sorry
 
 open Classical in
 noncomputable def κ {K : Type u_1} [Field K] (AS : AdelicStructure K) (ω : AS.Ω) : ℝ :=
@@ -64,6 +56,12 @@ theorem κ_eq_zero_iff {K : Type u_1} [Field K] (AS : AdelicStructure K) (ω : A
   · have : ¬ ω ∈ AS.Ωinf := id fun hc ↦ hc h
     simp [κ, this]
 
+theorem κ_def {K : Type u_1} [Field K] (AS : AdelicStructure K) {ω : AS.Ω} (hω : ω ∈ AS.Ωinf) :
+  ∀ q : ℚ, AS.ϕ ω q = (Rat.AbsoluteValue.real q) ^ (AS.κ ω) := by
+  have := (ExternalResults.exists_s (AS.ϕ ω) hω.out).choose_spec.2
+  unfold κ
+  rwa [dif_pos hω]
+
 end AdelicStructure
 
 structure AdelicCurve where
@@ -73,6 +71,13 @@ structure AdelicCurve where
 
 namespace AdelicCurve
 instance instFieldK {C : AdelicCurve} : Field C.K := C.hK
+
+abbrev Ω (C : AdelicCurve) := C.AS.Ω
+abbrev v (C : AdelicCurve) := C.AS.v
+abbrev ϕ (C : AdelicCurve) := C.AS.ϕ
+noncomputable abbrev κ (C : AdelicCurve) := C.AS.κ
+abbrev Ωfin (C : AdelicCurve) := C.AS.Ωfin
+abbrev Ωinf (C : AdelicCurve) := C.AS.Ωinf
 
 -- An adelic curve is `proper` if the product formula holds for all nonzero elements of K.
 class IsProper (C : AdelicCurve) where
