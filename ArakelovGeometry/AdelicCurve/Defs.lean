@@ -3,12 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.ExternalResults.Ostrowski
+import ArakelovGeometry.ExternalResults.AbsoluteValue
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
 namespace ArakelovGeometry
 
-open MeasureTheory
+open MeasureTheory AbsoluteValue
 
 structure AdelicStructure (K : Type u_1) [Field K] where
   Ω : Type u_2 -- The underlying set of the measurable space
@@ -31,7 +31,7 @@ def Ωinf {K : Type u_1} [Field K] (AS : AdelicStructure K) : Set AS.Ω :=
 
 open Classical in
 noncomputable def κ {K : Type u_1} [Field K] (AS : AdelicStructure K) (ω : AS.Ω) : ℝ :=
-  if hω : ω ∈ AS.Ωinf then (ExternalResults.exists_s (AS.ϕ ω) hω.out).choose
+  if hω : ω ∈ AS.Ωinf then (exists_rpow_eq_of_archimedean_abs (AS.ϕ ω) hω.out).choose
   else 0
 
 theorem κ_mem_Icc {K : Type u_1} [Field K] (AS : AdelicStructure K) (ω : AS.Ω) :
@@ -39,7 +39,7 @@ theorem κ_mem_Icc {K : Type u_1} [Field K] (AS : AdelicStructure K) (ω : AS.Ω
   by_cases hω : ω ∈ AS.Ωinf
   · unfold κ
     rw [dif_pos hω]
-    exact Set.mem_Icc_of_Ioc (ExternalResults.exists_s (AS.ϕ ω) hω.out).choose_spec.1
+    exact Set.mem_Icc_of_Ioc (exists_rpow_eq_of_archimedean_abs (AS.ϕ ω) hω.out).choose_spec.1
   · simp [κ,hω]
 
 theorem κ_eq_zero_iff {K : Type u_1} [Field K] (AS : AdelicStructure K) (ω : AS.Ω) :
@@ -51,14 +51,14 @@ theorem κ_eq_zero_iff {K : Type u_1} [Field K] (AS : AdelicStructure K) (ω : A
     by_contra hc
     unfold κ at h
     rw [dif_pos hc] at h
-    have := (ExternalResults.exists_s (AS.ϕ ω) hc.out).choose_spec.1.out.1
+    have := (exists_rpow_eq_of_archimedean_abs (AS.ϕ ω) hc.out).choose_spec.1.out.1
     linarith
   · have : ¬ ω ∈ AS.Ωinf := id fun hc ↦ hc h
     simp [κ, this]
 
 theorem κ_def {K : Type u_1} [Field K] (AS : AdelicStructure K) {ω : AS.Ω} (hω : ω ∈ AS.Ωinf) :
   ∀ q : ℚ, AS.ϕ ω q = (Rat.AbsoluteValue.real q) ^ (AS.κ ω) := by
-  have := (ExternalResults.exists_s (AS.ϕ ω) hω.out).choose_spec.2
+  have := (exists_rpow_eq_of_archimedean_abs (AS.ϕ ω) hω.out).choose_spec.2
   unfold κ
   rwa [dif_pos hω]
 

@@ -2,7 +2,7 @@ import ArakelovGeometry.AdelicCurve.Defs
 
 namespace ArakelovGeometry
 namespace AdelicStructure
-open MeasureTheory
+open MeasureTheory AbsoluteValue
 
 /-- For an archimedean place `ω` (i.e. `ω ∈ Ωinf`), `log (ϕ ω 2) = κ ω * log 2`.
 Comes from Ostrowski: `ϕ ω q = |q|^(κ ω)` for rationals `q`, instantiated at `q = 2`. -/
@@ -21,7 +21,7 @@ private theorem κ_pos_of_Ωinf {K : Type u_1} [Field K] (AS : AdelicStructure K
     (hω : ω ∈ AS.Ωinf) : 0 < AS.κ ω := by
   unfold κ
   rw [dif_pos hω]
-  exact (ExternalResults.exists_s (AS.ϕ ω) hω.out).choose_spec.1.out.1
+  exact (exists_rpow_eq_of_archimedean_abs (AS.ϕ ω) hω.out).choose_spec.1.out.1
 
 /-- For a non-archimedean place `ω` (i.e. `ω ∉ Ωinf`), `ϕ ω 2 ≤ 1` (the ultrametric bound on
 natural numbers; holds in every characteristic, including char 2 where `ϕ ω 2 = 0`). -/
@@ -36,7 +36,7 @@ private theorem Ωinf_empty_of_not_charZero {K : Type u_1} [Field K] (AS : Adeli
     (hC : ¬ CharZero K) : AS.Ωinf = ∅ := by
   rw [Set.eq_empty_iff_forall_notMem]
   intro ω hω
-  exact hC (ExternalResults.charZero_of_archimedean_abs (AS.ϕ ω) hω.out)
+  exact hC (charZero_of_archimedean_abs (AS.ϕ ω) hω.out)
 
 /-- If `K` is not of characteristic zero, every place is non-archimedean so `κ` vanishes
 identically. -/
