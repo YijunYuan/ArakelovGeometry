@@ -6,6 +6,8 @@ import Mathlib.Analysis.Normed.Field.Instances
 import Mathlib.Tactic
 import Mathlib.NumberTheory.Ostrowski
 import ArakelovGeometry.ExternalResults.Place
+import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
+import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
 
 -- J. Neukirch, Algebraic number theory, Chapter II, Theorem 4.2
 theorem Neukirch_ANT_Ch_II_Theorem_4_2 {K : Type*} [Field K] (abs : AbsoluteValue K ℝ)
@@ -39,7 +41,32 @@ theorem CauSeq.IsComplete_of_Completion {K : Type u_1} [inst : Field K]
         (inferInstance : CauSeq.IsComplete (UniformSpace.Completion K) norm)
 
 namespace NumberField
+open AbsoluteValue
 
+theorem ostrowski {K : Type*} [Field K] [NumberField K]
+  (abs : AbsoluteValue K ℝ) (habs : abs.IsNontrivial) :
+  ( ∃ v : InfinitePlace K, abs ≈ v.val ) ∨
+  ( ∃ v : FinitePlace K, abs ≈ v.val) := by
+  admit
 
+open Classical in
+theorem isInfinitePlace_iff' {K : Type*} [Field K] [NumberField K]
+  (p : AbsoluteValue.Place K) (hp : p ≠ TrivialPlace K) :
+  IsNonarchimedeanPlace p ↔
+  ∃ v : FinitePlace K, p.out ≈ v.val := by
+  sorry
+
+open Classical in
+theorem isFinitePlace_iff' {K : Type*} [Field K] [NumberField K]
+  (p : AbsoluteValue.Place K) :
+  IsArchimedeanPlace p ↔
+  ∃ v : InfinitePlace K, p.out ≈ v.val := by
+  sorry
+
+instance {K : Type*} [Field K] [NumberField K] : Countable (Place K) := by
+  sorry
+
+instance {K : Type*} [Field K] [NumberField K] : Infinite (Place K) := by
+  sorry
 
 end NumberField

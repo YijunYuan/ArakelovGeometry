@@ -9,10 +9,9 @@ namespace ArakelovGeometry.AdelicCurve
 
 open MeasureTheory
 
-#check NumberField.prod_abs_eq_one
 noncomputable def NumberFieldAdelicStructure (K : Type u_1) [Field K] [NumberField K] :
     AdelicStructure K where
-  Ω := Place K
+  Ω := AbsoluteValue.Place K
   A := ⊤
   v := @Measure.ofSingletons _ ⊤ (fun ω => ω.out.localDegree ℚ)
   ϕ := Quotient.out

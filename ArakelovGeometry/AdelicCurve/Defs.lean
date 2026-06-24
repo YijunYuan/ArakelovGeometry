@@ -85,4 +85,12 @@ class IsProper (C : AdelicCurve) where
 
 end AdelicCurve
 
+namespace AdelicStructure
+
+def toAdelicCurve (K : Type u_1) [Field K] (AS : AdelicStructure K) : AdelicCurve where
+  K := K
+  hK := ‹Field K›
+  AS := AS
+
+end AdelicStructure
 end ArakelovGeometry
