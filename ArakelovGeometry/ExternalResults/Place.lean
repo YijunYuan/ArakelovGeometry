@@ -1,14 +1,31 @@
 import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
 
-abbrev PlaceSetoid (K : Type*) [Field K] : Setoid (AbsoluteValue K ℝ) where
-  r v w:= v.IsEquiv w
-  iseqv := { refl := fun _ =>
-    AbsoluteValue.IsEquiv.rfl, symm :=
-    AbsoluteValue.IsEquiv.symm , trans :=
-    AbsoluteValue.IsEquiv.trans }
+namespace AbsoluteValue
 
-def Place (K : Type u) [Field K] : Type u := Quotient (PlaceSetoid K)
+def Place (K : Type u) [Field K] : Type u := Quotient (@AbsoluteValue.instSetoid K _ ℝ _ _)
 
-def IsFinitePlace {K : Type u} [Field K] (v : Place K) : Prop := IsNonarchimedean v.out
+open Classical in
+noncomputable def TrivialPlace (K : Type u) [Field K] : Place K :=
+  Quotient.mk' (.trivial)
 
-def IsInfinitePlace {K : Type u} [Field K] (v : Place K) : Prop := ¬ IsFinitePlace v
+open Classical in
+theorem trivialPlace_out_eq {K : Type u} [Field K] :
+  (TrivialPlace K).out = .trivial := by
+  sorry
+
+def IsNonarchimedeanPlace {K : Type u} [Field K] (v : Place K) : Prop :=
+  IsNonarchimedean v.out
+
+theorem isNonarchimedeanPlace_of_trivialPlace {K : Type u} [Field K] :
+  IsNonarchimedeanPlace (TrivialPlace K) := by
+  sorry
+
+def IsArchimedeanPlace {K : Type u} [Field K] (v : Place K) : Prop :=
+  ¬ IsNonarchimedean v.out
+
+theorem place_classification {K : Type u} [Field K] (v : Place K) :
+  IsNonarchimedeanPlace v ∨ IsArchimedeanPlace v := by
+  simp [IsNonarchimedeanPlace, IsArchimedeanPlace, em]
+
+
+end AbsoluteValue
