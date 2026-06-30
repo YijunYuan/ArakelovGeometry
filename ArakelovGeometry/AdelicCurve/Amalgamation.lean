@@ -14,10 +14,16 @@ noncomputable def Amalgamation {K : Type u_1} [Field K] (AS1 AS2 : AdelicStructu
     hφ1 := sorry
     hφ2 := sorry
 
+/-- Notation for the `Amalgamation` of two adelic structures over `K`.
+
+This overloads Mathlib's `⨿` (binary categorical coproduct); the two are disambiguated by
+the operand type, since `Amalgamation` acts on `AdelicStructure K`. -/
+scoped notation:20 AS1 " ⨿ " AS2:20 => Amalgamation AS1 AS2
+
 open ArakelovGeometry.AdelicCurve in
 theorem IsProper_of_amalgamation {K : Type u_1} [Field K] (AS1 AS2 : AdelicStructure K)
   [IsProper AS1.toAdelicCurve] [IsProper AS2.toAdelicCurve] :
-  IsProper (Amalgamation AS1 AS2).toAdelicCurve := by
+  IsProper (AS1 ⨿ AS2).toAdelicCurve := by
   sorry
 
 end ArakelovGeometry.AdelicStructure
