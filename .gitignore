@@ -5,3 +5,7 @@
 
 # Archon state directory
 .archon/
+
+# Local reference documents (not distributed with the repository)
+*.pdf
+*:Zone.Identifier

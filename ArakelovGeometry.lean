@@ -13,6 +13,7 @@ import ArakelovGeometry.AdelicCurve.Amalgamation
 import ArakelovGeometry.AdelicCurve.Restriction
 import ArakelovGeometry.AdelicCurve.Examples.Trivial
 import ArakelovGeometry.AdelicCurve.Examples.NumberFields
+import ArakelovGeometry.AdelicCurve.Examples.FunctionFields
 
 /-!
 # Arakelov geometry over adelic curves
