@@ -30,7 +30,7 @@ finite-support consequences for the set of places of a number field.
 ## Neukirch, ANT, Chapter II, Theorem 4.2 (Gelfand–Tornheim/Ostrowski)
 
 A field complete with respect to an archimedean absolute value is `ℝ` or `ℂ`, with the
-absolute value a power of the standard one. We follow the strategy of `Neukirch.md`:
+absolute value a power of the standard one. We follow the strategy of Neukirch's proof:
 
 1. Normalization: `abs` restricted to `ℚ` is `|·| ^ s` for some `s ∈ (0,1]`
    (Ostrowski over `ℚ`; the `p`-adic case is excluded since `abs` is archimedean).
@@ -39,7 +39,7 @@ absolute value a power of the standard one. We follow the strategy of `Neukirch.
    to an isometric `σ₀ : ℝ →+* K`, making `K` a normed `ℝ`-algebra.
 3. Every element of `K` is quadratic over `ℝ`, so `K ≃ ℝ` or `K ≃ ℂ`: this is the
    Gelfand–Mazur theorem, `NormedAlgebra.Real.nonempty_algEquiv_or` in Mathlib (whose proof
-   is the same minimum-of-`‖ξ² - (z+z̄)ξ + zz̄‖` argument as in `Neukirch.md`).
+   is the same minimum-of-`‖ξ² - (z+z̄)ξ + zz̄‖` argument as in Neukirch).
 4. In the complex case the norm identity `‖σ a‖ = ‖a‖` follows since a continuous
    multiplicative function on `ℂ` fixing `|·|` on `ℝ` is trivial on the unit circle. -/
 
@@ -472,7 +472,7 @@ open AbsoluteValue
 
 /-! ### Ostrowski's theorem for number fields
 
-We follow K. Conrad, *Ostrowski for number fields* (`OstrowskiNF.pdf`), Theorem 3.
+We follow K. Conrad, *Ostrowski for number fields*, Theorem 3.
 
 * Nonarchimedean case (Conrad, Theorem 2): `abs ≤ 1` on `𝓞 K` (integrality argument), so
   `𝔭 = {α ∈ 𝓞 K | abs α < 1}` is a nonzero prime ideal. Writing `y ∈ K` with `y·d = n` where
