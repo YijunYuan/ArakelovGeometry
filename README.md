@@ -1,50 +1,104 @@
-# Arakelovgeometry
+# Arakelov Geometry over Adelic Curves
 
-<!-- archon:readme -->
-<!-- Claude fills in the prose sections below. Keep the section headers. -->
+[![CI](https://github.com/YijunYuan/ArakelovGeometry/actions/workflows/lean_action_ci.yml/badge.svg)](https://github.com/YijunYuan/ArakelovGeometry/actions/workflows/lean_action_ci.yml)
+[![Lean](https://img.shields.io/badge/Lean-4.33.0-5C2D91)](https://github.com/leanprover/lean4)
+[![mathlib](https://img.shields.io/badge/mathlib-v4.33.0-5C2D91)](https://github.com/leanprover-community/mathlib4)
+[![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 
-## Project
+A [Lean 4](https://lean-lang.org/) formalization of Chen–Moriwaki,
+*Arakelov Geometry over Adelic Curves* (Springer Lecture Notes in Mathematics 2258, 2020),
+built on [mathlib](https://github.com/leanprover-community/mathlib4).
 
-This project formalizes the foundations of **Arakelov geometry over adelic curves**
-in the sense of Chen–Moriwaki. An *adelic curve* is a field `K` equipped with a
-measure space `(Ω, v)` of absolute values `ϕ : Ω → AbsoluteValue K ℝ`, together with
-measurability/integrability hypotheses making `x ↦ ∫ log ‖x‖_ω dv` well defined; it is
-*proper* when this integral vanishes for every nonzero `x` (the product formula). This
-abstract setting unifies number fields, function fields, and more exotic arithmetic
-bases under one definition. The core development (`AdelicCurve/Defs.lean`,
-`AdelicCurve/Basic.lean`) builds the `AdelicStructure` / `AdelicCurve` structures and
-proves the basic measure-theoretic facts about the archimedean exponent `κ` and the
-loci `Ωfin`, `Ωinf` (Chen–Moriwaki Propositions 3.1.1–3.1.3), resting on an Ostrowski-type
-classification of archimedean absolute values. The running goal is to discharge the
-remaining gaps and instantiate the framework on number fields
-(`AdelicCurve/Examples/NumberFields.lean`), where the product formula is the classical one.
+## Goal
 
-## References
+The long-term goal of this project is to fully formalize the book. The current goal is
+**Chapter 3: Adelic curves**.
 
-See [`references/summary.md`](references/summary.md) for a description of each source.
-The development follows Chen–Moriwaki, *Arakelov Geometry over Adelic Curves* (Springer
-LNM 2258, 2020), with the archimedean classification taken from Neukirch, *Algebraic
-Number Theory*, Chapter II, Theorem 4.2.
+An *adelic curve* is a field `K` equipped with a measure space `(Ω, 𝒜, ν)` and a family
+`ϕ : Ω → AbsoluteValue K ℝ` of absolute values such that `ω ↦ log (ϕ ω x)` is measurable
+and integrable for every nonzero `x : K`. It is *proper* when the product formula
+`∫_Ω log (ϕ ω x) dν = 0` holds for every nonzero `x`. This single definition unifies number
+fields, function fields, polarised (arithmetic) varieties, and more exotic arithmetic bases,
+and serves as the base object of the whole book — Chapters 4–7 develop slope theory, adelic
+line bundles, heights, and equidistribution over it.
 
-## Structure
+## Status of Chapter 3
 
-- `ArakelovGeometry/` — main Lean source
-- `blueprint/` — leanblueprint source (build with `leanblueprint pdf` and `leanblueprint web`)
-- `references/` — PDFs, papers, and informal notes backing the formalization
-- `archon-protected.yaml` — declarations agents must not modify
-- `.archon/` — agent state (not committed)
+- [x] **3.1 Definition of adelic curves** —
+  `AdelicStructure`, `AdelicCurve`, `IsProper` (`AdelicCurve/Defs.lean`); the archimedean
+  locus `Ωinf`, the archimedean exponent `κ` via an Ostrowski-type classification, and
+  Propositions 3.1.1–3.1.3 (measurability of `Ωinf`, measurability/integrability of `κ`,
+  finiteness of `ν(Ωinf)`) in `AdelicCurve/Basic.lean`.
+- [ ] **3.2 Examples**
+  - [x] 3.2.1 Function fields — `functionFieldAdelicCurve`
+    (`AdelicCurve/Examples/FunctionFields.lean`), for the case `C = ℙ¹_k`, i.e.
+    `K = RatFunc k`; properness is the product formula `∑_x n_x ord_x(f) = 0`, proved by
+    induction on prime factorizations.
+    - [ ] general regular projective curve `C` — deferred: the function field of `C` is a
+      finite extension of `k(T)`, so this is an instance of the scalar-extension machinery
+      of §3.3–3.4 (mathlib currently has no theory of closed points / divisor degrees on
+      projective schemes).
+  - [x] 3.2.2 Number fields — `numberFieldAdelicCurve`
+    (`AdelicCurve/Examples/NumberFields.lean`); properness is the classical product
+    formula `NumberField.prod_abs_eq_one`.
+  - [x] 3.2.3 Copies of the trivial absolute value — `trivialAdelicCurve`
+    (`AdelicCurve/Examples/Trivial.lean`).
+  - [ ] 3.2.4 Polarised varieties.
+  - [ ] 3.2.5 Function field over `ℚ`.
+  - [ ] 3.2.6 Polarised arithmetic variety.
+  - [x] 3.2.7 Amalgamation of adelic structures — `amalgamation`, `isProper_amalgamation`
+    (`AdelicCurve/Amalgamation.lean`).
+  - [x] 3.2.8 Restriction of adelic structure to a subfield — `fRestriction`,
+    `isProper_fRestriction` (`AdelicCurve/Restriction.lean`).
+  - [x] 3.2.9 Restriction of adelic structure to a measurable subset — `sRestriction`
+    (`AdelicCurve/Restriction.lean`).
+- [ ] **3.3 Finite separable extensions**
+  - [ ] 3.3.1 Integration along fibres (the operator `I_{K'/K}`).
+  - [ ] 3.3.2 Measurability of fibre integrals (Theorem 3.3.4).
+  - [ ] 3.3.3 Construction of the measure `ν_{K'}` (Theorem 3.3.7).
+- [ ] **3.4 General algebraic extensions** (scalar extension `S ⊗_K L`)
+  - [ ] 3.4.1 Finite extension (Definition 3.4.1, Proposition 3.4.4).
+  - [ ] 3.4.2 General algebraic extensions (projective limits of fibre measures,
+    Theorem 3.4.12, Proposition 3.4.13).
+- [ ] **3.5 Height function and Northcott property** (Theorem 3.5.3).
+- [ ] **3.6 Measurability of automorphism actions**.
+- [ ] **3.7 Morphisms of adelic curves**.
 
-## How to build
+Planned architecture for §3.3–3.4: define the carrier `Ω_L` (places of `L` over `Ω_K`),
+its σ-algebra, and the projection `π_{L/K}` uniformly for an arbitrary algebraic extension
+`L/K`, then build the fibre integration `I_{L/K}` as a Markov kernel `Ω_K → Ω_L` — the
+book's three-stage construction (finite separable → finite → algebraic) then only structures
+the proofs, while the API exposes a single scalar extension `S ⊗_K L` with the tower
+compatibilities of Proposition 3.4.4 and Theorem 3.4.12.
+
+## Repository layout
+
+- `ArakelovGeometry/AdelicCurve/` — the main development: definitions (`Defs.lean`),
+  basic measure theory (`Basic.lean`), the constructions of §3.2
+  (`Amalgamation.lean`, `Restriction.lean`, `Examples/`).
+- `ArakelovGeometry/ExternalResults/` — supporting results that morally belong to mathlib:
+  places and the archimedean/nonarchimedean dichotomy (`Place.lean`,
+  `AbsoluteValue.lean`), an Ostrowski-type classification of archimedean absolute values
+  (`Ostrowski.lean`), and measure-theoretic tools (`Measure.lean`: measures prescribed on
+  singletons, finite-support integrability criteria without countability assumptions).
+- `ArakelovGeometry.lean` — library root; importing it builds the whole development.
+
+## Building
+
+The project uses Lean `v4.33.0` (see `lean-toolchain`) and the pinned mathlib version in
+`lake-manifest.json`. It compiles with zero warnings and no `sorry`; the only axioms used
+are `propext`, `Classical.choice`, and `Quot.sound`.
 
 ```bash
-lake exe cache get   # download Mathlib olean cache
+lake exe cache get   # download the mathlib olean cache
 lake build           # compile the project
 ```
 
-## How to run the formalization loop
+## References
 
-```bash
-archon loop .
-```
-
-This launches the plan → prove → review loop and opens a dashboard.
+- Huayi Chen, Atsushi Moriwaki, *Arakelov Geometry over Adelic Curves*, Springer Lecture
+  Notes in Mathematics 2258, 2020. (Section numbers in the source refer to this book.)
+- Jürgen Neukirch, *Algebraic Number Theory*, Springer Grundlehren 322, 1999 — Chapter II
+  for the theory of absolute values, completions, and extensions of places.
+- Keith Conrad, *Ostrowski for number fields* — the classification behind the number-field
+  example.
