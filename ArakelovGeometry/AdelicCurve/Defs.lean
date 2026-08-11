@@ -6,88 +6,145 @@ Authors: Yijun Yuan
 import ArakelovGeometry.ExternalResults.AbsoluteValue
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
+/-!
+# Adelic structures and adelic curves
+
+Following Chen–Moriwaki, *Arakelov Geometry over Adelic Curves* (Springer LNM 2258),
+Chapter 3, an *adelic structure* on a field `K` is a measure space `(Ω, A, v)` together with
+a family `ϕ : Ω → AbsoluteValue K ℝ` of absolute values such that `ω ↦ log (ϕ ω x)` is
+measurable and integrable for every nonzero `x : K`.  An *adelic curve* is a field equipped
+with an adelic structure; it is *proper* when the product formula `∫ log (ϕ ω x) ∂v = 0`
+holds for every nonzero `x`.
+
+This file also defines the archimedean locus `Ωinf`, its complement `Ωfin`, and the
+archimedean exponent `κ` provided by the Ostrowski-type normalization.
+-/
+
 namespace ArakelovGeometry
 
 open MeasureTheory AbsoluteValue
 
-structure AdelicStructure (K : Type u_1) [Field K] where
-  Ω : Type u_2 -- The underlying set of the measurable space
-  [A : MeasurableSpace Ω] -- The σ-algebra on Ω
-  v : Measure Ω -- The measure on the measurable space
-  ϕ : Ω → AbsoluteValue K ℝ -- The function assigning an absolute value to each point in Ω
-  hφ1 : ∀ x : K, x ≠ 0 → Measurable (fun (ω : Ω) => Real.log ((ϕ ω) x))
-  hφ2 : ∀ x : K, x ≠ 0 → Integrable (fun (ω : Ω) => Real.log ((ϕ ω) x)) v
+universe u v
+
+/-- An adelic structure on a field `K` (Chen–Moriwaki, §3.1): a measure space `(Ω, A, v)`
+together with a family `ϕ` of absolute values on `K` such that `ω ↦ log (ϕ ω x)` is
+measurable and integrable for every nonzero `x`. -/
+structure AdelicStructure (K : Type u) [Field K] where
+  /-- The index type of the family of absolute values. -/
+  Ω : Type v
+  /-- The σ-algebra on `Ω`. -/
+  [A : MeasurableSpace Ω]
+  /-- The measure on `Ω`. -/
+  v : Measure Ω
+  /-- The family of absolute values on `K`, indexed by `Ω`. -/
+  ϕ : Ω → AbsoluteValue K ℝ
+  /-- `ω ↦ log (ϕ ω x)` is measurable for every nonzero `x`. -/
+  measurable_log : ∀ x : K, x ≠ 0 → Measurable (fun ω : Ω ↦ Real.log ((ϕ ω) x))
+  /-- `ω ↦ log (ϕ ω x)` is integrable for every nonzero `x`. -/
+  integrable_log : ∀ x : K, x ≠ 0 → Integrable (fun ω : Ω ↦ Real.log ((ϕ ω) x)) v
 
 namespace AdelicStructure
 
-instance instMeasurableSpaceΩ {K : Type u_1} [Field K] (AS : AdelicStructure K) :
-  MeasurableSpace AS.Ω := AS.A
+instance instMeasurableSpaceΩ {K : Type*} [Field K] (AS : AdelicStructure K) :
+    MeasurableSpace AS.Ω := AS.A
 
-def Ωfin {K : Type u_1} [Field K] (AS : AdelicStructure K) : Set AS.Ω :=
-  { ω : AS.Ω | IsNonarchimedean (AS.ϕ ω) }
+/-- The nonarchimedean (finite) locus of an adelic structure. -/
+def Ωfin {K : Type*} [Field K] (AS : AdelicStructure K) : Set AS.Ω :=
+  {ω : AS.Ω | IsNonarchimedean (AS.ϕ ω)}
 
-def Ωinf {K : Type u_1} [Field K] (AS : AdelicStructure K) : Set AS.Ω :=
-  { ω : AS.Ω | ¬ IsNonarchimedean (AS.ϕ ω) }
+/-- The archimedean (infinite) locus of an adelic structure. -/
+def Ωinf {K : Type*} [Field K] (AS : AdelicStructure K) : Set AS.Ω :=
+  {ω : AS.Ω | ¬IsNonarchimedean (AS.ϕ ω)}
 
 open Classical in
-noncomputable def κ {K : Type u_1} [Field K] (AS : AdelicStructure K) (ω : AS.Ω) : ℝ :=
-  if hω : ω ∈ AS.Ωinf then (exists_rpow_eq_of_archimedean_abs (AS.ϕ ω) hω.out).choose
+/-- The archimedean exponent of a place: for `ω ∈ Ωinf`, the exponent `κ ω ∈ (0, 1]` with
+`ϕ ω = |·| ^ κ ω` on `ℚ` (see `κ_def`); zero for nonarchimedean places. -/
+noncomputable def κ {K : Type*} [Field K] (AS : AdelicStructure K) (ω : AS.Ω) : ℝ :=
+  if hω : ω ∈ AS.Ωinf then (exists_rpow_eq_of_not_isNonarchimedean (AS.ϕ ω) hω.out).choose
   else 0
 
-theorem κ_mem_Icc {K : Type u_1} [Field K] (AS : AdelicStructure K) (ω : AS.Ω) :
-  AS.κ ω ∈ Set.Icc 0 1 := by
+/-- The archimedean exponent lies in `[0, 1]`. -/
+theorem κ_mem_Icc {K : Type*} [Field K] (AS : AdelicStructure K) (ω : AS.Ω) :
+    AS.κ ω ∈ Set.Icc 0 1 := by
   by_cases hω : ω ∈ AS.Ωinf
   · unfold κ
     rw [dif_pos hω]
-    exact Set.mem_Icc_of_Ioc (exists_rpow_eq_of_archimedean_abs (AS.ϕ ω) hω.out).choose_spec.1
-  · simp [κ,hω]
+    exact Set.mem_Icc_of_Ioc
+      (exists_rpow_eq_of_not_isNonarchimedean (AS.ϕ ω) hω.out).choose_spec.1
+  · simp [κ, hω]
 
-theorem κ_eq_zero_iff {K : Type u_1} [Field K] (AS : AdelicStructure K) (ω : AS.Ω) :
-  AS.κ ω = 0 ↔ ω ∈ AS.Ωfin := by
-  refine ⟨fun h => ?_, fun h => ?_⟩
-  · suffices h : ¬ ω ∈ AS.Ωinf by
-      simp only [Ωinf, Set.mem_setOf_eq, not_not, Ωfin] at *
+/-- The archimedean exponent vanishes exactly on the nonarchimedean locus. -/
+theorem κ_eq_zero_iff {K : Type*} [Field K] (AS : AdelicStructure K) (ω : AS.Ω) :
+    AS.κ ω = 0 ↔ ω ∈ AS.Ωfin := by
+  refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
+  · suffices h : ω ∉ AS.Ωinf by
+      simp only [Ωinf, Set.mem_ofPred_eq, not_not, Ωfin] at *
       exact h
     by_contra hc
     unfold κ at h
     rw [dif_pos hc] at h
-    have := (exists_rpow_eq_of_archimedean_abs (AS.ϕ ω) hc.out).choose_spec.1.out.1
+    have := (exists_rpow_eq_of_not_isNonarchimedean (AS.ϕ ω) hc.out).choose_spec.1.out.1
     linarith
-  · have : ¬ ω ∈ AS.Ωinf := id fun hc ↦ hc h
+  · have : ω ∉ AS.Ωinf := fun hc ↦ hc h
     simp [κ, this]
 
-theorem κ_def {K : Type u_1} [Field K] (AS : AdelicStructure K) {ω : AS.Ω} (hω : ω ∈ AS.Ωinf) :
-  ∀ q : ℚ, AS.ϕ ω q = (Rat.AbsoluteValue.real q) ^ (AS.κ ω) := by
-  have := (exists_rpow_eq_of_archimedean_abs (AS.ϕ ω) hω.out).choose_spec.2
+/-- On the archimedean locus, `ϕ ω` is the `κ ω`-th power of the usual absolute value
+on `ℚ`. -/
+theorem κ_def {K : Type*} [Field K] (AS : AdelicStructure K) {ω : AS.Ω} (hω : ω ∈ AS.Ωinf) :
+    ∀ q : ℚ, AS.ϕ ω q = Rat.AbsoluteValue.real q ^ AS.κ ω := by
+  have := (exists_rpow_eq_of_not_isNonarchimedean (AS.ϕ ω) hω.out).choose_spec.2
   unfold κ
   rwa [dif_pos hω]
 
 end AdelicStructure
 
+-- The universes `u`, `v` occur only jointly in the resulting sort, but they parametrize
+-- genuinely independent data (the field and the index space), so we keep both.
+set_option linter.checkUnivs false in
+/-- An adelic curve: a field together with an adelic structure on it (Chen–Moriwaki,
+§3.1). -/
 structure AdelicCurve where
-  K : Type u_1
+  /-- The underlying field. -/
+  K : Type u
+  /-- The field structure on `K`. -/
   [hK : Field K]
-  AS : AdelicStructure.{u_1, u_2} K
+  /-- The adelic structure on `K`. -/
+  AS : AdelicStructure.{u, v} K
 
 namespace AdelicCurve
+
 instance instFieldK {C : AdelicCurve} : Field C.K := C.hK
 
+/-- The index space of an adelic curve. -/
 abbrev Ω (C : AdelicCurve) := C.AS.Ω
+
+/-- The measure of an adelic curve. -/
 abbrev v (C : AdelicCurve) := C.AS.v
+
+/-- The family of absolute values of an adelic curve. -/
 abbrev ϕ (C : AdelicCurve) := C.AS.ϕ
+
+/-- The archimedean exponent of an adelic curve. -/
 noncomputable abbrev κ (C : AdelicCurve) := C.AS.κ
+
+/-- The nonarchimedean locus of an adelic curve. -/
 abbrev Ωfin (C : AdelicCurve) := C.AS.Ωfin
+
+/-- The archimedean locus of an adelic curve. -/
 abbrev Ωinf (C : AdelicCurve) := C.AS.Ωinf
 
--- An adelic curve is `proper` if the product formula holds for all nonzero elements of K.
+/-- An adelic curve is *proper* if the product formula holds for all nonzero elements
+of `K` (Chen–Moriwaki, §3.1). -/
 class IsProper (C : AdelicCurve) where
+  /-- The product formula. -/
   product_formula : ∀ x : C.K, x ≠ 0 → ∫ ω, Real.log ((C.AS.ϕ ω) x) ∂C.AS.v = 0
 
 end AdelicCurve
 
 namespace AdelicStructure
 
-def toAdelicCurve (K : Type u_1) [Field K] (AS : AdelicStructure K) : AdelicCurve where
+/-- Bundle an adelic structure on `K` into an adelic curve. -/
+def toAdelicCurve {K : Type*} [Field K] (AS : AdelicStructure K) : AdelicCurve where
   K := K
   hK := ‹Field K›
   AS := AS

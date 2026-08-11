@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Yijun Yuan. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yijun Yuan
+-/
 import Mathlib.Analysis.AbsoluteValue.Equivalence
 import Mathlib.Algebra.Order.CauSeq.Completion
 import Mathlib.Analysis.Normed.Module.Completion
@@ -5,15 +10,25 @@ import Mathlib.Analysis.Normed.Field.Instances
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import ArakelovGeometry.ExternalResults.Ostrowski
 
+/-!
+# Completions and restrictions of absolute values
+
+This file collects general facts about absolute values on fields: transfer of the
+nonarchimedean property to the completion, characteristic zero and rational normalization for
+archimedean absolute values (via Gelfand–Tornheim/Ostrowski), pullback and restriction of
+absolute values, and finite-dimensionality of completions in finite extensions.
+-/
+
 namespace AbsoluteValue
 
-theorem completion_preserves_isNonarchimedean {K : Type*} [Field K] (abs : AbsoluteValue K ℝ) :
-  letI := abs.toNormedField;
+/-- An absolute value is nonarchimedean iff the induced absolute value on the completion is. -/
+theorem isNonarchimedean_completion_iff {K : Type*} [Field K] (abs : AbsoluteValue K ℝ) :
+    letI := abs.toNormedField;
     IsNonarchimedean abs ↔
-    IsNonarchimedean (UniformSpace.Completion.instNormedFieldOfCompletableTopField K
-      ).toAbsoluteValue := by
-  letI := abs.toNormedField
-  refine ⟨fun h => ?_, fun h => ?_⟩
+      IsNonarchimedean
+        (UniformSpace.Completion.instNormedFieldOfCompletableTopField K).toAbsoluteValue := by
+  let := abs.toNormedField
+  refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
   · intro z w
     have hnorm := h
     change IsNonarchimedean (norm : K → ℝ) at hnorm
@@ -31,99 +46,97 @@ theorem completion_preserves_isNonarchimedean {K : Type*} [Field K] (abs : Absol
     change ‖x + y‖ ≤ max ‖x‖ ‖y‖
     simpa only [← UniformSpace.Completion.coe_add, UniformSpace.Completion.norm_coe] using h
 
-theorem charZero_of_archimedean_abs {K : Type*} [Field K] (abs : AbsoluteValue K ℝ)
-  (habs : ¬ IsNonarchimedean abs) : CharZero K := by
-  let Kc := Completion abs
-  letI := abs.toNormedField
-  replace habs : ¬ IsNonarchimedean
-    (UniformSpace.Completion.instNormedFieldOfCompletableTopField K).toAbsoluteValue := by
+/-- A field carrying an archimedean absolute value has characteristic zero. -/
+theorem charZero_of_not_isNonarchimedean {K : Type*} [Field K] (abs : AbsoluteValue K ℝ)
+    (habs : ¬IsNonarchimedean abs) : CharZero K := by
+  let := abs.toNormedField
+  replace habs : ¬IsNonarchimedean
+      (UniformSpace.Completion.instNormedFieldOfCompletableTopField K).toAbsoluteValue := by
     contrapose habs
-    rwa [completion_preserves_isNonarchimedean]
-  rcases Neukirch_ANT_Ch_II_Theorem_4_2 _ habs (CauSeq.IsComplete_of_Completion abs) with h1 | h2
-  · rcases h1 with ⟨σ,_⟩
-    have : CharZero (UniformSpace.Completion K) := by
-      suffices h : CharZero ℝ by exact RingHom.charZero σ.toRingHom
-      infer_instance
-    exact RingHom.charZero UniformSpace.Completion.coeRingHom
-  · rcases h2 with ⟨σ,_⟩
-    have : CharZero (UniformSpace.Completion K) := by
-      suffices h : CharZero ℂ by exact RingHom.charZero σ.toRingHom
-      infer_instance
+    rwa [isNonarchimedean_completion_iff]
+  rcases exists_ringEquiv_real_or_complex_of_complete _ habs (CauSeq.isComplete_completion abs)
+    with ⟨σ, -⟩ | ⟨σ, -⟩ <;>
+  · have : CharZero (UniformSpace.Completion K) := RingHom.charZero σ.toRingHom
     exact RingHom.charZero UniformSpace.Completion.coeRingHom
 
-theorem exists_rpow_eq_of_archimedean_abs {K : Type*} [Field K] (abs : AbsoluteValue K ℝ)
-  (habs : ¬ IsNonarchimedean abs) :
-    ∃ s : ℝ, (s ∈ Set.Ioc 0 1 ∧
-    ∀ q : ℚ, abs q = (Rat.AbsoluteValue.real q) ^ s) := by
-    letI := abs.toNormedField
-    have := Neukirch_ANT_Ch_II_Theorem_4_2
-      (UniformSpace.Completion.instNormedFieldOfCompletableTopField K
-      ).toAbsoluteValue ?_ ?_
-    · rcases this with h1 | h1
-      · rcases h1 with ⟨σ, s, hs1, hs2⟩
-        use s
-        refine ⟨hs1, fun q => ?_⟩
-        specialize hs2 q
-        simp only [map_ratCast, Rat.norm_cast_real] at hs2
-        convert hs2
-        · simpa [NormedField.toAbsoluteValue, AbsoluteValue.coe_mk, MulHom.coe_mk] using
-            (calc
-              abs (q : K) = ‖((q : K) : UniformSpace.Completion K)‖ := by
-                rw [UniformSpace.Completion.norm_coe]; rfl
-              _ = ‖(q : UniformSpace.Completion K)‖ := by
-                congr
-                exact map_ratCast
-                  (UniformSpace.Completion.coeRingHom : K →+* UniformSpace.Completion K) q)
-        · exact List.map_inj.mp rfl
-      · rcases h1 with ⟨σ, s, hs1, hs2⟩
-        use s
-        refine ⟨hs1, fun q => ?_⟩
-        specialize hs2 q
-        simp only [map_ratCast] at hs2
-        convert hs2
-        · simpa [NormedField.toAbsoluteValue, AbsoluteValue.coe_mk, MulHom.coe_mk] using
-            (calc
-              abs (q : K) = ‖((q : K) : UniformSpace.Completion K)‖ := by
-                rw [UniformSpace.Completion.norm_coe]; rfl
-              _ = ‖(q : UniformSpace.Completion K)‖ := by
-                congr
-                exact map_ratCast
-                  (UniformSpace.Completion.coeRingHom : K →+* UniformSpace.Completion K) q)
-        · simp
-    · contrapose habs
-      exact (completion_preserves_isNonarchimedean abs).mpr habs
-    · exact CauSeq.IsComplete_of_Completion abs
+/-- An archimedean absolute value restricts to a power `|·| ^ s`, `s ∈ (0, 1]`, of the usual
+absolute value on `ℚ`. -/
+theorem exists_rpow_eq_of_not_isNonarchimedean {K : Type*} [Field K] (abs : AbsoluteValue K ℝ)
+    (habs : ¬IsNonarchimedean abs) :
+    ∃ s : ℝ, s ∈ Set.Ioc 0 1 ∧ ∀ q : ℚ, abs q = Rat.AbsoluteValue.real q ^ s := by
+  let := abs.toNormedField
+  have := exists_ringEquiv_real_or_complex_of_complete
+    (UniformSpace.Completion.instNormedFieldOfCompletableTopField K).toAbsoluteValue ?_ ?_
+  · rcases this with h1 | h1
+    · rcases h1 with ⟨σ, s, hs1, hs2⟩
+      use s
+      refine ⟨hs1, fun q ↦ ?_⟩
+      specialize hs2 q
+      simp only [map_ratCast, Rat.norm_cast_real] at hs2
+      convert hs2
+      · simpa [NormedField.toAbsoluteValue, AbsoluteValue.coe_mk, MulHom.coe_mk] using
+          (calc
+            abs (q : K) = ‖((q : K) : UniformSpace.Completion K)‖ := by
+              rw [UniformSpace.Completion.norm_coe]; rfl
+            _ = ‖(q : UniformSpace.Completion K)‖ := by
+              congr
+              exact map_ratCast
+                (UniformSpace.Completion.coeRingHom : K →+* UniformSpace.Completion K) q)
+      · simp [← Rat.norm_cast_real]
+    · rcases h1 with ⟨σ, s, hs1, hs2⟩
+      use s
+      refine ⟨hs1, fun q ↦ ?_⟩
+      specialize hs2 q
+      simp only [map_ratCast] at hs2
+      convert hs2
+      · simpa [NormedField.toAbsoluteValue, AbsoluteValue.coe_mk, MulHom.coe_mk] using
+          (calc
+            abs (q : K) = ‖((q : K) : UniformSpace.Completion K)‖ := by
+              rw [UniformSpace.Completion.norm_coe]; rfl
+            _ = ‖(q : UniformSpace.Completion K)‖ := by
+              congr
+              exact map_ratCast
+                (UniformSpace.Completion.coeRingHom : K →+* UniformSpace.Completion K) q)
+      · simp
+  · contrapose habs
+    exact (isNonarchimedean_completion_iff abs).mpr habs
+  · exact CauSeq.isComplete_completion abs
 
-def pullback {K : Type u_1} [Field K] (v : AbsoluteValue K ℝ) {L : Type u_2} [Field L]
-  (i : L →+* K) : AbsoluteValue L ℝ where
-  toFun x :=  v (i x)
+/-- The pullback of an absolute value along a ring homomorphism of fields. -/
+def pullback {K : Type*} [Field K] (v : AbsoluteValue K ℝ) {L : Type*} [Field L]
+    (i : L →+* K) : AbsoluteValue L ℝ where
+  toFun x := v (i x)
   map_mul' := by simp
   nonneg' := by simp
   eq_zero' := by simp
-  add_le' x y:= by simp [v.add_le (i x) (i y)]
+  add_le' x y := by simp [v.add_le (i x) (i y)]
 
-abbrev restriction {K : Type u_1} [Field K] (v : AbsoluteValue K ℝ) (L : Type u_2) [Field L]
-  [Algebra L K] : AbsoluteValue L ℝ := pullback v (algebraMap L K)
+/-- The restriction of an absolute value on `K` to a field `L` embedded via `algebraMap L K`. -/
+abbrev restriction {K : Type*} [Field K] (v : AbsoluteValue K ℝ) (L : Type*) [Field L]
+    [Algebra L K] : AbsoluteValue L ℝ := pullback v (algebraMap L K)
 
 open WithAbs in
 /-- The `algebraMap` from `WithAbs (v.restriction L)` to `WithAbs v` is an isometry. -/
-theorem isometry_algebraMap_withAbs {K : Type u} [Field K] (v : AbsoluteValue K ℝ) (L : Type u_2)
+theorem isometry_algebraMap_withAbs {K : Type*} [Field K] (v : AbsoluteValue K ℝ) (L : Type*)
     [Field L] [Algebra L K] : Isometry (algebraMap (WithAbs (v.restriction L)) (WithAbs v)) :=
   AddMonoidHomClass.isometry_of_norm _ fun x ↦ by
     rw [WithAbs.norm_eq_apply_ofAbs, WithAbs.norm_eq_apply_ofAbs, WithAbs.ofAbs_algebraMap]; rfl
 
-noncomputable instance algebraCompletion {K : Type u} [Field K] (v : AbsoluteValue K ℝ)
-    (L : Type u_2) [Field L] [Algebra L K] :
+/-- `v.Completion` is an algebra over the completion of the restriction of `v`. -/
+noncomputable instance algebraCompletion {K : Type*} [Field K] (v : AbsoluteValue K ℝ)
+    (L : Type*) [Field L] [Algebra L K] :
     Algebra (v.restriction L).Completion v.Completion :=
   (UniformSpace.Completion.mapRingHom (algebraMap (WithAbs (v.restriction L)) (WithAbs v))
     (isometry_algebraMap_withAbs v L).continuous).toAlgebra
 
-variable {K : Type u} [Field K] (v : AbsoluteValue K ℝ) (L : Type u_2) [Field L] [Algebra L K]
+variable {K : Type*} [Field K] (v : AbsoluteValue K ℝ) (L : Type*) [Field L] [Algebra L K]
 
+/-- The algebra map between the completions is the map induced by the `algebraMap` on the
+underlying `WithAbs` types. -/
 theorem algebraMap_completion_def :
     (algebraMap (v.restriction L).Completion v.Completion) =
-    UniformSpace.Completion.mapRingHom (algebraMap (WithAbs (v.restriction L)) (WithAbs v))
-      (isometry_algebraMap_withAbs v L).continuous := rfl
+      UniformSpace.Completion.mapRingHom (algebraMap (WithAbs (v.restriction L)) (WithAbs v))
+        (isometry_algebraMap_withAbs v L).continuous := rfl
 
 /-- The algebra map between the completions is an isometry. -/
 theorem isometry_algebraMap_completion :
@@ -131,6 +144,7 @@ theorem isometry_algebraMap_completion :
   rw [algebraMap_completion_def]
   exact (isometry_algebraMap_withAbs v L).isometry_mapRingHom
 
+/-- The algebra map between the completions preserves the norm. -/
 theorem norm_algebraMap_completion (a : (v.restriction L).Completion) :
     ‖algebraMap (v.restriction L).Completion v.Completion a‖ = ‖a‖ := by
   simpa using (isometry_algebraMap_completion v L).norm_map_of_map_zero (map_zero _) a
@@ -164,7 +178,7 @@ theorem finiteDimensional_completion_of_isNontrivial [FiniteDimensional L K]
   classical
   -- Endow the base completion with its nontrivially normed field structure (needed for the
   -- closedness of finite-dimensional subspaces), sharing the canonical `NormedField`.
-  letI : NontriviallyNormedField (v.restriction L).Completion :=
+  let : NontriviallyNormedField (v.restriction L).Completion :=
     { (inferInstance : NormedField (v.restriction L).Completion) with
       non_trivial := by
         obtain ⟨x, hx⟩ := hv.exists_abv_gt_one
@@ -179,7 +193,7 @@ theorem finiteDimensional_completion_of_isNontrivial [FiniteDimensional L K]
   set W : Submodule (v.restriction L).Completion v.Completion := Submodule.span _ s with hW
   -- `W` is finite-dimensional, hence closed.
   have hsfin : s.Finite := Set.finite_range _
-  haveI : FiniteDimensional (v.restriction L).Completion W :=
+  have : FiniteDimensional (v.restriction L).Completion W :=
     FiniteDimensional.span_of_finite _ hsfin
   have hWclosed : IsClosed (W : Set v.Completion) :=
     Submodule.closed_of_finiteDimensional (𝕜 := (v.restriction L).Completion) W
@@ -213,6 +227,8 @@ theorem finiteDimensional_completion_of_isNontrivial [FiniteDimensional L K]
     hWtop ▸ Submodule.fg_span hsfin
   exact Module.Finite.of_fg_top hfg
 
+/-- The local degree of `K / L` at `v`: the dimension of the completion of `v` over the
+completion of its restriction to `L`. -/
 noncomputable def localDegree [FiniteDimensional L K] : ℕ :=
   Module.finrank (v.restriction L).Completion v.Completion
 
