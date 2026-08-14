@@ -514,6 +514,22 @@ theorem measurableSpace_eq_comap_sup :
           (fun x : ParameterSpaceFinExtension AS L ↦ ϕ AS L x a) inferInstance := by
   sorry
 
+/-- The closing remark of Definition 3.4.1 together with Theorem 3.3.7(5): the finite
+(possibly inseparable) extension of a proper adelic curve is proper. -/
+theorem isProper_finiteExtension [AS.toAdelicCurve.IsProper] :
+    (AS.finiteExtension L).toAdelicCurve.IsProper := by
+  sorry
+
+/-- Formula (3.14): the logarithmic integrals against `ν_{K'}` of `a ∈ L` and of its power
+`a^q ∈ K'`, `q = [L : K']` the inseparable degree, are proportional with ratio `q⁻¹`. -/
+theorem integral_log_eq_inv_finInsepDegree_mul (a : L) :
+    ∫ x, Real.log (ϕ AS L x a) ∂measure AS L =
+      (Field.finInsepDegree K L : ℝ)⁻¹ *
+        ∫ x, Real.log (ParameterSpaceExtension.ϕ x
+          ⟨a ^ Field.finInsepDegree K L,
+            pow_finInsepDegree_mem_separableClosure K a⟩) ∂measure AS L := by
+  sorry
+
 /-- Chen--Moriwaki, Lemma 3.4.2: for a finite extension `L/K` and an absolute value `w` on
 `L`, the completion of the separable closure `K^sc` of `K` in `L` at `w` identifies, inside
 the completion `L_w`, with the separable closure of the completion `K_v` (`v = w|_K`). -/
@@ -849,11 +865,20 @@ theorem lintegral_measure {f : ParameterSpaceExtension AS L → ℝ≥0∞}
   sorry
 
 /-- Chen--Moriwaki, Proposition 3.4.9: a projectively measurable function is `ν_L`-integrable
-if and only if the fibre integral of its absolute value is `ν_K`-integrable. -/
+if and only if the fibre integral of its absolute value — computed in `[0, +∞]`, as in the
+discussion after Proposition 3.4.8, since fibres of an infinite extension need not have
+integrable restrictions — has finite integral on the base. -/
 theorem integrable_measure_iff {f : ParameterSpaceExtension AS L → ℝ}
     (hf : Measurable[projectiveMeasurableSpace AS L] f) :
     Integrable[projectiveMeasurableSpace AS L] f (measure AS L) ↔
-      Integrable (fibreIntegral AS L fun x ↦ |f x|) AS.v := by
+      ∫⁻ ω, fibreLIntegral AS L (fun x ↦ ENNReal.ofReal |f x|) ω ∂AS.v < ∞ := by
+  sorry
+
+/-- Chen--Moriwaki, Proposition 3.4.9: fibre integration is a contraction from
+`L¹(Ω_L, ν_L)` to `L¹(Ω_K, ν_K)`; this is the continuity of the operator `I_{L/K}`. -/
+theorem integral_abs_fibreIntegral_le {f : ParameterSpaceExtension AS L → ℝ}
+    (hf : Integrable[projectiveMeasurableSpace AS L] f (measure AS L)) :
+    ∫ ω, |fibreIntegral AS L f ω| ∂AS.v ≤ ∫ x, |f x| ∂measure AS L := by
   sorry
 
 /-- Chen--Moriwaki, Proposition 3.4.9, formula (3.20): the projective-limit measure
@@ -926,8 +951,13 @@ theorem exists_equiv_finiteExtension_finiteExtension [FiniteDimensional K M]
     (F : IntermediateField K M) :
     ∃ e : AdelicStructure.Equiv
         ((AS.finiteExtension F).finiteExtension M) (AS.finiteExtension M),
-      ∀ x, ParameterSpaceExtension.proj (ParameterSpaceExtension.proj x) =
-        ParameterSpaceExtension.proj (e.toMeasurableEquiv x) := by
+      (∀ x, ParameterSpaceExtension.proj (ParameterSpaceExtension.proj x) =
+        ParameterSpaceExtension.proj (e.toMeasurableEquiv x)) ∧
+      ∀ g : ((AS.finiteExtension F).finiteExtension M).Ω → ℝ,
+        ParameterSpaceFinExtension.fibreIntegral AS F
+            (ParameterSpaceFinExtension.fibreIntegral (AS.finiteExtension F) M g) =
+          ParameterSpaceFinExtension.fibreIntegral AS M
+            (fun y ↦ g (e.toMeasurableEquiv.symm y)) := by
   sorry
 
 /-- Chen--Moriwaki, Theorem 3.4.12: algebraic extension of adelic structures is transitive:
@@ -938,8 +968,13 @@ theorem exists_equiv_algebraicExtension_algebraicExtension [Algebra.IsAlgebraic 
     (F : IntermediateField K M) :
     ∃ e : AdelicStructure.Equiv
         ((AS.algebraicExtension F).algebraicExtension M) (AS.algebraicExtension M),
-      ∀ x, ParameterSpaceExtension.proj (ParameterSpaceExtension.proj x) =
-        ParameterSpaceExtension.proj (e.toMeasurableEquiv x) := by
+      (∀ x, ParameterSpaceExtension.proj (ParameterSpaceExtension.proj x) =
+        ParameterSpaceExtension.proj (e.toMeasurableEquiv x)) ∧
+      ∀ g : ((AS.algebraicExtension F).algebraicExtension M).Ω → ℝ,
+        Algebraic.fibreIntegral AS F
+            (Algebraic.fibreIntegral (AS.algebraicExtension F) M g) =
+          Algebraic.fibreIntegral AS M
+            (fun y ↦ g (e.toMeasurableEquiv.symm y)) := by
   sorry
 
 end Compatibility
