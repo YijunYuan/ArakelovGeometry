@@ -11,6 +11,7 @@ import ArakelovGeometry.AdelicCurve.Defs
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicCurve.Amalgamation
 import ArakelovGeometry.AdelicCurve.Restriction
+import ArakelovGeometry.AdelicCurve.Extension
 import ArakelovGeometry.AdelicCurve.Examples.Trivial
 import ArakelovGeometry.AdelicCurve.Examples.NumberFields
 import ArakelovGeometry.AdelicCurve.Examples.FunctionFields
