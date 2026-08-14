@@ -5,17 +5,22 @@ Authors: Yijun Yuan
 -/
 import ArakelovGeometry.AdelicCurve.Defs
 import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
+import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 import Mathlib.FieldTheory.SeparableClosure
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
 import Mathlib.MeasureTheory.Measure.Dirac
 import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
+import Mathlib.RingTheory.Norm.Defs
 
 
 /-!
-This file records the definition-level data for algebraic extensions of adelic
-structures (§3.3–§3.4): the fibre product parameter space of extensions of the base absolute
-values, finite separable extensions, finite extensions, and general algebraic extensions.
+This file records the statement-level formalization of algebraic extensions of adelic
+structures (Chen–Moriwaki, §3.3–§3.4): the fibre product parameter space of extensions of the
+base absolute values, integration along fibres and its properties (§3.3.1–§3.3.2), the induced
+measure on a finite separable extension (§3.3.3), finite extensions via the separable closure
+(§3.4.1), and general algebraic extensions as projective limits (§3.4.2), including the
+projective-limit fibre probability measures and the transitivity of the construction.
 -/
 
 namespace ArakelovGeometry
@@ -24,6 +29,33 @@ open MeasureTheory AbsoluteValue
 open scoped ENNReal
 
 universe u v w
+
+/-! ### Equivalences of adelic structures -/
+
+/-- An equivalence between two adelic structures on the same field: a measurable equivalence
+of the parameter spaces matching the families of absolute values and transporting one measure
+to the other. This packages the meaning of the equalities of adelic curves in Chen–Moriwaki,
+Proposition 3.4.4 and Theorem 3.4.12. -/
+structure AdelicStructure.Equiv {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
+    (T : AdelicStructure.{u, w} K) where
+  /-- The underlying measurable equivalence of parameter spaces. -/
+  toMeasurableEquiv : S.Ω ≃ᵐ T.Ω
+  /-- The equivalence matches the families of absolute values. -/
+  ϕ_comp : ∀ x : S.Ω, T.ϕ (toMeasurableEquiv x) = S.ϕ x
+  /-- The equivalence transports the measure of `S` to the measure of `T`. -/
+  map_v : MeasureTheory.Measure.map toMeasurableEquiv S.v = T.v
+
+/-! ### Power sums and maxima of absolute values -/
+
+/-- Chen--Moriwaki, Lemma 3.3.5(1), formula (3.5): for finitely many distinct elements of a
+field with an absolute value, the maximum of their absolute values is recovered from power
+sums: `max_j |α_j| = limsup_N |α_1^N + ⋯ + α_d^N|^{1/N}`. -/
+theorem _root_.AbsoluteValue.iSup_eq_limsup_sum_pow_rpow {F : Type*} [Field F]
+    (v : AbsoluteValue F ℝ) {d : ℕ} (hd : 1 ≤ d) {α : Fin d → F}
+    (hα : Function.Injective α) :
+    (⨆ i, v (α i)) =
+      Filter.limsup (fun N : ℕ ↦ (v (∑ i, α i ^ N)) ^ ((N : ℝ)⁻¹)) Filter.atTop := by
+  sorry
 
 /-! ### Algebraic extensions of adelic structures -/
 
@@ -131,7 +163,23 @@ def restrictOfLE {F G : IntermediateField K L} (hFG : F ≤ G)
     change (x.abv.restriction K) a = (AS.ϕ x.base) a
     rw [x.restrict_eq]
 
+/-- Restriction to a smaller intermediate stage factors through any larger one. This is the
+compatibility `π_{L/K₁} = π_{K₂/K₁} ∘ π_{L/K₂}` of §3.4.2, formula (3.16). -/
+theorem restrictOfLE_restrict {F G : IntermediateField K L} (hFG : F ≤ G)
+    (x : ParameterSpaceExtension AS L) :
+    restrictOfLE AS L hFG (restrict AS L x G) = restrict AS L x F := by
+  sorry
+
 end ParameterSpaceExtension
+
+/-- Chen--Moriwaki, Lemma 3.3.5(2): given any choice of extensions of the base absolute
+values to an algebraic closure of `K`, the maximal absolute value on the Galois orbit of a
+separable element is a measurable function of the base point. -/
+theorem measurable_iSup_abv_aut (s : AS.Ω → ParameterSpaceExtension AS (AlgebraicClosure K))
+    (hs : ∀ ω, (s ω).proj = ω) {c : AlgebraicClosure K} (hc : IsSeparable K c) :
+    Measurable fun ω : AS.Ω ↦
+      ⨆ τ : AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K, (s ω).ϕ (τ c) := by
+  sorry
 
 /-- The filtered indexing type `E_{L/K}` of finite subextensions of an algebraic extension
 `L/K`. -/
@@ -201,6 +249,48 @@ noncomputable def fibreIntegral (f : ParameterSpaceExtension AS L → ℝ) : AS.
 noncomputable def fibreLIntegral (f : ParameterSpaceExtension AS L → ℝ≥0∞) : AS.Ω → ℝ≥0∞ :=
   fun ω ↦ ∫⁻ x : ExtensionFiber AS L ω, f x.1 ∂fibreProbabilityMeasure AS L ω
 
+omit _s in
+/-- The fibres of the projection of a finite extension are finite sets (§3.3, p. 178: a base
+absolute value has at most `[L : K]` extensions to `L`). -/
+theorem finite_extensionFiber (ω : AS.Ω) : Finite (ExtensionFiber AS L ω) := by
+  sorry
+
+/-- Formula (3.3): the fibre integration operator sends the constant function `1` on `Ω_L`
+to the constant function `1` on `Ω_K` (§3.3.1). -/
+theorem fibreIntegral_one : fibreIntegral AS L (fun _ ↦ 1) = fun _ ↦ 1 := by
+  sorry
+
+/-- The fibre integration operator is additive (§3.3.1). -/
+theorem fibreIntegral_add (f g : ParameterSpaceExtension AS L → ℝ) :
+    fibreIntegral AS L (f + g) = fibreIntegral AS L f + fibreIntegral AS L g := by
+  sorry
+
+/-- The fibre integration operator is `ℝ`-homogeneous (§3.3.1). -/
+theorem fibreIntegral_smul (c : ℝ) (f : ParameterSpaceExtension AS L → ℝ) :
+    fibreIntegral AS L (c • f) = c • fibreIntegral AS L f := by
+  sorry
+
+/-- Chen--Moriwaki, Proposition 3.3.1: fibre integration is linear over functions pulled back
+from the base: `I_{K'/K}(φ̄ f) = φ I_{K'/K}(f)` for `φ̄ = φ ∘ π_{K'/K}`. -/
+theorem fibreIntegral_comp_proj_mul (φ : AS.Ω → ℝ) (f : ParameterSpaceExtension AS L → ℝ) :
+    fibreIntegral AS L (fun x ↦ φ (proj x) * f x) = fun ω ↦ φ ω * fibreIntegral AS L f ω := by
+  sorry
+
+/-- Chen--Moriwaki, Corollary 3.3.3: fibre integration retracts the pullback along the
+projection: `I_{K'/K}(φ ∘ π_{K'/K}) = φ`. -/
+theorem fibreIntegral_comp_proj (φ : AS.Ω → ℝ) :
+    fibreIntegral AS L (fun x ↦ φ (proj x)) = φ := by
+  sorry
+
+/-- Chen--Moriwaki, Proposition 3.3.2, formula (3.4): fibre integration is compatible with
+successive finite separable extensions `K ⊆ F ⊆ L`: integrating a function pulled back from
+the intermediate stage agrees with integrating the function at the intermediate stage. -/
+theorem fibreIntegral_comp_restrict (F : IntermediateField K L)
+    [FiniteDimensional K F] [Algebra.IsSeparable K F]
+    (f : ParameterSpaceExtension AS F → ℝ) :
+    fibreIntegral AS L (fun x ↦ f (restrict AS L x F)) = fibreIntegral AS F f := by
+  sorry
+
 /-- Chen--Moriwaki, Theorem 3.3.4: for finite separable `L/K`, the fibre integration operator
 sends measurable real-valued functions on `Ω_L` to measurable real-valued functions on `Ω_K`. -/
 theorem measurable_fibreIntegral {f : ParameterSpaceExtension AS L → ℝ} (hf : Measurable f) :
@@ -222,6 +312,42 @@ theorem inducedMeasure_apply {A : Set (ParameterSpaceExtension AS L)} (hA : Meas
     inducedMeasure AS L A =
       ∫⁻ ω, fibreLIntegral AS L (Set.indicator A fun _ ↦ (1 : ℝ≥0∞)) ω ∂AS.v :=
   Measure.ofMeasurable_apply A hA
+
+/-- Chen--Moriwaki, Theorem 3.3.7(1), formula (3.7): the induced measure integrates
+nonnegative measurable functions through the fibre integration operator. -/
+theorem lintegral_inducedMeasure {f : ParameterSpaceExtension AS L → ℝ≥0∞}
+    (hf : Measurable f) :
+    ∫⁻ x, f x ∂inducedMeasure AS L = ∫⁻ ω, fibreLIntegral AS L f ω ∂AS.v := by
+  sorry
+
+/-- Chen--Moriwaki, Theorem 3.3.7(2): a measurable function is integrable for the induced
+measure if and only if the fibre integral of its absolute value is integrable on the base. -/
+theorem integrable_inducedMeasure_iff {f : ParameterSpaceExtension AS L → ℝ}
+    (hf : Measurable f) :
+    Integrable f (inducedMeasure AS L) ↔
+      Integrable (fibreIntegral AS L fun x ↦ |f x|) AS.v := by
+  sorry
+
+/-- Chen--Moriwaki, Theorem 3.3.7(2): formula (3.7) also holds for integrable real-valued
+functions. -/
+theorem integral_inducedMeasure {f : ParameterSpaceExtension AS L → ℝ}
+    (hf : Integrable f (inducedMeasure AS L)) :
+    ∫ x, f x ∂inducedMeasure AS L = ∫ ω, fibreIntegral AS L f ω ∂AS.v := by
+  sorry
+
+/-- Chen--Moriwaki, Theorem 3.3.7(3), formula (3.8): integrating a pullback from the base
+against the induced measure is integrating against the base measure. -/
+theorem integral_comp_proj_inducedMeasure {φ : AS.Ω → ℝ} (hφ : Integrable φ AS.v) :
+    ∫ x, φ (proj x) ∂inducedMeasure AS L = ∫ ω, φ ω ∂AS.v := by
+  sorry
+
+/-- Chen--Moriwaki, Theorem 3.3.7(5), formula (3.9): the logarithmic integral against the
+induced measure computes the logarithm of the norm form:
+`[K' : K] ∫ ln |b|_x dν_{K'} = ∫ ln |N_{K'/K}(b)|_ω dν_K`. -/
+theorem finrank_mul_integral_log_inducedMeasure (b : L) (hb : b ≠ 0) :
+    (Module.finrank K L : ℝ) * ∫ x, Real.log (ϕ x b) ∂inducedMeasure AS L =
+      ∫ ω, Real.log (AS.ϕ ω (Algebra.norm K b)) ∂AS.v := by
+  sorry
 
 /-- Chen--Moriwaki, Theorem 3.3.7(2): logarithmic evaluations are integrable for the measure
 defined in Definition 3.3.6. -/
@@ -248,6 +374,12 @@ noncomputable def _root_.ArakelovGeometry.AdelicStructure.finiteSeparableExtensi
   ϕ := ParameterSpaceExtension.ϕ
   measurable_log := fun a _ha ↦ ParameterSpaceExtension.measurable_log AS L a
   integrable_log := integrable_log_inducedMeasure AS L
+
+/-- Chen--Moriwaki, Theorem 3.3.7(5): the finite separable extension of a proper adelic curve
+is proper. -/
+theorem isProper_finiteSeparableExtension [AS.toAdelicCurve.IsProper] :
+    (AS.finiteSeparableExtension L).toAdelicCurve.IsProper := by
+  sorry
 
 end ParameterSpaceExtension
 
@@ -295,6 +427,16 @@ theorem extendAbsoluteValue_apply
           pow_finInsepDegree_mem_separableClosure K a⟩ ^
         ((Field.finInsepDegree K L : ℝ)⁻¹) :=
   rfl
+
+/-- The logarithmic form of formula (3.13), giving formula (3.14):
+`ln |a| = q⁻¹ ln |a^q|` with `q` the inseparable degree. -/
+theorem log_extendAbsoluteValue
+    (v : AbsoluteValue (separableClosure K L) ℝ) (a : L) :
+    Real.log (extendAbsoluteValue v a) =
+      (Field.finInsepDegree K L : ℝ)⁻¹ *
+        Real.log (v ⟨a ^ Field.finInsepDegree K L,
+          pow_finInsepDegree_mem_separableClosure K a⟩) := by
+  sorry
 
 /-- The canonical bijection `M_{K'} ≃ M_L` in Definition 3.4.1, used here as the parameter map
 for the finite extension adelic structure. -/
@@ -344,6 +486,42 @@ noncomputable def fibreProbabilityMeasure (ω : AS.Ω) :
     Measure (BaseFiber L ω) :=
   ParameterSpaceExtension.fibreProbabilityMeasure AS (separableClosure K L) ω
 
+/-- The fibre integration operator `I_{L/K}` of a finite (possibly inseparable) extension
+`L/K`, computed on the separable part as in Definition 3.4.1 and Remark 3.4.3. -/
+noncomputable def fibreIntegral (f : ParameterSpaceFinExtension AS L → ℝ) : AS.Ω → ℝ :=
+  fun ω ↦ ∫ x : BaseFiber L ω, f x.1 ∂fibreProbabilityMeasure AS L ω
+
+/-- Chen--Moriwaki, Remark 3.4.3: under the canonical bijection `M_{K'} ≃ M_L`, the fibre
+weights of the finite extension `L/K` are the ratios of separable degrees
+`[L_x : K_ω]_s / [L : K]_s`, computed here on the completions. -/
+theorem fibreWeight_eq_finSepDegree (ω : AS.Ω)
+    (x : ExtensionFiber AS (separableClosure K L) ω) :
+    ParameterSpaceExtension.fibreWeight AS (separableClosure K L) ω x =
+      (Field.finSepDegree ((ϕ AS L x.1).restriction K).Completion
+          (ϕ AS L x.1).Completion : ℝ≥0∞) /
+        (Field.finSepDegree K L : ℝ≥0∞) := by
+  sorry
+
+/-- The remark closing §3.4.1: the σ-algebra of the finite extension parameter space is also
+the smallest σ-algebra making the projection to the base and the evaluations of the extended
+absolute values at elements of `L` measurable. -/
+theorem measurableSpace_eq_comap_sup :
+    (ParameterSpaceExtension.instMeasurableSpace AS (separableClosure K L) :
+        MeasurableSpace (ParameterSpaceFinExtension AS L)) =
+      MeasurableSpace.comap
+          (ParameterSpaceExtension.proj (AS := AS) (L := separableClosure K L)) AS.A ⊔
+        ⨆ a : L, MeasurableSpace.comap
+          (fun x : ParameterSpaceFinExtension AS L ↦ ϕ AS L x a) inferInstance := by
+  sorry
+
+/-- Chen--Moriwaki, Lemma 3.4.2: for a finite extension `L/K` and an absolute value `w` on
+`L`, the completion of the separable closure `K^sc` of `K` in `L` at `w` identifies, inside
+the completion `L_w`, with the separable closure of the completion `K_v` (`v = w|_K`). -/
+theorem fieldRange_completion_separableClosure (w : AbsoluteValue L ℝ) :
+    (algebraMap (w.restriction (separableClosure K L)).Completion w.Completion).fieldRange =
+      (separableClosure (w.restriction K).Completion w.Completion).toSubfield := by
+  sorry
+
 end ParameterSpaceFinExtension
 
 namespace Algebraic
@@ -361,6 +539,20 @@ theorem mem_ofElement (a : L) : a ∈ (ofElement (K := K) (L := L) a).1 := by
   change a ∈ IntermediateField.adjoin K ({a} : Set L)
   exact IntermediateField.mem_adjoin_simple_self K a
 
+/-- Chen--Moriwaki, Proposition 3.4.5: for an algebraic extension `L/K`, every extension
+place of an intermediate stage lifts to `L`: the restriction maps `π_{L/K''}` are
+surjective. -/
+theorem surjective_restrict (F : IntermediateField K L) :
+    Function.Surjective fun x : ParameterSpaceExtension AS L ↦
+      ParameterSpaceExtension.restrict AS L x F := by
+  sorry
+
+/-- The base projection of an algebraic extension is surjective: every absolute value of the
+base structure extends to `L` (the case `K'' = K` of Proposition 3.4.5). -/
+theorem surjective_proj :
+    Function.Surjective (ParameterSpaceExtension.proj (AS := AS) (L := L)) := by
+  sorry
+
 variable {L} in
 /-- The projection `π_{L/F}` from the algebraic parameter space to the finite stage attached
 to a finite subextension `F/K`. For a non-separable finite stage this lands in the parameter
@@ -375,6 +567,12 @@ variable {AS} in
 /-- The finite-stage fibre over `ω : Ω_K`. -/
 abbrev FiniteBaseFiber (F : FiniteIntermediateField K L) (ω : AS.Ω) :=
   {x : AS.ParameterSpaceFinExtension F // ParameterSpaceExtension.proj x = ω}
+
+/-- In §3.4.2 the finite-stage fibres carry the discrete σ-algebra: every subset of a
+finite-stage fibre is measurable. -/
+theorem measurableSet_finiteBaseFiber (F : FiniteIntermediateField K L) (ω : AS.Ω)
+    (B : Set (FiniteBaseFiber L F ω)) : MeasurableSet B := by
+  sorry
 
 variable {AS} in
 /-- The fibre `M_{L,ω}` over a base parameter `ω : Ω_K`. -/
@@ -411,6 +609,7 @@ def fibreMeasurableSpace (ω : AS.Ω) :
   ⨆ F : FiniteIntermediateField K L,
     MeasurableSpace.comap (projFiniteFiber F ω) inferInstance
 
+omit [Algebra.IsAlgebraic K L] in
 /-- Each finite-stage projection is measurable for the projective-limit σ-algebra. -/
 theorem measurable_projFinite_projective (F : FiniteIntermediateField K L) :
     Measurable[projectiveMeasurableSpace AS L]
@@ -458,6 +657,19 @@ abbrev CylinderFunctions :=
   Σ f : ParameterSpaceExtension AS L → ℝ, DescendsToFinite AS L f
 
 variable {AS L} in
+/-- Remark 3.4.7: the cylinder functions `V_L` are closed under addition. -/
+theorem DescendsToFinite.nonempty_add {f g : ParameterSpaceExtension AS L → ℝ}
+    (hf : DescendsToFinite AS L f) (hg : DescendsToFinite AS L g) :
+    Nonempty (DescendsToFinite AS L (f + g)) := by
+  sorry
+
+variable {AS L} in
+/-- Remark 3.4.7: the cylinder functions `V_L` are closed under scalar multiplication. -/
+theorem DescendsToFinite.nonempty_smul (c : ℝ) {f : ParameterSpaceExtension AS L → ℝ}
+    (hf : DescendsToFinite AS L f) : Nonempty (DescendsToFinite AS L (c • f)) := by
+  sorry
+
+variable {AS L} in
 /-- A real-valued fibre cylinder function on `M_{L,ω}`, descending to a finite fibre. This is
 the definition-level counterpart of `V_{L,ω}` in §3.4.2. -/
 structure DescendsToFiniteFiber (ω : AS.Ω)
@@ -475,35 +687,87 @@ abbrev FibreCylinderFunctions (ω : AS.Ω) :=
   Σ f : BaseFiber L ω → ℝ,
     DescendsToFiniteFiber ω f
 
-/-- Proposition 3.4.6: the projective-limit probability measure `P_{L,ω}` on the fibre
-`M_{L,ω}` exists and has the prescribed finite-stage marginals. -/
--- To be fixed as a specific deifinition
-theorem exists_fibreProbabilityMeasure (ω : AS.Ω) :
-    ∃ P : @Measure (BaseFiber L ω)
-        (fibreMeasurableSpace L ω),
-      @IsProbabilityMeasure (BaseFiber L ω)
-          (fibreMeasurableSpace L ω) P ∧
-        ∀ F : FiniteIntermediateField K L,
-          letI : FiniteDimensional K F.1 := F.2
-          @Measure.map (BaseFiber L ω)
-              (FiniteBaseFiber L F ω)
-              (fibreMeasurableSpace L ω) inferInstance
-              (projFiniteFiber F ω) P =
-            ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω := by
+variable {AS L} in
+/-- Chen--Moriwaki, Proposition 3.4.6: the fibre cylinder functions `V_{L,ω}` are closed
+under addition. -/
+theorem DescendsToFiniteFiber.nonempty_add {ω : AS.Ω} {f g : BaseFiber L ω → ℝ}
+    (hf : DescendsToFiniteFiber ω f) (hg : DescendsToFiniteFiber ω g) :
+    Nonempty (DescendsToFiniteFiber ω (f + g)) := by
   sorry
 
-/-- The projective-limit fibre probability measure `P_{L,ω}` constructed in Proposition 3.4.6. -/
+variable {AS L} in
+/-- Chen--Moriwaki, Proposition 3.4.6: the fibre cylinder functions `V_{L,ω}` are closed
+under multiplication; `V_{L,ω}` is an `ℝ`-algebra of functions. -/
+theorem DescendsToFiniteFiber.nonempty_mul {ω : AS.Ω} {f g : BaseFiber L ω → ℝ}
+    (hf : DescendsToFiniteFiber ω f) (hg : DescendsToFiniteFiber ω g) :
+    Nonempty (DescendsToFiniteFiber ω (f * g)) := by
+  sorry
+
+variable {AS L} in
+/-- Chen--Moriwaki, Proposition 3.4.6: the fibre cylinder functions `V_{L,ω}` are closed
+under scalar multiplication. -/
+theorem DescendsToFiniteFiber.nonempty_smul (c : ℝ) {ω : AS.Ω} {f : BaseFiber L ω → ℝ}
+    (hf : DescendsToFiniteFiber ω f) : Nonempty (DescendsToFiniteFiber ω (c • f)) := by
+  sorry
+
+variable {AS L} in
+/-- The fibre integral of a cylinder function, computed at a finite stage through which it
+descends; this is the operator `I_{L/K,ω}` of formula (3.17). -/
+noncomputable def fibreCylinderIntegral {ω : AS.Ω} {f : BaseFiber L ω → ℝ}
+    (d : DescendsToFiniteFiber ω f) : ℝ :=
+  ∫ y, d.g y ∂ParameterSpaceFinExtension.fibreProbabilityMeasure AS d.F ω
+
+variable {AS L} in
+/-- Chen--Moriwaki, Proposition 3.4.6 (well-definedness of `I_{L/K,ω}`): the fibre integral
+of a cylinder function does not depend on the finite stage through which it descends. -/
+theorem fibreCylinderIntegral_congr {ω : AS.Ω} {f : BaseFiber L ω → ℝ}
+    (d₁ d₂ : DescendsToFiniteFiber ω f) :
+    fibreCylinderIntegral d₁ = fibreCylinderIntegral d₂ := by
+  sorry
+
+/-- The cylinder content on the fibre `M_{L,ω}`: the infimum of the prescribed finite-stage
+fibre measures over cylinder supersets. On a cylinder set `(π_{L/F,ω})⁻¹(B)` it takes the
+prescribed value `P_{F,ω}(B)`; this is the additive set function extended by Carathéodory's
+theorem in the proof of Proposition 3.4.6. -/
+noncomputable def fibreCylinderContent (ω : AS.Ω) (A : Set (BaseFiber L ω)) : ℝ≥0∞ :=
+  ⨅ (F : FiniteIntermediateField K L) (B : Set (FiniteBaseFiber L F ω))
+    (_ : A ⊆ projFiniteFiber F ω ⁻¹' B),
+    ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω B
+
+/-- Chen--Moriwaki, Proposition 3.4.6: the projective-limit fibre probability measure
+`P_{L,ω}` on the fibre `M_{L,ω}`, defined as the Carathéodory extension of the cylinder
+content: the outer measure generated by `fibreCylinderContent` (whose value on a countable
+cylinder cover is the infimum of the total finite-stage measures), restricted to the fibre
+σ-algebra `A_{L,ω}`. -/
 noncomputable def fibreProbabilityMeasure (ω : AS.Ω) :
     @Measure (BaseFiber L ω)
       (fibreMeasurableSpace L ω) :=
-  Classical.choose (exists_fibreProbabilityMeasure AS L ω)
+  letI : MeasurableSpace (BaseFiber L ω) := fibreMeasurableSpace L ω
+  (OuterMeasure.ofFunction (fibreCylinderContent AS L ω) (by sorry)).toMeasure (by sorry)
 
-/-- The projective-limit fibre probability measure has total mass one. -/
+/-- Chen--Moriwaki, Proposition 3.4.6: `P_{L,ω}` has total mass one. -/
 theorem fibreProbabilityMeasure_isProbability (ω : AS.Ω) :
     @IsProbabilityMeasure (BaseFiber L ω)
       (fibreMeasurableSpace L ω)
-      (fibreProbabilityMeasure AS L ω) :=
-  (Classical.choose_spec (exists_fibreProbabilityMeasure AS L ω)).1
+      (fibreProbabilityMeasure AS L ω) := by
+  sorry
+
+/-- Chen--Moriwaki, Proposition 3.4.6: the finite-stage marginals of `P_{L,ω}` are the
+prescribed finite fibre probability measures. -/
+theorem map_fibreProbabilityMeasure_projFiniteFiber (ω : AS.Ω)
+    (F : FiniteIntermediateField K L) :
+    @Measure.map (BaseFiber L ω) (FiniteBaseFiber L F ω)
+        (fibreMeasurableSpace L ω) inferInstance
+        (projFiniteFiber F ω) (fibreProbabilityMeasure AS L ω) =
+      ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω := by
+  sorry
+
+/-- Chen--Moriwaki, Proposition 3.4.6, formula (3.17): integrating a cylinder function
+against `P_{L,ω}` computes its finite-stage fibre integral `I_{L/K,ω}`. -/
+theorem integral_fibreProbabilityMeasure_descend {ω : AS.Ω} {f : BaseFiber L ω → ℝ}
+    (d : DescendsToFiniteFiber ω f) :
+    ∫ x, f x ∂fibreProbabilityMeasure AS L ω = fibreCylinderIntegral d := by
+  sorry
 
 /-- The fibre integral `I_{L/K}` for nonnegative functions, defined using the projective-limit
 probability measures `P_{L,ω}`. -/
@@ -512,6 +776,35 @@ noncomputable def fibreLIntegral
   fun ω ↦
     ∫⁻ x : BaseFiber L ω, f x.1
       ∂fibreProbabilityMeasure AS L ω
+
+/-- The fibre integration operator `I_{L/K}` on real-valued functions, defined using the
+projective-limit fibre probability measures (Remark 3.4.7 and the discussion after
+Proposition 3.4.8). -/
+noncomputable def fibreIntegral (f : ParameterSpaceExtension AS L → ℝ) : AS.Ω → ℝ :=
+  fun ω ↦
+    ∫ x : BaseFiber L ω, f x.1
+      ∂fibreProbabilityMeasure AS L ω
+
+/-- Remark 3.4.7: fibre integration retracts the pullback along the base projection:
+`I_{L/K}(g ∘ π_{L/K}) = g`. -/
+theorem fibreIntegral_comp_proj (g : AS.Ω → ℝ) :
+    fibreIntegral AS L (fun x ↦ g (ParameterSpaceExtension.proj x)) = g := by
+  sorry
+
+/-- Formula (3.19): on a function pulled back from a finite stage, the fibre integration
+operator computes the finite-stage fibre integral: `I_{L/K}(g ∘ π_{L/K''}) = I_{K''/K}(g)`. -/
+theorem fibreIntegral_comp_projFinite (F : FiniteIntermediateField K L)
+    (g : ParameterSpaceFinExtension AS F → ℝ) :
+    fibreIntegral AS L (fun x ↦ g (projFinite AS F x)) =
+      ParameterSpaceFinExtension.fibreIntegral AS F g := by
+  sorry
+
+/-- Chen--Moriwaki, Proposition 3.4.8: a projectively measurable function restricts to an
+`A_{L,ω}`-measurable function on every fibre. -/
+theorem measurable_restrict_baseFiber {f : ParameterSpaceExtension AS L → ℝ≥0∞}
+    (hf : Measurable[projectiveMeasurableSpace AS L] f) (ω : AS.Ω) :
+    Measurable[fibreMeasurableSpace L ω] fun x : BaseFiber L ω ↦ f x.1 := by
+  sorry
 
 /-- Proposition 3.4.8: fibre integration of a nonnegative projectively measurable function is
 measurable on the base. -/
@@ -544,9 +837,44 @@ theorem measure_apply {A : Set (ParameterSpaceExtension AS L)}
       ∫⁻ ω, fibreLIntegral (AS := AS) (L := L)
         (Set.indicator A fun _ ↦ (1 : ℝ≥0∞)) ω ∂AS.v :=
   by
-    letI : MeasurableSpace (ParameterSpaceExtension AS L) :=
+    let : MeasurableSpace (ParameterSpaceExtension AS L) :=
       projectiveMeasurableSpace AS L
     exact Measure.ofMeasurable_apply A hA
+
+/-- Formula (3.18): the projective-limit measure `ν_L` integrates nonnegative projectively
+measurable functions through the fibre integration operator. -/
+theorem lintegral_measure {f : ParameterSpaceExtension AS L → ℝ≥0∞}
+    (hf : Measurable[projectiveMeasurableSpace AS L] f) :
+    ∫⁻ x, f x ∂measure AS L = ∫⁻ ω, fibreLIntegral AS L f ω ∂AS.v := by
+  sorry
+
+/-- Chen--Moriwaki, Proposition 3.4.9: a projectively measurable function is `ν_L`-integrable
+if and only if the fibre integral of its absolute value is `ν_K`-integrable. -/
+theorem integrable_measure_iff {f : ParameterSpaceExtension AS L → ℝ}
+    (hf : Measurable[projectiveMeasurableSpace AS L] f) :
+    Integrable[projectiveMeasurableSpace AS L] f (measure AS L) ↔
+      Integrable (fibreIntegral AS L fun x ↦ |f x|) AS.v := by
+  sorry
+
+/-- Chen--Moriwaki, Proposition 3.4.9, formula (3.20): the projective-limit measure
+integrates integrable functions through the fibre integration operator. -/
+theorem integral_measure {f : ParameterSpaceExtension AS L → ℝ}
+    (hf : Integrable[projectiveMeasurableSpace AS L] f (measure AS L)) :
+    ∫ x, f x ∂measure AS L = ∫ ω, fibreIntegral AS L f ω ∂AS.v := by
+  sorry
+
+/-- Formula (3.21): the pullback of a `ν_K`-integrable function along the base projection is
+`ν_L`-integrable. -/
+theorem integrable_comp_proj_measure {g : AS.Ω → ℝ} (hg : Integrable g AS.v) :
+    Integrable[projectiveMeasurableSpace AS L]
+      (fun x ↦ g (ParameterSpaceExtension.proj x)) (measure AS L) := by
+  sorry
+
+/-- Formula (3.21): integrating a pullback from the base against `ν_L` is integrating
+against `ν_K`. -/
+theorem integral_comp_proj_measure {g : AS.Ω → ℝ} (hg : Integrable g AS.v) :
+    ∫ x, g (ParameterSpaceExtension.proj x) ∂measure AS L = ∫ ω, g ω ∂AS.v := by
+  sorry
 
 /-- Proposition 3.4.10: logarithmic evaluations are integrable for the projective-limit measure. -/
 theorem integrable_log_measure (a : L) (ha : a ≠ 0) :
@@ -574,9 +902,47 @@ noncomputable def _root_.ArakelovGeometry.AdelicStructure.algebraicExtension :
   measurable_log := fun a _ha ↦ measurable_log_projective AS L a
   integrable_log := integrable_log_measure AS L
 
+/-- Chen--Moriwaki, Proposition 3.4.10: the algebraic extension of a proper adelic curve is
+proper. -/
+theorem isProper_algebraicExtension [AS.toAdelicCurve.IsProper] :
+    (AS.algebraicExtension L).toAdelicCurve.IsProper := by
+  sorry
+
 end Algebraic
 
 end AdelicStructure
+
+section Compatibility
+
+open AdelicStructure
+
+variable {K : Type u} [Field K] (AS : AdelicStructure.{u, v} K)
+variable (M : Type w) [Field M] [Algebra K M]
+
+/-- Chen--Moriwaki, Proposition 3.4.4: finite extension of adelic structures is transitive:
+for a tower `K ⊆ K₁ ⊆ K₂` of finite extensions, `(S ⊗_K K₁) ⊗_{K₁} K₂` and `S ⊗_K K₂` are
+canonically equivalent, compatibly with the projections to the base (formula (3.15)). -/
+theorem exists_equiv_finiteExtension_finiteExtension [FiniteDimensional K M]
+    (F : IntermediateField K M) :
+    ∃ e : AdelicStructure.Equiv
+        ((AS.finiteExtension F).finiteExtension M) (AS.finiteExtension M),
+      ∀ x, ParameterSpaceExtension.proj (ParameterSpaceExtension.proj x) =
+        ParameterSpaceExtension.proj (e.toMeasurableEquiv x) := by
+  sorry
+
+/-- Chen--Moriwaki, Theorem 3.4.12: algebraic extension of adelic structures is transitive:
+for a tower `K ⊆ L₁ ⊆ L₂` of algebraic extensions, `(S ⊗_K L₁) ⊗_{L₁} L₂` and `S ⊗_K L₂` are
+canonically equivalent, compatibly with the projections to the base (formulae (3.22),
+(3.23)). -/
+theorem exists_equiv_algebraicExtension_algebraicExtension [Algebra.IsAlgebraic K M]
+    (F : IntermediateField K M) :
+    ∃ e : AdelicStructure.Equiv
+        ((AS.algebraicExtension F).algebraicExtension M) (AS.algebraicExtension M),
+      ∀ x, ParameterSpaceExtension.proj (ParameterSpaceExtension.proj x) =
+        ParameterSpaceExtension.proj (e.toMeasurableEquiv x) := by
+  sorry
+
+end Compatibility
 
 end Extensions
 
