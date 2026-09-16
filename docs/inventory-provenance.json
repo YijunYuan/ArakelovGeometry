@@ -6,13 +6,14 @@
     "ArakelovGeometry/AdelicCurve/Examples/FunctionFields.lean": "c4d9d7a9bdf3a86537a9e3daeb55974056c18edafa70d00d834703a5c3b6d7c2",
     "ArakelovGeometry/AdelicCurve/Examples/NumberFields.lean": "ef412c4387c2511d6adb106454732dc738d538e0f323743ff2000cc6081c3da6",
     "ArakelovGeometry/AdelicCurve/Examples/Trivial.lean": "db4ce1fe8eb35a446d3fb640401c6b99446b100974203df8bb4cc1ec8067fc84",
-    "ArakelovGeometry/AdelicCurve/Extension.lean": "8f25388d71a9de67b8173c6f063a9d0b9fdf537bc2466288dcbd7630a09ad436",
+    "ArakelovGeometry/AdelicCurve/Extension.lean": "4bd7b70153953311dcdd77c7ba02055b7124f5ffca84bea3540c2bcd8959eb1d",
     "ArakelovGeometry/AdelicCurve/Restriction.lean": "3534074ec9ee41e7176f254351d0ed962f3116054474e2c5101671f35882b2aa",
     "ArakelovGeometry/AdelicCurve/RootBounds.lean": "1d3b7489ddfc384ff5380bb9594484d2f70e7e802e94b97f360fd76b29d88ac5",
     "ArakelovGeometry/ExternalResults/AbsoluteValue.lean": "826166a966403c2bc65257748a7040fabbd601fe323ad6887994c6b7ae2b7b5f",
+    "ArakelovGeometry/ExternalResults/AbsoluteValueCompact.lean": "d39caee536f2117c807f331a348e270b3be56aa46e5fc28001ded8b92b309d7a",
     "ArakelovGeometry/ExternalResults/AbsoluteValueExtension.lean": "e22ff5bbf8da908285c65babfdfedef7ab97b582df0287f33298fec0b76e9337",
     "ArakelovGeometry/ExternalResults/AbsoluteValueFinite.lean": "74edbff72af7586547dae46a04c83e086675443e3cef8ef00a027e67bf7065b0",
-    "ArakelovGeometry/ExternalResults/AbsoluteValueLocal.lean": "ac469d065ab3803eb64c2fbdbcdab35290af3823cfd4fd184e55113cdc54cad7",
+    "ArakelovGeometry/ExternalResults/AbsoluteValueLocal.lean": "2386403a18ebffb5aab33c098fd1c213ec476e4d7ee492f218ebefb64a0a1874",
     "ArakelovGeometry/ExternalResults/AbsoluteValueRootBounds.lean": "ff53a454c69bec1a64f6c97299670ed9c5230459bf712f76d73ec426eba2a457",
     "ArakelovGeometry/ExternalResults/FunctionalMonotoneClass.lean": "823cadd1cce6a811f07e6fec88d2e3535e11fc9c88a8d180d7f0a683496cb7ea",
     "ArakelovGeometry/ExternalResults/Measure.lean": "830099174835dd68c07e89534155b863243496a055173087933530e80b3a666d",
@@ -20,7 +21,7 @@
     "ArakelovGeometry/ExternalResults/Place.lean": "1410c16d0750fde9796b3ed40ba08edc42f9d99d4afd5a074d7afeea11f8c22b",
     "ArakelovGeometry.lean": "999217af907e0d97e7375fbbe5349b6e05b8e69285fda73ee846f86438de23b8",
     "scripts/declaration_inventory.lean": "de86af08d98268a1370f98a5fda61c70e60edbdf3be066d97bd6c3d068a11432",
-    "docs/declaration-inventory.json": "2ef43dfc08669751c1f1b9d02319b2d019cf11c35cd71f56694fff0b92685b68"
+    "docs/declaration-inventory.json": "5e719a068314ee2c8adc66af379a4c09ca66d1959638a622e61b3a46428afbb9"
   },
   "compiled_artifacts_sha256": {
     ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Amalgamation.olean": "3ed42a67360c85f7e4527c670834ca2546c446f17f7b6f815fa339c192f40d65",
@@ -29,13 +30,14 @@
     ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Examples/FunctionFields.olean": "9a5643f9130615f5d633e500b733bd6e0b01acb53d9078987cbd4a032f04d294",
     ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Examples/NumberFields.olean": "c2df62b0ad483beda9e32a664fc3147a35c5c91d2e4cfc33155661f4768d8a78",
     ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Examples/Trivial.olean": "a62c49068d4f5650b403148ca9ae1a92877b012f61317add0d576ebabaf70638",
-    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Extension.olean": "725c52c641dc74ce5207afdf9503e7e255b053d3a40584daf69317f545cf9652",
+    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Extension.olean": "d21ece01ad3ff91d07491ed97a4a95ba37fe4cecbe359c5efa6da50ea605024d",
     ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Restriction.olean": "b7b17bfffb6daa56a0372aeb0cf3bb5ebe6f7a876715cfbf478db86548fa9bf5",
     ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/RootBounds.olean": "371bcbf80e0c233d35baeee29a43075f10514fb2972302e32142eb9d416acf34",
     ".lake/build/lib/lean/ArakelovGeometry/ExternalResults/AbsoluteValue.olean": "ef46fb8175ce55cdb1cfffd742d91874a2f6e2ac479af21836fa6ad8c8c7da9a",
+    ".lake/build/lib/lean/ArakelovGeometry/ExternalResults/AbsoluteValueCompact.olean": "d60d4ece1c1bc7f9bbc57e9368d9b2160cc19741b763daa60a0e20a20dcb74d0",
     ".lake/build/lib/lean/ArakelovGeometry/ExternalResults/AbsoluteValueExtension.olean": "27a76095802b252ae9838a25bc219fe1e44455031f2221ba520b3d5a2e7d0367",
     ".lake/build/lib/lean/ArakelovGeometry/ExternalResults/AbsoluteValueFinite.olean": "ddc9d35b20a12067c985f925a83d4ad300531f207f5fa58d405b418ce4dc7b87",
-    ".lake/build/lib/lean/ArakelovGeometry/ExternalResults/AbsoluteValueLocal.olean": "c2fef096dd760909970ca98c354428f992bc05d37cc5978d726ef99013813ea6",
+    ".lake/build/lib/lean/ArakelovGeometry/ExternalResults/AbsoluteValueLocal.olean": "01da3ca2dc572959b9185e5d1f3c1fe420bbfaf742eff783dc814062fc0814bd",
     ".lake/build/lib/lean/ArakelovGeometry/ExternalResults/AbsoluteValueRootBounds.olean": "1ae5adcda168c2a3ccbe31950d774615cf86bd5e7c19fcd77aadccd7710fe7be",
     ".lake/build/lib/lean/ArakelovGeometry/ExternalResults/FunctionalMonotoneClass.olean": "4bbfc20c780efd188ed6143706b2181155bb33a5b8c2d2601cbd97ce56909010",
     ".lake/build/lib/lean/ArakelovGeometry/ExternalResults/Measure.olean": "c6bee6c75a5cdc8ee85318126c7b8bd1331271524d1e9b87f6b06c8a1233970f",
@@ -57,10 +59,10 @@
     "timed_out": false,
     "reused": false,
     "wait_seconds": 0.0,
-    "duration_seconds": 16.52,
-    "started_at": "2026-09-16T05:25:05.038502+00:00",
-    "finished_at": "2026-09-16T05:25:21.558052+00:00",
-    "finished_epoch": 1789536321.558052
+    "duration_seconds": 18.782,
+    "started_at": "2026-09-16T05:53:12.452608+00:00",
+    "finished_at": "2026-09-16T05:53:31.234763+00:00",
+    "finished_epoch": 1789538011.234763
   },
   "inventory_check": {
     "schema_version": 1,
@@ -78,9 +80,9 @@
     "timed_out": false,
     "reused": false,
     "wait_seconds": 0.0,
-    "duration_seconds": 75.17,
-    "started_at": "2026-09-16T05:25:33.541586+00:00",
-    "finished_at": "2026-09-16T05:26:48.711938+00:00",
-    "finished_epoch": 1789536408.711938
+    "duration_seconds": 85.966,
+    "started_at": "2026-09-16T05:54:37.178021+00:00",
+    "finished_at": "2026-09-16T05:56:03.143827+00:00",
+    "finished_epoch": 1789538163.143827
   }
 }

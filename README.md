@@ -86,10 +86,10 @@ gap and records the additional mathematical dependencies.
 ## Building
 
 The project uses Lean `v4.33.0` (see `lean-toolchain`) and the pinned mathlib version in
-`lake-manifest.json`. The configured build on 2026-09-16 passes `lake build`, but still contains **21 `sorry`
+`lake-manifest.json`. The configured build on 2026-09-16 passes `lake build`, but still contains **2 `sorry`
 occurrences** (down from 67 at baseline), all in `AdelicCurve/Extension.lean`. Sections 3.3–3.4 are not yet
 fully proved; a successful build alone does not establish axiom freedom.
-There are **26 transitively sorry-backed project constants**. The algebraic
+There are **2 transitively sorry-backed project constants**. The algebraic
 tower statement has been corrected to the source's integration domains;
 its proof remains open. See [source corrections](docs/source-corrections.md).
 The proof route is recorded in `blueprint/src`; verification details are in
