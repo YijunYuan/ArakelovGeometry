@@ -1,9 +1,9 @@
 # Extension proof status
 
 The task is unfinished. The configured `horizon check --json` passed on
-2026-09-16 at 04:16:01 UTC (3405 jobs), with 43 direct sorry occurrences.
-The subsequent compiled inventory contains 564 project constants, including
-56 transitively using `sorryAx`; no other nonstandard axioms occur.
+2026-09-16 at 04:31:04 UTC (3406 jobs), with 36 direct sorry occurrences.
+The subsequent compiled inventory contains 579 project constants, including
+54 transitively using `sorryAx`; no other nonstandard axioms occur.
 
 ## Mathematical route and coverage
 
@@ -13,8 +13,8 @@ finite extensions including inseparability, algebraic cylinder measures,
 nonnegative and signed disintegration, and tower compatibility. Every direct
 gap and every extension-module constant has a blueprint mapping. Additional
 unwritten mathematical producers have explicit nodes and complete proofs;
-Seventeen nodes with axiom-clean attachments are marked `\leanok`. The combined route has 209
-mathematical nodes, including 45 explicitly unwritten producer nodes. All 564
+Twenty-six nodes with axiom-clean attachments are marked `\leanok`. The combined route has 215
+mathematical nodes, including 45 explicitly unwritten producer nodes. All 579
 project constants have an attachment or an explicitly classified support
 mapping; every compiled mathematical dependency between attached nodes has
 a blueprint path, with zero cycles or dangling links.
@@ -48,16 +48,17 @@ restriction from local degree and adding compiled-dependency reachability
 checks. These reviews certify the stated scope of the route, not Lean proof
 completion.
 
-The inseparable construction, finite transport, projective measurability, and
-cylinder operations have removed 21 direct gaps since the recovered baseline.
-The new completion results include trivial places, basis spanning, and the degree
-bound. Complete-base uniqueness and nonarchimedean existence are proved
-prerequisites; local factorization has not yet consumed them.
-Independent honesty review and transitive axiom checks confirm that these
-producers use only the standard axioms. The finite-fibre/local-degree producer
-remains unproved; in particular, integrability and properness of the finite
-extension still depend on the unfinished separable construction. Earlier
-verified restriction and scalar-integration lemmas are in `bc0d71f`.
+The inseparable construction, finite transport, projective measurability,
+cylinder operations, power-sum radius, and finite-fibre proofs have removed
+28 direct gaps since the recovered baseline. Complete-base existence and
+uniqueness now include all places; extension over arbitrary algebraic fields
+and finite-fibre finiteness follow through embeddings into completed algebraic
+closures. Independent honesty review and transitive axiom checks confirm that
+these producers use only the standard axioms. The probability and elementary
+fibre-integral results still depend on the unproved local-degree normalization.
+Integrability and properness of the finite extension continue to depend on
+the unfinished separable construction. Earlier verified restriction and
+scalar-integration lemmas are in `bc0d71f`.
 
 ## Reproducing evidence
 

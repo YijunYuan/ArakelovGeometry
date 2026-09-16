@@ -4,11 +4,16 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
 import ArakelovGeometry.AdelicCurve.Defs
+import ArakelovGeometry.ExternalResults.AbsoluteValueFinite
+import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
 import Mathlib.Analysis.MeanInequalitiesPow
+import Mathlib.Analysis.SpecificLimits.Normed
 import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 import Mathlib.FieldTheory.SeparableClosure
 import Mathlib.FieldTheory.PurelyInseparable.Basic
+import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+import Mathlib.LinearAlgebra.Vandermonde
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
 import Mathlib.MeasureTheory.Measure.Dirac
@@ -49,6 +54,42 @@ structure AdelicStructure.Equiv {K : Type u} [Field K] (S : AdelicStructure.{u, 
 
 /-! ### Power sums and maxima of absolute values -/
 
+/-- Every power of a member of a finite distinct family is a fixed linear combination
+of consecutive power sums of that family. The coefficients come from the inverse Vandermonde
+matrix. -/
+theorem exists_pow_eq_sum_shifted_sum_pow {F : Type*} [Field F] {d : ℕ} (α : Fin d → F)
+    (hα : Function.Injective α) :
+    ∃ c : Matrix (Fin d) (Fin d) F, ∀ i N, α i ^ N =
+      ∑ r : Fin d, c i r * ∑ j, α j ^ (N + r.val) := by
+  classical
+  let V := (Matrix.vandermonde α).transpose
+  have hV : IsUnit V.det := by
+    change IsUnit (Matrix.vandermonde α).transpose.det
+    rw [Matrix.det_transpose, isUnit_iff_ne_zero, Matrix.det_vandermonde_ne_zero_iff]
+    exact hα
+  refine ⟨V⁻¹, fun i N ↦ ?_⟩
+  have hs : (fun r : Fin d ↦ ∑ j, α j ^ (N + r.val)) =
+      V.mulVec (fun j ↦ α j ^ N) := by
+    ext r
+    simp [V, Matrix.mulVec, dotProduct, pow_add, mul_comm]
+  change α i ^ N = ((V⁻¹).mulVec (fun r : Fin d ↦ ∑ j, α j ^ (N + r.val))) i
+  rw [hs, Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hV, Matrix.one_mulVec]
+
+open Filter Topology in
+/-- If the power sums of a finite distinct family in a normed field tend to zero, then each
+individual power sequence tends to zero. -/
+theorem tendsto_pow_zero_of_tendsto_sum_pow_zero {F : Type*} [NormedField F] {d : ℕ} (α : Fin d → F)
+    (hα : Function.Injective α)
+    (hs : Tendsto (fun N : ℕ ↦ ∑ i, α i ^ N) atTop (𝓝 0)) (i : Fin d) :
+    Tendsto (fun N : ℕ ↦ α i ^ N) atTop (𝓝 0) := by
+  obtain ⟨c, hc⟩ := exists_pow_eq_sum_shifted_sum_pow α hα
+  have ht (r : Fin d) : Tendsto (fun N : ℕ ↦ c i r * ∑ j, α j ^ (N + r.val))
+      atTop (𝓝 (c i r * 0)) :=
+    tendsto_const_nhds.mul (hs.comp (tendsto_add_atTop_nat r.val))
+  have h := tendsto_finsetSum Finset.univ (fun r _ ↦ ht r)
+  simpa only [mul_zero, Finset.sum_const_zero, ← hc] using h
+
+open Filter Topology in
 /-- Chen--Moriwaki, Lemma 3.3.5(1), formula (3.5): for finitely many distinct elements of a
 field with an absolute value, the maximum of their absolute values is recovered from power
 sums: `max_j |α_j| = limsup_N |α_1^N + ⋯ + α_d^N|^{1/N}`. -/
@@ -57,7 +98,76 @@ theorem _root_.AbsoluteValue.iSup_eq_limsup_sum_pow_rpow {F : Type*} [Field F]
     (hα : Function.Injective α) :
     (⨆ i, v (α i)) =
       Filter.limsup (fun N : ℕ ↦ (v (∑ i, α i ^ N)) ^ ((N : ℝ)⁻¹)) Filter.atTop := by
-  sorry
+  let := v.toNormedField
+  change (⨆ i, ‖α i‖) = limsup (fun N : ℕ ↦ ‖∑ i, α i ^ N‖ ^ ((N : ℝ)⁻¹)) atTop
+  classical
+  let i₀ : Fin d := ⟨0, hd⟩
+  let : Nonempty (Fin d) := ⟨i₀⟩
+  let M := ⨆ i, ‖α i‖
+  let u (N : ℕ) := ‖∑ i, α i ^ N‖ ^ ((N : ℝ)⁻¹)
+  let g (N : ℕ) := (d : ℝ) ^ ((N : ℝ)⁻¹) * M
+  have hM : 0 ≤ M :=
+    (norm_nonneg (α i₀)).trans (le_ciSup (Finite.bddAbove_range (fun j ↦ ‖α j‖)) i₀)
+  have hbound (N : ℕ) : ‖∑ i, α i ^ N‖ ≤ (d : ℝ) * M ^ N := by
+    calc
+      ‖∑ i, α i ^ N‖ ≤ ∑ i, ‖α i ^ N‖ := norm_sum_le _ _
+      _ ≤ ∑ _i : Fin d, M ^ N := Finset.sum_le_sum fun i _ ↦ by
+        rw [norm_pow]
+        exact pow_le_pow_left₀ (norm_nonneg _)
+          (le_ciSup (Finite.bddAbove_range (fun j ↦ ‖α j‖)) i) N
+      _ = (d : ℝ) * M ^ N := by simp
+  have hug : u ≤ᶠ[atTop] g := by
+    filter_upwards [eventually_ge_atTop 1] with N hN
+    have hN0 : N ≠ 0 := by omega
+    dsimp [u, g]
+    calc
+      _ ≤ ((d : ℝ) * M ^ N) ^ ((N : ℝ)⁻¹) :=
+        Real.rpow_le_rpow (norm_nonneg _) (hbound N) (by positivity)
+      _ = (d : ℝ) ^ ((N : ℝ)⁻¹) * M := by
+        rw [Real.mul_rpow (Nat.cast_nonneg _) (pow_nonneg hM _),
+          Real.pow_rpow_inv_natCast hM hN0]
+  have hg : Tendsto g atTop (𝓝 M) := by
+    have hd0 : (d : ℝ) ≠ 0 := by exact_mod_cast (show d ≠ 0 by omega)
+    have ht := (Real.continuous_const_rpow hd0).continuousAt.tendsto.comp
+      (tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop)
+    simpa [g] using ht.mul_const M
+  have hu_bdd := hg.isBoundedUnder_le.mono_le hug
+  have hu_cobdd : IsCoboundedUnder (· ≤ ·) atTop u :=
+    (isBoundedUnder_of_eventually_ge (Eventually.of_forall
+      (fun N : ℕ ↦ Real.rpow_nonneg (norm_nonneg (∑ i, α i ^ N)) ((N : ℝ)⁻¹)))).isCoboundedUnder_le
+  apply le_antisymm
+  · apply le_limsup_of_le hu_bdd
+    intro b hb
+    have hb0 : 0 ≤ b := by
+      obtain ⟨N, hN⟩ := hb.exists
+      exact (Real.rpow_nonneg (norm_nonneg _) _).trans hN
+    refine ciSup_le fun i ↦ ?_
+    by_contra hi
+    have hib : b < ‖α i‖ := lt_of_not_ge hi
+    have hi0 : 0 < ‖α i‖ := lt_of_le_of_lt hb0 hib
+    have hia : α i ≠ 0 := norm_pos_iff.mp hi0
+    have hβ : Function.Injective (fun j ↦ α j / α i) :=
+      fun _ _ h ↦ hα ((div_left_inj' hia).mp h)
+    have hp : ∀ᶠ N : ℕ in atTop, ‖∑ j, α j ^ N‖ ≤ b ^ N := by
+      filter_upwards [hb, eventually_ge_atTop 1] with N hNb hN
+      have hN0 : N ≠ 0 := by omega
+      have hh := pow_le_pow_left₀ (Real.rpow_nonneg (norm_nonneg _) _) hNb N
+      simpa only [u, Real.rpow_inv_natCast_pow (norm_nonneg _) hN0] using hh
+    have hβnorm : ∀ᶠ N : ℕ in atTop,
+        ‖∑ j, (α j / α i) ^ N‖ ≤ (b / ‖α i‖) ^ N := by
+      filter_upwards [hp] with N hN
+      simp_rw [div_pow]
+      rw [← Finset.sum_div, norm_div, norm_pow]
+      exact div_le_div_of_nonneg_right hN (pow_nonneg (norm_nonneg _) _)
+    have ht : Tendsto (fun N : ℕ ↦ ∑ j, (α j / α i) ^ N) atTop (𝓝 0) := by
+      apply tendsto_zero_iff_norm_tendsto_zero.mpr
+      exact squeeze_zero' (Eventually.of_forall (fun N ↦ norm_nonneg _)) hβnorm
+        (tendsto_pow_atTop_nhds_zero_of_lt_one (div_nonneg hb0 (norm_nonneg _))
+          ((div_lt_one hi0).mpr hib))
+    have ht' := tendsto_pow_atTop_nhds_zero_iff_norm_lt_one.mp
+      (tendsto_pow_zero_of_tendsto_sum_pow_zero (fun j ↦ α j / α i) hβ ht i)
+    simp [div_self hia] at ht'
+  · exact (limsup_le_limsup hug hu_cobdd hg.isBoundedUnder_le).trans_eq hg.limsup_eq
 
 /-! ### Algebraic extensions of adelic structures -/
 
@@ -282,6 +392,12 @@ noncomputable def fibreProbabilityMeasure (ω : AS.Ω) :
     Measure (ExtensionFiber AS L ω) :=
   Measure.sum fun x : ExtensionFiber AS L ω ↦ fibreWeight AS L ω x • Measure.dirac x
 
+/-- The local-degree normalization makes every fibre measure a probability measure. -/
+instance isProbabilityMeasure_fibreProbabilityMeasure (ω : AS.Ω) :
+    IsProbabilityMeasure (fibreProbabilityMeasure AS L ω) where
+  measure_univ := by
+    simpa [fibreProbabilityMeasure, Measure.sum_apply] using tsum_fibreWeight AS L ω
+
 /-- The fibre integration operator `I_{L/K}` on real-valued functions from §3.3.1. -/
 noncomputable def fibreIntegral (f : ParameterSpaceExtension AS L → ℝ) : AS.Ω → ℝ :=
   fun ω ↦ ∫ x : ExtensionFiber AS L ω, f x.1 ∂fibreProbabilityMeasure AS L ω
@@ -294,17 +410,32 @@ omit _s in
 /-- The fibres of the projection of a finite extension are finite sets (§3.3, p. 178: a base
 absolute value has at most `[L : K]` extensions to `L`). -/
 theorem finite_extensionFiber (ω : AS.Ω) : Finite (ExtensionFiber AS L ω) := by
-  sorry
+  have : Finite {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω} :=
+    Set.finite_coe_iff.mpr (AbsoluteValue.finite_extensions (L := L) (AS.ϕ ω))
+  let f : ExtensionFiber AS L ω → {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω} :=
+    fun x ↦ ⟨x.val.abv, x.val.restrict_eq.trans (congrArg AS.ϕ x.property)⟩
+  apply Finite.of_injective f
+  intro x y h
+  apply Subtype.ext
+  exact ext AS L (x.property.trans y.property.symm) (congrArg Subtype.val h)
 
 /-- Formula (3.3): the fibre integration operator sends the constant function `1` on `Ω_L`
 to the constant function `1` on `Ω_K` (§3.3.1). -/
 theorem fibreIntegral_one : fibreIntegral AS L (fun _ ↦ 1) = fun _ ↦ 1 := by
-  sorry
+  funext ω
+  simp [fibreIntegral]
+
+/-- Every real function on a finite fibre is integrable for its probability measure. -/
+theorem integrable_fibre (ω : AS.Ω) (f : ExtensionFiber AS L ω → ℝ) :
+    Integrable f (fibreProbabilityMeasure AS L ω) := by
+  let := finite_extensionFiber AS L ω
+  exact Integrable.of_finite
 
 /-- The fibre integration operator is additive (§3.3.1). -/
 theorem fibreIntegral_add (f g : ParameterSpaceExtension AS L → ℝ) :
     fibreIntegral AS L (f + g) = fibreIntegral AS L f + fibreIntegral AS L g := by
-  sorry
+  funext ω
+  exact integral_add (integrable_fibre AS L ω _) (integrable_fibre AS L ω _)
 
 set_option linter.unusedSectionVars false in
 /-- The fibre integration operator is `ℝ`-homogeneous (§3.3.1). -/
@@ -329,7 +460,11 @@ theorem fibreIntegral_comp_proj_mul (φ : AS.Ω → ℝ) (f : ParameterSpaceExte
 projection: `I_{K'/K}(φ ∘ π_{K'/K}) = φ`. -/
 theorem fibreIntegral_comp_proj (φ : AS.Ω → ℝ) :
     fibreIntegral AS L (fun x ↦ φ (proj x)) = φ := by
-  sorry
+  funext ω
+  change (∫ x : ExtensionFiber AS L ω, φ x.val.proj
+    ∂fibreProbabilityMeasure AS L ω) = φ ω
+  simp only [show ∀ x : ExtensionFiber AS L ω, x.val.proj = ω from fun x ↦ x.property]
+  simp
 
 /-- Chen--Moriwaki, Proposition 3.3.2, formula (3.4): fibre integration is compatible with
 successive finite separable extensions `K ⊆ F ⊆ L`: integrating a function pulled back from
@@ -716,13 +851,27 @@ surjective. -/
 theorem surjective_restrict (F : IntermediateField K L) :
     Function.Surjective fun x : ParameterSpaceExtension AS L ↦
       ParameterSpaceExtension.restrict AS L x F := by
-  sorry
+  intro x
+  obtain ⟨w, hw⟩ := AbsoluteValue.exists_extension (L := L) x.abv
+  have hbase : w.restriction K = AS.ϕ x.base := by
+    ext a
+    calc
+      w (algebraMap K L a) = w (algebraMap F L (algebraMap K F a)) := by
+        rw [← IsScalarTower.algebraMap_apply K F L]
+      _ = x.abv (algebraMap K F a) :=
+        congrArg (fun z : AbsoluteValue F ℝ ↦ z (algebraMap K F a)) hw
+      _ = AS.ϕ x.base a :=
+        congrArg (fun z : AbsoluteValue K ℝ ↦ z a) x.restrict_eq
+  refine ⟨⟨x.base, w, hbase⟩, ?_⟩
+  exact ParameterSpaceExtension.ext AS F rfl hw
 
 /-- The base projection of an algebraic extension is surjective: every absolute value of the
 base structure extends to `L` (the case `K'' = K` of Proposition 3.4.5). -/
 theorem surjective_proj :
     Function.Surjective (ParameterSpaceExtension.proj (AS := AS) (L := L)) := by
-  sorry
+  intro ω
+  obtain ⟨w, hw⟩ := AbsoluteValue.exists_extension (L := L) (AS.ϕ ω)
+  exact ⟨⟨ω, w, hw⟩, rfl⟩
 
 variable {L} in
 /-- The projection `π_{L/F}` from the algebraic parameter space to the finite stage attached
