@@ -3175,21 +3175,6 @@ open AdelicStructure
 variable {K : Type u} [Field K] (AS : AdelicStructure.{u, v} K)
 variable (M : Type w) [Field M] [Algebra K M]
 
-/-- Chen--Moriwaki, Proposition 3.4.4: finite extension of adelic structures is transitive:
-for a tower `K ⊆ K₁ ⊆ K₂` of finite extensions, `(S ⊗_K K₁) ⊗_{K₁} K₂` and `S ⊗_K K₂` are
-canonically equivalent, compatibly with the projections to the base (formula (3.15)). -/
-theorem exists_equiv_finiteExtension_finiteExtension [FiniteDimensional K M]
-    (F : IntermediateField K M) :
-    ∃ e : AdelicStructure.Equiv
-        ((AS.finiteExtension F).finiteExtension M) (AS.finiteExtension M),
-      (∀ x, ParameterSpaceExtension.proj (ParameterSpaceExtension.proj x) =
-        ParameterSpaceExtension.proj (e.toMeasurableEquiv x)) ∧
-      ∀ g : ((AS.finiteExtension F).finiteExtension M).Ω → ℝ,
-        ParameterSpaceFinExtension.fibreIntegral AS F
-            (ParameterSpaceFinExtension.fibreIntegral (AS.finiteExtension F) M g) =
-          ParameterSpaceFinExtension.fibreIntegral AS M
-            (fun y ↦ g (e.toMeasurableEquiv.symm y)) := by
-  sorry
 
 /-- Chen--Moriwaki, Theorem 3.4.12: algebraic extension of adelic structures is transitive:
 for a tower `K ⊆ L₁ ⊆ L₂` of algebraic extensions, `(S ⊗_K L₁) ⊗_{L₁} L₂` and `S ⊗_K L₂` are

@@ -1,9 +1,9 @@
 # Extension proof status
 
 The task is unfinished. The configured `horizon check --json` passed on
-2026-09-16 at 05:53:31 UTC (3422 jobs), with 2 direct sorry occurrences.
-The subsequent compiled inventory contains 730 project constants, including
-2 transitively using `sorryAx`; no other nonstandard axioms occur.
+2026-09-16 at 06:07:04 UTC (3423 jobs), with 1 direct sorry occurrence.
+The subsequent compiled inventory contains 768 project constants, including
+1 transitively using `sorryAx`; no other nonstandard axioms occur.
 
 ## Mathematical route and coverage
 
@@ -13,8 +13,8 @@ finite extensions including inseparability, algebraic cylinder measures,
 nonnegative and signed disintegration, and tower compatibility. Every direct
 gap and every extension-module constant has a blueprint mapping. Additional
 unwritten mathematical producers have explicit nodes and complete proofs;
-120 nodes with axiom-clean attachments are marked `\leanok`. The combined route has 258
-mathematical nodes, including 31 explicitly unwritten producer nodes. All 730
+129 nodes with axiom-clean attachments are marked `\leanok`. The combined route has 261
+mathematical nodes, including 24 explicitly unwritten producer nodes. All 768
 project constants have an attachment or an explicitly classified support
 mapping; every compiled mathematical dependency between attached nodes has
 a blueprint path, with zero cycles or dangling links.
@@ -57,8 +57,17 @@ integrability and properness are axiom-clean. The signed proofs use almost
 everywhere fibre integrability and retain the double ENNReal criterion.
 Independent honesty review checked 73 attached declarations in this batch.
 
-Only the finite and algebraic tower-equivalence theorems remain sorry-backed.
-The complete 730-constant audit finds exactly these two gaps and no new axioms.
+Finite tower compatibility is proved, including inseparable towers. The canonical
+measurable equivalence, multiplicativity of local separable-degree weights,
+finite fibre sums and measure transport are actual producers. Independent
+honesty review checked 19 declarations and approved nine exact blueprint nodes.
+The broad finite-fibre statement remains unmarked pending its additional
+discrete probability attachments. The global separable-degree formula remains
+an external library reference, without adding a dependency declaration to the
+project graph.
+
+Only the algebraic tower-equivalence theorem remains sorry-backed.
+The complete 768-constant audit finds exactly this gap and no new axioms.
 Additional source statements without direct Lean attachments remain visible;
 their status is not inferred from narrower results.
 

@@ -222,7 +222,14 @@ def main():
             gaps.append({"file": str(path.relative_to(ROOT)), "line": line,
                          "token": match[1], "declaration": owner,
                          "nodes": attached.get(owner, [])})
-    target = [r for r in rows if r["module"] == "ArakelovGeometry.AdelicCurve.Extension"]
+    target_modules = {
+        "ArakelovGeometry.AdelicCurve.Extension",
+        "ArakelovGeometry.AdelicCurve.FiniteTower",
+        "ArakelovGeometry.AdelicCurve.AlgebraicTower",
+        "ArakelovGeometry.AdelicCurve.AlgebraicTowerSupport",
+        "ArakelovGeometry.AdelicCurve.AlgebraicBaseChange",
+    }
+    target = [r for r in rows if r["module"] in target_modules]
     for row in rows:
         name = row["name"]
         candidates = [n for n in authored if name == n or name.startswith(n + ".")]
@@ -361,11 +368,11 @@ def main():
              f"Unmapped project constants: {len(unmapped_project)}; missing compiled dependency routes: {len(missing_routes)}.",
              f"Unwritten mathematical blueprint nodes: {result['summary']['unwritten_mathematical_nodes']}.",
              f"Changed or unrecorded inventory inputs: {len(stale_inventory)}.", "",
-             "| Gap | Source line | Declaration | Blueprint nodes |", "| --- | --- | --- | --- |"]
+             "| Gap | Source | Declaration | Blueprint nodes |", "| --- | --- | --- | --- |"]
     for i, gap in enumerate(gaps, 1):
         labels = ", ".join(gap["nodes"]) or "UNMAPPED"
-        lines.append(f"| {i} | {gap['line']} | `{gap['declaration']}` | {labels} |")
-    lines += ["", "All gap source lines are in `ArakelovGeometry/AdelicCurve/Extension.lean`.",
+        lines.append(f"| {i} | `{gap['file']}:{gap['line']}` | `{gap['declaration']}` | {labels} |")
+    lines += ["", "Gap locations refer to the current authored modules.",
               "The machine-readable inventory also retains the prior chapters and examples,",
               "whose constants are mapped by exact attachments, explicit anonymous-instance owners,",
               "or actual compiled dependency paths to consuming blueprint nodes. A support mapping",
