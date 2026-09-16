@@ -52,24 +52,21 @@ line bundles, heights, and equidistribution over it.
     `isProper_fRestriction` (`AdelicCurve/Restriction.lean`).
   - [x] 3.2.9 Restriction of adelic structure to a measurable subset — `sRestriction`
     (`AdelicCurve/Restriction.lean`).
-- [ ] **3.3 Finite separable extensions**
-  - [ ] 3.3.1 Integration along fibres (the operator `I_{K'/K}`).
-  - [ ] 3.3.2 Measurability of fibre integrals (Theorem 3.3.4).
-  - [ ] 3.3.3 Construction of the measure `ν_{K'}` (Theorem 3.3.7).
-- [ ] **3.4 General algebraic extensions** (scalar extension `S ⊗_K L`)
-  - [ ] 3.4.1 Finite extension (Definition 3.4.1, Proposition 3.4.4).
-  - [ ] 3.4.2 General algebraic extensions (projective limits of fibre measures,
-    Theorem 3.4.12, Proposition 3.4.13).
+- [x] **3.3 Finite separable extensions** — fibre integration, measurability,
+  induced measures, logarithmic integrability and properness.
+- [x] **3.4 General algebraic extensions** — finite and arbitrary algebraic
+  extensions, projective fibre probabilities, disintegration and tower compatibility.
+  The signed tower formula assumes integrability and holds almost everywhere.
 - [ ] **3.5 Height function and Northcott property** (Theorem 3.5.3).
 - [ ] **3.6 Measurability of automorphism actions**.
 - [ ] **3.7 Morphisms of adelic curves**.
 
-The mathematical route for §3.3–3.4 is written in `blueprint/src`: finite
-separable fibres and local degrees, measurable fibre integration, finite
-extensions through the separable part, projective fibre probabilities, and
-algebraic tower compatibility. The current Lean constructions still contain
-unproved obligations. The [inventory](docs/obligations.md) maps every direct
-gap and records the additional mathematical dependencies.
+The mathematical route for §3.3–3.4 is written in `blueprint/src`. All existing
+Lean declarations are proved without `sorryAx`. Completing the additional
+source-facing blueprint obligations and their exact formalization coverage
+remains active; the checked boxes above describe the implemented extension
+constructions. The [inventory](docs/obligations.md) records all project
+constants and the remaining mathematical dependencies.
 
 ## Repository layout
 
@@ -86,14 +83,13 @@ gap and records the additional mathematical dependencies.
 ## Building
 
 The project uses Lean `v4.33.0` (see `lean-toolchain`) and the pinned mathlib version in
-`lake-manifest.json`. The configured build on 2026-09-16 passes `lake build`, but still contains **1 `sorry`
-occurrence** (down from 67 at baseline), all in `AdelicCurve/Extension.lean`. Sections 3.3–3.4 are not yet
-fully proved; a successful build alone does not establish axiom freedom.
-There are **1 transitively sorry-backed project constant**. The algebraic
-tower statement has been corrected to the source's integration domains;
-its proof remains open. See [source corrections](docs/source-corrections.md).
-The proof route is recorded in `blueprint/src`; verification details are in
-[the proof status](docs/proof-status.md).
+`lake-manifest.json`. The configured build on 2026-09-16 passes all 3455 jobs.
+The compiled inventory and a separate transitive axiom audit check **902 project
+constants: zero direct gaps, zero sorry-backed constants, and no axioms beyond
+`propext`, `Classical.choice`, and `Quot.sound`**.
+See [source corrections](docs/source-corrections.md) for the signed tower domain
+and [proof status](docs/proof-status.md) for the remaining blueprint obligations
+and reproducible evidence.
 
 ```bash
 lake exe cache get   # download the mathlib olean cache

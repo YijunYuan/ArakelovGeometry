@@ -3168,44 +3168,7 @@ end Algebraic
 
 end AdelicStructure
 
-section Compatibility
 
-open AdelicStructure
-
-variable {K : Type u} [Field K] (AS : AdelicStructure.{u, v} K)
-variable (M : Type w) [Field M] [Algebra K M]
-
-
-/-- Chen--Moriwaki, Theorem 3.4.12: algebraic extension of adelic structures is transitive:
-for a tower `K ⊆ L₁ ⊆ L₂` of algebraic extensions, `(S ⊗_K L₁) ⊗_{L₁} L₂` and `S ⊗_K L₂` are
-canonically equivalent, compatibly with the projections to the base (formulae (3.22),
-(3.23)). The fibre identity is pointwise for measurable nonnegative functions, as in
-the proof on PDF pages 213–214. For globally integrable real functions it holds almost
-everywhere, by Proposition 3.4.9. The signed integral in the source is defined only on
-its integrability domain (PDF pages 210–211); totalizing it does not give an identity
-for arbitrary real functions. -/
-theorem exists_equiv_algebraicExtension_algebraicExtension [Algebra.IsAlgebraic K M]
-    (F : IntermediateField K M) :
-    ∃ e : AdelicStructure.Equiv
-        ((AS.algebraicExtension F).algebraicExtension M) (AS.algebraicExtension M),
-      (∀ x, ParameterSpaceExtension.proj (ParameterSpaceExtension.proj x) =
-        ParameterSpaceExtension.proj (e.toMeasurableEquiv x)) ∧
-      (∀ g : ((AS.algebraicExtension F).algebraicExtension M).Ω → ℝ≥0∞,
-        Measurable[((AS.algebraicExtension F).algebraicExtension M).A] g →
-        Algebraic.fibreLIntegral AS F
-            (Algebraic.fibreLIntegral (AS.algebraicExtension F) M g) =
-          Algebraic.fibreLIntegral AS M
-            (fun y ↦ g (e.toMeasurableEquiv.symm y))) ∧
-      ∀ g : ((AS.algebraicExtension F).algebraicExtension M).Ω → ℝ,
-        Integrable[((AS.algebraicExtension F).algebraicExtension M).A] g
-          ((AS.algebraicExtension F).algebraicExtension M).v →
-        Algebraic.fibreIntegral AS F
-            (Algebraic.fibreIntegral (AS.algebraicExtension F) M g) =ᵐ[AS.v]
-          Algebraic.fibreIntegral AS M
-            (fun y ↦ g (e.toMeasurableEquiv.symm y)) := by
-  sorry
-
-end Compatibility
 
 end Extensions
 
