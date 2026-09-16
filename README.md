@@ -64,12 +64,12 @@ line bundles, heights, and equidistribution over it.
 - [ ] **3.6 Measurability of automorphism actions**.
 - [ ] **3.7 Morphisms of adelic curves**.
 
-Planned architecture for §3.3–3.4: define the carrier `Ω_L` (places of `L` over `Ω_K`),
-its σ-algebra, and the projection `π_{L/K}` uniformly for an arbitrary algebraic extension
-`L/K`, then build the fibre integration `I_{L/K}` as a Markov kernel `Ω_K → Ω_L` — the
-book's three-stage construction (finite separable → finite → algebraic) then only structures
-the proofs, while the API exposes a single scalar extension `S ⊗_K L` with the tower
-compatibilities of Proposition 3.4.4 and Theorem 3.4.12.
+The mathematical route for §3.3–3.4 is written in `blueprint/src`: finite
+separable fibres and local degrees, measurable fibre integration, finite
+extensions through the separable part, projective fibre probabilities, and
+algebraic tower compatibility. The current Lean constructions still contain
+unproved obligations. The [inventory](docs/obligations.md) maps every direct
+gap and records the additional mathematical dependencies.
 
 ## Repository layout
 
@@ -86,9 +86,12 @@ compatibilities of Proposition 3.4.4 and Theorem 3.4.12.
 ## Building
 
 The project uses Lean `v4.33.0` (see `lean-toolchain`) and the pinned mathlib version in
-`lake-manifest.json`. The verified pilot on 2026-09-16 passes `lake build`, but still contains **64 `sorry`
+`lake-manifest.json`. The configured build on 2026-09-16 passes `lake build`, but still contains **64 `sorry`
 occurrences** (down from 67 at baseline), all in `AdelicCurve/Extension.lean`. Sections 3.3–3.4 are not yet
 fully proved; a successful build alone does not establish axiom freedom.
+There are **75 transitively sorry-backed project constants**. The algebraic
+tower statement has been corrected to the source's integration domains;
+its proof remains open. See [source corrections](docs/source-corrections.md).
 The proof route is recorded in `blueprint/src`; verification details are in
 [the proof status](docs/proof-status.md).
 
