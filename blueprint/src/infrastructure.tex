@@ -86,8 +86,7 @@ $w^{1/\kappa}=|\sigma(\cdot)|$, which satisfies the triangle inequality.
 \begin{lemma}[Bounded integers and the ultrametric inequality]
 \label{lem:bounded-integers}\notready
 An absolute value $v$ is nonarchimedean if and only if $v(n)\leq1$ for every natural
-integer $n$. Every absolute value extending a trivial absolute value to an
-algebraic extension is trivial.
+integer $n$.
 \end{lemma}
 \begin{proof}
 If $v$ is nonarchimedean, induction using $n+1=n+1_K$ and $v(1)=1$
@@ -96,42 +95,79 @@ Conversely, put $M=\max(v(x),v(y))$. The binomial formula gives
 $v(x+y)^n\leq(n+1)M^n$ for every positive integer $n$, since each
 binomial coefficient has absolute value at most one. If $M=0$ both $x,y$
 vanish. Otherwise take $n$th roots and let $n$ tend to infinity, obtaining
-$v(x+y)\leq M$. An extension $w$ of a trivial absolute value
-has $w(n)\leq1$ and is therefore nonarchimedean. If a nonzero algebraic
-element $a$ had $w(a)>1$, its monic minimal polynomial would give
-$w(a)^d\leq\max_{i<d} w(a)^i<w(a)^d$, a contradiction. Thus $w(a)\leq1$;
-applying this to $a^{-1}$ gives $w(a)\geq1$.
+$v(x+y)\leq M$.
+\end{proof}
+
+\begin{lemma}[Algebraic extensions of the trivial absolute value]
+\label{lem:trivial-algebraic-extension}
+\leanok
+\lean{AbsoluteValue.not_isNontrivial_of_finite,AbsoluteValue.not_isNontrivial_of_isAlgebraic}
+\uses{def:absolute-value-restriction}
+If $L/K$ is algebraic and $w$ is an absolute value on $L$ whose
+restriction to $K$ is trivial, then $w$ is trivial.
+\end{lemma}
+\begin{proof}
+First suppose $L/K$ is finite and choose a basis $b_1,\ldots,b_d$.
+For $x=\sum_i c_i b_i$, every $w(c_i)$ is at most one, so the
+triangle inequality gives $w(x)\leq C:=\sum_i w(b_i)$.
+In particular $w(x)^n=w(x^n)\leq C$ for every natural $n$.
+If $w(x)>1$, its powers tend to infinity, a contradiction.
+Thus $w(x)\leq1$ for every $x$; for $x\ne0$ the same bound on
+$x^{-1}$ and $w(x)w(x^{-1})=1$ imply $w(x)=1$.
+For general algebraic $L/K$, apply the finite case to $K(x)$
+for each $x\in L$. The restricted absolute value is trivial on $K(x)$,
+and hence has value one at every nonzero $x$.
+\end{proof}
+
+\begin{lemma}[Completions of trivially valued fields]
+\label{lem:trivial-completion}
+\leanok
+\lean{AbsoluteValue.completeSpace_withAbs_of_not_isNontrivial,AbsoluteValue.surjective_coe_completion_of_not_isNontrivial}
+A field with the trivial absolute value is complete, and its canonical
+map to its completion is surjective.
+\end{lemma}
+\begin{proof}
+Distinct points have distance one. A Cauchy filter contains a set of
+diameter less than one and hence contains a singleton, so it converges.
+The image of a complete field under its canonical isometry into its
+completion is closed. It is also dense by the definition of completion,
+and therefore equals the whole completion.
 \end{proof}
 
 \begin{lemma}[Finite-dimensional nontrivial completions]
 \label{lem:completion-finite-nontrivial}
-\uses{lem:completion-embedding,lem:completion-nonarchimedean}
+\leanok
+\uses{lem:completion-finite}
 \lean{AbsoluteValue.finiteDimensional_completion_of_isNontrivial}
 If $L/K$ is finite and $v=w|_K$ is nontrivial, then $L_w$ is finite
 dimensional over $K_v$.
 \end{lemma}
 \begin{proof}
-Choose a $K$-basis $b_1,\ldots,b_d$ of $L$ and let $W$ be its
-$K_v$-linear span in $L_w$. The span is finite dimensional. A finite
-dimensional subspace of a normed space over a complete nontrivially normed
-field is closed. Thus $W$ is closed in $L_w$. It contains $L$, which is
-dense in its completion, so $W=L_w$.
+This is the nontrivial case of Lemma~\ref{lem:completion-finite}.
 \end{proof}
 
 \begin{lemma}[Generation of finite completions]\label{lem:completion-finite}
+\leanok
 \source{chen-moriwaki-adelic:page-0205}
-\uses{lem:completion-finite-nontrivial,lem:bounded-integers}
-\notready
+\uses{lem:completion-embedding,lem:trivial-algebraic-extension,lem:trivial-completion}
+\lean{AbsoluteValue.span_coe_basis_eq_top,AbsoluteValue.finiteDimensional_completion,AbsoluteValue.finrank_completion_le}
 For every finite extension $L/K$ and every extension $w$ of $v$,
-$L_w=K_v(L)$ inside $L_w$, and $[L_w:K_v]\leq[L:K]$.
+the image of every $K$-basis of $L$ spans $L_w$ over $K_v$.
+Consequently $L_w=K_v(L)$ inside $L_w$, and $[L_w:K_v]\leq[L:K]$.
 \end{lemma}
 \begin{proof}
-For nontrivial $v$, the preceding proof shows that any $K$-basis of $L$
-spans $L_w$ over $K_v$. This span is contained in $K_v(L)$ and proves
-both claims. If $v$ is trivial, so is $w$ by
-Lemma~\ref{lem:bounded-integers}. Both fields are discrete and complete:
+Choose a basis $b_1,\ldots,b_d$ of $L$ over $K$ and let $W$ be
+its $K_v$-linear span in $L_w$. The basis expansion of an element of
+$L$ remains valid in $L_w$, so $W$ contains $L$. For nontrivial $v$,
+$W$ is a finite-dimensional subspace over the complete nontrivially
+normed field $K_v$, hence is closed. Density of $L$ implies $W=L_w$.
+If $v$ is trivial, so is $w$ by
+Lemma~\ref{lem:trivial-algebraic-extension}. Both fields are discrete and complete:
 a Cauchy sequence is eventually constant, since unequal points have distance
-one. Thus $L_w=L$, $K_v=K$, and both claims follow directly.
+one. Lemma~\ref{lem:trivial-completion} then gives $L_w=L$ and $K_v=K$,
+so again $W=L_w$. Since this span is contained in $K_v(L)$, the generation
+claim follows. A vector space spanned by $d$ elements has dimension at most
+$d$, proving the degree bound and finite dimensionality.
 \end{proof}
 
 \begin{definition}[Local degree]\label{def:local-degree}
@@ -209,17 +245,38 @@ prime field $\mathbb Q$. Restricting the norm formula to this prime field
 gives the assertion.
 \end{proof}
 
-\begin{lemma}[Extension over a complete field]\label{lem:complete-extension}
+\begin{lemma}[Uniqueness over a complete nontrivially valued field]
+\label{lem:complete-extension-unique}
+\leanok
 \source{chen-moriwaki-adelic:page-0208}
-\uses{lem:bounded-integers,lem:completion-nonarchimedean,thm:complete-archimedean}
-\notready
-If $(F,v)$ is complete and $E/F$ is algebraic, there is exactly one
-absolute value on $E$ extending $v$.
+\uses{def:absolute-value-restriction}
+\lean{AbsoluteValue.eq_of_restriction_eq_of_complete}
+Let $(F,v)$ be complete with $v$ nontrivial and let $E/F$ be algebraic.
+Any two absolute values on $E$ restricting to $v$ are equal.
 \end{lemma}
 \begin{proof}
-For trivial $v$, existence is given by the trivial absolute value and
-uniqueness by Lemma~\ref{lem:bounded-integers}. For nontrivial
-nonarchimedean $v$, use the spectral norm theorem: on an algebraic extension
+First suppose $E/F$ is finite, and let $u,w$ be the two values.
+The identity between the finite-dimensional normed $F$-spaces defined
+by $w$ and $u$ is a continuous linear map, so there is $C>0$ with
+$u(x)\leq Cw(x)$ for every $x\in E$. Apply this to $x^n$.
+For $x\ne0$, division by $w(x)^n$ and taking $n$th roots gives
+$u(x)/w(x)\leq C^{1/n}$. Letting $n$ tend to infinity proves
+$u(x)\leq w(x)$; at zero this inequality is automatic.
+Interchanging $u,w$ proves equality. In the algebraic case apply
+the finite result to $F(x)$ for each $x\in E$.
+\end{proof}
+
+\begin{lemma}[Extension over a complete nonarchimedean field]
+\label{lem:complete-nonarchimedean-extension}
+\leanok
+\uses{def:absolute-value-restriction}
+\source{chen-moriwaki-adelic:page-0208}
+\lean{AbsoluteValue.existsUnique_extension_of_complete_of_isNonarchimedean}
+If $(F,v)$ is complete, $v$ is nontrivial and nonarchimedean, and $E/F$
+is algebraic, there is exactly one absolute value on $E$ extending $v$.
+\end{lemma}
+\begin{proof}
+Use the spectral norm theorem: on an algebraic extension
 of a complete nontrivially normed nonarchimedean field the spectral norm is
 multiplicative, extends the base norm, and is the unique extending
 multiplicative norm. In the notation $P_a(T)=T^d+\sum_{i<d}c_iT^i$ for
@@ -229,20 +286,31 @@ precisely those of the spectral norm theorem, applicable because the base is
 complete, its norm is nontrivial, and every $a\in E$ is algebraic. We use
 this existing norm theorem in the form recorded in
 \cite{mathlib-spectral-norm}.
+\end{proof}
 
+\begin{lemma}[Extension over a complete field]\label{lem:complete-extension}
+\source{chen-moriwaki-adelic:page-0208}
+\uses{lem:trivial-algebraic-extension,lem:complete-nonarchimedean-extension,lem:complete-extension-unique,lem:completion-nonarchimedean,thm:complete-archimedean,lem:algebraic-embedding-extension}
+\notready
+If $(F,v)$ is complete and $E/F$ is algebraic, there is exactly one
+absolute value on $E$ extending $v$.
+\end{lemma}
+\begin{proof}
+For trivial $v$, existence is given by the trivial absolute value and
+uniqueness by Lemma~\ref{lem:trivial-algebraic-extension}. For nontrivial
+nonarchimedean $v$, apply Lemma~\ref{lem:complete-nonarchimedean-extension}.
 In the archimedean case, the classification of complete archimedean
 absolute-valued fields identifies $F$ with $\mathbb R$ or $\mathbb C$ and
 $v$ with the $s$th power of the usual modulus, $0<s\leq1$.
-An algebraic extension of $\mathbb C$ is itself, and an algebraic extension
-of $\mathbb R$ is $\mathbb R$ or $\mathbb C$; extending the modulus to
-$\mathbb C$ and raising it to $s$ gives existence. To check uniqueness,
-complete $E$ with respect to any extending absolute value. Its completion
-is again archimedean, so the same classification identifies it with
-$\mathbb R$ or $\mathbb C$ with exponent $t$. Evaluation on $2$ gives
-$t=s$. The induced embedding of $\mathbb R$ fixes the rationals and is
-continuous, hence fixes $\mathbb R$. If $E=\mathbb C$, the image of $i$
-is $i$ or $-i$, and either choice preserves the usual modulus. Thus every
-extending absolute value is the one constructed above.
+Composing with $\mathbb R\hookrightarrow\mathbb C$ when necessary
+gives an embedding $\sigma:F\hookrightarrow\mathbb C$ with
+$v(a)=|\sigma(a)|^s$. Since $\mathbb C$ is algebraically closed,
+$\sigma$ extends to an embedding $\tau:E\hookrightarrow\mathbb C$.
+The formula $w(a)=|\tau(a)|^s$ is an absolute value: definiteness
+and multiplicativity follow from those of the modulus, and
+$(r+t)^s\leq r^s+t^s$ for nonnegative $r,t$ proves the triangle
+inequality. It restricts to $v$. Uniqueness follows from
+Lemma~\ref{lem:complete-extension-unique}.
 \end{proof}
 
 \begin{proposition}[Local factorization]\label{lem:local-factorization}

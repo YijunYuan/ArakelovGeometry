@@ -516,6 +516,31 @@ theorem extendAbsoluteValue_apply
         ((Field.finInsepDegree K L : ℝ)⁻¹) :=
   rfl
 
+variable {L} in
+/-- The inseparable extension agrees with the original absolute value on the separable part. -/
+theorem extendAbsoluteValue_coe
+    (v : AbsoluteValue (separableClosure K L) ℝ) (b : separableClosure K L) :
+    extendAbsoluteValue v (b : L) = v b := by
+  rw [extendAbsoluteValue_apply]
+  change v (b ^ Field.finInsepDegree K L) ^ (Field.finInsepDegree K L : ℝ)⁻¹ = v b
+  rw [map_pow, Real.pow_rpow_inv_natCast (v.nonneg _) (NeZero.ne _)]
+
+variable {L} in
+/-- Restricting the inseparable extension recovers the given absolute value. -/
+theorem restriction_extendAbsoluteValue
+    (v : AbsoluteValue (separableClosure K L) ℝ) :
+    (extendAbsoluteValue v).restriction (separableClosure K L) = v := by
+  ext b
+  exact extendAbsoluteValue_coe v b
+
+/-- An absolute value on a finite extension is recovered uniquely from its separable part. -/
+theorem extendAbsoluteValue_restriction (w : AbsoluteValue L ℝ) :
+    extendAbsoluteValue (w.restriction (separableClosure K L)) = w := by
+  ext a
+  rw [extendAbsoluteValue_apply]
+  change w (a ^ Field.finInsepDegree K L) ^ (Field.finInsepDegree K L : ℝ)⁻¹ = w a
+  rw [map_pow, Real.pow_rpow_inv_natCast (w.nonneg _) (NeZero.ne _)]
+
 /-- The logarithmic form of formula (3.13), giving formula (3.14):
 `ln |a| = q⁻¹ ln |a^q|` with `q` the inseparable degree. -/
 theorem log_extendAbsoluteValue
@@ -547,7 +572,8 @@ formula (3.13) and the finite separable construction on `K'`. -/
 theorem measurable_log (a : L) :
     Measurable fun x : ParameterSpaceFinExtension AS L ↦
       Real.log ((ϕ AS L x) a) := by
-  sorry
+  simp_rw [ϕ, log_extendAbsoluteValue]
+  exact (ParameterSpaceExtension.measurable_log AS (separableClosure K L) _).const_mul _
 
 /-- Logarithmic evaluations on a finite, possibly inseparable, extension are integrable by
 formula (3.13) and the finite separable construction on `K'`. -/
@@ -556,7 +582,11 @@ theorem integrable_log (a : L) (ha : a ≠ 0) :
       (fun x : ParameterSpaceFinExtension AS L ↦
         Real.log ((ϕ AS L x) a))
       (measure AS L) := by
-  sorry
+  simp_rw [ϕ, log_extendAbsoluteValue]
+  apply (ParameterSpaceExtension.integrable_log_inducedMeasure AS (separableClosure K L)
+    _ ?_).const_mul
+  intro h
+  exact pow_ne_zero _ ha (congrArg Subtype.val h)
 
 /-- Chen--Moriwaki, Definition 3.4.1: the concrete finite extension adelic structure
 `S ⊗_K L`, including the inseparable case. -/
@@ -606,13 +636,24 @@ theorem measurableSpace_eq_comap_sup :
           (ParameterSpaceExtension.proj (AS := AS) (L := separableClosure K L)) AS.A ⊔
         ⨆ a : L, MeasurableSpace.comap
           (fun x : ParameterSpaceFinExtension AS L ↦ ϕ AS L x a) inferInstance := by
-  sorry
-
-/-- The closing remark of Definition 3.4.1 together with Theorem 3.3.7(5): the finite
-(possibly inseparable) extension of a proper adelic curve is proper. -/
-theorem isProper_finiteExtension [AS.toAdelicCurve.IsProper] :
-    (AS.finiteExtension L).toAdelicCurve.IsProper := by
-  sorry
+  change _ ⊔ ⨆ b : separableClosure K L, _ = _
+  apply le_antisymm
+  · refine sup_le le_sup_left (iSup_le fun b ↦ ?_)
+    have heval :
+        (fun x : ParameterSpaceFinExtension AS L ↦ ParameterSpaceExtension.ϕ x b) =
+          (fun x : ParameterSpaceFinExtension AS L ↦ ϕ AS L x (b : L)) := by
+      funext x
+      exact (extendAbsoluteValue_coe _ b).symm
+    rw [heval]
+    exact le_trans (le_iSup
+      (fun a : L ↦ MeasurableSpace.comap
+        (fun x : ParameterSpaceFinExtension AS L ↦ ϕ AS L x a) inferInstance) (b : L))
+      le_sup_right
+  · refine sup_le le_sup_left (iSup_le fun a ↦ ?_)
+    have hmeas : Measurable fun x : ParameterSpaceFinExtension AS L ↦ ϕ AS L x a := by
+      simp_rw [ϕ, extendAbsoluteValue_apply]
+      exact (ParameterSpaceExtension.measurable_eval AS (separableClosure K L) _).pow_const _
+    exact hmeas.comap_le
 
 /-- Formula (3.14): the logarithmic integrals against `ν_{K'}` of `a ∈ L` and of its power
 `a^q ∈ K'`, `q = [L : K']` the inseparable degree, are proportional with ratio `q⁻¹`. -/
@@ -622,7 +663,27 @@ theorem integral_log_eq_inv_finInsepDegree_mul (a : L) :
         ∫ x, Real.log (ParameterSpaceExtension.ϕ x
           ⟨a ^ Field.finInsepDegree K L,
             pow_finInsepDegree_mem_separableClosure K a⟩) ∂measure AS L := by
-  sorry
+  simp_rw [ϕ, log_extendAbsoluteValue]
+  exact integral_const_mul _ _
+
+/-- The closing remark of Definition 3.4.1 together with Theorem 3.3.7(5): the finite
+(possibly inseparable) extension of a proper adelic curve is proper. -/
+theorem isProper_finiteExtension [AS.toAdelicCurve.IsProper] :
+    (AS.finiteExtension L).toAdelicCurve.IsProper := by
+  let : (AS.finiteSeparableExtension (separableClosure K L)).toAdelicCurve.IsProper :=
+    ParameterSpaceExtension.isProper_finiteSeparableExtension AS (separableClosure K L)
+  constructor
+  change ∀ a : L, a ≠ 0 → ∫ x, Real.log (ϕ AS L x a) ∂measure AS L = 0
+  intro a ha
+  rw [integral_log_eq_inv_finInsepDegree_mul]
+  have hzero := AdelicCurve.IsProper.product_formula
+    (C := (AS.finiteSeparableExtension (separableClosure K L)).toAdelicCurve)
+    ⟨a ^ Field.finInsepDegree K L, pow_finInsepDegree_mem_separableClosure K a⟩
+    (fun h ↦ pow_ne_zero _ ha (congrArg Subtype.val h))
+  change ∫ x, Real.log (ParameterSpaceExtension.ϕ x
+    ⟨a ^ Field.finInsepDegree K L, pow_finInsepDegree_mem_separableClosure K a⟩)
+    ∂measure AS L = 0 at hzero
+  rw [hzero, mul_zero]
 
 /-- Chen--Moriwaki, Lemma 3.4.2: for a finite extension `L/K` and an absolute value `w` on
 `L`, the completion of the separable closure `K^sc` of `K` in `L` at `w` identifies, inside
@@ -678,11 +739,13 @@ variable {AS} in
 abbrev FiniteBaseFiber (F : FiniteIntermediateField K L) (ω : AS.Ω) :=
   {x : AS.ParameterSpaceFinExtension F // ParameterSpaceExtension.proj x = ω}
 
+omit [Algebra.IsAlgebraic K L] in
 /-- In §3.4.2 the finite-stage fibres carry the discrete σ-algebra: every subset of a
 finite-stage fibre is measurable. -/
 theorem measurableSet_finiteBaseFiber (F : FiniteIntermediateField K L) (ω : AS.Ω)
     (B : Set (FiniteBaseFiber L F ω)) : MeasurableSet B := by
-  sorry
+  let := ParameterSpaceExtension.finite_extensionFiber AS (separableClosure K F.1) ω
+  exact (Set.toFinite B).measurableSet
 
 variable {AS} in
 /-- The fibre `M_{L,ω}` over a base parameter `ω : Ω_K`. -/
@@ -696,6 +759,56 @@ def projFiniteFiber (F : FiniteIntermediateField K L) (ω : AS.Ω) :
   fun x ↦ ⟨projFinite AS F x.1, by
     simpa [projFinite, ParameterSpaceFinExtension, ParameterSpaceExtension.proj,
       ParameterSpaceExtension.restrict] using x.2⟩
+
+variable {L} in
+/-- Inclusion of finite subextensions restricts to their separable parts. -/
+def finiteSeparableInclusion {F G : FiniteIntermediateField K L} (hFG : F.1 ≤ G.1) :
+    separableClosure K F.1 →ₐ[K] separableClosure K G.1 where
+  toFun a := ⟨IntermediateField.inclusion hFG a,
+    (map_mem_separableClosure_iff (IntermediateField.inclusion hFG)).mpr a.property⟩
+  map_zero' := Subtype.ext (map_zero _)
+  map_one' := Subtype.ext (map_one _)
+  map_add' a b := Subtype.ext (map_add _ (a : F.1) (b : F.1))
+  map_mul' a b := Subtype.ext (map_mul _ (a : F.1) (b : F.1))
+  commutes' a := Subtype.ext ((IntermediateField.inclusion hFG).commutes a)
+
+variable {L} in
+/-- The finite-stage transition map is restriction along the inclusion of separable parts. -/
+def projFiniteOfLE {F G : FiniteIntermediateField K L} (hFG : F.1 ≤ G.1)
+    (x : ParameterSpaceFinExtension AS G) : ParameterSpaceFinExtension AS F where
+  base := x.base
+  abv := x.abv.pullback (finiteSeparableInclusion hFG).toRingHom
+  restrict_eq := by
+    ext a
+    change x.abv (finiteSeparableInclusion hFG (algebraMap K (separableClosure K F.1) a)) =
+      AS.ϕ x.base a
+    rw [(finiteSeparableInclusion hFG).commutes]
+    exact congrArg (fun v : AbsoluteValue K ℝ ↦ v a) x.restrict_eq
+
+variable {L} in
+omit [Algebra.IsAlgebraic K L] in
+/-- Finite-stage projections commute with restriction to a smaller stage. -/
+theorem projFiniteOfLE_projFinite {F G : FiniteIntermediateField K L} (hFG : F.1 ≤ G.1)
+    (x : ParameterSpaceExtension AS L) :
+    projFiniteOfLE AS hFG (projFinite AS G x) = projFinite AS F x := by
+  apply ParameterSpaceExtension.ext _ _ rfl
+  ext a
+  rfl
+
+variable {AS L} in
+/-- The finite-stage transition on a fibre preserves its base point. -/
+def projFiniteFiberOfLE {F G : FiniteIntermediateField K L} (hFG : F.1 ≤ G.1) (ω : AS.Ω)
+    (x : FiniteBaseFiber L G ω) : FiniteBaseFiber L F ω :=
+  ⟨projFiniteOfLE AS hFG x.1, x.2⟩
+
+variable {AS L} in
+omit [Algebra.IsAlgebraic K L] in
+/-- Fibre projections commute with restriction to a smaller finite stage. -/
+theorem projFiniteFiberOfLE_projFiniteFiber {F G : FiniteIntermediateField K L}
+    (hFG : F.1 ≤ G.1) (ω : AS.Ω) (x : BaseFiber L ω) :
+    projFiniteFiberOfLE hFG ω (projFiniteFiber G ω x) = projFiniteFiber F ω x := by
+  apply Subtype.ext
+  exact projFiniteOfLE_projFinite AS hFG x.1
 
 /-- The inverse image `M_{L,x}` of a finite-stage point `x` under `π_{L/F}`. -/
 def finiteFiber (F : FiniteIntermediateField K L)
@@ -727,24 +840,44 @@ theorem measurable_projFinite_projective (F : FiniteIntermediateField K L) :
   Measurable.of_comap_le (le_iSup (fun F : FiniteIntermediateField K L ↦
     MeasurableSpace.comap (projFinite AS F) inferInstance) F)
 
+omit [Algebra.IsAlgebraic K L] in
 /-- The base projection is measurable for the projective-limit σ-algebra. -/
 theorem measurable_proj_projective :
     Measurable[projectiveMeasurableSpace AS L]
       (ParameterSpaceExtension.proj (AS := AS) (L := L)) := by
-  sorry
+  exact (ParameterSpaceExtension.measurable_proj AS
+    (separableClosure K (FiniteIntermediateField.bot (K := K) (L := L)).1)).comp
+      (measurable_projFinite_projective AS L FiniteIntermediateField.bot)
 
 /-- Every evaluation map `x ↦ |a|_x` is measurable for the projective-limit σ-algebra. -/
 theorem measurable_eval_projective (a : L) :
     Measurable[projectiveMeasurableSpace AS L]
       (fun x : ParameterSpaceExtension AS L ↦ (ParameterSpaceExtension.ϕ x) a) := by
-  sorry
+  let F := ofElement (K := K) L a
+  let b : F := ⟨a, mem_ofElement L a⟩
+  have hm : Measurable fun x : ParameterSpaceFinExtension AS F ↦
+      ParameterSpaceFinExtension.ϕ AS F x b := by
+    simp_rw [ParameterSpaceFinExtension.ϕ, ParameterSpaceFinExtension.extendAbsoluteValue_apply]
+    exact (ParameterSpaceExtension.measurable_eval AS (separableClosure K F) _).pow_const _
+  convert hm.comp (measurable_projFinite_projective AS L F) using 1
+  funext x
+  exact (congrArg (fun w : AbsoluteValue F ℝ ↦ w b)
+    (ParameterSpaceFinExtension.extendAbsoluteValue_restriction (K := K) F
+      ((ParameterSpaceExtension.ϕ x).restriction F))).symm
 
 /-- The projective σ-algebra of §3.4.2 agrees with the concrete σ-algebra generated by the base
 projection and all evaluations. This is Proposition 3.4.13. -/
 theorem projectiveMeasurableSpace_eq :
     projectiveMeasurableSpace AS L =
       (inferInstance : MeasurableSpace (ParameterSpaceExtension AS L)) := by
-  sorry
+  apply le_antisymm
+  · apply iSup_le
+    intro F
+    exact ((ParameterSpaceExtension.measurable_restrict AS F.1 (separableClosure K F.1)).comp
+      (ParameterSpaceExtension.measurable_restrict AS L F.1)).comap_le
+  · change _ ⊔ ⨆ a : L, _ ≤ _
+    exact sup_le (measurable_proj_projective AS L).comap_le
+      (iSup_le fun a ↦ (measurable_eval_projective AS L a).comap_le)
 
 /-- Logarithmic evaluations are measurable for the projective-limit σ-algebra. -/
 theorem measurable_log_projective (a : L) :
@@ -767,17 +900,26 @@ abbrev CylinderFunctions :=
   Σ f : ParameterSpaceExtension AS L → ℝ, DescendsToFinite AS L f
 
 variable {AS L} in
+omit [Algebra.IsAlgebraic K L] in
 /-- Remark 3.4.7: the cylinder functions `V_L` are closed under addition. -/
 theorem DescendsToFinite.nonempty_add {f g : ParameterSpaceExtension AS L → ℝ}
     (hf : DescendsToFinite AS L f) (hg : DescendsToFinite AS L g) :
     Nonempty (DescendsToFinite AS L (f + g)) := by
-  sorry
+  refine ⟨⟨FiniteIntermediateField.sup hf.F hg.F, fun x ↦
+    hf.g (projFiniteOfLE AS (FiniteIntermediateField.left_le_sup hf.F hg.F) x) +
+      hg.g (projFiniteOfLE AS (FiniteIntermediateField.right_le_sup hf.F hg.F) x), ?_⟩⟩
+  ext x
+  simp only [hf.eq_comp, hg.eq_comp, Pi.add_apply, Function.comp_apply,
+    projFiniteOfLE_projFinite]
 
 variable {AS L} in
+omit [Algebra.IsAlgebraic K L] in
 /-- Remark 3.4.7: the cylinder functions `V_L` are closed under scalar multiplication. -/
 theorem DescendsToFinite.nonempty_smul (c : ℝ) {f : ParameterSpaceExtension AS L → ℝ}
     (hf : DescendsToFinite AS L f) : Nonempty (DescendsToFinite AS L (c • f)) := by
-  sorry
+  refine ⟨⟨hf.F, fun x ↦ c * hf.g x, ?_⟩⟩
+  ext x
+  simp only [hf.eq_comp, Pi.smul_apply, Function.comp_apply, smul_eq_mul]
 
 variable {AS L} in
 /-- A real-valued fibre cylinder function on `M_{L,ω}`, descending to a finite fibre. This is
@@ -798,27 +940,42 @@ abbrev FibreCylinderFunctions (ω : AS.Ω) :=
     DescendsToFiniteFiber ω f
 
 variable {AS L} in
+omit [Algebra.IsAlgebraic K L] in
 /-- Chen--Moriwaki, Proposition 3.4.6: the fibre cylinder functions `V_{L,ω}` are closed
 under addition. -/
 theorem DescendsToFiniteFiber.nonempty_add {ω : AS.Ω} {f g : BaseFiber L ω → ℝ}
     (hf : DescendsToFiniteFiber ω f) (hg : DescendsToFiniteFiber ω g) :
     Nonempty (DescendsToFiniteFiber ω (f + g)) := by
-  sorry
+  refine ⟨⟨FiniteIntermediateField.sup hf.F hg.F, fun x ↦
+    hf.g (projFiniteFiberOfLE (FiniteIntermediateField.left_le_sup hf.F hg.F) ω x) +
+      hg.g (projFiniteFiberOfLE (FiniteIntermediateField.right_le_sup hf.F hg.F) ω x), ?_⟩⟩
+  ext x
+  simp only [hf.eq_comp, hg.eq_comp, Pi.add_apply, Function.comp_apply,
+    projFiniteFiberOfLE_projFiniteFiber]
 
 variable {AS L} in
+omit [Algebra.IsAlgebraic K L] in
 /-- Chen--Moriwaki, Proposition 3.4.6: the fibre cylinder functions `V_{L,ω}` are closed
 under multiplication; `V_{L,ω}` is an `ℝ`-algebra of functions. -/
 theorem DescendsToFiniteFiber.nonempty_mul {ω : AS.Ω} {f g : BaseFiber L ω → ℝ}
     (hf : DescendsToFiniteFiber ω f) (hg : DescendsToFiniteFiber ω g) :
     Nonempty (DescendsToFiniteFiber ω (f * g)) := by
-  sorry
+  refine ⟨⟨FiniteIntermediateField.sup hf.F hg.F, fun x ↦
+    hf.g (projFiniteFiberOfLE (FiniteIntermediateField.left_le_sup hf.F hg.F) ω x) *
+      hg.g (projFiniteFiberOfLE (FiniteIntermediateField.right_le_sup hf.F hg.F) ω x), ?_⟩⟩
+  ext x
+  simp only [hf.eq_comp, hg.eq_comp, Pi.mul_apply, Function.comp_apply,
+    projFiniteFiberOfLE_projFiniteFiber]
 
 variable {AS L} in
+omit [Algebra.IsAlgebraic K L] in
 /-- Chen--Moriwaki, Proposition 3.4.6: the fibre cylinder functions `V_{L,ω}` are closed
 under scalar multiplication. -/
 theorem DescendsToFiniteFiber.nonempty_smul (c : ℝ) {ω : AS.Ω} {f : BaseFiber L ω → ℝ}
     (hf : DescendsToFiniteFiber ω f) : Nonempty (DescendsToFiniteFiber ω (c • f)) := by
-  sorry
+  refine ⟨⟨hf.F, fun x ↦ c * hf.g x, ?_⟩⟩
+  ext x
+  simp only [hf.eq_comp, Pi.smul_apply, Function.comp_apply, smul_eq_mul]
 
 variable {AS L} in
 /-- The fibre integral of a cylinder function, computed at a finite stage through which it
@@ -909,12 +1066,24 @@ theorem fibreIntegral_comp_projFinite (F : FiniteIntermediateField K L)
       ParameterSpaceFinExtension.fibreIntegral AS F g := by
   sorry
 
+omit [Algebra.IsAlgebraic K L] in
 /-- Chen--Moriwaki, Proposition 3.4.8: a projectively measurable function restricts to an
 `A_{L,ω}`-measurable function on every fibre. -/
 theorem measurable_restrict_baseFiber {f : ParameterSpaceExtension AS L → ℝ≥0∞}
     (hf : Measurable[projectiveMeasurableSpace AS L] f) (ω : AS.Ω) :
     Measurable[fibreMeasurableSpace L ω] fun x : BaseFiber L ω ↦ f x.1 := by
-  sorry
+  apply hf.comp
+  apply Measurable.of_comap_le
+  change MeasurableSpace.comap _ (⨆ F : FiniteIntermediateField K L, _) ≤ _
+  rw [MeasurableSpace.comap_iSup]
+  refine iSup_le fun F ↦ ?_
+  rw [MeasurableSpace.comap_comp]
+  have h := le_iSup
+    (fun F : FiniteIntermediateField K L ↦
+      MeasurableSpace.comap (projFiniteFiber F ω) inferInstance) F
+  change MeasurableSpace.comap _ (MeasurableSpace.comap Subtype.val _) ≤ _ at h
+  rw [MeasurableSpace.comap_comp] at h
+  exact h
 
 /-- Proposition 3.4.8: fibre integration of a nonnegative projectively measurable function is
 measurable on the base. -/

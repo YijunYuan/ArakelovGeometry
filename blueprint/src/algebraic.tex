@@ -80,6 +80,30 @@ $M_{L,x}=p_F^{-1}\{x\}$. In the separable-part realization of $\Omega_F$,
 $p_F$ restricts first to $F$ and then to the separable closure of $K$ in $F$.
 \end{definition}
 
+\begin{lemma}[Transitions between finite stages]\label{lem:finite-stage-transitions}
+\leanok
+\uses{def:algebraic-projections,lem:finite-separable-part,def:absolute-value-restriction}
+\source{chen-moriwaki-adelic:page-0208}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.finiteSeparableInclusion,ArakelovGeometry.AdelicStructure.Algebraic.projFiniteOfLE,ArakelovGeometry.AdelicStructure.Algebraic.projFiniteOfLE_projFinite,ArakelovGeometry.AdelicStructure.Algebraic.projFiniteFiberOfLE,ArakelovGeometry.AdelicStructure.Algebraic.projFiniteFiberOfLE_projFiniteFiber}
+For finite intermediate fields $F\subseteq G\subseteq L$, inclusion
+induces $F^{\mathrm{sep}}\hookrightarrow G^{\mathrm{sep}}$.
+Restriction of absolute values along this inclusion defines
+$p_{G/F}:\Omega_G\to\Omega_F$, preserves the base parameter,
+and satisfies $p_{G/F}\circ p_G=p_F$. The induced maps on each
+fibre satisfy the same compatibility.
+\end{lemma}
+\begin{proof}
+An element separable over $K$ remains separable under a $K$-embedding:
+the embedding transports its minimal polynomial and preserves its
+distinct roots. Thus inclusion maps the separable part of $F$ into
+that of $G$. Pulling back an absolute value gives an absolute value
+whose restriction to $K$ is unchanged. For $a\in F^{\mathrm{sep}}$,
+restriction first to $G^{\mathrm{sep}}$ and then to $F^{\mathrm{sep}}$
+evaluates the original absolute value at the same element $a$.
+The base parameter is unchanged, so the parameter maps agree and
+restrict to the asserted maps on each fibre.
+\end{proof}
+
 \begin{lemma}[Finite fibres are discrete]\label{lem:finite-stage-discrete}
 \uses{def:algebraic-projections,lem:finite-fibre-sum,lem:fibre-separation}
 \source{chen-moriwaki-adelic:page-0208}
@@ -105,6 +129,7 @@ where the finite fibres are discrete measurable spaces.
 \end{definition}
 
 \begin{lemma}[Projective measurability of projections and evaluations]\label{lem:projective-evaluations}
+\leanok
 \uses{def:projective-measurable,lem:finite-stage-exhaustion,lem:finite-measurable-space}
 \source{chen-moriwaki-adelic:page-0211,chen-moriwaki-adelic:page-0215}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.measurable_projFinite_projective,ArakelovGeometry.AdelicStructure.Algebraic.measurable_proj_projective,ArakelovGeometry.AdelicStructure.Algebraic.measurable_eval_projective,ArakelovGeometry.AdelicStructure.Algebraic.measurable_log_projective}
@@ -122,6 +147,7 @@ zero does not affect Borel measurability.
 \end{proof}
 
 \begin{proposition}[Intrinsic description of the measurable structure]\label{prop:projective-measurable-equality}
+\leanok
 \uses{lem:projective-evaluations,def:extension-parameters,lem:measurable-restriction,lem:finite-measurable-space}
 \source{chen-moriwaki-adelic:page-0214,chen-moriwaki-adelic:page-0215}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.projectiveMeasurableSpace_eq}
@@ -186,7 +212,8 @@ has image $V_L$, respectively $V_{L,\omega}$.
 \end{definition}
 
 \begin{lemma}[Algebra of cylinder functions]\label{lem:cylinder-algebra}
-\uses{def:algebraic-cylinders,lem:finite-stage-exhaustion,lem:restriction-transitive}
+\leanok
+\uses{def:algebraic-cylinders,lem:finite-stage-exhaustion,lem:finite-stage-transitions}
 \source{chen-moriwaki-adelic:page-0209}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.nonempty_add,ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.nonempty_smul,ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.nonempty_add,ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.nonempty_mul,ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.nonempty_smul}
 Global cylinder functions are closed under addition and scalar
@@ -417,7 +444,8 @@ since every restriction to a finite fibre is measurable.
 \end{proof}
 
 \begin{lemma}[Restriction of measurable functions to fibres]\label{lem:algebraic-fibre-measurable}
-\uses{def:projective-measurable,lem:finite-stage-discrete}
+\leanok
+\uses{def:projective-measurable,def:algebraic-projections}
 \source{chen-moriwaki-adelic:page-0210}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.measurable_restrict_baseFiber}
 The inclusion $X_\omega\to\Omega_L$ is measurable. In particular any
@@ -426,8 +454,9 @@ $\mathcal A_{L,\omega}$-measurable function.
 \end{lemma}
 \begin{proof}
 The inverse image of a generating set $p_F^{-1}(B)$ is
-$p_{F,\omega}^{-1}(B\cap X_{F,\omega})$. The intersection is a subset
-of a finite discrete fibre and is measurable. Closure of inverse
+$p_{F,\omega}^{-1}(B\cap X_{F,\omega})$. The intersection is measurable
+for the induced measurable structure on the fibre, and the fibre
+projection is measurable by definition. Closure of inverse
 images under complements and countable unions proves the assertion
 for the generated $\sigma$-algebra. Composition proves the assertion
 for functions.

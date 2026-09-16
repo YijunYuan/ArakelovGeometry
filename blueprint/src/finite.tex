@@ -102,9 +102,10 @@ because $r>0$. Monotonicity of the positive root therefore gives
 
 \begin{lemma}[Restriction and uniqueness of the inseparable extension]
 \label{lem:inseparable-extension-unique}
+\leanok
 \source{chen-moriwaki-adelic:page-0204}
-\notready
-\uses{lem:inseparable-absolute-value}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue_coe,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.restriction_extendAbsoluteValue,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue_restriction}
+\uses{lem:inseparable-absolute-value,def:absolute-value-restriction}
 The absolute value $\widetilde v$ restricts to $v$ on $E$, and is
 the unique absolute value on $L$ doing so. Restriction and
 $v\mapsto\widetilde v$ are inverse bijections between the absolute
@@ -175,9 +176,10 @@ $E/K$.
 
 \begin{lemma}[Measurable logarithmic evaluations]
 \label{lem:finite-log-measurable}
+\leanok
 \source{chen-moriwaki-adelic:page-0204}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measurable_log}
-\uses{def:finite-parameters,lem:inseparable-log,def:extension-parameters}
+\uses{def:finite-parameters,lem:inseparable-log,def:extension-parameters,lem:extension-coordinates}
 For every $a\in L$, the function $x\mapsto\log|a|_x$ is
 $\mathcal A_L$-measurable.
 \end{lemma}
@@ -347,9 +349,10 @@ measure. Integration against the finite Dirac sum gives both formulas.
 
 \begin{lemma}[The sigma algebra using all elements of the extension]
 \label{lem:finite-measurable-space}
+\leanok
 \source{chen-moriwaki-adelic:page-0205}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measurableSpace_eq_comap_sup}
-\uses{def:finite-parameters,lem:inseparable-extension-unique,def:extension-parameters}
+\uses{def:finite-parameters,lem:inseparable-extension-unique,def:extension-parameters,lem:extension-coordinates}
 The sigma algebra $\mathcal A_L=\mathcal A_E$ is the smallest sigma
 algebra making $\pi_{L/K}$ and every evaluation $x\mapsto|a|_x$,
 $a\in L$, measurable.

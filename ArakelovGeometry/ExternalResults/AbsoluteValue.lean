@@ -115,6 +115,66 @@ def pullback {K : Type*} [Field K] (v : AbsoluteValue K ℝ) {L : Type*} [Field 
 abbrev restriction {K : Type*} [Field K] (v : AbsoluteValue K ℝ) (L : Type*) [Field L]
     [Algebra L K] : AbsoluteValue L ℝ := pullback v (algebraMap L K)
 
+/-- An absolute value on a finite field extension is trivial if its restriction is trivial. -/
+theorem not_isNontrivial_of_finite {K : Type*} [Field K] (v : AbsoluteValue K ℝ)
+    (L : Type*) [Field L] [Algebra L K] [FiniteDimensional L K]
+    (hv : ¬(v.restriction L).IsNontrivial) : ¬v.IsNontrivial := by
+  classical
+  let b := Module.Free.chooseBasis L K
+  have hscalar (c : L) : v (algebraMap L K c) ≤ 1 := by
+    by_cases hc : c = 0
+    · simp [hc]
+    · exact le_of_eq (not_isNontrivial_apply hv hc)
+  have hbound (y : K) : v y ≤ ∑ i, v (b i) := by
+    conv_lhs => rw [← b.sum_repr y]
+    refine (v.sum_le _ _).trans (Finset.sum_le_sum fun i _ ↦ ?_)
+    rw [Algebra.smul_def, map_mul]
+    exact mul_le_of_le_one_left (v.nonneg _) (hscalar _)
+  intro hn
+  obtain ⟨x, hx⟩ := hn.exists_abv_gt_one
+  obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt (∑ i, v (b i)) hx
+  exact (not_lt_of_ge (by simpa only [map_pow] using hbound (x ^ n))) hn
+
+/-- Triviality of absolute values is preserved by algebraic extension. -/
+theorem not_isNontrivial_of_isAlgebraic {K : Type*} [Field K] (v : AbsoluteValue K ℝ)
+    (L : Type*) [Field L] [Algebra L K] [Algebra.IsAlgebraic L K]
+    (hv : ¬(v.restriction L).IsNontrivial) : ¬v.IsNontrivial := by
+  intro hn
+  obtain ⟨x, hx⟩ := hn.exists_abv_gt_one
+  let F := IntermediateField.adjoin L ({x} : Set K)
+  have : FiniteDimensional L F :=
+    IntermediateField.adjoin.finiteDimensional (Algebra.IsAlgebraic.isAlgebraic x).isIntegral
+  have hF : ¬(v.restriction F).IsNontrivial :=
+    not_isNontrivial_of_finite (v.restriction F) L (by simpa [restriction, pullback] using hv)
+  let y : F := ⟨x, IntermediateField.subset_adjoin L {x} (Set.mem_singleton x)⟩
+  have hy : y ≠ 0 := by
+    intro hy
+    have hx0 : x = 0 := congrArg Subtype.val hy
+    simp [hx0] at hx
+    norm_num at hx
+  have hy1 := not_isNontrivial_apply hF hy
+  exact (ne_of_gt hx) hy1
+
+/-- A field with the trivial absolute value is complete. -/
+theorem completeSpace_withAbs_of_not_isNontrivial {K : Type*} [Field K]
+    (v : AbsoluteValue K ℝ) (hv : ¬v.IsNontrivial) : CompleteSpace (WithAbs v) := by
+  have : DiscreteUniformity (WithAbs v) := ⟨Metric.uniformSpace_eq_bot.mpr ⟨1, zero_lt_one,
+    fun x y hxy ↦ by
+      change 1 ≤ dist x y
+      rw [dist_eq_norm, WithAbs.norm_eq_apply_ofAbs,
+        not_isNontrivial_apply hv (by
+          simpa using sub_ne_zero.mpr ((WithAbs.ofAbs_injective v).ne hxy))]⟩⟩
+  infer_instance
+
+/-- The completion of a trivially valued field has no new elements. -/
+theorem surjective_coe_completion_of_not_isNontrivial {K : Type*} [Field K]
+    (v : AbsoluteValue K ℝ) (hv : ¬v.IsNontrivial) :
+    Function.Surjective (fun x : WithAbs v ↦ (x : v.Completion)) := by
+  have := completeSpace_withAbs_of_not_isNontrivial v hv
+  intro x
+  have hx := UniformSpace.Completion.denseRange_coe (α := WithAbs v) x
+  rwa [(UniformSpace.Completion.coe_isometry.isClosedEmbedding.isClosed_range).closure_eq] at hx
+
 open WithAbs in
 /-- The `algebraMap` from `WithAbs (v.restriction L)` to `WithAbs v` is an isometry. -/
 theorem isometry_algebraMap_withAbs {K : Type*} [Field K] (v : AbsoluteValue K ℝ) (L : Type*)
@@ -162,41 +222,17 @@ theorem coe_smul_completion (c : WithAbs (v.restriction L)) (y : WithAbs v) :
   rw [Algebra.smul_def, Algebra.smul_def, UniformSpace.Completion.coe_mul,
     algebraMap_completion_def, UniformSpace.Completion.mapRingHom_coe]
 
-open UniformSpace in
-/-- If the restricted absolute value is nontrivial, then the completion of `K` is a
-finite-dimensional vector space over the completion of `L`.
-
-The argument: an `L`-basis of `K` also generates `v.Completion` as a
-`(v.restriction L).Completion`-module (although it is not a basis in general). Concretely, the
-`(v.restriction L).Completion`-span of such a basis is finite-dimensional, hence closed, and
-contains the dense image of `K`, so it is everything. Nontriviality of the absolute value is
-needed to make the base completion a `NontriviallyNormedField`, which is what makes
-finite-dimensional subspaces closed. -/
-theorem finiteDimensional_completion_of_isNontrivial [FiniteDimensional L K]
-    (hv : (v.restriction L).IsNontrivial) :
-    FiniteDimensional (v.restriction L).Completion v.Completion := by
+/-- A finite basis of a field extension spans the completed extension over the completed base. -/
+theorem span_coe_basis_eq_top {ι : Type*} [Finite ι] (b : Module.Basis ι L K) :
+    Submodule.span (v.restriction L).Completion
+      (Set.range fun i ↦ (WithAbs.toAbs v (b i) : v.Completion)) = ⊤ := by
   classical
-  -- Endow the base completion with its nontrivially normed field structure (needed for the
-  -- closedness of finite-dimensional subspaces), sharing the canonical `NormedField`.
-  let : NontriviallyNormedField (v.restriction L).Completion :=
-    { (inferInstance : NormedField (v.restriction L).Completion) with
-      non_trivial := by
-        obtain ⟨x, hx⟩ := hv.exists_abv_gt_one
-        exact ⟨((WithAbs.toAbs (v.restriction L) x : WithAbs (v.restriction L)) :
-          (v.restriction L).Completion), by
-          rw [UniformSpace.Completion.norm_coe, WithAbs.norm_eq_apply_ofAbs]; exact hx⟩ }
-  -- An `L`-basis of `K`, indexed by a finite type, transported to `WithAbs v`.
-  let ι := Module.Free.ChooseBasisIndex L K
-  let b : Module.Basis ι L K := Module.Free.chooseBasis L K
+  let := Fintype.ofFinite ι
+  have : FiniteDimensional L K := Module.Finite.of_basis b
   let b' : ι → WithAbs v := fun i ↦ WithAbs.toAbs v (b i)
-  set s : Set v.Completion := Set.range (fun i ↦ ((b' i : WithAbs v) : v.Completion)) with hs
-  set W : Submodule (v.restriction L).Completion v.Completion := Submodule.span _ s with hW
-  -- `W` is finite-dimensional, hence closed.
-  have hsfin : s.Finite := Set.finite_range _
-  have : FiniteDimensional (v.restriction L).Completion W :=
-    FiniteDimensional.span_of_finite _ hsfin
-  have hWclosed : IsClosed (W : Set v.Completion) :=
-    Submodule.closed_of_finiteDimensional (𝕜 := (v.restriction L).Completion) W
+  let s : Set v.Completion := Set.range (fun i ↦ ((b' i : WithAbs v) : v.Completion))
+  let W : Submodule (v.restriction L).Completion v.Completion := Submodule.span _ s
+  change W = ⊤
   -- Every element of `WithAbs v` (i.e. of `K`) lies in `W`.
   have hmemK : ∀ y : WithAbs v, ((y : v.Completion)) ∈ W := by
     intro y
@@ -214,18 +250,54 @@ theorem finiteDimensional_completion_of_isNontrivial [FiniteDimensional L K]
     refine Submodule.sum_mem _ fun i _ ↦ ?_
     rw [coe_smul_completion]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
-  -- `W` contains the dense range of the coercion, so `W = ⊤`.
-  have hdense : Dense (W : Set v.Completion) := by
-    refine Dense.mono ?_ (UniformSpace.Completion.denseRange_coe (α := WithAbs v))
-    rintro _ ⟨y, rfl⟩
-    exact hmemK y
-  have hWtop : W = ⊤ := by
+  by_cases hv : (v.restriction L).IsNontrivial
+  · let : NontriviallyNormedField (v.restriction L).Completion :=
+      { (inferInstance : NormedField (v.restriction L).Completion) with
+        non_trivial := by
+          obtain ⟨x, hx⟩ := hv.exists_abv_gt_one
+          exact ⟨((WithAbs.toAbs (v.restriction L) x : WithAbs (v.restriction L)) :
+            (v.restriction L).Completion), by
+            rw [UniformSpace.Completion.norm_coe, WithAbs.norm_eq_apply_ofAbs]; exact hx⟩ }
+    have : FiniteDimensional (v.restriction L).Completion W :=
+      FiniteDimensional.span_of_finite _ (Set.finite_range _)
+    have hWclosed : IsClosed (W : Set v.Completion) :=
+      Submodule.closed_of_finiteDimensional (𝕜 := (v.restriction L).Completion) W
+    have hdense : Dense (W : Set v.Completion) := by
+      refine Dense.mono ?_ (UniformSpace.Completion.denseRange_coe (α := WithAbs v))
+      rintro _ ⟨y, rfl⟩
+      exact hmemK y
     have := Submodule.dense_iff_topologicalClosure_eq_top.mp hdense
     rwa [hWclosed.submodule_topologicalClosure_eq] at this
-  -- Hence the whole completion is finite over the base completion.
-  have hfg : (⊤ : Submodule (v.restriction L).Completion v.Completion).FG :=
-    hWtop ▸ Submodule.fg_span hsfin
+  · apply top_unique
+    intro x _
+    obtain ⟨y, rfl⟩ := surjective_coe_completion_of_not_isNontrivial v
+      (not_isNontrivial_of_finite v L hv) x
+    exact hmemK y
+
+/-- Completion preserves finiteness of a field extension, including at the trivial absolute
+value. -/
+theorem finiteDimensional_completion [FiniteDimensional L K] :
+    FiniteDimensional (v.restriction L).Completion v.Completion := by
+  classical
+  have hfg := Submodule.fg_span (R := (v.restriction L).Completion) (Set.finite_range
+    (fun i ↦ (WithAbs.toAbs v (Module.Free.chooseBasis L K i) : v.Completion)))
+  rw [span_coe_basis_eq_top v L (Module.Free.chooseBasis L K)] at hfg
   exact Module.Finite.of_fg_top hfg
+
+/-- For a nontrivial restricted absolute value, the completed extension is finite dimensional. -/
+theorem finiteDimensional_completion_of_isNontrivial [FiniteDimensional L K]
+    (_hv : (v.restriction L).IsNontrivial) :
+    FiniteDimensional (v.restriction L).Completion v.Completion :=
+  finiteDimensional_completion v L
+
+/-- Completion cannot increase the degree of a finite field extension. -/
+theorem finrank_completion_le [FiniteDimensional L K] :
+    Module.finrank (v.restriction L).Completion v.Completion ≤ Module.finrank L K := by
+  classical
+  have h := finrank_range_le_card (R := (v.restriction L).Completion)
+    (fun i ↦ (WithAbs.toAbs v (Module.Free.chooseBasis L K i) : v.Completion))
+  rw [Set.finrank, span_coe_basis_eq_top v L (Module.Free.chooseBasis L K), finrank_top] at h
+  exact h.trans_eq (Module.finrank_eq_card_chooseBasisIndex L K).symm
 
 /-- The local degree of `K / L` at `v`: the dimension of the completion of `v` over the
 completion of its restriction to `L`. -/
