@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 import ArakelovGeometry.AdelicCurve.Defs
 import ArakelovGeometry.AdelicCurve.RootBounds
 import ArakelovGeometry.ExternalResults.AbsoluteValueFinite
+import ArakelovGeometry.ExternalResults.AbsoluteValueCompact
 import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
 import ArakelovGeometry.ExternalResults.FunctionalMonotoneClass
 import ArakelovGeometry.ExternalResults.AbsoluteValueLocal
@@ -23,7 +24,10 @@ import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
 import Mathlib.MeasureTheory.Measure.Dirac
+import Mathlib.MeasureTheory.Measure.GiryMonad
 import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
+import Mathlib.MeasureTheory.OuterMeasure.OfAddContent
+import Mathlib.MeasureTheory.SetAlgebra
 import Mathlib.RingTheory.Norm.Defs
 import Mathlib.RingTheory.Trace.Basic
 
@@ -1793,6 +1797,43 @@ variable {AS} in
 abbrev BaseFiber (ω : AS.Ω) :=
   {x : ParameterSpaceExtension AS L // ParameterSpaceExtension.proj x = ω}
 
+omit [Algebra.IsAlgebraic K L] in
+/-- Evaluation gives each fibre its natural topology of pointwise convergence. -/
+instance instTopologicalSpaceBaseFiber (ω : AS.Ω) : TopologicalSpace (BaseFiber L ω) :=
+  TopologicalSpace.induced (fun x : BaseFiber L ω ↦ (x.val.abv : L → ℝ)) inferInstance
+
+omit [Algebra.IsAlgebraic K L] in
+/-- Absolute values on a fixed fibre are determined by all their evaluations. -/
+theorem isEmbedding_fibreEval (ω : AS.Ω) :
+    Topology.IsEmbedding (fun x : BaseFiber L ω ↦ (x.val.abv : L → ℝ)) := by
+  refine ⟨⟨rfl⟩, ?_⟩
+  intro x y hxy
+  apply Subtype.ext
+  exact ParameterSpaceExtension.ext AS L (x.property.trans y.property.symm)
+    (DFunLike.coe_injective hxy)
+
+omit [Algebra.IsAlgebraic K L] in
+instance instT2SpaceBaseFiber (ω : AS.Ω) : T2Space (BaseFiber L ω) :=
+  (isEmbedding_fibreEval AS L ω).t2Space
+
+/-- Algebraic fibres are compact in the evaluation topology. -/
+instance instCompactSpaceBaseFiber (ω : AS.Ω) :
+    CompactSpace (BaseFiber L ω) := by
+  constructor
+  apply (isEmbedding_fibreEval AS L ω).isCompact_iff.mpr
+  rw [Set.image_univ]
+  have hr : Set.range (fun x : BaseFiber L ω ↦ (x.val.abv : L → ℝ)) =
+      Set.range (fun w : {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω} ↦
+        (w.val : L → ℝ)) := by
+    ext f
+    constructor
+    · rintro ⟨x, rfl⟩
+      exact ⟨⟨x.val.abv, x.val.restrict_eq.trans (congrArg AS.ϕ x.property)⟩, rfl⟩
+    · rintro ⟨w, rfl⟩
+      exact ⟨⟨⟨ω, w.val, w.property⟩, rfl⟩, rfl⟩
+  rw [hr]
+  exact AbsoluteValue.isCompact_range_extensions (AS.ϕ ω)
+
 variable {AS L} in
 /-- Restriction from the algebraic fibre `M_{L,ω}` to the finite fibre attached to `F`. -/
 def projFiniteFiber (F : FiniteIntermediateField K L) (ω : AS.Ω) :
@@ -1800,6 +1841,50 @@ def projFiniteFiber (F : FiniteIntermediateField K L) (ω : AS.Ω) :
   fun x ↦ ⟨projFinite AS F x.1, by
     simpa [projFinite, ParameterSpaceFinExtension, ParameterSpaceExtension.proj,
       ParameterSpaceExtension.restrict] using x.2⟩
+
+omit [Algebra.IsAlgebraic K L] in
+/-- Restriction to a finite fibre is continuous for the evaluation topologies. -/
+theorem continuous_projFiniteFiber (F : FiniteIntermediateField K L) (ω : AS.Ω) :
+    Continuous (projFiniteFiber F ω) := by
+  apply continuous_induced_rng.mpr
+  apply continuous_pi
+  intro a
+  exact (continuous_apply ((a : F.1) : L)).comp continuous_induced_dom
+
+omit [Algebra.IsAlgebraic K L] in
+/-- Finite-stage cylinders are clopen in an algebraic fibre. -/
+theorem isClopen_fibreCylinder (F : FiniteIntermediateField K L) (ω : AS.Ω)
+    (B : Set (FiniteBaseFiber L F ω)) :
+    IsClopen (projFiniteFiber F ω ⁻¹' B) := by
+  let := ParameterSpaceExtension.finite_extensionFiber AS (separableClosure K F.1) ω
+  exact ⟨(isClosed_discrete B).preimage (continuous_projFiniteFiber AS L F ω),
+    (isOpen_discrete B).preimage (continuous_projFiniteFiber AS L F ω)⟩
+
+/-- Finite-stage cylinders are compact. -/
+theorem isCompact_fibreCylinder
+    (F : FiniteIntermediateField K L) (ω : AS.Ω)
+    (B : Set (FiniteBaseFiber L F ω)) :
+    IsCompact (projFiniteFiber F ω ⁻¹' B) :=
+  (isClopen_fibreCylinder AS L F ω B).isClosed.isCompact
+
+/-- Every finite-stage fibre point lifts to the algebraic fibre. -/
+theorem surjective_projFiniteFiber (F : FiniteIntermediateField K L) (ω : AS.Ω) :
+    Function.Surjective (projFiniteFiber (AS := AS) F ω) := by
+  intro x
+  let v := ParameterSpaceFinExtension.extendAbsoluteValue x.val.abv
+  obtain ⟨w, hw⟩ := AbsoluteValue.exists_extension (L := L) v
+  have hE : (w.restriction F.1).restriction (separableClosure K F.1) = x.val.abv := by
+    rw [hw]
+    exact ParameterSpaceFinExtension.restriction_extendAbsoluteValue _
+  have hbase : w.restriction K = AS.ϕ ω := by
+    ext a
+    have h := congrArg (fun z : AbsoluteValue (separableClosure K F.1) ℝ ↦
+      z (algebraMap K (separableClosure K F.1) a)) hE
+    exact h.trans ((congrArg (fun z : AbsoluteValue K ℝ ↦ z a) x.val.restrict_eq).trans
+      (congrArg (fun z ↦ AS.ϕ z a) x.property))
+  refine ⟨⟨⟨ω, w, hbase⟩, rfl⟩, ?_⟩
+  apply Subtype.ext
+  exact ParameterSpaceExtension.ext AS (separableClosure K F.1) x.property.symm hE
 
 variable {L} in
 /-- Inclusion of finite subextensions restricts to their separable parts. -/
@@ -1850,6 +1935,120 @@ theorem projFiniteFiberOfLE_projFiniteFiber {F G : FiniteIntermediateField K L}
     projFiniteFiberOfLE hFG ω (projFiniteFiber G ω x) = projFiniteFiber F ω x := by
   apply Subtype.ext
   exact projFiniteOfLE_projFinite AS hFG x.1
+
+omit [Algebra.IsAlgebraic K L] in
+/-- Finite-stage projection preserves the probability measure on each fibre. -/
+theorem map_finiteFibreProbabilityMeasure_projFiniteFiberOfLE (ω : AS.Ω)
+    {F G : FiniteIntermediateField K L} (hFG : F.1 ≤ G.1) :
+    Measure.map (projFiniteFiberOfLE hFG ω)
+        (ParameterSpaceFinExtension.fibreProbabilityMeasure AS G ω) =
+      ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω := by
+  classical
+  let F₀ := separableClosure K F.1
+  let G₀ := separableClosure K G.1
+  let i : F₀ →ₐ[K] G₀ := finiteSeparableInclusion hFG
+  let q := projFiniteFiberOfLE (AS := AS) hFG ω
+  let EF := {w : AbsoluteValue F₀ ℝ // w.restriction K = AS.ϕ ω}
+  let EG := {w : AbsoluteValue G₀ ℝ // w.restriction K = AS.ϕ ω}
+  let : Fintype EF := (AbsoluteValue.finite_extensions (L := F₀) (AS.ϕ ω)).fintype
+  let : Fintype EG := (AbsoluteValue.finite_extensions (L := G₀) (AS.ϕ ω)).fintype
+  let eF : FiniteBaseFiber L F ω ≃ EF := {
+    toFun x := ⟨x.val.abv, x.val.restrict_eq.trans (congrArg AS.ϕ x.property)⟩
+    invFun w := ⟨⟨ω, w.val, w.property⟩, rfl⟩
+    left_inv x := by
+      apply Subtype.ext
+      exact ParameterSpaceExtension.ext AS F₀ x.property.symm rfl
+    right_inv _ := rfl }
+  let eG : FiniteBaseFiber L G ω ≃ EG := {
+    toFun x := ⟨x.val.abv, x.val.restrict_eq.trans (congrArg AS.ϕ x.property)⟩
+    invFun w := ⟨⟨ω, w.val, w.property⟩, rfl⟩
+    left_inv x := by
+      apply Subtype.ext
+      exact ParameterSpaceExtension.ext AS G₀ x.property.symm rfl
+    right_inv _ := rfl }
+  let : Fintype (FiniteBaseFiber L F ω) := Fintype.ofEquiv EF eF.symm
+  let : Fintype (FiniteBaseFiber L G ω) := Fintype.ofEquiv EG eG.symm
+  have : IsProbabilityMeasure (ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω) :=
+    ParameterSpaceExtension.isProbabilityMeasure_fibreProbabilityMeasure AS F₀ ω
+  have : IsProbabilityMeasure (ParameterSpaceFinExtension.fibreProbabilityMeasure AS G ω) :=
+    ParameterSpaceExtension.isProbabilityMeasure_fibreProbabilityMeasure AS G₀ ω
+  have hint (g : FiniteBaseFiber L F ω → ℝ) :
+      (∫ x, g (q x) ∂ParameterSpaceFinExtension.fibreProbabilityMeasure AS G ω) =
+        ∫ x, g x ∂ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω := by
+    let φ (a : AbsoluteValue F₀ ℝ) : ℝ :=
+      if h : a.restriction K = AS.ϕ ω then g ⟨⟨ω, a, h⟩, rfl⟩ else 0
+    have hF (x : FiniteBaseFiber L F ω) : φ x.val.abv = g x := by
+      have hx : x.val.abv.restriction K = AS.ϕ ω :=
+        x.val.restrict_eq.trans (congrArg AS.ϕ x.property)
+      rw [show φ x.val.abv = _ from dif_pos hx]
+      apply congrArg g
+      apply Subtype.ext
+      exact ParameterSpaceExtension.ext AS F₀ x.property.symm rfl
+    have hG (x : FiniteBaseFiber L G ω) :
+        φ (x.val.abv.pullback i.toRingHom) = g (q x) := hF (q x)
+    have hw := AbsoluteValue.finrank_nsmul_sum_localDegree_pullback i (AS.ϕ ω) φ
+    rw [← eG.sum_comp (fun w ↦ w.val.localDegree K • φ (w.val.pullback i.toRingHom)),
+      ← eF.sum_comp (fun w ↦ w.val.localDegree K • φ w.val)] at hw
+    change Module.finrank K F₀ •
+        (∑ x : FiniteBaseFiber L G ω, x.val.abv.localDegree K •
+          φ (x.val.abv.pullback i.toRingHom)) =
+      Module.finrank K G₀ •
+        ∑ x : FiniteBaseFiber L F ω, x.val.abv.localDegree K • φ x.val.abv at hw
+    simp only [nsmul_eq_mul] at hw
+    simp_rw [hF, hG] at hw
+    unfold ParameterSpaceFinExtension.fibreProbabilityMeasure
+      ParameterSpaceExtension.fibreProbabilityMeasure
+    rw [integral_sum_measure (ParameterSpaceExtension.integrable_fibre AS G₀ ω (fun x ↦ g (q x))),
+      integral_sum_measure (ParameterSpaceExtension.integrable_fibre AS F₀ ω g)]
+    simp only [tsum_fintype, integral_smul_measure, integral_dirac, smul_eq_mul,
+      ParameterSpaceExtension.fibreWeight, ENNReal.toReal_div, ENNReal.toReal_natCast,
+      div_mul_eq_mul_div, ← Finset.sum_div]
+    apply (div_eq_div_iff
+      (by exact_mod_cast (Module.finrank_pos (R := K) (M := G₀)).ne')
+      (by exact_mod_cast (Module.finrank_pos (R := K) (M := F₀)).ne')).mpr
+    simpa only [ParameterSpaceExtension.ϕ, mul_comm] using hw
+  apply Measure.ext
+  intro s hs
+  have hq : Measurable q := measurable_of_countable q
+  rw [Measure.map_apply hq hs]
+  have hi := hint (s.indicator fun _ ↦ 1)
+  have hpre : MeasurableSet (q ⁻¹' s) := hq hs
+  simp only [← Set.indicator_comp_right, Function.comp_def] at hi
+  rw [show (fun _ : FiniteBaseFiber L G ω ↦ (1 : ℝ)) = 1 from rfl,
+    show (fun _ : FiniteBaseFiber L F ω ↦ (1 : ℝ)) = 1 from rfl,
+    integral_indicator_one hpre, integral_indicator_one hs] at hi
+  calc
+    _ = ENNReal.ofReal
+        ((ParameterSpaceFinExtension.fibreProbabilityMeasure AS G ω) (q ⁻¹' s)).toReal :=
+      (ENNReal.ofReal_toReal (measure_ne_top _ _)).symm
+    _ = ENNReal.ofReal ((ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω) s).toReal :=
+      congrArg ENNReal.ofReal hi
+    _ = _ := ENNReal.ofReal_toReal (measure_ne_top _ _)
+
+omit [Algebra.IsAlgebraic K L] in
+/-- Every point of a finite-stage fibre lifts along a larger finite stage. -/
+theorem surjective_projFiniteFiberOfLE (ω : AS.Ω)
+    {F G : FiniteIntermediateField K L} (hFG : F.1 ≤ G.1) :
+    Function.Surjective (projFiniteFiberOfLE (AS := AS) hFG ω) := by
+  let F₀ := separableClosure K F.1
+  let G₀ := separableClosure K G.1
+  let i : F₀ →ₐ[K] G₀ := finiteSeparableInclusion hFG
+  let : Algebra F₀ G₀ := i.toRingHom.toAlgebra
+  have : IsScalarTower K F₀ G₀ :=
+    IsScalarTower.of_algebraMap_eq (fun a ↦ (i.commutes a).symm)
+  have : FiniteDimensional F₀ G₀ := Module.Finite.of_restrictScalars_finite K F₀ G₀
+  intro x
+  obtain ⟨w, hw⟩ := AbsoluteValue.exists_extension (L := G₀) x.val.abv
+  have hbase : w.restriction K = AS.ϕ ω := by
+    ext a
+    have h := congrArg (fun z : AbsoluteValue F₀ ℝ ↦ z (algebraMap K F₀ a)) hw
+    change w (i (algebraMap K F₀ a)) = x.val.abv (algebraMap K F₀ a) at h
+    rw [i.commutes] at h
+    exact h.trans ((congrArg (fun z : AbsoluteValue K ℝ ↦ z a) x.val.restrict_eq).trans
+      (congrArg (fun z ↦ AS.ϕ z a) x.property))
+  refine ⟨⟨⟨ω, w, hbase⟩, rfl⟩, ?_⟩
+  apply Subtype.ext
+  exact ParameterSpaceExtension.ext AS F₀ x.property.symm hw
 
 /-- The inverse image `M_{L,x}` of a finite-stage point `x` under `π_{L/F}`. -/
 def finiteFiber (F : FiniteIntermediateField K L)
@@ -2031,7 +2230,65 @@ of a cylinder function does not depend on the finite stage through which it desc
 theorem fibreCylinderIntegral_congr {ω : AS.Ω} {f : BaseFiber L ω → ℝ}
     (d₁ d₂ : DescendsToFiniteFiber ω f) :
     fibreCylinderIntegral d₁ = fibreCylinderIntegral d₂ := by
-  sorry
+  let H := FiniteIntermediateField.sup d₁.F d₂.F
+  let := ParameterSpaceExtension.finite_extensionFiber AS (separableClosure K H.1) ω
+  have hint (d : DescendsToFiniteFiber ω f) (h : d.F.1 ≤ H.1) :
+      fibreCylinderIntegral d = ∫ y, d.g (projFiniteFiberOfLE h ω y)
+        ∂ParameterSpaceFinExtension.fibreProbabilityMeasure AS H ω := by
+    let := ParameterSpaceExtension.finite_extensionFiber AS (separableClosure K d.F.1) ω
+    rw [fibreCylinderIntegral,
+      ← map_finiteFibreProbabilityMeasure_projFiniteFiberOfLE AS L ω h]
+    exact integral_map (measurable_of_countable _).aemeasurable
+      (measurable_of_countable d.g).aestronglyMeasurable
+  rw [hint d₁ (FiniteIntermediateField.left_le_sup d₁.F d₂.F),
+    hint d₂ (FiniteIntermediateField.right_le_sup d₁.F d₂.F)]
+  apply integral_congr_ae
+  apply Filter.Eventually.of_forall
+  intro y
+  obtain ⟨x, rfl⟩ := surjective_projFiniteFiber AS L H ω y
+  simp only [H, projFiniteFiberOfLE_projFiniteFiber]
+  exact (congrFun d₁.eq_comp x).symm.trans (congrFun d₂.eq_comp x)
+
+/-- The sets represented at a finite stage of an algebraic fibre. -/
+def fibreCylinders (ω : AS.Ω) : Set (Set (BaseFiber L ω)) :=
+  {A | ∃ (F : FiniteIntermediateField K L) (B : Set (FiniteBaseFiber L F ω)),
+    projFiniteFiber F ω ⁻¹' B = A}
+
+omit [Algebra.IsAlgebraic K L] in
+/-- Finite-stage cylinders form an algebra of sets. -/
+theorem isSetAlgebra_fibreCylinders (ω : AS.Ω) :
+    IsSetAlgebra (fibreCylinders AS L ω) := by
+  constructor
+  · exact ⟨FiniteIntermediateField.bot, ∅, rfl⟩
+  · rintro A ⟨F, B, rfl⟩
+    exact ⟨F, Bᶜ, rfl⟩
+  · rintro A B ⟨F, C, rfl⟩ ⟨G, D, rfl⟩
+    refine ⟨FiniteIntermediateField.sup F G,
+      (projFiniteFiberOfLE (FiniteIntermediateField.left_le_sup F G) ω ⁻¹' C) ∪
+      (projFiniteFiberOfLE (FiniteIntermediateField.right_le_sup F G) ω ⁻¹' D), ?_⟩
+    ext x
+    simp only [Set.mem_preimage, Set.mem_union, projFiniteFiberOfLE_projFiniteFiber]
+
+omit [Algebra.IsAlgebraic K L] in
+/-- The prescribed fibre σ-algebra is generated by the finite-stage cylinders. -/
+theorem fibreMeasurableSpace_eq_generateFrom (ω : AS.Ω) :
+    fibreMeasurableSpace L ω = MeasurableSpace.generateFrom (fibreCylinders AS L ω) := by
+  apply le_antisymm
+  · refine iSup_le fun F ↦ ?_
+    rintro A ⟨B, _, rfl⟩
+    exact MeasurableSpace.measurableSet_generateFrom ⟨F, B, rfl⟩
+  · apply MeasurableSpace.generateFrom_le
+    rintro A ⟨F, B, rfl⟩
+    exact le_iSup (fun F : FiniteIntermediateField K L ↦
+      MeasurableSpace.comap (projFiniteFiber F ω) inferInstance) F
+        _ ⟨B, measurableSet_finiteBaseFiber AS L F ω B, rfl⟩
+
+omit [Algebra.IsAlgebraic K L] in
+/-- Finite-stage fibre projections are measurable for the cylinder σ-algebra. -/
+theorem measurable_projFiniteFiber (ω : AS.Ω) (F : FiniteIntermediateField K L) :
+    Measurable[fibreMeasurableSpace L ω] (projFiniteFiber F ω) :=
+  Measurable.of_comap_le (le_iSup (fun F : FiniteIntermediateField K L ↦
+    MeasurableSpace.comap (projFiniteFiber F ω) inferInstance) F)
 
 /-- The cylinder content on the fibre `M_{L,ω}`: the infimum of the prescribed finite-stage
 fibre measures over cylinder supersets. On a cylinder set `(π_{L/F,ω})⁻¹(B)` it takes the
@@ -2042,6 +2299,152 @@ noncomputable def fibreCylinderContent (ω : AS.Ω) (A : Set (BaseFiber L ω)) :
     (_ : A ⊆ projFiniteFiber F ω ⁻¹' B),
     ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω B
 
+omit [Algebra.IsAlgebraic K L] in
+/-- The empty cylinder has zero content. -/
+theorem fibreCylinderContent_empty (ω : AS.Ω) : fibreCylinderContent AS L ω ∅ = 0 := by
+  apply le_antisymm _ zero_le
+  exact iInf_le_of_le FiniteIntermediateField.bot
+    (iInf_le_of_le ∅ (iInf_le_of_le (Set.empty_subset _) (by simp)))
+
+/-- Inclusion of cylinders implies the corresponding inequality of finite-stage masses. -/
+theorem finiteFibreProbabilityMeasure_le_of_preimage_subset (ω : AS.Ω)
+    (F G : FiniteIntermediateField K L) (B : Set (FiniteBaseFiber L F ω))
+    (C : Set (FiniteBaseFiber L G ω))
+    (hBC : projFiniteFiber F ω ⁻¹' B ⊆ projFiniteFiber G ω ⁻¹' C) :
+    ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω B ≤
+      ParameterSpaceFinExtension.fibreProbabilityMeasure AS G ω C := by
+  let H := FiniteIntermediateField.sup F G
+  let qF := projFiniteFiberOfLE (FiniteIntermediateField.left_le_sup F G) ω
+  let qG := projFiniteFiberOfLE (FiniteIntermediateField.right_le_sup F G) ω
+  have hsub : qF ⁻¹' B ⊆ qG ⁻¹' C := by
+    intro y hy
+    obtain ⟨x, rfl⟩ := surjective_projFiniteFiber AS L H ω y
+    exact hBC (by simpa [qF, H, projFiniteFiberOfLE_projFiniteFiber] using hy)
+  let := ParameterSpaceExtension.finite_extensionFiber AS (separableClosure K H.1) ω
+  have hF := congrArg (fun μ : Measure (FiniteBaseFiber L F ω) ↦ μ B)
+    (map_finiteFibreProbabilityMeasure_projFiniteFiberOfLE AS L ω
+      (FiniteIntermediateField.left_le_sup F G))
+  have hG := congrArg (fun μ : Measure (FiniteBaseFiber L G ω) ↦ μ C)
+    (map_finiteFibreProbabilityMeasure_projFiniteFiberOfLE AS L ω
+      (FiniteIntermediateField.right_le_sup F G))
+  rw [Measure.map_apply (measurable_of_countable _)
+    (measurableSet_finiteBaseFiber AS L F ω B)] at hF
+  rw [Measure.map_apply (measurable_of_countable _)
+    (measurableSet_finiteBaseFiber AS L G ω C)] at hG
+  rw [← hF, ← hG]
+  exact measure_mono hsub
+
+/-- The cylinder content agrees with each prescribed finite-stage probability. -/
+theorem fibreCylinderContent_preimage (ω : AS.Ω) (F : FiniteIntermediateField K L)
+    (B : Set (FiniteBaseFiber L F ω)) :
+    fibreCylinderContent AS L ω (projFiniteFiber F ω ⁻¹' B) =
+      ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω B := by
+  apply le_antisymm
+  · exact iInf_le_of_le F (iInf_le_of_le B (iInf_le_of_le (Set.Subset.refl _) le_rfl))
+  · exact le_iInf fun G ↦ le_iInf fun C ↦ le_iInf fun hBC ↦
+      finiteFibreProbabilityMeasure_le_of_preimage_subset AS L ω F G B C hBC
+
+/-- Cylinder content is additive on disjoint cylinders. -/
+theorem fibreCylinderContent_union (ω : AS.Ω) {A B : Set (BaseFiber L ω)}
+    (hA : A ∈ fibreCylinders AS L ω) (hB : B ∈ fibreCylinders AS L ω)
+    (hdisj : Disjoint A B) :
+    fibreCylinderContent AS L ω (A ∪ B) =
+      fibreCylinderContent AS L ω A + fibreCylinderContent AS L ω B := by
+  obtain ⟨F, C, rfl⟩ := hA
+  obtain ⟨G, D, rfl⟩ := hB
+  let H := FiniteIntermediateField.sup F G
+  let C' := projFiniteFiberOfLE (FiniteIntermediateField.left_le_sup F G) ω ⁻¹' C
+  let D' := projFiniteFiberOfLE (FiniteIntermediateField.right_le_sup F G) ω ⁻¹' D
+  have hC : projFiniteFiber H ω ⁻¹' C' = projFiniteFiber F ω ⁻¹' C := by
+    ext x
+    simp only [C', H, Set.mem_preimage, projFiniteFiberOfLE_projFiniteFiber]
+  have hD : projFiniteFiber H ω ⁻¹' D' = projFiniteFiber G ω ⁻¹' D := by
+    ext x
+    simp only [D', H, Set.mem_preimage, projFiniteFiberOfLE_projFiniteFiber]
+  have hCD : Disjoint C' D' := by
+    rw [Set.disjoint_left] at hdisj ⊢
+    intro y hyC hyD
+    obtain ⟨x, rfl⟩ := surjective_projFiniteFiber AS L H ω y
+    exact hdisj ((Set.ext_iff.mp hC x).mp hyC) ((Set.ext_iff.mp hD x).mp hyD)
+  rw [← hC, ← hD, ← Set.preimage_union]
+  simp only [fibreCylinderContent_preimage]
+  exact measure_union hCD (measurableSet_finiteBaseFiber AS L H ω D')
+
+/-- The cylinder content, restricted to the cylinder algebra, is additive. -/
+noncomputable def fibreCylinderAddContent (ω : AS.Ω) :
+    AddContent ℝ≥0∞ (fibreCylinders AS L ω) :=
+  (isSetAlgebra_fibreCylinders AS L ω).isSetRing.addContent_of_union
+    (fibreCylinderContent AS L ω) (fibreCylinderContent_empty AS L ω)
+    (fibreCylinderContent_union AS L ω)
+
+/-- Compactness gives countable subadditivity of the cylinder content on cylinders. -/
+theorem fibreCylinderAddContent_isSigmaSubadditive (ω : AS.Ω) :
+    (fibreCylinderAddContent AS L ω).IsSigmaSubadditive := by
+  intro f hf huf
+  have hc : IsCompact (⋃ i, f i) := by
+    obtain ⟨F, B, hB⟩ := huf
+    rw [← hB]
+    exact isCompact_fibreCylinder AS L F ω B
+  have ho (i : ℕ) : IsOpen (f i) := by
+    obtain ⟨F, B, hB⟩ := hf i
+    rw [← hB]
+    exact (isClopen_fibreCylinder AS L F ω B).isOpen
+  obtain ⟨t, ht⟩ := hc.elim_finite_subcover f ho (by rfl)
+  have heq : (⋃ i, f i) = ⋃ i ∈ t, f i :=
+    le_antisymm ht (Set.iUnion₂_subset fun i _ ↦ Set.subset_iUnion f i)
+  calc
+    (fibreCylinderAddContent AS L ω) (⋃ i, f i) =
+        (fibreCylinderAddContent AS L ω) (⋃ i ∈ t, f i) := congrArg _ heq
+    _ ≤ ∑ i ∈ t, (fibreCylinderAddContent AS L ω) (f i) :=
+      addContent_biUnion_le (isSetAlgebra_fibreCylinders AS L ω).isSetRing (fun i _ ↦ hf i)
+    _ ≤ ∑' i, (fibreCylinderAddContent AS L ω) (f i) := ENNReal.sum_le_tsum t
+
+/-- The outer measure generated by the cylinder envelope is the extension of its content. -/
+theorem fibreCylinderOuterMeasure_eq_induced (ω : AS.Ω) :
+    OuterMeasure.ofFunction (fibreCylinderContent AS L ω) (fibreCylinderContent_empty AS L ω) =
+      inducedOuterMeasure
+        (fun A (_ : A ∈ fibreCylinders AS L ω) ↦ fibreCylinderAddContent AS L ω A)
+        (isSetAlgebra_fibreCylinders AS L ω).empty_mem addContent_empty := by
+  apply le_antisymm
+  · apply le_inducedOuterMeasure.mpr
+    intro A _
+    exact OuterMeasure.ofFunction_le A
+  · apply OuterMeasure.le_ofFunction.mpr
+    intro A
+    refine le_iInf fun F ↦ le_iInf fun B ↦ le_iInf fun hAB ↦ ?_
+    calc
+      _ ≤ inducedOuterMeasure
+          (fun A (_ : A ∈ fibreCylinders AS L ω) ↦ fibreCylinderAddContent AS L ω A)
+          (isSetAlgebra_fibreCylinders AS L ω).empty_mem addContent_empty
+          (projFiniteFiber F ω ⁻¹' B) := measure_mono hAB
+      _ ≤ fibreCylinderAddContent AS L ω (projFiniteFiber F ω ⁻¹' B) :=
+        le_inducedOuterMeasure.mp le_rfl _ ⟨F, B, rfl⟩
+      _ = _ := fibreCylinderContent_preimage AS L ω F B
+
+/-- The outer measure has the prescribed mass on each finite-stage cylinder. -/
+theorem fibreCylinderOuterMeasure_preimage (ω : AS.Ω) (F : FiniteIntermediateField K L)
+    (B : Set (FiniteBaseFiber L F ω)) :
+    OuterMeasure.ofFunction (fibreCylinderContent AS L ω) (fibreCylinderContent_empty AS L ω)
+        (projFiniteFiber F ω ⁻¹' B) =
+      ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω B := by
+  rw [fibreCylinderOuterMeasure_eq_induced AS L ω,
+    AddContent.inducedOuterMeasure_eq
+      (isSetAlgebra_fibreCylinders AS L ω).isSetRing.isSetSemiring
+      (fibreCylinderAddContent AS L ω) (fibreCylinderAddContent_isSigmaSubadditive AS L ω)
+      ⟨F, B, rfl⟩]
+  exact fibreCylinderContent_preimage AS L ω F B
+
+/-- The fibre σ-algebra consists of Carathéodory-measurable sets for the cylinder content. -/
+theorem fibreMeasurableSpace_le_caratheodory (ω : AS.Ω) :
+    fibreMeasurableSpace L ω ≤
+      (OuterMeasure.ofFunction (fibreCylinderContent AS L ω)
+        (fibreCylinderContent_empty AS L ω)).caratheodory := by
+  rw [fibreMeasurableSpace_eq_generateFrom AS L ω, fibreCylinderOuterMeasure_eq_induced AS L ω]
+  intro A hA
+  exact AddContent.isCaratheodory_inducedOuterMeasure
+    (isSetAlgebra_fibreCylinders AS L ω).isSetRing.isSetSemiring
+    (fibreCylinderAddContent AS L ω) A hA
+
 /-- Chen--Moriwaki, Proposition 3.4.6: the projective-limit fibre probability measure
 `P_{L,ω}` on the fibre `M_{L,ω}`, defined as the Carathéodory extension of the cylinder
 content: the outer measure generated by `fibreCylinderContent` (whose value on a countable
@@ -2051,14 +2454,33 @@ noncomputable def fibreProbabilityMeasure (ω : AS.Ω) :
     @Measure (BaseFiber L ω)
       (fibreMeasurableSpace L ω) :=
   letI : MeasurableSpace (BaseFiber L ω) := fibreMeasurableSpace L ω
-  (OuterMeasure.ofFunction (fibreCylinderContent AS L ω) (by sorry)).toMeasure (by sorry)
+  (OuterMeasure.ofFunction (fibreCylinderContent AS L ω)
+    (fibreCylinderContent_empty AS L ω)).toMeasure (fibreMeasurableSpace_le_caratheodory AS L ω)
+
+/-- The algebraic fibre measure has the prescribed mass on every finite-stage cylinder. -/
+theorem fibreProbabilityMeasure_preimage (ω : AS.Ω) (F : FiniteIntermediateField K L)
+    (B : Set (FiniteBaseFiber L F ω)) :
+    fibreProbabilityMeasure AS L ω (projFiniteFiber F ω ⁻¹' B) =
+      ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω B := by
+  let : MeasurableSpace (BaseFiber L ω) := fibreMeasurableSpace L ω
+  rw [fibreProbabilityMeasure, toMeasure_apply _ _
+    ((measurable_projFiniteFiber AS L ω F) (measurableSet_finiteBaseFiber AS L F ω B)),
+    fibreCylinderOuterMeasure_preimage AS L ω F B]
 
 /-- Chen--Moriwaki, Proposition 3.4.6: `P_{L,ω}` has total mass one. -/
 theorem fibreProbabilityMeasure_isProbability (ω : AS.Ω) :
     @IsProbabilityMeasure (BaseFiber L ω)
       (fibreMeasurableSpace L ω)
       (fibreProbabilityMeasure AS L ω) := by
-  sorry
+  let F : FiniteIntermediateField K L := FiniteIntermediateField.bot
+  have : IsProbabilityMeasure (ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω) :=
+    ParameterSpaceExtension.isProbabilityMeasure_fibreProbabilityMeasure AS
+      (separableClosure K F.1) ω
+  constructor
+  have h := fibreProbabilityMeasure_preimage AS L ω F Set.univ
+  simpa only [Set.preimage_univ, measure_univ] using h
+
+attribute [instance] fibreProbabilityMeasure_isProbability
 
 /-- Chen--Moriwaki, Proposition 3.4.6: the finite-stage marginals of `P_{L,ω}` are the
 prescribed finite fibre probability measures. -/
@@ -2068,14 +2490,27 @@ theorem map_fibreProbabilityMeasure_projFiniteFiber (ω : AS.Ω)
         (fibreMeasurableSpace L ω) inferInstance
         (projFiniteFiber F ω) (fibreProbabilityMeasure AS L ω) =
       ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω := by
-  sorry
+  let : MeasurableSpace (BaseFiber L ω) := fibreMeasurableSpace L ω
+  apply Measure.ext
+  intro B hB
+  rw [Measure.map_apply (measurable_projFiniteFiber AS L ω F) hB]
+  exact fibreProbabilityMeasure_preimage AS L ω F B
 
 /-- Chen--Moriwaki, Proposition 3.4.6, formula (3.17): integrating a cylinder function
 against `P_{L,ω}` computes its finite-stage fibre integral `I_{L/K,ω}`. -/
 theorem integral_fibreProbabilityMeasure_descend {ω : AS.Ω} {f : BaseFiber L ω → ℝ}
     (d : DescendsToFiniteFiber ω f) :
     ∫ x, f x ∂fibreProbabilityMeasure AS L ω = fibreCylinderIntegral d := by
-  sorry
+  let : MeasurableSpace (BaseFiber L ω) := fibreMeasurableSpace L ω
+  let := ParameterSpaceExtension.finite_extensionFiber AS (separableClosure K d.F.1) ω
+  calc
+    _ = ∫ x, d.g (projFiniteFiber d.F ω x) ∂fibreProbabilityMeasure AS L ω :=
+      integral_congr_ae (Filter.Eventually.of_forall (congrFun d.eq_comp))
+    _ = ∫ y, d.g y ∂Measure.map (projFiniteFiber d.F ω)
+        (fibreProbabilityMeasure AS L ω) :=
+      (integral_map (measurable_projFiniteFiber AS L ω d.F).aemeasurable
+        (measurable_of_countable d.g).aestronglyMeasurable).symm
+    _ = _ := by rw [map_fibreProbabilityMeasure_projFiniteFiber]; rfl
 
 /-- The fibre integral `I_{L/K}` for nonnegative functions, defined using the projective-limit
 probability measures `P_{L,ω}`. -/
@@ -2097,7 +2532,11 @@ noncomputable def fibreIntegral (f : ParameterSpaceExtension AS L → ℝ) : AS.
 `I_{L/K}(g ∘ π_{L/K}) = g`. -/
 theorem fibreIntegral_comp_proj (g : AS.Ω → ℝ) :
     fibreIntegral AS L (fun x ↦ g (ParameterSpaceExtension.proj x)) = g := by
-  sorry
+  funext ω
+  calc
+    _ = ∫ _ : BaseFiber L ω, g ω ∂fibreProbabilityMeasure AS L ω :=
+      integral_congr_ae (Filter.Eventually.of_forall fun x ↦ congrArg g x.property)
+    _ = g ω := by simp
 
 /-- Formula (3.19): on a function pulled back from a finite stage, the fibre integration
 operator computes the finite-stage fibre integral: `I_{L/K}(g ∘ π_{L/K''}) = I_{K''/K}(g)`. -/
@@ -2105,15 +2544,38 @@ theorem fibreIntegral_comp_projFinite (F : FiniteIntermediateField K L)
     (g : ParameterSpaceFinExtension AS F → ℝ) :
     fibreIntegral AS L (fun x ↦ g (projFinite AS F x)) =
       ParameterSpaceFinExtension.fibreIntegral AS F g := by
-  sorry
+  funext ω
+  exact integral_fibreProbabilityMeasure_descend AS L
+    ⟨F, fun y ↦ g y.val, rfl⟩
+
+/-- Nonnegative pullbacks from the base are constant on probability fibres. -/
+theorem fibreLIntegral_comp_proj (g : AS.Ω → ℝ≥0∞) :
+    fibreLIntegral AS L (fun x ↦ g (ParameterSpaceExtension.proj x)) = g := by
+  funext ω
+  calc
+    _ = ∫⁻ _ : BaseFiber L ω, g ω ∂fibreProbabilityMeasure AS L ω :=
+      lintegral_congr fun x ↦ congrArg g x.property
+    _ = g ω := by simp
+
+/-- Nonnegative finite-stage pullbacks integrate through the prescribed finite marginal. -/
+theorem fibreLIntegral_comp_projFinite (F : FiniteIntermediateField K L)
+    (g : ParameterSpaceFinExtension AS F → ℝ≥0∞) :
+    fibreLIntegral AS L (fun x ↦ g (projFinite AS F x)) =
+      ParameterSpaceExtension.fibreLIntegral AS (separableClosure K F.1) g := by
+  funext ω
+  let : MeasurableSpace (BaseFiber L ω) := fibreMeasurableSpace L ω
+  let := ParameterSpaceExtension.finite_extensionFiber AS (separableClosure K F.1) ω
+  have h := lintegral_map (μ := fibreProbabilityMeasure AS L ω)
+    (measurable_of_countable (fun y : FiniteBaseFiber L F ω ↦ g y.val))
+    (measurable_projFiniteFiber AS L ω F)
+  rw [map_fibreProbabilityMeasure_projFiniteFiber AS L ω F] at h
+  exact h.symm
 
 omit [Algebra.IsAlgebraic K L] in
-/-- Chen--Moriwaki, Proposition 3.4.8: a projectively measurable function restricts to an
-`A_{L,ω}`-measurable function on every fibre. -/
-theorem measurable_restrict_baseFiber {f : ParameterSpaceExtension AS L → ℝ≥0∞}
-    (hf : Measurable[projectiveMeasurableSpace AS L] f) (ω : AS.Ω) :
-    Measurable[fibreMeasurableSpace L ω] fun x : BaseFiber L ω ↦ f x.1 := by
-  apply hf.comp
+/-- The inclusion of a fibre into the projective parameter space is measurable. -/
+theorem measurable_subtype_val_baseFiber (ω : AS.Ω) :
+    @Measurable (BaseFiber L ω) (ParameterSpaceExtension AS L)
+      (fibreMeasurableSpace L ω) (projectiveMeasurableSpace AS L) Subtype.val := by
   apply Measurable.of_comap_le
   change MeasurableSpace.comap _ (⨆ F : FiniteIntermediateField K L, _) ≤ _
   rw [MeasurableSpace.comap_iSup]
@@ -2126,12 +2588,116 @@ theorem measurable_restrict_baseFiber {f : ParameterSpaceExtension AS L → ℝ�
   rw [MeasurableSpace.comap_comp] at h
   exact h
 
+omit [Algebra.IsAlgebraic K L] in
+/-- Chen--Moriwaki, Proposition 3.4.8: a projectively measurable function restricts to a
+measurable function on every fibre, for any measurable codomain. -/
+theorem measurable_restrict_baseFiber {Y : Type*} [MeasurableSpace Y]
+    {f : ParameterSpaceExtension AS L → Y}
+    (hf : Measurable[projectiveMeasurableSpace AS L] f) (ω : AS.Ω) :
+    Measurable[fibreMeasurableSpace L ω] fun x : BaseFiber L ω ↦ f x.1 :=
+  hf.comp (measurable_subtype_val_baseFiber AS L ω)
+
+variable {L} in
+omit [Algebra.IsAlgebraic K L] in
+theorem measurable_projFiniteOfLE {F G : FiniteIntermediateField K L} (hFG : F.1 ≤ G.1) :
+    Measurable (projFiniteOfLE AS hFG) := by
+  apply Measurable.of_comap_le
+  change MeasurableSpace.comap _ (_ ⊔ ⨆ a : separableClosure K F.1, _) ≤ _
+  rw [MeasurableSpace.comap_sup, MeasurableSpace.comap_iSup]
+  refine sup_le ?_ (iSup_le fun a ↦ ?_)
+  · rw [MeasurableSpace.comap_comp]
+    exact (ParameterSpaceExtension.measurable_proj AS (separableClosure K G.1)).comap_le
+  · rw [MeasurableSpace.comap_comp]
+    exact (ParameterSpaceExtension.measurable_eval AS (separableClosure K G.1)
+      (finiteSeparableInclusion hFG a)).comap_le
+
+/-- The fibre probabilities, pushed into the total parameter space, form a measurable
+family of probability measures. -/
+theorem measurable_map_fibreProbabilityMeasure :
+    @Measurable AS.Ω
+      (@Measure (ParameterSpaceExtension AS L) (projectiveMeasurableSpace AS L)) AS.A
+      (@Measure.instMeasurableSpace (ParameterSpaceExtension AS L) (projectiveMeasurableSpace AS L))
+      (fun ω ↦ @Measure.map (BaseFiber L ω) (ParameterSpaceExtension AS L)
+        (fibreMeasurableSpace L ω) (projectiveMeasurableSpace AS L)
+        Subtype.val (fibreProbabilityMeasure AS L ω)) := by
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  let μ (ω : AS.Ω) : Measure (ParameterSpaceExtension AS L) :=
+    @Measure.map (BaseFiber L ω) (ParameterSpaceExtension AS L)
+      (fibreMeasurableSpace L ω) (projectiveMeasurableSpace AS L)
+      Subtype.val (fibreProbabilityMeasure AS L ω)
+  let (ω : AS.Ω) : @IsProbabilityMeasure (BaseFiber L ω) (fibreMeasurableSpace L ω)
+      (fibreProbabilityMeasure AS L ω) := fibreProbabilityMeasure_isProbability AS L ω
+  let (ω : AS.Ω) : IsProbabilityMeasure (μ ω) :=
+    Measure.isProbabilityMeasure_map (measurable_subtype_val_baseFiber AS L ω).aemeasurable
+  let m (F : FiniteIntermediateField K L) :=
+    MeasurableSpace.comap (projFinite AS F) inferInstance
+  have hmono {F G : FiniteIntermediateField K L} (hFG : F.1 ≤ G.1) : m F ≤ m G := by
+    intro A hA
+    obtain ⟨B, hB, rfl⟩ := MeasurableSpace.measurableSet_comap.mp hA
+    apply MeasurableSpace.measurableSet_comap.mpr
+    refine ⟨projFiniteOfLE AS hFG ⁻¹' B,
+      hB.preimage (measurable_projFiniteOfLE AS hFG), ?_⟩
+    ext x
+    exact (congrArg (fun z ↦ z ∈ B) (projFiniteOfLE_projFinite AS hFG x)).to_iff
+  have hgen : (inferInstance : MeasurableSpace (ParameterSpaceExtension AS L)) =
+      MeasurableSpace.generateFrom (⋃ F, {A | @MeasurableSet _ (m F) A}) :=
+    (MeasurableSpace.generateFrom_iUnion_measurableSet m).symm
+  have hpi : IsPiSystem (⋃ F, {A | @MeasurableSet _ (m F) A}) := by
+    apply isPiSystem_iUnion_of_directed_le
+    · intro F A hA B hB _
+      exact @MeasurableSet.inter _ (m F) _ _ hA hB
+    · intro F G
+      refine ⟨FiniteIntermediateField.sup F G, ?_, ?_⟩
+      · exact hmono (FiniteIntermediateField.left_le_sup F G)
+      · exact hmono (FiniteIntermediateField.right_le_sup F G)
+  change Measurable μ
+  apply Measurable.measure_of_isPiSystem_of_isProbabilityMeasure hgen hpi
+  intro A hA
+  obtain ⟨F, hA⟩ := Set.mem_iUnion.mp hA
+  obtain ⟨B, hB, rfl⟩ := MeasurableSpace.measurableSet_comap.mp hA
+  have heq (ω : AS.Ω) :
+      μ ω (projFinite AS F ⁻¹' B) =
+        ParameterSpaceExtension.fibreLIntegral AS (separableClosure K F.1)
+          (B.indicator fun _ ↦ (1 : ℝ≥0∞)) ω := by
+    have hp : @Measurable (BaseFiber L ω) (FiniteBaseFiber L F ω)
+        (fibreMeasurableSpace L ω) inferInstance (projFiniteFiber F ω) :=
+      Measurable.of_comap_le (le_iSup
+        (fun G : FiniteIntermediateField K L ↦
+          MeasurableSpace.comap (projFiniteFiber G ω) inferInstance) F)
+    have hmarg : Measure.map (projFinite AS F) (μ ω) =
+        Measure.map Subtype.val (ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω) := by
+      rw [Measure.map_map (measurable_projFinite_projective AS L F)
+        (measurable_subtype_val_baseFiber AS L ω)]
+      have hcomp :
+          (projFinite AS F ∘ (Subtype.val : BaseFiber L ω → ParameterSpaceExtension AS L)) =
+          (Subtype.val : FiniteBaseFiber L F ω → ParameterSpaceFinExtension AS F) ∘
+            projFiniteFiber F ω := rfl
+      rw [hcomp, ← Measure.map_map measurable_subtype_coe hp,
+        map_fibreProbabilityMeasure_projFiniteFiber]
+    rw [← Measure.map_apply (measurable_projFinite_projective AS L F) hB, hmarg,
+      Measure.map_apply measurable_subtype_coe hB]
+    symm
+    change (∫⁻ x : FiniteBaseFiber L F ω, B.indicator (fun _ ↦ (1 : ℝ≥0∞)) x.val
+      ∂ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω) = _
+    have hind : (fun x : FiniteBaseFiber L F ω ↦ B.indicator (fun _ ↦ (1 : ℝ≥0∞)) x.val) =
+        (Subtype.val ⁻¹' B).indicator (fun _ : FiniteBaseFiber L F ω ↦ (1 : ℝ≥0∞)) := rfl
+    rw [hind, lintegral_indicator_const (hB.preimage measurable_subtype_coe), one_mul]
+  simp_rw [heq]
+  exact ParameterSpaceExtension.measurable_fibreLIntegral AS (separableClosure K F.1)
+    (measurable_const.indicator hB)
+
 /-- Proposition 3.4.8: fibre integration of a nonnegative projectively measurable function is
 measurable on the base. -/
 theorem measurable_fibreLIntegral {f : ParameterSpaceExtension AS L → ℝ≥0∞}
     (hf : Measurable[projectiveMeasurableSpace AS L] f) :
     Measurable (fibreLIntegral AS L f) := by
-  sorry
+  have hm := (Measure.measurable_lintegral hf).comp
+    (measurable_map_fibreProbabilityMeasure AS L)
+  convert hm using 1 <;> try rfl
+  funext ω
+  let : MeasurableSpace (BaseFiber L ω) := fibreMeasurableSpace L ω
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  exact (lintegral_map hf (measurable_subtype_val_baseFiber AS L ω)).symm
 
 /-- The measure `ν_L` on the projective-limit parameter space `Ω_L`, defined by the formula
 following Proposition 3.4.8:
@@ -2147,7 +2713,25 @@ noncomputable def measure :
       (by simp [fibreLIntegral])
       (by
         intro A hA hdisj
-        sorry)
+        let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+        have hind (s : Set (ParameterSpaceExtension AS L)) (hs : MeasurableSet s) (ω : AS.Ω) :
+            fibreLIntegral AS L (s.indicator fun _ ↦ 1) ω =
+              fibreProbabilityMeasure AS L ω (Subtype.val ⁻¹' s) := by
+          simp only [fibreLIntegral, ← Set.indicator_comp_right, Function.comp_def]
+          rw [lintegral_indicator_const (hs.preimage (measurable_subtype_val_baseFiber AS L ω))]
+          simp
+        have hpoint (ω : AS.Ω) :
+            fibreLIntegral AS L ((⋃ n, A n).indicator fun _ ↦ 1) ω =
+              ∑' n, fibreLIntegral AS L ((A n).indicator fun _ ↦ 1) ω := by
+          rw [hind _ (MeasurableSet.iUnion hA), Set.preimage_iUnion,
+            measure_iUnion (fun i j hij ↦ (hdisj hij).preimage Subtype.val)
+              (fun n ↦ (hA n).preimage (measurable_subtype_val_baseFiber AS L ω))]
+          congr 1
+          funext n
+          exact (hind _ (hA n) ω).symm
+        simp_rw [hpoint]
+        exact lintegral_tsum (fun n ↦
+          (measurable_fibreLIntegral AS L (measurable_const.indicator (hA n))).aemeasurable))
 
 /-- The defining formula for `ν_L`. -/
 theorem measure_apply {A : Set (ParameterSpaceExtension AS L)}
@@ -2166,7 +2750,34 @@ measurable functions through the fibre integration operator. -/
 theorem lintegral_measure {f : ParameterSpaceExtension AS L → ℝ≥0∞}
     (hf : Measurable[projectiveMeasurableSpace AS L] f) :
     ∫⁻ x, f x ∂measure AS L = ∫⁻ ω, fibreLIntegral AS L f ω ∂AS.v := by
-  sorry
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  refine Measurable.ennreal_induction
+    (motive := fun f ↦ (∫⁻ x, f x ∂measure AS L) =
+      ∫⁻ ω, fibreLIntegral AS L f ω ∂AS.v) ?_ ?_ ?_ hf
+  · intro c s hs
+    rw [lintegral_indicator_const hs, measure_apply AS L hs,
+      ← lintegral_const_mul c (measurable_fibreLIntegral AS L (measurable_const.indicator hs))]
+    apply lintegral_congr
+    intro ω
+    simp only [fibreLIntegral, ← Set.indicator_comp_right, Function.comp_def]
+    rw [lintegral_indicator_const (hs.preimage (measurable_subtype_val_baseFiber AS L ω)),
+      lintegral_indicator_const (hs.preimage (measurable_subtype_val_baseFiber AS L ω)), one_mul]
+  · intro f g _ hf hg ihf ihg
+    simp only [Pi.add_apply]
+    rw [lintegral_add_left hf, ihf, ihg,
+      ← lintegral_add_left (measurable_fibreLIntegral AS L hf)]
+    apply lintegral_congr
+    intro ω
+    exact (lintegral_add_left (measurable_restrict_baseFiber AS L hf ω) _).symm
+  · intro f hf hmono ih
+    rw [lintegral_iSup hf hmono]
+    simp_rw [ih]
+    rw [← lintegral_iSup (fun n ↦ measurable_fibreLIntegral AS L (hf n))
+      (fun n m h ω ↦ lintegral_mono fun x ↦ hmono h x.val)]
+    apply lintegral_congr
+    intro ω
+    exact (lintegral_iSup (fun n ↦ measurable_restrict_baseFiber AS L (hf n) ω)
+      (fun n m h x ↦ hmono h x.val)).symm
 
 /-- Chen--Moriwaki, Proposition 3.4.9: a projectively measurable function is `ν_L`-integrable
 if and only if the fibre integral of its absolute value — computed in `[0, +∞]`, as in the
@@ -2176,49 +2787,345 @@ theorem integrable_measure_iff {f : ParameterSpaceExtension AS L → ℝ}
     (hf : Measurable[projectiveMeasurableSpace AS L] f) :
     Integrable[projectiveMeasurableSpace AS L] f (measure AS L) ↔
       ∫⁻ ω, fibreLIntegral AS L (fun x ↦ ENNReal.ofReal |f x|) ω ∂AS.v < ∞ := by
-  sorry
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  have habs : Measurable (fun x ↦ |f x|) := by
+    simpa only [Real.norm_eq_abs] using hf.norm
+  rw [← integrable_norm_iff hf.aestronglyMeasurable]
+  simp only [Real.norm_eq_abs]
+  rw [← lintegral_ofReal_ne_top_iff_integrable habs.aestronglyMeasurable
+    (Filter.Eventually.of_forall fun x ↦ abs_nonneg (f x)),
+    lintegral_measure AS L habs.ennreal_ofReal]
+  exact lt_top_iff_ne_top.symm
 
-/-- Chen--Moriwaki, Proposition 3.4.9: fibre integration is a contraction from
-`L¹(Ω_L, ν_L)` to `L¹(Ω_K, ν_K)`; this is the continuity of the operator `I_{L/K}`. -/
-theorem integral_abs_fibreIntegral_le {f : ParameterSpaceExtension AS L → ℝ}
+/-- An almost everywhere property holds almost everywhere on almost every algebraic fibre. -/
+theorem ae_ae_fibre_of_ae {p : ParameterSpaceExtension AS L → Prop}
+    (hp : ∀ᵐ x ∂measure AS L, p x) :
+    ∀ᵐ ω ∂AS.v, ∀ᵐ x ∂fibreProbabilityMeasure AS L ω, p x.val := by
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  obtain ⟨N, hsub, hN, hzero⟩ := exists_measurable_superset_of_null (ae_iff.mp hp)
+  rw [measure_apply AS L hN] at hzero
+  have h := (lintegral_eq_zero_iff
+    (measurable_fibreLIntegral AS L (measurable_const.indicator hN))).mp hzero
+  filter_upwards [h] with ω hω
+  apply ae_iff.mpr
+  apply measure_mono_null (t := Subtype.val ⁻¹' N) (fun x hx ↦ hsub hx)
+  change fibreProbabilityMeasure AS L ω (Subtype.val ⁻¹' N) = 0
+  simpa only [fibreLIntegral, ← Set.indicator_comp_right, Function.comp_def,
+    lintegral_indicator_const (hN.preimage (measurable_subtype_val_baseFiber AS L ω)), one_mul,
+    Pi.zero_apply] using hω
+
+/-- A globally null set has null intersection with almost every algebraic fibre. -/
+theorem ae_fibre_measure_preimage_eq_zero {N : Set (ParameterSpaceExtension AS L)}
+    (hN : measure AS L N = 0) :
+    ∀ᵐ ω ∂AS.v, fibreProbabilityMeasure AS L ω (Subtype.val ⁻¹' N) = 0 := by
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  have h : ∀ᵐ x ∂measure AS L, x ∉ N := by
+    simpa only [ae_iff, not_not, Set.ofPred_mem_eq] using hN
+  filter_upwards [ae_ae_fibre_of_ae AS L h] with ω hω
+  let : MeasurableSpace (BaseFiber L ω) := fibreMeasurableSpace L ω
+  simpa only [ae_iff, not_not, Set.preimage] using hω
+
+/-- The real integral of a nonnegative measurable function is the real value of its
+nonnegative integral. -/
+theorem fibreIntegral_eq_toReal_of_nonneg {f : ParameterSpaceExtension AS L → ℝ}
+    (hf : Measurable[projectiveMeasurableSpace AS L] f) (hpos : ∀ x, 0 ≤ f x)
+    (ω : AS.Ω) :
+    fibreIntegral AS L f ω =
+      (fibreLIntegral AS L (fun x ↦ ENNReal.ofReal (f x)) ω).toReal := by
+  exact integral_eq_lintegral_of_nonneg_ae
+    (Filter.Eventually.of_forall fun x ↦ hpos x.val)
+    (measurable_restrict_baseFiber AS L hf ω).aestronglyMeasurable
+
+/-- A measurable integrable function has integrable restrictions to almost every algebraic fibre. -/
+theorem integrable_fibre_ae_of_measurable {f : ParameterSpaceExtension AS L → ℝ}
+    (hf : Measurable[projectiveMeasurableSpace AS L] f)
+    (hi : Integrable[projectiveMeasurableSpace AS L] f (measure AS L)) :
+    ∀ᵐ ω ∂AS.v, Integrable (fun x : BaseFiber L ω ↦ f x.val)
+      (fibreProbabilityMeasure AS L ω) := by
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  have habs : Measurable (fun x ↦ ENNReal.ofReal |f x|) := by
+    simpa only [Real.norm_eq_abs] using hf.norm.ennreal_ofReal
+  have hfin := (integrable_measure_iff AS L hf).mp hi
+  filter_upwards [ae_lt_top (measurable_fibreLIntegral AS L habs) hfin.ne] with ω hω
+  let : MeasurableSpace (BaseFiber L ω) := fibreMeasurableSpace L ω
+  have hm := measurable_restrict_baseFiber AS L hf ω
+  rw [← integrable_norm_iff hm.aestronglyMeasurable]
+  simp only [Real.norm_eq_abs]
+  apply (lintegral_ofReal_ne_top_iff_integrable
+    (μ := fibreProbabilityMeasure AS L ω) (f := fun x : BaseFiber L ω ↦ |f x.val|)
+    (by simpa only [Real.norm_eq_abs] using hm.norm.aestronglyMeasurable)
+    (Filter.Eventually.of_forall fun x ↦ abs_nonneg (f x.val))).mp
+  exact hω.ne
+
+/-- The average of a nonnegative integrable function is integrable on the base. -/
+theorem integrable_fibreIntegral_of_nonneg {f : ParameterSpaceExtension AS L → ℝ}
+    (hf : Measurable[projectiveMeasurableSpace AS L] f) (hpos : ∀ x, 0 ≤ f x)
+    (hi : Integrable[projectiveMeasurableSpace AS L] f (measure AS L)) :
+    Integrable (fibreIntegral AS L f) AS.v := by
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  have hfin := (integrable_measure_iff AS L hf).mp hi
+  simp_rw [abs_of_nonneg (hpos _)] at hfin
+  have heq : fibreIntegral AS L f =
+      fun ω ↦ (fibreLIntegral AS L (fun x ↦ ENNReal.ofReal (f x)) ω).toReal :=
+    funext (fibreIntegral_eq_toReal_of_nonneg AS L hf hpos)
+  rw [heq]
+  exact integrable_toReal_of_lintegral_ne_top
+    (measurable_fibreLIntegral AS L hf.ennreal_ofReal).aemeasurable hfin.ne
+
+/-- Nonnegative integrable real functions satisfy the algebraic disintegration formula. -/
+theorem integral_measure_of_nonneg {f : ParameterSpaceExtension AS L → ℝ}
+    (hf : Measurable[projectiveMeasurableSpace AS L] f) (hpos : ∀ x, 0 ≤ f x)
+    (hi : Integrable[projectiveMeasurableSpace AS L] f (measure AS L)) :
+    ∫ x, f x ∂measure AS L = ∫ ω, fibreIntegral AS L f ω ∂AS.v := by
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  have hfin := (integrable_measure_iff AS L hf).mp hi
+  simp_rw [abs_of_nonneg (hpos _)] at hfin
+  have hm := measurable_fibreLIntegral AS L hf.ennreal_ofReal
+  have heq : fibreIntegral AS L f =
+      fun ω ↦ (fibreLIntegral AS L (fun x ↦ ENNReal.ofReal (f x)) ω).toReal :=
+    funext (fibreIntegral_eq_toReal_of_nonneg AS L hf hpos)
+  calc
+    _ = (∫⁻ ω, fibreLIntegral AS L (fun x ↦ ENNReal.ofReal (f x)) ω ∂AS.v).toReal := by
+      rw [integral_eq_lintegral_of_nonneg_ae (Filter.Eventually.of_forall hpos)
+        hf.aestronglyMeasurable, lintegral_measure AS L hf.ennreal_ofReal]
+    _ = _ := by
+      rw [heq, integral_eq_lintegral_of_nonneg_ae
+        (Filter.Eventually.of_forall fun _ ↦ ENNReal.toReal_nonneg)
+        hm.ennreal_toReal.aestronglyMeasurable]
+      congr 1
+      apply lintegral_congr_ae
+      filter_upwards [ae_lt_top hm hfin.ne] with ω hω
+      exact (ENNReal.ofReal_toReal hω.ne).symm
+
+theorem integrable_fibreIntegral_and_integral_of_measurable
+    {f : ParameterSpaceExtension AS L → ℝ}
+    (hf : Measurable[projectiveMeasurableSpace AS L] f)
+    (hi : Integrable[projectiveMeasurableSpace AS L] f (measure AS L)) :
+    Integrable (fibreIntegral AS L f) AS.v ∧
+      ∫ x, f x ∂measure AS L = ∫ ω, fibreIntegral AS L f ω ∂AS.v := by
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  let p := fun x ↦ max (f x) 0
+  let n := fun x ↦ max (-f x) 0
+  have hp : Measurable p := hf.max measurable_const
+  have hn : Measurable n := hf.neg.max measurable_const
+  have hip : Integrable p (measure AS L) := hi.pos_part
+  have hin : Integrable n (measure AS L) := hi.neg.pos_part
+  have hbp := integrable_fibreIntegral_of_nonneg AS L hp (fun _ ↦ le_max_right _ _) hip
+  have hbn := integrable_fibreIntegral_of_nonneg AS L hn (fun _ ↦ le_max_right _ _) hin
+  have hfsub : f = p - n := by
+    funext x
+    dsimp [p, n]
+    grind
+  have hsub : fibreIntegral AS L f =ᵐ[AS.v]
+      fun ω ↦ fibreIntegral AS L p ω - fibreIntegral AS L n ω := by
+    filter_upwards [integrable_fibre_ae_of_measurable AS L hp hip,
+      integrable_fibre_ae_of_measurable AS L hn hin] with ω hωp hωn
+    change (∫ x : BaseFiber L ω, f x.val ∂fibreProbabilityMeasure AS L ω) = _
+    rw [hfsub]
+    exact integral_sub hωp hωn
+  refine ⟨(hbp.sub hbn).congr hsub.symm, ?_⟩
+  rw [integral_congr_ae hsub, integral_sub hbp hbn,
+    ← integral_measure_of_nonneg AS L hp (fun _ ↦ le_max_right _ _) hip,
+    ← integral_measure_of_nonneg AS L hn (fun _ ↦ le_max_right _ _) hin, hfsub]
+  exact integral_sub hip hin
+
+/-- Integrable functions have integrable restrictions to almost every algebraic fibre. -/
+theorem integrable_fibre_ae {f : ParameterSpaceExtension AS L → ℝ}
     (hf : Integrable[projectiveMeasurableSpace AS L] f (measure AS L)) :
-    ∫ ω, |fibreIntegral AS L f ω| ∂AS.v ≤ ∫ x, |f x| ∂measure AS L := by
-  sorry
+    ∀ᵐ ω ∂AS.v, Integrable (fun x : BaseFiber L ω ↦ f x.val)
+      (fibreProbabilityMeasure AS L ω) := by
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  let g := hf.aestronglyMeasurable.mk f
+  have hfg : f =ᵐ[measure AS L] g := hf.aestronglyMeasurable.ae_eq_mk
+  have hg : Integrable g (measure AS L) := hf.congr hfg
+  have hgm : Measurable g := hf.aestronglyMeasurable.stronglyMeasurable_mk.measurable
+  filter_upwards [integrable_fibre_ae_of_measurable AS L hgm hg,
+    ae_ae_fibre_of_ae AS L hfg] with ω hω hfgω
+  let : MeasurableSpace (BaseFiber L ω) := fibreMeasurableSpace L ω
+  apply hω.congr
+  filter_upwards [hfgω] with x hx
+  exact hx.symm
 
-/-- Chen--Moriwaki, Proposition 3.4.9, formula (3.20): the projective-limit measure
-integrates integrable functions through the fibre integration operator. -/
+/-- Fibre averages of integrable functions are integrable on the base. -/
+theorem integrable_fibreIntegral {f : ParameterSpaceExtension AS L → ℝ}
+    (hf : Integrable[projectiveMeasurableSpace AS L] f (measure AS L)) :
+    Integrable (fibreIntegral AS L f) AS.v := by
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  let g := hf.aestronglyMeasurable.mk f
+  have hfg : f =ᵐ[measure AS L] g := hf.aestronglyMeasurable.ae_eq_mk
+  have hg : Integrable g (measure AS L) := hf.congr hfg
+  have hgm : Measurable g := hf.aestronglyMeasurable.stronglyMeasurable_mk.measurable
+  have hi := (integrable_fibreIntegral_and_integral_of_measurable AS L hgm hg).1
+  apply hi.congr
+  filter_upwards [ae_ae_fibre_of_ae AS L hfg] with ω hω
+  exact (integral_congr_ae hω).symm
+
+/-- Chen--Moriwaki, Proposition 3.4.9: algebraic disintegration for integrable real functions. -/
 theorem integral_measure {f : ParameterSpaceExtension AS L → ℝ}
     (hf : Integrable[projectiveMeasurableSpace AS L] f (measure AS L)) :
     ∫ x, f x ∂measure AS L = ∫ ω, fibreIntegral AS L f ω ∂AS.v := by
-  sorry
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  let g := hf.aestronglyMeasurable.mk f
+  have hfg : f =ᵐ[measure AS L] g := hf.aestronglyMeasurable.ae_eq_mk
+  have hg : Integrable g (measure AS L) := hf.congr hfg
+  have hgm : Measurable g := hf.aestronglyMeasurable.stronglyMeasurable_mk.measurable
+  have hfib : fibreIntegral AS L f =ᵐ[AS.v] fibreIntegral AS L g := by
+    filter_upwards [ae_ae_fibre_of_ae AS L hfg] with ω hω
+    exact integral_congr_ae hω
+  exact (integral_congr_ae hfg).trans
+    (((integrable_fibreIntegral_and_integral_of_measurable AS L hgm hg).2).trans
+      (integral_congr_ae hfib).symm)
+
+/-- Chen--Moriwaki, Proposition 3.4.9: algebraic fibre integration is an L1 contraction. -/
+theorem integral_abs_fibreIntegral_le {f : ParameterSpaceExtension AS L → ℝ}
+    (hf : Integrable[projectiveMeasurableSpace AS L] f (measure AS L)) :
+    ∫ ω, |fibreIntegral AS L f ω| ∂AS.v ≤ ∫ x, |f x| ∂measure AS L := by
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  have habs : Integrable (fun x ↦ |f x|) (measure AS L) := by
+    simpa only [Real.norm_eq_abs] using hf.norm
+  rw [integral_measure AS L habs]
+  apply integral_mono
+  · simpa only [Real.norm_eq_abs] using (integrable_fibreIntegral AS L hf).norm
+  · exact integrable_fibreIntegral AS L habs
+  · intro ω
+    let : MeasurableSpace (BaseFiber L ω) := fibreMeasurableSpace L ω
+    simpa only [fibreIntegral, Real.norm_eq_abs] using
+      norm_integral_le_integral_norm (μ := fibreProbabilityMeasure AS L ω)
+        (fun x : BaseFiber L ω ↦ f x.val)
+
+theorem ofReal_abs_fibreIntegral_le_fibreLIntegral_ae
+    {f : ParameterSpaceExtension AS L → ℝ}
+    (hf : Integrable[projectiveMeasurableSpace AS L] f (measure AS L)) :
+    ∀ᵐ ω ∂AS.v, ENNReal.ofReal |fibreIntegral AS L f ω| ≤
+      fibreLIntegral AS L (fun x ↦ ENNReal.ofReal |f x|) ω := by
+  filter_upwards [integrable_fibre_ae AS L hf] with ω hω
+  let : MeasurableSpace (BaseFiber L ω) := fibreMeasurableSpace L ω
+  have habs : Integrable (fun x : BaseFiber L ω ↦ |f x.val|)
+      (fibreProbabilityMeasure AS L ω) := by
+    simpa only [Real.norm_eq_abs] using hω.norm
+  calc
+    _ ≤ ENNReal.ofReal (fibreIntegral AS L (fun x ↦ |f x|) ω) := by
+      apply ENNReal.ofReal_le_ofReal
+      simpa only [fibreIntegral, Real.norm_eq_abs] using
+        norm_integral_le_integral_norm (μ := fibreProbabilityMeasure AS L ω)
+          (fun x : BaseFiber L ω ↦ f x.val)
+    _ = _ := ofReal_integral_eq_lintegral_ofReal habs
+      (Filter.Eventually.of_forall fun x ↦ abs_nonneg (f x.val))
+
+/-- The base projection preserves the algebraic extension measure. -/
+theorem map_measure_proj :
+    (letI : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+    Measure.map ParameterSpaceExtension.proj (measure AS L) = AS.v) := by
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  apply Measure.ext
+  intro s hs
+  rw [Measure.map_apply (measurable_proj_projective AS L) hs, measure_apply AS L
+    (hs.preimage (measurable_proj_projective AS L))]
+  have hconst (ω : AS.Ω) :
+      fibreLIntegral AS L ((ParameterSpaceExtension.proj ⁻¹' s).indicator fun _ ↦ 1) ω =
+        s.indicator (fun _ ↦ (1 : ℝ≥0∞)) ω := by
+    change (∫⁻ x : BaseFiber L ω,
+      (ParameterSpaceExtension.proj ⁻¹' s).indicator (fun _ ↦ (1 : ℝ≥0∞)) x.val
+        ∂fibreProbabilityMeasure AS L ω) = _
+    classical
+    simp only [Set.indicator, Set.mem_preimage]
+    simp_rw [show ∀ x : BaseFiber L ω, ParameterSpaceExtension.proj x.val = ω
+      from fun x ↦ x.property]
+    simp
+  simp_rw [hconst]
+  rw [lintegral_indicator_const hs, one_mul]
 
 /-- Formula (3.21): the pullback of a `ν_K`-integrable function along the base projection is
 `ν_L`-integrable. -/
 theorem integrable_comp_proj_measure {g : AS.Ω → ℝ} (hg : Integrable g AS.v) :
     Integrable[projectiveMeasurableSpace AS L]
       (fun x ↦ g (ParameterSpaceExtension.proj x)) (measure AS L) := by
-  sorry
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  exact (show MeasurePreserving ParameterSpaceExtension.proj (measure AS L) AS.v from
+    ⟨measurable_proj_projective AS L, map_measure_proj AS L⟩).integrable_comp_of_integrable hg
 
 /-- Formula (3.21): integrating a pullback from the base against `ν_L` is integrating
 against `ν_K`. -/
 theorem integral_comp_proj_measure {g : AS.Ω → ℝ} (hg : Integrable g AS.v) :
     ∫ x, g (ParameterSpaceExtension.proj x) ∂measure AS L = ∫ ω, g ω ∂AS.v := by
-  sorry
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  have hm : AEStronglyMeasurable g
+      (Measure.map (ParameterSpaceExtension.proj (AS := AS) (L := L)) (measure AS L)) := by
+    rw [map_measure_proj AS L]
+    exact hg.aestronglyMeasurable
+  have h := integral_map (measurable_proj_projective AS L).aemeasurable hm
+  rw [map_measure_proj AS L] at h
+  exact h.symm
+
+/-- Each finite-stage projection sends the algebraic extension measure to the finite
+extension measure. -/
+theorem map_measure_projFinite (F : FiniteIntermediateField K L) :
+    (let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+    Measure.map (projFinite AS F) (measure AS L) = ParameterSpaceFinExtension.measure AS F) := by
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  ext B hB
+  rw [Measure.map_apply (measurable_projFinite_projective AS L F) hB,
+    measure_apply AS L (hB.preimage (measurable_projFinite_projective AS L F))]
+  change _ = ParameterSpaceExtension.inducedMeasure AS (separableClosure K F.1) B
+  rw [ParameterSpaceExtension.inducedMeasure_apply AS (separableClosure K F.1) hB]
+  apply lintegral_congr
+  intro ω
+  let : MeasurableSpace (BaseFiber L ω) := fibreMeasurableSpace L ω
+  have hp : Measurable (projFiniteFiber F ω) :=
+    Measurable.of_comap_le (le_iSup
+      (fun G : FiniteIntermediateField K L ↦
+        MeasurableSpace.comap (projFiniteFiber G ω) inferInstance) F)
+  have hf : Measurable (fun y : FiniteBaseFiber L F ω ↦ B.indicator (fun _ ↦ (1 : ℝ≥0∞)) y.val) :=
+    (measurable_const.indicator hB).comp measurable_subtype_coe
+  change (∫⁻ x : BaseFiber L ω,
+    B.indicator (fun _ ↦ (1 : ℝ≥0∞)) (projFiniteFiber F ω x).val
+    ∂fibreProbabilityMeasure AS L ω) = _
+  rw [← lintegral_map hf hp, map_fibreProbabilityMeasure_projFiniteFiber]
+  rfl
+
+/-- Pullback from a finite stage preserves integrability. -/
+theorem integrable_comp_projFinite_measure (F : FiniteIntermediateField K L)
+    {g : ParameterSpaceFinExtension AS F → ℝ}
+    (hg : Integrable g (ParameterSpaceFinExtension.measure AS F)) :
+    Integrable[projectiveMeasurableSpace AS L] (fun x ↦ g (projFinite AS F x)) (measure AS L) := by
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  have hg' : Integrable g (Measure.map (projFinite AS F) (measure AS L)) := by
+    simpa only [map_measure_projFinite AS L F] using hg
+  exact hg'.comp_measurable (measurable_projFinite_projective AS L F)
+
+/-- Integration of an integrable pullback from a finite stage. -/
+theorem integral_comp_projFinite_measure (F : FiniteIntermediateField K L)
+    {g : ParameterSpaceFinExtension AS F → ℝ}
+    (hg : Integrable g (ParameterSpaceFinExtension.measure AS F)) :
+    ∫ x, g (projFinite AS F x) ∂measure AS L =
+      ∫ y, g y ∂ParameterSpaceFinExtension.measure AS F := by
+  let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
+  rw [← map_measure_projFinite AS L F] at hg ⊢
+  exact (integral_map (measurable_projFinite_projective AS L F).aemeasurable
+    hg.aestronglyMeasurable).symm
+
+/-- Pullback from a finite stage preserves the integral of the norm. -/
+theorem integral_norm_comp_projFinite_measure (F : FiniteIntermediateField K L)
+    {g : ParameterSpaceFinExtension AS F → ℝ}
+    (hg : Integrable g (ParameterSpaceFinExtension.measure AS F)) :
+    ∫ x, ‖g (projFinite AS F x)‖ ∂measure AS L =
+      ∫ y, ‖g y‖ ∂ParameterSpaceFinExtension.measure AS F :=
+  integral_comp_projFinite_measure AS L F hg.norm
 
 /-- Proposition 3.4.10: logarithmic evaluations are integrable for the projective-limit measure. -/
 theorem integrable_log_measure (a : L) (ha : a ≠ 0) :
     Integrable[projectiveMeasurableSpace AS L]
       (fun x : ParameterSpaceExtension AS L ↦ Real.log ((ParameterSpaceExtension.ϕ x) a))
       (measure (AS := AS) (L := L)) := by
-  sorry
-
-/-- The projection `π_{L/K}` sends the projective-limit measure to the base measure. -/
-theorem map_measure_proj :
-    (letI : MeasurableSpace (ParameterSpaceExtension AS L) :=
-      projectiveMeasurableSpace AS L
-    Measure.map ParameterSpaceExtension.proj
-      (measure AS L) = AS.v) := by
-  sorry
+  let F := ofElement (K := K) L a
+  let b : F := ⟨a, mem_ofElement L a⟩
+  have hb : b ≠ 0 := fun h ↦ ha (congrArg Subtype.val h)
+  convert integrable_comp_projFinite_measure AS L F
+    (ParameterSpaceFinExtension.integrable_log AS F b hb) using 1
+  funext x
+  exact congrArg Real.log (congrArg (fun w : AbsoluteValue F ℝ ↦ w b)
+    (ParameterSpaceFinExtension.extendAbsoluteValue_restriction (K := K) F
+      ((ParameterSpaceExtension.ϕ x).restriction F))).symm
 
 /-- Chen--Moriwaki, Definition 3.4.11: the concrete algebraic extension adelic structure
 `S ⊗_K L`. -/
@@ -2235,7 +3142,27 @@ noncomputable def _root_.ArakelovGeometry.AdelicStructure.algebraicExtension :
 proper. -/
 theorem isProper_algebraicExtension [AS.toAdelicCurve.IsProper] :
     (AS.algebraicExtension L).toAdelicCurve.IsProper := by
-  sorry
+  constructor
+  change ∀ a : L, a ≠ 0 →
+    ∫ x, Real.log (ParameterSpaceExtension.ϕ x a) ∂measure AS L = 0
+  intro a ha
+  let F := ofElement (K := K) L a
+  let b : F := ⟨a, mem_ofElement L a⟩
+  have hb : b ≠ 0 := fun h ↦ ha (congrArg Subtype.val h)
+  let : (AS.finiteExtension F).toAdelicCurve.IsProper :=
+    ParameterSpaceFinExtension.isProper_finiteExtension AS F
+  have hzero := AdelicCurve.IsProper.product_formula
+    (C := (AS.finiteExtension F).toAdelicCurve) b hb
+  change ∫ y, Real.log (ParameterSpaceFinExtension.ϕ AS F y b)
+    ∂ParameterSpaceFinExtension.measure AS F = 0 at hzero
+  rw [← integral_comp_projFinite_measure AS L F
+    (ParameterSpaceFinExtension.integrable_log AS F b hb)] at hzero
+  convert hzero using 1
+  congr 1
+  funext x
+  exact congrArg Real.log (congrArg (fun w : AbsoluteValue F ℝ ↦ w b)
+    (ParameterSpaceFinExtension.extendAbsoluteValue_restriction (K := K) F
+      ((ParameterSpaceExtension.ϕ x).restriction F))).symm
 
 end Algebraic
 

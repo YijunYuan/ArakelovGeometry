@@ -580,21 +580,41 @@ valid for every real-valued function.
 
 \begin{lemma}[Finite fibre marginals]
 \label{lem:finite-fibre-marginal}
-\source{chen-moriwaki-adelic:page-0206,chen-moriwaki-adelic:page-0207}
-\notready
-\uses{lem:finite-fibre-tower,lem:finite-fibre-sum}
-In a finite tower $K\subseteq F\subseteq L$, restriction
-$r:X_{L,\omega}\to X_{F,\omega}$ satisfies
-$r_*P_{L,\omega}=P_{F,\omega}$ and is surjective.
+\leanok
+\source{chen-moriwaki-adelic:page-0206,chen-moriwaki-adelic:page-0207,chen-moriwaki-adelic:page-0208}
+\uses{lem:weighted-embedding-pullback,lem:finite-fibre-sum,lem:finite-stage-transitions,lem:algebraic-absolute-value-extension}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.map_finiteFibreProbabilityMeasure_projFiniteFiberOfLE,ArakelovGeometry.AdelicStructure.Algebraic.surjective_projFiniteFiberOfLE}
+Let $F\subseteq G$ be finite intermediate fields of an extension $L/K$.
+For every base parameter $\omega$, restriction
+$r:X_{G,\omega}\to X_{F,\omega}$ satisfies
+$r_*P_{G,\omega}=P_{F,\omega}$ and is surjective.
+The fibres are realized using the separable parts of $F/K$ and $G/K$.
 \end{lemma}
 \begin{proof}
-For $B\subseteq X_{F,\omega}$ apply the finite nonnegative tower
-identity to $\mathbf1_{r^{-1}B}$. On the fibre over $x$, this function
-is constantly $\mathbf1_B(x)$, and its integral equals that constant
-because the fibre measure has mass one. Therefore
-$P_{L,\omega}(r^{-1}B)=P_{F,\omega}(B)$. All subsets of both fibres
-are measurable, so this is the desired pushforward equality.
-For a point $x\in X_{F,\omega}$ the right side at $B=\{x\}$ is
-its strictly positive degree weight. Thus $r^{-1}\{x\}$ cannot be
-empty, proving surjectivity.
+Write $F_0$ and $G_0$ for those separable parts and
+$i:F_0\hookrightarrow G_0$ for the induced embedding.
+The fibres are the sets of absolute values on $F_0$ and $G_0$
+extending $\phi_\omega$, and $r$ is pullback along $i$.
+Let $g:X_{F,\omega}\to\mathbb R$ be arbitrary. Extend it by zero
+to a function of all absolute values on $F_0$; its values outside
+$X_{F,\omega}$ will not enter the following sums.
+Lemma~\ref{lem:weighted-embedding-pullback} gives
+\[
+ [F_0:K]\sum_{y\in X_{G,\omega}}[(G_0)_y:K_\omega]\,g(r(y))
+ =[G_0:K]\sum_{x\in X_{F,\omega}}[(F_0)_x:K_\omega]\,g(x).
+\]
+Divide by the positive product $[F_0:K][G_0:K]$.
+The finite weighted-sum formula identifies the result as
+$\int g\circ r\,dP_{G,\omega}=\int g\,dP_{F,\omega}$.
+Every subset $B$ of the finite fibre is measurable. Applying this
+identity to $\mathbf1_B$ proves
+$P_{G,\omega}(r^{-1}B)=P_{F,\omega}(B)$, and hence the claimed
+pushforward equality.
+
+For surjectivity, let $x$ be an absolute value on $F_0$ extending
+$\phi_\omega$. Regard $G_0$ as an extension of $F_0$ through $i$.
+Lemma~\ref{lem:algebraic-absolute-value-extension} extends $x$ to an
+absolute value $y$ on $G_0$. Its restriction to $K$ is $\phi_\omega$
+because $i$ is a $K$-embedding. Thus $y\in X_{G,\omega}$ and
+$r(y)=x$.
 \end{proof}

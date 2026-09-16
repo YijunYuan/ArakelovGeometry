@@ -27,6 +27,7 @@ In a field extension it is denoted by $w|_K$.
 \end{definition}
 
 \begin{lemma}[Maps between completions]\label{lem:completion-embedding}
+\leanok
 \uses{def:absolute-value-restriction,lem:completion-nonarchimedean}
 \lean{AbsoluteValue.isometry_algebraMap_withAbs,AbsoluteValue.algebraCompletion,AbsoluteValue.algebraMap_completion_def,AbsoluteValue.isometry_algebraMap_completion,AbsoluteValue.norm_algebraMap_completion,AbsoluteValue.coe_smul_completion}
 An inclusion $(K,v)\subseteq(L,w)$ with $w|_K=v$ is isometric and extends
@@ -45,6 +46,7 @@ gives the asserted compatibility with scalar multiplication.
 
 \begin{lemma}[Completeness and the nonarchimedean property]
 \label{lem:completion-nonarchimedean}
+\leanok
 \lean{CauSeq.isComplete_completion,AbsoluteValue.isNonarchimedean_completion_iff}
 The completion $K_v$ is complete for its induced absolute value $\widehat v$.
 Moreover, $v$ is nonarchimedean if and only if $\widehat v$ is
@@ -259,6 +261,7 @@ the completion of $K\hookrightarrow L$.
 
 \begin{theorem}[Classification of complete archimedean fields]
 \label{thm:complete-archimedean}
+\leanok
 \source{chen-moriwaki-adelic:page-0203,chen-moriwaki-adelic:page-0204}
 \uses{lem:bounded-integers}
 \lean{AbsoluteValue.exists_ringEquiv_real_or_complex_of_complete}
@@ -307,6 +310,7 @@ then proves that the algebra isomorphism preserves $u$. Finally $v=u^s$.
 
 \begin{lemma}[Rational normalization at an archimedean place]
 \label{lem:archimedean-rational-normalization}
+\leanok
 \source{chen-moriwaki-adelic:page-0203,chen-moriwaki-adelic:page-0204}
 \uses{lem:completion-nonarchimedean,thm:complete-archimedean}
 \lean{AbsoluteValue.charZero_of_not_isNonarchimedean,AbsoluteValue.exists_rpow_eq_of_not_isNonarchimedean}
@@ -722,6 +726,69 @@ Sum this identity over the finite set $X_F$, and distribute the
 natural-number multiple over the sum.
 \end{proof}
 
+\begin{lemma}[Counting extensions of a field embedding]
+\label{lem:embedding-extension-count}
+\leanok
+\source{chen-moriwaki-adelic:page-0195,chen-moriwaki-adelic:page-0196}
+\lean{AlgHom.natCard_comp_eq_finrank}
+Let $K\subseteq F\subseteq L$ be a tower of fields with $L/F$ finite
+separable, let $C$ be an algebraically closed extension of $K$, and
+let $\tau:F\to C$ be a $K$-embedding. Then
+\[
+ \#\{\sigma\in\operatorname{Hom}_K(L,C):\sigma|_F=\tau\}=[L:F].
+\]
+\end{lemma}
+\begin{proof}
+View $C$ as an extension of $F$ by the embedding $\tau$.
+The maps in the displayed set are exactly the $F$-embeddings of $L$
+into this extension: their compatibility with $F$ says
+$\sigma(a)=\tau(a)$ for every $a\in F$, and then compatibility with
+$K$ follows because $\tau$ is a $K$-embedding.
+Since $L/F$ is finite separable and $C$ is algebraically closed,
+the number of these embeddings is $[L:F]$.
+\end{proof}
+
+\begin{lemma}[Weighted sums under an arbitrary field embedding]
+\label{lem:weighted-embedding-pullback}
+\leanok
+\source{chen-moriwaki-adelic:page-0195,chen-moriwaki-adelic:page-0196}
+\uses{lem:embedding-extension-count,lem:weighted-embedding-sums,lem:algebraic-absolute-value-extension}
+\lean{AbsoluteValue.finrank_nsmul_sum_localDegree_pullback}
+Let $F/K$ and $L/K$ be finite separable extensions and let
+$i:F\to L$ be a $K$-embedding. Fix an absolute value $v$ of $K$.
+Let $X_F$ and $X_L$ be the sets of its extensions to $F$ and $L$.
+For any additive commutative monoid $M$ and any function $\Phi$
+from the absolute values of $F$ to $M$,
+\[
+ [F:K]\sum_{w\in X_L}[L_w:K_v]\,\Phi(w\circ i)
+ =[L:K]\sum_{x\in X_F}[F_x:K_v]\,\Phi(x).
+\]
+Multiplication by each natural number means repeated addition.
+This formulation applies to isomorphic copies of intermediate
+fields as well as to inclusions.
+\end{lemma}
+\begin{proof}
+Extend $v$ to an absolute value $u$ on an algebraic closure $C$ of
+$K$. By Lemma~\ref{lem:weighted-embedding-sums}, the two weighted
+sums, before the outer multiples, are respectively
+\[
+ \sum_{\sigma\in\operatorname{Hom}_K(L,C)}
+       \Phi(u\circ\sigma\circ i)
+ \quad\hbox{and}\quad
+ \sum_{\tau\in\operatorname{Hom}_K(F,C)}\Phi(u\circ\tau).
+\]
+Regard $L$ as an extension of $F$ using $i$.
+It is finite separable: any polynomial separable over $K$ remains
+separable after extending its coefficients to $F$, and the minimal
+polynomial over $F$ divides such a polynomial.
+Partition $\operatorname{Hom}_K(L,C)$ by $\sigma\mapsto\sigma\circ i$.
+Each part over $\tau$ has $[L:F]$ elements by
+Lemma~\ref{lem:embedding-extension-count}; the summand is constant
+on it with value $\Phi(u\circ\tau)$.
+Thus the first displayed sum equals $[L:F]$ times the second.
+Multiplying by $[F:K]$ and using $[F:K][L:F]=[L:K]$ proves the claim.
+\end{proof}
+
 \begin{proposition}[Local factorization]\label{lem:local-factorization}
 \source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0202,chen-moriwaki-adelic:page-0205}
 \uses{lem:complete-extension,lem:completion-finite,def:local-degree}
@@ -805,6 +872,7 @@ values, is at most $[L:K]$.
 \end{proof}
 
 \begin{lemma}[Archimedean exponent]\label{lem:archimedean-bound}
+\leanok
 \source{chen-moriwaki-adelic:page-0202,chen-moriwaki-adelic:page-0203,chen-moriwaki-adelic:page-0204}
 \uses{def:adelic-structure,lem:archimedean-rational-normalization}
 \lean{ArakelovGeometry.AdelicStructure.Ωfin,ArakelovGeometry.AdelicStructure.Ωinf,ArakelovGeometry.AdelicStructure.κ,ArakelovGeometry.AdelicStructure.κ_mem_Icc,ArakelovGeometry.AdelicStructure.κ_eq_zero_iff,ArakelovGeometry.AdelicStructure.κ_def,ArakelovGeometry.AdelicStructure.measurableSet_Ωinf,ArakelovGeometry.AdelicStructure.measurable_κ,ArakelovGeometry.AdelicStructure.integrable_κ,ArakelovGeometry.AdelicCurve.κ,ArakelovGeometry.AdelicCurve.Ωinf,ArakelovGeometry.AdelicCurve.Ωfin}

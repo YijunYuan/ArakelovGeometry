@@ -5,37 +5,18 @@ Every project constant, including generated declarations, and every direct depen
 is recorded in `blueprint-coverage.json`. External constants remain library references.
 A mapped obligation is still open until its transitive axiom audit is clean.
 
-Project constants: 663; extension constants: 307; direct gaps: 21.
-Sorry-backed constants: 26; blueprint nodes: 246.
+Project constants: 730; extension constants: 368; direct gaps: 2.
+Sorry-backed constants: 2; blueprint nodes: 258.
 Unmapped extension constants: 0; unmapped gaps: 0.
 
 Unmapped project constants: 0; missing compiled dependency routes: 0.
-Unwritten mathematical blueprint nodes: 38.
+Unwritten mathematical blueprint nodes: 31.
 Changed or unrecorded inventory inputs: 0.
 
 | Gap | Source line | Declaration | Blueprint nodes |
 | --- | --- | --- | --- |
-| 1 | 2034 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderIntegral_congr` | lem:cylinder-integral-independent |
-| 2 | 2054 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure` | def:algebraic-fibre-probability |
-| 3 | 2054 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure` | def:algebraic-fibre-probability |
-| 4 | 2061 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure_isProbability` | prop:algebraic-fibre-marginals |
-| 5 | 2071 | `ArakelovGeometry.AdelicStructure.Algebraic.map_fibreProbabilityMeasure_projFiniteFiber` | prop:algebraic-fibre-marginals |
-| 6 | 2078 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_fibreProbabilityMeasure_descend` | lem:algebraic-cylinder-integral |
-| 7 | 2100 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_proj` | lem:algebraic-integral-pullback |
-| 8 | 2108 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_projFinite` | lem:algebraic-integral-pullback |
-| 9 | 2134 | `ArakelovGeometry.AdelicStructure.Algebraic.measurable_fibreLIntegral` | prop:algebraic-kernel-measurable |
-| 10 | 2150 | `ArakelovGeometry.AdelicStructure.Algebraic.measure` | def:algebraic-measure |
-| 11 | 2169 | `ArakelovGeometry.AdelicStructure.Algebraic.lintegral_measure` | prop:algebraic-lintegral |
-| 12 | 2179 | `ArakelovGeometry.AdelicStructure.Algebraic.integrable_measure_iff` | prop:algebraic-integrability |
-| 13 | 2186 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_abs_fibreIntegral_le` | prop:algebraic-signed-disintegration |
-| 14 | 2193 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_measure` | prop:algebraic-signed-disintegration |
-| 15 | 2200 | `ArakelovGeometry.AdelicStructure.Algebraic.integrable_comp_proj_measure` | prop:algebraic-base-pullback |
-| 16 | 2206 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_comp_proj_measure` | prop:algebraic-base-pullback |
-| 17 | 2213 | `ArakelovGeometry.AdelicStructure.Algebraic.integrable_log_measure` | prop:algebraic-log-integrable |
-| 18 | 2221 | `ArakelovGeometry.AdelicStructure.Algebraic.map_measure_proj` | lem:algebraic-base-pushforward |
-| 19 | 2238 | `ArakelovGeometry.AdelicStructure.Algebraic.isProper_algebraicExtension` | prop:algebraic-proper |
-| 20 | 2265 | `ArakelovGeometry.exists_equiv_finiteExtension_finiteExtension` | prop:finite-tower |
-| 21 | 2294 | `ArakelovGeometry.exists_equiv_algebraicExtension_algebraicExtension` | thm:algebraic-tower |
+| 1 | 3192 | `ArakelovGeometry.exists_equiv_finiteExtension_finiteExtension` | prop:finite-tower |
+| 2 | 3221 | `ArakelovGeometry.exists_equiv_algebraicExtension_algebraicExtension` | thm:algebraic-tower |
 
 All gap source lines are in `ArakelovGeometry/AdelicCurve/Extension.lean`.
 The machine-readable inventory also retains the prior chapters and examples,

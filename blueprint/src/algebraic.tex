@@ -182,6 +182,82 @@ Thus $p_F$ is measurable for the claimed $\sigma$-algebra. This holds
 for every $F$, which proves the reverse inclusion.
 \end{proof}
 
+\begin{lemma}[Compactness of extending absolute values by evaluation]
+\label{lem:compact-absolute-value-extensions}
+\leanok
+\lean{AbsoluteValue.isClosed_range_extensions,AbsoluteValue.finite_range_extensions_apply,AbsoluteValue.isCompact_range_extensions}
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0208,chen-moriwaki-adelic:page-0209}
+\uses{lem:finite-values-via-embeddings,lem:finite-stage-exhaustion}
+Let $L/K$ be algebraic and let $v$ be an absolute value on $K$.
+The set of functions $L\to\mathbb R$ arising from absolute values
+on $L$ extending $v$ is compact in the topology of pointwise convergence.
+For each $a\in L$, the set of possible values $w(a)$ is finite.
+\end{lemma}
+\begin{proof}
+Put $E=K(a)$. Restriction to $E$ shows that each value $w(a)$ comes
+from an absolute value on $E$ extending $v$. There are finitely many
+such values, because $E/K$ is finite and the extending absolute values
+form a finite set. Denote this finite subset of $\mathbb R$ by $T_a$.
+
+The set in question is closed in $\mathbb R^L$. Indeed, it is exactly
+the set of functions $f$ satisfying
+\[
+ \begin{gathered}
+ f(0)=0,\quad f(1)=1,\quad f(a)\geq0,\quad f(ab)=f(a)f(b),\\
+ f(a+b)\leq f(a)+f(b),\qquad f(c)=v(c)
+ \end{gathered}
+\]
+for all $a,b\in L$ and $c\in K$. Each condition defines a closed
+set by continuity of evaluations and of the real arithmetic operations.
+Conversely these conditions imply definiteness: if $a\ne0$, then
+$f(a)f(a^{-1})=f(1)=1$, so $f(a)\ne0$.
+They therefore define precisely an extending absolute value.
+All these functions belong to $\prod_{a\in L}T_a$, which is compact
+by Tychonoff's theorem. Their closed locus is compact.
+\end{proof}
+
+\begin{lemma}[Compact fibres and clopen cylinders]
+\label{lem:compact-evaluation-fibre}
+\leanok
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.instTopologicalSpaceBaseFiber,ArakelovGeometry.AdelicStructure.Algebraic.isEmbedding_fibreEval,ArakelovGeometry.AdelicStructure.Algebraic.instT2SpaceBaseFiber,ArakelovGeometry.AdelicStructure.Algebraic.instCompactSpaceBaseFiber,ArakelovGeometry.AdelicStructure.Algebraic.continuous_projFiniteFiber,ArakelovGeometry.AdelicStructure.Algebraic.isClopen_fibreCylinder,ArakelovGeometry.AdelicStructure.Algebraic.isCompact_fibreCylinder}
+\source{chen-moriwaki-adelic:page-0208,chen-moriwaki-adelic:page-0209}
+\uses{lem:compact-absolute-value-extensions,def:algebraic-projections,lem:finite-stage-discrete}
+Give $X_\omega$ the topology induced by all evaluations
+$x\mapsto |a|_x$ for $a\in L$. This topology is compact and Hausdorff.
+Every finite-stage fibre has the discrete evaluation topology, every
+restriction $p_{F,\omega}$ is continuous, and each cylinder
+$p_{F,\omega}^{-1}(B)$ is clopen and compact.
+\end{lemma}
+\begin{proof}
+The fixed base point identifies $X_\omega$ with the absolute values
+extending $|\cdot|_\omega$. The evaluation map is injective, so its
+induced topology is Hausdorff, and the preceding lemma makes it compact.
+For a finite stage, evaluations again give an injective map into a
+Hausdorff space. A finite Hausdorff space is discrete: each singleton
+is the intersection of the complements of all other singletons.
+Evaluating a restricted absolute value is evaluating the original
+absolute value at the corresponding element of $L$. Thus all finite
+restriction maps are continuous for the induced evaluation topologies.
+Their target spaces are finite discrete, so inverse images of subsets
+are clopen. Closed subsets of a compact space are compact.
+\end{proof}
+
+\begin{lemma}[Surjectivity on finite-stage fibres]\label{lem:finite-fibre-projection-surjective}
+\leanok
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.surjective_projFiniteFiber}
+\uses{prop:algebraic-restriction-surjective,lem:inseparable-extension-unique,def:algebraic-projections,def:finite-parameters}
+\source{chen-moriwaki-adelic:page-0208}
+Every projection $p_{F,\omega}:X_\omega\to X_{F,\omega}$ is surjective.
+\end{lemma}
+\begin{proof}
+A point of $X_{F,\omega}$ gives an absolute value on the separable part
+of $F/K$ extending $|\cdot|_\omega$. Extend it uniquely across the
+purely inseparable extension to $F$, then extend that absolute value to
+the algebraic extension $L/F$. The resulting value on $L$ still
+restricts to $|\cdot|_\omega$ on $K$, and its projection is the given
+point of the finite-stage fibre.
+\end{proof}
+
 \begin{lemma}[Compact inverse-limit fibres]\label{lem:compact-algebraic-fibre}\notready
 \uses{def:algebraic-projections,lem:finite-stage-exhaustion,lem:finite-stage-discrete,lem:restriction-transitive,prop:algebraic-restriction-surjective}
 \source{chen-moriwaki-adelic:page-0208,chen-moriwaki-adelic:page-0209}
@@ -256,6 +332,7 @@ Represent the function by the same constant function at the stage $K$.
 \end{proof}
 
 \begin{definition}[Integral of a fibre cylinder]\label{def:cylinder-integral}
+\leanok
 \uses{def:algebraic-cylinders,def:finite-fibre-integral}
 \source{chen-moriwaki-adelic:page-0208}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderIntegral}
@@ -267,7 +344,8 @@ Every such integral is finite, since the fibre is finite.
 \end{definition}
 
 \begin{lemma}[Independence of the cylinder presentation]\label{lem:cylinder-integral-independent}
-\uses{def:cylinder-integral,lem:finite-fibre-marginal,prop:algebraic-restriction-surjective,lem:finite-stage-exhaustion}
+\leanok
+\uses{def:cylinder-integral,lem:finite-fibre-marginal,lem:finite-fibre-projection-surjective,lem:finite-stage-exhaustion}
 \source{chen-moriwaki-adelic:page-0208,chen-moriwaki-adelic:page-0209}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderIntegral_congr}
 If $f=g\circ p_{F,\omega}=h\circ p_{G,\omega}$, then
@@ -297,60 +375,98 @@ on $1$ follow from the corresponding properties of a finite probability
 integral.
 \end{proof}
 
-\begin{lemma}[Cylinder premeasure]\label{lem:cylinder-premeasure}\notready
-\uses{lem:cylinder-functional,lem:cylinder-algebra,lem:compact-algebraic-fibre}
+\begin{lemma}[Algebra of cylinder sets]\label{lem:fibre-cylinder-set-algebra}
+\leanok
+\uses{def:projective-measurable,lem:finite-stage-exhaustion,lem:finite-stage-transitions,lem:finite-stage-discrete}
 \source{chen-moriwaki-adelic:page-0209}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinders,ArakelovGeometry.AdelicStructure.Algebraic.isSetAlgebra_fibreCylinders,ArakelovGeometry.AdelicStructure.Algebraic.fibreMeasurableSpace_eq_generateFrom,ArakelovGeometry.AdelicStructure.Algebraic.measurable_projFiniteFiber}
 The cylinders $\mathcal D_\omega=\{p_{F,\omega}^{-1}(B)\}$ form an
-algebra of sets. The prescription
-$p_\omega(p_{F,\omega}^{-1}(B))=P_{F,\omega}(B)$ is a probability
-premeasure on this algebra.
+algebra of sets and generate $\mathcal A_{L,\omega}$.
 \end{lemma}
 \begin{proof}
-Complements are taken at the same stage; finite unions and intersections
-are taken after passage to a common stage. Independence of presentation
-follows by applying Lemma~\ref{lem:cylinder-integral-independent} to
-indicators. Finite additivity, positivity, and total mass one follow from
-Lemma~\ref{lem:cylinder-functional}. Suppose disjoint cylinders $C_n$
-have a cylinder union $C$.
-They form an open cover of the compact set $C$, so finitely many cover
-$C$. Every other $C_n$ is empty by disjointness. Finite additivity
-therefore gives $p_\omega(C)=\sum_n p_\omega(C_n)$.
+The empty set is represented at the stage $K$. Complements are taken
+at the same stage. To form a union, pass to the compositum of the two
+stages and take the union of the two pulled-back subsets there.
+Transitivity of the projections identifies its pullback with the
+desired union. Since every subset of each finite-stage fibre is
+measurable, making all finite-stage projections measurable is exactly
+the requirement that every cylinder be measurable. This proves the
+assertion about the generated $\sigma$-algebra.
 \end{proof}
 
 \begin{definition}[Cylinder content and outer measure]\label{def:cylinder-content}
-\uses{lem:cylinder-premeasure}
+\leanok
+\uses{lem:fibre-cylinder-set-algebra,def:finite-fibre-integral}
 \source{chen-moriwaki-adelic:page-0209}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderContent}
 For any $A\subseteq X_\omega$, define
 \[
- c_\omega(A)=\inf_{A\subseteq C\in\mathcal D_\omega}p_\omega(C),
+ c_\omega(A)=\inf_{A\subseteq p_{F,\omega}^{-1}(B)}P_{F,\omega}(B),
  \qquad
  \mu_\omega^*(A)=\inf_{A\subseteq\bigcup_n A_n}\sum_n c_\omega(A_n).
 \]
-The second infimum runs over all countable covers by arbitrary subsets.
+The first infimum runs over all finite stages and all subsets of their
+fibres; the second runs over all countable covers by arbitrary subsets.
 These formulas give a concrete realization of the Carath\'eodory
 construction used in Proposition 3.4.6.
 \end{definition}
 
-\begin{lemma}[Outer measure of cylinders]\label{lem:cylinder-outer-measure}\notready
-\uses{def:cylinder-content,lem:compact-algebraic-fibre,lem:cylinder-premeasure}
+\begin{lemma}[Cylinder premeasure]\label{lem:cylinder-premeasure}
+\leanok
+\uses{def:cylinder-content,lem:fibre-cylinder-set-algebra,lem:finite-fibre-marginal,lem:finite-fibre-projection-surjective,lem:compact-evaluation-fibre}
+\source{chen-moriwaki-adelic:page-0209}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderContent_empty,ArakelovGeometry.AdelicStructure.Algebraic.finiteFibreProbabilityMeasure_le_of_preimage_subset,ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderContent_preimage,ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderContent_union,ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderAddContent,ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderAddContent_isSigmaSubadditive}
+The restriction $p_\omega$ of $c_\omega$ to $\mathcal D_\omega$ is a
+probability premeasure, with
+$p_\omega(p_{F,\omega}^{-1}(B))=P_{F,\omega}(B)$.
+For any sequence of cylinders whose union is a cylinder, one has
+$p_\omega(\bigcup_n C_n)\leq\sum_n p_\omega(C_n)$.
+\end{lemma}
+\begin{proof}
+Suppose $p_{F,\omega}^{-1}(B)\subseteq p_{G,\omega}^{-1}(D)$.
+Pass to $H=FG$. Surjectivity of $p_{H,\omega}$ implies that the
+pullback of $B$ in $X_{H,\omega}$ is contained in the pullback of $D$.
+Monotonicity and finite marginal compatibility give
+$P_{F,\omega}(B)\leq P_{G,\omega}(D)$. Taking the infimum over
+cylinder supersets, and then using the cylinder itself as a superset,
+proves $c_\omega(p_{F,\omega}^{-1}(B))=P_{F,\omega}(B)$.
+In particular $c_\omega(\varnothing)=0$ and
+$c_\omega(X_\omega)=1$.
+
+For two disjoint cylinders, pass to a common stage. Surjectivity makes
+their representing subsets disjoint; the additivity of the finite-stage
+measure therefore proves finite additivity. If cylinders $C_n$ have
+cylinder union $C$, they form an open cover of the compact set $C$.
+A finite subcover and finite subadditivity give
+$p_\omega(C)\leq\sum_n p_\omega(C_n)$.
+When the $C_n$ are disjoint, every term outside a finite subcover is
+empty. Finite additivity then gives the asserted countable additivity.
+\end{proof}
+
+\begin{lemma}[Outer measure of cylinders]\label{lem:cylinder-outer-measure}
+\leanok
+\uses{def:cylinder-content,lem:compact-evaluation-fibre,lem:cylinder-premeasure}
+\source{chen-moriwaki-adelic:page-0209}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderOuterMeasure_eq_induced,ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderOuterMeasure_preimage,ArakelovGeometry.AdelicStructure.Algebraic.fibreMeasurableSpace_le_caratheodory}
 One has $c_\omega(\varnothing)=0$. Moreover $\mu_\omega^*$ equals
 the infimum of $\sum_n p_\omega(C_n)$ over countable cylinder covers,
 every cylinder is Carath\'eodory measurable, and
 $\mu_\omega^*(C)=p_\omega(C)$ for $C\in\mathcal D_\omega$.
 \end{lemma}
 \begin{proof}
-The empty cylinder proves the first assertion. Monotonicity of the
-premeasure gives $c_\omega(C)=p_\omega(C)$ on cylinders. Thus arbitrary
-covers give an infimum no larger than cylinder covers. Conversely, for
-an arbitrary cover $(A_n)$ with finite total content and $\varepsilon>0$,
-choose a cylinder $C_n\supseteq A_n$ with
-$p_\omega(C_n)<c_\omega(A_n)+\varepsilon 2^{-n-1}$. Such a choice
-exists by the definition of infimum; all contents are at most $1$.
-Then $\sum_n p_\omega(C_n)\le\sum_n c_\omega(A_n)+\varepsilon$.
-If the total content is infinite the desired inequality is automatic.
-Taking infima and then $\varepsilon\downarrow0$ proves equality of
-the two outer-measure formulas.
+The empty cylinder proves the first assertion. Let $\nu^*$ be the
+infimum over countable cylinder covers. The countable-cover construction
+is the largest outer measure bounded above by its assigned costs: if an
+outer measure is bounded by each cost, its countable subadditivity
+bounds it by every cover sum and hence by their infimum.
+The preceding lemma gives $c_\omega(C)=p_\omega(C)$ on cylinders.
+Since $\mu_\omega^*(C)\leq c_\omega(C)$, the maximality just proved
+gives $\mu_\omega^*\leq\nu^*$. Conversely, for any $A\subseteq C$
+with $C$ a cylinder, monotonicity gives
+$\nu^*(A)\leq\nu^*(C)\leq p_\omega(C)$. Taking the infimum over
+$C$ gives $\nu^*(A)\leq c_\omega(A)$, and maximality for the
+arbitrary-set cover construction gives $\nu^*\leq\mu_\omega^*$.
+Thus the two outer measures agree.
 
 If cylinders $C_n$ cover a cylinder $C$, compactness gives a finite
 subcover, and finite subadditivity gives
@@ -368,6 +484,7 @@ Carath\'eodory equality. Thus every cylinder is measurable.
 \end{proof}
 
 \begin{definition}[Projective fibre probability]\label{def:algebraic-fibre-probability}
+\leanok
 \uses{lem:cylinder-outer-measure,def:projective-measurable}
 \source{chen-moriwaki-adelic:page-0209}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure}
@@ -378,9 +495,10 @@ cylinder generators.
 \end{definition}
 
 \begin{proposition}[Probability and finite marginals]\label{prop:algebraic-fibre-marginals}
+\leanok
 \uses{def:algebraic-fibre-probability,lem:cylinder-outer-measure}
 \source{chen-moriwaki-adelic:page-0209}
-\lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure_isProbability,ArakelovGeometry.AdelicStructure.Algebraic.map_fibreProbabilityMeasure_projFiniteFiber}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure_preimage,ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure_isProbability,ArakelovGeometry.AdelicStructure.Algebraic.map_fibreProbabilityMeasure_projFiniteFiber}
 $P_{L,\omega}(X_\omega)=1$ and
 $(p_{F,\omega})_*P_{L,\omega}=P_{F,\omega}$ for every finite stage $F$.
 \end{proposition}
@@ -405,6 +523,7 @@ makes them agree on the generated $\sigma$-algebra.
 \end{proof}
 
 \begin{lemma}[Integrals of fibre cylinders]\label{lem:algebraic-cylinder-integral}
+\leanok
 \uses{prop:algebraic-fibre-marginals,def:cylinder-integral,lem:finite-stage-discrete}
 \source{chen-moriwaki-adelic:page-0209}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.integral_fibreProbabilityMeasure_descend}
@@ -419,6 +538,7 @@ $\sum_{y\in X_{F,\omega}}g(y)P_{F,\omega}(\{y\})$ on both sides.
 \end{proof}
 
 \begin{definition}[Algebraic fibre integration]\label{def:algebraic-fibre-integral}
+\leanok
 \uses{def:algebraic-fibre-probability}
 \source{chen-moriwaki-adelic:page-0209,chen-moriwaki-adelic:page-0210}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreLIntegral,ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral}
@@ -431,6 +551,7 @@ hypotheses under which it agrees with ordinary integration.
 \end{definition}
 
 \begin{lemma}[Integration of pullbacks]\label{lem:algebraic-integral-pullback}
+\leanok
 \uses{def:algebraic-fibre-integral,lem:algebraic-cylinder-integral,prop:algebraic-fibre-marginals}
 \source{chen-moriwaki-adelic:page-0209,chen-moriwaki-adelic:page-0211}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_proj,ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_projFinite}
@@ -447,8 +568,10 @@ on a finite fibre is measurable and integrable.
 \end{proof}
 
 \begin{lemma}[Nonnegative integration of pullbacks]\label{lem:algebraic-lintegral-pullback}
-\uses{def:algebraic-fibre-integral,prop:algebraic-fibre-marginals,lem:finite-stage-discrete}\notready
+\leanok
+\uses{def:algebraic-fibre-integral,prop:algebraic-fibre-marginals,lem:finite-stage-discrete}
 \source{chen-moriwaki-adelic:page-0209,chen-moriwaki-adelic:page-0211}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreLIntegral_comp_proj,ArakelovGeometry.AdelicStructure.Algebraic.fibreLIntegral_comp_projFinite}
 For every $g:\Omega\to[0,\infty]$, $I^+_{L/K}(g\circ\pi_{L/K})=g$.
 For every finite stage $F$ and every $h:\Omega_F\to[0,\infty]$,
 $I^+_{L/K}(h\circ p_F)=I^+_{F/K}h$.
@@ -466,10 +589,10 @@ since every restriction to a finite fibre is measurable.
 \leanok
 \uses{def:projective-measurable,def:algebraic-projections}
 \source{chen-moriwaki-adelic:page-0210}
-\lean{ArakelovGeometry.AdelicStructure.Algebraic.measurable_restrict_baseFiber}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.measurable_subtype_val_baseFiber,ArakelovGeometry.AdelicStructure.Algebraic.measurable_restrict_baseFiber}
 The inclusion $X_\omega\to\Omega_L$ is measurable. In particular any
-$\mathcal A_L$-measurable nonnegative function restricts to an
-$\mathcal A_{L,\omega}$-measurable function.
+$\mathcal A_L$-measurable function with values in a measurable space
+restricts to an $\mathcal A_{L,\omega}$-measurable function.
 \end{lemma}
 \begin{proof}
 The inverse image of a generating set $p_F^{-1}(B)$ is
@@ -481,29 +604,76 @@ for the generated $\sigma$-algebra. Composition proves the assertion
 for functions.
 \end{proof}
 
+\begin{lemma}[Measurable finite-stage transitions]\label{lem:finite-stage-transitions-measurable}
+\leanok
+\uses{lem:finite-stage-transitions,lem:finite-measurable-space}
+\source{chen-moriwaki-adelic:page-0208,chen-moriwaki-adelic:page-0210}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.measurable_projFiniteOfLE}
+For finite intermediate fields $F\subseteq G$, the transition
+$p_{G/F}:\Omega_G\to\Omega_F$ is measurable.
+\end{lemma}
+\begin{proof}
+The measurable structure on $\Omega_F$ is generated by its base
+coordinate and the absolute-value evaluations of elements of
+$F_{\mathrm{sep}}$. The transition preserves the base coordinate.
+For $a\in F_{\mathrm{sep}}$, its evaluation after transition is the
+evaluation of its image in $G_{\mathrm{sep}}$. Both types of functions
+are measurable on $\Omega_G$, proving the assertion.
+\end{proof}
+
+\begin{lemma}[Measurable family of fibre probabilities]\label{lem:algebraic-measurable-probability-family}
+\leanok
+\uses{lem:algebraic-fibre-measurable,lem:finite-stage-transitions-measurable,prop:algebraic-fibre-marginals,lem:finite-kernel-measurable,lem:finite-stage-exhaustion,lem:projective-evaluations}
+\source{chen-moriwaki-adelic:page-0210}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.measurable_map_fibreProbabilityMeasure}
+Let $i_\omega:X_\omega\to\Omega_L$ denote inclusion and set
+$\kappa_\omega=(i_\omega)_*P_{L,\omega}$. Then $\kappa_\omega$
+is a probability measure on $(\Omega_L,\mathcal A_L)$, and for every
+$A\in\mathcal A_L$, the function $\omega\mapsto\kappa_\omega(A)$
+is measurable.
+\end{lemma}
+\begin{proof}
+The inclusion is measurable and preserves total mass under pushforward,
+so $\kappa_\omega$ is a probability. For a measurable finite-stage
+cylinder $A=p_F^{-1}(B)$, commutation of the projections and the finite
+marginal formula give
+\[
+ \kappa_\omega(A)=P_{F,\omega}(B\cap X_{F,\omega})
+ =I^+_{F/K}(\mathbf1_B)(\omega),
+\]
+which is measurable by finite-kernel measurability. These cylinders
+form a $\pi$-system: two finite stages embed in their finite compositum,
+and measurable transitions express their intersection at that common
+stage. They generate $\mathcal A_L$ by its definition.
+The measurable sets $A$ for which $\omega\mapsto\kappa_\omega(A)$
+is measurable form a Dynkin system. The total space has value $1$;
+the complement of $A$ has value $1-\kappa_\omega(A)$; a disjoint
+countable union has the pointwise sum of the corresponding values.
+These operations preserve measurability, since all individual
+probabilities are finite. The $\pi$-$\lambda$ theorem completes the proof.
+\end{proof}
+
 \begin{proposition}[Measurability of fibre integration]\label{prop:algebraic-kernel-measurable}
-\uses{lem:algebraic-fibre-measurable,lem:algebraic-lintegral-pullback,lem:finite-kernel-measurable,lem:finite-stage-exhaustion}
+\leanok
+\uses{lem:algebraic-fibre-measurable,lem:algebraic-measurable-probability-family,def:algebraic-fibre-integral}
 \source{chen-moriwaki-adelic:page-0210}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.measurable_fibreLIntegral}
 If $f:\Omega_L\to[0,\infty]$ is $\mathcal A_L$-measurable, then
 $I^+_{L/K}f$ is $\mathcal A$-measurable.
 \end{proposition}
 \begin{proof}
-Let $\mathcal H$ consist of measurable sets $B\subseteq\Omega_L$
-for which $\omega\mapsto P_{L,\omega}(B\cap X_\omega)$ is measurable.
-It contains all measurable cylinders by the finite marginal formula
-and finite-kernel measurability. It is a Dynkin system: the total
-space has value $1$, complements have value $1$ minus the original
-probability, and disjoint countable unions have the sum of the
-probabilities. The measurable cylinders form a $\pi$-system, because
-two stages have a common finite upper bound. They generate
-$\mathcal A_L$, so the $\pi$-$\lambda$ theorem gives every measurable
-set in $\mathcal H$. Nonnegative simple functions follow by finite
-linear combinations, and general $f$ by increasing simple
-approximation and monotone convergence on each fibre.
+Write $\kappa_\omega=(i_\omega)_*P_{L,\omega}$ as in
+Lemma~\ref{lem:algebraic-measurable-probability-family}. Integrals of
+nonnegative measurable simple functions against $\kappa_\omega$
+are measurable functions of $\omega$, by finite sums of measurable
+evaluations $\kappa_\omega(A)$. Increasing simple approximation and
+monotone convergence give measurability of $\omega\mapsto\int f\,d\kappa_\omega$.
+The pushforward integral formula identifies this with
+$\int_{X_\omega}f\circ i_\omega\,dP_{L,\omega}=I^+_{L/K}f(\omega)$.
 \end{proof}
 
 \begin{definition}[Measure on the algebraic extension]\label{def:algebraic-measure}
+\leanok
 \uses{prop:algebraic-kernel-measurable}
 \source{chen-moriwaki-adelic:page-0210}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.measure,ArakelovGeometry.AdelicStructure.Algebraic.measure_apply}
@@ -523,6 +693,7 @@ of the partial sums under $\nu$ proves countable additivity.
 \end{proof}
 
 \begin{proposition}[Nonnegative disintegration]\label{prop:algebraic-lintegral}
+\leanok
 \uses{def:algebraic-measure,prop:algebraic-kernel-measurable}
 \source{chen-moriwaki-adelic:page-0210}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.lintegral_measure}
@@ -541,6 +712,7 @@ the value $+\infty$.
 \end{proof}
 
 \begin{proposition}[Integrability criterion]\label{prop:algebraic-integrability}
+\leanok
 \uses{prop:algebraic-lintegral}
 \source{chen-moriwaki-adelic:page-0210,chen-moriwaki-adelic:page-0211}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.integrable_measure_iff}
@@ -556,6 +728,82 @@ For measurable real $f$, integrability is precisely finiteness of its
 nonnegative absolute-value integral. Apply
 Proposition~\ref{prop:algebraic-lintegral} to $|f|$. In particular,
 finiteness is asserted before converting any integral to a real number.
+\end{proof}
+
+\begin{lemma}[Almost everywhere statements on algebraic fibres]\label{lem:algebraic-ae-fibres}
+\leanok
+\source{chen-moriwaki-adelic:page-0210,chen-moriwaki-adelic:page-0211}
+\uses{def:algebraic-measure,prop:algebraic-kernel-measurable,lem:algebraic-fibre-measurable}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.ae_ae_fibre_of_ae,ArakelovGeometry.AdelicStructure.Algebraic.ae_fibre_measure_preimage_eq_zero}
+If a property holds for $\nu_L$-almost every point, it holds
+$P_{L,\omega}$-almost everywhere on $X_\omega$ for $\nu$-almost every
+$\omega$. In particular, every $\nu_L$-null set has null intersection
+with almost every fibre.
+\end{lemma}
+\begin{proof}
+Enclose the exceptional set in a measurable null set $N$.
+The defining measure formula gives
+$\int_\Omega P_{L,\omega}(N\cap X_\omega)\,d\nu(\omega)=0$.
+The integrand is nonnegative and measurable, so it vanishes almost
+everywhere. On each such fibre, the exceptional subset of $N$ is null
+by monotonicity. Applying this to the property of lying outside a
+given null set proves the last assertion.
+\end{proof}
+
+\begin{lemma}[Almost everywhere integrability on fibres]\label{lem:algebraic-measurable-fibre-integrable}
+\leanok
+\source{chen-moriwaki-adelic:page-0210,chen-moriwaki-adelic:page-0211}
+\uses{prop:algebraic-integrability,prop:algebraic-kernel-measurable,lem:algebraic-fibre-measurable}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.integrable_fibre_ae_of_measurable}
+If $f$ is measurable and $\nu_L$-integrable, its restriction to
+$X_\omega$ is $P_{L,\omega}$-integrable for $\nu$-almost every $\omega$.
+\end{lemma}
+\begin{proof}
+The criterion gives $\int_\Omega I^+_{L/K}|f|\,d\nu<\infty$.
+Thus $I^+_{L/K}|f|(\omega)<\infty$ almost everywhere. The restriction
+of $f$ is measurable on every fibre; at the indicated base points
+its absolute-value integral is finite, which is precisely integrability.
+\end{proof}
+
+\begin{lemma}[Nonnegative real fibre averages]\label{lem:algebraic-nonnegative-real-average}
+\leanok
+\source{chen-moriwaki-adelic:page-0210,chen-moriwaki-adelic:page-0211}
+\uses{prop:algebraic-integrability,prop:algebraic-lintegral,prop:algebraic-kernel-measurable,lem:algebraic-fibre-measurable}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_eq_toReal_of_nonneg,ArakelovGeometry.AdelicStructure.Algebraic.integrable_fibreIntegral_of_nonneg,ArakelovGeometry.AdelicStructure.Algebraic.integral_measure_of_nonneg}
+For nonnegative measurable real $f$, its real fibre integral is the
+real value of $I^+_{L/K}f$ whenever that value is finite. If the
+nonnegative integral is infinite, the totalized real integral is zero.
+If in addition $f$ is $\nu_L$-integrable, then $I_{L/K}f$ is integrable
+on $\Omega$ and
+$\int_{\Omega_L}f\,d\nu_L=\int_\Omega I_{L/K}f\,d\nu$.
+\end{lemma}
+\begin{proof}
+On a fibre with finite nonnegative integral, the ordinary real integral
+equals that value. On a fibre with infinite integral, the nonnegative
+function is not integrable and its totalized real integral is zero.
+If $f$ is globally integrable, nonnegative disintegration shows that
+$I^+_{L/K}f$ has finite integral on the base. It is therefore finite
+almost everywhere, and its real value is integrable with the same
+integral. Discarding the null set where it is infinite proves the
+stated real integration formula.
+\end{proof}
+
+\begin{lemma}[Signed integration for measurable functions]\label{lem:algebraic-measurable-signed-disintegration}
+\leanok
+\source{chen-moriwaki-adelic:page-0211}
+\uses{lem:algebraic-nonnegative-real-average,lem:algebraic-measurable-fibre-integrable}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.integrable_fibreIntegral_and_integral_of_measurable}
+If $f$ is measurable and $\nu_L$-integrable, then $I_{L/K}f$ is
+$\nu$-integrable and
+$\int_{\Omega_L}f\,d\nu_L=\int_\Omega I_{L/K}f\,d\nu$.
+\end{lemma}
+\begin{proof}
+Write $f=f^+-f^-$, where both parts are nonnegative, measurable and
+integrable. The preceding lemma applies to each part. Their fibre
+restrictions are integrable outside the union of two null sets.
+There integral subtraction gives $I_{L/K}f=I_{L/K}f^+-I_{L/K}f^-$.
+The difference is integrable on the base. Integrating this equality
+and subtracting the two nonnegative integration formulas proves the result.
 \end{proof}
 
 \begin{lemma}[Null sets and measurable representatives]\label{lem:algebraic-null-disintegration}\notready
@@ -578,9 +826,10 @@ contain the fibre exceptional sets, proving the claim.
 \end{proof}
 
 \begin{lemma}[Integrability of signed fibre averages]\label{lem:algebraic-signed-integrability}
-\uses{prop:algebraic-integrability,prop:algebraic-kernel-measurable,lem:algebraic-null-disintegration}
+\leanok
+\uses{prop:algebraic-integrability,prop:algebraic-kernel-measurable,lem:algebraic-ae-fibres,lem:algebraic-measurable-signed-disintegration}
 \source{chen-moriwaki-adelic:page-0211}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.integrable_fibre_ae,ArakelovGeometry.AdelicStructure.Algebraic.integrable_fibreIntegral,ArakelovGeometry.AdelicStructure.Algebraic.ofReal_abs_fibreIntegral_le_fibreLIntegral_ae}
 For $\nu_L$-integrable real $f$, its fibre restriction is integrable
 for $\nu$-almost every $\omega$, the function $I_{L/K}f$ is
 $\nu$-integrable, and $|I_{L/K}f|\le I^+_{L/K}|f|$ almost everywhere.
@@ -594,14 +843,16 @@ $|I_{L/K}f|\le A$. Define the displayed difference where $A<\infty$
 and zero elsewhere. It is a measurable representative of $I_{L/K}f$,
 and domination by $A$ proves integrability and the asserted bound.
 
-For general integrable $f$, choose the representative from
-Lemma~\ref{lem:algebraic-null-disintegration}. Its fibre integrals
-equal those of $f$ almost everywhere; its global integral and absolute
-integral also equal those of $f$. All assertions therefore transfer.
+For general integrable $f$, choose a measurable representative equal
+to $f$ almost everywhere. Lemma~\ref{lem:algebraic-ae-fibres} makes
+their restrictions equal almost everywhere on almost every fibre.
+Their fibre integrals, global integrals and absolute integrals therefore
+agree almost everywhere, so all assertions transfer.
 \end{proof}
 
 \begin{proposition}[Signed disintegration and contraction bound]\label{prop:algebraic-signed-disintegration}
-\uses{lem:algebraic-signed-integrability,prop:algebraic-lintegral,lem:algebraic-null-disintegration}
+\leanok
+\uses{lem:algebraic-signed-integrability,prop:algebraic-lintegral,lem:algebraic-ae-fibres,lem:algebraic-measurable-signed-disintegration}
 \source{chen-moriwaki-adelic:page-0211}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.integral_abs_fibreIntegral_le,ArakelovGeometry.AdelicStructure.Algebraic.integral_measure}
 For $\nu_L$-integrable real $f$,
@@ -617,7 +868,7 @@ Lemma~\ref{lem:algebraic-signed-integrability} and apply nonnegative
 disintegration to $|f|$. Apply the same disintegration to $f^+$ and
 $f^-$, whose integrals are finite, and subtract to obtain the second
 identity. For general integrable $f$, use its measurable representative
-and Lemma~\ref{lem:algebraic-null-disintegration}; both global and fibre
+and Lemma~\ref{lem:algebraic-ae-fibres}; both global and fibre
 integrals are unchanged almost everywhere.
 \end{proof}
 
@@ -636,9 +887,10 @@ on the remaining fibres proves linearity in $L^1$.
 \end{proof}
 
 \begin{lemma}[Finite-stage pushforward]\label{lem:algebraic-measure-marginals}
+\leanok
 \uses{def:algebraic-measure,prop:algebraic-fibre-marginals,thm:finite-lintegral,lem:projective-evaluations}
 \source{chen-moriwaki-adelic:page-0211}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.map_measure_projFinite}
 For every finite stage $F$, $(p_F)_*\nu_L=\nu_F$.
 \end{lemma}
 \begin{proof}
@@ -653,6 +905,7 @@ Measurability of $p_F$ identifies the left side with its pushforward.
 \end{proof}
 
 \begin{lemma}[Base pushforward]\label{lem:algebraic-base-pushforward}
+\leanok
 \uses{def:algebraic-measure,prop:algebraic-fibre-marginals,lem:projective-evaluations}
 \source{chen-moriwaki-adelic:page-0211}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.map_measure_proj}
@@ -665,6 +918,7 @@ therefore gives $\nu_L(\pi^{-1}B)=\nu(B)$.
 \end{proof}
 
 \begin{proposition}[Pullback of integrable functions]\label{prop:algebraic-base-pullback}
+\leanok
 \uses{lem:algebraic-base-pushforward,prop:algebraic-signed-disintegration,lem:algebraic-integral-pullback}
 \source{chen-moriwaki-adelic:page-0211}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.integrable_comp_proj_measure,ArakelovGeometry.AdelicStructure.Algebraic.integral_comp_proj_measure}
@@ -681,9 +935,13 @@ and negative parts proves equality of signed integrals.
 \end{proof}
 
 \begin{lemma}[Finite-stage pullback on $L^1$]\label{lem:algebraic-finite-pullback}
-\uses{lem:algebraic-measure-marginals}\notready
-For a finite stage $F$, pullback along $p_F$ preserves integrability,
-the integral, and the $L^1$ norm of real functions.
+\leanok
+\uses{lem:algebraic-measure-marginals}
+\source{chen-moriwaki-adelic:page-0211}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.integrable_comp_projFinite_measure,ArakelovGeometry.AdelicStructure.Algebraic.integral_comp_projFinite_measure,ArakelovGeometry.AdelicStructure.Algebraic.integral_norm_comp_projFinite_measure}
+For a finite stage $F$ and a real $\nu_F$-integrable function $g$,
+the pullback $g\circ p_F$ is $\nu_L$-integrable, its integral equals
+$\int g\,d\nu_F$, and its $L^1$ norm equals $\int |g|\,d\nu_F$.
 \end{lemma}
 \begin{proof}
 The identity $(p_F)_*\nu_L=\nu_F$ gives equality of the nonnegative
@@ -695,6 +953,7 @@ positive and negative integral equalities proves the signed assertion.
 \end{proof}
 
 \begin{proposition}[Integrable logarithmic evaluations]\label{prop:algebraic-log-integrable}
+\leanok
 \uses{lem:finite-stage-exhaustion,lem:finite-log-integrable,lem:algebraic-finite-pullback}
 \source{chen-moriwaki-adelic:page-0211}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.integrable_log_measure}
@@ -709,6 +968,7 @@ Lemma~\ref{lem:algebraic-finite-pullback} proves its integrability.
 \end{proof}
 
 \begin{definition}[Algebraic extension of an adelic structure]\label{def:algebraic-extension}
+\leanok
 \uses{def:adelic-structure,def:algebraic-measure,lem:projective-evaluations,prop:algebraic-log-integrable}
 \source{chen-moriwaki-adelic:page-0212}
 \lean{ArakelovGeometry.AdelicStructure.algebraicExtension}
@@ -719,6 +979,7 @@ make this an adelic structure.
 \end{definition}
 
 \begin{proposition}[Preservation of properness]\label{prop:algebraic-proper}
+\leanok
 \uses{def:algebraic-extension,prop:finite-proper,lem:algebraic-finite-pullback}
 \source{chen-moriwaki-adelic:page-0211}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.isProper_algebraicExtension}
