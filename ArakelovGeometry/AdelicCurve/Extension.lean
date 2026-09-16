@@ -10,15 +10,18 @@ import Mathlib.Analysis.MeanInequalitiesPow
 import Mathlib.Analysis.SpecificLimits.Normed
 import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
+import Mathlib.FieldTheory.Normal.Basic
 import Mathlib.FieldTheory.SeparableClosure
 import Mathlib.FieldTheory.PurelyInseparable.Basic
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.LinearAlgebra.Vandermonde
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
 import Mathlib.MeasureTheory.Measure.Dirac
 import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
 import Mathlib.RingTheory.Norm.Defs
+import Mathlib.RingTheory.Trace.Basic
 
 
 /-!
@@ -308,6 +311,38 @@ theorem restrictOfLE_restrict {F G : IntermediateField K L} (hFG : F ≤ G)
 
 end ParameterSpaceExtension
 
+variable (K) in
+/-- The power sums of the embeddings of a finite separable extension are traces. -/
+theorem sum_pow_embeddings_eq_trace {E : Type*} [Field E] [Algebra K E]
+    [FiniteDimensional K E] [Algebra.IsSeparable K E] (b : E) (N : ℕ) :
+    (∑ σ : E →ₐ[K] AlgebraicClosure K, (σ b) ^ N) =
+      algebraMap K (AlgebraicClosure K) (Algebra.trace K E (b ^ N)) := by
+  simpa only [map_pow] using (trace_eq_sum_embeddings (AlgebraicClosure K)
+    (x := b ^ N)).symm
+
+variable (K) in
+/-- Every embedding of a simple subextension of an algebraic closure extends to an
+automorphism of the algebraic closure. -/
+theorem adjoin_restrict_aut_surjective (c : AlgebraicClosure K) :
+    Function.Surjective (fun τ : AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K ↦
+      τ.toAlgHom.comp (IntermediateField.adjoin K {c}).val) := by
+  intro σ
+  let f := σ.liftNormal (AlgebraicClosure K)
+  let e := AlgEquiv.ofBijective f (AlgHom.normal_bijective K (AlgebraicClosure K)
+    (AlgebraicClosure K) f)
+  refine ⟨e, ?_⟩
+  ext x
+  exact σ.liftNormal_commutes (AlgebraicClosure K) x
+
+variable (K) in
+/-- Embeddings of a simple extension are determined by the image of its generator. -/
+theorem adjoin_embeddings_gen_injective (c : AlgebraicClosure K) :
+    Function.Injective (fun σ : (IntermediateField.adjoin K {c}) →ₐ[K] AlgebraicClosure K ↦
+      σ (IntermediateField.AdjoinSimple.gen K c)) := by
+  intro σ τ h
+  apply (IntermediateField.adjoin.powerBasis (Algebra.IsIntegral.isIntegral c)).algHom_ext
+  simpa only [IntermediateField.adjoin.powerBasis_gen] using h
+
 /-- Chen--Moriwaki, Lemma 3.3.5(2): given any choice of extensions of the base absolute
 values to an algebraic closure of `K`, the maximal absolute value on the Galois orbit of a
 separable element is a measurable function of the base point. -/
@@ -315,7 +350,53 @@ theorem measurable_iSup_abv_aut (s : AS.Ω → ParameterSpaceExtension AS (Algeb
     (hs : ∀ ω, (s ω).proj = ω) {c : AlgebraicClosure K} (hc : IsSeparable K c) :
     Measurable fun ω : AS.Ω ↦
       ⨆ τ : AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K, (s ω).ϕ (τ c) := by
-  sorry
+ classical
+  let E := IntermediateField.adjoin K {c}
+  let : FiniteDimensional K E := IntermediateField.adjoin.finiteDimensional hc.isIntegral
+  let : Algebra.IsSeparable K E :=
+    (IntermediateField.isSeparable_adjoin_simple_iff_isSeparable K (AlgebraicClosure K)).mpr hc
+  let e : Fin (Module.finrank K E) ≃ (E →ₐ[K] AlgebraicClosure K) :=
+    (Fintype.equivFinOfCardEq (AlgHom.card K E (AlgebraicClosure K))).symm
+  let b : E := IntermediateField.AdjoinSimple.gen K c
+  let α (i : Fin (Module.finrank K E)) := e i b
+  have hα : Function.Injective α := (adjoin_embeddings_gen_injective K c).comp e.injective
+  have hd : 1 ≤ Module.finrank K E := Module.finrank_pos
+  have hsum (N : ℕ) : (∑ i, α i ^ N) =
+      algebraMap K (AlgebraicClosure K) (Algebra.trace K E (b ^ N)) := by
+    calc
+      _ = ∑ σ : E →ₐ[K] AlgebraicClosure K, σ b ^ N :=
+        Fintype.sum_equiv e _ _ (fun _ ↦ rfl)
+      _ = _ := sum_pow_embeddings_eq_trace K b N
+  have hrest (ω : AS.Ω) (a : K) :
+      (s ω).ϕ (algebraMap K (AlgebraicClosure K) a) = AS.ϕ ω a := by
+    have h := (ParameterSpaceExtension.ϕ_restriction AS (AlgebraicClosure K) (s ω)).trans
+      (congrArg AS.ϕ (hs ω))
+    exact congrArg (fun v : AbsoluteValue K ℝ ↦ v a) h
+  have heq (ω : AS.Ω) :
+      (⨆ τ : AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K, (s ω).ϕ (τ c)) =
+        Filter.limsup (fun N : ℕ ↦
+          (AS.ϕ ω (Algebra.trace K E (b ^ N))) ^ ((N : ℝ)⁻¹)) Filter.atTop := by
+    calc
+      _ = ⨆ σ : E →ₐ[K] AlgebraicClosure K, (s ω).ϕ (σ b) :=
+        (adjoin_restrict_aut_surjective K c).iSup_comp _
+      _ = ⨆ i, (s ω).ϕ (α i) := e.iSup_comp.symm
+      _ = _ := by
+        rw [(s ω).ϕ.iSup_eq_limsup_sum_pow_rpow hd hα]
+        simp_rw [hsum, hrest]
+  simp_rw [heq]
+  apply Measurable.limsup
+  intro N
+  apply Measurable.pow_const
+  let a := Algebra.trace K E (b ^ N)
+  change Measurable fun ω ↦ AS.ϕ ω a
+  by_cases ha : a = 0
+  · simp only [ha, map_zero]
+    exact measurable_const
+  · have heval : (fun ω ↦ AS.ϕ ω a) = fun ω ↦ Real.exp (Real.log (AS.ϕ ω a)) := by
+      funext ω
+      exact (Real.exp_log ((AS.ϕ ω).pos ha)).symm
+    rw [heval]
+    exact (AS.measurable_log a ha).exp
 
 /-- The filtered indexing type `E_{L/K}` of finite subextensions of an algebraic extension
 `L/K`. -/
@@ -481,6 +562,30 @@ theorem measurable_fibreIntegral {f : ParameterSpaceExtension AS L → ℝ} (hf 
     Measurable (fibreIntegral AS L f) := by
   sorry
 
+/-- Nonnegative measurable functions have measurable fibre integrals. -/
+theorem measurable_fibreLIntegral {f : ParameterSpaceExtension AS L → ℝ≥0∞}
+    (hf : Measurable f) : Measurable (fibreLIntegral AS L f) := by
+  refine Measurable.ennreal_induction
+    (motive := fun f ↦ Measurable (fibreLIntegral AS L f)) ?_ ?_ ?_ hf
+  · intro c s hs
+    have hm := measurable_fibreIntegral AS L (measurable_const.indicator hs :
+      Measurable (s.indicator fun _ : ParameterSpaceExtension AS L ↦ (1 : ℝ)))
+    convert hm.ennreal_ofReal.const_mul c using 1
+    funext ω
+    simp only [fibreLIntegral, fibreIntegral, ← Set.indicator_comp_right, Function.comp_def]
+    rw [lintegral_indicator_const (hs.preimage measurable_subtype_coe),
+      integral_indicator_const _ (hs.preimage measurable_subtype_coe)]
+    simp [measureReal_def]
+  · intro f g _ hf hg ihf ihg
+    convert ihf.add ihg using 1
+    funext ω
+    exact lintegral_add_left (hf.comp measurable_subtype_coe) _
+  · intro f hf hmono ih
+    convert Measurable.iSup ih using 1
+    funext ω
+    exact lintegral_iSup (fun n ↦ (hf n).comp measurable_subtype_coe)
+      (fun n m h x ↦ hmono h x.val)
+
 /-- Chen--Moriwaki, Definition 3.3.6: the measure `ν_L` on `Ω_L` defined by
 `ν_L(A) = ∫_{Ω_K} I_{L/K}(1_A) dν_K`. -/
 noncomputable def inducedMeasure : Measure (ParameterSpaceExtension AS L) :=
@@ -489,7 +594,24 @@ noncomputable def inducedMeasure : Measure (ParameterSpaceExtension AS L) :=
     (by simp [fibreLIntegral])
     (by
       intro A hA hdisj
-      sorry)
+      have hind (s : Set (ParameterSpaceExtension AS L)) (hs : MeasurableSet s) (ω : AS.Ω) :
+          fibreLIntegral AS L (s.indicator fun _ ↦ 1) ω =
+            fibreProbabilityMeasure AS L ω (Subtype.val ⁻¹' s) := by
+        simp only [fibreLIntegral, ← Set.indicator_comp_right, Function.comp_def]
+        rw [lintegral_indicator_const (hs.preimage measurable_subtype_coe)]
+        simp
+      have hpoint (ω : AS.Ω) :
+          fibreLIntegral AS L ((⋃ n, A n).indicator fun _ ↦ 1) ω =
+            ∑' n, fibreLIntegral AS L ((A n).indicator fun _ ↦ 1) ω := by
+        rw [hind _ (MeasurableSet.iUnion hA), Set.preimage_iUnion,
+          measure_iUnion (fun i j hij ↦ (hdisj hij).preimage Subtype.val)
+            (fun n ↦ (hA n).preimage measurable_subtype_coe)]
+        congr 1
+        funext n
+        exact (hind _ (hA n) ω).symm
+      simp_rw [hpoint]
+      exact lintegral_tsum (fun n ↦
+        (measurable_fibreLIntegral AS L (measurable_const.indicator (hA n))).aemeasurable))
 
 /-- The defining formula of Definition 3.3.6. -/
 theorem inducedMeasure_apply {A : Set (ParameterSpaceExtension AS L)} (hA : MeasurableSet A) :
@@ -502,7 +624,33 @@ nonnegative measurable functions through the fibre integration operator. -/
 theorem lintegral_inducedMeasure {f : ParameterSpaceExtension AS L → ℝ≥0∞}
     (hf : Measurable f) :
     ∫⁻ x, f x ∂inducedMeasure AS L = ∫⁻ ω, fibreLIntegral AS L f ω ∂AS.v := by
-  sorry
+  refine Measurable.ennreal_induction
+    (motive := fun f ↦ (∫⁻ x, f x ∂inducedMeasure AS L) =
+      ∫⁻ ω, fibreLIntegral AS L f ω ∂AS.v) ?_ ?_ ?_ hf
+  · intro c s hs
+    rw [lintegral_indicator_const hs, inducedMeasure_apply AS L hs,
+      ← lintegral_const_mul c (measurable_fibreLIntegral AS L (measurable_const.indicator hs))]
+    apply lintegral_congr
+    intro ω
+    simp only [fibreLIntegral, ← Set.indicator_comp_right, Function.comp_def]
+    rw [lintegral_indicator_const (hs.preimage measurable_subtype_coe),
+      lintegral_indicator_const (hs.preimage measurable_subtype_coe), one_mul]
+  · intro f g _ hf hg ihf ihg
+    simp only [Pi.add_apply]
+    rw [lintegral_add_left hf, ihf, ihg,
+      ← lintegral_add_left (measurable_fibreLIntegral AS L hf)]
+    apply lintegral_congr
+    intro ω
+    exact (lintegral_add_left (hf.comp measurable_subtype_coe) _).symm
+  · intro f hf hmono ih
+    rw [lintegral_iSup hf hmono]
+    simp_rw [ih]
+    rw [← lintegral_iSup (fun n ↦ measurable_fibreLIntegral AS L (hf n))
+      (fun n m h ω ↦ lintegral_mono (fun x ↦ hmono h x.val))]
+    apply lintegral_congr
+    intro ω
+    exact (lintegral_iSup (fun n ↦ (hf n).comp measurable_subtype_coe)
+      (fun n m h x ↦ hmono h x.val)).symm
 
 /-- Chen--Moriwaki, Theorem 3.3.7(2): a measurable function is integrable for the induced
 measure if and only if the fibre integral of its absolute value is integrable on the base. -/
@@ -510,7 +658,24 @@ theorem integrable_inducedMeasure_iff {f : ParameterSpaceExtension AS L → ℝ}
     (hf : Measurable f) :
     Integrable f (inducedMeasure AS L) ↔
       Integrable (fibreIntegral AS L fun x ↦ |f x|) AS.v := by
-  sorry
+  have habs : Measurable (fun x ↦ |f x|) := by
+    simpa only [Real.norm_eq_abs] using hf.norm
+  have hnonneg (ω : AS.Ω) : 0 ≤ fibreIntegral AS L (fun x ↦ |f x|) ω :=
+    integral_nonneg (fun x ↦ abs_nonneg (f x.val))
+  have heq (ω : AS.Ω) :
+      ENNReal.ofReal (fibreIntegral AS L (fun x ↦ |f x|) ω) =
+        fibreLIntegral AS L (fun x ↦ ENNReal.ofReal |f x|) ω :=
+    ofReal_integral_eq_lintegral_ofReal (integrable_fibre AS L ω _)
+      (Filter.Eventually.of_forall fun x ↦ abs_nonneg (f x.val))
+  rw [← integrable_norm_iff hf.aestronglyMeasurable]
+  simp only [Real.norm_eq_abs]
+  rw [← lintegral_ofReal_ne_top_iff_integrable habs.aestronglyMeasurable
+    (Filter.Eventually.of_forall fun x ↦ abs_nonneg (f x)),
+    lintegral_inducedMeasure AS L habs.ennreal_ofReal,
+    ← lintegral_ofReal_ne_top_iff_integrable
+      (measurable_fibreIntegral AS L habs).aestronglyMeasurable
+      (Filter.Eventually.of_forall hnonneg)]
+  simp_rw [heq]
 
 /-- Chen--Moriwaki, Theorem 3.3.7(2): formula (3.7) also holds for integrable real-valued
 functions. -/

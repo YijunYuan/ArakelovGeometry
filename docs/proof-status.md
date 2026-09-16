@@ -1,9 +1,9 @@
 # Extension proof status
 
 The task is unfinished. The configured `horizon check --json` passed on
-2026-09-16 at 04:31:04 UTC (3406 jobs), with 36 direct sorry occurrences.
-The subsequent compiled inventory contains 579 project constants, including
-54 transitively using `sorryAx`; no other nonstandard axioms occur.
+2026-09-16 at 04:48:02 UTC (3407 jobs), with 32 direct sorry occurrences.
+The subsequent compiled inventory contains 593 project constants, including
+56 transitively using `sorryAx`; no other nonstandard axioms occur.
 
 ## Mathematical route and coverage
 
@@ -13,8 +13,8 @@ finite extensions including inseparability, algebraic cylinder measures,
 nonnegative and signed disintegration, and tower compatibility. Every direct
 gap and every extension-module constant has a blueprint mapping. Additional
 unwritten mathematical producers have explicit nodes and complete proofs;
-Twenty-six nodes with axiom-clean attachments are marked `\leanok`. The combined route has 215
-mathematical nodes, including 45 explicitly unwritten producer nodes. All 579
+Thirty-three nodes with axiom-clean attachments are marked `\leanok`. The combined route has 221
+mathematical nodes, including 44 explicitly unwritten producer nodes. All 593
 project constants have an attachment or an explicitly classified support
 mapping; every compiled mathematical dependency between attached nodes has
 a blueprint path, with zero cycles or dangling links.
@@ -50,12 +50,17 @@ completion.
 
 The inseparable construction, finite transport, projective measurability,
 cylinder operations, power-sum radius, and finite-fibre proofs have removed
-28 direct gaps since the recovered baseline. Complete-base existence and
+32 direct gaps since the recovered baseline. Complete-base existence and
 uniqueness now include all places; extension over arbitrary algebraic fields
 and finite-fibre finiteness follow through embeddings into completed algebraic
 closures. Independent honesty review and transitive axiom checks confirm that
 these producers use only the standard axioms. The probability and elementary
 fibre-integral results still depend on the unproved local-degree normalization.
+Orbit-max measurability, completion separability, embedding counts, and unique
+lifting of embeddings to completions are also axiom-clean. Countable additivity
+and nonnegative disintegration of the induced measure, and its integrability
+criterion, are proved from the still-open fibre measurability and normalization
+producers; their support declarations remain counted as sorry-backed.
 Integrability and properness of the finite extension continue to depend on
 the unfinished separable construction. Earlier verified restriction and
 scalar-integration lemmas are in `bc0d71f`.
