@@ -213,10 +213,12 @@ structure FiniteIntermediateField (K : Type u) [Field K] (L : Type w) [Field L]
 
 attribute [instance] FiniteIntermediateField.finite_dimensional
 
-instance : Coe (FiniteIntermediateField K L) (IntermediateField K L) := ⟨fun F ↦ F.1⟩
+instance instCoeFiniteIntermediateFieldIntermediateField :
+    Coe (FiniteIntermediateField K L) (IntermediateField K L) := ⟨fun F ↦ F.1⟩
 attribute [coe] FiniteIntermediateField.toIntermediateField
 
-instance : CoeSort (FiniteIntermediateField K L) (Type w) := ⟨fun F ↦ F.1⟩
+instance instCoeSortFiniteIntermediateFieldType :
+    CoeSort (FiniteIntermediateField K L) (Type w) := ⟨fun F ↦ F.1⟩
 
 namespace FiniteIntermediateField
 
@@ -394,7 +396,7 @@ theorem finrank_mul_integral_log_inducedMeasure (b : L) (hb : b ≠ 0) :
       ∫ ω, Real.log (AS.ϕ ω (Algebra.norm K b)) ∂AS.v := by
   sorry
 
-/-- Chen--Moriwaki, Theorem 3.3.7(2): logarithmic evaluations are integrable for the measure
+/-- Chen--Moriwaki, Theorem 3.3.7(4): logarithmic evaluations are integrable for the measure
 defined in Definition 3.3.6. -/
 theorem integrable_log_inducedMeasure (a : L) (ha : a ≠ 0) :
     Integrable
@@ -1008,16 +1010,28 @@ theorem exists_equiv_finiteExtension_finiteExtension [FiniteDimensional K M]
 /-- Chen--Moriwaki, Theorem 3.4.12: algebraic extension of adelic structures is transitive:
 for a tower `K ⊆ L₁ ⊆ L₂` of algebraic extensions, `(S ⊗_K L₁) ⊗_{L₁} L₂` and `S ⊗_K L₂` are
 canonically equivalent, compatibly with the projections to the base (formulae (3.22),
-(3.23)). -/
+(3.23)). The fibre identity is pointwise for measurable nonnegative functions, as in
+the proof on PDF pages 213–214. For globally integrable real functions it holds almost
+everywhere, by Proposition 3.4.9. The signed integral in the source is defined only on
+its integrability domain (PDF pages 210–211); totalizing it does not give an identity
+for arbitrary real functions. -/
 theorem exists_equiv_algebraicExtension_algebraicExtension [Algebra.IsAlgebraic K M]
     (F : IntermediateField K M) :
     ∃ e : AdelicStructure.Equiv
         ((AS.algebraicExtension F).algebraicExtension M) (AS.algebraicExtension M),
       (∀ x, ParameterSpaceExtension.proj (ParameterSpaceExtension.proj x) =
         ParameterSpaceExtension.proj (e.toMeasurableEquiv x)) ∧
+      (∀ g : ((AS.algebraicExtension F).algebraicExtension M).Ω → ℝ≥0∞,
+        Measurable[((AS.algebraicExtension F).algebraicExtension M).A] g →
+        Algebraic.fibreLIntegral AS F
+            (Algebraic.fibreLIntegral (AS.algebraicExtension F) M g) =
+          Algebraic.fibreLIntegral AS M
+            (fun y ↦ g (e.toMeasurableEquiv.symm y))) ∧
       ∀ g : ((AS.algebraicExtension F).algebraicExtension M).Ω → ℝ,
+        Integrable[((AS.algebraicExtension F).algebraicExtension M).A] g
+          ((AS.algebraicExtension F).algebraicExtension M).v →
         Algebraic.fibreIntegral AS F
-            (Algebraic.fibreIntegral (AS.algebraicExtension F) M g) =
+            (Algebraic.fibreIntegral (AS.algebraicExtension F) M g) =ᵐ[AS.v]
           Algebraic.fibreIntegral AS M
             (fun y ↦ g (e.toMeasurableEquiv.symm y)) := by
   sorry
