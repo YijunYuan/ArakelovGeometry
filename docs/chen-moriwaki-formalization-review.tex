@@ -1,0 +1,592 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=22mm,headheight=14pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{TeX Gyre Pagella}
+\setsansfont{TeX Gyre Heros}
+\setmonofont[Scale=0.86]{DejaVu Sans Mono}
+\usepackage{amsmath,amssymb,mathrsfs,booktabs,tabularx,array,xcolor}
+\usepackage{enumitem,fancyhdr,titlesec,microtype}
+\usepackage[hyphens]{url}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+\hypersetup{pdftitle={Chen--Moriwaki: Source Issues and Formalization Repairs},
+ pdfauthor={ArakelovGeometry workspace review},
+ pdfsubject={Retrospective review of Chapter 3, sections 3.3--3.4}}
+\definecolor{navy}{HTML}{173D58}
+\definecolor{graytext}{HTML}{52616B}
+\titleformat{\section}{\Large\sffamily\bfseries\color{navy}}{}{0pt}{}
+\titleformat{\subsection}{\normalsize\sffamily\bfseries\color{navy}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{0pt}{12pt}
+\titlespacing*{\subsection}{0pt}{12pt}{5pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily Chen--Moriwaki \textbar\ Source issues and repairs}
+\fancyhead[R]{\small\sffamily Chapter 3, \S\S3.3--3.4}
+\fancyfoot[L]{\footnotesize\color{graytext}Manuscript v1.2 \textbullet\ Review dated 16 September 2026}
+\fancyfoot[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlist{nosep,leftmargin=18pt,topsep=4pt}
+\setlength{\emergencystretch}{2em}
+\newcommand{\code}[1]{{\small\nolinkurl{#1}}}
+\newcommand{\loc}[2]{\textbf{Source location:} printed p.\,#1 / PDF p.\,#2.}
+\newcommand{\hist}[1]{\par{\footnotesize\color{graytext}\textbf{Record:} #1}}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\R}{\mathbb R}
+\newcommand{\A}{\mathcal A}
+\newcommand{\E}{\mathscr E}
+\newcommand{\PP}{\mathbb P}
+\begin{document}
+\thispagestyle{plain}
+{\small\sffamily\color{graytext}ARAKELOVGEOMETRY \quad / \quad FORMALIZATION RETROSPECTIVE}
+\vspace{10pt}
+\begin{flushleft}
+{\huge\sffamily\bfseries\color{navy}Chen--Moriwaki:\\[3pt]Source Issues and Formalization Repairs}\\[10pt]
+{\large Chapter 3, sections 3.3--3.4}\\[5pt]
+{16 September 2026}
+\end{flushleft}
+
+The Horizon formalization identified \textbf{a false degree argument in the proof
+of Theorem 3.4.12} and \textbf{an unjustified cylinder/Borel identification in the
+proof of Proposition 3.4.6}. It replaced the affected arguments while retaining
+the intended extension and probability constructions. Several printed indices
+and function domains also required correction. The findings below do not
+refute the principal theorem conclusions.
+
+This report records \textbf{two substantive proof issues}, \textbf{twelve groups
+of notation or domain slips}, and \textbf{one supplementary clarification}.
+It separately explains two problems in the original formal statements:
+these must not be attributed to errors in the book.
+
+\textbf{Source and pagination.} Huayi Chen and Atsushi Moriwaki,
+\emph{Arakelov geometry over adelic curves}, version 1.2, 5 October 2019,
+the user-supplied \code{adelic_curve.pdf}. The audited range is printed
+pp.\,178--199, PDF pp.\,194--215; the start of \S3.5 on the last page is
+outside scope. PDF numbers are \emph{one-based viewer page numbers}:
+\[
+\boxed{\text{PDF page} = \text{printed page} + 16.}
+\]
+These locators refer to this manuscript, not to a different edition.
+
+\textbf{Reading guide, in priority order.}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}lXrr@{}}
+\toprule
+ID & Finding & Printed p. & Report p.\\
+\midrule
+S1 & Invalid degree argument; finite-descent repair & 197--198 & \pageref{s1}\\
+S2 & Cylinder versus Borel $\sigma$-algebras & 193 & \pageref{s2}\\
+E1 & Finite cylinders versus general measurable functions & 198 & \pageref{e1}\\
+T1--T4 & Local degree, integration subscripts, root-bound domains & 178, 186--188 & \pageref{t1}\\
+T5--T8 & Finite extension, completions, evaluations, fibre cylinders & 189--192 & \pageref{t5}\\
+T9--T12 & Measurability proof and tower formula indices & 194, 197--198 & \pageref{t9}\\
+F1--F2 & Corrections to the formal integration statements & 194--198 & \pageref{f1}\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Evidence boundary.} This is a retrospective of Horizon's existing work,
+checked against the rendered source pages, transcription comments, review records,
+and the completed mathematical formalization. The repairs below are explained
+in mathematical language, without references to formalization code.
+No new formal proofs were written for this report.
+The recorded final audit covers 998 formal declarations with no admitted
+proofs. Verification details and the limits of the review are on
+p.\,\pageref{evidence}.
+
+\newpage
+\section{S1. The degree argument in Theorem 3.4.12}\label{s1}
+\loc{197--198}{213--214}
+Proof of Theorem 3.4.12: on p.\,197, the paragraph introducing a prime
+upper degree, the paragraph following the first displayed tower identity,
+and the paragraph following the definition of $P(T)$.
+
+\textbf{What goes wrong.} The printed proof reduces to prime
+$[L_2:L_1]$ and, for $K_2\in\E_{L_2/K}$ not contained in $L_1$, puts
+$K_1=K_2\cap L_1$. It asserts
+\[
+[K_2:K_1]\mid [L_2:L_1]
+\quad\text{and hence}\quad [K_2:K_1]=[L_2:L_1].
+\]
+The divisibility is false for general subfields. Also, arbitrary finite
+extensions do not automatically decompose into towers of prime-degree
+extensions; the proposed reduction needs additional justification. Later,
+primality of a polynomial's degree and $a\notin L_1$ are used to assert
+that it remains minimal over $L_1$. Those facts alone do not ensure
+irreducibility after extending the ground field.
+
+\textbf{The counterexample recorded by Horizon.} Let $a=\sqrt[3]{2}$,
+let $\zeta$ be a primitive cube root of unity, and take
+\[
+ K=\Q,\qquad K_2=\Q(a),\qquad L_1=\Q(\zeta a),\qquad
+ L_2=\Q(a,\zeta).
+\]
+The two distinct cubic fields have intersection $\Q$, and $L_2$ is their
+compositum, of degree six over $\Q$. Consequently
+\[
+ K_1=\Q,\qquad [K_2:K_1]=3,\qquad [L_2:L_1]=2.
+\]
+Thus even a \emph{prime upper degree} does not make the claimed divisibility
+true. Moreover, $T^3-2$ is minimal for $a$ over $\Q$ but has the root
+$\zeta a$ over $L_1$; the degree of $a$ over $L_1$ is two.
+This exposes a proof defect, not a counterexample to tower compatibility.
+
+\textbf{How Horizon repaired it.} The replacement descends a finite
+extension to a sufficiently large finite base, rather than using the
+intersection as that base. For algebraic $B/K$, finite $N/B$, and a
+prescribed finite $F/K$ inside $N$, it constructs finite $A/K$ in $B$ and
+finite $E/K$ in $N$ such that
+\[
+ A,F\subseteq E,\qquad B(E)=N,\qquad
+ [E:A]=[N:B],\qquad [E:A]_s=[N:B]_s.
+\]
+Here $[\,\cdot:\cdot\,]_s$ denotes separable degree. The construction
+descends a basis and its multiplication coefficients, together with the
+separable part. Equality of separable degrees gives a restriction
+bijection of embeddings into an algebraically closed extension.
+Counting these embeddings yields the local weighted-sum identity;
+dividing by the common separable degree gives compatibility of fibre
+probabilities. The finite-cylinder tower identity follows, and uniqueness
+of probabilities on the generated $\sigma$-algebra gives the general result.
+
+\textbf{Why the replacement gives the required tower identity.}
+\begin{enumerate}
+\item Finite descent supplies a valid finite base change containing every
+element needed for a prescribed cylinder function. In particular, the
+multiplication map $E\otimes_A B\to N$ is an isomorphism.
+\item The embedding bijection shows that restricting an upper place gives
+exactly the lower probability distribution: the local separable degrees
+are the multiplicities, and the global separable degree normalizes their sum.
+\item Therefore the direct and iterated fibre integrals agree on finite
+cylinders. Their probability measures have identical finite marginals.
+\item Cylinder sets generate the specified measurable structure, so
+uniqueness of finite measures identifies the direct and iterated
+probabilities. Integrating gives the nonnegative tower formula.
+\end{enumerate}
+\hist{The false divisibility and this cubic-field counterexample were
+explicitly recorded during Horizon's source transcription. The completed
+formalization proves the finite-descent and probability-compatibility
+arguments described above.}
+
+\newpage
+\section{S2. Cylinder and Borel \texorpdfstring{$\sigma$}{sigma}-algebras}\label{s2}
+\loc{193}{209}
+Proof of Proposition 3.4.6: the paragraph identifying
+$\A_{L,\omega}$ with the Borel $\sigma$-algebra of the projective topology;
+also the description of the extended measure near the end of the proof.
+
+\textbf{The issue.} On the previous page, $\A_{L,\omega}$ is defined by
+the finite-stage projections. Equivalently it is generated by finite
+cylinders. The printed proof identifies this with the full Borel
+$\sigma$-algebra of the inverse-limit topology, without a countability
+argument. That identification is not valid for arbitrary uncountable
+inverse systems.
+
+\textbf{Why the general inference fails.} The source notes give the
+standard test case $X=\{0,1\}^{I}$ for uncountable $I$, viewed as the
+inverse limit of its finite-coordinate products. Every set in the
+cylinder-generated $\sigma$-algebra depends on at most countably many
+coordinates. A singleton is closed, hence Borel, but does not have that
+property. Thus the two $\sigma$-algebras differ in this example.
+
+\textbf{Qualification.} This example refutes the unrestricted
+topological-to-measurable inference used in the proof. It is not being
+presented as a constructed counterexample in the particular class of
+adelic fibres. The recorded repair avoids the unsupported equality;
+it does not prove that every adelic fibre has unequal $\sigma$-algebras.
+
+\textbf{How Horizon repaired it.} It retains the compact inverse-limit
+topology and uses it only where needed. Cylinder sets are clopen and
+compact. If a disjoint sequence of cylinders has a cylinder as its union,
+compactness gives a finite subcover, so only finitely many members are
+nonempty. Finite additivity therefore gives countable additivity on the
+cylinder algebra. Carath\'eodory extension then supplies a probability
+measure on the \emph{specified cylinder $\sigma$-algebra}, with the
+correct finite marginals. This establishes the measure construction
+required by Proposition 3.4.6 and used downstream.
+
+\textbf{The resulting mathematical object.} Writing $p_{F,\omega}$ for
+restriction to a finite stage, the measurable structure remains exactly
+\[
+ \A_{L,\omega}
+ =\sigma\bigl\{p_{F,\omega}^{-1}(B):F\in\E_{L/K},\;
+ B\subseteq M_{F,\omega}\bigr\}.
+\]
+The probability of such a cylinder is the probability of $B$ at its
+finite stage. The formalization also proves the homeomorphism with the
+space of compatible finite-stage families, without identifying its full
+Borel $\sigma$-algebra with the displayed one.
+\hist{This distinction and the repaired Carath\'eodory construction are
+explicit in Horizon's source notes and mathematical blueprint.}
+
+\subsection{E1. The implicit cylinder reduction in the general tower case}\label{e1}
+\loc{198}{214}
+Proof of Theorem 3.4.12, paragraph beginning the remaining integral
+identity in the general case, just before the display involving $L''=K_2L_1$.
+
+The wording describes an arbitrary nonnegative measurable $f$ as if it
+could be written $g\circ\pi_{L_2/K_2}$ for one finite $K_2/K$.
+Such a factorization characterizes a cylinder function, not a general
+measurable function. The intended reading is a reduction to cylinders,
+as already explained by a monotone-class argument on p.\,197.
+Horizon makes the passage explicit: first prove the cylinder identity,
+then identify the two probabilities on the generating $\pi$-system of
+finite-stage measurable cylinders, and finally integrate arbitrary
+nonnegative measurable functions. This establishes the result without
+assuming that every measurable function itself descends to a finite stage.
+\hist{Supplementary clarification identified in this retrospective;
+not counted as a third established mathematical error. The completed
+Horizon proof already contains the required extension step.}
+
+\newpage
+\section{Printed notation and domain slips: T1--T4}\label{t1}
+Each entry gives the literal problem, the intended correction, and the
+existing formalization that uses the corrected objects. These are local
+notation repairs; they do not require changing the result's conclusion.
+
+\subsection{T1. The completion subscript in the local-degree sum}
+\loc{178}{194} Equation (3.3), in the opening finite-separable construction.
+
+The denominator field in the local degree is printed $K_w$, although
+the fixed base parameter is $\omega$. The consistent identity is
+\[
+\sum_{x\in M_{K',\omega}}[K'_x:K_\omega]=[K':K].
+\]
+The letter $w$ here should be $\omega$. The formalization uses the
+completion at the restriction of the extension absolute value. The
+local-degree sum gives the global degree; dividing by that degree shows
+that the fibre weights sum to one.
+\hist{The printed $K_w$ was explicitly recorded during source transcription.}
+
+\subsection{T2. Reversed extension in the logarithmic norm formula}
+\loc{186}{202} Proof of Theorem 3.3.7(4), equation (3.10).
+
+The left side uses $I_{K/K'}$, reversing the extension. It must be
+\[
+ I_{K'/K}(\ln f_b)=\frac{1}{[K':K]}\ln f_\lambda,
+ \qquad \lambda=N_{K'/K}(b).
+\]
+The input is a function on $\Omega_{K'}$ and the output is a function on
+$\Omega_K$. The formalized norm identity has precisely this direction.
+Its proof takes logarithms of the local norm product formula and divides
+by the extension degree, producing the normalized weighted fibre sum.
+\hist{Flagged in the page transcription and explicitly corrected in the
+mathematical blueprint.}
+
+\subsection{T3. Root bounds stated on the base space instead of the extension}
+\loc{187--188}{203--204} Proof of Theorem 3.3.7(4): the sentence after
+(3.11), and the opening paragraph on p.\,188 introducing the archimedean bound.
+
+On p.\,187, the bound for $\ln f_b$ by $g\circ\pi_{K'/K}$ is said to
+hold on $\Omega_K\setminus\Omega_{K,\infty}$. Its domain should be
+$\Omega_{K'}\setminus\Omega_{K',\infty}$. Likewise, the analogous
+archimedean bound on p.\,188 belongs on $\Omega_{K',\infty}$, rather
+than $\Omega_{K,\infty}$. The variable $b$ lies in $K'$.
+
+The formalization states the bound for an absolute value $w$ on the extension field
+whose restriction is the absolute value at a specified base point.
+This keeps the base envelope and the extension evaluation distinct.
+The integrable envelope is then pulled back to the extension space and
+used to prove integrability of the logarithmic evaluation there.
+\hist{The p.\,187 occurrence is flagged in the original transcription;
+the parallel p.\,188 occurrence was additionally checked in this retrospective.}
+
+\subsection{T4. The fields of the two normalized absolute values are reversed}
+\loc{188}{204} Proof of Theorem 3.3.7(4), first prose sentence after
+the opening displayed archimedean bound.
+
+The normalized absolute values $|\cdot|_\omega^{1/\kappa}$ and
+$|\cdot|_x^{1/\kappa}$ are described as being on $K'$ and $K$,
+respectively. The fields must be \textbf{$K$ and $K'$}, in that order.
+The root-bound proof treats the second absolute value as an extension
+of the first. After normalization by the archimedean exponent, the
+triangle inequality gives the required bound for a root of the minimal
+polynomial over $K$.
+\hist{Explicitly flagged in the source transcription; the corrected
+roles are used in the formalized root-bound argument.}
+
+\newpage
+\section{Printed notation and domain slips: T5--T8}\label{t5}
+
+\subsection{T5. A displaced prime in the parameter-space notation}
+\loc{189}{205} Definition 3.4.1, sentence immediately after identifying
+the two integration operators $I_{K''/K}$ and $I_{K'/K}$.
+
+The parameter space appears once as $\Omega'_K$. The notation used
+throughout the construction is $\Omega_{K'}$, where $K'$ is the
+separable closure of $K$ in $K''$. Thus the sentence is about the
+identification
+\[
+ \Omega_{K'}\simeq\Omega_K\times_{M_K}M_{K''}.
+\]
+This is a notational inconsistency, not a change in the underlying set.
+The formalized finite extension parameter space is defined through the
+separable part, with the purely inseparable extension handled canonically.
+An absolute value on the separable part extends uniquely across the
+purely inseparable extension, which is what makes the identification valid.
+\hist{Visible in the original image and its faithful transcription;
+identified as a separate notation slip in this retrospective.}
+
+\subsection{T6. Two incorrect completion labels in a factorization argument}
+\loc{189}{205} Proof of Lemma 3.4.2, the nonarchimedean paragraph
+factoring the minimal polynomial $F$ and identifying a completion with a quotient.
+
+With $K^{\mathrm{sc}}=K(\alpha)$, the polynomial should be factored in
+\textbf{$K_v[T]$}, not in the printed $K_v^{\mathrm{sc}}[T]$.
+For the factor selected by the extension $w$, the isomorphism is
+\[
+ K_w^{\mathrm{sc}}\simeq K_v[T]/(F_i),
+\]
+not the printed $K_v^{\mathrm{sc}}\simeq K_v[T]/(F_i)$.
+Here $K_w^{\mathrm{sc}}$ is the completion of the separable subfield
+at the restriction of $w$. The corrected proof factors over the base
+completion and obtains the extension completion from the selected factor.
+
+The formalization proves that the image of the completed separable
+subfield is exactly the separable closure in the completed extension.
+It then derives the required local/global separable-degree expression
+for the finite-fibre weights.
+The remaining extension of completions is purely inseparable, while
+the completed separable part is separable over the base completion.
+These two properties identify it as the maximal separable subextension.
+\hist{Both printed labels are flagged in the transcription and corrected
+explicitly in the mathematical blueprint.}
+
+\subsection{T7. Evaluation functions in a finite tower have the wrong domain}
+\loc{191}{207} Proof of Proposition 3.4.4, paragraph describing the
+generators of $\A'_2$.
+
+The text writes $(y\in\Omega_K)\mapsto|\alpha|_y$ for $\alpha\in K_2$.
+The domain must be \textbf{$\Omega_{K_2}=\Omega_2$}. A base absolute
+value does not by itself evaluate an arbitrary element of $K_2$.
+The canonical measurable equivalence between the iterated and direct
+finite extensions compares evaluations on the correct extension space.
+Its measurability is proved by checking that the base projection and
+the evaluations of elements of the extension field are preserved.
+\hist{Flagged in the transcription and explicitly explained in the
+blueprint's discussion of finite-tower evaluation domains.}
+
+\subsection{T8. Fibre cylinder functions described as global functions}
+\loc{192}{208} Last main paragraph, definition of $V_{L,\omega}$
+immediately before (3.17).
+
+The text calls these functions on $\Omega_L$, but writes them in the
+form $f\circ(\pi_{L/K''}|_{M_{L,\omega}})$. The displayed composition
+has domain \textbf{$M_{L,\omega}$}. Accordingly $V_{L,\omega}$ is the
+space of fibre cylinder functions. The separate global space $V_L$
+is introduced in Remark 3.4.7 on the next page.
+The formalization distinguishes these two spaces. Closure under addition
+and multiplication follows by passing two cylinder functions to a common
+finite stage before combining them.
+\hist{The domain mismatch is explicitly noted in the page transcription.}
+
+\newpage
+\section{Printed notation and domain slips: T9--T12}\label{t9}
+
+\subsection{T9. The starting class in the measurability proof has the wrong domain}
+\loc{194}{210} First sentence of the proof of Proposition 3.4.8.
+
+The class $\mathcal H$ is initially described as bounded nonnegative
+functions on $\Omega_K$, even though the functions are restricted to
+$M_{L,\omega}$. They must be functions on \textbf{$\Omega_L$}.
+The same paragraph subsequently uses $\Omega_L$ correctly.
+The formalization takes the input on the algebraic extension parameter space and
+proves that its nonnegative fibre integral is measurable on the base.
+The proof starts with finite-stage functions and extends to the
+generated measurable structure by a monotone-class argument and
+monotone convergence.
+\hist{Explicitly flagged in the page transcription.}
+
+\subsection{T10. The point in the upper-fibre probability has the wrong letter}
+\loc{197}{213} Proof of Theorem 3.4.12, final probability formula,
+after the factors $Q_{i,j}$ and their associated points are introduced.
+
+The preceding sentence names the points $y_{i,j}$, while the formula
+uses $x_{i,j}$. In the intended factorization setup the mass formula is
+\[
+ \PP_{L_2,y}(\{y_{i,j}\})=\frac{\deg Q_{i,j}}{p}.
+\]
+The singleton braces here make the measure argument explicit; the
+essential typographical correction is $x_{i,j}\rightsquigarrow y_{i,j}$.
+The formalization assigns the singleton mass to a point of the actual
+upper fibre, using its normalized local degree.
+\hist{Explicitly flagged in the page transcription. This local notation
+correction does not fix the degree problem S1.}
+
+\subsection{T11. A missing sum and evaluation at the wrong point}
+\loc{198}{214} First display, continuing the proof of Theorem 3.4.12.
+
+The formula evaluates $g$ at $x$, although $x\in\Omega_{K_1}$ and
+$g$ is a function on $\Omega_{K_2}$. It also drops the sum over $i$
+in the middle expression. The intended calculation is
+\begin{align*}
+ (I_{L_2/L_1}f)(y)
+ &=\sum_{i=1}^{r}\sum_{j=1}^{n_i}\frac{\deg Q_{i,j}}{p}\,g(x_i)\\
+ &=\sum_{i=1}^{r}\frac{\deg P_i}{p}\,g(x_i)
+ =(I_{K_2/K_1}g)(x).
+\end{align*}
+Both occurrences of $g(x)$ inside the weighted sums must be $g(x_i)$,
+and the outer sum must remain in the middle expression.
+
+This repairs the \emph{notation of the intended calculation}, conditional
+on a valid compatible finite-stage setup. Because S1 invalidates the
+printed choice of fields in general, these edits alone are insufficient.
+After finite descent, Horizon proves that restriction $r$ pushes the
+upper probability $P$ to the lower probability $Q$, and hence
+$\int g\circ r\,dP=\int g\,dQ$. This gives the required integral comparison.
+\hist{Both slips are explicitly flagged in the page transcription; see S1 for the
+substantive replacement.}
+
+\subsection{T12. The finite-stage indexing family has the wrong base}
+\loc{198}{214} Proof of Theorem 3.4.12, general-case comparison of
+$\A_2$ and $\A'_2$, sentence just before concluding their equality.
+
+The last occurrence of $K_2\in\E_{L_2/L_1}$ in that paragraph should
+be \textbf{$K_2\in\E_{L_2/K}$}. The paragraph began with finite
+subextensions over $K$, which generate the direct extension's
+$\sigma$-algebra. The formalization constructs the measurable equivalence using
+those projective measurable structures and the correct base projections.
+Passing from $K_2/K$ to $K_2L_1/L_1$ relates the two families of finite
+projections and establishes measurability in both directions.
+\hist{Explicitly flagged in the page transcription.}
+
+\newpage
+\section{F1--F2. Corrections to the original formal statements}\label{f1}
+\textbf{These are formalization corrections, not additional errors in the
+book.} The source's distinction between nonnegative integration and
+signed integration supplies the correct mathematical contract.
+
+\subsection{F1. Integrability must be tested with the nonnegative integral}
+\loc{194--195}{210--211} Definition of signed fibre integration after
+(3.18), and Proposition 3.4.9.
+
+The source first defines the nonnegative integral with values in
+$[0,+\infty]$. Signed fibre integration is defined where the integral
+of the absolute value is finite; Proposition 3.4.9 then treats integrable
+functions and the induced operator on $L^1$.
+
+The original formal criterion tried to express integrability using a
+real Bochner fibre integral. The formal integration convention gives that integral the value zero
+when its integrand is not integrable. On an infinite fibre, this can
+hide a divergent integral of $|f|$: a returned real zero is not evidence
+of finiteness. Finite-fibre arguments cannot simply be reused here.
+
+\textbf{The correction already made by Horizon.} For a projectively
+measurable real function $f$, the criterion is
+\[
+ f\in L^1(\nu_L)
+ \quad\Longleftrightarrow\quad
+ \int_{\Omega_K}^{+}\!\left(\int_{M_{L,\omega}}^{+}|f(x)|\,
+ d\PP_{L,\omega}(x)\right)d\nu_K(\omega)<\infty.
+\]
+Both integrals are nonnegative extended-real integrals, so divergence
+is retained as $+\infty$ instead of disappearing into a default real value. Signed
+disintegration is then proved under integrability, and the resulting
+operator on $L^1$ is a continuous linear contraction.
+\hist{This concern was already recorded before the September completion
+run. Horizon proved the corrected criterion and the corresponding
+signed disintegration and $L^1$ results.}
+
+\subsection{F2. An unrestricted signed tower identity is too strong}
+\loc{194--198}{210--214} Signed-integral convention on p.\,194,
+Proposition 3.4.9 on p.\,195, and the nonnegative tower proof of
+Theorem 3.4.12 on pp.\,197--198.
+
+The pre-existing formal statement of algebraic tower compatibility demanded a
+pointwise iterated-integral identity for \emph{every} real function,
+without measurability or integrability. Totalizing a nonintegrable
+Bochner integral at zero does not establish unrestricted Fubini.
+This extra quantification was not justified by the source.
+
+\textbf{The corrected theorem keeps the adelic equivalence and projection
+compatibility}, and supplies the two appropriate integral statements,
+under the canonical identification of the parameter spaces:
+\begin{align*}
+ I^+_{B/K}(I^+_{N/B}f)&=I^+_{N/K}f
+ &&\text{pointwise, for measurable }f:\Omega_N\to[0,\infty],\\
+ I_{B/K}(I_{N/B}f)&=I_{N/K}f
+ &&\nu_K\text{-a.e., for globally integrable real }f.
+\end{align*}
+The signed version allows arbitrary almost-everywhere representatives.
+The proof uses integrability on almost every fibre, the nonnegative
+identities, and invariance under changes on null sets.
+The corrected statement therefore expresses the book's integral
+compatibility on its proper domain, while retaining the canonical
+equivalence of adelic curves themselves.
+\hist{Raised by Horizon's independent review on 16 September 2026;
+the statement was corrected after comparison with the source and then
+proved. The completed proof keeps the nonnegative and signed cases distinct.}
+
+\newpage
+\section{Evidence, provenance, and limits}\label{evidence}
+
+\subsection{Source identity and method}
+The source is the 466-page, user-supplied PDF of Huayi Chen and Atsushi
+Moriwaki's \emph{Arakelov geometry over adelic curves}, version 1.2,
+5 October 2019. The original and the registered reference copy are
+byte-for-byte identical. All page references in this report use the
+printed pagination and the corresponding one-based PDF pagination
+of that document.
+
+The original page images were inspected for every printed issue catalogued
+here. The transcriptions deliberately preserve the printed slips;
+the corrected interpretations reside in the mathematical blueprint and
+the completed formalization.
+No source PDF or source transcription was edited for this report.
+
+\subsection{What happened during the formalization}
+The historical review includes the source transcriptions, issue records,
+mathematical blueprint, completion reports, and final verification
+evidence. The relevant progression was:
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+Stage & Mathematical result or review finding\\
+\midrule
+Source review & Recorded notation slips, the degree counterexample, and the cylinder/Borel concern.\\
+Domain review & Reconciled signed integration and the integrability criterion with the source.\\
+Finite extensions & Proved measurability, logarithmic integrability, norm identities, and finite towers.\\
+Algebraic measures & Constructed the cylinder probabilities and proved disintegration and properness.\\
+Tower repair & Proved finite descent, compatible fibre probabilities, and algebraic tower integration.\\
+Final review & Completed the remaining source constructions and checked all formal obligations.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+The substantive corrections S1 and S2, and the formal-statement
+corrections F1 and F2, are explicit in the historical records.
+Most notation slips were preserved and flagged during page transcription.
+The second occurrence in T3, the separate notation observation T5, and
+the supplementary clarification E1 are identified here as retrospective
+observations, rather than being assigned an unsupported discovery date.
+
+\subsection{What the recorded verification establishes}
+Horizon's final full build completed at 07:26:42 UTC on 16 September 2026,
+without warnings or errors. The compiled inventory and a separate audit
+checked 998 project declarations and found no admitted proofs or
+nonstandard axioms. The proof system's ordinary foundations included
+choice, propositional extensionality, and quotient soundness.
+The source index covers all 26 entries for the targeted sections,
+including the separate parts of Theorem 3.3.7.
+
+These are existing Horizon checks, not new proof builds performed while
+writing this report. Kernel checking certifies the formal statements under
+their stated assumptions; identifying a printed typo and matching a
+theorem to its source also requires mathematical and visual review.
+The counterexamples and explanatory remarks quoted in substance here
+are not claimed to be separately formalized errata theorems.
+
+\textbf{Scope of the conclusion.} This is a catalogue of the issues found
+in the recorded work and the present page review, not a claim that no
+other error exists in the manuscript. No comparison with later editions
+or author-issued errata was made. In particular, the review found no
+separate defect in Proposition 3.4.13: its generated-$\sigma$-algebra
+claim is established by proving that the measurable structure generated
+by finite-stage projections equals the smallest $\sigma$-algebra making
+the base projection and all absolute-value evaluations measurable.
+This result is independent of the unsupported full-Borel identification
+discussed in S2.
+
+\end{document}
