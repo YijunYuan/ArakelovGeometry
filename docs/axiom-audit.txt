@@ -1,0 +1,102 @@
+[HORIZON] ◈ Advisory · 2 unread inbox items: I-0006 "chen-moriwaki-adelic: pages
+0207–0211 transcr..."; I-0005 "chen-moriwaki-adelic: pages 0194–0196 transcr..."
+— review when relevant: `horizon inbox list --mine --unread --json`
+[HORIZON] ◈ session running 14m12s, 29.0k tokens out
+[HORIZON] Another Horizon Lean check is active; waiting for its resource slot.
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.finrank_mul_integral_log_inducedMeasure
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_log_inducedMeasure
+GAP ArakelovGeometry.AdelicStructure.measurable_iSup_abv_aut
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_add
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreWeight_eq_finSepDegree
+GAP ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderIntegral_congr
+GAP ArakelovGeometry.AdelicStructure.Algebraic.isProper_algebraicExtension
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue
+GAP ArakelovGeometry.AdelicStructure.Algebraic.measurable_restrict_baseFiber
+GAP ArakelovGeometry.AdelicStructure.Algebraic.measurable_log_projective
+GAP ArakelovGeometry.AdelicStructure.algebraicExtension
+GAP ArakelovGeometry.AdelicStructure.Algebraic.measure
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.tsum_fibreWeight
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue_apply
+GAP ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.nonempty_smul
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fieldRange_completion_separableClosure
+GAP ArakelovGeometry.AdelicStructure.Algebraic.integral_fibreProbabilityMeasure_descend
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.integrable_log
+GAP ArakelovGeometry.AdelicStructure.Algebraic.measurable_proj_projective
+GAP ArakelovGeometry.AdelicStructure.Algebraic.map_fibreProbabilityMeasure_projFiniteFiber
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.map_inducedMeasure_proj
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measurableSpace_eq_comap_sup
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue._proof_1
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_inducedMeasure
+GAP ArakelovGeometry.AdelicStructure.finiteSeparableExtension
+GAP ArakelovGeometry.AdelicStructure.Algebraic.integrable_log_measure
+GAP ArakelovGeometry.AdelicStructure.Algebraic.integral_abs_fibreIntegral_le
+GAP ArakelovGeometry.AdelicStructure.Algebraic.integral_comp_proj_measure
+GAP ArakelovGeometry.AdelicStructure.Algebraic.integrable_measure_iff
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_one
+GAP ArakelovGeometry.AdelicStructure.Algebraic.lintegral_measure
+GAP ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.nonempty_add
+GAP ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.ϕ
+GAP ArakelovGeometry.AdelicStructure.Algebraic.integrable_comp_proj_measure
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.finite_extensionFiber
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_comp_restrict
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.isProper_finiteExtension
+GAP ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_proj
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measurable_log
+GAP ArakelovGeometry.exists_equiv_finiteExtension_finiteExtension
+GAP ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.nonempty_add
+GAP ArakelovGeometry.AdelicStructure.Algebraic.surjective_proj
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.isProper_finiteSeparableExtension
+GAP ArakelovGeometry.AdelicStructure.Algebraic.surjective_restrict
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.log_extendAbsoluteValue
+GAP ArakelovGeometry.exists_equiv_algebraicExtension_algebraicExtension
+GAP ArakelovGeometry.AdelicStructure.Algebraic.integral_measure
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_comp_proj_inducedMeasure
+GAP ArakelovGeometry.AdelicStructure.Algebraic.measure_apply
+GAP ArakelovGeometry.AdelicStructure.Algebraic.fibreLIntegral
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.lintegral_inducedMeasure
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.inducedMeasure_apply
+GAP ArakelovGeometry.AdelicStructure.Algebraic.measure._proof_1
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue._proof_2
+GAP ArakelovGeometry.AdelicStructure.Algebraic.fibreLIntegral.eq_1
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_fibreIntegral
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.pow_finInsepDegree_mem_separableClosure
+GAP ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_projFinite
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measure
+GAP ArakelovGeometry.AdelicStructure.Algebraic.projectiveMeasurableSpace_eq
+GAP ArakelovGeometry.AdelicStructure.Algebraic.measurable_fibreLIntegral
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_inducedMeasure_iff
+GAP ArakelovGeometry.AdelicStructure.finiteExtension
+GAP ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.nonempty_mul
+GAP ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.nonempty_smul
+GAP ArakelovGeometry.AdelicStructure.Algebraic.measurable_eval_projective
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.inducedMeasure
+GAP ArakelovGeometry.AdelicStructure.Algebraic.measurableSet_finiteBaseFiber
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.integral_log_eq_inv_finInsepDegree_mul
+GAP ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure_isProbability
+GAP ArakelovGeometry.AdelicStructure.Algebraic.map_measure_proj
+GAP ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral
+GAP AbsoluteValue.iSup_eq_limsup_sum_pow_rpow
+GAP ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_comp_proj
+AUDIT checked=521 sorryAx=75
+{
+  "schema_version": 1,
+  "fingerprint": "511327449ba75c8e",
+  "command": [
+    "lake",
+    "env",
+    "lean",
+    "/home/yijunyuan/ageo-workspace/ArakelovGeometry/scripts/audit_axioms.lean"
+  ],
+  "cwd": "ArakelovGeometry",
+  "status": "passed",
+  "ok": true,
+  "returncode": 0,
+  "timed_out": false,
+  "reused": false,
+  "wait_seconds": 0.0,
+  "duration_seconds": 92.751,
+  "started_at": "2026-09-16T02:47:20.831931+00:00",
+  "finished_at": "2026-09-16T02:48:59.036286+00:00",
+  "finished_epoch": 1789526939.036286
+}
