@@ -15,6 +15,7 @@ import Mathlib.Analysis.SpecificLimits.Normed
 import Mathlib.Data.Fin.Tuple.Sort
 import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
+import Mathlib.FieldTheory.Minpoly.IsConjRoot
 import Mathlib.FieldTheory.Normal.Basic
 import Mathlib.FieldTheory.SeparableClosure
 import Mathlib.FieldTheory.PurelyInseparable.Basic
@@ -477,6 +478,38 @@ theorem adjoin_embeddings_gen_injective (c : AlgebraicClosure K) :
   intro σ τ h
   apply (IntermediateField.adjoin.powerBasis (Algebra.IsIntegral.isIntegral c)).algHom_ext
   simpa only [IntermediateField.adjoin.powerBasis_gen] using h
+
+/-- The orbit of an algebraic element is exactly the root set of its minimal polynomial. -/
+theorem range_aut_eq_minpoly_rootSet (c : AlgebraicClosure K) :
+    Set.range (fun τ : AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K ↦ τ c) =
+      (minpoly K c).rootSet (AlgebraicClosure K) := by
+  ext a
+  rw [← isConjRoot_iff_mem_minpoly_rootSet (Algebra.IsIntegral.isIntegral c),
+    IsConjRoot.comm, isConjRoot_iff_exists_algEquiv]
+  rfl
+/-- A separable simple extension has one conjugate for each dimension over its base. -/
+theorem natCard_separable_orbit (c : AlgebraicClosure K) (hc : IsSeparable K c) :
+    Nat.card (Set.range (fun τ : AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K ↦ τ c)) =
+      Module.finrank K (IntermediateField.adjoin K {c}) := by
+  classical
+  let E := IntermediateField.adjoin K {c}
+  let : FiniteDimensional K E := IntermediateField.adjoin.finiteDimensional hc.isIntegral
+  let : Algebra.IsSeparable K E :=
+    (IntermediateField.isSeparable_adjoin_simple_iff_isSeparable K (AlgebraicClosure K)).mpr hc
+  have hrange : Set.range (fun τ : AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K ↦ τ c) =
+      Set.range (fun σ : E →ₐ[K] AlgebraicClosure K ↦
+        σ (IntermediateField.AdjoinSimple.gen K c)) := by
+    ext a
+    constructor
+    · rintro ⟨τ, rfl⟩
+      exact ⟨τ.toAlgHom.comp E.val, rfl⟩
+    · rintro ⟨σ, rfl⟩
+      obtain ⟨τ, hτ⟩ := adjoin_restrict_aut_surjective K c σ
+      exact ⟨τ, congrArg (fun f : E →ₐ[K] AlgebraicClosure K ↦
+        f (IntermediateField.AdjoinSimple.gen K c)) hτ⟩
+  rw [hrange, ← Nat.card_congr (Equiv.ofInjective _
+    (adjoin_embeddings_gen_injective K c)), Nat.card_eq_fintype_card]
+  exact AlgHom.card K E (AlgebraicClosure K)
 
 /-- Chen--Moriwaki, Lemma 3.3.5(2): given any choice of extensions of the base absolute
 values to an algebraic closure of `K`, the maximal absolute value on the Galois orbit of a

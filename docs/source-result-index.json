@@ -1,0 +1,350 @@
+[
+  {
+    "result": "3.3.setup",
+    "sources": [
+      "chen-moriwaki-adelic:page-0194",
+      "chen-moriwaki-adelic:page-0195"
+    ],
+    "claim": "Extension parameters, completed local factorization, local-degree probability weights and the finite fibre operator.",
+    "nodes": [
+      "def:extension-parameters",
+      "lem:local-factorization",
+      "lem:finite-extension-fibres",
+      "lem:fibre-normalization",
+      "def:weighted-fibre-integral",
+      "lem:fibre-one",
+      "lem:fibre-additivity",
+      "lem:fibre-homogeneity"
+    ]
+  },
+  {
+    "result": "3.3.1",
+    "sources": [
+      "chen-moriwaki-adelic:page-0195"
+    ],
+    "claim": "Multiplication by an arbitrary base function commutes with fibre integration.",
+    "nodes": [
+      "prop:fibre-base-multiplication"
+    ]
+  },
+  {
+    "result": "3.3.2",
+    "sources": [
+      "chen-moriwaki-adelic:page-0195",
+      "chen-moriwaki-adelic:page-0196"
+    ],
+    "claim": "Restriction along a finite separable tower preserves the fibre integral of pullbacks.",
+    "nodes": [
+      "prop:fibre-restriction"
+    ]
+  },
+  {
+    "result": "3.3.3",
+    "sources": [
+      "chen-moriwaki-adelic:page-0196"
+    ],
+    "claim": "Integration retracts arbitrary real base pullback.",
+    "nodes": [
+      "cor:fibre-pullback"
+    ]
+  },
+  {
+    "result": "3.3.4",
+    "sources": [
+      "chen-moriwaki-adelic:page-0196",
+      "chen-moriwaki-adelic:page-0198",
+      "chen-moriwaki-adelic:page-0199",
+      "chen-moriwaki-adelic:page-0200"
+    ],
+    "claim": "Measurability of finite separable real fibre integration, including the bounded-generator and functional closure proof steps.",
+    "nodes": [
+      "lem:measurable-evaluation-average",
+      "lem:bounded-evaluation-generators",
+      "lem:functional-monotone-class",
+      "lem:sequential-functional-monotone-class",
+      "thm:measurable-fibre-integral",
+      "lem:bounded-fibre-measurability",
+      "cor:measurable-fibre-integral-by-truncation"
+    ]
+  },
+  {
+    "result": "3.3.5",
+    "sources": [
+      "chen-moriwaki-adelic:page-0196",
+      "chen-moriwaki-adelic:page-0197",
+      "chen-moriwaki-adelic:page-0198"
+    ],
+    "claim": "Power sums recover the largest absolute value; separable orbit maxima are measurable.",
+    "nodes": [
+      "lem:power-sum-radius",
+      "lem:separable-orbit-cardinality",
+      "lem:orbit-power-sums",
+      "lem:orbit-maximum"
+    ]
+  },
+  {
+    "result": "3.3.6",
+    "sources": [
+      "chen-moriwaki-adelic:page-0200"
+    ],
+    "claim": "Induced measure defined by fibre probabilities.",
+    "nodes": [
+      "def:separable-induced-measure"
+    ]
+  },
+  {
+    "result": "3.3.7(1)",
+    "sources": [
+      "chen-moriwaki-adelic:page-0201"
+    ],
+    "claim": "Countable additivity and nonnegative disintegration.",
+    "nodes": [
+      "def:separable-induced-measure",
+      "thm:separable-lintegral"
+    ]
+  },
+  {
+    "result": "3.3.7(2)",
+    "sources": [
+      "chen-moriwaki-adelic:page-0201",
+      "chen-moriwaki-adelic:page-0202"
+    ],
+    "claim": "Integrability criterion and signed disintegration.",
+    "nodes": [
+      "thm:separable-integrability",
+      "thm:separable-integral"
+    ]
+  },
+  {
+    "result": "3.3.7(3)",
+    "sources": [
+      "chen-moriwaki-adelic:page-0201",
+      "chen-moriwaki-adelic:page-0202"
+    ],
+    "claim": "Projection pushforward, pullback integrability and integral identities.",
+    "nodes": [
+      "prop:separable-pushforward",
+      "lem:separable-pullback-integrability",
+      "cor:separable-pullback-integral"
+    ]
+  },
+  {
+    "result": "3.3.7(4)",
+    "sources": [
+      "chen-moriwaki-adelic:page-0201",
+      "chen-moriwaki-adelic:page-0202",
+      "chen-moriwaki-adelic:page-0203"
+    ],
+    "claim": "Logarithmic integrability makes the separable scalar extension an adelic curve.",
+    "nodes": [
+      "lem:algebraic-root-bound",
+      "lem:log-root-bound",
+      "thm:separable-log-integrable",
+      "def:separable-extension"
+    ]
+  },
+  {
+    "result": "3.3.7(5)",
+    "sources": [
+      "chen-moriwaki-adelic:page-0201",
+      "chen-moriwaki-adelic:page-0203",
+      "chen-moriwaki-adelic:page-0204"
+    ],
+    "claim": "Norm-integral formula and preservation of properness.",
+    "nodes": [
+      "lem:fibre-log-norm",
+      "prop:separable-norm-integral",
+      "prop:separable-proper"
+    ]
+  },
+  {
+    "result": "3.4.setup",
+    "sources": [
+      "chen-moriwaki-adelic:page-0204",
+      "chen-moriwaki-adelic:page-0205"
+    ],
+    "claim": "Finite separable part and unique purely inseparable extension of absolute values.",
+    "nodes": [
+      "lem:finite-separable-part",
+      "lem:inseparable-power",
+      "lem:inseparable-absolute-value",
+      "lem:inseparable-extension-unique",
+      "lem:inseparable-log"
+    ]
+  },
+  {
+    "result": "3.4.1",
+    "sources": [
+      "chen-moriwaki-adelic:page-0205"
+    ],
+    "claim": "Arbitrary finite scalar extension, its inherited measure and fibre operator.",
+    "nodes": [
+      "def:finite-parameters",
+      "def:finite-measure",
+      "def:finite-extension",
+      "def:finite-fibre-integral",
+      "lem:finite-log-integrable",
+      "prop:finite-proper",
+      "lem:finite-parameter-identification",
+      "lem:finite-measurable-space"
+    ]
+  },
+  {
+    "result": "3.4.2",
+    "sources": [
+      "chen-moriwaki-adelic:page-0205",
+      "chen-moriwaki-adelic:page-0206"
+    ],
+    "claim": "The completed separable part is the separable closure of the completed base.",
+    "nodes": [
+      "lem:completion-separable-closure"
+    ]
+  },
+  {
+    "result": "3.4.3",
+    "sources": [
+      "chen-moriwaki-adelic:page-0206"
+    ],
+    "claim": "Finite fibre weights expressed by local and global separable degrees.",
+    "nodes": [
+      "lem:finite-separable-weight",
+      "rem:completion-factorization-indices"
+    ]
+  },
+  {
+    "result": "3.4.4",
+    "sources": [
+      "chen-moriwaki-adelic:page-0206",
+      "chen-moriwaki-adelic:page-0207"
+    ],
+    "claim": "Arbitrary finite tower equivalence, operator compatibility and measure transport.",
+    "nodes": [
+      "lem:finite-tower-parameters",
+      "lem:finite-tower-weights",
+      "lem:finite-fibre-tower",
+      "prop:finite-tower",
+      "rem:finite-tower-evaluation-domain"
+    ]
+  },
+  {
+    "result": "3.4.5",
+    "sources": [
+      "chen-moriwaki-adelic:page-0208"
+    ],
+    "claim": "Surjective finite-stage restriction, inverse-limit fibres and projective measurable spaces.",
+    "nodes": [
+      "prop:algebraic-restriction-surjective",
+      "lem:compact-algebraic-fibre",
+      "def:projective-measurable"
+    ]
+  },
+  {
+    "result": "3.4.6",
+    "sources": [
+      "chen-moriwaki-adelic:page-0208",
+      "chen-moriwaki-adelic:page-0209"
+    ],
+    "claim": "Cylinder algebra, normalized positive linear functional and induced fibre probability with prescribed finite marginals.",
+    "nodes": [
+      "lem:cylinder-algebra",
+      "lem:cylinder-constants",
+      "lem:cylinder-integral-independent",
+      "lem:cylinder-functional",
+      "lem:cylinder-premeasure",
+      "lem:cylinder-outer-measure",
+      "def:algebraic-fibre-probability",
+      "prop:algebraic-fibre-marginals",
+      "rem:cylinder-borel-distinction"
+    ]
+  },
+  {
+    "result": "3.4.7",
+    "sources": [
+      "chen-moriwaki-adelic:page-0209"
+    ],
+    "claim": "Global cylinder linear operator and base retraction.",
+    "nodes": [
+      "lem:global-cylinder-functional",
+      "lem:algebraic-integral-pullback"
+    ]
+  },
+  {
+    "result": "3.4.8",
+    "sources": [
+      "chen-moriwaki-adelic:page-0210"
+    ],
+    "claim": "Measurable nonnegative fibre integration and the induced algebraic-extension measure.",
+    "nodes": [
+      "lem:algebraic-fibre-measurable",
+      "prop:algebraic-kernel-measurable",
+      "def:algebraic-measure",
+      "prop:algebraic-lintegral"
+    ]
+  },
+  {
+    "result": "3.4.9",
+    "sources": [
+      "chen-moriwaki-adelic:page-0210",
+      "chen-moriwaki-adelic:page-0211"
+    ],
+    "claim": "Nonnegative integrability criterion, signed disintegration, continuous linear L1 operator and base pullback.",
+    "nodes": [
+      "prop:algebraic-integrability",
+      "prop:algebraic-signed-disintegration",
+      "cor:algebraic-L1-operator",
+      "prop:algebraic-base-pullback"
+    ]
+  },
+  {
+    "result": "3.4.10",
+    "sources": [
+      "chen-moriwaki-adelic:page-0211"
+    ],
+    "claim": "Measurable integrable logarithmic evaluations and preservation of properness.",
+    "nodes": [
+      "prop:algebraic-log-integrable",
+      "prop:algebraic-proper"
+    ]
+  },
+  {
+    "result": "3.4.11",
+    "sources": [
+      "chen-moriwaki-adelic:page-0212"
+    ],
+    "claim": "The algebraic scalar-extension adelic curve.",
+    "nodes": [
+      "def:algebraic-extension"
+    ]
+  },
+  {
+    "result": "3.4.12",
+    "sources": [
+      "chen-moriwaki-adelic:page-0212",
+      "chen-moriwaki-adelic:page-0213",
+      "chen-moriwaki-adelic:page-0214"
+    ],
+    "claim": "Canonical algebraic tower equivalence and nonnegative/signed-compatible integration, using faithful domain and finite-descent corrections.",
+    "nodes": [
+      "lem:finite-descent-separable",
+      "lem:descended-base-change",
+      "lem:algebraic-tower-cylinders",
+      "thm:algebraic-tower-lintegral",
+      "lem:algebraic-tower-equivalence",
+      "lem:algebraic-tower-signed",
+      "thm:algebraic-tower",
+      "rem:algebraic-tower-source-repair",
+      "rem:signed-tower-domain"
+    ]
+  },
+  {
+    "result": "3.4.13",
+    "sources": [
+      "chen-moriwaki-adelic:page-0214",
+      "chen-moriwaki-adelic:page-0215"
+    ],
+    "claim": "The projective sigma algebra is generated by the base projection and all evaluations.",
+    "nodes": [
+      "prop:projective-measurable-equality"
+    ]
+  }
+]

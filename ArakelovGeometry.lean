@@ -7,6 +7,8 @@ import ArakelovGeometry.ExternalResults.AbsoluteValue
 import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
 import ArakelovGeometry.ExternalResults.AbsoluteValueRootBounds
 import ArakelovGeometry.ExternalResults.AbsoluteValueLocal
+import ArakelovGeometry.ExternalResults.AbsoluteValueTensor
+import ArakelovGeometry.ExternalResults.BoundedFunctionalMonotoneClass
 import ArakelovGeometry.ExternalResults.Place
 import ArakelovGeometry.ExternalResults.Measure
 import ArakelovGeometry.ExternalResults.Ostrowski
@@ -15,6 +17,7 @@ import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicCurve.Amalgamation
 import ArakelovGeometry.AdelicCurve.Restriction
 import ArakelovGeometry.AdelicCurve.Extension
+import ArakelovGeometry.AdelicCurve.BoundedEvaluationGenerators
 import ArakelovGeometry.AdelicCurve.FiniteTower
 import ArakelovGeometry.AdelicCurve.FiniteProbability
 import ArakelovGeometry.AdelicCurve.AlgebraicProbability
@@ -24,6 +27,8 @@ import ArakelovGeometry.AdelicCurve.AlgebraicTowerBasic
 import ArakelovGeometry.AdelicCurve.AlgebraicTowerCylinder
 import ArakelovGeometry.AdelicCurve.AlgebraicTowerIntegral
 import ArakelovGeometry.AdelicCurve.AlgebraicIntegrable
+import ArakelovGeometry.AdelicCurve.AlgebraicCylinder
+import ArakelovGeometry.AdelicCurve.AlgebraicInverseLimit
 import ArakelovGeometry.AdelicCurve.AlgebraicTower
 import ArakelovGeometry.ExternalResults.AlgebraicTowerSupport
 import ArakelovGeometry.AdelicCurve.Examples.Trivial

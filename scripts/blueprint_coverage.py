@@ -84,7 +84,12 @@ def inventory_provenance(paths, record):
         return ["Missing inventory provenance; run --record-provenance after the required checks"]
     evidence = json.loads(manifest.read_text())
     saved = evidence["sources_and_inventory_sha256"]
-    return [p for p in sorted(current.keys() | saved.keys()) if current.get(p) != saved.get(p)]
+    stale = [p for p in sorted(current.keys() | saved.keys()) if current.get(p) != saved.get(p)]
+    for name, digest in evidence.get("compiled_artifacts_sha256", {}).items():
+        artifact = ROOT / name
+        if not artifact.exists() or sha256(artifact) != digest:
+            stale.append(name)
+    return stale
 
 
 def included_blueprints():
@@ -101,6 +106,44 @@ def included_blueprints():
             child = path.parent / name
             pending.append(child if child.suffix else child.with_suffix(".tex"))
     return sorted(seen)
+
+
+def imported_boundary_provenance(record, audited):
+    """Bind imported producer evidence to its check and exact library inputs."""
+    manifest = ROOT / "docs/imported-boundary-provenance.json"
+    paths = [ROOT / p for p in (
+        "docs/imported-boundaries.json", "docs/imported-boundary-audit.json",
+        "scripts/audit_imported_boundaries.lean", "lake-manifest.json",
+        "lean-toolchain", ".lake/build/lib/lean/ArakelovGeometry.olean")]
+    for mod in sorted({r["module"] for r in audited}):
+        paths.append(ROOT / ".lake/packages/mathlib/.lake/build/lib/lean" /
+                     (mod.replace(".", "/") + ".olean"))
+    absent = [str(p.relative_to(ROOT)) for p in paths if not p.exists()]
+    if absent:
+        return ["Missing imported audit input: " + p for p in absent]
+    current = {str(p.relative_to(ROOT)): sha256(p) for p in paths}
+    if record:
+        session = Path(os.environ["ARCHON_HORIZON_SESSION_DIR"])
+        checks = [json.loads(p.read_text()) for p in (session / "checks").glob("*.json")]
+        builds = [c for c in checks if c.get("ok") and c.get("command") == ["lake", "build"]]
+        audits = [c for c in checks if c.get("ok") and
+                  c.get("command", [""])[-1].endswith("scripts/audit_imported_boundaries.lean")]
+        if not builds or not audits:
+            return ["Record imported provenance after a configured build and imported audit"]
+        build = max(builds, key=lambda c: c["finished_epoch"])
+        audit = max(audits, key=lambda c: c["finished_epoch"])
+        if audit["finished_epoch"] < build["finished_epoch"]:
+            return ["Imported audit predates configured build"]
+        if any(p.stat().st_mtime > audit["finished_epoch"] for p in paths):
+            return ["Imported audit inputs changed after the recorded audit"]
+        manifest.write_text(json.dumps({"inputs_sha256": current,
+                                        "build": build, "audit": audit}, indent=2) + "\n")
+    if not manifest.exists():
+        return ["Missing imported audit provenance"]
+    evidence = json.loads(manifest.read_text())
+    saved = evidence["inputs_sha256"]
+    return ["Stale imported audit input: " + p for p in sorted(current.keys() | saved.keys())
+            if current.get(p) != saved.get(p)]
 
 
 def lean_code(text):
@@ -169,9 +212,13 @@ def blueprint_nodes():
                      for s in x.split(",") if s.strip()]
             anchors = [s.strip() for x in re.findall(r"\\source\{([^}]+)\}", body)
                        for s in x.split(",") if s.strip()]
+            library_refs = [s.strip() for x in re.findall(r"\\dcref\{([^}]+)\}", body)
+                            for s in x.split(",") if s.strip()]
             nodes[label] = {"file": str(path.relative_to(ROOT)), "uses": uses,
                             "lean": names, "sources": anchors,
+                            "library_references": library_refs,
                             "leanok": r"\leanok" in body,
+                            "mathlibok": r"\mathlibok" in body,
                             "notready": r"\notready" in body}
             for name in names:
                 attached.setdefault(name, []).append(label)
@@ -181,6 +228,8 @@ def blueprint_nodes():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--require-complete", action="store_true")
+    parser.add_argument("--require-closed", action="store_true",
+                        help="also reject proof gaps and uncovered mathematical nodes")
     parser.add_argument("--record-provenance", action="store_true")
     args = parser.parse_args()
     rows = json.loads((ROOT / "docs/declaration-inventory.json").read_text())
@@ -231,6 +280,11 @@ def main():
         "ArakelovGeometry.AdelicCurve.AlgebraicTowerCylinder",
         "ArakelovGeometry.AdelicCurve.AlgebraicTowerIntegral",
         "ArakelovGeometry.AdelicCurve.AlgebraicIntegrable",
+        "ArakelovGeometry.AdelicCurve.AlgebraicCylinder",
+        "ArakelovGeometry.AdelicCurve.AlgebraicInverseLimit",
+        "ArakelovGeometry.AdelicCurve.BoundedEvaluationGenerators",
+        "ArakelovGeometry.ExternalResults.AbsoluteValueTensor",
+        "ArakelovGeometry.ExternalResults.BoundedFunctionalMonotoneClass",
         "ArakelovGeometry.ExternalResults.AlgebraicTowerSupport",
         "ArakelovGeometry.AdelicCurve.AlgebraicProbability",
         "ArakelovGeometry.AdelicCurve.AlgebraicFiniteProjection",
@@ -259,7 +313,6 @@ def main():
             row["blueprint_nodes"] = attached.get(GENERATED_SUPPORT[name], [])
         row["project_dependencies"] = [d for d in row["dependencies"] if d in by_name]
         row["external_dependencies"] = [d for d in row["dependencies"] if d not in by_name]
-    missing = [r["name"] for r in target if not r["blueprint_nodes"]]
     unknown = sorted(set(attached) - set(by_name))
     dangling = [(n, d) for n, v in nodes.items() for d in v["uses"] if d not in nodes]
     missing_sources = []
@@ -310,6 +363,18 @@ def main():
                                 "instance_owner" if row.get("implementation_owner") and row["blueprint_nodes"] else
                                 "generated_support" if row.get("generated_support_for") and row["blueprint_nodes"] else
                                 "dependency_support" if row.get("supports_nodes") else "unmapped")
+    # Private proof helpers and compiler-generated subordinate constants may
+    # be mapped through their actual compiled consumer cone. This is support,
+    # never a formalizes attachment. Public authored target declarations still
+    # require their own mathematical mapping, and absent support paths fail.
+    def private_or_generated(row):
+        return (row["name"].startswith("_private.") or
+                bool(row["authored_declaration"] and
+                     row["authored_declaration"] != row["name"]) or
+                row["name"] in GENERATED_SUPPORT)
+
+    missing = [r["name"] for r in target if not r["blueprint_nodes"] and
+               not (private_or_generated(r) and r.get("supports_nodes"))]
 
     def reachable(label):
         todo, seen = [label], set()
@@ -343,6 +408,74 @@ def main():
                 missing_routes.append(witness)
     nonstandard = [(r["name"], a) for r in rows for a in r["axioms"]
                    if a not in {"propext", "Classical.choice", "Quot.sound", "sorryAx"}]
+    # Imported theorems remain external references. A source node needs an
+    # explicit, kernel-audited boundary and actual project consumers.
+    boundary_path = ROOT / "docs/imported-boundaries.json"
+    audit_path = ROOT / "docs/imported-boundary-audit.json"
+    boundaries = json.loads(boundary_path.read_text()) if boundary_path.exists() else {}
+    false_completion.extend(label for label, node in nodes.items()
+                            if node["mathlibok"] and
+                            (label not in boundaries or node["lean"] or node["leanok"]))
+    audited = json.loads(audit_path.read_text()) if audit_path.exists() else []
+    checked = {(r["node"], r["name"]): r for r in audited}
+    boundary_errors = imported_boundary_provenance(args.record_provenance, audited) if boundaries else []
+    for label, boundary in boundaries.items():
+        node = nodes.get(label)
+        if node is None:
+            boundary_errors.append([label, "unknown blueprint node"])
+            continue
+        if node["lean"] or node["leanok"] or node["notready"]:
+            boundary_errors.append([label, "imported boundary has project or unproved status"])
+        producers = set(boundary["producers"])
+        if not producers or not producers <= set(node["library_references"]):
+            boundary_errors.append([label, "missing exact library references"])
+        for name in producers:
+            evidence = checked.get((label, name))
+            if (not evidence or name in by_name or
+                    evidence.get("module", "").startswith("ArakelovGeometry") or
+                    any(a not in {"propext", "Classical.choice", "Quot.sound"}
+                        for a in evidence.get("axioms", []))):
+                boundary_errors.append([label, name, "missing or invalid imported axiom audit"])
+        uses = {}
+        for consumer in boundary["consumers"]:
+            if consumer not in by_name:
+                boundary_errors.append([label, consumer, "unknown project consumer"])
+                continue
+            todo, seen, external = [consumer], set(), set()
+            while todo:
+                name = todo.pop()
+                if name in seen:
+                    continue
+                seen.add(name)
+                row = by_name[name]
+                external.update(row["external_dependencies"])
+                todo.extend(row["project_dependencies"])
+            uses[consumer] = sorted(producers & external)
+        if not any(uses.values()):
+            boundary_errors.append([label, "no compiled route to any imported producer"])
+        boundary["compiled_consumer_uses"] = uses
+    unsupported_nodes = [label for label, node in nodes.items()
+                         if not label.startswith("rem:") and not node["lean"]
+                         and label not in boundaries]
+    source_index = json.loads((ROOT / "docs/source-result-index.json").read_text())
+    expected_results = ({"3.3.setup", "3.4.setup"} |
+                        {f"3.3.{n}" for n in range(1, 7)} |
+                        {f"3.3.7({n})" for n in range(1, 6)} |
+                        {f"3.4.{n}" for n in range(1, 14)})
+    indexed_results = [r["result"] for r in source_index]
+    source_index_errors = []
+    if set(indexed_results) != expected_results or len(indexed_results) != len(expected_results):
+        source_index_errors.append("Numbered source-result inventory is incomplete or duplicated")
+    for entry in source_index:
+        if not entry["nodes"] or not entry["sources"]:
+            source_index_errors.append([entry["result"], "missing nodes or exact source pages"])
+        for label in entry["nodes"]:
+            if label not in nodes:
+                source_index_errors.append([entry["result"], label, "unknown blueprint node"])
+        for anchor in entry["sources"]:
+            slug, _, page = anchor.partition(":")
+            if not (ROOT.parent / "references" / slug / "tex" / (page + ".tex")).exists():
+                source_index_errors.append([entry["result"], anchor, "missing source page"])
     result = {"summary": {"project_constants": len(rows), "target_constants": len(target),
               "direct_gaps": len(gaps), "sorry_backed_constants": sum("sorryAx" in r["axioms"] for r in rows),
               "blueprint_nodes": len(nodes), "unmapped_target_constants": len(missing),
@@ -363,6 +496,16 @@ def main():
               "unmapped_project": unmapped_project, "stale_inventory": stale_inventory,
               "missing_compiled_dependency_routes": missing_routes,
               "elaboration_dependencies": elaboration_dependencies}
+    result["summary"].update({"imported_boundary_nodes": len(boundaries),
+                              "imported_boundary_errors": len(boundary_errors),
+                              "unsupported_source_nodes": len(unsupported_nodes),
+                              "indexed_source_results": len(source_index),
+                              "source_index_errors": len(source_index_errors)})
+    result.update({"imported_boundaries": boundaries,
+                   "imported_boundary_errors": boundary_errors,
+                   "unsupported_source_nodes": unsupported_nodes,
+                   "source_result_index": source_index,
+                   "source_index_errors": source_index_errors})
     (ROOT / "docs/blueprint-coverage.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")
     lines = ["# Complete extension obligation inventory", "",
              "Generated by `scripts/blueprint_coverage.py` from the compiled project inventory.",
@@ -386,11 +529,16 @@ def main():
               "is not a formalizes attachment. Completeness checks every project constant.", ""]
     (ROOT / "docs/obligations.md").write_text("\n".join(lines))
     print(json.dumps(result["summary"], indent=2))
-    if args.require_complete and (missing or unknown or dangling or nonstandard
+    if (args.require_complete or args.require_closed) and (missing or unknown or dangling or nonstandard
                                  or missing_sources or cycles or false_completion or unmapped_project
                                  or stale_inventory or missing_routes
+                                 or source_index_errors
                                  or any(not g["nodes"] for g in gaps)):
         raise SystemExit("Incomplete blueprint coverage; see docs/blueprint-coverage.json")
+    if args.require_closed and (gaps or any("sorryAx" in r["axioms"] for r in rows)
+                                or any(n["notready"] for n in nodes.values())
+                                or unsupported_nodes or boundary_errors):
+        raise SystemExit("Unclosed mathematical obligations; see docs/blueprint-coverage.json")
 
 
 if __name__ == "__main__":

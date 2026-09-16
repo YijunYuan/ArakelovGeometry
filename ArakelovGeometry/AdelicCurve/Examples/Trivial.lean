@@ -39,7 +39,8 @@ noncomputable abbrev trivialAdelicCurve (K : Type*) [Field K]
 open Classical in
 /-- The trivial adelic curve is proper: the integrand of the product formula vanishes
 identically. -/
-noncomputable instance (K : Type*) [Field K] (Ω : Type*) [A : MeasurableSpace Ω]
+noncomputable instance instIsProperTrivialAdelicCurve
+    (K : Type*) [Field K] (Ω : Type*) [A : MeasurableSpace Ω]
     (v : Measure Ω) : IsProper (trivialAdelicCurve K Ω v) := by
   constructor
   intro x hx
