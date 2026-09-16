@@ -262,7 +262,8 @@ It is therefore an automorphism restricting to the given embedding.
 \end{proof}
 
 \begin{lemma}[Counting a separable orbit]\label{lem:separable-orbit-cardinality}
-\notready
+\leanok
+\lean{ArakelovGeometry.AdelicStructure.range_aut_eq_minpoly_rootSet,ArakelovGeometry.AdelicStructure.natCard_separable_orbit}
 \uses{lem:separable-orbit-embeddings}
 \source{chen-moriwaki-adelic:page-0198}
 For a separable element $c$ over $K$ in an algebraic closure $C$, the
@@ -342,9 +343,10 @@ are finite, so it is a measurable real function.
 \end{proof}
 
 \begin{lemma}[Counting embeddings above a place]\label{lem:conjugate-count}
+\leanok
 \source{chen-moriwaki-adelic:page-0198,chen-moriwaki-adelic:page-0199}
-\uses{lem:local-factorization,lem:complete-extension}
-\notready
+\uses{lem:embedding-count-algclosed,lem:weighted-embedding-sums,lem:finite-fibre-sums}
+\lean{AbsoluteValue.card_embeddings_eq_localDegree_of_isAlgClosed,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_eval_eq_sum_embeddings}
 Fix $\omega$ and realize $\overline K$ inside an algebraic closure of
 $K_\omega$, with its extended absolute value. Among the $n$ embeddings
 $\sigma:L\hookrightarrow\overline K$ over $K$, the number inducing
@@ -355,26 +357,24 @@ a given $x\in X_\omega$ is $[L_x:K_\omega]$. Consequently, for $b\in L$,
 \]
 \end{lemma}
 \begin{proof}
-Every $K$-embedding of $L$ into the algebraic closure of $K_\omega$
-extends uniquely to a $K_\omega$-algebra homomorphism on
-$K_\omega\otimes_KL$, by $a\otimes b\mapsto a\sigma(b)$.
-This algebra is the product of the separable fields $L_x$.
-A homomorphism from this product to an algebraically closed field
-selects exactly one factor: its idempotents have images zero or one,
-and their sum is one. A separable factor $L_x$ has exactly
-$[L_x:K_\omega]$ embeddings into the algebraic closure of $K_\omega$.
-Each gives the absolute value $x$ on $L$, by uniqueness of extension
-of the absolute value from the complete field $K_\omega$ to its algebraic
-extensions. Distinct factors correspond to distinct absolute values,
-so the embeddings inducing $x$ are precisely those selecting $L_x$.
-The subfield of elements algebraic over $K$ in the chosen algebraic
-closure of $K_\omega$ is exactly the image of $\overline K$: an element
-algebraic over $K$ is algebraic over that image, and an algebraically
-closed field has no proper algebraic field extension. Thus these are
-exactly the embeddings $L\hookrightarrow\overline K$ in the statement.
-For every such embedding selecting $L_x$, the absolute value of
-$\sigma b$ is $|b|_x$. Grouping the $n$ embeddings by the selected
-factor therefore gives
+Fix an extending absolute value $x$. An embedding inducing $x$ is
+an isometry on $L$, so it extends uniquely to the completion $L_x$.
+The completed-base linear span of its image is finite dimensional,
+hence complete, so the extended image remains in the chosen algebraic
+closure of $K_\omega$. Conversely, every $K_\omega$-embedding of
+$L_x$ into that closure preserves its absolute value, by uniqueness
+over the complete base. Restriction and extension are inverse. Since
+$L_x/K_\omega$ is separable, it has exactly $[L_x:K_\omega]$ such
+embeddings. This is the completion-embedding count of
+Lemma~\ref{lem:embedding-count-algclosed}.
+
+The subfield of elements algebraic over $K$ in this algebraic closure
+is the image of $\overline K$: an element algebraic over $K$ is
+algebraic over that image, and an algebraically closed field has no
+proper algebraic extension. Thus all the embeddings in the count
+take their values in the indicated copy of $\overline K$.
+Every embedding inducing $x$ has $|\sigma b|_\omega=|b|_x$.
+Grouping the $n$ embeddings by their induced absolute value gives
 \[
  \frac1n\sum_\sigma|\sigma b|_\omega
  =\sum_{x\in X_\omega}\frac{[L_x:K_\omega]}n|b|_x
@@ -572,8 +572,10 @@ localization is imposed.
 \end{proof}
 
 \begin{lemma}[A coefficient bound for roots]\label{lem:algebraic-root-bound}
+\leanok
 \source{chen-moriwaki-adelic:page-0200}
-\notready
+\uses{lem:root-bound-from-sums}
+\lean{AbsoluteValue.apply_root_le_degree_mul}
 If $b$ satisfies $b^m+\mu_1b^{m-1}+\cdots+\mu_m=0$ with $m\geq1$
 and $\mu_i\in K$, then for $x\in X_\omega$,
 \[
@@ -588,9 +590,10 @@ $1\leq\sum_{i=1}^m|\mu_i|_\omega/r^i\leq mM/r<1$, a contradiction.
 \end{proof}
 
 \begin{lemma}[Bounded multiplicative generators]\label{lem:bounded-evaluation-generators}
+\leanok
 \source{chen-moriwaki-adelic:page-0199,chen-moriwaki-adelic:page-0200}
-\uses{def:extension-parameters,def:adelic-structure,lem:algebraic-root-bound}
-\notready
+\uses{def:extension-parameters,def:adelic-structure,lem:algebraic-root-bound,lem:extension-coordinates}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.boundedEvaluationGenerators, ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.one_mem_boundedEvaluationGenerators, ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.mul_mem_boundedEvaluationGenerators, ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurableSpace_eq_iSup_comap_boundedEvaluationGenerators}
 Let $C$ consist of the bounded nonnegative functions on $\Omega_L$ of
 the form $e_b(\varphi\circ\pi)$, where $b\in L$ and $\varphi$ is a
 bounded nonnegative measurable function on $\Omega$. Then $1\in C$,
@@ -606,29 +609,37 @@ For every $A\in\mathcal A$, choosing $b=1$ and $\varphi=\mathbf1_A$
 shows that $\mathbf1_{\pi^{-1}A}\in C$; hence the projection is
 $\sigma(C)$-measurable.
 
-Fix $b\in L$ and its monic minimal polynomial of degree $m$. Set
-$A_N=\{\omega:\max_i|\mu_i|_\omega\leq N\}$ for positive integers $N$.
-These sets are measurable and increase to $\Omega$. The preceding root
-bound gives $0\leq e_b(\mathbf1_{A_N}\circ\pi)\leq m\max(1,N)$.
+Fix $b\in L$ and its monic minimal polynomial
+$T^m+\sum_{i<m}\mu_iT^i$. The function
+$M(\omega)=1+\sum_{i<m}|\mu_i|_\omega$ is measurable, at least one,
+and bounds the absolute value of every nonleading coefficient.
+The preceding root bound gives $e_b\leq B\circ\pi$, where
+$B=mM$. Set $A_N=\{\omega:B(\omega)\leq N\}$ for integers $N\geq0$.
+These sets are measurable and increase to $\Omega$, and
+$0\leq e_b(\mathbf1_{A_N}\circ\pi)\leq N$.
 Thus each such function belongs to $C$, and their pointwise limit is
 $e_b$. Every evaluation is therefore $\sigma(C)$-measurable. Together
 with the projection these generate $\mathcal A_L$, proving equality.
 \end{proof}
 
 \begin{lemma}[Bounded functional monotone closure]\label{lem:functional-monotone-class}
+\leanok
 \source{chen-moriwaki-adelic:page-0199}
-\notready
+\lean{MeasureTheory.measurable_mem_of_bounded_pointwise_closed}
 Let $C$ be a multiplicatively closed family of bounded real functions
 on a set $X$ containing $1$. Suppose a real vector space $H$ of bounded
 functions contains $C$ and is closed under pointwise limits of uniformly
 bounded sequences. Then $H$ contains every bounded $\sigma(C)$-measurable
 real function.
+The same conclusion holds if $H$ also contains unbounded functions,
+provided the stated closure under uniformly bounded sequences holds.
 \end{lemma}
 \begin{proof}
 This vector-space formulation supplies the functional monotone-class
 step used in the proof of Theorem 3.3.4.
-Let $D$ be the intersection of all vector spaces of bounded functions
-containing $C$ and closed under such limits. Then $D\subseteq H$ and
+Let $D$ be the intersection of all vector spaces containing $C$ and
+closed under such limits. The bounded functions themselves form one
+such space, so every member of $D$ is bounded. Then $D\subseteq H$ and
 $D$ contains the algebra $A$ spanned by $C$. For fixed $g\in A$, the
 set $\{f\in D:fg\in D\}$ is a vector space with the same limit closure
 and contains $A$. Its closure property follows because $g$ is bounded.
@@ -636,13 +647,14 @@ Minimality gives $fg\in D$ for all $f\in D$. Fixing now $f\in D$ and
 applying the same argument to $\{g\in D:fg\in D\}$ shows that $D$ is
 an algebra.
 
-To see that $|f|\in D$, first rescale to $|f|\leq1$. Define
-$q_0=0$ and $q_{j+1}=q_j+(f^2-q_j^2)/2$. These are polynomials in $f$.
-Pointwise, $0\leq q_j\leq|f|$ and $q_j$ increases: if $0\leq q\leq t\leq1$,
-then $0\leq(t^2-q^2)/2\leq t-q$. Its limit $q$ satisfies
-$q=q+(f^2-q^2)/2$, hence $q=|f|$. The limit closure proves the claim;
-rescaling removes the bound one. Thus positive parts and finite minima
-belong to $D$. For $f\in D$ and $r\in\mathbb R$, the bounded functions
+To see that $|f|\in D$, choose $M\geq0$ bounding $|f|$. Polynomial
+approximation on $[-M,M]$ gives polynomials $P_j$ such that
+$|P_j(t)-|t||<1/(j+1)$ on that interval. Since $D$ is an algebra
+containing the constants, $P_j(f)\in D$. These functions are uniformly
+bounded by $M+1$ and converge pointwise to $|f|$, so $|f|\in D$.
+The identities $\min(f,g)=(f+g-|f-g|)/2$ and
+$\max(f,g)=f+g-\min(f,g)$ give the finite lattice operations.
+For $f\in D$ and $r\in\mathbb R$, the bounded functions
 $\min(1,j(f-r)^+)$ converge to $\mathbf1_{\{f>r\}}$, which belongs to $D$.
 
 Let $\mathcal E=\{B\subseteq X:\mathbf1_B\in D\}$. It contains $X$,
@@ -652,9 +664,56 @@ unions belong to $D$, are bounded by one, and converge to the indicator
 of the union. Hence $\mathcal E$ is a sigma algebra. It contains the
 inverse images of rays under all members of $C$, so contains $\sigma(C)$.
 Finally, a bounded measurable real function is the pointwise limit of
-uniformly bounded finite-valued measurable functions obtained by rounding
-down to multiples of $2^{-j}$. Their level-set indicators belong to $D$,
-so the simple functions and their limit belong to $D\subseteq H$.
+measurable simple functions. If $|f|\leq M$, replace each approximation
+$s_j$ by $\max(-M,\min(M,s_j))$; these remain simple, are uniformly
+bounded by $M$, and still converge to $f$. Their level-set indicators
+belong to $D$, so the simple functions and their limit belong to
+$D\subseteq H$.
+\end{proof}
+
+\begin{lemma}[Bounded fibre averages from multiplicative generators]
+\label{lem:bounded-fibre-measurability}
+\leanok
+\source{chen-moriwaki-adelic:page-0199,chen-moriwaki-adelic:page-0200}
+\uses{lem:bounded-evaluation-generators,lem:functional-monotone-class,lem:measurable-evaluation-average,lem:finite-fibre-limits,lem:fibre-additivity,cor:fibre-pullback,lem:fibre-homogeneity,prop:fibre-base-multiplication}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_fibreIntegral_of_bounded}
+For a finite separable extension $L/K$, the function $I_{L/K}(f)$ is
+measurable whenever $f:\Omega_L\to\mathbb R$ is bounded and measurable.
+\end{lemma}
+\begin{proof}
+Let $H$ be the real vector space of functions $f$ for which $I_{L/K}(f)$
+is measurable. It is a vector space by linearity on each finite fibre.
+If $f_n\in H$ converges pointwise to $f$, finite weighted-sum continuity
+gives $I_{L/K}(f_n)(\omega)\to I_{L/K}(f)(\omega)$ for every $\omega$;
+the limit is measurable. In particular $H$ has the required closure
+under uniformly bounded pointwise limits.
+
+For each bounded generator $e_b(\varphi\circ\pi)$, the identity
+\[
+ I_{L/K}\bigl(e_b(\varphi\circ\pi)\bigr)
+   =\varphi I_{L/K}(e_b)
+\]
+and measurability of evaluation averages show that the generator
+belongs to $H$. The bounded generators contain one, are multiplicatively
+closed, and generate $\mathcal A_L$. The bounded functional
+monotone-class lemma therefore puts every bounded measurable $f$ in $H$.
+\end{proof}
+
+\begin{corollary}[Removing the boundedness restriction]
+\label{cor:measurable-fibre-integral-by-truncation}
+\leanok
+\source{chen-moriwaki-adelic:page-0199,chen-moriwaki-adelic:page-0200}
+\uses{lem:bounded-fibre-measurability,lem:finite-fibre-limits}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_fibreIntegral_via_bounded_generators}
+For a finite separable extension $L/K$, the function $I_{L/K}(f)$ is
+measurable for every measurable real function $f$ on $\Omega_L$.
+\end{corollary}
+\begin{proof}
+Set $f_n=\max(-n,\min(n,f))$. These functions are measurable, bounded
+by $n$ in absolute value, and converge pointwise to $f$. Their fibre
+averages are measurable by the preceding lemma. Since every fibre
+is finite, those averages converge pointwise to $I_{L/K}(f)$.
+The pointwise limit of measurable real functions is measurable.
 \end{proof}
 
 \begin{lemma}[Functional closure under pointwise sequences]
@@ -736,6 +795,7 @@ specialization of its functional monotone-class argument.
 \end{proof}
 
 \begin{lemma}[Measurability of nonnegative fibre integration]\label{lem:measurable-fibre-lintegral}
+\leanok
 \source{chen-moriwaki-adelic:page-0200,chen-moriwaki-adelic:page-0201}
 \uses{thm:measurable-fibre-integral,lem:finite-fibre-integrability}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_fibreLIntegral}
@@ -758,6 +818,7 @@ $I^+f=\sup_j I^+s_j$, a measurable function.
 \subsection{The induced measure and integral identities}
 
 \begin{definition}[The induced measure]\label{def:separable-induced-measure}
+\leanok
 \source{chen-moriwaki-adelic:page-0200,chen-moriwaki-adelic:page-0201}
 \uses{lem:measurable-fibre-lintegral,lem:finite-fibre-sums}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.inducedMeasure,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.inducedMeasure_apply}
@@ -778,6 +839,7 @@ $\mathcal A_L$, with the stated values.
 \end{proof}
 
 \begin{theorem}[Nonnegative integration formula]\label{thm:separable-lintegral}
+\leanok
 \source{chen-moriwaki-adelic:page-0201}
 \uses{def:separable-induced-measure,lem:measurable-fibre-lintegral,lem:finite-fibre-sums}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.lintegral_inducedMeasure}
@@ -798,6 +860,7 @@ Taking the limit in the simple-function identities proves the assertion.
 \end{proof}
 
 \begin{theorem}[Integrability criterion]\label{thm:separable-integrability}
+\leanok
 \source{chen-moriwaki-adelic:page-0201}
 \uses{thm:separable-lintegral,thm:measurable-fibre-integral,lem:finite-fibre-sums}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_inducedMeasure_iff}
@@ -839,6 +902,7 @@ every fibre, so their integrals agree on those same fibres.
 \end{proof}
 
 \begin{lemma}[Almost everywhere statements on fibres]\label{lem:separable-ae-fibres}
+\leanok
 \source{chen-moriwaki-adelic:page-0201,chen-moriwaki-adelic:page-0202}
 \uses{def:separable-induced-measure,lem:measurable-fibre-lintegral}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.ae_ae_fibre_of_ae}
@@ -856,6 +920,7 @@ fails only on the $P_\omega$-null set $N\cap X_\omega$.
 \end{proof}
 
 \begin{theorem}[Real integration formula]\label{thm:separable-integral}
+\leanok
 \source{chen-moriwaki-adelic:page-0201,chen-moriwaki-adelic:page-0202}
 \uses{thm:separable-lintegral,thm:separable-integrability,lem:separable-ae-fibres,lem:fibre-additivity,lem:fibre-homogeneity,thm:measurable-fibre-integral}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_inducedMeasure}
@@ -885,6 +950,7 @@ of Theorem 3.3.7(2) by equality almost everywhere.
 \end{proof}
 
 \begin{proposition}[Pushforward to the base]\label{prop:separable-pushforward}
+\leanok
 \source{chen-moriwaki-adelic:page-0201,chen-moriwaki-adelic:page-0202}
 \uses{def:extension-parameters,def:separable-induced-measure,lem:finite-fibre-sums}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.map_inducedMeasure_proj}
@@ -922,6 +988,7 @@ function.
 \end{proof}
 
 \begin{corollary}[Integration of base pullbacks]\label{cor:separable-pullback-integral}
+\leanok
 \source{chen-moriwaki-adelic:page-0201,chen-moriwaki-adelic:page-0202}
 \uses{lem:separable-pullback-integrability,prop:separable-pushforward,def:extension-parameters}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_comp_proj_inducedMeasure}

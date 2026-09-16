@@ -432,7 +432,8 @@ theorem functionField_product_formula {k : Type*} [Field k] {f : RatFunc k} (hf 
 
 /-- The function-field adelic curve is proper: this is the vanishing of the degree of
 principal divisors on `ℙ¹_k`, i.e. the product formula of Chen–Moriwaki §3.2.1. -/
-noncomputable instance (k : Type*) [Field k] : IsProper (functionFieldAdelicCurve k) := by
+noncomputable instance instIsProperFunctionFieldAdelicCurve (k : Type*) [Field k] :
+    IsProper (functionFieldAdelicCurve k) := by
   constructor
   intro f hf
   exact functionField_product_formula hf

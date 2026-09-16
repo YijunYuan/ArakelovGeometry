@@ -16,16 +16,16 @@ functions.
 The corrected declaration retains the adelic equivalence and projection
 compatibility, asserts pointwise tower equality for measurable ENNReal-valued
 functions, and asserts almost everywhere equality for globally integrable real
-functions. Its existing proof obligation remains open. It introduces no axiom,
-and the ENNReal integrability criterion of `Algebraic.integrable_measure_iff`
+functions. The corrected theorem is proved in `25eb9cd` without additional axioms.
+The ENNReal integrability criterion of `Algebraic.integrable_measure_iff`
 is unchanged.
 
 Evidence: the complete page transcriptions are registered under
 `references/chen-moriwaki-adelic/tex/page-0210.tex` through `page-0214.tex`.
-The configured `horizon check --json` passed on 2026-09-16 at 03:43:26 UTC
-(3392 jobs), with the existing sorry warnings. An independent honesty review
-confirmed the correction's source domain. This verifies the declaration's
-elaboration, not its still-unproved mathematical result.
+The configured build for `25eb9cd` passed on 2026-09-16 at 06:54:37 UTC
+(3455 jobs). Two compiled audits checked all 902 project constants with zero
+`sorryAx` and no nonstandard axioms. Independent honesty review confirmed both
+the corrected source domain and the final proof's exact hypotheses.
 
 ## Algebraic tower proof: finite descent
 
@@ -37,7 +37,8 @@ degree two. The blueprint's `lem:finite-descent-separable` instead descends
 a basis, multiplication coefficients, and the separable part to a finite
 base. The resulting base-change isomorphisms preserve both the total and
 separable degrees. `lem:descended-base-change` then proves the fibre-weight
-identity by local factorization. The tower theorem's conclusion is retained.
+identity by counting embeddings into algebraically closed completed fields.
+The tower theorem's conclusion is retained.
 
 ## Cylinder sigma algebra
 
@@ -49,3 +50,13 @@ Carathéodory extension then gives the measure on the specified cylinder sigma
 algebra. This preserves the measurable space defined on PDF 208 and the
 probability construction in Proposition 3.4.6 without requiring that additional
 Borel claim.
+
+## Infinite-fibre integrability
+
+Proposition 3.4.9 (PDF 211), read with the preceding definition on PDF 210,
+uses the nonnegative integral of the absolute value to test integrability.
+The faithful Lean criterion is finiteness of the double ENNReal integral of
+`ENNReal.ofReal ‖f‖`. A real Bochner integral is totalized at zero when its
+integrand is not integrable, so its value cannot replace this nonnegative
+criterion on an infinite fibre. The signed operator is used on almost every
+integrable fibre, and its L1 construction respects almost-everywhere equality.

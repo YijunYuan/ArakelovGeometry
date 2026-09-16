@@ -26,6 +26,7 @@ construction, with the stated normalized absolute values.
 \subsection{Places and their types}
 
 \begin{definition}[Places]\label{def:places}
+\leanok
 \lean{AbsoluteValue.Place,AbsoluteValue.trivialPlace}
 For any field $F$, two real absolute values $v,w$ are equivalent if
 $w=v^c$ for some $c>0$. A place of $F$ is an equivalence class of real
@@ -36,6 +37,7 @@ zero at zero and one at every nonzero element.
 \end{definition}
 
 \begin{lemma}[Invariance of non-Archimedean type]\label{lem:place-type-invariance}
+\leanok
 \uses{def:places}
 \lean{NumberField.isNonarchimedean_congr}
 Equivalent absolute values on any field are either both non-Archimedean
@@ -51,6 +53,7 @@ Apply the same argument to $v=w^{1/c}$ for the converse.
 \end{proof}
 
 \begin{definition}[Types of places]\label{def:place-types}
+\leanok
 \uses{def:places,lem:place-type-invariance}
 \lean{AbsoluteValue.IsNonarchimedeanPlace,AbsoluteValue.IsArchimedeanPlace,AbsoluteValue.isNonarchimedeanPlace_or_isArchimedeanPlace}
 A place is non-Archimedean if its representative satisfies the strong
@@ -64,6 +67,7 @@ by their definitions.
 \end{proof}
 
 \begin{lemma}[The trivial place]\label{lem:trivial-place}
+\leanok
 \uses{def:places,def:place-types}
 \lean{AbsoluteValue.trivialPlace_out_eq,AbsoluteValue.isNonarchimedeanPlace_trivialPlace}
 Every representative of $\omega_0$ is the trivial absolute value.
@@ -80,6 +84,7 @@ is at most one.
 \end{proof}
 
 \begin{lemma}[A small element at a finite place]\label{lem:finite-place-small-element}
+\leanok
 \lean{ArakelovGeometry.AdelicStructure.finitePlace_exists_lt_one}
 For every finite place $v$ of $K$, some $a\in K^\times$ satisfies $v(a)<1$.
 \end{lemma}
@@ -91,6 +96,7 @@ criterion.
 \end{proof}
 
 \begin{lemma}[Type of a finite place]\label{lem:finite-place-type}
+\leanok
 \uses{def:places,def:place-types,lem:trivial-place,lem:place-type-invariance,lem:finite-place-small-element}
 \lean{NumberField.finitePlace_isNonarchimedean,ArakelovGeometry.AdelicStructure.mk_finitePlace_ne_trivialPlace,ArakelovGeometry.AdelicStructure.isNonarchimedeanPlace_mk_finitePlace}
 A normalized finite absolute value is non-Archimedean, and its class is
@@ -108,6 +114,7 @@ of Lemma~\ref{lem:finite-place-small-element}.
 \end{proof}
 
 \begin{lemma}[The value of two at an infinite place]\label{lem:infinite-place-two}
+\leanok
 \lean{ArakelovGeometry.AdelicStructure.infinitePlace_apply_two}
 For an infinite place $w$ of any field admitting a complex embedding,
 $w(2)=2$.
@@ -118,6 +125,7 @@ $2$ to $2$, so $w(2)=|\sigma(2)|=2$.
 \end{proof}
 
 \begin{lemma}[Type of an infinite place]\label{lem:infinite-place-type}
+\leanok
 \uses{def:place-types,lem:trivial-place,lem:place-type-invariance,lem:infinite-place-two}
 \lean{NumberField.infinitePlace_not_isNonarchimedean,ArakelovGeometry.AdelicStructure.mk_infinitePlace_ne_trivialPlace,ArakelovGeometry.AdelicStructure.not_isNonarchimedeanPlace_mk_infinitePlace}
 A normalized infinite absolute value on $K$ is Archimedean, and its class
@@ -135,6 +143,8 @@ is one.
 
 \begin{lemma}[Algebraic integers have bounded non-Archimedean absolute value]
 \label{lem:integral-elements-bound}
+\leanok
+\lean{NumberField.abs_le_one_of_isIntegral}
 A non-Archimedean absolute value $v$ on a field satisfies $v(a)\leq1$
 for every element $a$ integral over $\mathbb Z$.
 \end{lemma}
@@ -151,7 +161,9 @@ a contradiction.
 \end{proof}
 
 \begin{lemma}[Finite-place classification]\label{lem:number-field-nonarchimedean-classification}
+\leanok
 \uses{def:places,lem:integral-elements-bound}
+\lean{NumberField.exists_finitePlace_of_isNonarchimedean}
 Every nontrivial non-Archimedean absolute value on $K$ is equivalent to
 a normalized finite place.
 \end{lemma}
@@ -183,7 +195,9 @@ $a\in\mathfrak p$ constructed above.
 \end{proof}
 
 \begin{lemma}[Archimedean classification]\label{lem:number-field-archimedean-classification}
+\leanok
 \uses{def:places,lem:completion-nonarchimedean,thm:complete-archimedean}
+\lean{NumberField.exists_infinitePlace_of_not_isNonarchimedean}
 Every Archimedean absolute value on $K$ is equivalent to a normalized
 infinite place.
 \end{lemma}
@@ -200,6 +214,7 @@ therefore equivalent to $v$.
 \end{proof}
 
 \begin{theorem}[Ostrowski classification for number fields]\label{thm:number-field-ostrowski}
+\leanok
 \uses{lem:number-field-nonarchimedean-classification,lem:number-field-archimedean-classification}
 \lean{NumberField.ostrowski}
 Every nontrivial absolute value on $K$ is equivalent to a normalized
@@ -213,6 +228,7 @@ archimedean case. These cases exhaust all absolute values.
 \end{proof}
 
 \begin{proposition}[Classification of places]\label{prop:number-field-place-classification}
+\leanok
 \uses{thm:number-field-ostrowski,lem:place-type-invariance,lem:trivial-place,lem:finite-place-type,lem:infinite-place-type}
 \lean{NumberField.isNonarchimedeanPlace_iff,NumberField.isArchimedeanPlace_iff,ArakelovGeometry.AdelicStructure.place_trichotomy}
 A nontrivial place $\omega$ is non-Archimedean if and only if
@@ -234,6 +250,7 @@ and have opposite types, proving disjointness.
 \end{proof}
 
 \begin{lemma}[Finite places give distinct classes]\label{lem:finite-place-injectivity}
+\leanok
 \uses{def:places}
 \lean{NumberField.finitePlace_injective_place}
 The map $v\mapsto[v]$ from finite places to $\mathcal P_K$ is injective.
@@ -250,6 +267,7 @@ them equal.
 \subsection{Countability and finite support}
 
 \begin{lemma}[Countability of places]\label{lem:number-field-places-countable}
+\leanok
 \uses{prop:number-field-place-classification}
 \lean{NumberField.instCountablePlace}
 The set $\mathcal P_K$ is countable.
@@ -269,6 +287,7 @@ $\mathcal P_K$ is countable.
 \end{proof}
 
 \begin{lemma}[Infinitely many nonzero prime ideals]\label{lem:number-field-primes-infinite}
+\leanok
 \lean{NumberField.infinite_heightOneSpectrum}
 The ring $\mathcal O_K$ has infinitely many nonzero prime ideals.
 \end{lemma}
@@ -284,6 +303,7 @@ ideals of $\mathcal O_K$.
 \end{proof}
 
 \begin{corollary}[Infinitude of places]\label{cor:number-field-places-infinite}
+\leanok
 \uses{lem:number-field-primes-infinite,lem:finite-place-injectivity}
 \lean{NumberField.instInfinitePlace}
 The set $\mathcal P_K$ is infinite.
@@ -295,6 +315,7 @@ Lemma~\ref{lem:finite-place-injectivity}.
 \end{proof}
 
 \begin{lemma}[Finiteness of the Archimedean locus]\label{lem:number-field-archimedean-finite}
+\leanok
 \uses{prop:number-field-place-classification}
 \lean{NumberField.finite_isArchimedeanPlace}
 The Archimedean places form a finite subset of $\mathcal P_K$.
@@ -307,6 +328,7 @@ infinite places, proving the assertion.
 \end{proof}
 
 \begin{lemma}[Finitely many non-Archimedean contributions]\label{lem:number-field-finite-contributions}
+\leanok
 \uses{prop:number-field-place-classification,lem:trivial-place}
 \lean{NumberField.finite_isNonarchimedean_ne_one}
 For $a\in K^\times$, only finitely many non-Archimedean places $\omega$
@@ -324,6 +346,7 @@ There are therefore only finitely many places in question.
 \end{proof}
 
 \begin{lemma}[Finite support of logarithmic evaluations]\label{lem:number-field-finite-support}
+\leanok
 \uses{def:place-types,lem:number-field-archimedean-finite,lem:number-field-finite-contributions}
 \lean{NumberField.finite_out_ne_one}
 For $a\in K^\times$, the set $\{\omega:v_\omega(a)\ne1\}$ is finite.
@@ -337,6 +360,7 @@ one. Both sets are finite by the preceding two lemmas.
 \subsection{Normalized representatives and the adelic measure}
 
 \begin{definition}[Normalized representatives and weights]\label{def:number-field-place-data}
+\leanok
 \uses{prop:number-field-place-classification}
 \lean{ArakelovGeometry.AdelicStructure.placeRep,ArakelovGeometry.AdelicStructure.placeWeight}
 For $\omega\in\mathcal P_K$ choose the normalized representative
@@ -355,6 +379,7 @@ Here $m(w)$ is its multiplicity, one or two.
 \end{definition}
 
 \begin{lemma}[The chosen representative belongs to its place]\label{lem:number-field-representative-equivalence}
+\leanok
 \uses{def:number-field-place-data,lem:trivial-place}
 \lean{ArakelovGeometry.AdelicStructure.placeRep_equiv}
 For every place $\omega$, the representative $v_\omega$ is equivalent
@@ -367,6 +392,7 @@ place selected from the classification.
 \end{proof}
 
 \begin{lemma}[Recovery of finite-place data]\label{lem:number-field-finite-normalization}
+\leanok
 \uses{def:number-field-place-data,lem:finite-place-type,lem:finite-place-injectivity}
 \lean{ArakelovGeometry.AdelicStructure.finitePlace_choose_eq,ArakelovGeometry.AdelicStructure.placeRep_mk_finitePlace,ArakelovGeometry.AdelicStructure.placeWeight_mk_finitePlace}
 For a finite place $v$, any finite place selected to represent $[v]$ is
@@ -381,6 +407,7 @@ The representative and weight formulas follow from their definitions.
 \end{proof}
 
 \begin{lemma}[Recovery of infinite-place data]\label{lem:number-field-infinite-normalization}
+\leanok
 \uses{def:number-field-place-data,lem:infinite-place-type}
 \lean{ArakelovGeometry.AdelicStructure.infinitePlace_choose_eq,ArakelovGeometry.AdelicStructure.placeRep_mk_infinitePlace,ArakelovGeometry.AdelicStructure.placeWeight_mk_infinitePlace}
 For an infinite place $w$, any infinite place selected to represent $[w]$
@@ -394,6 +421,7 @@ infinite places makes them equal. Substitution gives both asserted formulas.
 \end{proof}
 
 \begin{lemma}[Finite weights]\label{lem:number-field-weights}
+\leanok
 \uses{def:number-field-place-data}
 \lean{ArakelovGeometry.AdelicStructure.placeWeight_ne_top,ArakelovGeometry.AdelicStructure.placeWeight_trivialPlace}
 Every $c(\omega)$ is finite, and $c(\omega_0)=0$.
@@ -404,6 +432,7 @@ infinite place. The trivial-place value is the first case of the definition.
 \end{proof}
 
 \begin{definition}[The number-field adelic structure]\label{def:number-field-adelic-structure}
+\leanok
 \uses{def:adelic-structure,def:singleton-measure,def:number-field-place-data,lem:number-field-representative-equivalence,lem:number-field-weights,lem:number-field-places-countable,lem:number-field-finite-support}
 \lean{ArakelovGeometry.AdelicStructure.numberFieldAdelicStructure,ArakelovGeometry.AdelicCurve.numberFieldAdelicCurve}
 Equip $\mathcal P_K$ with its discrete sigma algebra and the measure
@@ -428,6 +457,7 @@ of an adelic structure.
 \end{proof}
 
 \begin{theorem}[The logarithmic product formula]\label{thm:number-field-product-formula}
+\leanok
 \uses{def:number-field-adelic-structure,prop:number-field-place-classification,lem:finite-place-type,lem:infinite-place-type,lem:finite-place-injectivity,lem:number-field-finite-normalization,lem:number-field-infinite-normalization,lem:number-field-weights}
 \lean{ArakelovGeometry.AdelicCurve.numberField_product_formula}
 For every $a\in K^\times$,
@@ -466,7 +496,9 @@ the product one. Its logarithm is zero, as required.
 \end{proof}
 
 \begin{corollary}[Properness of the number-field adelic curve]\label{cor:number-field-proper}
+\leanok
 \uses{def:adelic-structure,def:number-field-adelic-structure,thm:number-field-product-formula}
+\lean{ArakelovGeometry.AdelicCurve.instIsProperNumberFieldAdelicCurve}
 The adelic curve associated with $K$ is proper.
 \end{corollary}
 \begin{proof}

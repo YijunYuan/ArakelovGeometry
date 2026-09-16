@@ -61,12 +61,13 @@ line bundles, heights, and equidistribution over it.
 - [ ] **3.6 Measurability of automorphism actions**.
 - [ ] **3.7 Morphisms of adelic curves**.
 
-The mathematical route for §3.3–3.4 is written in `blueprint/src`. All existing
-Lean declarations are proved without `sorryAx`. Completing the additional
-source-facing blueprint obligations and their exact formalization coverage
-remains active; the checked boxes above describe the implemented extension
-constructions. The [inventory](docs/obligations.md) records all project
-constants and the remaining mathematical dependencies.
+The full mathematical route for §3.3–3.4 is written in `blueprint/src`.
+All project declarations and required source obligations are proved. The
+[declaration inventory](docs/obligations.md) covers every project constant;
+the [source-result index](docs/source-result-index.md) covers every numbered
+result, including all five clauses of Theorem 3.3.7. The synchronized graph
+has **283 project-proved nodes and three explicitly imported Mathlib nodes**,
+with no remaining TODO nodes.
 
 ## Repository layout
 
@@ -83,13 +84,12 @@ constants and the remaining mathematical dependencies.
 ## Building
 
 The project uses Lean `v4.33.0` (see `lean-toolchain`) and the pinned mathlib version in
-`lake-manifest.json`. The configured build on 2026-09-16 passes all 3455 jobs.
-The compiled inventory and a separate transitive axiom audit check **902 project
+`lake-manifest.json`. The configured build on 2026-09-16 passes all 3462 jobs.
+The compiled inventory and a separate transitive axiom audit check **998 project
 constants: zero direct gaps, zero sorry-backed constants, and no axioms beyond
 `propext`, `Classical.choice`, and `Quot.sound`**.
 See [source corrections](docs/source-corrections.md) for the signed tower domain
-and [proof status](docs/proof-status.md) for the remaining blueprint obligations
-and reproducible evidence.
+and [proof status](docs/proof-status.md) for reproducible build, axiom, source-coverage and imported-boundary evidence.
 
 ```bash
 lake exe cache get   # download the mathlib olean cache

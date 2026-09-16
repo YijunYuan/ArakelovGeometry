@@ -43,14 +43,18 @@ absolute value a power of the standard one. We follow the strategy of Neukirch's
 4. In the complex case the norm identity `‖σ a‖ = ‖a‖` follows since a continuous
    multiplicative function on `ℂ` fixing `|·|` on `ℝ` is trivial on the unit circle. -/
 
-/-- An absolute value bounded by `1` on `ℕ` is nonarchimedean. -/
-private theorem neukirch_isNonarch_of_natCast_le_one {K : Type*} [Field K]
-    (abs : AbsoluteValue K ℝ) (h : ∀ n : ℕ, abs (n : K) ≤ 1) : IsNonarchimedean ⇑abs := by
-  let := abs.toNormedField
-  have : IsUltrametricDist K :=
-    IsUltrametricDist.isUltrametricDist_of_forall_norm_natCast_le_one h
-  intro x y
-  exact IsUltrametricDist.norm_add_le_max x y
+/-- An absolute value is nonarchimedean exactly when natural integers have value at most one. -/
+theorem AbsoluteValue.isNonarchimedean_iff_natCast_le_one {K : Type*} [Field K]
+    (v : AbsoluteValue K ℝ) : IsNonarchimedean v ↔ ∀ n : ℕ, v (n : K) ≤ 1 := by
+  constructor
+  · intro hv n
+    exact hv.apply_natCast_le_one
+  · intro h
+    let := v.toNormedField
+    have : IsUltrametricDist K :=
+      IsUltrametricDist.isUltrametricDist_of_forall_norm_natCast_le_one h
+    intro x y
+    exact IsUltrametricDist.norm_add_le_max x y
 
 /-- A field with an absolute value exceeding `1` somewhere on `ℕ` has characteristic zero
 (in characteristic `p` the multiplicative group of the prime field is torsion, forcing
@@ -348,7 +352,7 @@ theorem AbsoluteValue.exists_ringEquiv_real_or_complex_of_complete {K : Type*} [
   have hnat : ∃ n : ℕ, 1 < abs (n : K) := by
     by_contra h
     push Not at h
-    exact habs (neukirch_isNonarch_of_natCast_le_one abs h)
+    exact habs ((AbsoluteValue.isNonarchimedean_iff_natCast_le_one abs).mpr h)
   obtain ⟨n₀, hn₀⟩ := hnat
   have : CharZero K := neukirch_charZero abs hn₀
   -- Step 1: on `ℚ`, `abs` is the `s`-th power of the usual absolute value
@@ -486,7 +490,7 @@ We follow K. Conrad, *Ostrowski for number fields*, Theorem 3.
 
 /-- A nonarchimedean absolute value is bounded by `1` on elements that are integral over `ℤ`
 (Conrad, proof of Theorem 2: nonnegativity of `-log abs` on algebraic integers). -/
-private theorem abs_le_one_of_isIntegral {K : Type*} [Field K] {abs : AbsoluteValue K ℝ}
+theorem abs_le_one_of_isIntegral {K : Type*} [Field K] {abs : AbsoluteValue K ℝ}
     (hna : IsNonarchimedean abs) {x : K} (hx : IsIntegral ℤ x) : abs x ≤ 1 := by
   by_contra hgt
   push Not at hgt
@@ -533,7 +537,7 @@ private theorem abs_le_one_of_isIntegral {K : Type*} [Field K] {abs : AbsoluteVa
 
 /-- The nonarchimedean half of Ostrowski: a nontrivial nonarchimedean absolute value on a
 number field is equivalent to a finite place (Conrad, Theorems 2 and 3). -/
-private theorem exists_finitePlace_of_isNonarchimedean {K : Type*} [Field K] [NumberField K]
+theorem exists_finitePlace_of_isNonarchimedean {K : Type*} [Field K] [NumberField K]
     {abs : AbsoluteValue K ℝ} (habs : abs.IsNontrivial) (hna : IsNonarchimedean abs) :
     ∃ v : FinitePlace K, abs ≈ v.val := by
   -- all algebraic integers have absolute value at most 1
@@ -637,7 +641,7 @@ private theorem exists_finitePlace_of_isNonarchimedean {K : Type*} [Field K] [Nu
 /-- The archimedean half of Ostrowski: an archimedean absolute value on a number field is
 equivalent to an infinite place. Conrad defers this to the references; we obtain it from the
 theorem `exists_ringEquiv_real_or_complex_of_complete` applied to the completion of `K`. -/
-private theorem exists_infinitePlace_of_not_isNonarchimedean {K : Type*} [Field K]
+theorem exists_infinitePlace_of_not_isNonarchimedean {K : Type*} [Field K]
     [NumberField K] {abs : AbsoluteValue K ℝ} (hna : ¬IsNonarchimedean abs) :
     ∃ v : InfinitePlace K, abs ≈ v.val := by
   let := abs.toNormedField

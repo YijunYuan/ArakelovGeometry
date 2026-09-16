@@ -27,6 +27,7 @@ many prime-ideal divisors. These are the valuation and factorization
 inputs; the product formula below is proved from them.
 
 \begin{definition}[Exponential base]\label{def:ff-exp-base}
+\leanok
 \lean{ArakelovGeometry.AdelicStructure.expBase,ArakelovGeometry.AdelicStructure.one_lt_expBase,ArakelovGeometry.AdelicStructure.coe_expBase}
 Let $e=\exp(1)$, regarded as a nonnegative real number. Then its underlying
 real value is $\exp(1)$ and $e>1$.
@@ -39,6 +40,7 @@ does not change its real value.
 
 \begin{lemma}[Logarithm of the exponential realization]
 \label{lem:ff-log-exponential}
+\leanok
 \uses{def:ff-exp-base}
 \lean{ArakelovGeometry.AdelicStructure.real_log_toNNReal_expBase}
 Define $\lambda:\Gamma\to\mathbb R_{\geq0}$ by $\lambda(0)=0$ and
@@ -51,6 +53,7 @@ $\log e$. The latter logarithm is $1$, so $\log(e^m)=m$.
 \end{proof}
 
 \begin{definition}[Degree of a finite point]\label{def:ff-point-degree}
+\leanok
 \lean{ArakelovGeometry.AdelicStructure.pointDegree}
 For $v\in\Sigma$, choose a generator $g_v$ of the principal ideal $v$
 and define $d_v=\deg g_v\in\mathbb N$.
@@ -58,6 +61,7 @@ and define $d_v=\deg g_v\in\mathbb N$.
 
 \begin{lemma}[Degree is independent of a generator]
 \label{lem:ff-generator-degree}
+\leanok
 \uses{def:ff-point-degree}
 \lean{ArakelovGeometry.AdelicStructure.pointDegree_eq_of_span}
 If $v=(q)$, then $d_v=\deg q$.
@@ -71,6 +75,7 @@ $\deg g_v=\deg u+\deg q=\deg q$.
 \end{proof}
 
 \begin{definition}[The point of a prime polynomial]\label{def:ff-prime-point}
+\leanok
 \lean{ArakelovGeometry.AdelicStructure.spanPrime,ArakelovGeometry.AdelicStructure.spanPrime_asIdeal}
 For a prime polynomial $q\in k[T]$, let $v_q\in\Sigma$ be the point
 whose ideal is $(q)$.
@@ -81,6 +86,7 @@ therefore a nonzero proper prime ideal, as required.
 \end{proof}
 
 \begin{lemma}[Degree of a prime-polynomial point]\label{lem:ff-prime-degree}
+\leanok
 \uses{def:ff-prime-point,lem:ff-generator-degree}
 \lean{ArakelovGeometry.AdelicStructure.pointDegree_spanPrime}
 For a prime polynomial $q$, one has $d_{v_q}=\deg q$.
@@ -90,6 +96,7 @@ The ideal of $v_q$ is $(q)$, so the generator-degree formula applies.
 \end{proof}
 
 \begin{lemma}[Logarithm at a finite point]\label{lem:ff-finite-log}
+\leanok
 \uses{lem:ff-log-exponential}
 \lean{ArakelovGeometry.AdelicStructure.real_log_adicAbv}
 Let $|f|_v=\lambda(V_v(f))$ be the $v$-adic absolute value with base
@@ -101,6 +108,7 @@ Lemma~\ref{lem:ff-log-exponential} to $V_v(f)$.
 \end{proof}
 
 \begin{lemma}[Valuations of a prime polynomial]\label{lem:ff-prime-valuations}
+\leanok
 \uses{def:ff-prime-point}
 \lean{ArakelovGeometry.AdelicStructure.valuation_spanPrime_self,ArakelovGeometry.AdelicStructure.valuation_algebraMap_eq_one_of_ne}
 For a prime polynomial $q$, regarded as an element of $F$,
@@ -119,6 +127,7 @@ The valuation on $F$ restricts to $V_v^R$, proving the assertion.
 \end{proof}
 
 \begin{lemma}[Valuations of nonzero constants]\label{lem:ff-constant-valuation}
+\leanok
 \lean{ArakelovGeometry.AdelicStructure.valuation_algebraMap_C}
 For $c\in k^\times$ and $v\in\Sigma$, one has $V_v(c)=1$.
 \end{lemma}
@@ -130,6 +139,7 @@ the assertion.
 \end{proof}
 
 \begin{definition}[Absolute value at infinity]\label{def:ff-infinity-absolute-value}
+\leanok
 \uses{def:ff-exp-base,lem:ff-log-exponential}
 \lean{ArakelovGeometry.AdelicStructure.inftyAbvDef,ArakelovGeometry.AdelicStructure.isNonarchimedean_inftyAbvDef,ArakelovGeometry.AdelicStructure.inftyAbv}
 Put $|f|_\infty=\lambda(V_\infty(f))$. This is a nonarchimedean real
@@ -147,6 +157,7 @@ formula for $V_\infty(p/q)$.
 \end{proof}
 
 \begin{lemma}[Logarithmic degree at infinity]\label{lem:ff-infinity-polynomial-log}
+\leanok
 \uses{def:ff-infinity-absolute-value,lem:ff-log-exponential}
 \lean{ArakelovGeometry.AdelicStructure.real_log_inftyAbv_algebraMap}
 For every nonzero polynomial $p\in k[T]$, one has
@@ -160,6 +171,7 @@ Lemma~\ref{lem:ff-log-exponential}.
 
 \begin{definition}[Absolute values and weights on the parameter set]
 \label{def:ff-point-data}
+\leanok
 \uses{def:ff-point-degree,lem:ff-finite-log,def:ff-infinity-absolute-value}
 \lean{ArakelovGeometry.AdelicStructure.pointAbv,ArakelovGeometry.AdelicStructure.pointWeight,ArakelovGeometry.AdelicStructure.pointAbv_none,ArakelovGeometry.AdelicStructure.pointAbv_some,ArakelovGeometry.AdelicStructure.pointWeight_none,ArakelovGeometry.AdelicStructure.pointWeight_some}
 On $\Omega=\{\infty\}\sqcup\Sigma$, use the absolute value
@@ -175,6 +187,7 @@ and $\log0=0$.
 \end{definition}
 
 \begin{lemma}[Finiteness of the weights]\label{lem:ff-finite-weights}
+\leanok
 \uses{def:ff-point-data}
 \lean{ArakelovGeometry.AdelicStructure.pointWeight_ne_top}
 For every $\omega\in\Omega$, one has $n_\omega<+\infty$.
@@ -185,6 +198,7 @@ number $d_v$. Both are finite.
 \end{proof}
 
 \begin{lemma}[Clearing the canonical denominator]\label{lem:ff-clearing-denominators}
+\leanok
 \lean{ArakelovGeometry.AdelicStructure.algebraMap_num_eq_mul_denom}
 Write $a_f,b_f\in k[T]$ for the canonical numerator and denominator of
 $f\in F$, with $b_f\ne0$. Then $a_f=f b_f$ in $F$.
@@ -196,6 +210,7 @@ nonzero in $F$. Multiplication by it gives the assertion.
 \end{proof}
 
 \begin{lemma}[The local unit criterion]\label{lem:ff-local-unit-criterion}
+\leanok
 \lean{ArakelovGeometry.AdelicStructure.intValuation_eq_one_of_not_dvd}
 If $r\in k[T]$ and $v\nmid(r)$, then $V_v^R(r)=1$.
 \end{lemma}
@@ -206,6 +221,7 @@ The hypothesis thus forces equality.
 \end{proof}
 
 \begin{lemma}[Unit valuation of a quotient]\label{lem:ff-quotient-unit-valuation}
+\leanok
 \uses{lem:ff-clearing-denominators}
 \lean{ArakelovGeometry.AdelicStructure.valuation_eq_one_of_intValuation_num_denom}
 If $V_v^R(a_f)=V_v^R(b_f)=1$, then $V_v(f)=1$.
@@ -216,6 +232,7 @@ give $1=V_v(f)\cdot1$, hence the result.
 \end{proof}
 
 \begin{lemma}[Support of logarithmic absolute values]\label{lem:ff-support-bound}
+\leanok
 \uses{def:ff-point-data,lem:ff-finite-log,lem:ff-local-unit-criterion,lem:ff-quotient-unit-valuation}
 \lean{ArakelovGeometry.AdelicStructure.support_log_pointAbv_subset}
 For every $f\in F$,
@@ -234,6 +251,7 @@ at a finite point gives $\ell_f(v)=0$. This proves the inclusion.
 \end{proof}
 
 \begin{lemma}[Finite logarithmic support]\label{lem:ff-finite-log-support}
+\leanok
 \uses{lem:ff-support-bound}
 \lean{ArakelovGeometry.AdelicStructure.finite_support_log}
 For every $f\in F^\times$, the function $\ell_f$ has finite support.
@@ -246,6 +264,7 @@ sets and the singleton $\{\infty\}$.
 \end{proof}
 
 \begin{lemma}[Support of the weighted logarithm]\label{lem:ff-weighted-log-support}
+\leanok
 \uses{def:ff-point-data,lem:ff-finite-log-support}
 \lean{ArakelovGeometry.AdelicStructure.support_weighted_log_subset,ArakelovGeometry.AdelicStructure.finite_support_weighted_log}
 For every $f\in F$, one has
@@ -265,6 +284,7 @@ support of $h_f$.
 
 \begin{lemma}[Additivity of the weighted logarithmic sum]
 \label{lem:ff-product-log-additive}
+\leanok
 \uses{def:ff-point-data,lem:ff-weighted-log-support}
 \lean{ArakelovGeometry.AdelicStructure.finsum_weighted_log_mul}
 For $f,g\in F^\times$, one has $B(fg)=B(f)+B(g)$.
@@ -279,6 +299,7 @@ the equality.
 \end{proof}
 
 \begin{lemma}[Product formula for constants]\label{lem:ff-constant-product-formula}
+\leanok
 \uses{def:ff-point-data,lem:ff-constant-valuation,lem:ff-finite-log,lem:ff-infinity-polynomial-log}
 \lean{ArakelovGeometry.AdelicStructure.finsum_weighted_log_C}
 For $c\in k^\times$, one has $B(c)=0$.
@@ -291,6 +312,7 @@ zero. Thus every summand in $B(c)$ is zero.
 
 \begin{lemma}[Product formula for prime polynomials]
 \label{lem:ff-prime-product-formula}
+\leanok
 \uses{def:ff-point-data,lem:ff-prime-degree,lem:ff-prime-valuations,lem:ff-finite-log,lem:ff-infinity-polynomial-log}
 \lean{ArakelovGeometry.AdelicStructure.finsum_weighted_log_prime}
 For a prime polynomial $q\in k[T]$, one has $B(q)=0$.
@@ -304,6 +326,7 @@ $-(\deg q)+\deg q=0$.
 \end{proof}
 
 \begin{lemma}[Product formula for polynomials]\label{lem:ff-polynomial-product-formula}
+\leanok
 \uses{lem:ff-constant-product-formula,lem:ff-prime-product-formula,lem:ff-product-log-additive}
 \lean{ArakelovGeometry.AdelicStructure.finsum_weighted_log_polynomial}
 For every nonzero polynomial $p\in k[T]$, one has $B(p)=0$.
@@ -317,6 +340,7 @@ formulas show that each term is zero, including the case $r=0$.
 \end{proof}
 
 \begin{theorem}[Product formula for rational functions]\label{thm:ff-product-formula}
+\leanok
 \uses{lem:ff-clearing-denominators,lem:ff-polynomial-product-formula,lem:ff-product-log-additive}
 \lean{ArakelovGeometry.AdelicStructure.finsum_weighted_log_eq_zero}
 For every $f\in F^\times$,
@@ -331,6 +355,7 @@ $0=B(a_f)=B(f)+B(b_f)=B(f)$.
 \end{proof}
 
 \begin{definition}[The rational-function adelic curve]\label{def:ff-adelic-structure}
+\leanok
 \uses{def:adelic-structure,def:singleton-measure,lem:singleton-measure-values,def:ff-point-data,lem:ff-finite-weights,lem:ff-finite-log-support,lem:finite-support-integrability}
 \lean{ArakelovGeometry.AdelicStructure.functionFieldAdelicStructure,ArakelovGeometry.AdelicCurve.functionFieldAdelicCurve}
 Equip the discrete measurable space $\Omega$ with the measure
@@ -349,8 +374,9 @@ integrable. These are exactly the conditions for an adelic structure.
 
 \begin{theorem}[The integral product formula and properness]
 \label{thm:ff-integral-product-formula}
+\leanok
 \uses{def:ff-adelic-structure,lem:singleton-measure-values,lem:ff-finite-weights,lem:ff-finite-log-support,lem:ff-weighted-log-support,lem:finite-support-integral,thm:ff-product-formula}
-\lean{ArakelovGeometry.AdelicCurve.functionField_product_formula}
+\lean{ArakelovGeometry.AdelicCurve.functionField_product_formula,ArakelovGeometry.AdelicCurve.instIsProperFunctionFieldAdelicCurve}
 For $f\in F^\times$, one has
 $\int_\Omega\log|f|_\omega\,d\nu(\omega)=0$.
 In particular, the rational-function adelic curve is proper.

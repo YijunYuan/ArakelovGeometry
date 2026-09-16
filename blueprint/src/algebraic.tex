@@ -8,6 +8,7 @@ absolute value, using the unique extension across the purely inseparable
 part. Thus restriction has its literal meaning also at inseparable stages.
 
 \begin{definition}[Finite stages]\label{def:finite-stages}
+\leanok
 \source{chen-moriwaki-adelic:page-0207}
 \lean{ArakelovGeometry.AdelicStructure.FiniteIntermediateField,ArakelovGeometry.AdelicStructure.FiniteIntermediateField.bot,ArakelovGeometry.AdelicStructure.FiniteIntermediateField.sup,ArakelovGeometry.AdelicStructure.instCoeFiniteIntermediateFieldIntermediateField,ArakelovGeometry.AdelicStructure.instCoeSortFiniteIntermediateFieldType}
 Let $\mathscr E_{L/K}$ be the intermediate fields $F$ with $[F:K]<\infty$,
@@ -23,6 +24,7 @@ and hence is surjective and has $1$ in its image. It is therefore $FG$.
 \end{proof}
 
 \begin{lemma}[Directedness and exhaustion]\label{lem:finite-stage-exhaustion}
+\leanok
 \uses{def:finite-stages}
 \source{chen-moriwaki-adelic:page-0207,chen-moriwaki-adelic:page-0211}
 \lean{ArakelovGeometry.AdelicStructure.FiniteIntermediateField.left_le_sup,ArakelovGeometry.AdelicStructure.FiniteIntermediateField.right_le_sup,ArakelovGeometry.AdelicStructure.Algebraic.ofElement,ArakelovGeometry.AdelicStructure.Algebraic.mem_ofElement}
@@ -37,6 +39,7 @@ belongs to this field. Taking successive composita handles any finite set.
 \end{proof}
 
 \begin{lemma}[Extending algebraic embeddings]\label{lem:algebraic-embedding-extension}
+\mathlibok
 \dcref{IsAlgClosed.lift}
 Let $E/F$ be algebraic and let $j:F\hookrightarrow C$ be a field embedding
 with $C$ algebraically closed. Then $j$ extends to an embedding $E\hookrightarrow C$.
@@ -88,6 +91,7 @@ $\phi_\omega$ directly from $K$ to $L$.
 \end{proof}
 
 \begin{definition}[Finite projections and fibres]\label{def:algebraic-projections}
+\leanok
 \uses{def:extension-parameters,def:restriction-parameters,def:finite-stages,def:finite-extension}
 \source{chen-moriwaki-adelic:page-0208}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.projFinite,ArakelovGeometry.AdelicStructure.Algebraic.FiniteBaseFiber,ArakelovGeometry.AdelicStructure.Algebraic.BaseFiber,ArakelovGeometry.AdelicStructure.Algebraic.projFiniteFiber,ArakelovGeometry.AdelicStructure.Algebraic.finiteFiber}
@@ -139,6 +143,7 @@ finitely many sets is $\{x\}$. Every subset is a finite union of singletons.
 \end{proof}
 
 \begin{definition}[Projective measurable structures]\label{def:projective-measurable}
+\leanok
 \uses{def:algebraic-projections,lem:finite-stage-discrete}
 \source{chen-moriwaki-adelic:page-0208}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.projectiveMeasurableSpace,ArakelovGeometry.AdelicStructure.Algebraic.fibreMeasurableSpace}
@@ -259,9 +264,11 @@ restricts to $|\cdot|_\omega$ on $K$, and its projection is the given
 point of the finite-stage fibre.
 \end{proof}
 
-\begin{lemma}[Compact inverse-limit fibres]\label{lem:compact-algebraic-fibre}\notready
+\begin{lemma}[Compact inverse-limit fibres]\label{lem:compact-algebraic-fibre}
+\leanok
 \uses{def:algebraic-projections,lem:finite-stage-exhaustion,lem:finite-stage-discrete,lem:finite-stage-transitions,lem:finite-fibre-projection-surjective,lem:compact-evaluation-fibre}
 \source{chen-moriwaki-adelic:page-0208,chen-moriwaki-adelic:page-0209}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.compatibleFibreFamilies,ArakelovGeometry.AdelicStructure.Algebraic.isClosed_compatibleFibreFamilies,ArakelovGeometry.AdelicStructure.Algebraic.fibreToInverseLimit,ArakelovGeometry.AdelicStructure.Algebraic.continuous_fibreToInverseLimit,ArakelovGeometry.AdelicStructure.Algebraic.injective_fibreToInverseLimit,ArakelovGeometry.AdelicStructure.Algebraic.surjective_fibreToInverseLimit,ArakelovGeometry.AdelicStructure.Algebraic.fibreInverseLimitHomeomorph,ArakelovGeometry.AdelicStructure.Algebraic.instCompactSpaceBaseFiber,ArakelovGeometry.AdelicStructure.Algebraic.isClopen_fibreCylinder,ArakelovGeometry.AdelicStructure.Algebraic.isCompact_fibreCylinder}
 Give each $X_{F,\omega}$ its finite discrete topology. Restriction
 identifies $X_\omega$ with the closed subspace of
 $\prod_{F\in\mathscr E_{L/K}}X_{F,\omega}$ consisting of compatible
@@ -300,6 +307,7 @@ therefore omitted here.
 \end{remark}
 
 \begin{definition}[Cylinder functions]\label{def:algebraic-cylinders}
+\leanok
 \uses{def:algebraic-projections}
 \source{chen-moriwaki-adelic:page-0208,chen-moriwaki-adelic:page-0209}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite,ArakelovGeometry.AdelicStructure.Algebraic.CylinderFunctions,ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber,ArakelovGeometry.AdelicStructure.Algebraic.FibreCylinderFunctions}
@@ -329,9 +337,11 @@ give the sum and product of the original functions. For scalar
 multiplication multiply the descended function at the same stage.
 \end{proof}
 
-\begin{lemma}[Constant cylinder functions]\label{lem:cylinder-constants}\notready
+\begin{lemma}[Constant cylinder functions]\label{lem:cylinder-constants}
+\leanok
 \uses{def:algebraic-cylinders,def:finite-stages}
 \source{chen-moriwaki-adelic:page-0209}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.const,ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.const}
 Every constant real function on $\Omega_L$ or on $X_\omega$ is a cylinder
 function.
 \end{lemma}
@@ -367,9 +377,11 @@ their integrals against $P_{H,\omega}$ are respectively $J_{F,g}$ and
 $J_{G,h}$; hence these are equal.
 \end{proof}
 
-\begin{lemma}[The cylinder probability functional]\label{lem:cylinder-functional}\notready
+\begin{lemma}[The cylinder probability functional]\label{lem:cylinder-functional}
+\leanok
 \uses{lem:cylinder-integral-independent,lem:cylinder-algebra,lem:cylinder-constants,lem:algebraic-cylinder-integral,prop:algebraic-fibre-marginals}
 \source{chen-moriwaki-adelic:page-0208,chen-moriwaki-adelic:page-0209}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.integrable,ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderIntegral_nonneg,ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderIntegral_add,ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderIntegral_smul,ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderIntegral_const}
 The resulting functional $J_\omega$ on $V_{L,\omega}$ is positive,
 linear, and sends $1$ to $1$.
 \end{lemma}
@@ -589,6 +601,27 @@ For the second apply Lemma~\ref{lem:algebraic-cylinder-integral} on
 each fibre. No global measurability is needed, since every real function
 on a finite fibre is measurable and integrable.
 \end{proof}
+
+\begin{lemma}[The global cylinder integration operator]
+\label{lem:global-cylinder-functional}
+\leanok
+\uses{lem:cylinder-algebra,lem:cylinder-functional,def:algebraic-fibre-integral,lem:algebraic-integral-pullback}
+\source{chen-moriwaki-adelic:page-0209}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.integrable_fibre,ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_add_of_descendsToFinite,ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_smul,ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_proj}
+The map $I_{L/K}:V_L\to\mathbb R^\Omega$ is real-linear. For every
+real function $g$ on $\Omega$, one has $I_{L/K}(g\circ\pi_{L/K})=g$.
+No global measurability or integrability is required for these cylinder identities.
+\end{lemma}
+\begin{proof}
+If $f=h\circ p_F$ is a global cylinder, its restriction to $X_\omega$
+is the fibre cylinder $h|_{X_{F,\omega}}\circ p_{F,\omega}$ and is
+therefore integrable. Additivity of the integral applies on every fibre
+to any two global cylinders, and scalar multiplication commutes with
+integration. Their pointwise identities give equality of the resulting
+functions on $\Omega$. The pullback of $g$ is constant with value
+$g(\omega)$ on each probability fibre, so its integral is $g(\omega)$.
+\end{proof}
+
 
 \begin{lemma}[Nonnegative integration of pullbacks]\label{lem:algebraic-lintegral-pullback}
 \leanok

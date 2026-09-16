@@ -7,6 +7,7 @@ separable closure of $K$ in $L$. We follow
 
 \begin{definition}[Equivalence of adelic structures]
 \label{def:adelic-equivalence}
+\leanok
 \source{chen-moriwaki-adelic:page-0206,chen-moriwaki-adelic:page-0207}
 \lean{ArakelovGeometry.AdelicStructure.Equiv}
 \uses{def:adelic-structure}
@@ -19,8 +20,19 @@ through the canonical identification of their parameter spaces.
 
 \begin{lemma}[The separable part of a finite extension]
 \label{lem:finite-separable-part}
+\mathlibok
 \source{chen-moriwaki-adelic:page-0204}
-\notready
+\dcref{IntermediateField.finiteDimensional_left}
+\dcref{separableClosure.isSeparable}
+\dcref{separableClosure.isPurelyInseparable}
+\dcref{Field.finSepDegree_eq}
+\dcref{Field.finInsepDegree}
+\dcref{Field.instNeZeroFinInsepDegree}
+\dcref{PerfectField.ofCharZero}
+\dcref{Algebra.IsAlgebraic.isSeparable_of_perfectField}
+\dcref{separableClosure.eq_top_iff}
+\dcref{Algebra.IsSeparable.finInsepDegree_eq}
+\dcref{finInsepDegree_eq_pow}
 The extension $E/K$ is finite separable, $L/E$ is purely inseparable,
 and
 \[
@@ -138,6 +150,7 @@ elements without changing it on $L^\times$.
 
 \begin{definition}[Parameters and absolute values of a finite extension]
 \label{def:finite-parameters}
+\leanok
 \source{chen-moriwaki-adelic:page-0204,chen-moriwaki-adelic:page-0205}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.ϕ}
 \uses{def:extension-parameters,lem:inseparable-absolute-value,lem:inseparable-extension-unique,lem:finite-separable-part}
@@ -174,6 +187,7 @@ image in $L$. These generator identities give measurability of both maps.
 
 \begin{definition}[Measure of a finite extension]
 \label{def:finite-measure}
+\leanok
 \source{chen-moriwaki-adelic:page-0205}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measure}
 \uses{def:finite-parameters,def:separable-induced-measure,lem:finite-separable-part}
@@ -200,6 +214,7 @@ $q^{-1}$ proves the assertion by the logarithmic power formula.
 
 \begin{lemma}[Integrable logarithmic evaluations]
 \label{lem:finite-log-integrable}
+\leanok
 \source{chen-moriwaki-adelic:page-0204,chen-moriwaki-adelic:page-0205}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.integrable_log}
 \uses{def:finite-measure,lem:inseparable-log,thm:separable-log-integrable}
@@ -227,6 +242,7 @@ The preceding two lemmas show that this is an adelic curve.
 
 \begin{definition}[Finite fibres and their integrals]
 \label{def:finite-fibre-integral}
+\leanok
 \source{chen-moriwaki-adelic:page-0205}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.BaseFiber,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreProbabilityMeasure,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreIntegral}
 \uses{def:finite-parameters,def:weighted-fibre-integral,lem:fibre-normalization}
@@ -492,6 +508,7 @@ nonnegative disintegration formula therefore gives the identity.
 
 \begin{proposition}[Integral of the inseparable power formula]
 \label{prop:finite-log-integral}
+\leanok
 \source{chen-moriwaki-adelic:page-0205}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.integral_log_eq_inv_finInsepDegree_mul}
 \uses{def:finite-measure,lem:inseparable-log,lem:finite-log-integrable}
@@ -527,6 +544,7 @@ formula for $S\otimes_KL$.
 
 \begin{lemma}[Multiplicativity of separable degree]
 \label{lem:separable-degree-tower}
+\mathlibok
 \source{chen-moriwaki-adelic:page-0206,chen-moriwaki-adelic:page-0207}
 \dcref{Field.finSepDegree_mul_finSepDegree_of_isAlgebraic}
 For a finite tower $K\subseteq F\subseteq L$,

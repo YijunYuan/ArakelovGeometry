@@ -375,7 +375,7 @@ theorem numberField_product_formula {K : Type*} [Field K] [NumberField K] {x : K
 /-- The number-field adelic curve is proper: this is the product formula
 `NumberField.prod_abs_eq_one` (K. Conrad, *Ostrowski for number fields*, Theorem 4),
 in logarithmic form. -/
-noncomputable instance (K : Type*) [Field K] [NumberField K] :
+noncomputable instance instIsProperNumberFieldAdelicCurve (K : Type*) [Field K] [NumberField K] :
     IsProper (numberFieldAdelicCurve K) := by
   constructor
   intro x hx

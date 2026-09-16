@@ -9,6 +9,7 @@ These facts supply the local-field ingredients used in
 \cite[\S\S3.3--3.4]{chen-moriwaki}.
 
 \begin{definition}[Adelic structures and properness]\label{def:adelic-structure}
+\leanok
 \source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0201}
 \lean{ArakelovGeometry.AdelicStructure,ArakelovGeometry.AdelicStructure.instMeasurableSpaceΩ,ArakelovGeometry.AdelicCurve,ArakelovGeometry.AdelicCurve.instFieldK,ArakelovGeometry.AdelicCurve.Ω,ArakelovGeometry.AdelicCurve.v,ArakelovGeometry.AdelicCurve.ϕ,ArakelovGeometry.AdelicCurve.IsProper,ArakelovGeometry.AdelicStructure.toAdelicCurve}
 An adelic structure on $K$ consists of a measure space
@@ -20,6 +21,7 @@ $\int_\Omega\log\phi_\omega(a)\,d\nu(\omega)=0$ for every $a\in K^\times$.
 \end{definition}
 
 \begin{definition}[Restriction of absolute values]\label{def:absolute-value-restriction}
+\leanok
 \source{chen-moriwaki-adelic:page-0194}
 \lean{AbsoluteValue.pullback,AbsoluteValue.restriction}
 The pullback of $w$ along an embedding $j:K\to L$ is $a\mapsto w(j(a))$.
@@ -117,9 +119,10 @@ $w(\sum_i a_i)\leq m^s w(a_j)\leq m^sM$.
 \end{proof}
 
 \begin{lemma}[Archimedean type under extension]\label{lem:archimedean-extension}
+\leanok
 \source{chen-moriwaki-adelic:page-0202,chen-moriwaki-adelic:page-0203,chen-moriwaki-adelic:page-0204}
-\uses{lem:bounded-integers,lem:completion-nonarchimedean,thm:complete-archimedean,lem:archimedean-rational-normalization}
-\notready
+\uses{lem:bounded-integers,lem:completion-nonarchimedean,thm:complete-archimedean,lem:archimedean-rational-normalization,def:absolute-value-restriction,lem:archimedean-complex-embedding}
+\lean{AbsoluteValue.isNonarchimedean_restriction_iff,AbsoluteValue.exists_normalized_extension}
 For a finite extension $L/K$ and an extending absolute value $w$ of $v$,
 $w$ is archimedean if and only if $v$ is archimedean. In that case their
 exponents on $\mathbb Q$ agree, and if that exponent is $\kappa$, then
@@ -139,7 +142,10 @@ $w^{1/\kappa}=|\sigma(\cdot)|$, which satisfies the triangle inequality.
 \end{proof}
 
 \begin{lemma}[Bounded integers and the ultrametric inequality]
-\label{lem:bounded-integers}\notready
+\label{lem:bounded-integers}
+\leanok
+\lean{AbsoluteValue.isNonarchimedean_iff_natCast_le_one}
+\dcref{IsUltrametricDist.isUltrametricDist_of_forall_norm_natCast_le_one}
 An absolute value $v$ is nonarchimedean if and only if $v(n)\leq1$ for every natural
 integer $n$.
 \end{lemma}
@@ -251,6 +257,7 @@ that span with $L_w$. Therefore $E=L_w$, proving separability.
 \end{proof}
 
 \begin{definition}[Local degree]\label{def:local-degree}
+\leanok
 \source{chen-moriwaki-adelic:page-0194}
 \uses{lem:completion-embedding,lem:completion-finite}
 \lean{AbsoluteValue.localDegree}
@@ -884,10 +891,91 @@ Thus the first displayed sum equals $[L:F]$ times the second.
 Multiplying by $[F:K]$ and using $[F:K][L:F]=[L:K]$ proves the claim.
 \end{proof}
 
+\begin{definition}[Canonical maps to completed extensions]
+\label{def:completion-tensor-map}
+\leanok
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0205}
+\uses{lem:completion-embedding}
+\lean{AbsoluteValue.isScalarTower_base_completion,AbsoluteValue.algebraCompletionOfEq,AbsoluteValue.algebraCompletionExtension,AbsoluteValue.completionTensorMap,AbsoluteValue.completionTensorMapOfEq,AbsoluteValue.completionTensorMapOfEq_one_tmul,AbsoluteValue.completionTensorProductMap}
+Let $L/K$ be a field extension and $w$ an absolute value on $L$
+extending $v$ on $K$. The canonical maps $K\to K_v\to L_w$ and
+$K\to L\to L_w$ agree. Thus $L_w$ is a $K_v$-algebra and there is a
+canonical $K_v$-algebra homomorphism
+\[
+ q_w:K_v\otimes_KL\longrightarrow L_w,\qquad
+ q_w(a\otimes b)=a\,b.
+\]
+In particular $q_w(1\otimes b)$ is the image of $b$ in $L_w$.
+The maps $q_w$ together define
+$q:K_v\otimes_KL\to\prod_{w|_K=v}L_w$.
+\end{definition}
+\begin{proof}
+Both composites from $K$ are the canonical inclusion into $L_w$,
+by the defining extension property of the completion map.
+The images of $K_v$ and $L$ commute in the field $L_w$. The universal
+property of the tensor product therefore gives $q_w$ and its formula.
+Applying the product universal property gives $q$.
+\end{proof}
+
+\begin{lemma}[Surjectivity onto a completed field]
+\label{lem:completion-tensor-surjective}
+\leanok
+\source{chen-moriwaki-adelic:page-0205}
+\uses{def:completion-tensor-map,lem:completion-finite}
+\lean{AbsoluteValue.completionTensorMap_surjective,AbsoluteValue.completionTensorMapOfEq_surjective}
+If $L/K$ is finite, the map $q_w:K_v\otimes_KL\to L_w$ is surjective.
+\end{lemma}
+\begin{proof}
+Let $b_1,\ldots,b_n$ be a $K$-basis of $L$. Its images span $L_w$
+over $K_v$ by Lemma~\ref{lem:completion-finite}. The image of $q_w$
+is a $K_v$-linear subspace containing every $b_i=q_w(1\otimes b_i)$,
+so it equals $L_w$.
+\end{proof}
+
+\begin{lemma}[Distinct kernels of completed-place maps]
+\label{lem:completion-tensor-kernels}
+\leanok
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0205}
+\uses{lem:completion-tensor-surjective,lem:complete-extension,lem:completion-finite}
+\lean{AbsoluteValue.completionTensorMapOfEq_ker_injective}
+If $L/K$ is finite, different extending absolute values $w$ have
+different kernels $\ker(q_w)$.
+\end{lemma}
+\begin{proof}
+Suppose $\ker(q_{w_1})=\ker(q_{w_2})$. Surjectivity and the quotient
+universal property give a $K_v$-algebra homomorphism
+$f:L_{w_1}\to L_{w_2}$ with $f\circ q_{w_1}=q_{w_2}$.
+Both the given absolute value on $L_{w_1}$ and the pullback along
+$f$ of the absolute value on $L_{w_2}$ extend the norm on $K_v$.
+The extension $L_{w_1}/K_v$ is finite, so uniqueness of an extending
+absolute value over the complete field $K_v$ makes these equal.
+For every $b\in L$, the equation for $f$ on $1\otimes b$ then gives
+$w_1(b)=w_2(b)$. Hence $w_1=w_2$.
+\end{proof}
+
+\begin{lemma}[Simultaneous surjectivity onto the completed fields]
+\label{lem:completion-tensor-product-surjective}
+\leanok
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0205}
+\uses{lem:completion-tensor-surjective,lem:completion-tensor-kernels,lem:finite-extension-count}
+\lean{AbsoluteValue.completionTensorProductMap_surjective}
+If $L/K$ is finite, the canonical map
+$q:K_v\otimes_KL\to\prod_{w|_K=v}L_w$ is surjective.
+\end{lemma}
+\begin{proof}
+Each $q_w$ is surjective onto a field, so its kernel is maximal.
+The preceding lemma shows these maximal ideals are distinct, hence
+pairwise comaximal. There are only finitely many extending absolute
+values. The Chinese remainder theorem makes the simultaneous quotient
+map onto the product of their quotients surjective. The isomorphisms
+$(K_v\otimes_KL)/\ker(q_w)\simeq L_w$ identify this map with $q$.
+\end{proof}
+
 \begin{proposition}[Local factorization]\label{lem:local-factorization}
+\leanok
 \source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0202,chen-moriwaki-adelic:page-0205}
-\uses{lem:complete-extension,lem:completion-finite,def:local-degree}
-\notready
+\uses{lem:completion-tensor-product-surjective,thm:local-degree-sum,prop:local-norm-product,lem:finite-extension-count,def:local-degree}
+\lean{AbsoluteValue.completionTensorEquiv,AbsoluteValue.completionTensorEquiv_one_tmul,AbsoluteValue.sum_localDegree,AbsoluteValue.apply_norm_eq_prod,AbsoluteValue.natCard_extensions_pos,AbsoluteValue.natCard_extensions_le_finrank}
 Let $L/K$ be finite separable, let $v$ be an absolute value on $K$, and
 let $X_v$ be the set of extending absolute values on $L$. Then $X_v$ is
 finite and nonempty, and
@@ -901,33 +989,27 @@ For every $b\in L^\times$,
 \]
 \end{proposition}
 \begin{proof}
-Take a primitive element $a$ and its separable monic minimal polynomial
-$P\in K[T]$. Write $P=\prod_{j=1}^rP_j$ as its distinct monic irreducible
-factors over $K_v$. Each field $E_j=K_v[T]/(P_j)$ has the unique extending
-absolute value of Lemma~\ref{lem:complete-extension} and is complete,
-being finite dimensional over a complete field (in the trivial case it is
-discrete). The embedding $L=K[T]/(P)\to E_j$ has dense image: the powers
-of the residue of $T$ span $E_j$ and each coefficient in $K_v$ can be
-approximated by coefficients in $K$. Its completion is consequently $E_j$.
+The extending absolute values form a nonempty finite set by
+Lemma~\ref{lem:finite-extension-count}. The canonical homomorphism
+\[
+ q:K_v\otimes_KL\longrightarrow\prod_{w\in X_v}L_w
+\]
+is surjective by Lemma~\ref{lem:completion-tensor-product-surjective}.
+The dimension of its source over $K_v$ is $[L:K]$. The dimension
+of its target is $\sum_w[L_w:K_v]$, which equals $[L:K]$ by
+Lemma~\ref{thm:local-degree-sum}. Thus this surjective linear map
+between finite-dimensional spaces of equal dimension is also
+injective. It is therefore the asserted algebra isomorphism, and
+its value on $1\otimes b$ is the family of images of $b$ in the
+completions.
 
-Conversely, for an extending $w$, Lemma~\ref{lem:completion-finite}
-gives $L_w=K_v(a)$. The evaluation homomorphism $K_v[T]\to L_w$ is
-surjective and its kernel is generated by one of the $P_j$. Uniqueness of
-the extending absolute value identifies $w$ with the value just obtained
-from that factor. If two factors gave the same $w$, their maps to the
-completion of the same valued field $L$ would agree on the dense subfield
-$L$ and on $K_v$, hence would have the same kernel. Thus their factors
-would agree. The factors therefore correspond bijectively to $X_v$.
-
-The Chinese remainder theorem gives
-$K_v\otimes_K L\simeq K_v[T]/(P)\simeq\prod_jE_j$.
-Taking dimensions proves the degree sum. Determinants of multiplication
-commute with extension of scalars and with products, so
-$N_{L/K}(b)=\prod_jN_{E_j/K_v}(b)$ in $K_v$.
-The norm in each separable $E_j/K_v$ is the product over its embeddings
-into an algebraic closure of $K_v$. All embeddings preserve the unique
-extending absolute value. Taking absolute values therefore gives
-$v(N_{E_j/K_v}(b))=w_j(b)^{[E_j:K_v]}$ and proves the last formula.
+For the norm identity, choose an extension $u$ of $v$ to an
+algebraic closure of $K$. The norm is the product of $\sigma(b)$
+over all $K$-embeddings of $L$ into this closure. Applying $u$ and
+partitioning those embeddings by their induced absolute values
+gives a factor $w(b)$ exactly $[L_w:K_v]$ times, by
+Lemma~\ref{lem:embedding-count-algclosed}. This proves the displayed
+product formula (and also proves it for $b=0$).
 \end{proof}
 
 \begin{lemma}[Number of extending absolute values]\label{lem:finite-extension-count}

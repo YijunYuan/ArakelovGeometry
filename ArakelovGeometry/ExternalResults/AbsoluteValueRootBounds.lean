@@ -154,4 +154,36 @@ theorem apply_root_le_of_complex_embedding {K L : Type*} [Field K] [Field L] [Al
     sum_le_card_rpow_mul_of_complex_embedding w σ hs hσ
       (Finset.range p.natDegree) (Finset.nonempty_range_iff.mpr hm.ne') f hB
 
+/-- The ordinary triangle inequality bounds a monic root by its degree times a coefficient bound. -/
+theorem apply_root_le_degree_mul {K L : Type*} [Field K] [Field L] [Algebra K L]
+    (w : AbsoluteValue L ℝ) {p : Polynomial K} (hp : p.Monic)
+    {a : L} (ha : Polynomial.aeval a p = 0) {M : ℝ} (hM : 1 ≤ M)
+    (hcoeff : ∀ i < p.natDegree, w (algebraMap K L (p.coeff i)) ≤ M) :
+    w a ≤ (p.natDegree : ℝ) * M := by
+  have hm : 0 < p.natDegree := Polynomial.natDegree_pos_of_monic_of_aeval_eq_zero hp ha
+  apply apply_root_le_of_sum_bound w hp ha (by exact_mod_cast hm) hM hcoeff
+  intro f B _ hB
+  exact (w.sum_le _ _).trans ((Finset.sum_le_sum hB).trans_eq (by simp))
+/-- An extending archimedean absolute value has the same exponent and admits
+its norm normalization. -/
+theorem exists_normalized_extension {K L : Type*} [Field K] [Field L] [Algebra K L]
+    (w : AbsoluteValue L ℝ) (hw : ¬ IsNonarchimedean (w.restriction K))
+    {κ : ℝ} (hκ : 0 < κ) (hκ2 : (w.restriction K) 2 = (2 : ℝ) ^ κ) :
+    ∃ (σ : L →+* ℂ) (u : AbsoluteValue L ℝ),
+      (∀ a, w a = ‖σ a‖ ^ κ) ∧ ∀ a, u a = w a ^ κ⁻¹ := by
+  obtain ⟨σ, s, hs, hσ⟩ := exists_complex_embedding_of_not_isNonarchimedean w
+    ((isNonarchimedean_restriction_iff w).not.mp hw)
+  have htwo : (2 : ℝ) ^ s = 2 ^ κ := by
+    calc
+      (2 : ℝ) ^ s = w (2 : L) := by simpa only [map_ofNat, Complex.norm_ofNat] using (hσ 2).symm
+      _ = (w.restriction K) 2 := by
+        simp only [restriction, pullback, coe_mk, MulHom.coe_mk, map_ofNat]
+      _ = _ := hκ2
+  have hsk : s = κ := (Real.rpow_right_inj (by norm_num) (by norm_num)).mp htwo
+  subst s
+  refine ⟨σ, (NormedField.toAbsoluteValue ℂ).pullback σ, hσ, ?_⟩
+  intro a
+  rw [hσ, Real.rpow_rpow_inv (norm_nonneg _) hκ.ne']
+  rfl
+
 end AbsoluteValue
