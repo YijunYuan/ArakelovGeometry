@@ -4,9 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
 import ArakelovGeometry.AdelicCurve.Defs
+import Mathlib.Analysis.MeanInequalitiesPow
 import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 import Mathlib.FieldTheory.SeparableClosure
+import Mathlib.FieldTheory.PurelyInseparable.Basic
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
 import Mathlib.MeasureTheory.Measure.Dirac
@@ -446,7 +448,18 @@ variable (K) {L} in
 This is the algebraic input used in formula (3.13). -/
 theorem pow_finInsepDegree_mem_separableClosure (a : L) :
     a ^ Field.finInsepDegree K L ∈ separableClosure K L := by
-  sorry
+  obtain ⟨p, hp⟩ := ExpChar.exists (separableClosure K L)
+  obtain ⟨n, b, hpoly⟩ := IsPurelyInseparable.minpoly_eq_X_pow_sub_C
+    (separableClosure K L) p a
+  have hpow : a ^ p ^ n = (b : L) := by
+    have h := minpoly.aeval (separableClosure K L) a
+    simpa [hpoly, sub_eq_zero] using h
+  have hdvd : p ^ n ∣ Field.finInsepDegree K L := by
+    simpa [Field.finInsepDegree, hpoly] using
+      (minpoly.degree_dvd (Algebra.IsIntegral.isIntegral (R := separableClosure K L) a))
+  obtain ⟨m, hm⟩ := hdvd
+  rw [hm, pow_mul, hpow]
+  exact pow_mem b.property m
 
 variable {L} in
 /-- The formula (3.13) extending an absolute value from the separable part `K'` to the finite
@@ -458,13 +471,41 @@ noncomputable def extendAbsoluteValue
         pow_finInsepDegree_mem_separableClosure K a⟩ ^
       ((Field.finInsepDegree K L : ℝ)⁻¹)
   map_mul' a b := by
-    sorry
+    have hmul :
+        (⟨(a * b) ^ Field.finInsepDegree K L,
+          pow_finInsepDegree_mem_separableClosure K (a * b)⟩ : separableClosure K L) =
+          ⟨a ^ Field.finInsepDegree K L, pow_finInsepDegree_mem_separableClosure K a⟩ *
+            ⟨b ^ Field.finInsepDegree K L, pow_finInsepDegree_mem_separableClosure K b⟩ := by
+      ext
+      exact mul_pow a b _
+    rw [hmul, map_mul, Real.mul_rpow (v.nonneg _) (v.nonneg _)]
   nonneg' a := by
-    sorry
+    exact Real.rpow_nonneg (v.nonneg _) _
   eq_zero' a := by
-    sorry
+    have hq : (Field.finInsepDegree K L : ℝ) ≠ 0 :=
+      Nat.cast_ne_zero.mpr (NeZero.ne _)
+    rw [Real.rpow_eq_zero (v.nonneg _) (inv_ne_zero hq), v.eq_zero]
+    simp only [Subtype.ext_iff, ZeroMemClass.coe_zero, pow_eq_zero_iff (NeZero.ne _)]
   add_le' a b := by
-    sorry
+    obtain ⟨p, hp⟩ := ExpChar.exists L
+    let : ExpChar K p := (algebraMap K L).expChar (algebraMap K L).injective p
+    obtain ⟨n, hn⟩ := finInsepDegree_eq_pow K L p
+    have hadd :
+        (⟨(a + b) ^ Field.finInsepDegree K L,
+          pow_finInsepDegree_mem_separableClosure K (a + b)⟩ : separableClosure K L) =
+          ⟨a ^ Field.finInsepDegree K L, pow_finInsepDegree_mem_separableClosure K a⟩ +
+            ⟨b ^ Field.finInsepDegree K L, pow_finInsepDegree_mem_separableClosure K b⟩ := by
+      apply Subtype.ext
+      change (a + b) ^ Field.finInsepDegree K L =
+        a ^ Field.finInsepDegree K L + b ^ Field.finInsepDegree K L
+      rw [hn, add_pow_expChar_pow]
+    have hr : 0 ≤ (Field.finInsepDegree K L : ℝ)⁻¹ := by positivity
+    have hr₁ : (Field.finInsepDegree K L : ℝ)⁻¹ ≤ 1 := by
+      apply inv_le_one_of_one_le₀
+      exact_mod_cast Nat.one_le_iff_ne_zero.mpr (NeZero.ne (Field.finInsepDegree K L))
+    rw [hadd]
+    exact (Real.rpow_le_rpow (v.nonneg _) (v.add_le _ _) hr).trans
+      (Real.rpow_add_le_add_rpow (v.nonneg _) (v.nonneg _) hr hr₁)
 
 /-- Formula (3.13) as a simp-ready evaluation statement. -/
 theorem extendAbsoluteValue_apply
@@ -483,7 +524,13 @@ theorem log_extendAbsoluteValue
       (Field.finInsepDegree K L : ℝ)⁻¹ *
         Real.log (v ⟨a ^ Field.finInsepDegree K L,
           pow_finInsepDegree_mem_separableClosure K a⟩) := by
-  sorry
+  by_cases ha : a = 0
+  · subst a
+    simp [NeZero.ne (Field.finInsepDegree K L), Subtype.ext_iff]
+  · rw [extendAbsoluteValue_apply]
+    apply Real.log_rpow (v.pos ?_)
+    intro h
+    exact pow_ne_zero _ ha (congrArg Subtype.val h)
 
 /-- The canonical bijection `M_{K'} ≃ M_L` in Definition 3.4.1, used here as the parameter map
 for the finite extension adelic structure. -/
