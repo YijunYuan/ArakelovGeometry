@@ -1,0 +1,726 @@
+\section{Finite separable extensions}
+
+Fix an adelic structure $S=(\Omega,\mathcal A,\nu,\phi)$ on a field $K$.
+For an extension $L/K$, use the parameter space $\Omega_L$, projection
+$\pi$, evaluations $e_b(x)=|b|_x$, and fibres $X_\omega$ of
+Definition~\ref{def:extension-parameters}. Except where explicitly stated
+otherwise, $L/K$ is finite separable and $n=[L:K]$. This section follows
+\cite[\S3.3]{chen-moriwaki}; the bounded-generator argument and the passage
+from measurable to almost everywhere measurable integrands are made explicit.
+
+\subsection{Finite fibres and their integrals}
+
+\begin{lemma}[Finiteness of extension fibres]\label{lem:finite-extension-fibres}
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0204}
+\uses{def:extension-parameters,lem:finite-extension-count}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.finite_extensionFiber}
+For every finite extension $L/K$, separable or not, and every $\omega\in\Omega$,
+the set $X_\omega$ is finite.
+\end{lemma}
+\begin{proof}
+Sending $(\omega,w)$ to $w$ identifies the fibre with the set of absolute
+values on $L$ extending $\phi_\omega$. The finite extension-count theorem
+bounds this set by $[L:K]$.
+The assertion includes inseparable extensions: restriction to the separable
+part is bijective by the uniqueness of purely inseparable extension of an
+absolute value.
+\end{proof}
+
+\begin{lemma}[Normalization of local degrees]\label{lem:fibre-normalization}
+\source{chen-moriwaki-adelic:page-0194}
+\uses{def:weighted-fibre-integral,lem:local-factorization,lem:finite-extension-fibres}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.tsum_fibreWeight}
+The weights $p_\omega(x)=[L_x:K_\omega]/n$ satisfy
+$\sum_{x\in X_\omega}p_\omega(x)=1$.
+\end{lemma}
+\begin{proof}
+The decomposition $K_\omega\otimes_K L\simeq\prod_{x\in X_\omega}L_x$
+is an isomorphism of $K_\omega$-vector spaces. Comparing their dimensions
+gives $n=\sum_x[L_x:K_\omega]$. Division by the positive integer $n$
+gives the assertion.
+\end{proof}
+
+\begin{lemma}[Finite weighted sums]\label{lem:finite-fibre-sums}
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0195}
+\uses{def:weighted-fibre-integral,lem:finite-extension-fibres,lem:fibre-separation,lem:fibre-normalization,lem:completion-finite}
+\notready
+The measurable space $X_\omega$ is discrete, every weight $p_\omega(x)$
+is positive, and $P_\omega$ is a probability measure. Every real function
+on $X_\omega$ is integrable, and
+\[
+ If(\omega)=\sum_{x\in X_\omega}p_\omega(x)f(x),\qquad
+ I^+g(\omega)=\sum_{x\in X_\omega}p_\omega(x)g(x)
+\]
+for real $f$ and extended nonnegative $g$. In particular $I$ preserves
+pointwise limits of real functions, and $I^+$ preserves increasing limits
+and countable sums of nonnegative functions.
+\end{lemma}
+\begin{proof}
+For each $x$ and every other $y$ choose a measurable set containing $x$
+and not $y$. Their finite intersection is $\{x\}$, so every subset is
+measurable. The completion $L_x$ is a nonzero finite-dimensional vector
+space over $K_\omega$, hence its degree is a positive integer. Each point
+therefore has positive finite weight. The total weight is one by
+Lemma~\ref{lem:fibre-normalization}. Integration against the finite sum
+of weighted Dirac measures gives the displayed formulas. A real function
+has finite absolute integral because the sum has finitely many finite
+terms. Limits of real sequences commute with a fixed finite linear
+combination. For nonnegative extended functions, increasing limits and
+countable sums commute with a finite nonnegative sum, including when a
+term is infinite.
+\end{proof}
+
+\begin{lemma}[Integral of one]\label{lem:fibre-one}
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0195}
+\uses{lem:finite-fibre-sums}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_one}
+$I1=1$.
+\end{lemma}
+\begin{proof}
+At $\omega$ the finite-sum formula gives $I1(\omega)=\sum_xp_\omega(x)=1$.
+\end{proof}
+
+\begin{lemma}[Additivity]\label{lem:fibre-additivity}
+\source{chen-moriwaki-adelic:page-0195}
+\uses{lem:finite-fibre-sums}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_add}
+For all real functions $f,g$ on $\Omega_L$, $I(f+g)=If+Ig$.
+\end{lemma}
+\begin{proof}
+For each $\omega$, distribute $p_\omega(x)$ over $f(x)+g(x)$ and separate
+the two finite sums.
+\end{proof}
+
+\begin{corollary}[Retraction of base pullback]\label{cor:fibre-pullback}
+\source{chen-moriwaki-adelic:page-0196}
+\uses{lem:fibre-one,prop:fibre-base-multiplication}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_comp_proj}
+For every real function $\varphi$ on $\Omega$, $I(\varphi\circ\pi)=\varphi$.
+\end{corollary}
+\begin{proof}
+Apply multiplication by a base function to $f=1$, and use $I1=1$.
+No measurability hypothesis is needed for this finite-sum identity.
+\end{proof}
+
+\begin{proposition}[Compatibility with intermediate fields]\label{prop:fibre-restriction}
+\source{chen-moriwaki-adelic:page-0195,chen-moriwaki-adelic:page-0196}
+\uses{lem:finite-fibre-sums,lem:local-factorization,lem:completion-finite,lem:restriction-transitive}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_comp_restrict}
+If $K\subseteq F\subseteq L$, then for every real function $f$ on
+$\Omega_F$,
+\[
+ I_{L/K}(f\circ\pi_{L/F})=I_{F/K}f.
+\]
+\end{proposition}
+\begin{proof}
+The embeddings of completed fields give a tower
+$K_\omega\subseteq F_x\subseteq L_y$ whenever $y|_F=x$. Its degree
+formula gives
+\[
+ \frac{[L_y:K_\omega]}{[L:K]}
+ =\frac{[F_x:K_\omega]}{[F:K]}
+  \frac{[L_y:F_x]}{[L:F]}.
+\]
+The places $y$ over $x$ are exactly the extensions of the absolute value
+$x$ from $F$ to $L$. Local factorization for $L/F$ gives
+$\sum_{y|_F=x}[L_y:F_x]=[L:F]$. Partitioning the finite sum over $y$
+according to $x=y|_F$ therefore leaves
+$\sum_x[F_x:K_\omega]f(x)/[F:K]$, as required.
+\end{proof}
+
+\subsection{Power sums and measurable conjugate averages}
+
+\begin{lemma}[Recovering the largest absolute value]\label{lem:power-sum-radius}
+\source{chen-moriwaki-adelic:page-0196,chen-moriwaki-adelic:page-0197}
+\lean{AbsoluteValue.iSup_eq_limsup_sum_pow_rpow}
+For a real absolute value $v$ on a field and pairwise distinct elements
+$\alpha_1,\ldots,\alpha_d$, where $d\geq1$, one has
+\[
+ \max_i v(\alpha_i)
+ =\limsup_{N\to\infty}v\left(\sum_{i=1}^d\alpha_i^N\right)^{1/N}.
+\]
+\end{lemma}
+\begin{proof}
+Put $M=\max_i v(\alpha_i)$. For $N\geq1$, the triangle inequality bounds the $N$th
+term by $d^{1/N}M$, giving the upper bound. If $M=0$, the same estimate
+proves the assertion. Suppose $M>0$, and number the elements so that
+$v(\alpha_i)=M$ exactly for $1\leq i\leq\ell$. Write
+$\beta_i=\alpha_i/\alpha_1$. For $i\leq\ell$ these are distinct of
+absolute value one; for $i>\ell$ their absolute values are less than one.
+
+Let $V=(\beta_i^r)_{0\leq r<\ell,\,1\leq i\leq\ell}$. Its determinant
+is the nonzero product $\prod_{i<j}(\beta_j-\beta_i)$. Write
+$B=V^{-1}$ and put $C=\max_i\sum_r v(B_{ir})$. Since an invertible
+matrix has a nonzero entry, $C>0$. For
+$u_i=\beta_i^N$ and $s_r=\sum_{i\leq\ell}\beta_i^{N+r}$, the equation
+$u=Bs$ implies $1\leq C\max_r v(s_r)$. Thus in every block
+$N,\ldots,N+\ell-1$ at least one such sum has absolute value at least
+$C^{-1}$. The omitted tail satisfies, uniformly for these finitely many
+$r$,
+\[
+ v\left(\sum_{i>\ell}\beta_i^{N+r}\right)
+ \leq\sum_{i>\ell}v(\beta_i)^{N+r}\longrightarrow0.
+\]
+For all sufficiently large $N$, one index $m\in[N,N+\ell-1]$ therefore
+satisfies $v(\sum_{i=1}^d\beta_i^m)\geq(2C)^{-1}$: use
+$v(s_r)\leq v(s_r+\text{tail})+v(\text{tail})$.
+Choosing such indices along disjoint blocks gives $m\to\infty$ and
+\[
+ v\left(\sum_i\alpha_i^m\right)^{1/m}
+ \geq M(2C)^{-1/m}\longrightarrow M.
+\]
+This proves the reverse bound and the equality.
+The inverse-matrix estimate makes the Vandermonde lower bound explicit
+over the original valued field; passing to its completion is unnecessary.
+\end{proof}
+
+\begin{lemma}[Power sums of a separable orbit lie in the base]\label{lem:orbit-power-sums}
+\source{chen-moriwaki-adelic:page-0198}
+\notready
+If $c$ is separable over $K$ and $\alpha_1,\ldots,\alpha_d$ are its
+distinct conjugates in an algebraic closure, then
+$\sum_i\alpha_i^N\in K$ for every integer $N\geq1$.
+\end{lemma}
+\begin{proof}
+Write $\prod_i(1-\alpha_iT)=Q(T)=\sum_{j=0}^d(-1)^je_jT^j$.
+The $e_j$ belong to $K$, since they are coefficients of the minimal
+polynomial. In formal power series,
+\[
+ -TQ'(T)=Q(T)\sum_{N\geq1}\left(\sum_i\alpha_i^N\right)T^N.
+\]
+Indeed logarithmic differentiation of the finite product gives
+\[
+ -TQ'/Q=\sum_i\frac{\alpha_iT}{1-\alpha_iT},
+\]
+and expansion of each geometric series gives the right side of the
+previous identity. The constant coefficient of $Q$ is one.
+Comparing coefficients in increasing order of $N$ therefore expresses
+the $N$th power sum as a $K$-linear combination of earlier power sums
+and a coefficient of $-TQ'$. Induction proves membership in $K$ without
+division by an integer, so this proof also applies in positive characteristic.
+This gives directly the power-sum consequence of the symmetric-polynomial
+argument in Lemma 3.3.5(2).
+\end{proof}
+
+\begin{lemma}[Measurability of orbit maxima]\label{lem:orbit-maximum}
+\source{chen-moriwaki-adelic:page-0196,chen-moriwaki-adelic:page-0198}
+\uses{def:adelic-structure,lem:power-sum-radius,lem:orbit-power-sums,def:extension-parameters}
+\lean{ArakelovGeometry.AdelicStructure.measurable_iSup_abv_aut}
+Choose for each $\omega$ any extension $v_\omega$ of $\phi_\omega$ to
+an algebraic closure $\overline K$. For every separable $c\in\overline K$,
+\[
+ \omega\longmapsto
+ \sup_{\tau\in\operatorname{Aut}_K(\overline K)}v_\omega(\tau c)
+\]
+is measurable; no measurability of the choices $v_\omega$ is required.
+\end{lemma}
+\begin{proof}
+The orbit of $c$ is the finite set of distinct roots of its minimal
+polynomial: each embedding of $K(c)$ extends to an automorphism of the
+algebraic closure. For every $N\geq1$, its power sum $a_N$ lies in $K$
+by Lemma~\ref{lem:orbit-power-sums}. If $a_N=0$, then
+$v_\omega(a_N)=0$ is measurable. Otherwise positivity gives
+\[
+ v_\omega(a_N)=\phi_\omega(a_N)
+ =\exp\bigl(\log\phi_\omega(a_N)\bigr),
+\]
+which is measurable by the adelic hypothesis. Composing with the continuous
+map $t\mapsto t^{1/N}$ on $[0,\infty)$ preserves measurability.
+Lemma~\ref{lem:power-sum-radius} identifies the desired maximum with
+the limsup of this sequence. The limsup is a countable infimum of
+countable suprema of measurable extended real functions, and its values
+are finite, so it is a measurable real function.
+\end{proof}
+
+\begin{lemma}[Counting embeddings above a place]\label{lem:conjugate-count}
+\source{chen-moriwaki-adelic:page-0198,chen-moriwaki-adelic:page-0199}
+\uses{lem:local-factorization,lem:complete-extension}
+\notready
+Fix $\omega$ and realize $\overline K$ inside an algebraic closure of
+$K_\omega$, with its extended absolute value. Among the $n$ embeddings
+$\sigma:L\hookrightarrow\overline K$ over $K$, the number inducing
+a given $x\in X_\omega$ is $[L_x:K_\omega]$. Consequently, for $b\in L$,
+\[
+ I_{L/K}e_b(\omega)=\frac1n\sum_{\sigma:L\hookrightarrow\overline K}
+ |\sigma b|_\omega.
+\]
+\end{lemma}
+\begin{proof}
+Every $K$-embedding of $L$ into the algebraic closure of $K_\omega$
+extends uniquely to a $K_\omega$-algebra homomorphism on
+$K_\omega\otimes_KL$, by $a\otimes b\mapsto a\sigma(b)$.
+This algebra is the product of the separable fields $L_x$.
+A homomorphism from this product to an algebraically closed field
+selects exactly one factor: its idempotents have images zero or one,
+and their sum is one. A separable factor $L_x$ has exactly
+$[L_x:K_\omega]$ embeddings into the algebraic closure of $K_\omega$.
+Each gives the absolute value $x$ on $L$, by uniqueness of extension
+of the absolute value from the complete field $K_\omega$ to its algebraic
+extensions. Distinct factors correspond to distinct absolute values,
+so the embeddings inducing $x$ are precisely those selecting $L_x$.
+The subfield of elements algebraic over $K$ in the chosen algebraic
+closure of $K_\omega$ is exactly the image of $\overline K$: an element
+algebraic over $K$ is algebraic over that image, and an algebraically
+closed field has no proper algebraic field extension. Thus these are
+exactly the embeddings $L\hookrightarrow\overline K$ in the statement.
+For every such embedding selecting $L_x$, the absolute value of
+$\sigma b$ is $|b|_x$. Grouping the $n$ embeddings by the selected
+factor therefore gives
+\[
+ \frac1n\sum_\sigma|\sigma b|_\omega
+ =\sum_{x\in X_\omega}\frac{[L_x:K_\omega]}n|b|_x
+ =I_{L/K}e_b(\omega).
+\]
+\end{proof}
+
+\begin{lemma}[Measurable ordered conjugate values]\label{lem:ordered-conjugate-values}
+\source{chen-moriwaki-adelic:page-0198}
+\uses{lem:orbit-maximum}
+\notready
+If $a\ne0$ is separable with conjugates $\gamma_1,\ldots,\gamma_m$,
+let $s_1(\omega)\geq\cdots\geq s_m(\omega)>0$ be their absolute values
+in decreasing order. Each $s_i$ is measurable.
+\end{lemma}
+\begin{proof}
+For a $k$-element subset $J\subseteq\{1,\ldots,m\}$ put
+$c_J=\prod_{j\in J}\gamma_j$. This element is separable, since the
+separable algebraic elements form a field. Automorphisms permute the
+conjugates, so
+\[
+ \prod_{i=1}^ks_i(\omega)
+ =\max_{|J|=k}|c_J|_\omega
+ =\max_{|J|=k}\sup_\tau|\tau c_J|_\omega.
+\]
+The last expression is a finite maximum of measurable functions by
+Lemma~\ref{lem:orbit-maximum}. Denote it by $P_k$ and put $P_0=1$.
+All $P_k$ are positive, and $s_k=P_k/P_{k-1}$ is measurable.
+\end{proof}
+
+\begin{lemma}[Measurable averages of evaluations]\label{lem:measurable-evaluation-average}
+\source{chen-moriwaki-adelic:page-0198,chen-moriwaki-adelic:page-0199}
+\uses{lem:complete-extension,lem:conjugate-count,lem:ordered-conjugate-values,prop:fibre-restriction}
+\notready
+For every $b\in L$, the function $I_{L/K}e_b$ is measurable.
+\end{lemma}
+\begin{proof}
+Choose the absolute values on an algebraic closure used above by extending
+each base absolute value through its completion. If $b=0$, the average
+is zero. Otherwise first consider the extension $K(b)/K$, of degree $m$.
+Its embeddings send $b$ to its $m$ distinct conjugates. Lemmas
+\ref{lem:conjugate-count} and \ref{lem:ordered-conjugate-values} give
+$I_{K(b)/K}e_b=m^{-1}\sum_{i=1}^m s_i$, a measurable function.
+Evaluation at $b$ on $\Omega_L$ is the pullback of evaluation on
+$\Omega_{K(b)}$, so Proposition~\ref{prop:fibre-restriction} proves
+the assertion for $L$.
+\end{proof}
+
+\subsection{The measurable-function extension argument}
+
+\begin{lemma}[A coefficient bound for roots]\label{lem:algebraic-root-bound}
+\source{chen-moriwaki-adelic:page-0200}
+\notready
+If $b$ satisfies $b^m+\mu_1b^{m-1}+\cdots+\mu_m=0$ with $m\geq1$
+and $\mu_i\in K$, then for $x\in X_\omega$,
+\[
+ |b|_x\leq m\max(1,|\mu_1|_\omega,\ldots,|\mu_m|_\omega).
+\]
+\end{lemma}
+\begin{proof}
+Put $r=|b|_x$ and $M=\max(1,|\mu_1|_\omega,\ldots,|\mu_m|_\omega)$.
+If $r>mM$, then $r>1$. Dividing the triangle inequality for the polynomial
+relation by $r^m$ gives
+$1\leq\sum_{i=1}^m|\mu_i|_\omega/r^i\leq mM/r<1$, a contradiction.
+\end{proof}
+
+\begin{lemma}[Bounded multiplicative generators]\label{lem:bounded-evaluation-generators}
+\source{chen-moriwaki-adelic:page-0199,chen-moriwaki-adelic:page-0200}
+\uses{def:extension-parameters,def:adelic-structure,lem:algebraic-root-bound}
+\notready
+Let $C$ consist of the bounded nonnegative functions on $\Omega_L$ of
+the form $e_b(\varphi\circ\pi)$, where $b\in L$ and $\varphi$ is a
+bounded nonnegative measurable function on $\Omega$. Then $1\in C$,
+$C$ is closed under multiplication, and $\sigma(C)=\mathcal A_L$.
+\end{lemma}
+\begin{proof}
+Take $b=1$, $\varphi=1$ to obtain the constant one. Multiplicativity
+of absolute values gives
+$e_b(\varphi\circ\pi)e_c(\psi\circ\pi)=e_{bc}((\varphi\psi)\circ\pi)$;
+the product is bounded and nonnegative. All these functions are
+$\mathcal A_L$-measurable, so $\sigma(C)\subseteq\mathcal A_L$.
+For every $A\in\mathcal A$, choosing $b=1$ and $\varphi=\mathbf1_A$
+shows that $\mathbf1_{\pi^{-1}A}\in C$; hence the projection is
+$\sigma(C)$-measurable.
+
+Fix $b\in L$ and its monic minimal polynomial of degree $m$. Set
+$A_N=\{\omega:\max_i|\mu_i|_\omega\leq N\}$ for positive integers $N$.
+These sets are measurable and increase to $\Omega$. The preceding root
+bound gives $0\leq e_b(\mathbf1_{A_N}\circ\pi)\leq m\max(1,N)$.
+Thus each such function belongs to $C$, and their pointwise limit is
+$e_b$. Every evaluation is therefore $\sigma(C)$-measurable. Together
+with the projection these generate $\mathcal A_L$, proving equality.
+\end{proof}
+
+\begin{lemma}[Bounded functional monotone closure]\label{lem:functional-monotone-class}
+\source{chen-moriwaki-adelic:page-0199}
+\notready
+Let $C$ be a multiplicatively closed family of bounded real functions
+on a set $X$ containing $1$. Suppose a real vector space $H$ of bounded
+functions contains $C$ and is closed under pointwise limits of uniformly
+bounded sequences. Then $H$ contains every bounded $\sigma(C)$-measurable
+real function.
+\end{lemma}
+\begin{proof}
+This vector-space formulation supplies the functional monotone-class
+step used in the proof of Theorem 3.3.4.
+Let $D$ be the intersection of all vector spaces of bounded functions
+containing $C$ and closed under such limits. Then $D\subseteq H$ and
+$D$ contains the algebra $A$ spanned by $C$. For fixed $g\in A$, the
+set $\{f\in D:fg\in D\}$ is a vector space with the same limit closure
+and contains $A$. Its closure property follows because $g$ is bounded.
+Minimality gives $fg\in D$ for all $f\in D$. Fixing now $f\in D$ and
+applying the same argument to $\{g\in D:fg\in D\}$ shows that $D$ is
+an algebra.
+
+To see that $|f|\in D$, first rescale to $|f|\leq1$. Define
+$q_0=0$ and $q_{j+1}=q_j+(f^2-q_j^2)/2$. These are polynomials in $f$.
+Pointwise, $0\leq q_j\leq|f|$ and $q_j$ increases: if $0\leq q\leq t\leq1$,
+then $0\leq(t^2-q^2)/2\leq t-q$. Its limit $q$ satisfies
+$q=q+(f^2-q^2)/2$, hence $q=|f|$. The limit closure proves the claim;
+rescaling removes the bound one. Thus positive parts and finite minima
+belong to $D$. For $f\in D$ and $r\in\mathbb R$, the bounded functions
+$\min(1,j(f-r)^+)$ converge to $\mathbf1_{\{f>r\}}$, which belongs to $D$.
+
+Let $\mathcal E=\{B\subseteq X:\mathbf1_B\in D\}$. It contains $X$,
+is closed under complements, and under finite intersections because
+$D$ is an algebra. For a countable union, the indicators of its finite
+unions belong to $D$, are bounded by one, and converge to the indicator
+of the union. Hence $\mathcal E$ is a sigma algebra. It contains the
+inverse images of rays under all members of $C$, so contains $\sigma(C)$.
+Finally, a bounded measurable real function is the pointwise limit of
+uniformly bounded finite-valued measurable functions obtained by rounding
+down to multiples of $2^{-j}$. Their level-set indicators belong to $D$,
+so the simple functions and their limit belong to $D\subseteq H$.
+\end{proof}
+
+\begin{theorem}[Measurability of fibre integration]\label{thm:measurable-fibre-integral}
+\source{chen-moriwaki-adelic:page-0196,chen-moriwaki-adelic:page-0199,chen-moriwaki-adelic:page-0200}
+\uses{lem:finite-fibre-sums,lem:fibre-additivity,lem:fibre-homogeneity,prop:fibre-base-multiplication,lem:measurable-evaluation-average,lem:bounded-evaluation-generators,lem:functional-monotone-class}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_fibreIntegral}
+If $f:\Omega_L\to\mathbb R$ is measurable, then $If:\Omega\to\mathbb R$
+is measurable.
+\end{theorem}
+\begin{proof}
+Let $H$ be the vector space of bounded real functions whose fibre integrals
+are measurable. Linearity shows that it is a vector space. For a uniformly
+bounded pointwise convergent sequence in $H$, the finite-sum formula
+gives pointwise convergence of its fibre integrals to the integral of
+the limit. This limit is measurable, so $H$ has the required closure.
+For $e_b(\varphi\circ\pi)\in C$, multiplication by a base function gives
+$I(e_b(\varphi\circ\pi))=\varphi Ie_b$, measurable by
+Lemma~\ref{lem:measurable-evaluation-average}. Thus $C\subseteq H$.
+Lemmas~\ref{lem:bounded-evaluation-generators} and
+\ref{lem:functional-monotone-class} prove the result for bounded measurable
+functions. For a general real measurable $f$, truncate it to
+$f_j=\max(-j,\min(j,f))$. These functions are bounded and converge
+pointwise to $f$. Their fibre integrals converge pointwise by finiteness
+of each fibre, giving the claimed measurability.
+\end{proof}
+
+\begin{lemma}[Measurability of nonnegative fibre integration]\label{lem:measurable-fibre-lintegral}
+\source{chen-moriwaki-adelic:page-0200,chen-moriwaki-adelic:page-0201}
+\uses{thm:measurable-fibre-integral,lem:finite-fibre-sums}
+\notready
+For every measurable $f:\Omega_L\to[0,\infty]$, the function $I^+f$
+is measurable.
+\end{lemma}
+\begin{proof}
+The truncations $f_j=\min(j,f)$ are finite nonnegative measurable functions.
+Their real fibre integrals are measurable by the preceding theorem.
+Viewed in $[0,\infty]$, they equal $I^+f_j$ by the finite-sum formula
+and increase to $I^+f$. An increasing supremum of measurable functions
+is measurable.
+\end{proof}
+
+\subsection{The induced measure and integral identities}
+
+\begin{definition}[The induced measure]\label{def:separable-induced-measure}
+\source{chen-moriwaki-adelic:page-0200,chen-moriwaki-adelic:page-0201}
+\uses{lem:measurable-fibre-lintegral,lem:finite-fibre-sums}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.inducedMeasure,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.inducedMeasure_apply}
+The induced measure $\nu_L$ on $(\Omega_L,\mathcal A_L)$ is characterized by
+\[
+ \nu_L(A)=\int_\Omega I^+\mathbf1_A\,d\nu
+ \qquad(A\in\mathcal A_L).
+\]
+\end{definition}
+\begin{proof}
+The formula assigns zero to the empty set. For disjoint measurable
+$A_j$, the finite-fibre formula gives
+$I^+\mathbf1_{\bigcup_j A_j}=\sum_j I^+\mathbf1_{A_j}$.
+Each summand is measurable by Lemma~\ref{lem:measurable-fibre-lintegral}.
+Monotone convergence applied to partial sums gives countable additivity
+of the displayed set function. It therefore defines a measure on
+$\mathcal A_L$, with the stated values.
+\end{proof}
+
+\begin{theorem}[Nonnegative integration formula]\label{thm:separable-lintegral}
+\source{chen-moriwaki-adelic:page-0201}
+\uses{def:separable-induced-measure,lem:measurable-fibre-lintegral,lem:finite-fibre-sums}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.lintegral_inducedMeasure}
+For every measurable $f:\Omega_L\to[0,\infty]$,
+\[
+ \int_{\Omega_L}f\,d\nu_L=\int_\Omega I^+f\,d\nu.
+\]
+\end{theorem}
+\begin{proof}
+For an indicator this is the definition of $\nu_L$. Finite additivity
+and nonnegative homogeneity of both integrals prove the formula for
+nonnegative measurable simple functions. Choose simple functions
+$s_j\uparrow f$. Monotone convergence on $\Omega_L$ gives convergence
+of the left integrals. Fibrewise monotone convergence gives
+$I^+s_j\uparrow I^+f$, and these are measurable functions. Monotone
+convergence on $\Omega$ gives convergence of the right integrals.
+Taking the limit in the simple-function identities proves the assertion.
+\end{proof}
+
+\begin{theorem}[Integrability criterion]\label{thm:separable-integrability}
+\source{chen-moriwaki-adelic:page-0201}
+\uses{thm:separable-lintegral,thm:measurable-fibre-integral,lem:finite-fibre-sums}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_inducedMeasure_iff}
+A measurable real function $f$ is $\nu_L$-integrable if and only if
+$I|f|$ is $\nu$-integrable.
+\end{theorem}
+\begin{proof}
+Both $f$ and $I|f|$ are measurable. The latter is nonnegative and finite
+at every base point by the finite-sum formula. The nonnegative integration
+formula gives
+\[
+ \int_{\Omega_L}|f|\,d\nu_L=\int_\Omega I|f|\,d\nu
+\]
+as an equality in $[0,\infty]$. Integrability on either side is precisely
+finiteness of this number.
+\end{proof}
+
+\begin{lemma}[Null sets and finite fibres]\label{lem:finite-fibre-ae}
+\uses{def:separable-induced-measure,lem:measurable-fibre-lintegral,lem:finite-fibre-sums}
+\notready
+If two real functions $f,g$ on $\Omega_L$ agree $\nu_L$-almost everywhere,
+then for $\nu$-almost every $\omega$ they agree at every point of
+$X_\omega$. In particular $If=Ig$ almost everywhere.
+\end{lemma}
+\begin{proof}
+Choose a measurable $\nu_L$-null set $N$ containing $\{f\ne g\}$.
+The defining formula gives $\int I^+\mathbf1_N\,d\nu=0$.
+Its nonnegative measurable integrand is zero almost everywhere.
+For any base point where it is zero, the sum
+$\sum_{x\in X_\omega}p_\omega(x)\mathbf1_N(x)$ is zero. Since every
+weight is strictly positive, no $x\in X_\omega$ belongs to $N$.
+The functions therefore agree on that entire fibre, as do their integrals.
+\end{proof}
+
+\begin{theorem}[Real integration formula]\label{thm:separable-integral}
+\source{chen-moriwaki-adelic:page-0201,chen-moriwaki-adelic:page-0202}
+\uses{thm:separable-lintegral,thm:separable-integrability,lem:finite-fibre-ae,lem:fibre-additivity,lem:fibre-homogeneity,thm:measurable-fibre-integral}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_inducedMeasure}
+For every $\nu_L$-integrable real function $f$,
+\[
+ \int_{\Omega_L}f\,d\nu_L=\int_\Omega If\,d\nu.
+\]
+The integrability assumption allows almost everywhere measurable functions.
+\end{theorem}
+\begin{proof}
+First suppose $f$ is measurable. Its positive and negative parts $f^+,f^-$
+have finite integrals. The nonnegative integration formula applies to both.
+Moreover $If^+$ and $If^-$ are integrable, since they are measurable and
+their nonnegative integrals are finite. Subtracting their integral
+identities, and using $If=If^+-If^-$, gives the asserted formula; it
+also proves integrability of $If$.
+
+For an arbitrary integrable $f$, choose a measurable real representative
+$g=f$ almost everywhere. Such a representative is obtained from the
+measurable simple functions witnessing almost everywhere strong
+measurability, taking their limit where it exists and zero elsewhere.
+It is integrable with the same integral as $f$. By
+Lemma~\ref{lem:finite-fibre-ae}, $If=Ig$ almost everywhere. Thus $If$
+is integrable and has the same integral as $Ig$. Apply the measurable
+case to $g$ to conclude. This extends the measurable-integrand formulation
+of Theorem 3.3.7(2) by equality almost everywhere.
+\end{proof}
+
+\begin{proposition}[Pushforward to the base]\label{prop:separable-pushforward}
+\source{chen-moriwaki-adelic:page-0201,chen-moriwaki-adelic:page-0202}
+\uses{def:extension-parameters,def:separable-induced-measure,lem:finite-fibre-sums}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.map_inducedMeasure_proj}
+The projection satisfies $\pi_*\nu_L=\nu$.
+\end{proposition}
+\begin{proof}
+For measurable $A\subseteq\Omega$, the indicator of $\pi^{-1}A$ is
+constant on $X_\omega$ with value $\mathbf1_A(\omega)$. Since the fibre
+measure has total mass one, $I^+\mathbf1_{\pi^{-1}A}=\mathbf1_A$.
+The definition of $\nu_L$ yields $\nu_L(\pi^{-1}A)=\nu(A)$.
+Equality on measurable sets is equality of measures.
+\end{proof}
+
+\begin{lemma}[Nonnegative integrals and integrability of base pullbacks]\label{lem:separable-pullback-integrability}
+\source{chen-moriwaki-adelic:page-0201,chen-moriwaki-adelic:page-0202}
+\uses{prop:separable-pushforward,def:extension-parameters}
+\notready
+For every measurable $\varphi:\Omega\to[0,\infty]$,
+\[
+ \int_{\Omega_L}\varphi\circ\pi\,d\nu_L=\int_\Omega\varphi\,d\nu.
+\]
+For every $\nu$-integrable real function $\varphi$, its pullback
+$\varphi\circ\pi$ is $\nu_L$-integrable.
+\end{lemma}
+\begin{proof}
+For measurable nonnegative functions, the integral transformation formula
+under a measurable map follows first for indicators, then for simple
+functions, and then by monotone convergence. Apply it to $|\varphi|$
+and use $\pi_*\nu_L=\nu$ to obtain integrability. If $\varphi$
+is only almost everywhere measurable, replace it by a measurable
+representative. The inverse image of a measurable base null set is null
+by the pushforward identity, so integrability remains true for the original
+function.
+\end{proof}
+
+\begin{corollary}[Integration of base pullbacks]\label{cor:separable-pullback-integral}
+\source{chen-moriwaki-adelic:page-0201,chen-moriwaki-adelic:page-0202}
+\uses{lem:separable-pullback-integrability,prop:separable-pushforward,def:extension-parameters}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_comp_proj_inducedMeasure}
+For every $\nu$-integrable real function $\varphi$,
+\[
+ \int_{\Omega_L}\varphi\circ\pi\,d\nu_L=\int_\Omega\varphi\,d\nu.
+\]
+\end{corollary}
+\begin{proof}
+For a measurable $\varphi$, apply the preceding lemma to its positive
+and negative parts and subtract their finite integral identities.
+For an almost everywhere measurable $\varphi$, choose a measurable
+representative; its pullback equals $\varphi\circ\pi$ almost everywhere
+because the pushforward identity takes base null sets to null inverse
+images. Replacing integrands by these equal representatives gives the
+same equality.
+\end{proof}
+
+\subsection{Logarithms, norms, and properness}
+
+\begin{lemma}[The fibrewise logarithmic norm identity]\label{lem:fibre-log-norm}
+\source{chen-moriwaki-adelic:page-0202}
+\uses{lem:local-factorization,lem:finite-fibre-sums}
+\notready
+For $b\in L^\times$,
+\[
+ I_{L/K}(\log e_b)(\omega)
+ =\frac1n\log|N_{L/K}(b)|_\omega.
+\]
+\end{lemma}
+\begin{proof}
+The local norm product formula gives
+$|N_{L/K}(b)|_\omega=\prod_{x\in X_\omega}|b|_x^{[L_x:K_\omega]}$.
+Every factor is positive. Taking logarithms and dividing by $n$
+turns this product into the finite-sum formula for the fibre integral.
+The operator is $I_{L/K}$, with domain functions on $\Omega_L$; this
+fixes the reversed subscripts in the printed formula (3.10).
+\end{proof}
+
+\begin{lemma}[An integrable upper bound for logarithmic evaluations]\label{lem:log-root-bound}
+\source{chen-moriwaki-adelic:page-0202,chen-moriwaki-adelic:page-0203,chen-moriwaki-adelic:page-0204}
+\uses{def:adelic-structure,lem:archimedean-bound,lem:archimedean-extension}
+\notready
+Let $b\in L^\times$ have minimal polynomial
+$T^m+\mu_1T^{m-1}+\cdots+\mu_m$. There is a nonnegative measurable
+integrable function $h$ on $\Omega$ such that $\log|b|_x\leq h(\pi x)$.
+More precisely, with $\kappa$ the Archimedean exponent, extended by zero
+at non-Archimedean places, one may take
+\[
+ g(\omega)=\max\bigl(\{0\}\cup
+       \{\log|\mu_i|_\omega:\mu_i\ne0\}\bigr),\qquad
+ h=(\log m)\kappa+g.
+\]
+\end{lemma}
+\begin{proof}
+The finite maximum $g$ is measurable and integrable: it is nonnegative
+and at most $\sum_{\mu_i\ne0}|\log|\mu_i|_\omega|$, an integrable
+function by the adelic hypothesis. The function $\kappa$ is measurable,
+integrable, and nonnegative, so the same is true of $h$.
+
+Put $M=\max(1,|\mu_1|_\omega,\ldots,|\mu_m|_\omega)$, so $\log M=g$.
+At a non-Archimedean place, if $r=|b|_x>M$, the polynomial relation gives
+$1\leq\max_i|\mu_i|_\omega/r^i<1$, a contradiction. Thus $r\leq M$.
+At an Archimedean place put $k=\kappa(\omega)>0$. The normalized
+absolute value $|\cdot|_x^{1/k}$ satisfies the triangle inequality.
+If $r>m^kM$, then $r^{1/k}>mM^{1/k}\geq1$ and the polynomial relation
+gives
+\[
+ 1\leq\sum_{i=1}^m\frac{|\mu_i|_\omega^{1/k}}{r^{i/k}}
+ \leq\frac{mM^{1/k}}{r^{1/k}}<1,
+\]
+again a contradiction. Hence in both cases $\log r\leq (\log m)k+g$,
+where $k=0$ in the non-Archimedean case. Zero coefficients are omitted
+from logarithms; they contribute nothing to $M$ because $1$ is included.
+\end{proof}
+
+\begin{theorem}[Integrability of logarithmic evaluations]\label{thm:separable-log-integrable}
+\source{chen-moriwaki-adelic:page-0202,chen-moriwaki-adelic:page-0203,chen-moriwaki-adelic:page-0204}
+\uses{def:extension-parameters,def:adelic-structure,lem:log-root-bound,lem:fibre-log-norm,thm:separable-integrability,lem:separable-pullback-integrability,cor:fibre-pullback,lem:fibre-additivity,lem:fibre-homogeneity}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_log_inducedMeasure}
+For every $b\in L^\times$, $x\mapsto\log|b|_x$ is $\nu_L$-integrable.
+\end{theorem}
+\begin{proof}
+Write $\ell=\log e_b$ and choose $h$ from Lemma~\ref{lem:log-root-bound}.
+The function $u=h\circ\pi-\ell$ is nonnegative and measurable. Its fibre
+integral is
+\[
+ Iu=h-I\ell=h-\frac1n\log|N_{L/K}(b)|.
+\]
+The norm of a nonzero element is nonzero, so the last logarithm is
+integrable on the base. Thus $Iu=I|u|$ is integrable, and the integrability
+criterion proves $u$ integrable. The pullback $h\circ\pi$ is integrable
+by Lemma~\ref{lem:separable-pullback-integrability}. Their difference
+$\ell=h\circ\pi-u$ is therefore integrable.
+\end{proof}
+
+\begin{definition}[The finite separable extension adelic structure]\label{def:separable-extension}
+\source{chen-moriwaki-adelic:page-0201,chen-moriwaki-adelic:page-0202,chen-moriwaki-adelic:page-0204}
+\uses{def:adelic-structure,def:extension-parameters,def:separable-induced-measure,thm:separable-log-integrable}
+\lean{ArakelovGeometry.AdelicStructure.finiteSeparableExtension}
+The finite separable extension of $S$ to $L$ is the adelic structure
+$S_L=(\Omega_L,\mathcal A_L,\nu_L,x\mapsto|\cdot|_x)$.
+\end{definition}
+\begin{proof}
+The induced set function is a measure. Every nonzero logarithmic evaluation
+is measurable by the definition of $\mathcal A_L$ and integrable by
+Theorem~\ref{thm:separable-log-integrable}. These are exactly the adelic
+structure conditions.
+\end{proof}
+
+\begin{proposition}[The global logarithmic norm identity]\label{prop:separable-norm-integral}
+\source{chen-moriwaki-adelic:page-0201,chen-moriwaki-adelic:page-0202,chen-moriwaki-adelic:page-0204}
+\uses{thm:separable-log-integrable,thm:separable-integral,lem:fibre-log-norm,def:adelic-structure}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.finrank_mul_integral_log_inducedMeasure}
+For every $b\in L^\times$,
+\[
+ n\int_{\Omega_L}\log|b|_x\,d\nu_L(x)
+ =\int_\Omega\log|N_{L/K}(b)|_\omega\,d\nu(\omega).
+\]
+\end{proposition}
+\begin{proof}
+Apply the real integration formula to the integrable function $\log e_b$.
+Substitute the fibrewise logarithmic norm identity on its right side.
+The base logarithm is integrable, so the factor $1/n$ passes through
+the integral. Multiply by the positive integer $n$.
+\end{proof}
+
+\begin{proposition}[Preservation of properness]\label{prop:separable-proper}
+\source{chen-moriwaki-adelic:page-0201,chen-moriwaki-adelic:page-0204}
+\uses{def:separable-extension,prop:separable-norm-integral,def:adelic-structure}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.isProper_finiteSeparableExtension}
+If $S$ is proper, then its finite separable extension $S_L$ is proper.
+\end{proposition}
+\begin{proof}
+For $b\in L^\times$, its norm is in $K^\times$. Properness of $S$
+sets the right side of the global logarithmic norm identity to zero.
+Since $[L:K]>0$, the integral of $\log|b|$ on $\Omega_L$ is zero.
+This is the product formula for every nonzero element of $L$, which
+is precisely properness of $S_L$.
+\end{proof}

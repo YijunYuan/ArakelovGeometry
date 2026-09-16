@@ -1,0 +1,74 @@
+{
+  "sources_and_inventory_sha256": {
+    "ArakelovGeometry/AdelicCurve/Amalgamation.lean": "3e8f8989ff39aaa59baa37d48e5e9eb2ea054a0f1ad36cba2c3b44c96b55a460",
+    "ArakelovGeometry/AdelicCurve/Basic.lean": "d942414f98f11c925362ffe1d3e175a6403104f7f633a9f73e1a74a449d6bbdd",
+    "ArakelovGeometry/AdelicCurve/Defs.lean": "fd3a55702a338190a4016633c0a47ecd7e949fe180840f20c55c9fde4dfd8650",
+    "ArakelovGeometry/AdelicCurve/Examples/FunctionFields.lean": "c4d9d7a9bdf3a86537a9e3daeb55974056c18edafa70d00d834703a5c3b6d7c2",
+    "ArakelovGeometry/AdelicCurve/Examples/NumberFields.lean": "ef412c4387c2511d6adb106454732dc738d538e0f323743ff2000cc6081c3da6",
+    "ArakelovGeometry/AdelicCurve/Examples/Trivial.lean": "db4ce1fe8eb35a446d3fb640401c6b99446b100974203df8bb4cc1ec8067fc84",
+    "ArakelovGeometry/AdelicCurve/Extension.lean": "dbe798ebb29ee83f323e97dc332efa4f98100f3356d18151ebb068574ab53d2a",
+    "ArakelovGeometry/AdelicCurve/Restriction.lean": "3534074ec9ee41e7176f254351d0ed962f3116054474e2c5101671f35882b2aa",
+    "ArakelovGeometry/ExternalResults/AbsoluteValue.lean": "13e2a1ed1471a6b7e2acfcfb74598b59f13d69e0127df84f185d3aa8bae1868b",
+    "ArakelovGeometry/ExternalResults/Measure.lean": "830099174835dd68c07e89534155b863243496a055173087933530e80b3a666d",
+    "ArakelovGeometry/ExternalResults/Ostrowski.lean": "e03acef9dde06b5e47f759c0c61509b7625658651c01feb28714be4cf8a317de",
+    "ArakelovGeometry/ExternalResults/Place.lean": "1410c16d0750fde9796b3ed40ba08edc42f9d99d4afd5a074d7afeea11f8c22b",
+    "ArakelovGeometry.lean": "28c3a0a1d700110820315b4f593a72f7b5f7092eae7aae9d7c5447355808c302",
+    "scripts/declaration_inventory.lean": "de86af08d98268a1370f98a5fda61c70e60edbdf3be066d97bd6c3d068a11432",
+    "docs/declaration-inventory.json": "b7b5e086fada8e4f36071615b60fc082f53e83ec559f62cc2cdae5ffb61ed4da"
+  },
+  "compiled_artifacts_sha256": {
+    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Amalgamation.olean": "3ed42a67360c85f7e4527c670834ca2546c446f17f7b6f815fa339c192f40d65",
+    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Basic.olean": "1c125b8d3458a6b3b4c75b9ef1c34960665e9601ed02121cd16f6cb49fbb4fad",
+    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Defs.olean": "5b7db5647d401daa54f756f89994aa738fc4d4606012daa3ca8c191015a03e84",
+    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Examples/FunctionFields.olean": "9a5643f9130615f5d633e500b733bd6e0b01acb53d9078987cbd4a032f04d294",
+    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Examples/NumberFields.olean": "c2df62b0ad483beda9e32a664fc3147a35c5c91d2e4cfc33155661f4768d8a78",
+    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Examples/Trivial.olean": "a62c49068d4f5650b403148ca9ae1a92877b012f61317add0d576ebabaf70638",
+    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Extension.olean": "03ad2b5a56fb85518834154db6e85c95efdd2752ccb164e1466553b3ca79f4ae",
+    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Restriction.olean": "b7b17bfffb6daa56a0372aeb0cf3bb5ebe6f7a876715cfbf478db86548fa9bf5",
+    ".lake/build/lib/lean/ArakelovGeometry/ExternalResults/AbsoluteValue.olean": "1d6e13cae802e3881dd386dcd0bf8624ceb4ee8161c243bbfcbf7519f8353cf7",
+    ".lake/build/lib/lean/ArakelovGeometry/ExternalResults/Measure.olean": "c6bee6c75a5cdc8ee85318126c7b8bd1331271524d1e9b87f6b06c8a1233970f",
+    ".lake/build/lib/lean/ArakelovGeometry/ExternalResults/Ostrowski.olean": "cf8801ff4996a90eb3a680862fd179b7264a018c54afbeb444ae9334798ec9b0",
+    ".lake/build/lib/lean/ArakelovGeometry/ExternalResults/Place.olean": "21d033746c0b63c89f24bee89cf3bb4e21f7ffd42f8261ab6274845c74e46b4e",
+    ".lake/build/lib/lean/ArakelovGeometry.olean": "0bf44f6f463be6e6f03ca580bb876dbf58d517ea07416a8d39b2f9fe46ae1752"
+  },
+  "build": {
+    "schema_version": 1,
+    "fingerprint": "32f9220b5c16fa96",
+    "command": [
+      "lake",
+      "build"
+    ],
+    "cwd": "ArakelovGeometry",
+    "status": "passed",
+    "ok": true,
+    "returncode": 0,
+    "timed_out": false,
+    "reused": false,
+    "wait_seconds": 0.0,
+    "duration_seconds": 7.388,
+    "started_at": "2026-09-16T03:43:19.223771+00:00",
+    "finished_at": "2026-09-16T03:43:26.611924+00:00",
+    "finished_epoch": 1789530206.611924
+  },
+  "inventory_check": {
+    "schema_version": 1,
+    "fingerprint": "1f8c3af77e2e7345",
+    "command": [
+      "lake",
+      "env",
+      "lean",
+      "/home/yijunyuan/ageo-workspace/ArakelovGeometry/scripts/declaration_inventory.lean"
+    ],
+    "cwd": "ArakelovGeometry",
+    "status": "passed",
+    "ok": true,
+    "returncode": 0,
+    "timed_out": false,
+    "reused": false,
+    "wait_seconds": 0.0,
+    "duration_seconds": 67.396,
+    "started_at": "2026-09-16T03:44:52.920131+00:00",
+    "finished_at": "2026-09-16T03:46:00.315966+00:00",
+    "finished_epoch": 1789530360.315966
+  }
+}

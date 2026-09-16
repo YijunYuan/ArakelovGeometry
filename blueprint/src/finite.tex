@@ -1,0 +1,582 @@
+\section{Finite extensions, including inseparability}
+
+Let $S=(K,(\Omega_K,\mathcal A_K,\nu_K),\phi_K)$ be an adelic
+curve. Throughout this section $L/K$ is finite and $E$ denotes the
+separable closure of $K$ in $L$. We follow
+\cite[\S3.4.1]{chen-moriwaki}.
+
+\begin{definition}[Equivalence of adelic structures]
+\label{def:adelic-equivalence}
+\source{chen-moriwaki-adelic:page-0206,chen-moriwaki-adelic:page-0207}
+\lean{ArakelovGeometry.AdelicStructure.Equiv}
+\uses{def:adelic-structure}
+For adelic structures $S$ and $T$ on the same field, an equivalence is a
+measurable bijection $e:\Omega_S\to\Omega_T$ with measurable inverse such
+that $\phi_T(e(x))=\phi_S(x)$ for every $x$ and $e_*\nu_S=\nu_T$.
+Thus the equality of adelic curves in Proposition 3.4.4 is understood
+through the canonical identification of their parameter spaces.
+\end{definition}
+
+\begin{lemma}[The separable part of a finite extension]
+\label{lem:finite-separable-part}
+\source{chen-moriwaki-adelic:page-0204}
+\notready
+The extension $E/K$ is finite separable, $L/E$ is purely inseparable,
+and
+\[
+ [L:K]_s=[E:K],\qquad q:=[L:K]_i=[L:E]\geq1.
+\]
+In characteristic zero $E=L$ and $q=1$. In characteristic $p>0$, the
+integer $q$ is a power of $p$.
+\end{lemma}
+\begin{proof}
+The separable elements of an algebraic extension form a subfield, and
+their minimal polynomials are separable. Since $E\subseteq L$, its
+degree over $K$ is finite. In characteristic zero every irreducible
+polynomial is separable, giving the assertion. In characteristic $p$,
+the irreducible polynomial of an element $a\in L$ has the form
+$g(T^{p^r})$, where $g$ is irreducible with nonzero derivative: repeatedly
+remove a common factor $p$ from the exponents until the derivative is
+nonzero. The polynomial $g$ is separable, so $a^{p^r}\in E$. Hence
+$L/E$ is purely inseparable. A purely inseparable element has minimal
+polynomial $T^{p^s}-b$: its minimal polynomial divides some
+$T^{p^r}-c$, which has only one distinct root, and successively removing
+zero derivatives leaves a linear polynomial. Adjoining a finite list
+of generators therefore shows that $[L:E]$ is a power of $p$.
+Every $K$-embedding of $E$ into an algebraic closure extends to $L$,
+and does so uniquely: at each purely inseparable adjunction the image
+of the new generator is the unique root of its power equation.
+Consequently $L$ has exactly $[E:K]$ distinct $K$-embeddings. This is
+its separable degree. The degree formula
+$[L:K]=[L:E][E:K]$ gives the asserted inseparable degree.
+\end{proof}
+
+\begin{lemma}[A uniform inseparable power]
+\label{lem:inseparable-power}
+\source{chen-moriwaki-adelic:page-0204}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.pow_finInsepDegree_mem_separableClosure}
+\uses{lem:finite-separable-part}
+For every $a\in L$ one has $a^q\in E$, where $q=[L:K]_i$.
+\end{lemma}
+\begin{proof}
+If $q=1$, then $E=L$. Otherwise write $q=p^r$. The minimal polynomial
+of $a$ over $E$ is $T^{p^s}-b$, and its degree $p^s=[E(a):E]$ divides
+$[L:E]=p^r$ by the tower law. Thus $s\leq r$ and
+$a^q=b^{p^{r-s}}\in E$.
+\end{proof}
+
+\begin{lemma}[Absolute value from the inseparable power formula]
+\label{lem:inseparable-absolute-value}
+\source{chen-moriwaki-adelic:page-0204}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue_apply}
+\uses{lem:inseparable-power,lem:finite-separable-part}
+For an absolute value $v:E\to\mathbb R$, the formula
+\[
+ \widetilde v(a)=v(a^q)^{1/q}\quad(a\in L)
+\]
+defines an absolute value on $L$.
+\end{lemma}
+\begin{proof}
+The integer $q$ is positive. In characteristic zero it is one; in
+characteristic $p>0$ it is a power of $p$. Consequently
+$(a+b)^q=a^q+b^q$, either directly when $q=1$ or by the iterated
+Frobenius identity. Set $r=1/q$, so $0<r\leq1$.
+The proposed function is nonnegative. Since $q>0$, it vanishes exactly
+when $a^q=0$, equivalently $a=0$. Multiplicativity follows from
+$(ab)^q=a^qb^q$ and the product rule for positive real roots, which
+also holds if either factor is zero. For nonnegative real $u,t$,
+$(u+t)^r\leq u^r+t^r$: when $u+t=0$ this is immediate; otherwise
+divide by $(u+t)^r$ and use $s^r\geq s$ for
+$s=u/(u+t)$ and $s=t/(u+t)$ in $[0,1]$. The latter inequality
+follows for $s>0$ from $r\log s\geq\log s$, and holds at zero
+because $r>0$. Monotonicity of the positive root therefore gives
+\[
+ \widetilde v(a+b)
+ =v(a^q+b^q)^{1/q}
+ \leq\bigl(v(a^q)+v(b^q)\bigr)^{1/q}
+ \leq\widetilde v(a)+\widetilde v(b).
+\]
+\end{proof}
+
+\begin{lemma}[Restriction and uniqueness of the inseparable extension]
+\label{lem:inseparable-extension-unique}
+\source{chen-moriwaki-adelic:page-0204}
+\notready
+\uses{lem:inseparable-absolute-value}
+The absolute value $\widetilde v$ restricts to $v$ on $E$, and is
+the unique absolute value on $L$ doing so. Restriction and
+$v\mapsto\widetilde v$ are inverse bijections between the absolute
+values on $L$ and on $E$.
+\end{lemma}
+\begin{proof}
+For $b\in E$, one has $v(b^q)^{1/q}=v(b)$, so restriction recovers
+$v$. Conversely an extending absolute value $w$ satisfies
+$w(a)^q=v(a^q)$. The nonnegative $q$-th root is unique, so
+$w=\widetilde v$.
+\end{proof}
+
+\begin{lemma}[Logarithmic inseparable power formula]
+\label{lem:inseparable-log}
+\source{chen-moriwaki-adelic:page-0204}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.log_extendAbsoluteValue}
+\uses{lem:inseparable-absolute-value}
+With the convention $\log0=0$, for all $a\in L$ one has
+\[
+ \log\widetilde v(a)=q^{-1}\log v(a^q).
+\]
+\end{lemma}
+\begin{proof}
+If $a=0$, both sides vanish. If $a\ne0$, then $v(a^q)>0$ and
+the formula is the logarithm of the positive $q$-th root formula.
+The zero convention extends the source's assertion for nonzero
+elements without changing it on $L^\times$.
+\end{proof}
+
+\begin{definition}[Parameters and absolute values of a finite extension]
+\label{def:finite-parameters}
+\source{chen-moriwaki-adelic:page-0204,chen-moriwaki-adelic:page-0205}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.ϕ}
+\uses{def:extension-parameters,lem:inseparable-absolute-value,lem:inseparable-extension-unique,lem:finite-separable-part}
+Set $\Omega_L=\Omega_E$ and $\mathcal A_L=\mathcal A_E$. At a parameter
+$x\in\Omega_E$, extend its absolute value from $E$ to $L$ by
+$|a|_x=|a^q|_x^{1/q}$. The projection $\pi_{L/K}$ is $\pi_{E/K}$.
+The extended absolute value restricts to $\phi_K(\pi_{L/K}(x))$ on $K$.
+\end{definition}
+
+\begin{lemma}[The fibre-product description of finite parameters]
+\label{lem:finite-parameter-identification}
+\source{chen-moriwaki-adelic:page-0205}
+\notready
+\uses{def:finite-parameters,lem:inseparable-extension-unique}
+The extended absolute values identify $\Omega_L$ canonically with
+$\Omega_K\times_{M_K}M_L$, where $M_F$ denotes the set of absolute
+values on a field $F$ and the maps to $M_K$ are restriction and
+$\phi_K$.
+\end{lemma}
+\begin{proof}
+The map sends $(\omega,v)$ to $(\omega,\widetilde v)$.
+Restriction sends $(\omega,w)$ back to $(\omega,w|_E)$.
+These maps preserve the restrictions to $K$ and are inverse by
+uniqueness in Lemma~\ref{lem:inseparable-extension-unique}.
+\end{proof}
+
+\begin{definition}[Measure of a finite extension]
+\label{def:finite-measure}
+\source{chen-moriwaki-adelic:page-0205}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measure}
+\uses{def:finite-parameters,def:separable-induced-measure,lem:finite-separable-part}
+On $(\Omega_L,\mathcal A_L)=(\Omega_E,\mathcal A_E)$ put
+$\nu_L=\nu_E$, the measure induced by the finite separable extension
+$E/K$.
+\end{definition}
+
+\begin{lemma}[Measurable logarithmic evaluations]
+\label{lem:finite-log-measurable}
+\source{chen-moriwaki-adelic:page-0204}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measurable_log}
+\uses{def:finite-parameters,lem:inseparable-log,def:extension-parameters}
+For every $a\in L$, the function $x\mapsto\log|a|_x$ is
+$\mathcal A_L$-measurable.
+\end{lemma}
+\begin{proof}
+The evaluation $x\mapsto|a^q|_x$ on $\Omega_E$ is measurable by the
+definition of $\mathcal A_E$. The logarithm with value zero at zero is
+Borel measurable. Composing and multiplying by the fixed scalar
+$q^{-1}$ proves the assertion by the logarithmic power formula.
+\end{proof}
+
+\begin{lemma}[Integrable logarithmic evaluations]
+\label{lem:finite-log-integrable}
+\source{chen-moriwaki-adelic:page-0204,chen-moriwaki-adelic:page-0205}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.integrable_log}
+\uses{def:finite-measure,lem:inseparable-log,thm:separable-log-integrable}
+For $a\in L^\times$, the function $x\mapsto\log|a|_x$ is
+$\nu_L$-integrable.
+\end{lemma}
+\begin{proof}
+The element $a^q\in E$ is nonzero, so its logarithmic evaluation is
+$\nu_E$-integrable. Since $\nu_L=\nu_E$ and the desired function is
+$q^{-1}$ times that evaluation, it is integrable.
+\end{proof}
+
+\begin{definition}[The finite extension of an adelic curve]
+\label{def:finite-extension}
+\source{chen-moriwaki-adelic:page-0205}
+\lean{ArakelovGeometry.AdelicStructure.finiteExtension}
+\uses{def:adelic-structure,def:finite-measure,lem:finite-log-measurable,lem:finite-log-integrable}
+The finite extension $S\otimes_KL$ is
+\[
+ (L,(\Omega_L,\mathcal A_L,\nu_L),(x\mapsto|\cdot|_x)).
+\]
+The preceding two lemmas show that this is an adelic curve.
+\end{definition}
+
+\begin{definition}[Finite fibres and their integrals]
+\label{def:finite-fibre-integral}
+\source{chen-moriwaki-adelic:page-0205}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.BaseFiber,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreProbabilityMeasure,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreIntegral}
+\uses{def:finite-parameters,def:weighted-fibre-integral,lem:fibre-normalization}
+For $\omega\in\Omega_K$ let $X_{L,\omega}=\pi_{L/K}^{-1}\{\omega\}$.
+Its probability measure $P_{L,\omega}$ is the probability measure
+$P_{E,\omega}$ under $X_{L,\omega}=X_{E,\omega}$. Define
+\[
+ I_{L/K}f(\omega)=\int_{X_{L,\omega}}f(x)\,dP_{L,\omega}(x)
+\]
+for real-valued $f$. Thus $I_{L/K}=I_{E/K}$ on their common parameter
+space.
+\end{definition}
+
+\begin{definition}[Nonnegative finite fibre integration]
+\label{def:finite-fibre-lintegral}
+\source{chen-moriwaki-adelic:page-0205}
+\notready
+\uses{def:finite-fibre-integral}
+For $h:\Omega_L\to[0,\infty]$ put
+\[
+ I^+_{L/K}h(\omega)=\int_{X_{L,\omega}}h(x)\,dP_{L,\omega}(x).
+\]
+The integral takes values in $[0,\infty]$. On the common parameter
+space of $L$ and $E$, this operator is $I^+_{E/K}$.
+\end{definition}
+
+\begin{lemma}[Completion of the separable part]
+\label{lem:completion-separable-closure}
+\source{chen-moriwaki-adelic:page-0205,chen-moriwaki-adelic:page-0206}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fieldRange_completion_separableClosure}
+\uses{lem:finite-separable-part,lem:completion-finite,lem:local-factorization}
+Let $w$ be an absolute value on $L$, let $v=w|_K$, and regard the
+completion $E_w$ as a subfield of $L_w$ through the continuous
+extension of $E\hookrightarrow L$. Then $E_w$ is exactly the separable
+closure of $K_v$ in $L_w$.
+\end{lemma}
+\begin{proof}
+The inclusions $K\subseteq E\subseteq L$ preserve the absolute values.
+They therefore extend to isometric field embeddings of completions;
+these embeddings compose because the compositions agree on the dense
+subfield $K$. We use them to regard $K_v\subseteq E_w\subseteq L_w$.
+The local factorization for the finite separable extension $E/K$
+expresses $E_w$ as one of the field factors of $K_v\otimes_KE$.
+Writing $E=K(\alpha)$, the minimal polynomial of $\alpha$ over $K$
+is separable. Its irreducible factors over $K_v$ are therefore
+separable, and each corresponding quotient field is finite separable
+over $K_v$. In particular $E_w/K_v$ is separable.
+By the completion lemma, $L_w=K_v(L)$. Since $K_v\subseteq E_w\subseteq L_w$,
+this also gives $L_w=E_w(L)$. Every
+element of $L$ is purely inseparable over $E$, hence also over $E_w$.
+More explicitly, in characteristic $p>0$ choose a finite generating
+family $a_1,\ldots,a_m$ of $L/E$ and a common $p$-power $p^r$ with
+$a_j^{p^r}\in E$ for every $j$. Every element of $E_w(a_1,\ldots,a_m)$
+is a quotient of polynomials in the $a_j$ with coefficients in $E_w$.
+Its $p^r$-th power belongs to $E_w$, by the Frobenius identity.
+Thus $L_w/E_w$ is purely inseparable. In characteristic zero $E=L$
+and the assertion is immediate.
+Now let $b\in L_w$ be separable over $K_v$. Its minimal polynomial
+over $E_w$ divides its separable minimal polynomial over $K_v$,
+so $b$ is separable over $E_w$. It is also purely inseparable over
+$E_w$; a polynomial with one distinct root cannot be separable unless
+it is linear. Thus $b\in E_w$. Conversely every element of $E_w$ is
+separable over $K_v$, proving equality.
+\end{proof}
+
+\begin{remark}[The fields in the completion factorization]
+\label{rem:completion-factorization-indices}
+\source{chen-moriwaki-adelic:page-0205}
+\uses{lem:completion-separable-closure}
+In the proof of Lemma 3.4.2, if $E=K(\alpha)$ with minimal polynomial
+$F$, the factorization is $F=\prod_iF_i$ in $K_v[T]$, and the selected
+completion is $E_w\simeq K_v[T]/(F_i)$. These are the fields determined
+by the domains of the tensor-product factorization. The printed
+$K_v^{\mathrm{sc}}$ in the factorization sentence and on the left of
+the quotient isomorphism is read as $K_v$ and $E_w$, respectively.
+\end{remark}
+
+\begin{lemma}[Weights as ratios of separable degrees]
+\label{lem:finite-separable-weight}
+\source{chen-moriwaki-adelic:page-0206}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreWeight_eq_finSepDegree}
+\uses{def:finite-fibre-integral,lem:completion-separable-closure,lem:finite-separable-part,lem:inseparable-extension-unique}
+For $x\in X_{L,\omega}$, the weight inherited from $E/K$ is
+\[
+ p_{L,\omega}(x)
+ =\frac{[E_x:K_\omega]}{[E:K]}
+ =\frac{[L_x:K_\omega]_s}{[L:K]_s}.
+\]
+\end{lemma}
+\begin{proof}
+The first ratio is the definition of the finite separable weight.
+Restriction of the extended absolute value to $E$, and then to $K$,
+recovers the given values, so the base completion in both ratios is
+$K_\omega$.
+The completion comparison identifies $E_x$ with the separable closure
+of $K_\omega$ in $L_x$, so its degree is the numerator of the second
+ratio. The global separable-part lemma identifies the denominators.
+Both denominators are positive integers, so the divisions agree.
+\end{proof}
+
+\begin{lemma}[Finite fibre sums]
+\label{lem:finite-fibre-sum}
+\source{chen-moriwaki-adelic:page-0205,chen-moriwaki-adelic:page-0206}
+\notready
+\uses{def:finite-fibre-integral,def:finite-fibre-lintegral,lem:finite-separable-weight,lem:finite-fibre-sums}
+Every $X_{L,\omega}$ is a finite measurable space with all subsets
+measurable, every weight $p_{L,\omega}(x)$ is strictly positive, and
+\[
+ P_{L,\omega}=\sum_{x\in X_{L,\omega}}p_{L,\omega}(x)\delta_x,
+ \qquad \sum_xp_{L,\omega}(x)=1.
+\]
+For every real-valued function $f$ and every nonnegative
+extended-real-valued function $h$ on $\Omega_L$,
+\[
+ I_{L/K}f(\omega)=\sum_xp_{L,\omega}(x)f(x),\qquad
+ I^+_{L/K}h(\omega)=\sum_xp_{L,\omega}(x)h(x).
+\]
+In particular the real integrals exist on every fibre without a
+global measurability or integrability assumption on $f$.
+\end{lemma}
+\begin{proof}
+Under $X_{L,\omega}=X_{E,\omega}$, the finite separable fibre-sum
+lemma gives finiteness, the full sigma algebra, the Dirac-sum measure,
+positive weights, and normalization. The weight lemma rewrites its coefficients in the
+displayed form. Every real-valued function on a finite set is
+measurable and bounded, and hence integrable for a probability
+measure. Integration against the finite Dirac sum gives both formulas.
+\end{proof}
+
+\begin{lemma}[The sigma algebra using all elements of the extension]
+\label{lem:finite-measurable-space}
+\source{chen-moriwaki-adelic:page-0205}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measurableSpace_eq_comap_sup}
+\uses{def:finite-parameters,lem:inseparable-extension-unique,def:extension-parameters}
+The sigma algebra $\mathcal A_L=\mathcal A_E$ is the smallest sigma
+algebra making $\pi_{L/K}$ and every evaluation $x\mapsto|a|_x$,
+$a\in L$, measurable.
+\end{lemma}
+\begin{proof}
+Every evaluation at $a\in L$ is the continuous $q$-th root of the
+$\mathcal A_E$-measurable evaluation at $a^q\in E$. The projection is
+also $\mathcal A_E$-measurable. Thus the proposed generated sigma
+algebra is contained in $\mathcal A_E$. Conversely, when $b\in E$,
+the extended evaluation at $b$ equals the original evaluation at $b$.
+It follows that each generator of $\mathcal A_E$, including the
+projection, is measurable for the proposed sigma algebra. This proves
+the opposite inclusion.
+\end{proof}
+
+\begin{lemma}[Measurability of finite fibre integration]
+\label{lem:finite-kernel-measurable}
+\source{chen-moriwaki-adelic:page-0205,chen-moriwaki-adelic:page-0207}
+\notready
+\uses{def:finite-fibre-integral,def:finite-fibre-lintegral,thm:measurable-fibre-integral,lem:measurable-fibre-lintegral}
+If $f:\Omega_L\to\mathbb R$ is measurable, then $I_{L/K}f$ is
+measurable. If $h:\Omega_L\to[0,\infty]$ is measurable, then
+$I^+_{L/K}h$ is measurable.
+\end{lemma}
+\begin{proof}
+The measurable space and the two operators coincide with those for
+$E/K$. Apply the corresponding real and nonnegative measurability
+theorems for that finite separable extension.
+\end{proof}
+
+\begin{theorem}[Nonnegative disintegration for finite extensions]
+\label{thm:finite-lintegral}
+\source{chen-moriwaki-adelic:page-0205}
+\notready
+\uses{def:finite-measure,def:finite-fibre-lintegral,thm:separable-lintegral}
+For every measurable $h:\Omega_L\to[0,\infty]$,
+\[
+ \int_{\Omega_L}h\,d\nu_L
+ =\int_{\Omega_K}I^+_{L/K}h\,d\nu_K.
+\]
+\end{theorem}
+\begin{proof}
+The left side is the integral on $(\Omega_E,\mathcal A_E,\nu_E)$.
+The operator on the right is $I^+_{E/K}$. The finite separable
+nonnegative disintegration formula therefore gives the identity.
+\end{proof}
+
+\begin{proposition}[Integral of the inseparable power formula]
+\label{prop:finite-log-integral}
+\source{chen-moriwaki-adelic:page-0205}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.integral_log_eq_inv_finInsepDegree_mul}
+\uses{def:finite-measure,lem:inseparable-log,lem:finite-log-integrable}
+For all $a\in L$, with $\log0=0$,
+\[
+ \int_{\Omega_L}\log|a|_x\,d\nu_L(x)
+ =q^{-1}\int_{\Omega_E}\log|a^q|_x\,d\nu_E(x).
+\]
+\end{proposition}
+\begin{proof}
+For $a=0$, both integrands vanish. For $a\ne0$, both logarithmic
+evaluations are integrable. Substitute the pointwise logarithmic power
+formula, use $\nu_L=\nu_E$, and pull the constant $q^{-1}$ outside
+the integral. This is formula (3.14), together with its zero-value
+extension.
+\end{proof}
+
+\begin{proposition}[Properness of finite extensions]
+\label{prop:finite-proper}
+\source{chen-moriwaki-adelic:page-0205}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.isProper_finiteExtension}
+\uses{def:finite-extension,prop:finite-log-integral,prop:separable-proper}
+If $S$ is proper, then $S\otimes_KL$ is proper.
+\end{proposition}
+\begin{proof}
+The finite separable extension $S\otimes_KE$ is proper. For
+$a\in L^\times$ the element $a^q\in E^\times$ therefore has
+logarithmic integral zero. The preceding integral formula gives
+$\int\log|a|_x\,d\nu_L=q^{-1}\cdot0=0$, which is the product
+formula for $S\otimes_KL$.
+\end{proof}
+
+\begin{lemma}[Multiplicativity of separable degree]
+\label{lem:separable-degree-tower}
+\source{chen-moriwaki-adelic:page-0206,chen-moriwaki-adelic:page-0207}
+\notready
+For a finite tower $K\subseteq F\subseteq L$,
+\[
+ [L:K]_s=[L:F]_s[F:K]_s.
+\]
+\end{lemma}
+\begin{proof}
+Fix an algebraic closure $\overline K$ containing $L$. There are
+$[F:K]_s$ distinct $K$-embeddings of $F$ into $\overline K$.
+For any such embedding $\sigma$, extend it to an automorphism
+$\widetilde\sigma$ of $\overline K$. To obtain the extension, order
+the extensions of $\sigma$ to intermediate subfields of $\overline K$
+by inclusion. Unions give upper bounds for chains, so a maximal one
+exists. If its domain were proper, adjoining an element outside it
+and choosing in $\overline K$ a root of the image of its minimal
+polynomial would extend the embedding further. Its domain is therefore
+$\overline K$. Its image is algebraically closed and contains $K$;
+since $\overline K$ is algebraic over that image, the image is all of
+$\overline K$. Composition with
+$\widetilde\sigma$ bijects the $F$-embeddings of $L$ with the
+$K$-embeddings of $L$ whose restriction to $F$ is $\sigma$.
+There are therefore exactly $[L:F]_s$ embeddings in each restriction
+fibre. Partitioning all $K$-embeddings of $L$ by their restriction
+proves the formula.
+\end{proof}
+
+\begin{lemma}[Tower identity on finite fibres]
+\label{lem:finite-fibre-tower}
+\source{chen-moriwaki-adelic:page-0206,chen-moriwaki-adelic:page-0207}
+\notready
+\uses{lem:finite-parameter-identification,lem:finite-fibre-sum,lem:separable-degree-tower,lem:completion-finite}
+For a finite tower $K\subseteq F\subseteq L$, let $e_0$ be the
+canonical bijection from the iterated parameter space to the direct
+parameter space given by
+$e_0((\omega,v),w)=(\omega,w)$. For every real-valued $g$ on the
+iterated space,
+\[
+ I_{F/K}(I_{L/F}g)=I_{L/K}(g\circ e_0^{-1}).
+\]
+For every nonnegative extended-real-valued $h$ on that space,
+\[
+ I^+_{F/K}(I^+_{L/F}h)=I^+_{L/K}(h\circ e_0^{-1}).
+\]
+\end{lemma}
+\begin{proof}
+The inverse bijection sends $(\omega,w)$ to
+$((\omega,w|_F),w)$. For $y$ over $x$ over $\omega$, completions
+form a finite tower $K_\omega\subseteq F_x\subseteq L_y$.
+Multiplicativity of separable degree, both locally and globally, gives
+\[
+ \frac{[F_x:K_\omega]_s}{[F:K]_s}
+ \frac{[L_y:F_x]_s}{[L:F]_s}
+ =\frac{[L_y:K_\omega]_s}{[L:K]_s}.
+\]
+The fibre $X_{L,\omega}$ is the disjoint union of the finite fibres
+$X_{L,x}$ over $x\in X_{F,\omega}$. Substitute the finite-sum
+formulas for the integrals and apply the displayed equality term by
+term. The resulting double sum is the single sum over
+$X_{L,\omega}$. This proves both identities. In the nonnegative
+case the calculation also applies to infinite summands: all weights
+are strictly positive finite real numbers, and finite sums of
+nonnegative extended reals are associative and distributive.
+\end{proof}
+
+\begin{proposition}[Compatibility of successive finite extensions]
+\label{prop:finite-tower}
+\source{chen-moriwaki-adelic:page-0206,chen-moriwaki-adelic:page-0207}
+\lean{ArakelovGeometry.exists_equiv_finiteExtension_finiteExtension}
+\uses{def:adelic-equivalence,def:finite-extension,lem:finite-fibre-tower,lem:finite-measurable-space,thm:finite-lintegral,lem:finite-kernel-measurable}
+For a finite tower $K\subseteq F\subseteq L$, there is a canonical
+equivalence
+\[
+ e:(S\otimes_KF)\otimes_FL\ \simeq\ S\otimes_KL
+\]
+preserving the projection to $\Omega_K$. Under this equivalence,
+\[
+ \pi_{F/K}\circ\pi_{L/F}=\pi_{L/K}\circ e,\qquad
+ I_{F/K}(I_{L/F}g)=I_{L/K}(g\circ e^{-1})
+\]
+for every real-valued function $g$ on the iterated parameter space.
+\end{proposition}
+\begin{proof}
+Use the fibre-product description of finite parameters. A point of
+the iterated space is $((\omega,v),w)$ with $v=w|_F$ and
+$v|_K=\phi_K(\omega)$. Send it to $(\omega,w)$; restriction to $F$
+gives the inverse. Thus the map preserves absolute values and the
+projection to the base.
+
+The restriction map $r:\Omega_L\to\Omega_F$ is measurable. Indeed,
+the pullback of the base projection is $\pi_{L/K}$, and the pullback
+of the evaluation at $b\in F$ is the evaluation at $b$ on $L$.
+These maps are measurable for the direct sigma algebra. Consequently
+the iterated sigma algebra, generated by $r$ and the evaluations at
+elements of $L$, is contained in the direct one. Conversely the base
+projection is $\pi_{F/K}\circ r$, so it and all $L$-evaluations are
+measurable for the iterated sigma algebra. The two sigma algebras
+coincide, proving that $e$ is a measurable equivalence.
+
+The map $e$ is precisely the bijection in the finite-fibre tower
+lemma. Its real identity therefore gives the asserted identity of
+operators.
+
+Finally let $A$ be a measurable subset of the common parameter space.
+Twice applying nonnegative disintegration and then the nonnegative
+tower identity gives
+\begin{align*}
+ \nu_{\mathrm{iter}}(A)
+ &=\int_{\Omega_F}I^+_{L/F}\mathbf1_A\,d\nu_F\\
+ &=\int_{\Omega_K}I^+_{F/K}(I^+_{L/F}\mathbf1_A)\,d\nu_K\\
+ &=\int_{\Omega_K}I^+_{L/K}\mathbf1_A\,d\nu_K
+ =\nu_L(A).
+\end{align*}
+The inner function is measurable by finite-kernel measurability, so
+each application is justified. Equality on all measurable sets proves
+$e_*\nu_{\mathrm{iter}}=\nu_L$, completing the equivalence.
+\end{proof}
+
+\begin{remark}[Domain of the evaluations in the tower]
+\label{rem:finite-tower-evaluation-domain}
+\source{chen-moriwaki-adelic:page-0207}
+\uses{prop:finite-tower}
+The evaluations $y\mapsto|\alpha|_y$, $\alpha\in L$, in the
+sigma-algebra comparison are functions on $\Omega_L$. Thus
+$\Omega_K$ in the corresponding sentence of the printed proof of
+Proposition 3.4.4 is read as $\Omega_L$. The finite fibre-sum argument
+also explains why the real tower identity in this proposition is
+valid for every real-valued function.
+\end{remark}
+
+\begin{lemma}[Finite fibre marginals]
+\label{lem:finite-fibre-marginal}
+\source{chen-moriwaki-adelic:page-0206,chen-moriwaki-adelic:page-0207}
+\notready
+\uses{lem:finite-fibre-tower,lem:finite-fibre-sum}
+In a finite tower $K\subseteq F\subseteq L$, restriction
+$r:X_{L,\omega}\to X_{F,\omega}$ satisfies
+$r_*P_{L,\omega}=P_{F,\omega}$ and is surjective.
+\end{lemma}
+\begin{proof}
+For $B\subseteq X_{F,\omega}$ apply the finite nonnegative tower
+identity to $\mathbf1_{r^{-1}B}$. On the fibre over $x$, this function
+is constantly $\mathbf1_B(x)$, and its integral equals that constant
+because the fibre measure has mass one. Therefore
+$P_{L,\omega}(r^{-1}B)=P_{F,\omega}(B)$. All subsets of both fibres
+are measurable, so this is the desired pushforward equality.
+For a point $x\in X_{F,\omega}$ the right side at $B=\{x\}$ is
+its strictly positive degree weight. Thus $r^{-1}\{x\}$ cannot be
+empty, proving surjectivity.
+\end{proof}

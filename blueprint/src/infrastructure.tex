@@ -1,0 +1,332 @@
+\section{Absolute values and finite local degrees}
+
+The absolute values in this chapter are multiplicative, real-valued and
+satisfy the triangle inequality. The trivial absolute value is allowed.
+For an absolute value $v$ on a field $K$, write $K_v$ for its completion.
+All statements about sigma algebras refer to the specified sigma algebra;
+no countability assumption on the set of places is imposed.
+These facts supply the local-field ingredients used in
+\cite[\S\S3.3--3.4]{chen-moriwaki}.
+
+\begin{definition}[Adelic structures and properness]\label{def:adelic-structure}
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0201}
+\lean{ArakelovGeometry.AdelicStructure,ArakelovGeometry.AdelicStructure.instMeasurableSpaceΩ,ArakelovGeometry.AdelicCurve,ArakelovGeometry.AdelicCurve.instFieldK,ArakelovGeometry.AdelicCurve.Ω,ArakelovGeometry.AdelicCurve.v,ArakelovGeometry.AdelicCurve.ϕ,ArakelovGeometry.AdelicCurve.IsProper,ArakelovGeometry.AdelicStructure.toAdelicCurve}
+An adelic structure on $K$ consists of a measure space
+$(\Omega,\mathcal A,\nu)$ and absolute values $\phi_\omega$ such that
+$\omega\mapsto\log\phi_\omega(a)$ is measurable and integrable for every
+$a\in K^\times$. An adelic curve is a field together with an adelic
+structure. It is proper if
+$\int_\Omega\log\phi_\omega(a)\,d\nu(\omega)=0$ for every $a\in K^\times$.
+\end{definition}
+
+\begin{definition}[Restriction of absolute values]\label{def:absolute-value-restriction}
+\source{chen-moriwaki-adelic:page-0194}
+\lean{AbsoluteValue.pullback,AbsoluteValue.restriction}
+The pullback of $w$ along an embedding $j:K\to L$ is $a\mapsto w(j(a))$.
+In a field extension it is denoted by $w|_K$.
+\end{definition}
+
+\begin{lemma}[Maps between completions]\label{lem:completion-embedding}
+\uses{def:absolute-value-restriction,lem:completion-nonarchimedean}
+\lean{AbsoluteValue.isometry_algebraMap_withAbs,AbsoluteValue.algebraCompletion,AbsoluteValue.algebraMap_completion_def,AbsoluteValue.isometry_algebraMap_completion,AbsoluteValue.norm_algebraMap_completion,AbsoluteValue.coe_smul_completion}
+An inclusion $(K,v)\subseteq(L,w)$ with $w|_K=v$ is isometric and extends
+to an isometric field embedding $K_v\to L_w$. Multiplication by a scalar
+and the embeddings of the original fields commute with these completion maps.
+\end{lemma}
+\begin{proof}
+For $a,b\in K$, $w(a-b)=v(a-b)$, so Cauchy sequences and equivalent
+Cauchy sequences remain so under the inclusion. Send the class of $(a_n)$
+to its limit in $L_w$. Equality of distances passes to limits and proves
+isometry. Addition and multiplication commute with limits, so the extension
+is a field homomorphism. It agrees with the original inclusion on constant
+sequences. Applying this observation to products of approximating sequences
+gives the asserted compatibility with scalar multiplication.
+\end{proof}
+
+\begin{lemma}[Completeness and the nonarchimedean property]
+\label{lem:completion-nonarchimedean}
+\lean{CauSeq.isComplete_completion,AbsoluteValue.isNonarchimedean_completion_iff}
+The completion $K_v$ is complete for its induced absolute value $\widehat v$.
+Moreover, $v$ is nonarchimedean if and only if $\widehat v$ is
+nonarchimedean.
+\end{lemma}
+\begin{proof}
+To verify completeness directly, let $(z_n)$ be a Cauchy sequence in $K_v$.
+Choose $a_n\in K$ with $\widehat v(z_n-a_n)<2^{-n}$. The triangle
+inequality shows that $(a_n)$ is Cauchy. Its class in the completion is a
+limit of $(a_n)$ and hence of $(z_n)$. If $v$ is nonarchimedean, approximate
+$x,y\in K_v$ by sequences $a_n,b_n\in K$. Passing to the limit in
+$v(a_n+b_n)\leq\max(v(a_n),v(b_n))$ gives the nonarchimedean inequality
+for $x,y$. The converse follows by restriction along the isometric
+embedding of $K$.
+\end{proof}
+
+\begin{lemma}[Archimedean type under extension]\label{lem:archimedean-extension}
+\source{chen-moriwaki-adelic:page-0202,chen-moriwaki-adelic:page-0203,chen-moriwaki-adelic:page-0204}
+\uses{lem:bounded-integers,lem:completion-nonarchimedean,thm:complete-archimedean,lem:archimedean-rational-normalization}
+\notready
+For a finite extension $L/K$ and an extending absolute value $w$ of $v$,
+$w$ is archimedean if and only if $v$ is archimedean. In that case their
+exponents on $\mathbb Q$ agree, and if that exponent is $\kappa$, then
+$w^{1/\kappa}$ is an absolute value on $L$.
+\end{lemma}
+\begin{proof}
+A nonarchimedean absolute value restricts to a nonarchimedean one.
+Conversely, if $v$ is nonarchimedean, then for every natural integer $n$
+one has $w(n)=v(n)\leq1$. Lemma~\ref{lem:bounded-integers} shows that
+$w$ is nonarchimedean. In the archimedean case its completion is
+archimedean by Lemma~\ref{lem:completion-nonarchimedean}, so the complete
+archimedean classification writes
+$w=|\sigma(\cdot)|^t$ on $L$, where $\sigma$ takes values in
+$\mathbb R$ or $\mathbb C$. On the rational element $2$, restriction
+gives $2^t=2^\kappa$, hence $t=\kappa$. It follows that
+$w^{1/\kappa}=|\sigma(\cdot)|$, which satisfies the triangle inequality.
+\end{proof}
+
+\begin{lemma}[Bounded integers and the ultrametric inequality]
+\label{lem:bounded-integers}\notready
+An absolute value $v$ is nonarchimedean if and only if $v(n)\leq1$ for every natural
+integer $n$. Every absolute value extending a trivial absolute value to an
+algebraic extension is trivial.
+\end{lemma}
+\begin{proof}
+If $v$ is nonarchimedean, induction using $n+1=n+1_K$ and $v(1)=1$
+gives $v(n)\leq1$ for every natural integer $n$.
+Conversely, put $M=\max(v(x),v(y))$. The binomial formula gives
+$v(x+y)^n\leq(n+1)M^n$ for every positive integer $n$, since each
+binomial coefficient has absolute value at most one. If $M=0$ both $x,y$
+vanish. Otherwise take $n$th roots and let $n$ tend to infinity, obtaining
+$v(x+y)\leq M$. An extension $w$ of a trivial absolute value
+has $w(n)\leq1$ and is therefore nonarchimedean. If a nonzero algebraic
+element $a$ had $w(a)>1$, its monic minimal polynomial would give
+$w(a)^d\leq\max_{i<d} w(a)^i<w(a)^d$, a contradiction. Thus $w(a)\leq1$;
+applying this to $a^{-1}$ gives $w(a)\geq1$.
+\end{proof}
+
+\begin{lemma}[Finite-dimensional nontrivial completions]
+\label{lem:completion-finite-nontrivial}
+\uses{lem:completion-embedding,lem:completion-nonarchimedean}
+\lean{AbsoluteValue.finiteDimensional_completion_of_isNontrivial}
+If $L/K$ is finite and $v=w|_K$ is nontrivial, then $L_w$ is finite
+dimensional over $K_v$.
+\end{lemma}
+\begin{proof}
+Choose a $K$-basis $b_1,\ldots,b_d$ of $L$ and let $W$ be its
+$K_v$-linear span in $L_w$. The span is finite dimensional. A finite
+dimensional subspace of a normed space over a complete nontrivially normed
+field is closed. Thus $W$ is closed in $L_w$. It contains $L$, which is
+dense in its completion, so $W=L_w$.
+\end{proof}
+
+\begin{lemma}[Generation of finite completions]\label{lem:completion-finite}
+\source{chen-moriwaki-adelic:page-0205}
+\uses{lem:completion-finite-nontrivial,lem:bounded-integers}
+\notready
+For every finite extension $L/K$ and every extension $w$ of $v$,
+$L_w=K_v(L)$ inside $L_w$, and $[L_w:K_v]\leq[L:K]$.
+\end{lemma}
+\begin{proof}
+For nontrivial $v$, the preceding proof shows that any $K$-basis of $L$
+spans $L_w$ over $K_v$. This span is contained in $K_v(L)$ and proves
+both claims. If $v$ is trivial, so is $w$ by
+Lemma~\ref{lem:bounded-integers}. Both fields are discrete and complete:
+a Cauchy sequence is eventually constant, since unequal points have distance
+one. Thus $L_w=L$, $K_v=K$, and both claims follow directly.
+\end{proof}
+
+\begin{definition}[Local degree]\label{def:local-degree}
+\source{chen-moriwaki-adelic:page-0194}
+\uses{lem:completion-embedding,lem:completion-finite}
+\lean{AbsoluteValue.localDegree}
+For a finite extension $L/K$ and an absolute value $w$ on $L$, the local
+degree is $n(w/v)=[L_w:K_v]$, where $v=w|_K$ and the scalar embedding is
+the completion of $K\hookrightarrow L$.
+\end{definition}
+
+\begin{theorem}[Classification of complete archimedean fields]
+\label{thm:complete-archimedean}
+\source{chen-moriwaki-adelic:page-0203,chen-moriwaki-adelic:page-0204}
+\uses{lem:bounded-integers}
+\lean{AbsoluteValue.exists_ringEquiv_real_or_complex_of_complete}
+A field $F$ complete for an archimedean absolute value $v$ is isomorphic to
+$\mathbb R$ or $\mathbb C$, with absolute value the $s$th power of the
+usual modulus for some $s\in(0,1]$.
+This is the classification invoked in the archimedean part of the proof
+of Theorem 3.3.7 of \cite{chen-moriwaki}. The argument below uses the
+rational Ostrowski theorem and the real Gelfand--Mazur theorem in
+\cite{mathlib-archimedean-classification}.
+\end{theorem}
+\begin{proof}
+Some integer has absolute value greater than one by
+Lemma~\ref{lem:bounded-integers}. The characteristic is zero: in positive
+characteristic each nonzero element of the prime field has finite
+multiplicative order and therefore absolute value one. Ostrowski's theorem
+on $\mathbb Q$ gives $v(q)=|q|^s$, $s>0$; the nonarchimedean possibilities
+are excluded by that integer. The inequality $v(2)\leq2$ gives $s\leq1$.
+
+The function $u=v^{1/s}$ is an absolute value. Multiplicativity and
+definiteness follow from those of $v$. To prove its triangle inequality,
+write $A=v(x)^{1/s}$, $B=v(y)^{1/s}$. Binomial expansion gives, for every
+positive $n$,
+\[
+ v(x+y)^n\leq\sum_{i=0}^n
+  \bigl({n\choose i}A^iB^{n-i}\bigr)^s
+ \leq(n+1)(A+B)^{ns}.
+\]
+Taking $n$th roots and passing to the limit gives $v(x+y)\leq(A+B)^s$.
+The norm $u$ is complete, since raising distances to a positive power
+preserves Cauchy sequences and limits. The usual isometric embedding of
+$\mathbb Q$ therefore extends to an isometric field embedding
+$\mathbb R\to F$. The real Gelfand--Mazur theorem for a normed division
+algebra identifies $F$ as an $\mathbb R$-algebra with $\mathbb R$ or
+$\mathbb C$. In the real case the scalar embedding is already isometric.
+In the complex case let $\psi:\mathbb C\to F$ be the inverse algebra
+isomorphism. The identity
+$\psi(z)=\operatorname{Re}(z)+\operatorname{Im}(z)\psi(i)$ proves that
+$\psi$ is continuous. Thus $u(\psi(z))$ is bounded, say by $B$, on the
+unit circle. For $|z|=1$ and every positive integer $n$,
+$u(\psi(z))^n\leq B$ and $u(\psi(z))^{-n}\leq B$. Taking $n$th roots
+and letting $n$ tend to infinity gives $u(\psi(z))=1$.
+Writing a nonzero complex number as its modulus times a unit complex number
+then proves that the algebra isomorphism preserves $u$. Finally $v=u^s$.
+\end{proof}
+
+\begin{lemma}[Rational normalization at an archimedean place]
+\label{lem:archimedean-rational-normalization}
+\source{chen-moriwaki-adelic:page-0203,chen-moriwaki-adelic:page-0204}
+\uses{lem:completion-nonarchimedean,thm:complete-archimedean}
+\lean{AbsoluteValue.charZero_of_not_isNonarchimedean,AbsoluteValue.exists_rpow_eq_of_not_isNonarchimedean}
+If $v$ is an archimedean absolute value on $K$, then $K$ has
+characteristic zero, and there exists $s\in(0,1]$ such that
+$v(q)=|q|^s$ for every $q\in\mathbb Q$.
+\end{lemma}
+\begin{proof}
+The completion remains archimedean, hence is isomorphic to $\mathbb R$
+or $\mathbb C$ with absolute value the $s$th power of the usual modulus
+for some $s\in(0,1]$. Its subfield $K$ therefore has characteristic zero.
+Every field homomorphism between fields of characteristic zero fixes the
+prime field $\mathbb Q$. Restricting the norm formula to this prime field
+gives the assertion.
+\end{proof}
+
+\begin{lemma}[Extension over a complete field]\label{lem:complete-extension}
+\source{chen-moriwaki-adelic:page-0208}
+\uses{lem:bounded-integers,lem:completion-nonarchimedean,thm:complete-archimedean}
+\notready
+If $(F,v)$ is complete and $E/F$ is algebraic, there is exactly one
+absolute value on $E$ extending $v$.
+\end{lemma}
+\begin{proof}
+For trivial $v$, existence is given by the trivial absolute value and
+uniqueness by Lemma~\ref{lem:bounded-integers}. For nontrivial
+nonarchimedean $v$, use the spectral norm theorem: on an algebraic extension
+of a complete nontrivially normed nonarchimedean field the spectral norm is
+multiplicative, extends the base norm, and is the unique extending
+multiplicative norm. In the notation $P_a(T)=T^d+\sum_{i<d}c_iT^i$ for
+the minimal polynomial, its value is
+$\max_{i<d}v(c_i)^{1/(d-i)}$. The extension and uniqueness assertions are
+precisely those of the spectral norm theorem, applicable because the base is
+complete, its norm is nontrivial, and every $a\in E$ is algebraic. We use
+this existing norm theorem in the form recorded in
+\cite{mathlib-spectral-norm}.
+
+In the archimedean case, the classification of complete archimedean
+absolute-valued fields identifies $F$ with $\mathbb R$ or $\mathbb C$ and
+$v$ with the $s$th power of the usual modulus, $0<s\leq1$.
+An algebraic extension of $\mathbb C$ is itself, and an algebraic extension
+of $\mathbb R$ is $\mathbb R$ or $\mathbb C$; extending the modulus to
+$\mathbb C$ and raising it to $s$ gives existence. To check uniqueness,
+complete $E$ with respect to any extending absolute value. Its completion
+is again archimedean, so the same classification identifies it with
+$\mathbb R$ or $\mathbb C$ with exponent $t$. Evaluation on $2$ gives
+$t=s$. The induced embedding of $\mathbb R$ fixes the rationals and is
+continuous, hence fixes $\mathbb R$. If $E=\mathbb C$, the image of $i$
+is $i$ or $-i$, and either choice preserves the usual modulus. Thus every
+extending absolute value is the one constructed above.
+\end{proof}
+
+\begin{proposition}[Local factorization]\label{lem:local-factorization}
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0202,chen-moriwaki-adelic:page-0205}
+\uses{lem:complete-extension,lem:completion-finite,def:local-degree}
+\notready
+Let $L/K$ be finite separable, let $v$ be an absolute value on $K$, and
+let $X_v$ be the set of extending absolute values on $L$. Then $X_v$ is
+finite and nonempty, and
+\[
+ K_v\otimes_KL\simeq\prod_{w\in X_v}L_w,\qquad
+ \sum_{w\in X_v}[L_w:K_v]=[L:K].
+\]
+For every $b\in L^\times$,
+\[
+ v(N_{L/K}(b))=\prod_{w\in X_v}w(b)^{[L_w:K_v]}.
+\]
+\end{proposition}
+\begin{proof}
+Take a primitive element $a$ and its separable monic minimal polynomial
+$P\in K[T]$. Write $P=\prod_{j=1}^rP_j$ as its distinct monic irreducible
+factors over $K_v$. Each field $E_j=K_v[T]/(P_j)$ has the unique extending
+absolute value of Lemma~\ref{lem:complete-extension} and is complete,
+being finite dimensional over a complete field (in the trivial case it is
+discrete). The embedding $L=K[T]/(P)\to E_j$ has dense image: the powers
+of the residue of $T$ span $E_j$ and each coefficient in $K_v$ can be
+approximated by coefficients in $K$. Its completion is consequently $E_j$.
+
+Conversely, for an extending $w$, Lemma~\ref{lem:completion-finite}
+gives $L_w=K_v(a)$. The evaluation homomorphism $K_v[T]\to L_w$ is
+surjective and its kernel is generated by one of the $P_j$. Uniqueness of
+the extending absolute value identifies $w$ with the value just obtained
+from that factor. If two factors gave the same $w$, their maps to the
+completion of the same valued field $L$ would agree on the dense subfield
+$L$ and on $K_v$, hence would have the same kernel. Thus their factors
+would agree. The factors therefore correspond bijectively to $X_v$.
+
+The Chinese remainder theorem gives
+$K_v\otimes_K L\simeq K_v[T]/(P)\simeq\prod_jE_j$.
+Taking dimensions proves the degree sum. Determinants of multiplication
+commute with extension of scalars and with products, so
+$N_{L/K}(b)=\prod_jN_{E_j/K_v}(b)$ in $K_v$.
+The norm in each separable $E_j/K_v$ is the product over its embeddings
+into an algebraic closure of $K_v$. All embeddings preserve the unique
+extending absolute value. Taking absolute values therefore gives
+$v(N_{E_j/K_v}(b))=w_j(b)^{[E_j:K_v]}$ and proves the last formula.
+\end{proof}
+
+\begin{lemma}[Number of extending absolute values]\label{lem:finite-extension-count}
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0204}
+\uses{lem:local-factorization,lem:finite-separable-part,lem:inseparable-extension-unique}
+\notready
+For any finite extension $L/K$, an absolute value of $K$ has at least one
+and at most $[L:K]$ extensions to $L$.
+\end{lemma}
+\begin{proof}
+Let $E$ be the separable closure of $K$ in $L$. Restriction gives a
+bijection between extensions to $L$ and extensions to $E$, because $L/E$
+is purely inseparable and the extension formula is unique. The latter
+set is nonempty by local factorization. Its cardinality is at most
+$[E:K]$, since the positive local degrees sum to $[E:K]$. Finally
+$[E:K]\leq[L:K]$ by the dimension formula in the tower.
+\end{proof}
+
+\begin{lemma}[Archimedean exponent]\label{lem:archimedean-bound}
+\source{chen-moriwaki-adelic:page-0202,chen-moriwaki-adelic:page-0203,chen-moriwaki-adelic:page-0204}
+\uses{def:adelic-structure,lem:archimedean-rational-normalization}
+\lean{ArakelovGeometry.AdelicStructure.Ωfin,ArakelovGeometry.AdelicStructure.Ωinf,ArakelovGeometry.AdelicStructure.κ,ArakelovGeometry.AdelicStructure.κ_mem_Icc,ArakelovGeometry.AdelicStructure.κ_eq_zero_iff,ArakelovGeometry.AdelicStructure.κ_def,ArakelovGeometry.AdelicStructure.measurableSet_Ωinf,ArakelovGeometry.AdelicStructure.measurable_κ,ArakelovGeometry.AdelicStructure.integrable_κ,ArakelovGeometry.AdelicCurve.κ,ArakelovGeometry.AdelicCurve.Ωinf,ArakelovGeometry.AdelicCurve.Ωfin}
+The archimedean locus is measurable. Let $\kappa(\omega)$ be zero on
+the nonarchimedean locus and the exponent of the usual absolute value on
+$\mathbb Q$ at an archimedean place. Then $0\leq\kappa\leq1$,
+$\kappa$ vanishes exactly at the nonarchimedean places, and $\kappa$ is
+measurable and integrable.
+\end{lemma}
+\begin{proof}
+The classification of archimedean absolute values gives an exponent in
+$(0,1]$. In characteristic zero, evaluation at $2$ gives
+\[
+ \kappa(\omega)=\frac{\max(0,\log\phi_\omega(2))}{\log2}.
+\]
+Indeed the archimedean value of $2$ is $2^{\kappa(\omega)}$, whereas a
+nonarchimedean value of $2$ is at most one. The formula proves
+measurability and integrability by the defining properties of an adelic
+structure. Its strictly positive locus is precisely the archimedean locus,
+which is consequently measurable. In positive characteristic there are no
+archimedean places, and $\kappa$ is the zero function, giving all assertions.
+\end{proof}

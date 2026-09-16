@@ -6,76 +6,82 @@ is recorded in `blueprint-coverage.json`. External constants remain library refe
 A mapped obligation is still open until its transitive axiom audit is clean.
 
 Project constants: 521; extension constants: 233; direct gaps: 64.
-Sorry-backed constants: 75; blueprint nodes: 7.
-Unmapped extension constants: 165; unmapped gaps: 64.
+Sorry-backed constants: 75; blueprint nodes: 204.
+Unmapped extension constants: 0; unmapped gaps: 0.
+
+Unmapped project constants: 0; missing compiled dependency routes: 0.
+Unwritten mathematical blueprint nodes: 47.
+Changed or unrecorded inventory inputs: 0.
 
 | Gap | Source line | Declaration | Blueprint nodes |
 | --- | --- | --- | --- |
-| 1 | 58 | `AbsoluteValue.iSup_eq_limsup_sum_pow_rpow` | UNMAPPED |
-| 2 | 206 | `ArakelovGeometry.AdelicStructure.measurable_iSup_abv_aut` | UNMAPPED |
-| 3 | 274 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.tsum_fibreWeight` | UNMAPPED |
-| 4 | 293 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.finite_extensionFiber` | UNMAPPED |
-| 5 | 298 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_one` | UNMAPPED |
-| 6 | 303 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_add` | UNMAPPED |
-| 7 | 328 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_comp_proj` | UNMAPPED |
-| 8 | 337 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_comp_restrict` | UNMAPPED |
-| 9 | 343 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_fibreIntegral` | UNMAPPED |
-| 10 | 353 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.inducedMeasure` | UNMAPPED |
-| 11 | 366 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.lintegral_inducedMeasure` | UNMAPPED |
-| 12 | 374 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_inducedMeasure_iff` | UNMAPPED |
-| 13 | 381 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_inducedMeasure` | UNMAPPED |
-| 14 | 387 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_comp_proj_inducedMeasure` | UNMAPPED |
-| 15 | 395 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.finrank_mul_integral_log_inducedMeasure` | UNMAPPED |
-| 16 | 403 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_log_inducedMeasure` | UNMAPPED |
-| 17 | 410 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.map_inducedMeasure_proj` | UNMAPPED |
-| 18 | 427 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.isProper_finiteSeparableExtension` | UNMAPPED |
-| 19 | 447 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.pow_finInsepDegree_mem_separableClosure` | UNMAPPED |
-| 20 | 459 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue` | UNMAPPED |
-| 21 | 461 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue` | UNMAPPED |
-| 22 | 463 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue` | UNMAPPED |
-| 23 | 465 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue` | UNMAPPED |
-| 24 | 484 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.log_extendAbsoluteValue` | UNMAPPED |
-| 25 | 501 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measurable_log` | UNMAPPED |
-| 26 | 510 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.integrable_log` | UNMAPPED |
-| 27 | 548 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreWeight_eq_finSepDegree` | UNMAPPED |
-| 28 | 560 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measurableSpace_eq_comap_sup` | UNMAPPED |
-| 29 | 566 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.isProper_finiteExtension` | UNMAPPED |
-| 30 | 576 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.integral_log_eq_inv_finInsepDegree_mul` | UNMAPPED |
-| 31 | 584 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fieldRange_completion_separableClosure` | UNMAPPED |
-| 32 | 609 | `ArakelovGeometry.AdelicStructure.Algebraic.surjective_restrict` | UNMAPPED |
-| 33 | 615 | `ArakelovGeometry.AdelicStructure.Algebraic.surjective_proj` | UNMAPPED |
-| 34 | 636 | `ArakelovGeometry.AdelicStructure.Algebraic.measurableSet_finiteBaseFiber` | UNMAPPED |
-| 35 | 685 | `ArakelovGeometry.AdelicStructure.Algebraic.measurable_proj_projective` | UNMAPPED |
-| 36 | 691 | `ArakelovGeometry.AdelicStructure.Algebraic.measurable_eval_projective` | UNMAPPED |
-| 37 | 698 | `ArakelovGeometry.AdelicStructure.Algebraic.projectiveMeasurableSpace_eq` | UNMAPPED |
-| 38 | 725 | `ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.nonempty_add` | UNMAPPED |
-| 39 | 731 | `ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.nonempty_smul` | UNMAPPED |
-| 40 | 757 | `ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.nonempty_add` | UNMAPPED |
-| 41 | 765 | `ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.nonempty_mul` | UNMAPPED |
-| 42 | 772 | `ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.nonempty_smul` | UNMAPPED |
-| 43 | 787 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderIntegral_congr` | UNMAPPED |
-| 44 | 807 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure` | UNMAPPED |
-| 45 | 807 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure` | UNMAPPED |
-| 46 | 814 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure_isProbability` | UNMAPPED |
-| 47 | 824 | `ArakelovGeometry.AdelicStructure.Algebraic.map_fibreProbabilityMeasure_projFiniteFiber` | UNMAPPED |
-| 48 | 831 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_fibreProbabilityMeasure_descend` | UNMAPPED |
-| 49 | 853 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_proj` | UNMAPPED |
-| 50 | 861 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_projFinite` | UNMAPPED |
-| 51 | 868 | `ArakelovGeometry.AdelicStructure.Algebraic.measurable_restrict_baseFiber` | UNMAPPED |
-| 52 | 875 | `ArakelovGeometry.AdelicStructure.Algebraic.measurable_fibreLIntegral` | UNMAPPED |
-| 53 | 891 | `ArakelovGeometry.AdelicStructure.Algebraic.measure` | UNMAPPED |
-| 54 | 910 | `ArakelovGeometry.AdelicStructure.Algebraic.lintegral_measure` | UNMAPPED |
-| 55 | 920 | `ArakelovGeometry.AdelicStructure.Algebraic.integrable_measure_iff` | UNMAPPED |
-| 56 | 927 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_abs_fibreIntegral_le` | UNMAPPED |
-| 57 | 934 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_measure` | UNMAPPED |
-| 58 | 941 | `ArakelovGeometry.AdelicStructure.Algebraic.integrable_comp_proj_measure` | UNMAPPED |
-| 59 | 947 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_comp_proj_measure` | UNMAPPED |
-| 60 | 954 | `ArakelovGeometry.AdelicStructure.Algebraic.integrable_log_measure` | UNMAPPED |
-| 61 | 962 | `ArakelovGeometry.AdelicStructure.Algebraic.map_measure_proj` | UNMAPPED |
-| 62 | 979 | `ArakelovGeometry.AdelicStructure.Algebraic.isProper_algebraicExtension` | UNMAPPED |
-| 63 | 1006 | `ArakelovGeometry.exists_equiv_finiteExtension_finiteExtension` | UNMAPPED |
-| 64 | 1023 | `ArakelovGeometry.exists_equiv_algebraicExtension_algebraicExtension` | UNMAPPED |
+| 1 | 58 | `AbsoluteValue.iSup_eq_limsup_sum_pow_rpow` | lem:power-sum-radius |
+| 2 | 206 | `ArakelovGeometry.AdelicStructure.measurable_iSup_abv_aut` | lem:orbit-maximum |
+| 3 | 276 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.tsum_fibreWeight` | lem:fibre-normalization |
+| 4 | 295 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.finite_extensionFiber` | lem:finite-extension-fibres |
+| 5 | 300 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_one` | lem:fibre-one |
+| 6 | 305 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_add` | lem:fibre-additivity |
+| 7 | 330 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_comp_proj` | cor:fibre-pullback |
+| 8 | 339 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_comp_restrict` | prop:fibre-restriction |
+| 9 | 345 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_fibreIntegral` | thm:measurable-fibre-integral |
+| 10 | 355 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.inducedMeasure` | def:separable-induced-measure |
+| 11 | 368 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.lintegral_inducedMeasure` | thm:separable-lintegral |
+| 12 | 376 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_inducedMeasure_iff` | thm:separable-integrability |
+| 13 | 383 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_inducedMeasure` | thm:separable-integral |
+| 14 | 389 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_comp_proj_inducedMeasure` | cor:separable-pullback-integral |
+| 15 | 397 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.finrank_mul_integral_log_inducedMeasure` | prop:separable-norm-integral |
+| 16 | 405 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_log_inducedMeasure` | thm:separable-log-integrable |
+| 17 | 412 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.map_inducedMeasure_proj` | prop:separable-pushforward |
+| 18 | 429 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.isProper_finiteSeparableExtension` | prop:separable-proper |
+| 19 | 449 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.pow_finInsepDegree_mem_separableClosure` | lem:inseparable-power |
+| 20 | 461 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue` | lem:inseparable-absolute-value |
+| 21 | 463 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue` | lem:inseparable-absolute-value |
+| 22 | 465 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue` | lem:inseparable-absolute-value |
+| 23 | 467 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue` | lem:inseparable-absolute-value |
+| 24 | 486 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.log_extendAbsoluteValue` | lem:inseparable-log |
+| 25 | 503 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measurable_log` | lem:finite-log-measurable |
+| 26 | 512 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.integrable_log` | lem:finite-log-integrable |
+| 27 | 550 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreWeight_eq_finSepDegree` | lem:finite-separable-weight |
+| 28 | 562 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measurableSpace_eq_comap_sup` | lem:finite-measurable-space |
+| 29 | 568 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.isProper_finiteExtension` | prop:finite-proper |
+| 30 | 578 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.integral_log_eq_inv_finInsepDegree_mul` | prop:finite-log-integral |
+| 31 | 586 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fieldRange_completion_separableClosure` | lem:completion-separable-closure |
+| 32 | 611 | `ArakelovGeometry.AdelicStructure.Algebraic.surjective_restrict` | prop:algebraic-restriction-surjective |
+| 33 | 617 | `ArakelovGeometry.AdelicStructure.Algebraic.surjective_proj` | prop:algebraic-restriction-surjective |
+| 34 | 638 | `ArakelovGeometry.AdelicStructure.Algebraic.measurableSet_finiteBaseFiber` | lem:finite-stage-discrete |
+| 35 | 687 | `ArakelovGeometry.AdelicStructure.Algebraic.measurable_proj_projective` | lem:projective-evaluations |
+| 36 | 693 | `ArakelovGeometry.AdelicStructure.Algebraic.measurable_eval_projective` | lem:projective-evaluations |
+| 37 | 700 | `ArakelovGeometry.AdelicStructure.Algebraic.projectiveMeasurableSpace_eq` | prop:projective-measurable-equality |
+| 38 | 727 | `ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.nonempty_add` | lem:cylinder-algebra |
+| 39 | 733 | `ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.nonempty_smul` | lem:cylinder-algebra |
+| 40 | 759 | `ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.nonempty_add` | lem:cylinder-algebra |
+| 41 | 767 | `ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.nonempty_mul` | lem:cylinder-algebra |
+| 42 | 774 | `ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.nonempty_smul` | lem:cylinder-algebra |
+| 43 | 789 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderIntegral_congr` | lem:cylinder-integral-independent |
+| 44 | 809 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure` | def:algebraic-fibre-probability |
+| 45 | 809 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure` | def:algebraic-fibre-probability |
+| 46 | 816 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure_isProbability` | prop:algebraic-fibre-marginals |
+| 47 | 826 | `ArakelovGeometry.AdelicStructure.Algebraic.map_fibreProbabilityMeasure_projFiniteFiber` | prop:algebraic-fibre-marginals |
+| 48 | 833 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_fibreProbabilityMeasure_descend` | lem:algebraic-cylinder-integral |
+| 49 | 855 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_proj` | lem:algebraic-integral-pullback |
+| 50 | 863 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_projFinite` | lem:algebraic-integral-pullback |
+| 51 | 870 | `ArakelovGeometry.AdelicStructure.Algebraic.measurable_restrict_baseFiber` | lem:algebraic-fibre-measurable |
+| 52 | 877 | `ArakelovGeometry.AdelicStructure.Algebraic.measurable_fibreLIntegral` | prop:algebraic-kernel-measurable |
+| 53 | 893 | `ArakelovGeometry.AdelicStructure.Algebraic.measure` | def:algebraic-measure |
+| 54 | 912 | `ArakelovGeometry.AdelicStructure.Algebraic.lintegral_measure` | prop:algebraic-lintegral |
+| 55 | 922 | `ArakelovGeometry.AdelicStructure.Algebraic.integrable_measure_iff` | prop:algebraic-integrability |
+| 56 | 929 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_abs_fibreIntegral_le` | prop:algebraic-signed-disintegration |
+| 57 | 936 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_measure` | prop:algebraic-signed-disintegration |
+| 58 | 943 | `ArakelovGeometry.AdelicStructure.Algebraic.integrable_comp_proj_measure` | prop:algebraic-base-pullback |
+| 59 | 949 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_comp_proj_measure` | prop:algebraic-base-pullback |
+| 60 | 956 | `ArakelovGeometry.AdelicStructure.Algebraic.integrable_log_measure` | prop:algebraic-log-integrable |
+| 61 | 964 | `ArakelovGeometry.AdelicStructure.Algebraic.map_measure_proj` | lem:algebraic-base-pushforward |
+| 62 | 981 | `ArakelovGeometry.AdelicStructure.Algebraic.isProper_algebraicExtension` | prop:algebraic-proper |
+| 63 | 1008 | `ArakelovGeometry.exists_equiv_finiteExtension_finiteExtension` | prop:finite-tower |
+| 64 | 1037 | `ArakelovGeometry.exists_equiv_algebraicExtension_algebraicExtension` | thm:algebraic-tower |
 
 All gap source lines are in `ArakelovGeometry/AdelicCurve/Extension.lean`.
 The machine-readable inventory also retains the prior chapters and examples,
-whose constants are audited for axioms even when outside the extension blueprint scope.
+whose constants are mapped by exact attachments, explicit anonymous-instance owners,
+or actual compiled dependency paths to consuming blueprint nodes. A support mapping
+is not a formalizes attachment. Completeness checks every project constant.

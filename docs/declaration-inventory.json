@@ -3708,8 +3708,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.BaseFiber",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 639,
-  "end_line": 641,
+  "line": 641,
+  "end_line": 643,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -3726,8 +3726,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.CylinderFunctions",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 716,
-  "end_line": 718,
+  "line": 718,
+  "end_line": 720,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -3743,8 +3743,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 706,
-  "end_line": 714,
+  "line": 708,
+  "end_line": 716,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -3758,8 +3758,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.F",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 710,
-  "end_line": 710,
+  "line": 712,
+  "end_line": 712,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -3847,8 +3847,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.casesOn",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 706,
-  "end_line": 714,
+  "line": 708,
+  "end_line": 716,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -3906,8 +3906,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.eq_comp",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 714,
-  "end_line": 714,
+  "line": 716,
+  "end_line": 716,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -3947,8 +3947,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.g",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 712,
-  "end_line": 712,
+  "line": 714,
+  "end_line": 714,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -3984,8 +3984,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.mk",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 708,
-  "end_line": 708,
+  "line": 710,
+  "end_line": 710,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4163,8 +4163,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.mk.noConfusion",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 708,
-  "end_line": 708,
+  "line": 710,
+  "end_line": 710,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4265,8 +4265,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.noConfusion",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 706,
-  "end_line": 714,
+  "line": 708,
+  "end_line": 716,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4355,8 +4355,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.nonempty_add",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 721,
-  "end_line": 725,
+  "line": 723,
+  "end_line": 727,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4390,8 +4390,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.nonempty_smul",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 728,
-  "end_line": 731,
+  "line": 730,
+  "end_line": 733,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4425,8 +4425,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.rec",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 706,
-  "end_line": 714,
+  "line": 708,
+  "end_line": 716,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4466,8 +4466,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFinite.recOn",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 706,
-  "end_line": 714,
+  "line": 708,
+  "end_line": 716,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4508,8 +4508,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 734,
-  "end_line": 744,
+  "line": 736,
+  "end_line": 746,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4524,8 +4524,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.F",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 740,
-  "end_line": 740,
+  "line": 742,
+  "end_line": 742,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4598,8 +4598,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.casesOn",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 734,
-  "end_line": 744,
+  "line": 736,
+  "end_line": 746,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4642,8 +4642,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.eq_comp",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 744,
-  "end_line": 744,
+  "line": 746,
+  "end_line": 746,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4665,8 +4665,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.g",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 742,
-  "end_line": 742,
+  "line": 744,
+  "end_line": 744,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4684,8 +4684,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.mk",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 736,
-  "end_line": 736,
+  "line": 738,
+  "end_line": 738,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4792,8 +4792,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.mk.noConfusion",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 736,
-  "end_line": 736,
+  "line": 738,
+  "end_line": 738,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4858,8 +4858,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.noConfusion",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 734,
-  "end_line": 744,
+  "line": 736,
+  "end_line": 746,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4912,8 +4912,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.nonempty_add",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 752,
-  "end_line": 757,
+  "line": 754,
+  "end_line": 759,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4948,8 +4948,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.nonempty_mul",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 760,
-  "end_line": 765,
+  "line": 762,
+  "end_line": 767,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -4984,8 +4984,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.nonempty_smul",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 768,
-  "end_line": 772,
+  "line": 770,
+  "end_line": 774,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5021,8 +5021,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.rec",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 734,
-  "end_line": 744,
+  "line": 736,
+  "end_line": 746,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5045,8 +5045,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.DescendsToFiniteFiber.recOn",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 734,
-  "end_line": 744,
+  "line": 736,
+  "end_line": 746,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5069,8 +5069,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.FibreCylinderFunctions",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 746,
-  "end_line": 749,
+  "line": 748,
+  "end_line": 751,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5087,8 +5087,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.FiniteBaseFiber",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 628,
-  "end_line": 630,
+  "line": 630,
+  "end_line": 632,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5159,8 +5159,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderContent",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 789,
-  "end_line": 796,
+  "line": 791,
+  "end_line": 798,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5215,8 +5215,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderIntegral",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 775,
-  "end_line": 779,
+  "line": 777,
+  "end_line": 781,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5346,8 +5346,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderIntegral_congr",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 782,
-  "end_line": 787,
+  "line": 784,
+  "end_line": 789,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5378,8 +5378,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 841,
-  "end_line": 847,
+  "line": 843,
+  "end_line": 849,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5406,8 +5406,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_proj",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 849,
-  "end_line": 853,
+  "line": 851,
+  "end_line": 855,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5439,8 +5439,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_projFinite",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 855,
-  "end_line": 861,
+  "line": 857,
+  "end_line": 863,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5493,8 +5493,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.fibreLIntegral",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 833,
-  "end_line": 839,
+  "line": 835,
+  "end_line": 841,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5541,8 +5541,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.fibreMeasurableSpace",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 665,
-  "end_line": 671,
+  "line": 667,
+  "end_line": 673,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5588,8 +5588,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 798,
-  "end_line": 807,
+  "line": 800,
+  "end_line": 809,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5629,8 +5629,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure_isProbability",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 809,
-  "end_line": 814,
+  "line": 811,
+  "end_line": 816,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5660,8 +5660,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.finiteFiber",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 651,
-  "end_line": 655,
+  "line": 653,
+  "end_line": 657,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5701,8 +5701,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.integrable_comp_proj_measure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 936,
-  "end_line": 941,
+  "line": 938,
+  "end_line": 943,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5746,8 +5746,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.integrable_log_measure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 949,
-  "end_line": 954,
+  "line": 951,
+  "end_line": 956,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5798,8 +5798,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.integrable_measure_iff",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 912,
-  "end_line": 920,
+  "line": 914,
+  "end_line": 922,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5859,8 +5859,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.integral_abs_fibreIntegral_le",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 922,
-  "end_line": 927,
+  "line": 924,
+  "end_line": 929,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5916,8 +5916,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.integral_comp_proj_measure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 943,
-  "end_line": 947,
+  "line": 945,
+  "end_line": 949,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -5969,8 +5969,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.integral_fibreProbabilityMeasure_descend",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 826,
-  "end_line": 831,
+  "line": 828,
+  "end_line": 833,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6009,8 +6009,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.integral_measure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 929,
-  "end_line": 934,
+  "line": 931,
+  "end_line": 936,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6062,8 +6062,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.isProper_algebraicExtension",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 975,
-  "end_line": 979,
+  "line": 977,
+  "end_line": 981,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6091,8 +6091,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.lintegral_measure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 905,
-  "end_line": 910,
+  "line": 907,
+  "end_line": 912,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6130,8 +6130,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.map_fibreProbabilityMeasure_projFiniteFiber",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 816,
-  "end_line": 824,
+  "line": 818,
+  "end_line": 826,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6195,8 +6195,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.map_measure_proj",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 956,
-  "end_line": 962,
+  "line": 958,
+  "end_line": 964,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6232,8 +6232,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.measurableSet_finiteBaseFiber",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 632,
-  "end_line": 636,
+  "line": 634,
+  "end_line": 638,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6284,8 +6284,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.measurable_eval_projective",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 687,
-  "end_line": 691,
+  "line": 689,
+  "end_line": 693,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6322,8 +6322,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.measurable_fibreLIntegral",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 870,
-  "end_line": 875,
+  "line": 872,
+  "end_line": 877,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6357,8 +6357,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.measurable_log_projective",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 700,
-  "end_line": 704,
+  "line": 702,
+  "end_line": 706,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6389,8 +6389,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.measurable_projFinite_projective",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 674,
-  "end_line": 679,
+  "line": 676,
+  "end_line": 681,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6437,8 +6437,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.measurable_proj_projective",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 681,
-  "end_line": 685,
+  "line": 683,
+  "end_line": 687,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6470,8 +6470,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.measurable_restrict_baseFiber",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 863,
-  "end_line": 868,
+  "line": 865,
+  "end_line": 870,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6507,8 +6507,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.measure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 877,
-  "end_line": 891,
+  "line": 879,
+  "end_line": 893,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6627,8 +6627,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.measure_apply",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 893,
-  "end_line": 903,
+  "line": 895,
+  "end_line": 905,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6692,8 +6692,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.mem_ofElement",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 598,
-  "end_line": 601,
+  "line": 600,
+  "end_line": 603,
   "dependencies":
   ["Field",
    "Algebra",
@@ -6716,8 +6716,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.ofElement",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 592,
-  "end_line": 596,
+  "line": 594,
+  "end_line": 598,
   "dependencies":
   ["Field",
    "Algebra",
@@ -6777,8 +6777,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.projFinite",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 618,
-  "end_line": 625,
+  "line": 620,
+  "end_line": 627,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6856,8 +6856,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.projFiniteFiber",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 644,
-  "end_line": 649,
+  "line": 646,
+  "end_line": 651,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6934,8 +6934,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.projectiveMeasurableSpace",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 657,
-  "end_line": 662,
+  "line": 659,
+  "end_line": 664,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -6977,8 +6977,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.Algebraic.projectiveMeasurableSpace_eq",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 693,
-  "end_line": 698,
+  "line": 695,
+  "end_line": 700,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -7009,8 +7009,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.surjective_proj",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 611,
-  "end_line": 615,
+  "line": 613,
+  "end_line": 617,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -7039,8 +7039,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.Algebraic.surjective_restrict",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 603,
-  "end_line": 609,
+  "line": 605,
+  "end_line": 611,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -7561,8 +7561,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.ExtensionFiber",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 246,
-  "end_line": 248,
+  "line": 248,
+  "end_line": 250,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -7654,8 +7654,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.FiniteIntermediateField.bot",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 225,
-  "end_line": 227,
+  "line": 227,
+  "end_line": 229,
   "dependencies":
   ["Field",
    "Algebra",
@@ -7817,8 +7817,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.FiniteIntermediateField.left_le_sup",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 236,
-  "end_line": 238,
+  "line": 238,
+  "end_line": 240,
   "dependencies":
   ["Field",
    "Algebra",
@@ -8314,8 +8314,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.FiniteIntermediateField.right_le_sup",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 240,
-  "end_line": 242,
+  "line": 242,
+  "end_line": 244,
   "dependencies":
   ["Field",
    "Algebra",
@@ -8339,8 +8339,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.FiniteIntermediateField.sup",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 229,
-  "end_line": 234,
+  "line": 231,
+  "end_line": 236,
   "dependencies":
   ["Field",
    "Algebra",
@@ -8665,8 +8665,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.extensionFiber_separatesPoints",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 252,
-  "end_line": 263,
+  "line": 254,
+  "end_line": 265,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -8762,8 +8762,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 281,
-  "end_line": 283,
+  "line": 283,
+  "end_line": 285,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -8823,8 +8823,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_add",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 300,
-  "end_line": 303,
+  "line": 302,
+  "end_line": 305,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -8862,8 +8862,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_comp_proj",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 324,
-  "end_line": 328,
+  "line": 326,
+  "end_line": 330,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -8898,8 +8898,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_comp_proj_mul",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 313,
-  "end_line": 322,
+  "line": 315,
+  "end_line": 324,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -8946,8 +8946,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_comp_restrict",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 330,
-  "end_line": 337,
+  "line": 332,
+  "end_line": 339,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9001,8 +9001,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_one",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 295,
-  "end_line": 298,
+  "line": 297,
+  "end_line": 300,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9038,8 +9038,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_smul",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 306,
-  "end_line": 310,
+  "line": 308,
+  "end_line": 312,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9097,8 +9097,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreLIntegral",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 285,
-  "end_line": 287,
+  "line": 287,
+  "end_line": 289,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9159,8 +9159,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreProbabilityMeasure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 276,
-  "end_line": 279,
+  "line": 278,
+  "end_line": 281,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9245,8 +9245,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreWeight",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 267,
-  "end_line": 269,
+  "line": 269,
+  "end_line": 271,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9283,8 +9283,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.finite_extensionFiber",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 290,
-  "end_line": 293,
+  "line": 292,
+  "end_line": 295,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9314,8 +9314,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.finrank_mul_integral_log_inducedMeasure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 389,
-  "end_line": 395,
+  "line": 391,
+  "end_line": 397,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9386,8 +9386,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.inducedMeasure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 345,
-  "end_line": 353,
+  "line": 347,
+  "end_line": 355,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9519,8 +9519,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.inducedMeasure_apply",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 355,
-  "end_line": 359,
+  "line": 357,
+  "end_line": 361,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9626,8 +9626,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_inducedMeasure_iff",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 368,
-  "end_line": 374,
+  "line": 370,
+  "end_line": 376,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9681,8 +9681,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_log_inducedMeasure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 397,
-  "end_line": 403,
+  "line": 399,
+  "end_line": 405,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9737,8 +9737,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_comp_proj_inducedMeasure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 383,
-  "end_line": 387,
+  "line": 385,
+  "end_line": 389,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9793,8 +9793,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_inducedMeasure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 376,
-  "end_line": 381,
+  "line": 378,
+  "end_line": 383,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9849,8 +9849,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.isProper_finiteSeparableExtension",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 423,
-  "end_line": 427,
+  "line": 425,
+  "end_line": 429,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9882,8 +9882,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.lintegral_inducedMeasure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 361,
-  "end_line": 366,
+  "line": 363,
+  "end_line": 368,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -9924,8 +9924,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.map_inducedMeasure_proj",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 405,
-  "end_line": 410,
+  "line": 407,
+  "end_line": 412,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -10008,8 +10008,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_fibreIntegral",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 339,
-  "end_line": 343,
+  "line": 341,
+  "end_line": 345,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -10973,8 +10973,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.tsum_fibreWeight",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 271,
-  "end_line": 274,
+  "line": 273,
+  "end_line": 276,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -11057,8 +11057,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 431,
-  "end_line": 436,
+  "line": 433,
+  "end_line": 438,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -11089,8 +11089,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.BaseFiber",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 524,
-  "end_line": 526,
+  "line": 526,
+  "end_line": 528,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -11124,8 +11124,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 450,
-  "end_line": 465,
+  "line": 452,
+  "end_line": 467,
   "dependencies":
   ["Field",
    "Algebra",
@@ -11266,8 +11266,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue_apply",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 467,
-  "end_line": 474,
+  "line": 469,
+  "end_line": 476,
   "dependencies":
   ["Field",
    "Algebra",
@@ -11314,8 +11314,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreIntegral",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 534,
-  "end_line": 537,
+  "line": 536,
+  "end_line": 539,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -11361,8 +11361,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreProbabilityMeasure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 528,
-  "end_line": 532,
+  "line": 530,
+  "end_line": 534,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -11402,8 +11402,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreWeight_eq_finSepDegree",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 539,
-  "end_line": 548,
+  "line": 541,
+  "end_line": 550,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -11488,8 +11488,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fieldRange_completion_separableClosure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 578,
-  "end_line": 584,
+  "line": 580,
+  "end_line": 586,
   "dependencies":
   ["Field",
    "Algebra",
@@ -11552,8 +11552,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.integrable_log",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 503,
-  "end_line": 510,
+  "line": 505,
+  "end_line": 512,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -11618,8 +11618,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.integral_log_eq_inv_finInsepDegree_mul",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 568,
-  "end_line": 576,
+  "line": 570,
+  "end_line": 578,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -11692,8 +11692,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.isProper_finiteExtension",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 562,
-  "end_line": 566,
+  "line": 564,
+  "end_line": 568,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -11723,8 +11723,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.log_extendAbsoluteValue",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 476,
-  "end_line": 484,
+  "line": 478,
+  "end_line": 486,
   "dependencies":
   ["Field",
    "Algebra",
@@ -11781,8 +11781,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measurableSpace_eq_comap_sup",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 550,
-  "end_line": 560,
+  "line": 552,
+  "end_line": 562,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -11854,8 +11854,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measurable_log",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 496,
-  "end_line": 501,
+  "line": 498,
+  "end_line": 503,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -11905,8 +11905,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.measure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 491,
-  "end_line": 494,
+  "line": 493,
+  "end_line": 496,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -11973,8 +11973,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.pow_finInsepDegree_mem_separableClosure",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 443,
-  "end_line": 447,
+  "line": 445,
+  "end_line": 449,
   "dependencies":
   ["Field",
    "Algebra",
@@ -12010,8 +12010,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.ϕ",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 486,
-  "end_line": 489,
+  "line": 488,
+  "end_line": 491,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -12213,8 +12213,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.algebraicExtension",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 964,
-  "end_line": 973,
+  "line": 966,
+  "end_line": 975,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -12613,8 +12613,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.finiteExtension",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 512,
-  "end_line": 521,
+  "line": 514,
+  "end_line": 523,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -12789,8 +12789,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.AdelicStructure.finiteSeparableExtension",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 412,
-  "end_line": 421,
+  "line": 414,
+  "end_line": 423,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -14374,7 +14374,7 @@
   "ArakelovGeometry.AdelicStructure.instCoeFiniteIntermediateFieldIntermediateField",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
   "line": 216,
-  "end_line": 216,
+  "end_line": 217,
   "dependencies":
   ["Field",
    "Algebra",
@@ -14391,8 +14391,8 @@
  {"name":
   "ArakelovGeometry.AdelicStructure.instCoeSortFiniteIntermediateFieldType",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 219,
-  "end_line": 219,
+  "line": 220,
+  "end_line": 221,
   "dependencies":
   ["Field",
    "Algebra",
@@ -19819,8 +19819,8 @@
   "axioms": ["propext", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.exists_equiv_algebraicExtension_algebraicExtension",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 1008,
-  "end_line": 1023,
+  "line": 1010,
+  "end_line": 1037,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
@@ -19868,9 +19868,31 @@
    "EquivLike.toFunLike",
    "MeasurableEquiv.instEquivLike",
    "ArakelovGeometry.AdelicStructure.Equiv.toMeasurableEquiv",
-   "Real",
-   "ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral",
+   "ENNReal",
+   "Measurable",
+   "ArakelovGeometry.AdelicStructure.A",
+   "ENNReal.measurableSpace",
+   "ArakelovGeometry.AdelicStructure.Algebraic.fibreLIntegral",
    "MeasurableEquiv.symm",
+   "Real",
+   "MeasureTheory.Integrable",
+   "UniformSpace.toTopologicalSpace",
+   "PseudoMetricSpace.toUniformSpace",
+   "Real.pseudoMetricSpace",
+   "SeminormedAddGroup.toContinuousENorm",
+   "SeminormedAddCommGroup.toSeminormedAddGroup",
+   "NonUnitalSeminormedRing.toSeminormedAddCommGroup",
+   "NonUnitalSeminormedCommRing.toNonUnitalSeminormedRing",
+   "SeminormedCommRing.toNonUnitalSeminormedCommRing",
+   "NormedCommRing.toSeminormedCommRing",
+   "Real.normedCommRing",
+   "ArakelovGeometry.AdelicStructure.v",
+   "Filter.EventuallyEq",
+   "MeasureTheory.ae",
+   "MeasureTheory.Measure",
+   "MeasureTheory.Measure.instFunLike",
+   "MeasureTheory.Measure.instOuterMeasureClass",
+   "ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral",
    "sorryAx",
    "Lean.Name",
    "Bool.false",
@@ -19883,8 +19905,8 @@
   "axioms": ["propext", "sorryAx", "Classical.choice", "Quot.sound"]},
  {"name": "ArakelovGeometry.exists_equiv_finiteExtension_finiteExtension",
   "module": "ArakelovGeometry.AdelicCurve.Extension",
-  "line": 992,
-  "end_line": 1006,
+  "line": 994,
+  "end_line": 1008,
   "dependencies":
   ["Field",
    "ArakelovGeometry.AdelicStructure",
