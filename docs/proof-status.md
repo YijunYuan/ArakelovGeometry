@@ -1,91 +1,59 @@
 # Extension proof status
 
-The task is unfinished. The configured `horizon check --json` passed on
-2026-09-16 at 06:35:41 UTC (3430 jobs), with 1 direct sorry occurrence.
-The subsequent compiled inventory contains 864 project constants, including
-1 transitively using `sorryAx`; no other nonstandard axioms occur.
+All existing project Lean proof gaps are closed. The task remains active because
+additional source-facing blueprint obligations still need exact formalization
+coverage and final review.
+
+## Verified declarations
+
+The configured `horizon check --json` passed on 2026-09-16 at 06:54:37 UTC
+(3455 jobs), without warnings or errors. The compiled inventory completed at
+06:56:58 UTC and contains **902 project constants, zero direct gaps, zero
+sorry-backed constants, and no nonstandard axioms**. A separate transitive
+axiom audit completed at 06:59:28 UTC with `AUDIT checked=902 sorryAx=0`;
+see [axiom-audit.txt](axiom-audit.txt).
+
+Finite and algebraic extension measures, fibre integration, logarithmic
+integrability, properness and tower compatibility are proved. The algebraic
+tower proof uses finite descent, base-change probabilities, finite cylinder
+identities, probability uniqueness and signed Fubini. Its canonical measurable
+equivalence preserves the measure. Nonnegative measurable fibre integrals agree
+pointwise; signed integrable fibre integrals agree almost everywhere, including
+arbitrary almost-everywhere representatives. The actual fibre integral induces
+a continuous linear contraction on L1.
+
+The corrected signed contract from `f6cf21e` is preserved exactly. The
+infinite-fibre integrability criterion retains its double ENNReal integral.
+See [source-corrections.md](source-corrections.md) for exact reference evidence.
+Independent honesty review checked the final tower producers, signed domains,
+L1 construction and their blueprint attachments before completion markers were
+added. It did not certify completion of the remaining source obligations.
 
 ## Mathematical route and coverage
 
-The recovered blueprint covers all of Chen–Moriwaki sections 3.3–3.4:
-absolute-value extensions and local factorization, finite separable kernels,
-finite extensions including inseparability, algebraic cylinder measures,
-nonnegative and signed disintegration, and tower compatibility. Every direct
-gap and every extension-module constant has a blueprint mapping. Additional
-unwritten mathematical producers have explicit nodes and complete proofs;
-149 nodes with axiom-clean attachments are marked `\leanok`. The combined route has 276
-mathematical nodes, including 19 explicitly unwritten producer nodes. All 864
-project constants have an attachment or an explicitly classified support
-mapping; every compiled mathematical dependency between attached nodes has
-a blueprint path, with zero cycles or dangling links.
+The blueprint covers the full sections 3.3–3.4 route, including absolute-value
+extensions and local factorization, finite separable integration, inseparability,
+projective fibre probabilities and algebraic compatibility. Its 284 nodes map
+all 902 project constants through direct attachments or explicitly classified
+support. Every compiled mathematical dependency between attached nodes has a
+blueprint path, with no cycles, dangling links or stale inventory inputs.
+There are 165 independently reviewed `\leanok` nodes.
 
-`scripts/blueprint_coverage.py` inventories all project constants, records
-actual compiled dependencies and transitive axioms, and distinguishes direct
-attachments from auxiliary support mappings. Its acceptance check also
-requires all older project constants to have a mapping. The additional
-chapters cover the older constructions and the number-field and rational-function
-examples; the coverage report distinguishes their attachments from private and
-generated support constants.
+Remaining source obligations include the full local tensor-product factorization,
+the inverse-limit identification of algebraic fibres, bounded generators and
+the bounded functional monotone-class theorem. Their complete mathematical
+statements and proofs remain visible, with unproved clauses marked explicitly.
+Exact existing library producers are classified as imported boundaries; they
+are not added as project graph nodes or presented as project Lean proofs.
+The machine-readable [coverage report](blueprint-coverage.json) records current
+counts and each attachment. A support mapping is not a formalizes attachment.
 
-The inventory provenance records source and compiled-artifact hashes with the
-successful build and inventory checks. Changed sources invalidate coverage
-until rebuilt and reinventoried. External library constants stay external;
-the graph inputs are only `ArakelovGeometry/` and `ArakelovGeometry.lean`.
-
-## Source corrections and review
-
-The signed algebraic tower contract is corrected in `f6cf21e`: measurable
-nonnegative fibre integrals agree pointwise, and globally integrable signed
-fibre integrals agree almost everywhere. The exact source evidence is in
-[source-corrections.md](source-corrections.md). The infinite-fibre
-integrability criterion continues to use the double ENNReal integral.
-
-Honesty review found no wrapper evasion and confirmed the tower correction.
-Its attachment findings were repaired by giving output integrability,
-linearity, probability uniqueness, finite marginals, and nonnegative pullback
-formulas their own unwritten nodes. A graph review prompted splitting
-restriction from local degree and adding compiled-dependency reachability
-checks. These reviews certify the stated scope of the route, not Lean proof
-completion.
-
-The algebraic fibre probability is now constructed from the prescribed cylinder
-content. Pointwise compactness makes cylinder covers reducible to finite
-covers; the resulting outer measure is proved equal to the original
-`OuterMeasure.ofFunction` construction. All finite marginals, measurable
-fibre integration, nonnegative and signed disintegration, logarithmic
-integrability and properness are axiom-clean. The signed proofs use almost
-everywhere fibre integrability and retain the double ENNReal criterion.
-Independent honesty review checked 73 attached declarations in this batch.
-
-Finite tower compatibility is proved, including inseparable towers. The canonical
-measurable equivalence, multiplicativity of local separable-degree weights,
-finite fibre sums and measure transport are actual producers. Independent
-honesty review checked 19 declarations and approved nine exact blueprint nodes.
-The broad finite-fibre statement remains unmarked pending its additional
-discrete probability attachments. The global separable-degree formula remains
-an external library reference, without adding a dependency declaration to the
-project graph.
-
-Finite descent now constructs a finite base and extension preserving both
-total and separable degrees. Generalized embedding counts give normalized
-base-change probabilities and restriction along arbitrary finite embeddings.
-Finite marginal uniqueness and the canonical algebraic parameter equivalence
-are proved. The iterated measurable fibre kernel defines a probability and
-computes iterated nonnegative integration; its equality with the direct fibre
-probability remains the next obligation. Independent honesty review checked
-62 declarations in this producer batch.
-
-Only the algebraic tower-equivalence theorem remains sorry-backed.
-The complete 864-constant audit finds exactly this gap and no new axioms.
-Additional source statements without direct Lean attachments remain visible;
-their status is not inferred from narrower results.
-
-The human-requested reuse audit confirmed that complete archimedean
-classification, completion embeddings and the archimedean exponent bounds
-were already proved and reused. Their five blueprint status markers were
-corrected after an independent review of 23 existing attachments. The source
-parser warning for the additive embedding formula was resolved by exposing
-the same proof explicitly, preserving both additive and multiplicative APIs.
+The inventory records all project declarations, including generated constants
+and names outside the project namespace, with actual compiled dependencies and
+transitive axioms. Provenance pins source and compiled-artifact hashes to the
+successful build and inventory. Changed Lean inputs invalidate the coverage
+check until rebuilt and reinventoried. The graph inputs remain restricted to
+`ArakelovGeometry/` and `ArakelovGeometry.lean`; external libraries stay searchable.
 
 ## Reproducing evidence
 
@@ -94,13 +62,13 @@ From the project root:
 ```sh
 "$HORIZON_BIN" check --json
 "$HORIZON_BIN" check --lean scripts/declaration_inventory.lean --json
+"$HORIZON_BIN" check --lean scripts/audit_axioms.lean --json
 python3 scripts/blueprint_coverage.py --record-provenance --require-complete
 "$HORIZON_BIN" graph -p ArakelovGeometry sync
 "$HORIZON_BIN" blueprint --json
 ```
 
-The coverage command rejects missing declaration mappings, missing dependency
-routes, stale inventory inputs, cycles, and false completion markers. It does
-not claim to check mathematical proof completeness. The configured build
-accepts sorry-backed proofs; completion additionally requires zero direct
-gaps and zero sorry-backed constants in the inventory.
+The coverage check rejects missing declaration mappings, missing compiled
+dependency routes, unknown attachments, stale inputs, cycles and false completion
+markers. Mathematical proof completeness and source fidelity additionally
+require independent review; compilation alone does not establish them.

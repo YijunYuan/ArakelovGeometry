@@ -225,9 +225,12 @@ def main():
     target_modules = {
         "ArakelovGeometry.AdelicCurve.Extension",
         "ArakelovGeometry.AdelicCurve.FiniteTower",
+        "ArakelovGeometry.AdelicCurve.FiniteProbability",
         "ArakelovGeometry.AdelicCurve.AlgebraicTower",
         "ArakelovGeometry.AdelicCurve.AlgebraicTowerBasic",
         "ArakelovGeometry.AdelicCurve.AlgebraicTowerCylinder",
+        "ArakelovGeometry.AdelicCurve.AlgebraicTowerIntegral",
+        "ArakelovGeometry.AdelicCurve.AlgebraicIntegrable",
         "ArakelovGeometry.ExternalResults.AlgebraicTowerSupport",
         "ArakelovGeometry.AdelicCurve.AlgebraicProbability",
         "ArakelovGeometry.AdelicCurve.AlgebraicFiniteProjection",

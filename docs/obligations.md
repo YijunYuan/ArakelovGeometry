@@ -5,17 +5,16 @@ Every project constant, including generated declarations, and every direct depen
 is recorded in `blueprint-coverage.json`. External constants remain library references.
 A mapped obligation is still open until its transitive axiom audit is clean.
 
-Project constants: 864; extension constants: 476; direct gaps: 1.
-Sorry-backed constants: 1; blueprint nodes: 276.
+Project constants: 902; extension constants: 514; direct gaps: 0.
+Sorry-backed constants: 0; blueprint nodes: 284.
 Unmapped extension constants: 0; unmapped gaps: 0.
 
 Unmapped project constants: 0; missing compiled dependency routes: 0.
-Unwritten mathematical blueprint nodes: 19.
+Unwritten mathematical blueprint nodes: 12.
 Changed or unrecorded inventory inputs: 0.
 
 | Gap | Source | Declaration | Blueprint nodes |
 | --- | --- | --- | --- |
-| 1 | `ArakelovGeometry/AdelicCurve/Extension.lean:3206` | `ArakelovGeometry.exists_equiv_algebraicExtension_algebraicExtension` | thm:algebraic-tower |
 
 Gap locations refer to the current authored modules.
 The machine-readable inventory also retains the prior chapters and examples,

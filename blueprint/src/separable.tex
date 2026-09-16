@@ -816,20 +816,26 @@ finiteness of this number.
 \end{proof}
 
 \begin{lemma}[Null sets and finite fibres]\label{lem:finite-fibre-ae}
-\uses{def:separable-induced-measure,lem:measurable-fibre-lintegral,lem:finite-fibre-sums}
-\notready
+\leanok
+\uses{lem:separable-ae-fibres,lem:finite-fibre-sum}
+\source{chen-moriwaki-adelic:page-0201,chen-moriwaki-adelic:page-0202}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.ae_fibreProbabilityMeasure_iff,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.ae_forall_fibre_of_ae,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_congr_ae}
+On a finite fibre, a property holds $P_\omega$-almost everywhere if
+and only if it holds at every point. Consequently a property holding
+$\nu_L$-almost everywhere holds at every point of $X_\omega$ for
+$\nu$-almost every $\omega$.
 If two real functions $f,g$ on $\Omega_L$ agree $\nu_L$-almost everywhere,
 then for $\nu$-almost every $\omega$ they agree at every point of
 $X_\omega$. In particular $If=Ig$ almost everywhere.
 \end{lemma}
 \begin{proof}
-Choose a measurable $\nu_L$-null set $N$ containing $\{f\ne g\}$.
-The defining formula gives $\int I^+\mathbf1_N\,d\nu=0$.
-Its nonnegative measurable integrand is zero almost everywhere.
-For any base point where it is zero, the sum
-$\sum_{x\in X_\omega}p_\omega(x)\mathbf1_N(x)$ is zero. Since every
-weight is strictly positive, no $x\in X_\omega$ belongs to $N$.
-The functions therefore agree on that entire fibre, as do their integrals.
+Each singleton $\{x\}$ has mass $p_\omega(x)>0$. A null exceptional
+set therefore contains no point, proving the first assertion; the
+converse is immediate. Lemma~\ref{lem:separable-ae-fibres} gives a
+fibre-almost-everywhere property on almost every fibre, and the first
+assertion turns it into an everywhere property on those fibres.
+Apply this to $f=g$. The integrands agree at every point of almost
+every fibre, so their integrals agree on those same fibres.
 \end{proof}
 
 \begin{lemma}[Almost everywhere statements on fibres]\label{lem:separable-ae-fibres}
@@ -893,9 +899,10 @@ Equality on measurable sets is equality of measures.
 \end{proof}
 
 \begin{lemma}[Nonnegative integrals and integrability of base pullbacks]\label{lem:separable-pullback-integrability}
+\leanok
 \source{chen-moriwaki-adelic:page-0201,chen-moriwaki-adelic:page-0202}
 \uses{prop:separable-pushforward,def:extension-parameters}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.lintegral_comp_proj_inducedMeasure,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_comp_proj_inducedMeasure}
 For every measurable $\varphi:\Omega\to[0,\infty]$,
 \[
  \int_{\Omega_L}\varphi\circ\pi\,d\nu_L=\int_\Omega\varphi\,d\nu.

@@ -636,7 +636,7 @@ private theorem exists_finitePlace_of_isNonarchimedean {K : Type*} [Field K] [Nu
 
 /-- The archimedean half of Ostrowski: an archimedean absolute value on a number field is
 equivalent to an infinite place. Conrad defers this to the references; we obtain it from the
-admitted `exists_ringEquiv_real_or_complex_of_complete` applied to the completion of `K`. -/
+theorem `exists_ringEquiv_real_or_complex_of_complete` applied to the completion of `K`. -/
 private theorem exists_infinitePlace_of_not_isNonarchimedean {K : Type*} [Field K]
     [NumberField K] {abs : AbsoluteValue K ℝ} (hna : ¬IsNonarchimedean abs) :
     ∃ v : InfinitePlace K, abs ≈ v.val := by

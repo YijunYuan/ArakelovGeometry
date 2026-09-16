@@ -340,9 +340,10 @@ Both denominators are positive integers, so the divisions agree.
 
 \begin{lemma}[Finite fibre sums]
 \label{lem:finite-fibre-sum}
+\leanok
 \source{chen-moriwaki-adelic:page-0205,chen-moriwaki-adelic:page-0206}
-\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreIntegral_eq_sum,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreLIntegral_eq_sum}
-\uses{def:finite-fibre-integral,def:finite-fibre-lintegral,lem:finite-separable-weight,lem:finite-fibre-sums}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.finite_extensionFiber,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurableSet_extensionFiber,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreWeight_pos,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreProbabilityMeasure_singleton,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.tsum_fibreWeight,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_fibre,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreProbabilityMeasure_eq_sum,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreIntegral_eq_sum,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreLIntegral_eq_sum}
+\uses{def:finite-fibre-integral,def:finite-fibre-lintegral,lem:finite-separable-weight,lem:finite-fibre-sums,lem:finite-extension-fibres,lem:fibre-normalization,lem:finite-fibre-integrability,lem:completion-finite,def:local-degree}
 Every $X_{L,\omega}$ is a finite measurable space with all subsets
 measurable, every weight $p_{L,\omega}(x)$ is strictly positive, and
 \[
@@ -360,9 +361,17 @@ global measurability or integrability assumption on $f$.
 \end{lemma}
 \begin{proof}
 Under $X_{L,\omega}=X_{E,\omega}$, the finite separable fibre-sum
-lemma gives finiteness, the full sigma algebra, the Dirac-sum measure,
-positive weights, and normalization. The weight lemma rewrites its coefficients in the
-displayed form. Every real-valued function on a finite set is
+formula applies. The finite-fibre lemma gives finiteness, and the
+measurable evaluations separate points, so every singleton and hence
+every subset is measurable. Each completion degree $[E_x:K_\omega]$
+is a positive integer: the completed extension is finite dimensional
+and its underlying field is a nonzero vector space. Thus its quotient
+by $[E:K]>0$ is strictly positive. The defining sum of Dirac measures
+is a finite sum, and evaluating it on $\{x\}$ gives exactly
+$P_{L,\omega}(\{x\})=p_{L,\omega}(x)$. The normalization lemma
+gives the sum of the weights as one. The weight lemma rewrites these
+coefficients in the displayed form.
+Every real-valued function on a finite set is
 measurable and bounded, and hence integrable for a probability
 measure. Integration against the finite Dirac sum gives both formulas.
 \end{proof}

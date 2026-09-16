@@ -36,7 +36,8 @@ polynomial of degree $d$, then $1,a,\ldots,a^{d-1}$ span $K(a)$, and $a$
 belongs to this field. Taking successive composita handles any finite set.
 \end{proof}
 
-\begin{lemma}[Extending algebraic embeddings]\label{lem:algebraic-embedding-extension}\notready
+\begin{lemma}[Extending algebraic embeddings]\label{lem:algebraic-embedding-extension}
+\dcref{IsAlgClosed.lift}
 Let $E/F$ be algebraic and let $j:F\hookrightarrow C$ be a field embedding
 with $C$ algebraically closed. Then $j$ extends to an embedding $E\hookrightarrow C$.
 \end{lemma}
@@ -259,7 +260,7 @@ point of the finite-stage fibre.
 \end{proof}
 
 \begin{lemma}[Compact inverse-limit fibres]\label{lem:compact-algebraic-fibre}\notready
-\uses{def:algebraic-projections,lem:finite-stage-exhaustion,lem:finite-stage-discrete,lem:restriction-transitive,prop:algebraic-restriction-surjective}
+\uses{def:algebraic-projections,lem:finite-stage-exhaustion,lem:finite-stage-discrete,lem:finite-stage-transitions,lem:finite-fibre-projection-surjective,lem:compact-evaluation-fibre}
 \source{chen-moriwaki-adelic:page-0208,chen-moriwaki-adelic:page-0209}
 Give each $X_{F,\omega}$ its finite discrete topology. Restriction
 identifies $X_\omega$ with the closed subspace of
@@ -268,17 +269,23 @@ families. In particular $X_\omega$ is compact, and every cylinder
 $p_{F,\omega}^{-1}(B)$ is both open and compact.
 \end{lemma}
 \begin{proof}
-Restrictions form compatible families. Conversely, a compatible family
-defines $|a|$ by evaluation in any stage containing $a$. Two choices give
-the same value in their compositum. To check multiplication, addition,
-positivity, and vanishing only at zero, place the finitely many elements
-of the corresponding identity or inequality in one finite stage and use
-its absolute value. This gives an inverse to the restriction map.
+Restrictions form compatible families, and the map to the product is
+continuous because every coordinate projection is continuous. It is
+injective: evaluating the coordinate at $K(a)$ recovers $|a|$ for every
+$a\in L$, and these evaluations determine the absolute value.
+For a compatible family $(x_F)$, put
+$C_F=p_{F,\omega}^{-1}\{x_F\}$. Each $C_F$ is closed and nonempty,
+by continuity and surjectivity of the finite projection. Compatibility
+implies $C_{FG}\subseteq C_F\cap C_G$, so these sets have the finite
+intersection property. The compactness established in
+Lemma~\ref{lem:compact-evaluation-fibre} gives a point in their total
+intersection, proving surjectivity onto compatible families.
 Compatibility is the intersection, over inclusions $F\subseteq G$, of
 the equations $x_F=x_G|_F$. Each equation is closed in the product of
-finite discrete spaces. Tychonoff's theorem makes the product compact,
-so its closed subspace is compact. A cylinder is the inverse image of a
-clopen subset of a finite discrete space; it is clopen, and hence compact.
+finite discrete spaces. The resulting continuous bijection from the
+compact space $X_\omega$ to this Hausdorff subspace is a homeomorphism.
+A cylinder is the inverse image of a clopen subset of a finite discrete
+space; it is clopen, and hence compact.
 \end{proof}
 
 \begin{remark}[Cylinder and Borel $\sigma$-algebras]\label{rem:cylinder-borel-distinction}
@@ -322,8 +329,9 @@ give the sum and product of the original functions. For scalar
 multiplication multiply the descended function at the same stage.
 \end{proof}
 
-\begin{lemma}[Constant cylinder functions]\label{lem:cylinder-constants}
-\uses{def:algebraic-cylinders,def:finite-stages}\notready
+\begin{lemma}[Constant cylinder functions]\label{lem:cylinder-constants}\notready
+\uses{def:algebraic-cylinders,def:finite-stages}
+\source{chen-moriwaki-adelic:page-0209}
 Every constant real function on $\Omega_L$ or on $X_\omega$ is a cylinder
 function.
 \end{lemma}
@@ -359,20 +367,23 @@ their integrals against $P_{H,\omega}$ are respectively $J_{F,g}$ and
 $J_{G,h}$; hence these are equal.
 \end{proof}
 
-\begin{lemma}[The cylinder probability functional]\label{lem:cylinder-functional}
-\uses{lem:cylinder-integral-independent,lem:cylinder-algebra,lem:cylinder-constants,lem:finite-fibre-sum}\notready
+\begin{lemma}[The cylinder probability functional]\label{lem:cylinder-functional}\notready
+\uses{lem:cylinder-integral-independent,lem:cylinder-algebra,lem:cylinder-constants,lem:algebraic-cylinder-integral,prop:algebraic-fibre-marginals}
 \source{chen-moriwaki-adelic:page-0208,chen-moriwaki-adelic:page-0209}
 The resulting functional $J_\omega$ on $V_{L,\omega}$ is positive,
 linear, and sends $1$ to $1$.
 \end{lemma}
 \begin{proof}
-Present finitely many cylinder
-functions at one common stage. If a cylinder function is nonnegative,
-surjectivity of the stage projection shows that its descended function
-is nonnegative at every point of that finite fibre. Positivity therefore
-follows from positivity of the finite integral. Linearity and the value
-on $1$ follow from the corresponding properties of a finite probability
-integral.
+A cylinder function is integrable on its fibre: the descended function
+is integrable on the finite-stage probability space, and its pullback
+has the same absolute integral by the marginal formula. By
+Lemma~\ref{lem:algebraic-cylinder-integral}, its cylinder integral is
+its integral against $P_{L,\omega}$. Positivity, additivity and scalar
+linearity therefore follow from the corresponding properties of the
+integral of integrable real functions. Every constant function has
+integral equal to its value, because $P_{L,\omega}$ is a probability;
+in particular $J_\omega(1)=1$. Independence of the presentation makes
+these identities properties of the function itself.
 \end{proof}
 
 \begin{lemma}[Algebra of cylinder sets]\label{lem:fibre-cylinder-set-algebra}
@@ -818,8 +829,11 @@ The difference is integrable on the base. Integrating this equality
 and subtracting the two nonnegative integration formulas proves the result.
 \end{proof}
 
-\begin{lemma}[Null sets and measurable representatives]\label{lem:algebraic-null-disintegration}\notready
+\begin{lemma}[Null sets and measurable representatives]\label{lem:algebraic-null-disintegration}
+\leanok
 \uses{prop:algebraic-lintegral,prop:algebraic-kernel-measurable}
+\source{chen-moriwaki-adelic:page-0211}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.ae_fibre_measure_preimage_eq_zero,ArakelovGeometry.AdelicStructure.Algebraic.exists_measurable_representative,ArakelovGeometry.AdelicStructure.Algebraic.ae_ae_fibre_of_ae}
 If a measurable $N\subseteq\Omega_L$ is $\nu_L$-null, then
 $P_{L,\omega}(N\cap X_\omega)=0$ for $\nu$-almost every $\omega$.
 Consequently, if $f$ is $\nu_L$-integrable, it admits a measurable
@@ -835,6 +849,24 @@ equal to a measurable function. The exceptional set is contained in
 a measurable null set by the definition of almost everywhere equality.
 Apply the first assertion to that null set. Its fibre intersections
 contain the fibre exceptional sets, proving the claim.
+\end{proof}
+
+\begin{lemma}[Fibre integration respects almost everywhere equality]
+\label{lem:algebraic-fibre-integral-ae}
+\leanok
+\uses{lem:algebraic-null-disintegration}
+\source{chen-moriwaki-adelic:page-0211}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_congr_ae}
+If real functions $f,g$ on $\Omega_L$ are equal $\nu_L$-almost everywhere,
+then $I_{L/K}f=I_{L/K}g$ $\nu$-almost everywhere.
+\end{lemma}
+\begin{proof}
+Their restrictions are equal $P_{L,\omega}$-almost everywhere for
+$\nu$-almost every $\omega$ by
+Lemma~\ref{lem:algebraic-null-disintegration}. On each such fibre their
+real integrals agree, since the integral is unchanged by alteration
+on a null set. This also applies when these functions are not integrable,
+as both integrals then use the same totalized convention.
 \end{proof}
 
 \begin{lemma}[Integrability of signed fibre averages]\label{lem:algebraic-signed-integrability}
@@ -885,17 +917,36 @@ integrals are unchanged almost everywhere.
 \end{proof}
 
 \begin{corollary}[The operator on $L^1$]\label{cor:algebraic-L1-operator}
-\uses{prop:algebraic-signed-disintegration,lem:algebraic-signed-integrability,lem:algebraic-null-disintegration}\notready
+\leanok
+\uses{prop:algebraic-signed-disintegration,lem:algebraic-signed-integrability,lem:algebraic-fibre-integral-ae}
 \source{chen-moriwaki-adelic:page-0211}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_add_ae,ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_smul,ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegralL1,ArakelovGeometry.AdelicStructure.Algebraic.coeFn_fibreIntegralL1,ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegralL1_add,ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegralL1_smul,ArakelovGeometry.AdelicStructure.Algebraic.norm_fibreIntegralL1_le,ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegralL1ContinuousLinearMap,ArakelovGeometry.AdelicStructure.Algebraic.norm_fibreIntegralL1ContinuousLinearMap_le,ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegralL1_toL1}
 Fibre integration induces a linear contraction from
 $L^1(\Omega_L,\nu_L)$ to $L^1(\Omega,\nu)$.
+Precisely, there is a continuous linear map $T$ satisfying
+$T[f]=[I_{L/K}f]$ for every integrable real $f$, and $\|T\|\le1$.
 \end{corollary}
 \begin{proof}
-The null-disintegration lemma makes the operation independent of representatives,
-and the preceding inequality bounds its $L^1$ norm.
-For two integrable functions and a scalar, discard the union of the
-finitely many exceptional sets of fibres. Ordinary integral linearity
-on the remaining fibres proves linearity in $L^1$.
+By Lemma~\ref{lem:algebraic-signed-integrability}, the fibre average of
+an integrable function is integrable. Define $T[f]=[I_{L/K}f]$.
+Lemma~\ref{lem:algebraic-fibre-integral-ae} proves that this class is
+independent of the chosen representative of $[f]$.
+
+If $f,g$ are integrable, their restrictions to each fibre are integrable
+outside the union of two null sets of base points. On all other fibres,
+integral additivity gives $I_{L/K}(f+g)=I_{L/K}f+I_{L/K}g$.
+For every scalar $c$, homogeneity of the real integral gives
+$I_{L/K}(cf)=cI_{L/K}f$; this identity is valid also on exceptional
+fibres under the totalized integral convention. These identities prove
+linearity of $T$ on the equivalence classes.
+
+Finally, Proposition~\ref{prop:algebraic-signed-disintegration} gives
+\[
+ \|T[f]\|_1=\int_\Omega|I_{L/K}f|\,d\nu
+ \le\int_{\Omega_L}|f|\,d\nu_L=\|[f]\|_1.
+\]
+Thus $T$ is continuous and has operator norm at most one, with the
+asserted formula for every integrable representative.
 \end{proof}
 
 \begin{lemma}[Finite-stage pushforward]\label{lem:algebraic-measure-marginals}
@@ -1335,77 +1386,255 @@ The two pushforward integration formulas identify the resulting
 iterated integral with the two fibre operators.
 \end{proof}
 
-\begin{lemma}[Tower integration with finite upper extension]\label{lem:algebraic-tower-finite-upper}\notready
-\uses{lem:descended-base-change,lem:algebraic-lintegral-pullback,prop:finite-tower,prop:algebraic-kernel-measurable,lem:algebraic-tower-spaces}
+\begin{lemma}[Finite upper stages containing a finite subextension]
+\label{lem:algebraic-finite-upper-stage}
+\leanok
 \source{chen-moriwaki-adelic:page-0213,chen-moriwaki-adelic:page-0214}
-Suppose $B/K$ is algebraic and $N/B$ is finite. For every nonnegative
-measurable $f$ on $\Omega_N$,
-\[
- I^+_{B/K}(I^+_{N/B}f)=I^+_{N/K}f
-\]
-pointwise on $\Omega$.
+\uses{lem:finite-stage-exhaustion}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.exists_finite_upper_stage}
+Let $L/K$ be algebraic, let $B$ be an intermediate field, and let
+$H/K$ be a finite intermediate extension. There is an intermediate
+field $N$ of $L/B$ that is finite over $B$ and contains $H$.
+Equivalently, the inclusion $H\hookrightarrow L$ factors through a
+$K$-embedding $H\hookrightarrow N$.
 \end{lemma}
 \begin{proof}
-First take $f=g\circ p_F$ with $F/K$ finite in $N$ and $g$ a
-nonnegative measurable function on $\Omega_F$. Choose $A,E$ as in
-Lemma~\ref{lem:finite-descent-separable} and set
-$h=g\circ\pi_{E/F}$. The descended base-change lemma, applied at
-every absolute value $y$ of $B$, gives
-\[
- I^+_{N/B}f=(I^+_{E/A}h)\circ p_A.
-\]
-This equality holds for extended nonnegative functions because it
-is a finite weighted sum identity. Pullback compatibility and the
-finite tower identity now give
-\[
- I^+_{B/K}(I^+_{N/B}f)
- =I^+_{A/K}(I^+_{E/A}h)
- =I^+_{E/K}h=I^+_{F/K}g=I^+_{N/K}f.
-\]
-
-To extend the identity, let $\mathcal H$ be the measurable sets whose
-indicators satisfy it pointwise. It contains the measurable finite
-cylinders. All operators send $1$ to $1$, so complements preserve
-the identity by subtraction of finite quantities. Disjoint countable
-unions preserve it by monotone convergence, first on the inner
-fibres and then on the outer fibre. Measurability of the inner
-integrals follows from Proposition~\ref{prop:algebraic-kernel-measurable}
-and its finite version. Thus $\mathcal H$ is a Dynkin system containing
-the cylinder $\pi$-system, and contains all measurable sets.
-Nonnegative simple approximation and the same monotone convergence
-argument prove the formula for $f$.
+Choose a finite $K$-basis $e_1,\ldots,e_n$ of $H$ and put
+$N=B(e_1,\ldots,e_n)$. Each $e_i$ is algebraic over $B$, since it is
+algebraic over $K$. Adjoining finitely many algebraic elements gives
+a finite extension of $B$. The field $N$ contains $K$ and each $e_i$,
+so it contains their $K$-span $H$. The inclusion of $H$ into $N$
+has the required composite with $N\hookrightarrow L$.
 \end{proof}
 
-\begin{theorem}[Nonnegative integration in algebraic towers]\label{thm:algebraic-tower-lintegral}\notready
-\uses{lem:algebraic-tower-finite-upper,lem:algebraic-lintegral-pullback,lem:algebraic-tower-spaces,prop:algebraic-kernel-measurable}
-\source{chen-moriwaki-adelic:page-0212,chen-moriwaki-adelic:page-0214}
-For arbitrary algebraic $K\subseteq B\subseteq N$ and every
-nonnegative measurable $f:\Omega_N\to[0,\infty]$,
+\begin{lemma}[Algebraic tower integration on finite cylinders]
+\label{lem:algebraic-tower-cylinders}
+\leanok
+\source{chen-moriwaki-adelic:page-0213,chen-moriwaki-adelic:page-0214}
+\uses{lem:algebraic-finite-upper-stage,lem:finite-descent-separable,lem:descended-base-change,lem:algebraic-finite-embedding-projection,lem:finite-fibre-tower,lem:finite-fibre-embedding-naturality,lem:algebraic-tower-spaces}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreLIntegral_tower_projFinite}
+Let $K\subseteq B\subseteq L$ be algebraic, let $H/K$ be finite in
+$L$, and let $e:\Omega_{L/B/K}\to\Omega_{L/K}$ be the canonical
+identification. For every function $g:\Omega_H\to[0,\infty]$ and
+every $\omega\in\Omega_K$,
 \[
- I^+_{B/K}(I^+_{N/B}f)=I^+_{N/K}f
+ I^+_{B/K}\bigl(I^+_{L/B}(g\circ p_H\circ e)\bigr)(\omega)
+ = I^+_{H/K}g(\omega).
 \]
-pointwise on $\Omega$.
+No global measurability assumption on $g$ is needed.
+\end{lemma}
+\begin{proof}
+Choose a finite extension $N/B$ inside $L$ containing $H$.
+Apply finite descent to the image of $H$ in $N$. It gives finite
+$A/K$ in $B$ and finite $E/A$ in $N$, containing that image, with
+$B(E)=N$ and $[E:A]_s=[N:B]_s$.
+Write $j:H\hookrightarrow E$ for the resulting $K$-embedding,
+$q:\Omega_{E/K}\to\Omega_{H/K}$ for restriction along $j$, and
+$e_{E/A/K}$ for the finite tower identification. Put
+$h=g\circ q\circ e_{E/A/K}$.
+
+For a place $y\in\Omega_B$, let $x=p_A(y)$. Restriction maps the
+finite fibre of $N/B$ above $y$ to the finite fibre of $E/A$ above
+$x$, and preserves their probability measures by descended base
+change. Restricting an $L$-place first to $N$, then to $E$, then
+along $j$ gives its restriction to $H$. The algebraic finite
+projection formula and this base-change formula therefore give
+\[
+ I^+_{L/B}(g\circ p_H\circ e)(y)=I^+_{E/A}h(p_A(y)).
+\]
+All test functions on the finite fibres are measurable, including
+the restrictions of $g$, so the equality holds for arbitrary $g$.
+
+The finite projection formula for $B/K$, followed by the finite
+tower formula and naturality under the embedding $j$, now yields
+\[
+ \begin{aligned}
+ I^+_{B/K}\bigl(I^+_{L/B}(g\circ p_H\circ e)\bigr)(\omega)
+ &= I^+_{A/K}(I^+_{E/A}h)(\omega)\\
+ &= I^+_{E/K}(g\circ q)(\omega)\\
+ &= I^+_{H/K}g(\omega).
+ \end{aligned}
+\]
+This proves the pointwise identity.
+\end{proof}
+
+\begin{lemma}[Signed integration against a total-space fibre probability]
+\label{lem:algebraic-total-fibre-integrals}
+\leanok
+\source{chen-moriwaki-adelic:page-0211}
+\uses{def:algebraic-total-fibre-probability,lem:algebraic-signed-integrability}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.integral_fibreMeasure,ArakelovGeometry.AdelicStructure.Algebraic.integrable_fibreMeasure_ae}
+Let $f:\Omega_L\to\mathbb R$ be measurable. Then
+\[
+ \int f\,d\mu_{L,\omega}=I_{L/K}f(\omega).
+\]
+If $f$ is $\nu_L$-integrable, it is $\mu_{L,\omega}$-integrable for
+almost every $\omega$. As usual, a nonintegrable real function has
+totalized integral zero in the displayed identity.
+\end{lemma}
+\begin{proof}
+The measurable inclusion $j_{L,\omega}$ defining $\mu_{L,\omega}$
+gives change of variables for $f^+$, $f^-$ and $|f|$. Therefore $f$
+is integrable for the pushforward exactly when $f\circ j_{L,\omega}$
+is integrable on the fibre. In the integrable case subtraction of the
+two nonnegative formulas gives the stated signed identity; otherwise
+both totalized integrals are zero. If $f$ is globally integrable,
+nonnegative disintegration of $|f|$ shows that its integral on almost
+every fibre is finite, giving the last assertion by this equivalence.
+\end{proof}
+
+\begin{lemma}[Signed integration against the iterated fibre probability]
+\label{lem:algebraic-tower-probability-integral}
+\leanok
+\source{chen-moriwaki-adelic:page-0211,chen-moriwaki-adelic:page-0214}
+\uses{def:algebraic-tower-probability,lem:algebraic-total-fibre-integrals}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.integral_towerFibreMeasure}
+In an algebraic tower $K\subseteq B\subseteq N$, let
+$f:\Omega_N\to\mathbb R$ be measurable and $Q_\omega$-integrable.
+Then
+\[
+ \int f\,dQ_\omega
+ =I_{B/K}\bigl(I_{N/B}(f\circ e)\bigr)(\omega).
+\]
+\end{lemma}
+\begin{proof}
+Put $\eta_x=e_*\mu_{N,x}$, so
+$Q_\omega(A)=\int\eta_x(A)\,d\mu_{B,\omega}(x)$.
+The nonnegative integration formula applied to $|f|$ shows that
+$f$ is $\eta_x$-integrable for $\mu_{B,\omega}$-almost every $x$,
+and that these absolute integrals have finite integral. Applying the
+same formula to $f^+$ and $f^-$ and subtracting gives
+\[
+ \int f\,dQ_\omega
+ =\int_{\Omega_B}\left(\int f\,d\eta_x\right)d\mu_{B,\omega}(x).
+\]
+The inner integral is measurable: the nonnegative integrals of
+$f^+$, $f^-$ and $|f|$ are measurable by the kernel formula; on the
+measurable set where the last is finite it is the difference of the
+first two, and elsewhere its totalized value is zero. Change of
+variables along $e$ and Lemma~\ref{lem:algebraic-total-fibre-integrals}
+identify it with $I_{N/B}(f\circ e)(x)$. A second application of
+that lemma to the outer integral yields the asserted identity.
+\end{proof}
+
+\begin{lemma}[Equality of direct and iterated fibre probabilities]\label{lem:algebraic-tower-probability-equality}
+\leanok
+\uses{def:algebraic-tower-probability,lem:algebraic-tower-cylinders,lem:algebraic-total-measure-uniqueness,lem:algebraic-lintegral-pullback}
+\source{chen-moriwaki-adelic:page-0213,chen-moriwaki-adelic:page-0214}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.towerFibreMeasure_eq}
+For every algebraic tower $K\subseteq B\subseteq N$ and
+$\omega\in\Omega_K$, the iterated probability satisfies
+$Q_\omega=\mu_{N,\omega}$ on $\mathcal A_N$.
+\end{lemma}
+\begin{proof}
+For every finite $H/K$ in $N$ and every nonnegative measurable
+$g$ on $\Omega_H$, the integral of $g\circ p_H$ against $Q_\omega$
+is its iterated fibre integral. The cylinder tower identity
+identifies this with $I^+_{H/K}g(\omega)$, which is also its
+integral against $\mu_{N,\omega}$ by the finite marginal formula.
+Taking indicators shows that the two probabilities have equal
+pushforwards to every finite stage. Uniqueness on the projective
+parameter space therefore gives the asserted equality.
+\end{proof}
+
+\begin{theorem}[Nonnegative integration in algebraic towers]\label{thm:algebraic-tower-lintegral}
+\leanok
+\uses{lem:algebraic-tower-probability-equality,def:algebraic-tower-probability,def:algebraic-total-fibre-probability,lem:algebraic-tower-spaces}
+\source{chen-moriwaki-adelic:page-0212,chen-moriwaki-adelic:page-0214}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreLIntegral_tower}
+For arbitrary algebraic $K\subseteq B\subseteq N$ and every
+nonnegative measurable $g$ on the iterated parameter space,
+\[
+ I^+_{B/K}(I^+_{N/B}g)
+ =I^+_{N/K}(g\circ e^{-1})
+\]
+pointwise on $\Omega_K$.
 \end{theorem}
 \begin{proof}
-For a measurable cylinder $f=g\circ p_F$ with $F/K$ finite in $N$,
-put $D=BF$, a finite extension of $B$, and $h=g\circ\pi_{D/F}$.
-The finite-stage marginal formula for the extension $N/B$ gives
-$I^+_{N/B}f=I^+_{D/B}h$. The finite-upper-extension lemma gives
+Put $f=g\circ e^{-1}$, which is measurable because $e$ is a
+measurable equivalence. At each $\omega$, integrating $f$ against
+$Q_\omega$ gives $I^+_{B/K}(I^+_{N/B}g)(\omega)$ by the iterated
+integration formula and $e^{-1}\circ e=\mathrm{id}$. Equality
+$Q_\omega=\mu_{N,\omega}$ identifies this with
+$I^+_{N/K}(g\circ e^{-1})(\omega)$.
+\end{proof}
+
+\begin{corollary}[Tower integration with finite upper extension]\label{lem:algebraic-tower-finite-upper}
+\leanok
+\uses{thm:algebraic-tower-lintegral}
+\source{chen-moriwaki-adelic:page-0213,chen-moriwaki-adelic:page-0214}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreLIntegral_tower}
+If $B/K$ is algebraic and $N/B$ is finite, the same pointwise
+nonnegative tower identity holds. In fact finiteness of $N/B$
+may be replaced by algebraicity.
+\end{corollary}
+\begin{proof}
+A finite extension is algebraic, so the preceding theorem applies
+with its canonical identification of parameter spaces.
+\end{proof}
+
+\begin{lemma}[The equivalence of extended adelic structures]\label{lem:algebraic-tower-equivalence}
+\leanok
+\uses{thm:algebraic-tower-lintegral,lem:algebraic-tower-probability-equality,prop:algebraic-lintegral,lem:algebraic-tower-spaces,def:adelic-equivalence}
+\source{chen-moriwaki-adelic:page-0212,chen-moriwaki-adelic:page-0214}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.map_measure_towerMeasurableEquiv,ArakelovGeometry.AdelicStructure.Algebraic.towerEquiv}
+The canonical parameter identification $e$ pushes the iterated
+extension measure to the direct extension measure. Together with
+its preservation of absolute values, it is an equivalence
+$(S\otimes_KB)\otimes_BN\simeq S\otimes_KN$.
+\end{lemma}
+\begin{proof}
+For a nonnegative measurable $f$ on $\Omega_N$, successive
+disintegration writes its integral against the pushed-forward
+iterated measure as
 \[
- I^+_{B/K}(I^+_{D/B}h)=I^+_{D/K}h=I^+_{F/K}g=I^+_{N/K}f.
+ \int_{\Omega_K} I^+_{B/K}
+       \bigl(I^+_{N/B}(f\circ e)\bigr)\,d\nu_K.
 \]
-Here the middle equality is the finite-stage marginal formula for
-$D/K$. For all measurable functions, repeat the indicator argument:
-the sets satisfying the identity form a Dynkin system, since all
-fibre measures are probabilities and disjoint unions commute with
-both integrals by monotone convergence. It contains the cylinder
-$\pi$-system and hence all of $\mathcal A_N$. Increasing simple
-approximation then gives the displayed formula.
+The tower identity makes the integrand $I^+_{N/K}f$.
+Disintegration for $N/K$ therefore gives $\int f\,d\nu_N$.
+Indicators show equality of the measures. The parameter
+identification already preserves absolute values, giving the
+claimed equivalence.
+\end{proof}
+
+\begin{lemma}[Signed integration in an algebraic tower]\label{lem:algebraic-tower-signed}
+\leanok
+\uses{lem:algebraic-tower-equivalence,lem:algebraic-tower-probability-equality,lem:algebraic-total-fibre-integrals,lem:algebraic-tower-probability-integral,lem:algebraic-null-disintegration,lem:algebraic-fibre-integral-ae}
+\source{chen-moriwaki-adelic:page-0211,chen-moriwaki-adelic:page-0214}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_tower_of_measurable,ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_tower}
+For every integrable real function $g$ on the iterated parameter
+space,
+\[
+ I_{B/K}(I_{N/B}g)=I_{N/K}(g\circ e^{-1})
+ \quad\text{for }\nu_K\text{-almost every base point}.
+\]
+\end{lemma}
+\begin{proof}
+First suppose $g$ is measurable. The measure-preserving inverse of
+$e$ makes $f=g\circ e^{-1}$ measurable and integrable on $\Omega_N$.
+It is integrable for $\mu_{N,\omega}$ for almost every $\omega$.
+At each such point, $Q_\omega=\mu_{N,\omega}$ makes $f$
+$Q_\omega$-integrable. Signed integration against this iterated
+probability identifies $\int f\,dQ_\omega$ with
+$I_{B/K}(I_{N/B}g)(\omega)$, while integration against
+$\mu_{N,\omega}$ identifies the same integral with
+$I_{N/K}(g\circ e^{-1})(\omega)$.
+
+For general integrable $g$, choose a measurable representative $g'$
+equal to it almost everywhere. Almost everywhere congruence of fibre
+integration, first for $N/B$ and then for $B/K$, makes the two
+iterated integrals agree almost everywhere on $\Omega_K$.
+Measure preservation transports $g=g'$ almost everywhere to the
+direct space, and fibre congruence gives agreement of the direct
+integrals almost everywhere. Applying the measurable case to $g'$
+and combining these three equalities proves the assertion.
 \end{proof}
 
 \begin{theorem}[Compatibility of algebraic extensions]\label{thm:algebraic-tower}
+\leanok
 \lean{ArakelovGeometry.exists_equiv_algebraicExtension_algebraicExtension}
-\uses{thm:algebraic-tower-lintegral,lem:algebraic-tower-spaces,prop:algebraic-lintegral,prop:algebraic-signed-disintegration,lem:algebraic-null-disintegration}
+\uses{thm:algebraic-tower-lintegral,lem:algebraic-tower-spaces,lem:algebraic-tower-equivalence,lem:algebraic-tower-signed,prop:algebraic-lintegral,prop:algebraic-signed-disintegration,lem:algebraic-null-disintegration}
 \source{chen-moriwaki-adelic:page-0212,chen-moriwaki-adelic:page-0214}
 The measurable equivalence of Lemma~\ref{lem:algebraic-tower-spaces}
 preserves the measures, and gives
