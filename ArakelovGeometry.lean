@@ -5,6 +5,7 @@ Authors: Yijun Yuan
 -/
 import ArakelovGeometry.ExternalResults.AbsoluteValue
 import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
+import ArakelovGeometry.ExternalResults.AbsoluteValueRootBounds
 import ArakelovGeometry.ExternalResults.AbsoluteValueLocal
 import ArakelovGeometry.ExternalResults.Place
 import ArakelovGeometry.ExternalResults.Measure
