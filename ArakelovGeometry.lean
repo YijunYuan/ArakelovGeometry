@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
 import ArakelovGeometry.ExternalResults.AbsoluteValue
+import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
 import ArakelovGeometry.ExternalResults.Place
 import ArakelovGeometry.ExternalResults.Measure
 import ArakelovGeometry.ExternalResults.Ostrowski
