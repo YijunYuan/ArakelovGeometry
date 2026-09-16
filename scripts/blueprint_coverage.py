@@ -226,7 +226,11 @@ def main():
         "ArakelovGeometry.AdelicCurve.Extension",
         "ArakelovGeometry.AdelicCurve.FiniteTower",
         "ArakelovGeometry.AdelicCurve.AlgebraicTower",
-        "ArakelovGeometry.AdelicCurve.AlgebraicTowerSupport",
+        "ArakelovGeometry.AdelicCurve.AlgebraicTowerBasic",
+        "ArakelovGeometry.AdelicCurve.AlgebraicTowerCylinder",
+        "ArakelovGeometry.ExternalResults.AlgebraicTowerSupport",
+        "ArakelovGeometry.AdelicCurve.AlgebraicProbability",
+        "ArakelovGeometry.AdelicCurve.AlgebraicFiniteProjection",
         "ArakelovGeometry.AdelicCurve.AlgebraicBaseChange",
     }
     target = [r for r in rows if r["module"] in target_modules]

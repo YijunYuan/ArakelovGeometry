@@ -367,6 +367,65 @@ measurable and bounded, and hence integrable for a probability
 measure. Integration against the finite Dirac sum gives both formulas.
 \end{proof}
 
+\begin{lemma}[Finite fibres indexed by absolute values]
+\label{lem:finite-absolute-fibre-sums}
+\leanok
+\source{chen-moriwaki-adelic:page-0205,chen-moriwaki-adelic:page-0206}
+\uses{lem:finite-parameter-identification,lem:finite-separable-weight,lem:finite-fibre-sum}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreEquivAbsoluteValues,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.lintegral_fibreProbabilityMeasure_eq_sum_localFinSepDegree}
+For $\omega\in\Omega_K$, the map sending a finite parameter to its
+extended absolute value gives a bijection
+\[
+ q:X_{L,\omega}\ \simeq\ \{w:w|_K=\phi_K(\omega)\}.
+\]
+For every $f:X_{L,\omega}\to[0,\infty]$,
+\[
+ \int f\,dP_{L,\omega}
+ =\frac1{[L:K]_s}\sum_{w|_K=\phi_K(\omega)}
+     [L_w:K_{\phi_K(\omega)}]_s\,f(q^{-1}(w)).
+\]
+\end{lemma}
+\begin{proof}
+The fibre-product identification, restricted to the fixed base
+coordinate $\omega$, gives $q$ and its inverse. Reindex the finite
+weighted-sum formula by this bijection and write each weight as its
+ratio of local and global separable degrees. Distributivity of finite
+nonnegative sums allows the common reciprocal denominator to be
+factored out.
+\end{proof}
+
+
+\begin{lemma}[Naturality of finite fibre probabilities]
+\label{lem:finite-fibre-embedding-naturality}
+\leanok
+\source{chen-moriwaki-adelic:page-0206,chen-moriwaki-adelic:page-0207}
+\uses{lem:finite-absolute-fibre-sums,lem:weighted-separable-embedding-pullback}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.homFiber,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.homFiber_ϕ,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.map_fibreProbabilityMeasure_homFiber,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.lintegral_homFiber}
+Let $E/K$ and $N/K$ be finite, let $i:E\to N$ be a $K$-embedding,
+and fix $\omega\in\Omega_K$. Pullback of absolute values defines
+\[
+ r_i:X_{N,\omega}\longrightarrow X_{E,\omega},
+ \qquad |\cdot|_{r_i(w)}=|\cdot|_w\circ i.
+\]
+Then $(r_i)_*P_{N,\omega}=P_{E,\omega}$. Consequently, for every
+$f:X_{E,\omega}\to[0,\infty]$,
+\[
+ \int f(r_i(w))\,dP_{N,\omega}(w)=\int f(z)\,dP_{E,\omega}(z).
+\]
+\end{lemma}
+\begin{proof}
+Since $i$ is a $K$-embedding, pullback preserves the required restriction
+to $\phi_K(\omega)$. All functions on the two finite fibres are
+measurable. Express their nonnegative integrals as weighted sums over
+absolute values. The weighted pullback identity gives equality after
+multiplying by the positive finite integers $[E:K]_s$ and $[N:K]_s$;
+dividing by their product gives equality of the normalized sums.
+This division remains valid for infinite values because the two
+denominators are nonzero and finite. Indicator functions prove the
+pushforward identity, and the nonnegative change-of-variables formula
+then proves the displayed integral identity.
+\end{proof}
+
 \begin{lemma}[The sigma algebra using all elements of the extension]
 \label{lem:finite-measurable-space}
 \leanok
@@ -508,12 +567,32 @@ $L_w/F_v$ finite. Apply multiplicativity of separable degree to this
 tower.
 \end{proof}
 
+\begin{lemma}[Restriction along a field tower]
+\label{lem:tower-scalar-restriction}
+\leanok
+\source{chen-moriwaki-adelic:page-0206,chen-moriwaki-adelic:page-0207}
+\uses{def:extension-parameters,lem:extension-coordinates,def:absolute-value-restriction}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.restrictScalars,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_restrictScalars}
+Let $K\to F\to L$ be field embeddings whose composite is the given
+embedding $K\to L$. Restriction defines a measurable map from the
+full parameter space of extending absolute values on $L$ to that on
+$F$, by $(\omega,w)\mapsto(\omega,w|_F)$.
+\end{lemma}
+\begin{proof}
+Restriction along the composite agrees with successive restriction,
+so $w|_F$ still restricts to $\phi_\omega$ on $K$. The base
+coordinate is unchanged. Evaluating $w|_F$ at $a\in F$ is evaluating
+$w$ at the image of $a$ in $L$. Since the base coordinate and all
+these evaluations are measurable and generate the target sigma
+algebra, the restriction map is measurable.
+\end{proof}
+
 \begin{lemma}[Canonical measurable identification in a finite tower]
 \label{lem:finite-tower-parameters}
 \leanok
 \source{chen-moriwaki-adelic:page-0206,chen-moriwaki-adelic:page-0207}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fullTowerEquiv,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.towerMeasurableEquiv,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.towerMeasurableEquiv_proj,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.towerMeasurableEquiv_ϕ}
-\uses{def:finite-extension,lem:finite-parameter-identification,lem:measurable-restriction,lem:finite-measurable-space}
+\uses{def:finite-extension,lem:finite-parameter-identification,lem:tower-scalar-restriction,lem:finite-measurable-space}
 For a finite tower $K\subseteq F\subseteq L$, identify the finite
 parameter spaces with pairs consisting of a base parameter and an
 extending absolute value. Then
@@ -525,8 +604,12 @@ the direct one. It preserves the absolute value on $L$ and the
 projection to $\Omega_K$.
 \end{lemma}
 \begin{proof}
-Restriction determines $v=w|_F$, so the inverse sends
-$(\omega,w)$ to $((\omega,w|_F),w)$. The base coordinate of $e_0$
+Restriction determines the intermediate absolute value $v=w|_F$.
+Thus the inverse map is
+\[
+ (\omega,w)\longmapsto((\omega,w|_F),w).
+\]
+The base coordinate of $e_0$
 is a composition of the two base projections, and its evaluations
 on $L$ are the original evaluations. They are all measurable.
 For the inverse, the intermediate parameter is obtained by

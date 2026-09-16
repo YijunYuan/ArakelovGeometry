@@ -509,17 +509,29 @@ Lemma~\ref{lem:cylinder-outer-measure}, proving both assertions.
 \end{proof}
 
 \begin{lemma}[Uniqueness from finite marginals]\label{lem:algebraic-fibre-uniqueness}
-\uses{prop:algebraic-fibre-marginals,lem:cylinder-premeasure,def:projective-measurable}\notready
+\leanok
+\uses{prop:algebraic-fibre-marginals,lem:cylinder-premeasure,def:projective-measurable}
 \source{chen-moriwaki-adelic:page-0209}
-The finite marginal probabilities uniquely determine $P_{L,\omega}$ on
-$\mathcal A_{L,\omega}$.
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreMeasure_ext,ArakelovGeometry.AdelicStructure.Algebraic.eq_fibreProbabilityMeasure_of_map_projFiniteFiber}
+Let $\mu,\eta$ be measures on $(X_\omega,\mathcal A_{L,\omega})$,
+with $\mu$ finite. If $(p_{F,\omega})_*\mu=(p_{F,\omega})_*\eta$
+for every finite stage $F$, then $\mu=\eta$.
+In particular any measure whose finite marginals are $P_{F,\omega}$
+equals $P_{L,\omega}$; its total mass is automatically one.
 \end{lemma}
 \begin{proof}
-Two such probabilities agree on the cylinder algebra. The sets on
-which they agree form a Dynkin system: complements follow by
-subtracting from the common mass one, and disjoint countable unions
-follow by countable additivity. The $\pi$-$\lambda$ theorem therefore
-makes them agree on the generated $\sigma$-algebra.
+For a cylinder $A=p_{F,\omega}^{-1}(B)$, measurability of the finite-stage
+projection gives
+$\mu(A)=((p_{F,\omega})_*\mu)(B)=((p_{F,\omega})_*\eta)(B)=\eta(A)$.
+The total space is a cylinder, so the measures have the same finite
+total mass. The sets on which they agree form a Dynkin system:
+complements follow by subtracting from that common finite mass, and
+disjoint countable unions follow by countable additivity. Cylinders
+form an algebra and generate $\mathcal A_{L,\omega}$. The
+$\pi$-$\lambda$ theorem therefore proves $\mu=\eta$.
+Apply this finite-measure uniqueness argument with one measure equal
+to $P_{L,\omega}$ and use its prescribed marginals. Equality also gives
+total mass one for the other measure.
 \end{proof}
 
 \begin{lemma}[Integrals of fibre cylinders]\label{lem:algebraic-cylinder-integral}
@@ -904,6 +916,42 @@ The last equality is finite disintegration of $\mathbf1_B$.
 Measurability of $p_F$ identifies the left side with its pushforward.
 \end{proof}
 
+\begin{lemma}[Finite projections along field embeddings]
+\label{lem:algebraic-finite-embedding-projection}
+\leanok
+\source{chen-moriwaki-adelic:page-0209,chen-moriwaki-adelic:page-0211}
+\uses{prop:algebraic-fibre-marginals,lem:finite-fibre-embedding-naturality,lem:projective-evaluations,prop:projective-measurable-equality,def:algebraic-measure,prop:algebraic-lintegral,thm:finite-lintegral}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.projFiniteAlong,ArakelovGeometry.AdelicStructure.Algebraic.projFiniteAlong_base,ArakelovGeometry.AdelicStructure.Algebraic.projFiniteAlong_ϕ,ArakelovGeometry.AdelicStructure.Algebraic.measurable_projFiniteAlong,ArakelovGeometry.AdelicStructure.Algebraic.projFiniteFiberAlong,ArakelovGeometry.AdelicStructure.Algebraic.projFiniteFiberAlong_eq_homFiber,ArakelovGeometry.AdelicStructure.Algebraic.measurable_projFiniteFiberAlong,ArakelovGeometry.AdelicStructure.Algebraic.map_fibreProbabilityMeasure_projFiniteFiberAlong,ArakelovGeometry.AdelicStructure.Algebraic.lintegral_projFiniteFiberAlong,ArakelovGeometry.AdelicStructure.Algebraic.fibreLIntegral_comp_projFiniteAlong,ArakelovGeometry.AdelicStructure.Algebraic.map_measure_projFiniteAlong}
+Let $L/K$ be algebraic, let $E/K$ be finite, and let
+$i:E\hookrightarrow L$ be a $K$-embedding. Pullback of absolute values
+defines a measurable map $p_i:\Omega_L\to\Omega_E$, preserving the
+base point, with $|a|_{p_i(w)}=|i(a)|_w$. Its restriction $p_{i,\omega}$
+to each fibre is measurable and satisfies
+\[
+ (p_{i,\omega})_*P_{L,\omega}=P_{E,\omega},\qquad
+ (p_i)_*\nu_L=\nu_E.
+\]
+For every function $g:\Omega_E\to[0,\infty]$, without a measurability
+requirement away from a fibre,
+$I^+_{L/K}(g\circ p_i)=I^+_{E/K}g$.
+\end{lemma}
+\begin{proof}
+Put $F=i(E)$. This is a finite intermediate field of $L/K$, and $i$
+identifies $E$ with $F$ over $K$. The map $p_i$ is the finite-stage
+projection to $F$ followed by pullback along this isomorphism.
+Equivalently, it is characterized by its base point and the displayed
+evaluation identity. These coordinates are measurable, proving the
+global measurability assertion. On each fibre it factors as the
+measurable projection to the finite $F$-fibre followed by a map between
+finite discrete fibres. The prescribed marginal at $F$ and
+Lemma~\ref{lem:finite-fibre-embedding-naturality} give its probability
+pushforward. Every function on the finite target fibre is measurable,
+so change of variables proves the nonnegative fibre-integral identity.
+Finally, apply that identity to indicators of measurable subsets of
+$\Omega_E$ and integrate over the base. The defining disintegration
+formulas for $\nu_L$ and $\nu_E$ give the global pushforward equality.
+\end{proof}
+
 \begin{lemma}[Base pushforward]\label{lem:algebraic-base-pushforward}
 \leanok
 \uses{def:algebraic-measure,prop:algebraic-fibre-marginals,lem:projective-evaluations}
@@ -994,84 +1042,184 @@ Thus every nonzero element satisfies the product formula on $L$.
 
 \subsection{Compatibility in algebraic towers}
 
-\begin{lemma}[Finite descent with the separable part]\label{lem:finite-descent-separable}\notready
+\begin{lemma}[Descent of a finite basis]\label{lem:finite-basis-descent}
+\leanok
+\source{chen-moriwaki-adelic:page-0213,chen-moriwaki-adelic:page-0214}
 \uses{lem:finite-stage-exhaustion}
-Let $B/K$ be algebraic, let $N/B$ be finite, and let $F/K$ be a
-finite subextension of $N/K$. There are finite subextensions
-$A/K$ in $B$ and $E/K$ in $N$, with $A,F\subseteq E$, such that,
-writing $C$ for the separable closure of $B$ in $N$ and $D$ for the
-separable closure of $A$ in $E$, multiplication gives isomorphisms
-\[
- E\otimes_A B\simeq N,\qquad D\otimes_A B\simeq C.
-\]
-In particular $[E:A]=[N:B]$ and $[E:A]_s=[N:B]_s$.
+\lean{IntermediateField.exists_toSubmodule_eq_span_of_mul_mem,IntermediateField.exists_finite_basis_descent,IntermediateField.finiteDimensional_finrank_adjoin_of_basis_span}
+Let $B/K$ be algebraic, let $N/B$ be finite, and let
+$e_1,\ldots,e_n$ be a $B$-basis of $N$. Given finite subsets
+$U\subseteq N$ and $T\subseteq B$, there is a finite subextension
+$A/K$ in $B$ containing $T$ such that the $A$-span $E$ of the $e_i$
+is a subfield of $N$ containing $U$. It satisfies
+$[E:A]=[N:B]$ and $B(E)=N$.
+More generally, the finite-dimensional span of a finite family over a
+field $A$ is an intermediate field whenever it contains $1$ and the
+products of all pairs from that family.
 \end{lemma}
 \begin{proof}
-Choose a $B$-basis $c_1=1,c_2,\ldots,c_s$ of $C$ and extend it to
-a $B$-basis $e_1,\ldots,e_n$ of $N$, with $e_i=c_i$ for $i\le s$.
-Choose finitely many field generators of $F/K$. Record their
-coordinates in this basis and every multiplication coefficient in
-$e_i e_j=\sum_k b_{ijk}e_k$. For each $c_i$, also record the coefficients
-of its separable minimal polynomial over $B$.
-If the characteristic is $p>0$, choose a common power $q=p^r$ such
-that every $e_i^q$ lies in $C$, and record its coordinates in the
-$c_j$. Such $q$ exists because $N/C$ is finite purely inseparable.
-In characteristic zero one has $C=N$, and take $q=1$.
-Let $A$ be the field generated over $K$ by all these finitely many
-coefficients. It is a finite subextension of $B/K$.
-
-The $A$-span $E$ of the $e_i$ contains $1$, is closed under
-multiplication by the recorded coefficients, and contains the chosen
-generators of $F$. As a finite-dimensional subalgebra of the field
-$N$, it is a field: multiplication by any nonzero element is injective
-and therefore surjective. The $A$-span $D_0$ of the $c_i$ is similarly
-a field, because products of elements of $C$ have no coordinates
-outside this part of the basis. Every $c_i$ satisfies its recorded
-separable polynomial over $A$, so $D_0/A$ is separable.
-The recorded $q$-power identities show $e_i^q\in D_0$. Thus
-$E/D_0$ is purely inseparable: for an $A$-linear combination of the
-$e_i$, its $q$-th power lies in $D_0$ by the Frobenius identity.
-Consequently $D_0$ is exactly the separable closure $D$ of $A$ in $E$.
-Indeed an element of $E$ separable over $A$ is separable over $D_0$,
-whereas it is purely inseparable over $D_0$, and must lie in $D_0$.
-
-The $e_i$ are still $A$-linearly independent, and are a $B$-basis
-of $N$, so the multiplication map $E\otimes_A B\to N$ takes a
-basis to a basis. It is an algebra isomorphism. The same argument
-with the $c_i$ gives $D\otimes_A B\simeq C$ and both degree identities.
+Adjoin to $K$ the set $T$, the coordinates of $1$, the coordinates of
+every product $e_i e_j$, and the coordinates of every element of $U$.
+These are finitely many elements of the algebraic extension $B/K$, so
+they generate a finite extension $A/K$. Their defining coordinate
+identities put $1$, all $e_i e_j$, and $U$ in the $A$-span $E$.
+Bilinearity makes this span a subalgebra. In a finite-dimensional
+subalgebra of a field, multiplication by a nonzero element is an
+injective linear endomorphism and hence surjective. It therefore has
+an inverse in the subalgebra, proving the general assertion as well.
+The $e_i$ are $A$-linearly independent because they are
+$B$-linearly independent; thus they are an $A$-basis of $E$ and
+$[E:A]=n$. Their $B$-span is $N$, so $B(E)=N$.
 \end{proof}
 
-\begin{lemma}[Fibre probabilities under a descended base change]\label{lem:descended-base-change}\notready
-\uses{lem:finite-descent-separable,lem:local-factorization,lem:completion-separable-closure,lem:finite-separable-weight}
-In the situation of Lemma~\ref{lem:finite-descent-separable}, fix an
-absolute value $y$ of $B$, and put $x=y|_A$. Restriction from the
-absolute values of $N$ above $y$ to those of $E$ above $x$ sends
-$P_{N,y}$ to $P_{E,x}$.
+\begin{lemma}[A separable generator and purely inseparable powers]
+\label{lem:separable-generator-powers}
+\leanok
+\source{chen-moriwaki-adelic:page-0213}
+\lean{Field.exists_separable_generator_pow_aeval}
+Let $N/B$ be finite and let $q$ be the exponential characteristic of
+$B$. There is a separable element $c\in N$ whose minimal polynomial
+has degree $[N:B]_s$, and every $x\in N$ satisfies
+$x^{q^r}=P(c)$ for some $r\geq0$ and some $P\in B[T]$.
 \end{lemma}
 \begin{proof}
-Write $B_y$ and $A_x$ for the completions. The embedding $A\to B$
-is isometric and extends to $A_x\to B_y$. For the separable part
-$D/A$, local factorization gives
+Let $C$ be the separable closure of $B$ in $N$. The primitive element
+theorem gives $C=B(c)$ for a separable element $c$. Its minimal
+polynomial has degree $[C:B]=[N:B]_s$. Since $N/C$ is purely
+inseparable, every $x\in N$ has some $q$-power in $C$. Every element
+of $C$ is a polynomial in its primitive element $c$, giving the
+asserted expression. In characteristic zero, $q=1$ and $C=N$.
+\end{proof}
+
+\begin{lemma}[Finite descent with the separable part]\label{lem:finite-descent-separable}
+\leanok
+\source{chen-moriwaki-adelic:page-0213,chen-moriwaki-adelic:page-0214}
+\uses{lem:finite-basis-descent,lem:separable-generator-powers}
+\lean{IntermediateField.exists_finite_descent_of_finite_subset,IntermediateField.exists_finite_descent}
+Let $B/K$ be algebraic, let $N/B$ be finite, and let $F/K$ be a
+finite subextension of $N/K$. There are finite subextensions
+$A/K$ in $B$ and $E/K$ in $N$, with $A,F\subseteq E$, such that
 \[
- D\otimes_A A_x=\prod_i D_i,
+ B(E)=N,\qquad [E:A]=[N:B],\qquad [E:A]_s=[N:B]_s.
 \]
-where $D_i$ is the completion at one extension of $x$ and has
-dimension $d_i=[D_i:A_x]$. Base change to $B_y$ and
-$C=D\otimes_A B$ give
+More generally, any prescribed finite subset of $N$ can be required
+to lie in $E$.
+\end{lemma}
+\begin{proof}
+Choose a $B$-basis $e_1,\ldots,e_n$ of $N$ and choose $c$ as in
+Lemma~\ref{lem:separable-generator-powers}. Write
+$e_i^{q^{r_i}}=P_i(c)$ with $P_i\in B[T]$.
+Apply Lemma~\ref{lem:finite-basis-descent}, requiring the prescribed
+finite subset and $c$ to belong to $E$, and requiring $A$ to contain
+all coefficients of the minimal polynomial of $c$ over $B$ and of
+the finitely many $P_i$. This gives the total-degree identity and
+$B(E)=N$.
+
+The minimal polynomial of $c$ over $A$ maps to its minimal polynomial
+over $B$: the latter has coefficients in $A$ and remains irreducible
+there, since a factorization over $A$ would give one over $B$.
+Consequently $c$ is separable over $A$ and
+$[A(c):A]=[N:B]_s$. Each identity $e_i^{q^{r_i}}=P_i(c)$ now has
+coefficients in $A$, so every $e_i$ is purely inseparable over
+$D=A(c)$. The elements of $E$ purely inseparable over $D$ form a
+subfield containing $A$ and every $e_i$; hence they contain the
+$A$-span $E$. Thus $E/D$ is purely inseparable, and the tower law
+for separable degrees gives $[E:A]_s=[D:A]=[N:B]_s$.
+To obtain $F\subseteq E$, prescribe a finite $K$-basis of $F$.
+Since $K\subseteq A$, its $K$-span also lies in $E$.
+
+These constructions also explain the scalar extensions: multiplication
+maps $E\otimes_A B\to N$ isomorphically because it carries the
+basis $e_i\otimes1$ to the $B$-basis $e_i$. Writing $C=B(c)$, the
+same argument with the power basis of $c$ gives
+$D\otimes_A B\simeq C$. Here $D$ and $C$ are the respective
+separable closures, because the remaining extensions are purely
+inseparable.
+\end{proof}
+
+\begin{lemma}[Restriction of embeddings after finite descent]
+\label{lem:descended-embedding-bijection}
+\leanok
+\source{chen-moriwaki-adelic:page-0213,chen-moriwaki-adelic:page-0214}
+\lean{IntermediateField.bijective_restrict_embeddings_of_adjoin_eq_top}
+Let $A\subseteq B\subseteq N$ be fields, let $E$ be a subfield of $N$
+containing $A$, and suppose that $E/A$ and $N/B$ are finite,
+$B(E)=N$, and $[E:A]_s=[N:B]_s$. For every algebraically closed
+extension $C$ of $B$, restriction is a bijection
 \[
- C\otimes_B B_y=\prod_i(D_i\otimes_{A_x}B_y)
-                 =\prod_{i,j} C_{ij}.
+ \operatorname{Hom}_B(N,C)\ \longrightarrow\ \operatorname{Hom}_A(E,C).
 \]
-Each factor is finite separable, so it is a product of fields; if
-$d_{ij}=[C_{ij}:B_y]$, preservation of vector-space dimension under
-scalar extension gives $\sum_j d_{ij}=d_i$.
-The fibre points indexed by $(i,j)$ restrict to the point indexed by
-$i$. Since $[C:B]=[D:A]=s$, their probabilities sum to
-$\sum_j d_{ij}/s=d_i/s$. The purely inseparable extensions
-$E/D$ and $N/C$ identify the corresponding absolute-value fibres
-bijectively, and the separable-degree weight formula assigns the
-same probabilities under these identifications. This proves the
-claimed pushforward equality at every point of the finite target fibre.
+\end{lemma}
+\begin{proof}
+If two $B$-embeddings agree on $E$, then they agree on the field
+generated by $B$ and $E$, which is $N$. Thus restriction is injective.
+The two sets are finite, and their cardinalities are $[N:B]_s$ and
+$[E:A]_s$, respectively. The assumed equality of these degrees makes
+the injection a bijection.
+\end{proof}
+
+\begin{lemma}[Weighted place sums after finite descent]
+\label{lem:descended-weighted-sums}
+\leanok
+\source{chen-moriwaki-adelic:page-0213,chen-moriwaki-adelic:page-0214}
+\uses{lem:descended-embedding-bijection,lem:weighted-separable-embedding-sums,lem:algebraic-absolute-value-extension}
+\lean{AbsoluteValue.sum_localFinSepDegree_nsmul_baseChange}
+Under the hypotheses of Lemma~\ref{lem:descended-embedding-bijection},
+fix an absolute value $y$ on $B$ and put $x=y|_A$. For an additive
+commutative monoid $M$ and a function $\Phi$ from the absolute values
+of $E$ to $M$,
+\[
+ \sum_{w|_B=y}[N_w:B_y]_s\,\Phi(w|_E)
+ =
+ \sum_{v|_A=x}[E_v:A_x]_s\,\Phi(v).
+\]
+\end{lemma}
+\begin{proof}
+Extend $y$ to an absolute value $u$ on an algebraic closure $C$ of $B$.
+The weighted embedding formula changes the left sum into the sum of
+$\Phi(u\circ\sigma|_E)$ over $\operatorname{Hom}_B(N,C)$ and the right
+sum into the sum of $\Phi(u\circ\tau)$ over $\operatorname{Hom}_A(E,C)$.
+The restriction bijection identifies these sums term by term.
+\end{proof}
+
+\begin{lemma}[Fibre probabilities under a descended base change]
+\label{lem:descended-base-change}
+\leanok
+\source{chen-moriwaki-adelic:page-0213,chen-moriwaki-adelic:page-0214}
+\uses{lem:descended-weighted-sums,lem:finite-absolute-fibre-sums}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.baseChangeFiber,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.baseChangeFiber_ϕ,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.map_fibreProbabilityMeasure_baseChangeFiber,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.lintegral_baseChangeFiber}
+Let $A\subseteq B\subseteq N$ and $E\subseteq N$ satisfy the hypotheses
+of Lemma~\ref{lem:descended-embedding-bijection}. Let $S$ and $T$ be
+adelic structures on $A$ and $B$, and let $\alpha\in\Omega_S$ and
+$\beta\in\Omega_T$ satisfy $\phi_T(\beta)|_A=\phi_S(\alpha)$.
+Restriction of absolute values defines
+\[
+ r:X_{N,\beta}\longrightarrow X_{E,\alpha}.
+\]
+It satisfies $|\cdot|_{r(w)}=|\cdot|_w|_E$ and
+\[
+ r_*P_{N,\beta}=P_{E,\alpha}.
+\]
+Consequently, for every $f:X_{E,\alpha}\to[0,\infty]$,
+\[
+ \int f(r(w))\,dP_{N,\beta}(w)=\int f(v)\,dP_{E,\alpha}(v).
+\]
+In particular this applies to the fields supplied by finite descent.
+\end{lemma}
+\begin{proof}
+The matching restrictions to $A$ make $r$ well-defined. Each fibre is
+a finite measurable space with all subsets measurable, so every map
+between the two fibres is measurable. Its weights are the local
+separable degrees divided by the global separable degrees.
+
+Apply Lemma~\ref{lem:descended-weighted-sums} to an arbitrary
+nonnegative function of the restricting absolute value, assigning it
+value zero away from the extensions of $\phi_S(\alpha)$.
+Divide by the common positive denominator $[E:A]_s=[N:B]_s$.
+The finite weighted-sum formulas then identify its two integrals.
+Taking indicator functions gives equality of the two probability
+measures. The nonnegative change-of-variables formula gives the last
+identity for every $f$; measurability is automatic on the finite fibre.
 \end{proof}
 
 \begin{remark}[The role of finite descent]\label{rem:algebraic-tower-source-repair}
@@ -1089,7 +1237,31 @@ degrees after enlarging the finite base, and also supplies the
 equality of separable degrees needed for the probabilities.
 \end{remark}
 
-\begin{lemma}[Parameter and measurable-space compatibility]\label{lem:algebraic-tower-spaces}\notready
+\begin{lemma}[Uniqueness on the projective parameter space]\label{lem:algebraic-total-measure-uniqueness}
+\leanok
+\uses{def:projective-measurable,def:finite-stages,lem:finite-stage-exhaustion,lem:projective-evaluations,lem:finite-stage-transitions-measurable}
+\source{chen-moriwaki-adelic:page-0209,chen-moriwaki-adelic:page-0210}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.totalMeasure_ext}
+Let $\mu,\nu$ be measures on $(\Omega_L,\mathcal A_L)$ with $\mu$
+finite. If $(\pi_{L/F})_*\mu=(\pi_{L/F})_*\nu$ for every finite
+intermediate field $F/K$, then $\mu=\nu$.
+\end{lemma}
+\begin{proof}
+Let $\mathcal C$ be the union of the pullback $\sigma$-algebras
+$\pi_{L/F}^{-1}(\mathcal A_F)$. It contains the whole space and
+generates $\mathcal A_L$. Two members represented at stages $F,G$
+have their intersection represented at the finite compositum $FG$,
+so $\mathcal C$ is a $\pi$-system. The pushforward hypothesis gives
+equality of the two measures on $\mathcal C$, including equality of
+their total masses. Both measures are therefore finite. Their
+agreement sets form a Dynkin system by subtraction for complements
+and countable additivity for disjoint unions. The $\pi$-$\lambda$
+theorem gives agreement on all of $\mathcal A_L$.
+\end{proof}
+
+\begin{lemma}[Parameter and measurable-space compatibility]\label{lem:algebraic-tower-spaces}
+\leanok
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.towerMeasurableEquiv,ArakelovGeometry.AdelicStructure.Algebraic.towerMeasurableEquiv_proj,ArakelovGeometry.AdelicStructure.Algebraic.towerMeasurableEquiv_ϕ,ArakelovGeometry.AdelicStructure.Algebraic.towerMeasurableEquiv_symm_proj}
 \uses{def:algebraic-extension,prop:projective-measurable-equality,lem:restriction-transitive}
 \source{chen-moriwaki-adelic:page-0212,chen-moriwaki-adelic:page-0214}
 For $K\subseteq B\subseteq N$ algebraic, the iterated parameter
@@ -1110,6 +1282,57 @@ at elements of $B$ are direct generators. Conversely, composing this
 projection with $\pi_{B/K}$ gives the direct base projection.
 Thus each generating family is measurable for the other structure.
 The formulas for absolute values and projections follow from the maps.
+\end{proof}
+
+\begin{definition}[Fibre probabilities on the parameter space]\label{def:algebraic-total-fibre-probability}
+\leanok
+\uses{def:algebraic-extension,def:algebraic-fibre-probability,lem:algebraic-fibre-measurable,lem:algebraic-measurable-probability-family,def:algebraic-fibre-integral}
+\source{chen-moriwaki-adelic:page-0210}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.fibreMeasure,ArakelovGeometry.AdelicStructure.Algebraic.isProbabilityMeasure_fibreMeasure,ArakelovGeometry.AdelicStructure.Algebraic.measurable_fibreMeasure,ArakelovGeometry.AdelicStructure.Algebraic.lintegral_fibreMeasure}
+Write $j_{L,\omega}:X_{L,\omega}\to\Omega_L$ for the inclusion and set
+$\mu_{L,\omega}=(j_{L,\omega})_*P_{L,\omega}$. These are probability
+measures, depend measurably on $\omega$, and for measurable
+$f:\Omega_L\to[0,\infty]$ satisfy
+$\int f\,d\mu_{L,\omega}=I^+_{L/K}f(\omega)$.
+\end{definition}
+\begin{proof}
+The inclusion is measurable, so pushforward preserves the mass one.
+Measurable dependence is the measurable-family assertion for fibre
+probabilities. The pushforward integration formula gives
+$\int f\,d\mu_{L,\omega}=\int(f\circ j_{L,\omega})\,dP_{L,\omega}$,
+which is the definition of $I^+_{L/K}f(\omega)$.
+\end{proof}
+
+\begin{definition}[The iterated fibre probability]\label{def:algebraic-tower-probability}
+\leanok
+\uses{def:algebraic-total-fibre-probability,lem:algebraic-tower-spaces,prop:algebraic-kernel-measurable}
+\source{chen-moriwaki-adelic:page-0213,chen-moriwaki-adelic:page-0214}
+\lean{ArakelovGeometry.AdelicStructure.Algebraic.towerFibreMeasure,ArakelovGeometry.AdelicStructure.Algebraic.measurable_towerFibreKernel,ArakelovGeometry.AdelicStructure.Algebraic.isProbabilityMeasure_towerFibreMeasure,ArakelovGeometry.AdelicStructure.Algebraic.lintegral_towerFibreMeasure}
+For $K\subseteq B\subseteq N$ algebraic, let $e$ identify the iterated
+parameter space with $\Omega_N$. For each $\omega\in\Omega_K$ the formula
+\[
+ Q_\omega(A)=\int_{\Omega_B}
+       (e_*\mu_{N,x})(A)\,d\mu_{B,\omega}(x)
+       \qquad(A\in\mathcal A_N)
+\]
+defines a probability measure. The family $x\mapsto e_*\mu_{N,x}$ is
+measurable, and every measurable $f:\Omega_N\to[0,\infty]$ satisfies
+\[
+ \int f\,dQ_\omega
+ =I^+_{B/K}\bigl(I^+_{N/B}(f\circ e)\bigr)(\omega).
+\]
+\end{definition}
+\begin{proof}
+Pushforward along the measurable map $e$ preserves both measurable
+dependence and total mass. Countable additivity of $Q_\omega$ follows
+from monotone convergence applied to the sum of indicators of
+pairwise disjoint sets. Its total mass is the integral of the
+constant function one against a probability, hence is one.
+The displayed integration formula first holds for indicators by the
+definition, then for simple functions by finite additivity, and finally
+for nonnegative measurable functions by increasing simple approximation.
+The two pushforward integration formulas identify the resulting
+iterated integral with the two fibre operators.
 \end{proof}
 
 \begin{lemma}[Tower integration with finite upper extension]\label{lem:algebraic-tower-finite-upper}\notready

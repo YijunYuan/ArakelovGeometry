@@ -287,7 +287,7 @@ write $A=v(x)^{1/s}$, $B=v(y)^{1/s}$. Binomial expansion gives, for every
 positive $n$,
 \[
  v(x+y)^n\leq\sum_{i=0}^n
-  \bigl({n\choose i}A^iB^{n-i}\bigr)^s
+  \bigl(\binom{n}{i}A^iB^{n-i}\bigr)^s
  \leq(n+1)(A+B)^{ns}.
 \]
 Taking $n$th roots and passing to the limit gives $v(x+y)\leq(A+B)^s$.
@@ -471,9 +471,10 @@ Lemma~\ref{lem:complete-extension} therefore identifies these two values.
 \end{proof}
 
 \begin{lemma}[Embeddings of a completed extension]\label{lem:completed-embedding-fibres}
+\leanok
 \source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0208}
 \uses{lem:completed-embedding-lift,lem:completed-embedding-norm}
-\notready
+\lean{AbsoluteValue.completionEmbeddingEquiv}
 Let $L/K$ be finite, let $w$ be an absolute value on $L$, and put
 $v=w|_K$, $B=K_v$ and $C=B^{\mathrm{ac}}$. Let $u$ extend the norm of
 $B$ to $C$. Restriction induces a bijection
@@ -487,10 +488,31 @@ Norm preservation shows that restriction takes values in the displayed set.
 The unique lifting property proves surjectivity and injectivity.
 \end{proof}
 
+\begin{lemma}[Counting embeddings for an arbitrary finite extension]
+\label{lem:completed-separable-embedding-count}
+\leanok
+\source{chen-moriwaki-adelic:page-0205,chen-moriwaki-adelic:page-0206}
+\uses{lem:completed-embedding-fibres,lem:completion-finite}
+\lean{AbsoluteValue.card_embeddings_eq_localFinSepDegree}
+Let $L/K$ be finite, let $w$ be an absolute value on $L$, put
+$B=K_{w|_K}$ and $C=B^{\mathrm{ac}}$, and let $u$ extend the norm
+of $B$ to $C$. Then
+\[
+ \#\{\sigma\in\operatorname{Hom}_K(L,C):u\circ\sigma=w\}
+ =[L_w:B]_s.
+\]
+\end{lemma}
+\begin{proof}
+The completed embedding bijection identifies the set on the left
+with $\operatorname{Hom}_B(L_w,C)$. The extension $L_w/B$ is finite,
+and the number of embeddings of a finite extension into an
+algebraically closed field is its separable degree.
+\end{proof}
+
 \begin{lemma}[Counting embeddings inducing a place]\label{lem:completed-embedding-count}
 \leanok
 \source{chen-moriwaki-adelic:page-0194}
-\uses{lem:completed-embedding-fibres,lem:completion-separable,lem:completion-finite,def:local-degree}
+\uses{lem:completed-separable-embedding-count,lem:completion-separable,lem:completion-finite,def:local-degree}
 \lean{AbsoluteValue.card_embeddings_eq_localDegree}
 Let $L/K$ be finite separable, let $w$ be an absolute value on $L$,
 put $B=K_{w|_K}$ and $C=B^{\mathrm{ac}}$, and let $u$ extend the
@@ -530,16 +552,17 @@ parts proves the formula.
 \label{lem:embedding-count-algclosed}
 \leanok
 \source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0202}
-\uses{lem:completed-embedding-count,lem:finite-values-via-embeddings,lem:complete-extension,def:local-degree}
-\lean{AbsoluteValue.card_embeddings_eq_localDegree_of_isAlgClosed}
-Let $L/K$ be finite separable, let $w$ be an absolute value on $L$,
+\uses{lem:completed-separable-embedding-count,lem:finite-values-via-embeddings,lem:complete-extension,lem:completion-separable,def:local-degree}
+\lean{AbsoluteValue.card_embeddings_eq_localFinSepDegree_of_isAlgClosed,AbsoluteValue.card_embeddings_eq_localDegree_of_isAlgClosed}
+Let $L/K$ be finite, let $w$ be an absolute value on $L$,
 and let $C_0$ be an algebraically closed extension of $K$, equipped
 with an absolute value $u_0$ whose restriction to $K$ is $w|_K$.
 Then
 \[
  \#\{\sigma\in\operatorname{Hom}_K(L,C_0):u_0\circ\sigma=w\}
- =[L_w:K_{w|_K}].
+ =[L_w:K_{w|_K}]_s.
 \]
+When $L/K$ is separable, the right side equals $[L_w:K_{w|_K}]$.
 This extends the completed-base embedding count to any algebraically
 closed ambient field.
 \end{lemma}
@@ -561,14 +584,85 @@ For a map with factor $\sigma_N:L\to N$, the corresponding map to
 $C$ is $j\circ\sigma_N$, and
 $u\circ j\circ\sigma_N=u_0\circ\sigma_N$.
 The bijection thus preserves the induced absolute value on $L$.
-The result now follows from Lemma~\ref{lem:completed-embedding-count}.
+The result now follows from Lemma~\ref{lem:completed-separable-embedding-count}.
+For separable $L/K$, the completed extension is separable by
+Lemma~\ref{lem:completion-separable}, so its separable degree equals its degree.
+\end{proof}
+
+\begin{lemma}[Weighted sums for arbitrary finite extensions]
+\label{lem:weighted-separable-embedding-sums}
+\leanok
+\source{chen-moriwaki-adelic:page-0205,chen-moriwaki-adelic:page-0206}
+\uses{lem:embedding-count-algclosed,lem:finite-extension-count}
+\lean{AbsoluteValue.sum_localFinSepDegree_nsmul_eq_sum_embeddings}
+Let $L/K$ be finite, $v$ an absolute value on $K$, and $C/K$
+algebraically closed with an absolute value $u$ extending $v$.
+For any additive commutative monoid $M$ and any function $\Phi$
+from the absolute values of $L$ to $M$,
+\[
+ \sum_{w|_K=v}[L_w:K_v]_s\,\Phi(w)
+ =
+ \sum_{\sigma\in\operatorname{Hom}_K(L,C)}\Phi(u\circ\sigma),
+\]
+where multiplication by a nonnegative integer denotes repeated addition.
+\end{lemma}
+\begin{proof}
+Partition the finite set of embeddings by the absolute value they induce.
+By Lemma~\ref{lem:embedding-count-algclosed}, the part indexed by $w$
+has $[L_w:K_v]_s$ elements. Summing a constant value $\Phi(w)$ over
+each part gives the formula.
+\end{proof}
+
+
+\begin{lemma}[The number of extensions of an embedding]
+\label{lem:embedding-extension-count-general}
+\leanok
+\source{chen-moriwaki-adelic:page-0206,chen-moriwaki-adelic:page-0207}
+\lean{AlgHom.natCard_comp_eq_finSepDegree}
+Let $K\subseteq F\subseteq L$ be a field tower with $L/F$ finite,
+let $C/K$ be algebraically closed, and fix a $K$-embedding $\tau:F\to C$.
+Then
+\[
+ \#\{\sigma\in\operatorname{Hom}_K(L,C):\sigma|_F=\tau\}=[L:F]_s.
+\]
+\end{lemma}
+\begin{proof}
+Give $C$ its $F$-algebra structure through $\tau$. A $K$-embedding
+of $L$ whose restriction is $\tau$ is then precisely an $F$-embedding
+of $L$ into $C$. There are $[L:F]_s$ such embeddings, by the
+definition of separable degree for a finite extension.
+\end{proof}
+
+\begin{lemma}[Weighted pullback along an arbitrary finite embedding]
+\label{lem:weighted-separable-embedding-pullback}
+\leanok
+\source{chen-moriwaki-adelic:page-0206,chen-moriwaki-adelic:page-0207}
+\uses{lem:embedding-extension-count-general,lem:weighted-separable-embedding-sums,lem:separable-degree-tower,lem:algebraic-absolute-value-extension}
+\lean{AbsoluteValue.finSepDegree_nsmul_sum_localFinSepDegree_pullback}
+Let $E/K$ and $N/K$ be finite, let $i:E\to N$ be a $K$-embedding,
+and let $v$ be an absolute value on $K$. For an additive commutative
+monoid $M$ and any function $\Phi$ from the absolute values of $E$ to $M$,
+\[
+ [E:K]_s\sum_{w|_K=v}[N_w:K_v]_s\,\Phi(w\circ i)
+ =
+ [N:K]_s\sum_{z|_K=v}[E_z:K_v]_s\,\Phi(z).
+\]
+\end{lemma}
+\begin{proof}
+Regard $N$ as an extension of $E$ using $i$. Extend $v$ to an
+absolute value $u$ on an algebraic closure $C$ of $K$. The weighted
+embedding-sum formula replaces the two place sums by embedding sums.
+Every embedding $E\to C$ has exactly $[N:E]_s$ extensions to $N$.
+Partitioning $\operatorname{Hom}_K(N,C)$ by restriction to $E$
+therefore multiplies the $E$-embedding sum by $[N:E]_s$.
+Finally $[E:K]_s[N:E]_s=[N:K]_s$, giving the asserted equality.
 \end{proof}
 
 \begin{lemma}[Weighted products and sums over extending places]
 \label{lem:weighted-embedding-sums}
 \leanok
 \source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0202}
-\uses{lem:embedding-count-algclosed,lem:finite-extension-count,def:local-degree}
+\uses{lem:embedding-count-algclosed,lem:finite-extension-count,def:local-degree,lem:weighted-separable-embedding-sums}
 \lean{AbsoluteValue.prod_pow_localDegree_eq_prod_embeddings,AbsoluteValue.sum_localDegree_nsmul_eq_sum_embeddings}
 Let $L/K$ be finite separable, let $v$ be an absolute value on $K$,
 let $C$ be an algebraically closed extension of $K$, and let $u$ be
@@ -728,6 +822,7 @@ natural-number multiple over the sum.
 
 \begin{lemma}[Counting extensions of a field embedding]
 \label{lem:embedding-extension-count}
+\uses{lem:embedding-extension-count-general}
 \leanok
 \source{chen-moriwaki-adelic:page-0195,chen-moriwaki-adelic:page-0196}
 \lean{AlgHom.natCard_comp_eq_finrank}
