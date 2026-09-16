@@ -99,4 +99,97 @@ theorem apply_completion_algHom {K L : Type*} [Field K] [Field L] [Algebra K L]
   exact congrArg (fun z : AbsoluteValue w.Completion ℝ ↦ z x)
     ((existsUnique_extension_of_complete (L := w.Completion) n).unique ht hn)
 
+
+/-- The number of embeddings inducing a fixed absolute value is its local degree. -/
+theorem card_embeddings_eq_localDegree {K L : Type*} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [Algebra.IsSeparable K L] (w : AbsoluteValue L ℝ)
+    (u : AbsoluteValue (AlgebraicClosure (w.restriction K).Completion) ℝ)
+    (hu : u.restriction (w.restriction K).Completion =
+      NormedField.toAbsoluteValue (w.restriction K).Completion) :
+    Nat.card {σ : L →ₐ[K] AlgebraicClosure (w.restriction K).Completion //
+      u.pullback σ.toRingHom = w} = w.localDegree K := by
+  let B := (w.restriction K).Completion
+  let C := AlgebraicClosure B
+  have : FiniteDimensional B w.Completion := finiteDimensional_completion w K
+  have : Algebra.IsSeparable B w.Completion := isSeparable_completion w
+  have : IsScalarTower K B w.Completion := by
+    apply IsScalarTower.of_algebraMap_eq
+    intro x
+    change ((WithAbs.toAbs w (algebraMap K L x)) : w.Completion) = _
+    rw [algebraMap_completion_def]
+    exact (Completion.mapRingHom_coe
+      (isometry_algebraMap_withAbs w K).continuous (WithAbs.toAbs (w.restriction K) x)).symm
+  let f₀ (τ : w.Completion →ₐ[B] C) : L →ₐ[K] C := {
+    toRingHom := τ.toRingHom.comp (algebraMap L w.Completion)
+    commutes' a := by
+      change τ (algebraMap K w.Completion a) = algebraMap K C a
+      rw [IsScalarTower.algebraMap_apply K B w.Completion, τ.commutes,
+        ← IsScalarTower.algebraMap_apply K B C] }
+  have hf₀ (τ : w.Completion →ₐ[B] C) : u.pullback (f₀ τ).toRingHom = w := by
+    ext x
+    change u (τ (algebraMap L w.Completion x)) = w x
+    rw [apply_completion_algHom w u hu]
+    exact Completion.norm_coe (WithAbs.toAbs w x)
+  let f (τ : w.Completion →ₐ[B] C) :
+      {σ : L →ₐ[K] C // u.pullback σ.toRingHom = w} := ⟨f₀ τ, hf₀ τ⟩
+  have hf : Function.Bijective f := by
+    constructor
+    · intro τ τ' heq
+      have hh : τ.toLinearMap = τ'.toLinearMap :=
+        LinearMap.ext_on_range (span_coe_basis_eq_top w K (Module.Free.chooseBasis K L))
+          (fun i ↦ congrArg (fun z ↦ z.val (Module.Free.chooseBasis K L i)) heq)
+      ext x
+      exact LinearMap.congr_fun hh x
+    · intro σ
+      obtain ⟨τ, hτ, -⟩ := existsUnique_completion_algHom w u hu σ.val σ.property
+      refine ⟨τ, ?_⟩
+      apply Subtype.ext
+      ext x
+      exact hτ x
+  calc
+    _ = Nat.card (w.Completion →ₐ[B] C) := (Nat.card_congr (Equiv.ofBijective f hf)).symm
+    _ = Module.finrank B w.Completion :=
+      AlgHom.natCard_of_splits B w.Completion C (fun _ ↦ IsAlgClosed.splits _)
+    _ = w.localDegree K := rfl
+
+/-- The sum of the local degrees over a finite separable extension equals its degree. -/
+theorem sum_localDegree {K L : Type*} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [Algebra.IsSeparable K L] (v : AbsoluteValue K ℝ)
+    [Fintype {w : AbsoluteValue L ℝ // w.restriction K = v}] :
+    ∑ w : {w : AbsoluteValue L ℝ // w.restriction K = v}, w.val.localDegree K =
+      Module.finrank K L := by
+  classical
+  let B := v.Completion
+  let C := AlgebraicClosure B
+  let n : AbsoluteValue B ℝ := NormedField.toAbsoluteValue B
+  let e : WithAbs n ≃ᵢ B := {
+    (WithAbs.equiv n).toEquiv with
+    isometry_toFun := AddMonoidHomClass.isometry_of_norm (WithAbs.equiv n) (fun _ ↦ rfl) }
+  have : CompleteSpace (WithAbs n) := e.completeSpace
+  obtain ⟨u, hu, -⟩ := existsUnique_extension_of_complete (L := C) n
+  let E := {w : AbsoluteValue L ℝ // w.restriction K = v}
+  have hr (σ : L →ₐ[K] C) : (u.pullback σ.toRingHom).restriction K = v := by
+    ext a
+    change u (σ (algebraMap K L a)) = v a
+    rw [σ.commutes, IsScalarTower.algebraMap_apply K B C]
+    rw [show u (algebraMap B C (algebraMap K B a)) = ‖algebraMap K B a‖ from
+      congrArg (fun z : AbsoluteValue B ℝ ↦ z (algebraMap K B a)) hu]
+    exact Completion.norm_coe (WithAbs.toAbs v a)
+  let f (σ : L →ₐ[K] C) : E := ⟨u.pullback σ.toRingHom, hr σ⟩
+  have hc (w : E) :
+      Nat.card {σ : L →ₐ[K] C // u.pullback σ.toRingHom = w.val} = w.val.localDegree K := by
+    rcases w with ⟨w, hw⟩
+    subst v
+    exact card_embeddings_eq_localDegree w u hu
+  have hf (w : E) : Fintype.card {σ : L →ₐ[K] C // f σ = w} = w.val.localDegree K := by
+    rw [Fintype.card_eq_nat_card]
+    calc
+      _ = Nat.card {σ : L →ₐ[K] C // u.pullback σ.toRingHom = w.val} :=
+        Nat.card_congr (Equiv.subtypeEquivRight (fun σ ↦ by
+          exact Subtype.ext_iff))
+      _ = w.val.localDegree K := hc w
+  have hh := Fintype.sum_fiberwise f (fun _ ↦ (1 : ℕ))
+  simpa only [Finset.sum_const, Finset.card_univ, smul_eq_mul, mul_one, hf,
+    AlgHom.card] using hh
+
 end AbsoluteValue
