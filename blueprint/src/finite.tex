@@ -206,6 +206,7 @@ $q^{-1}$ times that evaluation, it is integrable.
 
 \begin{definition}[The finite extension of an adelic curve]
 \label{def:finite-extension}
+\leanok
 \source{chen-moriwaki-adelic:page-0205}
 \lean{ArakelovGeometry.AdelicStructure.finiteExtension}
 \uses{def:adelic-structure,def:finite-measure,lem:finite-log-measurable,lem:finite-log-integrable}
@@ -249,7 +250,7 @@ space of $L$ and $E$, this operator is $I^+_{E/K}$.
 \leanok
 \source{chen-moriwaki-adelic:page-0205,chen-moriwaki-adelic:page-0206}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fieldRange_completion_separableClosure}
-\uses{lem:finite-separable-part,lem:completion-finite,lem:completion-separable}
+\uses{lem:finite-separable-part,lem:completion-finite,lem:completion-separable,lem:completion-tower}
 Let $w$ be an absolute value on $L$, let $v=w|_K$, and regard the
 completion $E_w$ as a subfield of $L_w$ through the continuous
 extension of $E\hookrightarrow L$. Then $E_w$ is exactly the separable
@@ -431,6 +432,7 @@ extension.
 
 \begin{proposition}[Properness of finite extensions]
 \label{prop:finite-proper}
+\leanok
 \source{chen-moriwaki-adelic:page-0205}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.isProper_finiteExtension}
 \uses{def:finite-extension,prop:finite-log-integral,prop:separable-proper}

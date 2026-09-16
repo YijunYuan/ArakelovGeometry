@@ -4,11 +4,14 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
 import ArakelovGeometry.AdelicCurve.Defs
+import ArakelovGeometry.AdelicCurve.RootBounds
 import ArakelovGeometry.ExternalResults.AbsoluteValueFinite
 import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
+import ArakelovGeometry.ExternalResults.FunctionalMonotoneClass
 import ArakelovGeometry.ExternalResults.AbsoluteValueLocal
 import Mathlib.Analysis.MeanInequalitiesPow
 import Mathlib.Analysis.SpecificLimits.Normed
+import Mathlib.Data.Fin.Tuple.Sort
 import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 import Mathlib.FieldTheory.Normal.Basic
@@ -173,6 +176,93 @@ theorem _root_.AbsoluteValue.iSup_eq_limsup_sum_pow_rpow {F : Type*} [Field F]
     simp [div_self hia] at ht'
   · exact (limsup_le_limsup hug hu_cobdd hg.isBoundedUnder_le).trans_eq hg.limsup_eq
 
+
+/-- The product over any fixed-size subset of a decreasing nonnegative tuple is bounded
+by the product over its initial segment. -/
+theorem prod_le_prod_initial_of_antitone {n k : ℕ} (hk : k ≤ n)
+    {s : Fin n → ℝ} (hs : Antitone s) (hs0 : ∀ i, 0 ≤ s i)
+    (J : Finset (Fin n)) (hJ : J.card = k) :
+    (∏ j ∈ J, s j) ≤ ∏ i : Fin k, s (i.castLE hk) := by
+  classical
+  have hindex (i : Fin k) : i.val ≤ (J.orderEmbOfFin hJ i).val := by
+    cases k with
+    | zero => exact i.elim0
+    | succ k =>
+      induction i using Fin.induction with
+      | zero => exact Nat.zero_le _
+      | succ i ih =>
+        exact Nat.succ_le_of_lt (lt_of_le_of_lt ih
+          ((J.orderEmbOfFin hJ).strictMono (Fin.castSucc_lt_succ (i := i))))
+  calc
+    _ = ∏ i : Fin k, s (J.orderEmbOfFin hJ i) := by
+      calc
+        _ = ∏ j ∈ Finset.univ.image (J.orderEmbOfFin hJ), s j := by simp
+        _ = _ := Finset.prod_image (J.orderEmbOfFin hJ).injective.injOn
+    _ ≤ _ := Finset.prod_le_prod (fun i _ ↦ hs0 _) (fun i _ ↦ hs (hindex i))
+
+/-- An initial product in a decreasing nonnegative tuple is the largest subset product
+of the same size. -/
+theorem prod_initial_eq_iSup_prod {n k : ℕ} (hk : k ≤ n)
+    {s : Fin n → ℝ} (hs : Antitone s) (hs0 : ∀ i, 0 ≤ s i) :
+    (∏ i : Fin k, s (i.castLE hk)) =
+      ⨆ J : {J : Finset (Fin n) // J.card = k}, ∏ j ∈ J.val, s j := by
+  classical
+  let J₀ : {J : Finset (Fin n) // J.card = k} :=
+    ⟨Finset.univ.map (Fin.castLEEmb hk), by simp⟩
+  let : Nonempty {J : Finset (Fin n) // J.card = k} := ⟨J₀⟩
+  apply le_antisymm
+  · apply Finite.le_ciSup_of_le J₀
+    simp [J₀, Finset.prod_map]
+  · apply ciSup_le
+    intro J
+    exact prod_le_prod_initial_of_antitone hk hs hs0 J.val J.property
+
+/-- Sorting a tuple identifies its initial products with the largest subset products. -/
+theorem prod_initial_comp_perm_eq_iSup_prod {n k : ℕ} (hk : k ≤ n)
+    {s : Fin n → ℝ} (hs0 : ∀ i, 0 ≤ s i) (π : Equiv.Perm (Fin n))
+    (hπ : Antitone (s ∘ π)) :
+    (∏ i : Fin k, s (π (i.castLE hk))) =
+      ⨆ J : {J : Finset (Fin n) // J.card = k}, ∏ j ∈ J.val, s j := by
+  classical
+  let e := π.finsetCongr.subtypeEquiv
+    (p := fun J : Finset (Fin n) ↦ J.card = k)
+    (q := fun J : Finset (Fin n) ↦ J.card = k) (by intro J; simp)
+  calc
+    _ = ⨆ J : {J : Finset (Fin n) // J.card = k}, ∏ j ∈ J.val, s (π j) :=
+      prod_initial_eq_iSup_prod hk hπ (fun i ↦ hs0 (π i))
+    _ = ⨆ J : {J : Finset (Fin n) // J.card = k}, ∏ j ∈ (e J).val, s j := by
+      apply iSup_congr
+      intro J
+      simp [e, Equiv.subtypeEquiv, Finset.prod_map]
+    _ = _ := e.iSup_comp (g := fun J ↦ ∏ j ∈ J.val, s j)
+
+/-- A positive tuple has measurable ordered entries when its maximal subset products
+are measurable, without any measurability assumption on the sorting permutations. -/
+theorem measurable_perm_eval_of_measurable_iSup_prod
+    {Ω : Type*} [MeasurableSpace Ω] {n : ℕ}
+    (s : Ω → Fin n → ℝ) (hs : ∀ ω i, 0 < s ω i)
+    (π : Ω → Equiv.Perm (Fin n)) (hπ : ∀ ω, Antitone (s ω ∘ π ω))
+    (hP : ∀ k ≤ n, Measurable fun ω ↦
+      ⨆ J : {J : Finset (Fin n) // J.card = k}, ∏ j ∈ J.val, s ω j)
+    (i : Fin n) :
+    Measurable fun ω ↦ s ω (π ω i) := by
+  have hprefix (k : ℕ) (hk : k ≤ n) :
+      Measurable fun ω ↦ ∏ j : Fin k, s ω (π ω (j.castLE hk)) := by
+    have heq (ω : Ω) := prod_initial_comp_perm_eq_iSup_prod hk
+      (fun j ↦ (hs ω j).le) (π ω) (hπ ω)
+    simp_rw [heq]
+    exact hP k hk
+  have heq (ω : Ω) :
+      s ω (π ω i) =
+        (∏ j : Fin (i.val + 1), s ω (π ω (j.castLE i.isLt))) /
+          ∏ j : Fin i.val, s ω (π ω (j.castLE i.isLt.le)) := by
+    rw [Fin.prod_univ_castSucc]
+    change s ω (π ω i) = ((∏ j : Fin i.val, s ω (π ω (j.castLE i.isLt.le))) *
+      s ω (π ω i)) / _
+    exact (mul_div_cancel_left₀ _ (ne_of_gt (Finset.prod_pos (fun _ _ ↦ hs ω _)))).symm
+  simp_rw [heq]
+  exact (hprefix (i.val + 1) i.isLt).div (hprefix i.val i.isLt.le)
+
 /-! ### Algebraic extensions of adelic structures -/
 
 section Extensions
@@ -310,6 +400,46 @@ theorem restrictOfLE_restrict {F G : IntermediateField K L} (hFG : F ≤ G)
     restrictOfLE AS L hFG (restrict AS L x G) = restrict AS L x F := by
   rfl
 
+
+/-- Evaluation maps multiplied by measurable base functions generate the extension
+sigma algebra. -/
+theorem measurableSpace_eq_iSup_comap_eval_mul_base :
+    (inferInstance : MeasurableSpace (ParameterSpaceExtension AS L)) =
+      ⨆ b : L, ⨆ φ : {φ : AS.Ω → ℝ // Measurable φ},
+        MeasurableSpace.comap (fun x : ParameterSpaceExtension AS L ↦ x.ϕ b * φ.val x.proj)
+          inferInstance := by
+  let m : MeasurableSpace (ParameterSpaceExtension AS L) :=
+    ⨆ b : L, ⨆ φ : {φ : AS.Ω → ℝ // Measurable φ},
+      MeasurableSpace.comap (fun x : ParameterSpaceExtension AS L ↦ x.ϕ b * φ.val x.proj)
+        inferInstance
+  apply le_antisymm
+  · change MeasurableSpace.comap (proj (AS := AS) (L := L)) AS.A ⊔
+      (⨆ b : L, MeasurableSpace.comap (fun x : ParameterSpaceExtension AS L ↦ x.ϕ b)
+        inferInstance) ≤ m
+    apply sup_le
+    · apply Measurable.comap_le
+      intro A hA
+      have hm : @Measurable (ParameterSpaceExtension AS L) ℝ m _
+          (fun x ↦ x.ϕ 1 * (A.indicator fun _ ↦ (1 : ℝ)) x.proj) :=
+        Measurable.of_comap_le (le_iSup_of_le 1
+          (le_iSup_of_le ⟨A.indicator fun _ ↦ (1 : ℝ), measurable_const.indicator hA⟩ le_rfl))
+      have hi : @Measurable (ParameterSpaceExtension AS L) ℝ m _
+          ((proj ⁻¹' A).indicator fun _ ↦ (1 : ℝ)) := by
+        simpa only [map_one, one_mul, ← Set.indicator_comp_right, Function.comp_def] using hm
+      exact (measurable_indicator_const_iff (1 : ℝ)).mp hi
+    · apply iSup_le
+      intro b
+      have hm : @Measurable (ParameterSpaceExtension AS L) ℝ m _
+          (fun x ↦ x.ϕ b * (1 : ℝ)) :=
+        Measurable.of_comap_le (le_iSup_of_le b
+          (le_iSup_of_le ⟨fun _ ↦ (1 : ℝ), measurable_const⟩ le_rfl))
+      simpa only [mul_one] using hm.comap_le
+  · apply iSup_le
+    intro b
+    apply iSup_le
+    intro φ
+    exact ((measurable_eval AS L b).mul (φ.property.comp (measurable_proj AS L))).comap_le
+
 end ParameterSpaceExtension
 
 variable (K) in
@@ -398,6 +528,128 @@ theorem measurable_iSup_abv_aut (s : AS.Ω → ParameterSpaceExtension AS (Algeb
       exact (Real.exp_log ((AS.ϕ ω).pos ha)).symm
     rw [heval]
     exact (AS.measurable_log a ha).exp
+
+
+variable (K) in
+/-- The maximal products of fixed numbers of embedding values are measurable by the
+Galois orbit maximum formula. -/
+theorem measurable_iSup_prod_embeddings {E : Type*} [Field E] [Algebra K E]
+    [FiniteDimensional K E] [Algebra.IsSeparable K E]
+    (s : AS.Ω → ParameterSpaceExtension AS (AlgebraicClosure K))
+    (hs : ∀ ω, (s ω).proj = ω) (b : E) (k : ℕ)
+    (hk : k ≤ Fintype.card (E →ₐ[K] AlgebraicClosure K)) :
+    Measurable fun ω ↦
+      ⨆ J : {J : Finset (E →ₐ[K] AlgebraicClosure K) // J.card = k},
+        ∏ σ ∈ J.val, (s ω).ϕ (σ b) := by
+  classical
+  let e := Fintype.equivFin (E →ₐ[K] AlgebraicClosure K)
+  let J₀ : {J : Finset (E →ₐ[K] AlgebraicClosure K) // J.card = k} :=
+    ⟨(Finset.univ.map (Fin.castLEEmb hk)).map e.symm.toEmbedding, by simp⟩
+  let : Nonempty {J : Finset (E →ₐ[K] AlgebraicClosure K) // J.card = k} := ⟨J₀⟩
+  let P (ω : AS.Ω) := ⨆ J : {J : Finset (E →ₐ[K] AlgebraicClosure K) // J.card = k},
+    ∏ σ ∈ J.val, (s ω).ϕ (σ b)
+  have hbound (ω : AS.Ω)
+      (J : {J : Finset (E →ₐ[K] AlgebraicClosure K) // J.card = k})
+      (τ : AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K) :
+      (s ω).ϕ (τ (∏ σ ∈ J.val, σ b)) ≤ P ω := by
+    let p := (AlgEquiv.refl : E ≃ₐ[K] E).arrowCongr τ
+    let J' : {J : Finset (E →ₐ[K] AlgebraicClosure K) // J.card = k} :=
+      ⟨J.val.map p.toEmbedding, by simpa using J.property⟩
+    apply Finite.le_ciSup_of_le J'
+    simp only [J', Finset.prod_map]
+    rw [_root_.map_prod, AbsoluteValue.map_prod]
+    rfl
+  have heq (ω : AS.Ω) : P ω =
+      ⨆ J : {J : Finset (E →ₐ[K] AlgebraicClosure K) // J.card = k},
+        ⨆ τ : AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K,
+          (s ω).ϕ (τ (∏ σ ∈ J.val, σ b)) := by
+    apply le_antisymm
+    · apply ciSup_le
+      intro J
+      apply Finite.le_ciSup_of_le J
+      have hb : BddAbove (Set.range fun τ : AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K ↦
+          (s ω).ϕ (τ (∏ σ ∈ J.val, σ b))) := ⟨P ω, by
+        rintro _ ⟨τ, rfl⟩
+        exact hbound ω J τ⟩
+      apply le_ciSup_of_le hb (AlgEquiv.refl : AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K)
+      change (∏ σ ∈ J.val, (s ω).ϕ (σ b)) ≤ (s ω).ϕ (∏ σ ∈ J.val, σ b)
+      rw [AbsoluteValue.map_prod]
+    · apply ciSup_le
+      intro J
+      exact ciSup_le (hbound ω J)
+  change Measurable fun ω ↦ P ω
+  simp_rw [heq]
+  apply Measurable.iSup
+  intro J
+  apply measurable_iSup_abv_aut AS s hs
+  change (∏ σ ∈ J.val, σ b) ∈ separableClosure K (AlgebraicClosure K)
+  exact (separableClosure K (AlgebraicClosure K)).prod_mem
+    (fun σ _ ↦ IsSeparable.map σ σ.injective (Algebra.IsSeparable.isSeparable K b))
+
+variable (K) in
+/-- The decreasingly ordered absolute values of the embeddings of a nonzero separable
+element are measurable. The chosen ordering need not depend measurably on the base point. -/
+theorem measurable_ordered_abv_embeddings {E : Type*} [Field E] [Algebra K E]
+    [FiniteDimensional K E] [Algebra.IsSeparable K E]
+    (s : AS.Ω → ParameterSpaceExtension AS (AlgebraicClosure K))
+    (hs : ∀ ω, (s ω).proj = ω) (b : E) (hb : b ≠ 0)
+    {n : ℕ} (e : Fin n ≃ (E →ₐ[K] AlgebraicClosure K))
+    (π : AS.Ω → Equiv.Perm (Fin n))
+    (hπ : ∀ ω, Antitone (fun i ↦ (s ω).ϕ (e (π ω i) b)))
+    (i : Fin n) :
+    Measurable fun ω ↦ (s ω).ϕ (e (π ω i) b) := by
+  classical
+  have hP (k : ℕ) (hk : k ≤ n) :
+      Measurable fun ω ↦
+        ⨆ J : {J : Finset (Fin n) // J.card = k}, ∏ j ∈ J.val, (s ω).ϕ (e j b) := by
+    let eJ := e.finsetCongr.subtypeEquiv
+      (p := fun J : Finset (Fin n) ↦ J.card = k)
+      (q := fun J : Finset (E →ₐ[K] AlgebraicClosure K) ↦ J.card = k)
+      (by intro J; simp)
+    have heq (ω : AS.Ω) :
+        (⨆ J : {J : Finset (Fin n) // J.card = k}, ∏ j ∈ J.val, (s ω).ϕ (e j b)) =
+        ⨆ J : {J : Finset (E →ₐ[K] AlgebraicClosure K) // J.card = k},
+          ∏ σ ∈ J.val, (s ω).ϕ (σ b) := by
+      calc
+        _ = ⨆ J : {J : Finset (Fin n) // J.card = k},
+            ∏ σ ∈ (eJ J).val, (s ω).ϕ (σ b) := by
+          apply iSup_congr
+          intro J
+          simp [eJ, Equiv.subtypeEquiv, Finset.prod_map]
+        _ = _ := eJ.iSup_comp (g := fun J ↦ ∏ σ ∈ J.val, (s ω).ϕ (σ b))
+    simp_rw [heq]
+    apply measurable_iSup_prod_embeddings (AS := AS) K s hs b k
+    simpa only [← Fintype.card_congr e, Fintype.card_fin] using hk
+  exact measurable_perm_eval_of_measurable_iSup_prod
+    (fun ω i ↦ (s ω).ϕ (e i b))
+    (fun ω i ↦ (s ω).ϕ.pos ((map_ne_zero (e i)).mpr hb)) π hπ hP i
+
+variable (K) in
+/-- The sum of the absolute values of all embeddings of an element of a finite separable
+extension is measurable for any choice of extensions to the algebraic closure. -/
+theorem measurable_sum_abv_embeddings {E : Type*} [Field E] [Algebra K E]
+    [FiniteDimensional K E] [Algebra.IsSeparable K E]
+    (s : AS.Ω → ParameterSpaceExtension AS (AlgebraicClosure K))
+    (hs : ∀ ω, (s ω).proj = ω) (b : E) :
+    Measurable fun ω ↦ ∑ σ : E →ₐ[K] AlgebraicClosure K, (s ω).ϕ (σ b) := by
+  classical
+  by_cases hb : b = 0
+  · simp only [hb, map_zero, Finset.sum_const_zero]
+    exact measurable_const
+  let n := Fintype.card (E →ₐ[K] AlgebraicClosure K)
+  let e : Fin n ≃ (E →ₐ[K] AlgebraicClosure K) := (Fintype.equivFin _).symm
+  let x (ω : AS.Ω) (i : Fin n) := (s ω).ϕ (e i b)
+  let π (ω : AS.Ω) := Tuple.sort (α := ℝᵒᵈ) (fun i ↦ x ω i)
+  have hπ (ω : AS.Ω) : Antitone (x ω ∘ π ω) :=
+    Tuple.monotone_sort (α := ℝᵒᵈ) (fun i ↦ x ω i)
+  have hm (i : Fin n) : Measurable fun ω ↦ x ω (π ω i) :=
+    measurable_ordered_abv_embeddings (AS := AS) K s hs b hb e π hπ i
+  have heq (ω : AS.Ω) : (∑ σ : E →ₐ[K] AlgebraicClosure K, (s ω).ϕ (σ b)) =
+      ∑ i : Fin n, x ω (π ω i) := by
+    rw [Equiv.sum_comp (π ω)]
+    exact (e.sum_comp (fun σ ↦ (s ω).ϕ (σ b))).symm
+  simp_rw [heq]
+  exact Finset.measurable_sum _ (fun i _ ↦ hm i)
 
 /-- The filtered indexing type `E_{L/K}` of finite subextensions of an algebraic extension
 `L/K`. -/
@@ -533,6 +785,25 @@ theorem integrable_fibre (ω : AS.Ω) (f : ExtensionFiber AS L ω → ℝ) :
   let := finite_extensionFiber AS L ω
   exact Integrable.of_finite
 
+/-- Real fibre integration is the finite sum with its local-degree weights. -/
+theorem fibreIntegral_eq_sum (f : ParameterSpaceExtension AS L → ℝ) (ω : AS.Ω)
+    [Fintype (ExtensionFiber AS L ω)] :
+    fibreIntegral AS L f ω =
+      ∑ x : ExtensionFiber AS L ω, (fibreWeight AS L ω x).toReal * f x.val := by
+  unfold fibreIntegral fibreProbabilityMeasure
+  rw [integral_sum_measure (integrable_fibre AS L ω _), tsum_fintype]
+  simp only [integral_smul_measure, integral_dirac, smul_eq_mul]
+
+omit [Algebra.IsSeparable K L] in
+/-- Nonnegative fibre integration is the finite sum with its local-degree weights. -/
+theorem fibreLIntegral_eq_sum (f : ParameterSpaceExtension AS L → ℝ≥0∞) (ω : AS.Ω)
+    [Fintype (ExtensionFiber AS L ω)] :
+    fibreLIntegral AS L f ω =
+      ∑ x : ExtensionFiber AS L ω, fibreWeight AS L ω x * f x.val := by
+  unfold fibreLIntegral fibreProbabilityMeasure
+  rw [lintegral_sum_measure, tsum_fintype]
+  simp only [lintegral_smul_measure, lintegral_dirac, smul_eq_mul]
+
 /-- The fibre integration operator is additive (§3.3.1). -/
 theorem fibreIntegral_add (f g : ParameterSpaceExtension AS L → ℝ) :
     fibreIntegral AS L (f + g) = fibreIntegral AS L f + fibreIntegral AS L g := by
@@ -575,13 +846,211 @@ theorem fibreIntegral_comp_restrict (F : IntermediateField K L)
     [FiniteDimensional K F] [Algebra.IsSeparable K F]
     (f : ParameterSpaceExtension AS F → ℝ) :
     fibreIntegral AS L (fun x ↦ f (restrict AS L x F)) = fibreIntegral AS F f := by
-  sorry
+  classical
+  funext ω
+  let E := {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω}
+  let D := {w : AbsoluteValue F ℝ // w.restriction K = AS.ϕ ω}
+  let : Fintype E := (AbsoluteValue.finite_extensions (L := L) (AS.ϕ ω)).fintype
+  let : Fintype D := (AbsoluteValue.finite_extensions (L := F) (AS.ϕ ω)).fintype
+  let eL : ExtensionFiber AS L ω ≃ E := {
+    toFun x := ⟨x.val.ϕ, x.val.restrict_eq.trans (congrArg AS.ϕ x.property)⟩
+    invFun w := ⟨⟨ω, w.val, w.property⟩, rfl⟩
+    left_inv x := by
+      apply Subtype.ext
+      exact ParameterSpaceExtension.ext AS L x.property.symm rfl
+    right_inv _ := rfl }
+  let eF : ExtensionFiber AS F ω ≃ D := {
+    toFun x := ⟨x.val.ϕ, x.val.restrict_eq.trans (congrArg AS.ϕ x.property)⟩
+    invFun w := ⟨⟨ω, w.val, w.property⟩, rfl⟩
+    left_inv x := by
+      apply Subtype.ext
+      exact ParameterSpaceExtension.ext AS F x.property.symm rfl
+    right_inv _ := rfl }
+  let : Fintype (ExtensionFiber AS L ω) := Fintype.ofEquiv E eL.symm
+  let : Fintype (ExtensionFiber AS F ω) := Fintype.ofEquiv D eF.symm
+  let φ (w : D) : ℝ := f ⟨ω, w.val, w.property⟩
+  have hs := AbsoluteValue.sum_localDegree_nsmul_restriction F (AS.ϕ ω) φ
+  simp only [nsmul_eq_mul] at hs
+  have hl :
+      ∑ x : ExtensionFiber AS L ω, (x.val.ϕ.localDegree K : ℝ) * f (restrict AS L x.val F) =
+        ∑ w : E, (w.val.localDegree K : ℝ) * φ ⟨w.val.restriction F, w.property⟩ := by
+    rw [← eL.sum_comp (fun w ↦ (w.val.localDegree K : ℝ) *
+      φ ⟨w.val.restriction F, w.property⟩)]
+    apply Finset.sum_congr rfl
+    intro x _
+    apply congrArg ((x.val.ϕ.localDegree K : ℝ) * ·)
+    apply congrArg f
+    exact ParameterSpaceExtension.ext AS F x.property rfl
+  have hr :
+      ∑ x : ExtensionFiber AS F ω, (x.val.ϕ.localDegree K : ℝ) * f x.val =
+        ∑ w : D, (w.val.localDegree K : ℝ) * φ w := by
+    rw [← eF.sum_comp (fun w ↦ (w.val.localDegree K : ℝ) * φ w)]
+    apply Finset.sum_congr rfl
+    intro x _
+    apply congrArg ((x.val.ϕ.localDegree K : ℝ) * ·)
+    apply congrArg f
+    exact ParameterSpaceExtension.ext AS F x.property rfl
+  rw [fibreIntegral_eq_sum, fibreIntegral_eq_sum]
+  simp only [fibreWeight, ENNReal.toReal_div, ENNReal.toReal_natCast,
+    div_mul_eq_mul_div, ← Finset.sum_div]
+  rw [hl, hr, hs]
+  have hd : (Module.finrank K L : ℝ) =
+      (Module.finrank K F : ℝ) * (Module.finrank F L : ℝ) := by
+    exact_mod_cast (Module.finrank_mul_finrank K F L).symm
+  rw [hd]
+  have hn : (Module.finrank F L : ℝ) ≠ 0 := by
+    exact_mod_cast (Module.finrank_pos (R := F) (M := L)).ne'
+  rw [mul_comm (Module.finrank K F : ℝ), mul_div_mul_left _ _ hn]
+
+
+/-- The local-degree weighted evaluation integral is the normalized average over
+embeddings into an algebraic closure, for any extension of the base absolute value. -/
+theorem fibreIntegral_eval_eq_sum_embeddings (ω : AS.Ω)
+    (u : AbsoluteValue (AlgebraicClosure K) ℝ) (hu : u.restriction K = AS.ϕ ω)
+    (b : L) :
+    fibreIntegral AS L (fun x ↦ x.ϕ b) ω =
+      (Module.finrank K L : ℝ)⁻¹ * ∑ σ : L →ₐ[K] AlgebraicClosure K, u (σ b) := by
+  classical
+  let E := {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω}
+  let e : ExtensionFiber AS L ω ≃ E := {
+    toFun x := ⟨x.val.ϕ, x.val.restrict_eq.trans (congrArg AS.ϕ x.property)⟩
+    invFun w := ⟨⟨ω, w.val, w.property⟩, rfl⟩
+    left_inv x := by
+      apply Subtype.ext
+      exact ParameterSpaceExtension.ext AS L x.property.symm rfl
+    right_inv _ := rfl }
+  let : Fintype E := (AbsoluteValue.finite_extensions (L := L) (AS.ϕ ω)).fintype
+  let : Fintype (ExtensionFiber AS L ω) := Fintype.ofEquiv E e.symm
+  rw [fibreIntegral_eq_sum]
+  simp only [fibreWeight, ENNReal.toReal_div, ENNReal.toReal_natCast]
+  calc
+    _ = (Module.finrank K L : ℝ)⁻¹ *
+        ∑ x : ExtensionFiber AS L ω, (x.val.ϕ.localDegree K : ℝ) * x.val.ϕ b := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro x _
+      ring
+    _ = (Module.finrank K L : ℝ)⁻¹ * ∑ w : E, (w.val.localDegree K : ℝ) * w.val b := by
+      congr 1
+      exact e.sum_comp (fun w ↦ (w.val.localDegree K : ℝ) * w.val b)
+    _ = _ := by
+      congr 1
+      convert AbsoluteValue.sum_localDegree_nsmul_eq_sum_embeddings (AS.ϕ ω) u hu
+        (fun w : AbsoluteValue L ℝ ↦ w b) using 1 <;> simp [nsmul_eq_mul, E]
+      rfl
+
+/-- Evaluation functions have measurable fibre integrals. -/
+theorem measurable_fibreIntegral_eval (b : L) :
+    Measurable (fibreIntegral AS L (fun x ↦ x.ϕ b)) := by
+  classical
+  choose u hu using fun ω : AS.Ω ↦
+    AbsoluteValue.exists_extension (L := AlgebraicClosure K) (AS.ϕ ω)
+  let s (ω : AS.Ω) : ParameterSpaceExtension AS (AlgebraicClosure K) := ⟨ω, u ω, hu ω⟩
+  have hs (ω : AS.Ω) : (s ω).proj = ω := rfl
+  have heq (ω : AS.Ω) :
+      fibreIntegral AS L (fun x ↦ x.ϕ b) ω =
+        (Module.finrank K L : ℝ)⁻¹ * ∑ σ : L →ₐ[K] AlgebraicClosure K, (s ω).ϕ (σ b) :=
+    fibreIntegral_eval_eq_sum_embeddings AS L ω (s ω).ϕ
+      ((ϕ_restriction AS (AlgebraicClosure K) (s ω)).trans (congrArg AS.ϕ (hs ω))) b
+  change Measurable fun ω ↦ fibreIntegral AS L (fun x ↦ x.ϕ b) ω
+  simp_rw [heq]
+  exact (measurable_sum_abv_embeddings K AS s hs b).const_mul _
+
+/-- Finite-fibre integration preserves pointwise sequential limits of real functions. -/
+theorem tendsto_fibreIntegral (f : ℕ → ParameterSpaceExtension AS L → ℝ)
+    (g : ParameterSpaceExtension AS L → ℝ)
+    (hf : ∀ x, Filter.Tendsto (fun n ↦ f n x) Filter.atTop (nhds (g x)))
+    (ω : AS.Ω) :
+    Filter.Tendsto (fun n ↦ fibreIntegral AS L (f n) ω) Filter.atTop
+      (nhds (fibreIntegral AS L g ω)) := by
+  let : Finite (ExtensionFiber AS L ω) := finite_extensionFiber AS L ω
+  let : Fintype (ExtensionFiber AS L ω) := Fintype.ofFinite _
+  simp_rw [fibreIntegral_eq_sum]
+  exact tendsto_finsetSum _ (fun x _ ↦ tendsto_const_nhds.mul (hf x.val))
+
+omit _s in
+/-- Nonnegative fibre integration preserves increasing sequential suprema. -/
+theorem fibreLIntegral_iSup (f : ℕ → ParameterSpaceExtension AS L → ℝ≥0∞)
+    (hf : Monotone f) :
+    fibreLIntegral AS L (fun x ↦ ⨆ n, f n x) =
+      fun ω ↦ ⨆ n, fibreLIntegral AS L (f n) ω := by
+  funext ω
+  let : Finite (ExtensionFiber AS L ω) := finite_extensionFiber AS L ω
+  exact lintegral_iSup (fun n ↦ measurable_of_finite (fun x : ExtensionFiber AS L ω ↦ f n x.val))
+    (fun n m h x ↦ hf h x.val)
+
+omit _s in
+/-- Nonnegative fibre integration preserves countable sums. -/
+theorem fibreLIntegral_tsum (f : ℕ → ParameterSpaceExtension AS L → ℝ≥0∞) :
+    fibreLIntegral AS L (fun x ↦ ∑' n, f n x) =
+      fun ω ↦ ∑' n, fibreLIntegral AS L (f n) ω := by
+  funext ω
+  let : Finite (ExtensionFiber AS L ω) := finite_extensionFiber AS L ω
+  exact lintegral_tsum (fun n ↦
+    (measurable_of_finite (fun x : ExtensionFiber AS L ω ↦ f n x.val)).aemeasurable)
 
 /-- Chen--Moriwaki, Theorem 3.3.4: for finite separable `L/K`, the fibre integration operator
 sends measurable real-valued functions on `Ω_L` to measurable real-valued functions on `Ω_K`. -/
 theorem measurable_fibreIntegral {f : ParameterSpaceExtension AS L → ℝ} (hf : Measurable f) :
     Measurable (fibreIntegral AS L f) := by
-  sorry
+ classical
+  let H : Submodule ℝ (ParameterSpaceExtension AS L → ℝ) := {
+    carrier := {f | Measurable (fibreIntegral AS L f)}
+    zero_mem' := by
+      change Measurable fun ω : AS.Ω ↦
+        ∫ _x : ExtensionFiber AS L ω, (0 : ℝ) ∂fibreProbabilityMeasure AS L ω
+      simp only [integral_zero]
+      exact measurable_const
+    add_mem' := fun hf hg ↦ by
+      change Measurable (fibreIntegral AS L (_ + _))
+      rw [fibreIntegral_add]
+      exact hf.add hg
+    smul_mem' := fun c f hf ↦ by
+      change Measurable (fibreIntegral AS L (c • f))
+      rw [fibreIntegral_smul]
+      exact hf.const_smul c }
+  have hH : IsSeqClosed (H : Set (ParameterSpaceExtension AS L → ℝ)) := by
+    intro u f hu hf
+    exact measurable_of_tendsto_metrizable hu (tendsto_pi_nhds.mpr fun ω ↦
+      tendsto_fibreIntegral AS L u f (fun x ↦ tendsto_pi_nhds.mp hf x) ω)
+  let C : Set (ParameterSpaceExtension AS L → ℝ) :=
+    Set.range (fun p : L × {φ : AS.Ω → ℝ // Measurable φ} ↦
+      fun x : ParameterSpaceExtension AS L ↦ x.ϕ p.1 * p.2.val x.proj)
+  have h1 : (1 : ParameterSpaceExtension AS L → ℝ) ∈ C := by
+    refine ⟨⟨1, ⟨fun _ ↦ 1, measurable_const⟩⟩, ?_⟩
+    ext x
+    simp
+  have hmul : ∀ f ∈ C, ∀ g ∈ C, f * g ∈ C := by
+    rintro f ⟨⟨b, φ⟩, rfl⟩ g ⟨⟨c, ψ⟩, rfl⟩
+    refine ⟨⟨b * c, ⟨φ.val * ψ.val, φ.property.mul ψ.property⟩⟩, ?_⟩
+    ext x
+    simp only [Pi.mul_apply, map_mul]
+    ring
+  have hCH : C ⊆ H := by
+    rintro f ⟨⟨b, φ⟩, rfl⟩
+    change Measurable (fibreIntegral AS L (fun x ↦ x.ϕ b * φ.val x.proj))
+    have heq : (fun x : ParameterSpaceExtension AS L ↦ x.ϕ b * φ.val x.proj) =
+        fun x ↦ φ.val x.proj * x.ϕ b := by
+      ext x
+      exact mul_comm _ _
+    rw [heq, fibreIntegral_comp_proj_mul]
+    exact φ.property.mul (measurable_fibreIntegral_eval AS L b)
+  have hm : (inferInstance : MeasurableSpace (ParameterSpaceExtension AS L)) =
+      ⨆ g : C, MeasurableSpace.comap g.val inferInstance := by
+    rw [measurableSpace_eq_iSup_comap_eval_mul_base AS L]
+    apply le_antisymm
+    · apply iSup_le
+      intro b
+      apply iSup_le
+      intro φ
+      exact le_iSup_of_le ⟨_, ⟨⟨b, φ⟩, rfl⟩⟩ le_rfl
+    · apply iSup_le
+      intro g
+      obtain ⟨⟨b, φ⟩, hg⟩ := g.property
+      rw [← hg]
+      exact le_iSup_of_le b (le_iSup_of_le φ le_rfl)
+  apply MeasureTheory.measurable_mem_of_isSeqClosed H hH h1 hmul hCH
+  exact hm ▸ hf
 
 /-- Nonnegative measurable functions have measurable fibre integrals. -/
 theorem measurable_fibreLIntegral {f : ParameterSpaceExtension AS L → ℝ≥0∞}
@@ -808,13 +1277,32 @@ theorem integral_comp_proj_inducedMeasure {φ : AS.Ω → ℝ} (hφ : Integrable
   rw [map_inducedMeasure_proj AS L] at h
   exact h.symm
 
-/-- Chen--Moriwaki, Theorem 3.3.7(5), formula (3.9): the logarithmic integral against the
-induced measure computes the logarithm of the norm form:
-`[K' : K] ∫ ln |b|_x dν_{K'} = ∫ ln |N_{K'/K}(b)|_ω dν_K`. -/
-theorem finrank_mul_integral_log_inducedMeasure (b : L) (hb : b ≠ 0) :
-    (Module.finrank K L : ℝ) * ∫ x, Real.log (ϕ x b) ∂inducedMeasure AS L =
-      ∫ ω, Real.log (AS.ϕ ω (Algebra.norm K b)) ∂AS.v := by
-  sorry
+/-- Formula (3.10): the fibre integral of a logarithmic evaluation is the logarithm
+of its field norm divided by the extension degree. -/
+theorem fibreIntegral_log_eq_log_norm (b : L) (hb : b ≠ 0) (ω : AS.Ω) :
+    fibreIntegral AS L (fun x ↦ Real.log (ϕ x b)) ω =
+      Real.log (AS.ϕ ω (Algebra.norm K b)) / (Module.finrank K L : ℝ) := by
+  classical
+  let E := {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω}
+  let e : ExtensionFiber AS L ω ≃ E := {
+    toFun x := ⟨x.val.ϕ, x.val.restrict_eq.trans (congrArg AS.ϕ x.property)⟩
+    invFun w := ⟨⟨ω, w.val, w.property⟩, rfl⟩
+    left_inv x := by
+      apply Subtype.ext
+      exact ParameterSpaceExtension.ext AS L x.property.symm rfl
+    right_inv _ := rfl }
+  let : Fintype E := (AbsoluteValue.finite_extensions (L := L) (AS.ϕ ω)).fintype
+  let : Fintype (ExtensionFiber AS L ω) := Fintype.ofEquiv E e.symm
+  rw [fibreIntegral_eq_sum]
+  simp only [fibreWeight, ENNReal.toReal_div, ENNReal.toReal_natCast,
+    div_mul_eq_mul_div, ← Finset.sum_div]
+  congr 1
+  have hp : AS.ϕ ω (Algebra.norm K b) =
+      ∏ x : ExtensionFiber AS L ω, x.val.ϕ b ^ x.val.ϕ.localDegree K :=
+    (AbsoluteValue.apply_norm_eq_prod (AS.ϕ ω) b).trans
+      (e.prod_comp (fun w ↦ w.val b ^ w.val.localDegree K)).symm
+  rw [hp, Real.log_prod (fun x _ ↦ pow_ne_zero _ (x.val.ϕ.ne_zero hb))]
+  simp only [Real.log_pow]
 
 /-- Chen--Moriwaki, Theorem 3.3.7(4): logarithmic evaluations are integrable for the measure
 defined in Definition 3.3.6. -/
@@ -822,7 +1310,54 @@ theorem integrable_log_inducedMeasure (a : L) (ha : a ≠ 0) :
     Integrable
       (fun x : ParameterSpaceExtension AS L ↦ Real.log ((ParameterSpaceExtension.ϕ x) a))
       (inducedMeasure AS L) := by
-  sorry
+  let p := minpoly K a
+  have hp : p.Monic := minpoly.monic (Algebra.IsIntegral.isIntegral a)
+  let h : AS.Ω → ℝ := fun ω ↦
+    Real.log (p.natDegree : ℝ) * AS.κ ω + AS.coefficientLogBound p ω
+  have hm : Measurable h := AS.measurable_logarithmicRootBound p
+  have hi : Integrable h AS.v := AS.integrable_logarithmicRootBound p
+  let u : ParameterSpaceExtension AS L → ℝ := fun x ↦ h (proj x) - Real.log (ϕ x a)
+  have um : Measurable u := (hm.comp (measurable_proj AS L)).sub (measurable_log AS L a)
+  have un (x : ParameterSpaceExtension AS L) : 0 ≤ u x := by
+    exact sub_nonneg.mpr (AS.log_apply_le_rootBound p hp a
+      (minpoly.aeval K a) ha (proj x) (ϕ x) (ϕ_restriction AS L x))
+  have uint : Integrable u (inducedMeasure AS L) := by
+    apply (integrable_inducedMeasure_iff AS L um).mpr
+    have heq : (fibreIntegral AS L fun x ↦ |u x|) =
+        fun ω ↦ h ω -
+          Real.log (AS.ϕ ω (Algebra.norm K a)) / (Module.finrank K L : ℝ) := by
+      funext ω
+      simp_rw [abs_of_nonneg (un _)]
+      change (∫ x : ExtensionFiber AS L ω, u x.val
+        ∂fibreProbabilityMeasure AS L ω) = _
+      rw [show (fun x : ExtensionFiber AS L ω ↦ u x.val) =
+        (fun x ↦ h (proj x.val) - Real.log (ϕ x.val a)) from rfl]
+      rw [integral_sub (integrable_fibre AS L ω _) (integrable_fibre AS L ω _)]
+      change fibreIntegral AS L (fun x ↦ h (proj x)) ω -
+        fibreIntegral AS L (fun x ↦ Real.log (ϕ x a)) ω = _
+      rw [fibreIntegral_comp_proj, fibreIntegral_log_eq_log_norm AS L a ha]
+    rw [heq]
+    exact hi.sub ((AS.integrable_log (Algebra.norm K a)
+      (Algebra.norm_ne_zero_iff.mpr ha)).div_const _)
+  have hmp : MeasurePreserving (proj (AS := AS) (L := L))
+      (inducedMeasure AS L) AS.v :=
+    ⟨measurable_proj AS L, map_inducedMeasure_proj AS L⟩
+  have hc := hmp.integrable_comp_of_integrable hi
+  convert hc.sub uint using 1
+  funext x
+  dsimp [u, Function.comp_def]
+  ring
+
+/-- Chen--Moriwaki, Theorem 3.3.7(5), formula (3.9): the logarithmic integral against the
+induced measure computes the logarithm of the norm form:
+`[K' : K] ∫ ln |b|_x dν_{K'} = ∫ ln |N_{K'/K}(b)|_ω dν_K`. -/
+theorem finrank_mul_integral_log_inducedMeasure (b : L) (hb : b ≠ 0) :
+    (Module.finrank K L : ℝ) * ∫ x, Real.log (ϕ x b) ∂inducedMeasure AS L =
+      ∫ ω, Real.log (AS.ϕ ω (Algebra.norm K b)) ∂AS.v := by
+  rw [integral_inducedMeasure AS L (integrable_log_inducedMeasure AS L b hb)]
+  simp_rw [fibreIntegral_log_eq_log_norm (AS := AS) (L := L) b hb]
+  rw [integral_div]
+  exact mul_div_cancel₀ _ (by exact_mod_cast (Module.finrank_pos (R := K) (M := L)).ne')
 
 /-- The finite separable extension adelic structure on `L`, using the measure defined by
 Definition 3.3.6. -/
@@ -1094,39 +1629,6 @@ theorem isProper_finiteExtension [AS.toAdelicCurve.IsProper] :
     ∂measure AS L = 0 at hzero
   rw [hzero, mul_zero]
 
-omit [FiniteDimensional K L] in
-/-- The canonical completion maps for the separable part form a scalar tower. -/
-private theorem isScalarTower_completion_separableClosure (w : AbsoluteValue L ℝ) :
-    let : Algebra (w.restriction K).Completion
-        (w.restriction (separableClosure K L)).Completion :=
-      algebraCompletion (w.restriction (separableClosure K L)) K
-    IsScalarTower (w.restriction K).Completion
-      (w.restriction (separableClosure K L)).Completion w.Completion := by
-  let E := separableClosure K L
-  let B := (w.restriction K).Completion
-  let D := (w.restriction E).Completion
-  let : Algebra B D := algebraCompletion (w.restriction E) K
-  apply IsScalarTower.of_algebraMap_eq
-  intro x
-  refine UniformSpace.Completion.induction_on x ?_ ?_
-  · exact isClosed_eq (isometry_algebraMap_completion w K).continuous
-      ((isometry_algebraMap_completion w E).continuous.comp
-        (isometry_algebraMap_completion (w.restriction E) K).continuous)
-  · intro a
-    change (algebraMap (w.restriction K).Completion w.Completion)
-          (a : (w.restriction K).Completion) =
-        (algebraMap (w.restriction E).Completion w.Completion)
-          ((algebraMap ((w.restriction E).restriction K).Completion
-            (w.restriction E).Completion)
-            ((show WithAbs ((w.restriction E).restriction K) from a) :
-              ((w.restriction E).restriction K).Completion))
-    rw [algebraMap_completion_def, algebraMap_completion_def,
-      algebraMap_completion_def]
-    erw [UniformSpace.Completion.mapRingHom_coe,
-      UniformSpace.Completion.mapRingHom_coe,
-      UniformSpace.Completion.mapRingHom_coe]
-    rfl
-
 /-- Chen--Moriwaki, Lemma 3.4.2: for a finite extension `L/K` and an absolute value `w` on
 `L`, the completion of the separable closure `K^sc` of `K` in `L` at `w` identifies, inside
 the completion `L_w`, with the separable closure of the completion `K_v` (`v = w|_K`). -/
@@ -1138,7 +1640,7 @@ theorem fieldRange_completion_separableClosure (w : AbsoluteValue L ℝ) :
   let D := (w.restriction E).Completion
   let : Algebra B D := algebraCompletion (w.restriction E) K
   have : Algebra.IsSeparable B D := isSeparable_completion (w.restriction E)
-  have : IsScalarTower B D w.Completion := isScalarTower_completion_separableClosure L w
+  have : IsScalarTower B D w.Completion := isScalarTower_completion_restriction w E
   let p := ringExpChar w.Completion
   let : ExpChar E p := (algebraMap E w.Completion).expChar
     (algebraMap E w.Completion).injective p
@@ -1197,7 +1699,7 @@ theorem fibreWeight_eq_finSepDegree (ω : AS.Ω)
     let B := (w.restriction K).Completion
     let D := (w.restriction E).Completion
     let : Algebra B D := algebraCompletion (w.restriction E) K
-    have : IsScalarTower B D w.Completion := isScalarTower_completion_separableClosure L w
+    have : IsScalarTower B D w.Completion := isScalarTower_completion_restriction w E
     let f := IsScalarTower.toAlgHom B D w.Completion
     have hf : f.range = (separableClosure B w.Completion).toSubalgebra := by
       ext y

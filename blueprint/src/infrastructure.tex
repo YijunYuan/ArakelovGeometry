@@ -61,6 +61,59 @@ for $x,y$. The converse follows by restriction along the isometric
 embedding of $K$.
 \end{proof}
 
+\begin{lemma}[Complex representation of an archimedean absolute value]
+\label{lem:archimedean-complex-embedding}
+\leanok
+\source{chen-moriwaki-adelic:page-0203,chen-moriwaki-adelic:page-0204}
+\uses{lem:completion-nonarchimedean,thm:complete-archimedean}
+\lean{AbsoluteValue.exists_complex_embedding_of_not_isNonarchimedean}
+If $v$ is an archimedean real absolute value on a field $K$, there
+are a field embedding $\sigma:K\hookrightarrow\mathbb C$ and a real
+number $s\in(0,1]$ such that $v(a)=|\sigma(a)|^s$ for every $a\in K$.
+\end{lemma}
+\begin{proof}
+The absolute value remains archimedean on the completion $K_v$.
+The complete archimedean classification identifies this field with
+$\mathbb R$ or $\mathbb C$ and its absolute value with the $s$th power
+of the usual one, for some $s\in(0,1]$. Compose the isometric inclusion
+$K\to K_v$ with this identification, and in the real case with
+$\mathbb R\hookrightarrow\mathbb C$. These compositions give the
+asserted embedding and formula.
+\end{proof}
+
+\begin{lemma}[Nonarchimedean type and restriction]
+\label{lem:nonarchimedean-restriction}
+\leanok
+\source{chen-moriwaki-adelic:page-0202,chen-moriwaki-adelic:page-0203}
+\uses{def:absolute-value-restriction,lem:archimedean-complex-embedding}
+\lean{AbsoluteValue.isNonarchimedean_restriction_iff}
+For any field extension $L/K$ and any real absolute value $w$ on $L$,
+$w|_K$ is nonarchimedean if and only if $w$ is nonarchimedean.
+\end{lemma}
+\begin{proof}
+The ultrametric inequality is preserved by restriction. Conversely,
+if $w$ were archimedean, its complex representation would give
+$w(2)=2^s>1$ for some $s>0$. A nonarchimedean restriction satisfies
+$w(2)=w(1+1)\leq\max(w(1),w(1))=1$, a contradiction.
+\end{proof}
+
+\begin{lemma}[A finite-sum bound for a powered complex absolute value]
+\label{lem:powered-complex-sum-bound}
+\leanok
+\source{chen-moriwaki-adelic:page-0203,chen-moriwaki-adelic:page-0204}
+\lean{AbsoluteValue.sum_le_card_rpow_mul_of_complex_embedding}
+Suppose $w(a)=|\sigma(a)|^s$ for an embedding into $\mathbb C$ and
+$s\geq0$. If $a_1,\ldots,a_m$ is a nonempty finite family with
+$w(a_i)\leq M$ for every $i$, then
+$w(\sum_i a_i)\leq m^sM$.
+\end{lemma}
+\begin{proof}
+Choose $j$ maximizing $|\sigma(a_j)|$. The triangle inequality gives
+$|\sum_i\sigma(a_i)|\leq m|\sigma(a_j)|$. Raising to the nonnegative
+power $s$ and using the formula for $w$ gives
+$w(\sum_i a_i)\leq m^s w(a_j)\leq m^sM$.
+\end{proof}
+
 \begin{lemma}[Archimedean type under extension]\label{lem:archimedean-extension}
 \source{chen-moriwaki-adelic:page-0202,chen-moriwaki-adelic:page-0203,chen-moriwaki-adelic:page-0204}
 \uses{lem:bounded-integers,lem:completion-nonarchimedean,thm:complete-archimedean,lem:archimedean-rational-normalization}
@@ -467,6 +520,206 @@ split in $C$. Partition these embeddings according to their pulled-back
 absolute value $u\circ\sigma$. For each extending $w$, the preceding
 lemma gives cardinality $[L_w:B]$ for its part. Summing the cardinalities of the
 parts proves the formula.
+\end{proof}
+
+\begin{lemma}[Embedding counts in an algebraically closed field]
+\label{lem:embedding-count-algclosed}
+\leanok
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0202}
+\uses{lem:completed-embedding-count,lem:finite-values-via-embeddings,lem:complete-extension,def:local-degree}
+\lean{AbsoluteValue.card_embeddings_eq_localDegree_of_isAlgClosed}
+Let $L/K$ be finite separable, let $w$ be an absolute value on $L$,
+and let $C_0$ be an algebraically closed extension of $K$, equipped
+with an absolute value $u_0$ whose restriction to $K$ is $w|_K$.
+Then
+\[
+ \#\{\sigma\in\operatorname{Hom}_K(L,C_0):u_0\circ\sigma=w\}
+ =[L_w:K_{w|_K}].
+\]
+This extends the completed-base embedding count to any algebraically
+closed ambient field.
+\end{lemma}
+\begin{proof}
+Put $v=w|_K$, $B=K_v$ and $C=B^{\mathrm{ac}}$, with the unique
+absolute value $u$ extending the norm on $B$.
+Let $N$ be the normal closure of $L/K$ in $C_0$: it is the
+compositum of the finitely many images of $L$ in $C_0$.
+It is finite over $K$, and every minimal polynomial of an element
+of $L$ splits in $N$. By Lemma~\ref{lem:finite-values-via-embeddings},
+there is a $K$-embedding $j:N\to C$ with $u\circ j=u_0|_N$.
+
+Every $K$-embedding $L\to C_0$ has image in $N$ by its definition.
+Every $K$-embedding $L\to C$ has image in $j(N)$, because each of
+its values is a root of a minimal polynomial that splits in $j(N)$.
+Factoring through these two inclusions therefore gives a bijection
+between $\operatorname{Hom}_K(L,C_0)$ and $\operatorname{Hom}_K(L,C)$.
+For a map with factor $\sigma_N:L\to N$, the corresponding map to
+$C$ is $j\circ\sigma_N$, and
+$u\circ j\circ\sigma_N=u_0\circ\sigma_N$.
+The bijection thus preserves the induced absolute value on $L$.
+The result now follows from Lemma~\ref{lem:completed-embedding-count}.
+\end{proof}
+
+\begin{lemma}[Weighted products and sums over extending places]
+\label{lem:weighted-embedding-sums}
+\leanok
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0202}
+\uses{lem:embedding-count-algclosed,lem:finite-extension-count,def:local-degree}
+\lean{AbsoluteValue.prod_pow_localDegree_eq_prod_embeddings,AbsoluteValue.sum_localDegree_nsmul_eq_sum_embeddings}
+Let $L/K$ be finite separable, let $v$ be an absolute value on $K$,
+let $C$ be an algebraically closed extension of $K$, and let $u$ be
+an absolute value on $C$ extending $v$. Put
+$X_v=\{w:w|_K=v\}$ and $d_w=[L_w:K_v]$.
+For a commutative monoid $M$ and any function $\Phi$ from the
+absolute values of $L$ to $M$,
+\[
+ \prod_{w\in X_v}\Phi(w)^{d_w}
+ =\prod_{\sigma\in\operatorname{Hom}_K(L,C)}\Phi(u\circ\sigma).
+\]
+For an additive commutative monoid and such a function $\Phi$,
+the corresponding formula is
+\[
+ \sum_{w\in X_v}d_w\Phi(w)
+ =\sum_{\sigma\in\operatorname{Hom}_K(L,C)}\Phi(u\circ\sigma),
+\]
+where $d_w\Phi(w)$ means repeated addition.
+\end{lemma}
+\begin{proof}
+Partition the finite set $\operatorname{Hom}_K(L,C)$ by the map
+$\sigma\mapsto u\circ\sigma$, whose values lie in $X_v$.
+Lemma~\ref{lem:embedding-count-algclosed} says that the part indexed
+by $w$ has exactly $d_w$ elements. The function
+$\sigma\mapsto\Phi(u\circ\sigma)$ is constant with value $\Phi(w)$
+on that part. Its product on that part is $\Phi(w)^{d_w}$, and its
+sum is $d_w\Phi(w)$. Multiplying, respectively adding, over the parts
+gives the two identities.
+\end{proof}
+
+\begin{proposition}[The local norm product]\label{prop:local-norm-product}
+\leanok
+\source{chen-moriwaki-adelic:page-0202}
+\uses{lem:weighted-embedding-sums,lem:algebraic-absolute-value-extension,def:local-degree}
+\lean{AbsoluteValue.apply_norm_eq_prod}
+Let $L/K$ be finite separable, let $v$ be an absolute value on $K$,
+and let $X_v$ be the set of absolute values of $L$ extending $v$.
+For every $a\in L$,
+\[
+ v(N_{L/K}(a))=\prod_{w\in X_v}w(a)^{[L_w:K_v]}.
+\]
+This includes the zero element as well as the nonzero elements in
+the norm formula used in the proof of Theorem 3.3.7(4)
+of \cite{chen-moriwaki}.
+\end{proposition}
+\begin{proof}
+Extend $v$ to an absolute value $u$ on an algebraic closure $C$ of
+$K$ by Lemma~\ref{lem:algebraic-absolute-value-extension}.
+For a finite separable extension, the field norm in $C$ is the
+product of all conjugates:
+\[
+ N_{L/K}(a)=\prod_{\sigma\in\operatorname{Hom}_K(L,C)}\sigma(a).
+\]
+Indeed, after extending scalars to $C$, multiplication by $a$ has
+the eigenvalues $\sigma(a)$, with one entry for each embedding, so
+its determinant is that product. Apply the multiplicative map $u$
+to this identity. The restriction $u|_K=v$ identifies its left side
+with $v(N_{L/K}(a))$. Lemma~\ref{lem:weighted-embedding-sums},
+applied to $\Phi(w)=w(a)$, identifies its right side with the stated
+product.
+\end{proof}
+
+\begin{lemma}[Completion of an intermediate-field tower]
+\label{lem:completion-tower}
+\leanok
+\source{chen-moriwaki-adelic:page-0195}
+\uses{lem:completion-embedding,lem:restriction-transitive}
+\lean{AbsoluteValue.isScalarTower_completion_restriction}
+Let $K\subseteq F\subseteq L$ be fields and let $w$ be an absolute
+value on $L$. The canonical isometric embeddings of completions form
+a commutative triangle
+\[
+ K_{w|_K}\longrightarrow F_{w|_F}\longrightarrow L_w,
+\]
+whose composite is the canonical embedding $K_{w|_K}\to L_w$.
+\end{lemma}
+\begin{proof}
+Both the direct embedding and the composite are continuous maps
+$K_{w|_K}\to L_w$. They agree on the dense image of $K$, since
+the original field inclusions compose to the inclusion $K\to L$.
+The equalizer of two continuous maps to the Hausdorff field $L_w$
+is closed, so their equality on that dense image implies equality
+everywhere.
+\end{proof}
+
+\begin{lemma}[Multiplication of local degrees]\label{lem:local-degree-tower}
+\leanok
+\source{chen-moriwaki-adelic:page-0195}
+\uses{lem:completion-tower,lem:completion-finite,def:local-degree}
+\lean{AbsoluteValue.localDegree_mul}
+Let $L/K$ be finite, let $F$ be an intermediate field, and let $w$
+be an absolute value on $L$. Then
+\[
+ [F_{w|_F}:K_{w|_K}]\,[L_w:F_{w|_F}]
+ =[L_w:K_{w|_K}].
+\]
+\end{lemma}
+\begin{proof}
+Lemma~\ref{lem:completion-tower} gives a tower of fields with precisely
+these canonical embeddings. Each extension in the tower is finite by
+Lemma~\ref{lem:completion-finite}. Products of a basis for the first
+extension and a basis for the second form a basis of the full
+extension, so their dimensions multiply.
+\end{proof}
+
+\begin{lemma}[Local degrees above an intermediate place]
+\label{lem:local-degree-restriction-sum}
+\leanok
+\source{chen-moriwaki-adelic:page-0195,chen-moriwaki-adelic:page-0196}
+\uses{lem:local-degree-tower,thm:local-degree-sum}
+\lean{AbsoluteValue.sum_localDegree_restriction}
+Let $L/K$ be finite, let $F$ be intermediate with $L/F$ separable,
+and let $x$ be an absolute value on $F$. Then
+\[
+ \sum_{w|_F=x}[L_w:K_{x|_K}]
+ =[F_x:K_{x|_K}]\,[L:F].
+\]
+\end{lemma}
+\begin{proof}
+For each summand, Lemma~\ref{lem:local-degree-tower} gives
+$[L_w:K_{x|_K}]=[F_x:K_{x|_K}][L_w:F_x]$.
+Factor out the first degree, which is independent of $w$.
+Theorem~\ref{thm:local-degree-sum} applied to $L/F$ and $x$
+identifies the remaining sum with $[L:F]$.
+\end{proof}
+
+\begin{lemma}[Weighted sums under restriction]\label{lem:weighted-restriction-sum}
+\leanok
+\source{chen-moriwaki-adelic:page-0195,chen-moriwaki-adelic:page-0196}
+\uses{lem:local-degree-restriction-sum,lem:finite-extension-count,lem:restriction-transitive}
+\lean{AbsoluteValue.sum_localDegree_nsmul_restriction}
+Let $L/K$ be finite, let $F$ be intermediate with $L/F$ separable,
+and fix an absolute value $v$ on $K$. Write $X_L$ and $X_F$ for
+the sets of extensions of $v$ to $L$ and $F$, respectively.
+For any additive commutative monoid $M$ and any function
+$\Phi:X_F\to M$,
+\[
+ \sum_{w\in X_L}[L_w:K_v]\,\Phi(w|_F)
+ =[L:F]\sum_{x\in X_F}[F_x:K_v]\,\Phi(x),
+\]
+where multiplication by a natural number denotes repeated addition.
+\end{lemma}
+\begin{proof}
+Partition $X_L$ by restriction to $F$. For a fixed $x\in X_F$,
+its part is exactly the set of absolute values of $L$ extending
+$x$: restricting an extension of $x$ further to $K$ gives $v$.
+On this part, the function $\Phi(w|_F)$ is constant with value
+$\Phi(x)$. Its weighted sum is therefore
+\[
+ \left(\sum_{w|_F=x}[L_w:K_v]\right)\Phi(x)
+ =[L:F]\,[F_x:K_v]\,\Phi(x)
+\]
+by Lemma~\ref{lem:local-degree-restriction-sum}.
+Sum this identity over the finite set $X_F$, and distribute the
+natural-number multiple over the sum.
 \end{proof}
 
 \begin{proposition}[Local factorization]\label{lem:local-factorization}

@@ -1,9 +1,9 @@
 # Extension proof status
 
 The task is unfinished. The configured `horizon check --json` passed on
-2026-09-16 at 04:58:34 UTC (3407 jobs), with 25 direct sorry occurrences.
-The subsequent compiled inventory contains 601 project constants, including
-48 transitively using `sorryAx`; no other nonstandard axioms occur.
+2026-09-16 at 05:25:21 UTC (3415 jobs), with 21 direct sorry occurrences.
+The subsequent compiled inventory contains 663 project constants, including
+26 transitively using `sorryAx`; no other nonstandard axioms occur.
 
 ## Mathematical route and coverage
 
@@ -13,8 +13,8 @@ finite extensions including inseparability, algebraic cylinder measures,
 nonnegative and signed disintegration, and tower compatibility. Every direct
 gap and every extension-module constant has a blueprint mapping. Additional
 unwritten mathematical producers have explicit nodes and complete proofs;
-Forty-two nodes with axiom-clean attachments are marked `\leanok`. The combined route has 225
-mathematical nodes, including 45 explicitly unwritten producer nodes. All 601
+Seventy-eight nodes with axiom-clean attachments are marked `\leanok`. The combined route has 246
+mathematical nodes, including 38 explicitly unwritten producer nodes. All 663
 project constants have an attachment or an explicitly classified support
 mapping; every compiled mathematical dependency between attached nodes has
 a blueprint path, with zero cycles or dangling links.
@@ -48,20 +48,27 @@ restriction from local degree and adding compiled-dependency reachability
 checks. These reviews certify the stated scope of the route, not Lean proof
 completion.
 
-The inseparable construction, finite transport, projective measurability,
-cylinder operations, power-sum radius, and finite-fibre proofs have removed
-39 direct gaps since the recovered baseline. Complete-base existence and
-uniqueness now include all places; extension over arbitrary algebraic fields
-and finite-fibre finiteness follow through embeddings into completed algebraic
-closures. Independent honesty review and transitive axiom checks confirm that
-these producers use only the standard axioms. Local-degree normalization is now proved by counting embeddings, so the finite
-fibre probability and elementary integration lemmas are axiom-clean. Completion
-of the separable part and the resulting separable-degree weight identity are
-also axiom-clean. The signed disintegration formula, pushforward and base
-pullback formulas now have proofs; they still inherit the open measurable
-fibre-integration producer. Properness is reduced to the unproved global
-logarithmic norm identity, and logarithmic integrability remains open. Earlier verified restriction and
-scalar-integration lemmas are in `bc0d71f`.
+The source graph parser currently misses one `to_additive`-generated theorem,
+`AbsoluteValue.sum_localDegree_nsmul_eq_sum_embeddings`; its compiled
+attachment and axiom evidence are present. Exposing the same additive theorem
+explicitly is scheduled in the next proof batch.
+
+Finite separable fibre integration is now measurable by ordered embedding
+values and functional closure under pointwise sequences. The root estimate
+retains the exact factor $m^{\kappa(\omega)}$, and its coefficient envelope is
+measurable and integrable. Together with the local norm formula, it proves
+logarithmic integrability and the global norm identity. Both finite extension
+constructions and their properness results now use only standard axioms.
+The finite-separable restriction identity is also proved by local-degree
+tower identities and finite sums. Independent honesty review checked 50
+producers and consumers; no assumed producer or weakened conclusion was found.
+
+The recovered baseline has fallen from 64 to 21 direct gaps. The remaining
+sorry-backed constants belong to the general algebraic measure construction
+and the finite/algebraic tower-equivalence theorems. The broader local
+factorization and other unwritten source lemmas remain explicitly identified
+in the blueprint; they are not certified by narrower attached results.
+Earlier verified restriction and scalar-integration lemmas are in `bc0d71f`.
 
 ## Reproducing evidence
 

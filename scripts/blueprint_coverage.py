@@ -19,9 +19,6 @@ ROOT = Path(__file__).resolve().parents[1]
 # explicit mathematical owner. These mappings do not claim a separate theorem
 # attachment; their axioms and compiled dependency paths remain audited.
 IMPLEMENTATION_OWNER_NODES = {
-    "_private.ArakelovGeometry.AdelicCurve.Extension.0.ArakelovGeometry.AdelicStructure."
-    "ParameterSpaceFinExtension.isScalarTower_completion_separableClosure":
-        "lem:completion-separable-closure",
     "ArakelovGeometry.AdelicCurve.instIsProperTrivialAdelicCurve":
         "prop:proper-trivial-adelic-curve",
     "ArakelovGeometry.AdelicCurve.instIsProperNumberFieldAdelicCurve":
@@ -30,11 +27,12 @@ IMPLEMENTATION_OWNER_NODES = {
         "thm:ff-integral-product-formula",
 }
 
-# These congruence lemmas are generated in project modules for imported
-# operations. They express substitutivity, not new library declarations or
+# These congruence and equation lemmas are generated in project modules for
+# imported operations. They express computation, not new library declarations or
 # independently authored mathematical theorems. Keep them in the axiom audit
 # and map them to the project construction using the underlying operation.
 GENERATED_SUPPORT = {
+    "Equiv.subtypeEquiv.eq_1": "ArakelovGeometry.prod_initial_comp_perm_eq_iSup_prod",
     "CauSeq.IsComplete.congr_simp": "CauSeq.isComplete_completion",
     "IsDedekindDomain.HeightOneSpectrum.adicAbv.congr_simp":
         "ArakelovGeometry.AdelicStructure.pointAbv",
@@ -239,8 +237,10 @@ def main():
             if label in nodes:
                 nodes[label].setdefault("implementation_support", []).append(name)
         if name in GENERATED_SUPPORT:
-            if row["line"] is not None or not name.endswith(".congr_simp"):
-                raise ValueError(f"Expected an unlocated generated congruence lemma: {name}")
+            if row["line"] is not None or not (
+                name.endswith(".congr_simp") or re.search(r"\.eq_\d+$", name)
+            ):
+                raise ValueError(f"Expected an unlocated generated support lemma: {name}")
             row["generated_support_for"] = GENERATED_SUPPORT[name]
             row["blueprint_nodes"] = attached.get(GENERATED_SUPPORT[name], [])
         row["project_dependencies"] = [d for d in row["dependencies"] if d in by_name]
@@ -294,7 +294,7 @@ def main():
     for row in rows:
         row["coverage_kind"] = ("attachment" if row["attachment"] else
                                 "instance_owner" if row.get("implementation_owner") and row["blueprint_nodes"] else
-                                "generated_congruence" if row.get("generated_support_for") and row["blueprint_nodes"] else
+                                "generated_support" if row.get("generated_support_for") and row["blueprint_nodes"] else
                                 "dependency_support" if row.get("supports_nodes") else "unmapped")
 
     def reachable(label):
