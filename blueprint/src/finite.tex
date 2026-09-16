@@ -55,6 +55,7 @@ $[L:K]=[L:E][E:K]$ gives the asserted inseparable degree.
 \label{lem:inseparable-power}
 \source{chen-moriwaki-adelic:page-0204}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.pow_finInsepDegree_mem_separableClosure}
+\leanok
 \uses{lem:finite-separable-part}
 For every $a\in L$ one has $a^q\in E$, where $q=[L:K]_i$.
 \end{lemma}
@@ -69,6 +70,7 @@ $a^q=b^{p^{r-s}}\in E$.
 \label{lem:inseparable-absolute-value}
 \source{chen-moriwaki-adelic:page-0204}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue,ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.extendAbsoluteValue_apply}
+\leanok
 \uses{lem:inseparable-power,lem:finite-separable-part}
 For an absolute value $v:E\to\mathbb R$, the formula
 \[
@@ -119,6 +121,7 @@ $w=\widetilde v$.
 \label{lem:inseparable-log}
 \source{chen-moriwaki-adelic:page-0204}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.log_extendAbsoluteValue}
+\leanok
 \uses{lem:inseparable-absolute-value}
 With the convention $\log0=0$, for all $a\in L$ one has
 \[

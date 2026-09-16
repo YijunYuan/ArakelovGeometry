@@ -1,9 +1,9 @@
 # Extension proof status
 
 The task is unfinished. The configured `horizon check --json` passed on
-2026-09-16 at 03:43:26 UTC (3392 jobs), with 64 direct sorry occurrences.
-The subsequent compiled inventory contains 521 project constants, including
-75 transitively using `sorryAx`; no other nonstandard axioms occur.
+2026-09-16 at 04:03:29 UTC (3392 jobs), with 58 direct sorry occurrences.
+The subsequent compiled inventory contains 528 project constants, including
+68 transitively using `sorryAx`; no other nonstandard axioms occur.
 
 ## Mathematical route and coverage
 
@@ -13,8 +13,9 @@ finite extensions including inseparability, algebraic cylinder measures,
 nonnegative and signed disintegration, and tower compatibility. Every direct
 gap and every extension-module constant has a blueprint mapping. Additional
 unwritten mathematical producers have explicit nodes and complete proofs;
-no node in this checkpoint is marked `\leanok`. The combined route has 204
-mathematical nodes, including 47 explicitly unwritten producer nodes. All 521
+the uniform inseparable power, extending absolute value, and logarithmic
+formula nodes are marked `\leanok`. The combined route has 204
+mathematical nodes, including 47 explicitly unwritten producer nodes. All 528
 project constants have an attachment or an explicitly classified support
 mapping; every compiled mathematical dependency between attached nodes has
 a blueprint path, with zero cycles or dangling links.
@@ -48,9 +49,12 @@ restriction from local degree and adding compiled-dependency reachability
 checks. These reviews certify the stated scope of the route, not Lean proof
 completion.
 
-The finite-fibre/local-degree producer remains unproved. Earlier verified
-restriction and scalar-integration lemmas are in `bc0d71f`; blueprint recovery
-has not reduced the 64 direct gaps.
+The inseparable power and absolute-value construction remove six direct gaps.
+Independent honesty review and transitive axiom checks confirm that these
+producers use only the standard axioms. The finite-fibre/local-degree producer
+remains unproved; in particular, integrability and properness of the finite
+extension still depend on the unfinished separable construction. Earlier
+verified restriction and scalar-integration lemmas are in `bc0d71f`.
 
 ## Reproducing evidence
 
