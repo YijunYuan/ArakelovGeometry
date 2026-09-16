@@ -86,8 +86,11 @@ compatibilities of Proposition 3.4.4 and Theorem 3.4.12.
 ## Building
 
 The project uses Lean `v4.33.0` (see `lean-toolchain`) and the pinned mathlib version in
-`lake-manifest.json`. It compiles with zero warnings and no `sorry`; the only axioms used
-are `propext`, `Classical.choice`, and `Quot.sound`.
+`lake-manifest.json`. The verified baseline on 2026-09-16 passes `lake build`, but contains **67 `sorry`
+occurrences**, all in `AdelicCurve/Extension.lean`. Sections 3.3–3.4 are not yet
+fully proved; a successful build alone does not establish axiom freedom.
+The proof route is recorded in `blueprint/src`; verification details are in
+[the proof status](docs/proof-status.md).
 
 ```bash
 lake exe cache get   # download the mathlib olean cache

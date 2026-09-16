@@ -163,12 +163,36 @@ def restrictOfLE {F G : IntermediateField K L} (hFG : F ≤ G)
     change (x.abv.restriction K) a = (AS.ϕ x.base) a
     rw [x.restrict_eq]
 
+/-- Restriction of places to an intermediate field is measurable. -/
+theorem measurable_restrict (F : IntermediateField K L) :
+    Measurable fun x : ParameterSpaceExtension AS L ↦ restrict AS L x F := by
+  apply Measurable.of_comap_le
+  change MeasurableSpace.comap _ (_ ⊔ ⨆ a : F, _) ≤ _
+  rw [MeasurableSpace.comap_sup, MeasurableSpace.comap_iSup]
+  refine sup_le ?_ (iSup_le fun a ↦ ?_)
+  · rw [MeasurableSpace.comap_comp]
+    exact (measurable_proj AS L).comap_le
+  · rw [MeasurableSpace.comap_comp]
+    exact (measurable_eval AS L (a : L)).comap_le
+
+/-- Restriction along an inclusion of intermediate fields is measurable. -/
+theorem measurable_restrictOfLE {F G : IntermediateField K L} (hFG : F ≤ G) :
+    Measurable (restrictOfLE AS L hFG) := by
+  apply Measurable.of_comap_le
+  change MeasurableSpace.comap _ (_ ⊔ ⨆ a : F, _) ≤ _
+  rw [MeasurableSpace.comap_sup, MeasurableSpace.comap_iSup]
+  refine sup_le ?_ (iSup_le fun a ↦ ?_)
+  · rw [MeasurableSpace.comap_comp]
+    exact (measurable_proj AS G).comap_le
+  · rw [MeasurableSpace.comap_comp]
+    exact (measurable_eval AS G (IntermediateField.inclusion hFG a)).comap_le
+
 /-- Restriction to a smaller intermediate stage factors through any larger one. This is the
 compatibility `π_{L/K₁} = π_{K₂/K₁} ∘ π_{L/K₂}` of §3.4.2, formula (3.16). -/
 theorem restrictOfLE_restrict {F G : IntermediateField K L} (hFG : F ≤ G)
     (x : ParameterSpaceExtension AS L) :
     restrictOfLE AS L hFG (restrict AS L x G) = restrict AS L x F := by
-  sorry
+  rfl
 
 end ParameterSpaceExtension
 
@@ -225,6 +249,19 @@ abbrev ExtensionFiber (ω : AS.Ω) :=
 
 namespace ParameterSpaceExtension
 
+/-- Evaluation maps distinguish two different absolute values in the same fibre. -/
+instance extensionFiber_separatesPoints (ω : AS.Ω) :
+    MeasurableSpace.SeparatesPoints (ExtensionFiber AS L ω) := by
+  rw [MeasurableSpace.separatesPoints_iff]
+  intro x y h
+  apply Subtype.ext
+  apply ext AS L (x.property.trans y.property.symm)
+  ext a
+  have hmeas : Measurable fun z : ExtensionFiber AS L ω ↦ z.val.ϕ a :=
+    (measurable_eval AS L a).comp measurable_subtype_coe
+  exact ((h {z | z.val.ϕ a = x.val.ϕ a}
+    (hmeas (measurableSet_singleton _))).mp rfl).symm
+
 variable [FiniteDimensional K L] [_s : Algebra.IsSeparable K L]
 
 /-- The concrete fibre weight `[L_x : K_ω] / [L : K]` from (3.2). -/
@@ -265,16 +302,24 @@ theorem fibreIntegral_add (f g : ParameterSpaceExtension AS L → ℝ) :
     fibreIntegral AS L (f + g) = fibreIntegral AS L f + fibreIntegral AS L g := by
   sorry
 
+set_option linter.unusedSectionVars false in
 /-- The fibre integration operator is `ℝ`-homogeneous (§3.3.1). -/
 theorem fibreIntegral_smul (c : ℝ) (f : ParameterSpaceExtension AS L → ℝ) :
     fibreIntegral AS L (c • f) = c • fibreIntegral AS L f := by
-  sorry
+  funext ω
+  exact integral_smul c _
 
+set_option linter.unusedSectionVars false in
 /-- Chen--Moriwaki, Proposition 3.3.1: fibre integration is linear over functions pulled back
 from the base: `I_{K'/K}(φ̄ f) = φ I_{K'/K}(f)` for `φ̄ = φ ∘ π_{K'/K}`. -/
 theorem fibreIntegral_comp_proj_mul (φ : AS.Ω → ℝ) (f : ParameterSpaceExtension AS L → ℝ) :
     fibreIntegral AS L (fun x ↦ φ (proj x) * f x) = fun ω ↦ φ ω * fibreIntegral AS L f ω := by
-  sorry
+  funext ω
+  have hproj : ∀ x : ExtensionFiber AS L ω, x.val.proj = ω := fun x ↦ x.property
+  change (∫ x : ExtensionFiber AS L ω, φ x.val.proj * f x.val
+    ∂fibreProbabilityMeasure AS L ω) = _
+  simp_rw [hproj]
+  exact integral_const_mul (φ ω) _
 
 /-- Chen--Moriwaki, Corollary 3.3.3: fibre integration retracts the pullback along the
 projection: `I_{K'/K}(φ ∘ π_{K'/K}) = φ`. -/
