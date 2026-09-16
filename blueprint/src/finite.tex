@@ -246,9 +246,10 @@ space of $L$ and $E$, this operator is $I^+_{E/K}$.
 
 \begin{lemma}[Completion of the separable part]
 \label{lem:completion-separable-closure}
+\leanok
 \source{chen-moriwaki-adelic:page-0205,chen-moriwaki-adelic:page-0206}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fieldRange_completion_separableClosure}
-\uses{lem:finite-separable-part,lem:completion-finite,lem:local-factorization}
+\uses{lem:finite-separable-part,lem:completion-finite,lem:completion-separable}
 Let $w$ be an absolute value on $L$, let $v=w|_K$, and regard the
 completion $E_w$ as a subfield of $L_w$ through the continuous
 extension of $E\hookrightarrow L$. Then $E_w$ is exactly the separable
@@ -259,27 +260,29 @@ The inclusions $K\subseteq E\subseteq L$ preserve the absolute values.
 They therefore extend to isometric field embeddings of completions;
 these embeddings compose because the compositions agree on the dense
 subfield $K$. We use them to regard $K_v\subseteq E_w\subseteq L_w$.
-The local factorization for the finite separable extension $E/K$
-expresses $E_w$ as one of the field factors of $K_v\otimes_KE$.
-Writing $E=K(\alpha)$, the minimal polynomial of $\alpha$ over $K$
-is separable. Its irreducible factors over $K_v$ are therefore
-separable, and each corresponding quotient field is finite separable
-over $K_v$. In particular $E_w/K_v$ is separable.
-By the completion lemma, $L_w=K_v(L)$. Since $K_v\subseteq E_w\subseteq L_w$,
-this also gives $L_w=E_w(L)$. Every
-element of $L$ is purely inseparable over $E$, hence also over $E_w$.
-More explicitly, in characteristic $p>0$ choose a finite generating
-family $a_1,\ldots,a_m$ of $L/E$ and a common $p$-power $p^r$ with
-$a_j^{p^r}\in E$ for every $j$. Every element of $E_w(a_1,\ldots,a_m)$
-is a quotient of polynomials in the $a_j$ with coefficients in $E_w$.
-Its $p^r$-th power belongs to $E_w$, by the Frobenius identity.
-Thus $L_w/E_w$ is purely inseparable. In characteristic zero $E=L$
-and the assertion is immediate.
+The extension $E/K$ is finite separable, so
+Lemma~\ref{lem:completion-separable} gives that $E_w/K_v$ is separable.
+
+We next prove that $L_w/E_w$ is purely inseparable. In characteristic
+zero $E=L$, so there is nothing to prove. Suppose the characteristic
+is $p>0$, and let
+\[
+ P=\{x\in L_w:\text{for some }n\geq0,\ x^{p^n}\in E_w\}.
+\]
+This is an $E_w$-subalgebra: for two elements, take a common exponent
+and use the Frobenius identities for their sum and product; scalar
+multiplication also preserves this condition. Every element of $L$
+lies in $P$, since $L/E$ is purely inseparable and the embeddings
+preserve powers. Choose an $E$-basis $b_1,\ldots,b_d$ of $L$.
+By Lemma~\ref{lem:completion-finite}, their images span $L_w$ over
+$E_w$. As $P$ is an $E_w$-vector subspace containing these images,
+$P=L_w$. Thus $L_w/E_w$ is purely inseparable.
+
 Now let $b\in L_w$ be separable over $K_v$. Its minimal polynomial
 over $E_w$ divides its separable minimal polynomial over $K_v$,
 so $b$ is separable over $E_w$. It is also purely inseparable over
-$E_w$; a polynomial with one distinct root cannot be separable unless
-it is linear. Thus $b\in E_w$. Conversely every element of $E_w$ is
+$E_w$; its minimal polynomial can have both properties only if it
+is linear. Thus $b\in E_w$. Conversely every element of $E_w$ is
 separable over $K_v$, proving equality.
 \end{proof}
 
@@ -297,6 +300,7 @@ the quotient isomorphism is read as $K_v$ and $E_w$, respectively.
 
 \begin{lemma}[Weights as ratios of separable degrees]
 \label{lem:finite-separable-weight}
+\leanok
 \source{chen-moriwaki-adelic:page-0206}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreWeight_eq_finSepDegree}
 \uses{def:finite-fibre-integral,lem:completion-separable-closure,lem:finite-separable-part,lem:inseparable-extension-unique}
@@ -312,9 +316,15 @@ The first ratio is the definition of the finite separable weight.
 Restriction of the extended absolute value to $E$, and then to $K$,
 recovers the given values, so the base completion in both ratios is
 $K_\omega$.
-The completion comparison identifies $E_x$ with the separable closure
-of $K_\omega$ in $L_x$, so its degree is the numerator of the second
-ratio. The global separable-part lemma identifies the denominators.
+The completion comparison identifies $E_x$, as a $K_\omega$-algebra,
+with the separable closure $F$ of $K_\omega$ in $L_x$. The extension
+$F/K_\omega$ is separable and $L_x/F$ is purely inseparable. The
+tower law for separable degrees therefore gives
+\[
+ [L_x:K_\omega]_s=[F:K_\omega]_s[L_x:F]_s
+ =[F:K_\omega]\cdot1=[E_x:K_\omega].
+\]
+The same argument for $K\subseteq E\subseteq L$ identifies the denominators.
 Both denominators are positive integers, so the divisions agree.
 \end{proof}
 

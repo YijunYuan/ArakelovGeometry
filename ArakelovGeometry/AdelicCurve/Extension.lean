@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 import ArakelovGeometry.AdelicCurve.Defs
 import ArakelovGeometry.ExternalResults.AbsoluteValueFinite
 import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
+import ArakelovGeometry.ExternalResults.AbsoluteValueLocal
 import Mathlib.Analysis.MeanInequalitiesPow
 import Mathlib.Analysis.SpecificLimits.Normed
 import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
@@ -466,7 +467,27 @@ noncomputable def fibreWeight (ω : AS.Ω) (x : ExtensionFiber AS L ω) : ℝ≥
 /-- The concrete fibre weights from (3.2) have total mass one. -/
 theorem tsum_fibreWeight (ω : AS.Ω) :
     ∑' x : ExtensionFiber AS L ω, fibreWeight AS L ω x = 1 := by
-  sorry
+  classical
+  let E := {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω}
+  let e : ExtensionFiber AS L ω ≃ E := {
+    toFun x := ⟨x.val.ϕ, x.val.restrict_eq.trans (congrArg AS.ϕ x.property)⟩
+    invFun w := ⟨⟨ω, w.val, w.property⟩, rfl⟩
+    left_inv x := by
+      apply Subtype.ext
+      exact ParameterSpaceExtension.ext AS L x.property.symm rfl
+    right_inv _ := rfl }
+  let : Fintype E := (AbsoluteValue.finite_extensions (L := L) (AS.ϕ ω)).fintype
+  let : Fintype (ExtensionFiber AS L ω) := Fintype.ofEquiv E e.symm
+  rw [tsum_fintype]
+  change (∑ x : ExtensionFiber AS L ω,
+    (x.val.ϕ.localDegree K : ℝ≥0∞) / (Module.finrank K L : ℝ≥0∞)) = 1
+  simp_rw [div_eq_mul_inv]
+  rw [← Finset.sum_mul, ← Nat.cast_sum]
+  have hs : ∑ x : ExtensionFiber AS L ω, x.val.ϕ.localDegree K = Module.finrank K L :=
+    (e.sum_comp (fun w ↦ w.val.localDegree K)).trans (AbsoluteValue.sum_localDegree (AS.ϕ ω))
+  rw [hs, ← div_eq_mul_inv]
+  exact ENNReal.div_self (by exact_mod_cast (ne_of_gt (Module.finrank_pos (R := K) (M := L))))
+    (by simp)
 
 /-- The finite fibre probability measure `P_{L,ω}` of (3.2), defined from its point masses. -/
 noncomputable def fibreProbabilityMeasure (ω : AS.Ω) :
@@ -677,18 +698,115 @@ theorem integrable_inducedMeasure_iff {f : ParameterSpaceExtension AS L → ℝ}
       (Filter.Eventually.of_forall hnonneg)]
   simp_rw [heq]
 
+/-- A globally almost everywhere property holds almost everywhere on almost every fibre. -/
+theorem ae_ae_fibre_of_ae {p : ParameterSpaceExtension AS L → Prop}
+    (hp : ∀ᵐ x ∂inducedMeasure AS L, p x) :
+    ∀ᵐ ω ∂AS.v, ∀ᵐ x ∂fibreProbabilityMeasure AS L ω, p x.val := by
+  obtain ⟨N, hsub, hN, hzero⟩ := exists_measurable_superset_of_null (ae_iff.mp hp)
+  rw [inducedMeasure_apply AS L hN] at hzero
+  have h := (lintegral_eq_zero_iff
+    (measurable_fibreLIntegral AS L (measurable_const.indicator hN))).mp hzero
+  filter_upwards [h] with ω hω
+  apply ae_iff.mpr
+  apply measure_mono_null (t := Subtype.val ⁻¹' N) (fun x hx ↦ hsub hx)
+  change fibreProbabilityMeasure AS L ω (Subtype.val ⁻¹' N) = 0
+  simpa only [fibreLIntegral, ← Set.indicator_comp_right, Function.comp_def,
+    lintegral_indicator_const (hN.preimage measurable_subtype_coe), one_mul,
+    Pi.zero_apply] using hω
+
 /-- Chen--Moriwaki, Theorem 3.3.7(2): formula (3.7) also holds for integrable real-valued
 functions. -/
 theorem integral_inducedMeasure {f : ParameterSpaceExtension AS L → ℝ}
     (hf : Integrable f (inducedMeasure AS L)) :
     ∫ x, f x ∂inducedMeasure AS L = ∫ ω, fibreIntegral AS L f ω ∂AS.v := by
-  sorry
+  have hnonnegative {f : ParameterSpaceExtension AS L → ℝ}
+      (hf : Measurable f) (hpos : ∀ x, 0 ≤ f x) :
+      ∫ x, f x ∂inducedMeasure AS L = ∫ ω, fibreIntegral AS L f ω ∂AS.v := by
+    have heq (ω : AS.Ω) :
+        ENNReal.ofReal (fibreIntegral AS L f ω) =
+          fibreLIntegral AS L (fun x ↦ ENNReal.ofReal (f x)) ω :=
+      ofReal_integral_eq_lintegral_ofReal (integrable_fibre AS L ω _)
+        (Filter.Eventually.of_forall fun x ↦ hpos x.val)
+    have hnonneg (ω : AS.Ω) : 0 ≤ fibreIntegral AS L f ω :=
+      integral_nonneg (fun x ↦ hpos x.val)
+    rw [integral_eq_lintegral_of_nonneg_ae
+        (Filter.Eventually.of_forall hpos) hf.aestronglyMeasurable,
+      lintegral_inducedMeasure AS L hf.ennreal_ofReal,
+      integral_eq_lintegral_of_nonneg_ae
+        (Filter.Eventually.of_forall hnonneg)
+        (measurable_fibreIntegral AS L hf).aestronglyMeasurable]
+    simp_rw [heq]
+  have hmeasurable {f : ParameterSpaceExtension AS L → ℝ}
+      (hf : Integrable f (inducedMeasure AS L)) (hfm : Measurable f) :
+      ∫ x, f x ∂inducedMeasure AS L = ∫ ω, fibreIntegral AS L f ω ∂AS.v := by
+    let p := fun x ↦ max (f x) 0
+    let n := fun x ↦ max (-f x) 0
+    have hp : Measurable p := hfm.max measurable_const
+    have hn : Measurable n := hfm.neg.max measurable_const
+    have hip : Integrable p (inducedMeasure AS L) := hf.pos_part
+    have hin : Integrable n (inducedMeasure AS L) := hf.neg.pos_part
+    have hbp : Integrable (fibreIntegral AS L p) AS.v := by
+      have h := (integrable_inducedMeasure_iff AS L hp).mp hip
+      simpa only [p, abs_of_nonneg (le_max_right (f _) (0 : ℝ))] using h
+    have hbn : Integrable (fibreIntegral AS L n) AS.v := by
+      have h := (integrable_inducedMeasure_iff AS L hn).mp hin
+      simpa only [n, abs_of_nonneg (le_max_right (-f _) (0 : ℝ))] using h
+    have hfsub : f = p - n := by
+      funext x
+      dsimp [p, n]
+      grind
+    have hsub : fibreIntegral AS L f =
+        fibreIntegral AS L p - fibreIntegral AS L n := by
+      funext ω
+      rw [hfsub]
+      exact integral_sub (integrable_fibre AS L ω _) (integrable_fibre AS L ω _)
+    rw [hsub]
+    simp only [Pi.sub_apply]
+    rw [integral_sub hbp hbn, ← hnonnegative hp (fun _ ↦ le_max_right _ _),
+      ← hnonnegative hn (fun _ ↦ le_max_right _ _), hfsub]
+    simpa only [Pi.sub_apply] using integral_sub hip hin
+  let g := hf.aestronglyMeasurable.mk f
+  have hfg : f =ᵐ[inducedMeasure AS L] g := hf.aestronglyMeasurable.ae_eq_mk
+  have hg : Integrable g (inducedMeasure AS L) := hf.congr hfg
+  have hgm : Measurable g := hf.aestronglyMeasurable.stronglyMeasurable_mk.measurable
+  have hfib : fibreIntegral AS L f =ᵐ[AS.v] fibreIntegral AS L g := by
+    filter_upwards [ae_ae_fibre_of_ae AS L hfg] with ω hω
+    exact integral_congr_ae hω
+  exact (integral_congr_ae hfg).trans
+    ((hmeasurable hg hgm).trans (integral_congr_ae hfib).symm)
+
+/-- The projection sends the induced measure to the base measure. -/
+theorem map_inducedMeasure_proj :
+    Measure.map (ParameterSpaceExtension.proj (AS := AS) (L := L)) (inducedMeasure AS L) =
+      AS.v := by
+  apply Measure.ext
+  intro s hs
+  rw [Measure.map_apply (measurable_proj AS L) hs, inducedMeasure_apply AS L
+    (hs.preimage (measurable_proj AS L))]
+  have hconst (ω : AS.Ω) :
+      fibreLIntegral AS L ((proj ⁻¹' s).indicator fun _ ↦ 1) ω =
+        s.indicator (fun _ ↦ (1 : ℝ≥0∞)) ω := by
+    change (∫⁻ x : ExtensionFiber AS L ω,
+      (proj ⁻¹' s).indicator (fun _ ↦ (1 : ℝ≥0∞)) x.val
+        ∂fibreProbabilityMeasure AS L ω) = _
+    classical
+    simp only [Set.indicator, Set.mem_preimage]
+    simp_rw [show ∀ x : ExtensionFiber AS L ω, x.val.proj = ω from fun x ↦ x.property]
+    simp
+  simp_rw [hconst]
+  rw [lintegral_indicator_const hs, one_mul]
 
 /-- Chen--Moriwaki, Theorem 3.3.7(3), formula (3.8): integrating a pullback from the base
 against the induced measure is integrating against the base measure. -/
 theorem integral_comp_proj_inducedMeasure {φ : AS.Ω → ℝ} (hφ : Integrable φ AS.v) :
     ∫ x, φ (proj x) ∂inducedMeasure AS L = ∫ ω, φ ω ∂AS.v := by
-  sorry
+  have hm : AEStronglyMeasurable φ
+      (Measure.map (proj (AS := AS) (L := L)) (inducedMeasure AS L)) := by
+    rw [map_inducedMeasure_proj AS L]
+    exact hφ.aestronglyMeasurable
+  have h := integral_map (measurable_proj AS L).aemeasurable hm
+  rw [map_inducedMeasure_proj AS L] at h
+  exact h.symm
 
 /-- Chen--Moriwaki, Theorem 3.3.7(5), formula (3.9): the logarithmic integral against the
 induced measure computes the logarithm of the norm form:
@@ -706,13 +824,6 @@ theorem integrable_log_inducedMeasure (a : L) (ha : a ≠ 0) :
       (inducedMeasure AS L) := by
   sorry
 
-/-- Chen--Moriwaki, Theorem 3.3.7(3): the projection sends the induced measure to the base
-measure. -/
-theorem map_inducedMeasure_proj :
-    Measure.map (ParameterSpaceExtension.proj (AS := AS) (L := L)) (inducedMeasure AS L) =
-      AS.v := by
-  sorry
-
 /-- The finite separable extension adelic structure on `L`, using the measure defined by
 Definition 3.3.6. -/
 noncomputable def _root_.ArakelovGeometry.AdelicStructure.finiteSeparableExtension :
@@ -728,7 +839,16 @@ noncomputable def _root_.ArakelovGeometry.AdelicStructure.finiteSeparableExtensi
 is proper. -/
 theorem isProper_finiteSeparableExtension [AS.toAdelicCurve.IsProper] :
     (AS.finiteSeparableExtension L).toAdelicCurve.IsProper := by
-  sorry
+  constructor
+  change ∀ a : L, a ≠ 0 → ∫ x, Real.log (ϕ x a) ∂inducedMeasure AS L = 0
+  intro a ha
+  have hn : Algebra.norm K a ≠ 0 := Algebra.norm_ne_zero_iff.mpr ha
+  have h := finrank_mul_integral_log_inducedMeasure AS L a ha
+  have hzero : (∫ ω, Real.log (AS.ϕ ω (Algebra.norm K a)) ∂AS.v) = 0 :=
+    AdelicCurve.IsProper.product_formula (C := AS.toAdelicCurve) (Algebra.norm K a) hn
+  rw [hzero] at h
+  exact (mul_eq_zero.mp h).resolve_left
+    (by exact_mod_cast (Module.finrank_pos (R := K) (M := L)).ne')
 
 end ParameterSpaceExtension
 
@@ -915,17 +1035,6 @@ noncomputable def fibreProbabilityMeasure (ω : AS.Ω) :
 noncomputable def fibreIntegral (f : ParameterSpaceFinExtension AS L → ℝ) : AS.Ω → ℝ :=
   fun ω ↦ ∫ x : BaseFiber L ω, f x.1 ∂fibreProbabilityMeasure AS L ω
 
-/-- Chen--Moriwaki, Remark 3.4.3: under the canonical bijection `M_{K'} ≃ M_L`, the fibre
-weights of the finite extension `L/K` are the ratios of separable degrees
-`[L_x : K_ω]_s / [L : K]_s`, computed here on the completions. -/
-theorem fibreWeight_eq_finSepDegree (ω : AS.Ω)
-    (x : ExtensionFiber AS (separableClosure K L) ω) :
-    ParameterSpaceExtension.fibreWeight AS (separableClosure K L) ω x =
-      (Field.finSepDegree ((ϕ AS L x.1).restriction K).Completion
-          (ϕ AS L x.1).Completion : ℝ≥0∞) /
-        (Field.finSepDegree K L : ℝ≥0∞) := by
-  sorry
-
 /-- The remark closing §3.4.1: the σ-algebra of the finite extension parameter space is also
 the smallest σ-algebra making the projection to the base and the evaluations of the extended
 absolute values at elements of `L` measurable. -/
@@ -985,13 +1094,129 @@ theorem isProper_finiteExtension [AS.toAdelicCurve.IsProper] :
     ∂measure AS L = 0 at hzero
   rw [hzero, mul_zero]
 
+omit [FiniteDimensional K L] in
+/-- The canonical completion maps for the separable part form a scalar tower. -/
+private theorem isScalarTower_completion_separableClosure (w : AbsoluteValue L ℝ) :
+    let : Algebra (w.restriction K).Completion
+        (w.restriction (separableClosure K L)).Completion :=
+      algebraCompletion (w.restriction (separableClosure K L)) K
+    IsScalarTower (w.restriction K).Completion
+      (w.restriction (separableClosure K L)).Completion w.Completion := by
+  let E := separableClosure K L
+  let B := (w.restriction K).Completion
+  let D := (w.restriction E).Completion
+  let : Algebra B D := algebraCompletion (w.restriction E) K
+  apply IsScalarTower.of_algebraMap_eq
+  intro x
+  refine UniformSpace.Completion.induction_on x ?_ ?_
+  · exact isClosed_eq (isometry_algebraMap_completion w K).continuous
+      ((isometry_algebraMap_completion w E).continuous.comp
+        (isometry_algebraMap_completion (w.restriction E) K).continuous)
+  · intro a
+    change (algebraMap (w.restriction K).Completion w.Completion)
+          (a : (w.restriction K).Completion) =
+        (algebraMap (w.restriction E).Completion w.Completion)
+          ((algebraMap ((w.restriction E).restriction K).Completion
+            (w.restriction E).Completion)
+            ((show WithAbs ((w.restriction E).restriction K) from a) :
+              ((w.restriction E).restriction K).Completion))
+    rw [algebraMap_completion_def, algebraMap_completion_def,
+      algebraMap_completion_def]
+    erw [UniformSpace.Completion.mapRingHom_coe,
+      UniformSpace.Completion.mapRingHom_coe,
+      UniformSpace.Completion.mapRingHom_coe]
+    rfl
+
 /-- Chen--Moriwaki, Lemma 3.4.2: for a finite extension `L/K` and an absolute value `w` on
 `L`, the completion of the separable closure `K^sc` of `K` in `L` at `w` identifies, inside
 the completion `L_w`, with the separable closure of the completion `K_v` (`v = w|_K`). -/
 theorem fieldRange_completion_separableClosure (w : AbsoluteValue L ℝ) :
     (algebraMap (w.restriction (separableClosure K L)).Completion w.Completion).fieldRange =
       (separableClosure (w.restriction K).Completion w.Completion).toSubfield := by
-  sorry
+  let E := separableClosure K L
+  let B := (w.restriction K).Completion
+  let D := (w.restriction E).Completion
+  let : Algebra B D := algebraCompletion (w.restriction E) K
+  have : Algebra.IsSeparable B D := isSeparable_completion (w.restriction E)
+  have : IsScalarTower B D w.Completion := isScalarTower_completion_separableClosure L w
+  let p := ringExpChar w.Completion
+  let : ExpChar E p := (algebraMap E w.Completion).expChar
+    (algebraMap E w.Completion).injective p
+  let : ExpChar D p := (algebraMap D w.Completion).expChar
+    (algebraMap D w.Completion).injective p
+  have hcoe (y : L) :
+      (WithAbs.toAbs w y : w.Completion) ∈ Subalgebra.perfectClosure D w.Completion p := by
+    obtain ⟨n, e, he⟩ := IsPurelyInseparable.pow_mem E p y
+    apply Subalgebra.mem_perfectClosure_iff.mpr
+    refine ⟨n, (WithAbs.toAbs (w.restriction E) e : D), ?_⟩
+    change algebraMap (w.restriction E).Completion w.Completion
+      (WithAbs.toAbs (w.restriction E) e : (w.restriction E).Completion) =
+        (WithAbs.toAbs w y : w.Completion) ^ p ^ n
+    rw [algebraMap_completion_def, UniformSpace.Completion.mapRingHom_coe]
+    change (WithAbs.toAbs w (algebraMap E L e) : w.Completion) = _
+    rw [he]
+    change UniformSpace.Completion.coeRingHom _ = _
+    exact map_pow UniformSpace.Completion.coeRingHom _ _
+  have hp : IsPurelyInseparable D w.Completion := by
+    apply (isPurelyInseparable_iff_pow_mem D p).mpr
+    intro x
+    have hspan : Submodule.span D
+        (Set.range fun i ↦ (WithAbs.toAbs w (Module.finBasis E L i) : w.Completion)) ≤
+        (Subalgebra.perfectClosure D w.Completion p).toSubmodule := by
+      apply Submodule.span_le.mpr
+      rintro _ ⟨i, rfl⟩
+      exact hcoe _
+    rw [span_coe_basis_eq_top w E (Module.finBasis E L)] at hspan
+    exact Subalgebra.mem_perfectClosure_iff.mp
+      (show x ∈ Subalgebra.perfectClosure D w.Completion p from
+        hspan (Submodule.mem_top))
+  ext x
+  constructor
+  · rintro ⟨d, rfl⟩
+    apply mem_separableClosure_iff.mpr
+    exact (Algebra.IsSeparable.isSeparable B d).map
+      (IsScalarTower.toAlgHom B D w.Completion)
+      (IsScalarTower.toAlgHom B D w.Completion).injective
+  · intro hx
+    exact IsPurelyInseparable.inseparable D x
+      ((mem_separableClosure_iff.mp hx).tower_top D)
+
+/-- Chen--Moriwaki, Remark 3.4.3: under the canonical bijection `M_{K'} ≃ M_L`, the fibre
+weights of the finite extension `L/K` are the ratios of separable degrees
+`[L_x : K_ω]_s / [L : K]_s`, computed here on the completions. -/
+theorem fibreWeight_eq_finSepDegree (ω : AS.Ω)
+    (x : ExtensionFiber AS (separableClosure K L) ω) :
+    ParameterSpaceExtension.fibreWeight AS (separableClosure K L) ω x =
+      (Field.finSepDegree ((ϕ AS L x.1).restriction K).Completion
+          (ϕ AS L x.1).Completion : ℝ≥0∞) /
+        (Field.finSepDegree K L : ℝ≥0∞) := by
+  let w := ϕ AS L x.1
+  have hd : (w.restriction (separableClosure K L)).localDegree K =
+      Field.finSepDegree (w.restriction K).Completion w.Completion := by
+    let E := separableClosure K L
+    let B := (w.restriction K).Completion
+    let D := (w.restriction E).Completion
+    let : Algebra B D := algebraCompletion (w.restriction E) K
+    have : IsScalarTower B D w.Completion := isScalarTower_completion_separableClosure L w
+    let f := IsScalarTower.toAlgHom B D w.Completion
+    have hf : f.range = (separableClosure B w.Completion).toSubalgebra := by
+      ext y
+      exact congrArg (fun S : Subfield w.Completion ↦ y ∈ S)
+        (fieldRange_completion_separableClosure L w) |>.to_iff
+    have hdim := (AlgEquiv.ofInjectiveField f).toLinearEquiv.finrank_eq
+    rw [hf] at hdim
+    have : FiniteDimensional B w.Completion := finiteDimensional_completion w K
+    have hs := Field.finSepDegree_mul_finSepDegree_of_isAlgebraic B
+      (separableClosure B w.Completion) w.Completion
+    simp only [IsPurelyInseparable.finSepDegree_eq_one, mul_one,
+      Field.finSepDegree_eq_finrank_of_isSeparable] at hs
+    exact hdim.trans hs
+  simp only [w, ϕ, restriction_extendAbsoluteValue] at hd
+  have hg := Field.finSepDegree_mul_finSepDegree_of_isAlgebraic K (separableClosure K L) L
+  simp only [IsPurelyInseparable.finSepDegree_eq_one, mul_one,
+    Field.finSepDegree_eq_finrank_of_isSeparable] at hg
+  rw [ParameterSpaceExtension.fibreWeight, hd, hg]
+  rfl
 
 end ParameterSpaceFinExtension
 

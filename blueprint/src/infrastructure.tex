@@ -430,10 +430,29 @@ Norm preservation shows that restriction takes values in the displayed set.
 The unique lifting property proves surjectivity and injectivity.
 \end{proof}
 
-\begin{theorem}[Sum of local degrees]\label{thm:local-degree-sum}
+\begin{lemma}[Counting embeddings inducing a place]\label{lem:completed-embedding-count}
+\leanok
 \source{chen-moriwaki-adelic:page-0194}
-\uses{lem:completed-embedding-fibres,lem:completion-separable,lem:finite-extension-count,def:local-degree}
-\notready
+\uses{lem:completed-embedding-fibres,lem:completion-separable,lem:completion-finite,def:local-degree}
+\lean{AbsoluteValue.card_embeddings_eq_localDegree}
+Let $L/K$ be finite separable, let $w$ be an absolute value on $L$,
+put $B=K_{w|_K}$ and $C=B^{\mathrm{ac}}$, and let $u$ extend the
+norm of $B$ to $C$. The number of $K$-embeddings $\sigma:L\to C$
+with $u\circ\sigma=w$ equals $[L_w:B]$.
+\end{lemma}
+\begin{proof}
+Lemma~\ref{lem:completed-embedding-fibres} identifies these embeddings
+with $\operatorname{Hom}_B(L_w,C)$. The extension $L_w/B$ is finite
+and separable by Lemmas~\ref{lem:completion-finite}
+and~\ref{lem:completion-separable}. Every minimal polynomial splits
+in $C$, so the number of these embeddings is $[L_w:B]$.
+\end{proof}
+
+\begin{theorem}[Sum of local degrees]\label{thm:local-degree-sum}
+\leanok
+\source{chen-moriwaki-adelic:page-0194}
+\uses{lem:completed-embedding-count,lem:finite-extension-count,lem:complete-extension,def:local-degree}
+\lean{AbsoluteValue.sum_localDegree}
 Let $L/K$ be finite separable and let $v$ be an absolute value on $K$.
 Then
 \[
@@ -446,10 +465,7 @@ to an absolute value $u$ of $C$. There are $[L:K]$ embeddings of $L$
 into $C$ over $K$, because $L/K$ is separable and all minimal polynomials
 split in $C$. Partition these embeddings according to their pulled-back
 absolute value $u\circ\sigma$. For each extending $w$, the preceding
-lemma identifies its part with $\operatorname{Hom}_B(L_w,C)$.
-The extension $L_w/B$ is finite and separable by
-Lemmas~\ref{lem:completion-finite} and~\ref{lem:completion-separable},
-so this part has cardinality $[L_w:B]$. Summing the cardinalities of the
+lemma gives cardinality $[L_w:B]$ for its part. Summing the cardinalities of the
 parts proves the formula.
 \end{proof}
 

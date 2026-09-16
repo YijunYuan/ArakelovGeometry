@@ -15,10 +15,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# Anonymous instances have kernel names but no named source declaration for
-# hgraph to attach. Record their mathematical owner explicitly, without claiming
-# that a namespace prefix is an attachment.
-INSTANCE_OWNER_NODES = {
+# Anonymous instances and private proof support have kernel names that need an
+# explicit mathematical owner. These mappings do not claim a separate theorem
+# attachment; their axioms and compiled dependency paths remain audited.
+IMPLEMENTATION_OWNER_NODES = {
+    "_private.ArakelovGeometry.AdelicCurve.Extension.0.ArakelovGeometry.AdelicStructure."
+    "ParameterSpaceFinExtension.isScalarTower_completion_separableClosure":
+        "lem:completion-separable-closure",
     "ArakelovGeometry.AdelicCurve.instIsProperTrivialAdelicCurve":
         "prop:proper-trivial-adelic-curve",
     "ArakelovGeometry.AdelicCurve.instIsProperNumberFieldAdelicCurve":
@@ -229,8 +232,8 @@ def main():
         row["authored_declaration"] = parent
         row["blueprint_nodes"] = attached.get(name, attached.get(parent, []))
         row["attachment"] = name if name in attached else parent if parent in attached else None
-        if name in INSTANCE_OWNER_NODES:
-            label = INSTANCE_OWNER_NODES[name]
+        if name in IMPLEMENTATION_OWNER_NODES:
+            label = IMPLEMENTATION_OWNER_NODES[name]
             row["implementation_owner"] = label
             row["blueprint_nodes"] = [label] if label in nodes else []
             if label in nodes:

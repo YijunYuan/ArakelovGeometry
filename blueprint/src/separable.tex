@@ -27,21 +27,22 @@ finite extensions.
 \end{proof}
 
 \begin{lemma}[Normalization of local degrees]\label{lem:fibre-normalization}
+\leanok
 \source{chen-moriwaki-adelic:page-0194}
-\uses{def:weighted-fibre-integral,lem:local-factorization,lem:finite-extension-fibres}
+\uses{def:weighted-fibre-integral,thm:local-degree-sum,lem:finite-extension-fibres}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.tsum_fibreWeight}
 The weights $p_\omega(x)=[L_x:K_\omega]/n$ satisfy
 $\sum_{x\in X_\omega}p_\omega(x)=1$.
 \end{lemma}
 \begin{proof}
-The decomposition $K_\omega\otimes_K L\simeq\prod_{x\in X_\omega}L_x$
-is an isomorphism of $K_\omega$-vector spaces. Comparing their dimensions
-gives $n=\sum_x[L_x:K_\omega]$. Division by the positive integer $n$
+Theorem~\ref{thm:local-degree-sum} gives
+$n=\sum_x[L_x:K_\omega]$. Division by the positive integer $n$
 gives the assertion.
 \end{proof}
 
 \begin{lemma}[Probability and integrability on finite fibres]
 \label{lem:finite-fibre-integrability}
+\leanok
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.isProbabilityMeasure_fibreProbabilityMeasure,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_fibre}
 \source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0195}
 \uses{def:weighted-fibre-integral,lem:finite-extension-fibres,lem:fibre-separation,lem:fibre-normalization}
@@ -89,6 +90,7 @@ term is infinite.
 \end{proof}
 
 \begin{lemma}[Integral of one]\label{lem:fibre-one}
+\leanok
 \source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0195}
 \uses{lem:finite-fibre-integrability}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_one}
@@ -100,6 +102,7 @@ of the probability measure $P_\omega$, which is $1$.
 \end{proof}
 
 \begin{lemma}[Additivity]\label{lem:fibre-additivity}
+\leanok
 \source{chen-moriwaki-adelic:page-0195}
 \uses{lem:finite-fibre-integrability}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_add}
@@ -112,6 +115,7 @@ therefore gives the assertion at every $\omega$.
 \end{proof}
 
 \begin{corollary}[Retraction of base pullback]\label{cor:fibre-pullback}
+\leanok
 \source{chen-moriwaki-adelic:page-0196}
 \uses{lem:finite-fibre-integrability}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_comp_proj}
@@ -366,9 +370,59 @@ factor therefore gives
 \]
 \end{proof}
 
+\begin{lemma}[Largest products in an ordered tuple]
+\label{lem:ordered-subset-product}\notready
+\source{chen-moriwaki-adelic:page-0198}
+Let $s_0\geq\cdots\geq s_{n-1}\geq0$, and let $0\leq k\leq n$.
+For every $k$-element subset $J\subseteq\{0,\ldots,n-1\}$,
+\[
+ \prod_{j\in J}s_j\leq\prod_{i=0}^{k-1}s_i.
+\]
+Consequently the right side is the largest product over all such subsets.
+For a strictly positive tuple, the ratios of these largest products
+for $k+1$ and $k$ recover its $k$th entry, including $k=0$ when the
+denominator is the empty product $1$.
+\end{lemma}
+\begin{proof}
+Enumerate $J$ increasingly as $j_0<\cdots<j_{k-1}$. Induction gives
+$j_i\geq i$: the base case is nonnegativity of $j_0$, and
+$j_{i+1}\geq j_i+1\geq i+1$. Since the tuple is decreasing,
+$s_{j_i}\leq s_i$. Multiplying these inequalities between nonnegative
+numbers proves the bound. The subset $\{0,\ldots,k-1\}$ attains it.
+For a strictly positive tuple all these products are positive, and
+cancelling the first $k$ factors in their consecutive ratio gives $s_k$.
+Permuting an arbitrary nonnegative tuple into decreasing order preserves
+the collection of its $k$-subset products, so the same maximum describes
+the product of its $k$ largest entries.
+\end{proof}
+
+\begin{lemma}[Measurability from maximal subset products]
+\label{lem:measurable-ordered-tuple}\notready
+\uses{lem:ordered-subset-product}
+\source{chen-moriwaki-adelic:page-0198}
+Let $\Omega$ be a measurable space and let
+$a_0,\ldots,a_{n-1}:\Omega\to\mathbb R_{>0}$ be arbitrary functions.
+For each $\omega$, choose a permutation $\pi_\omega$ making
+$a_{\pi_\omega(0)}(\omega)\geq\cdots\geq a_{\pi_\omega(n-1)}(\omega)$.
+Suppose that for every $0\leq k\leq n$ the function
+\[
+ P_k(\omega)=\max_{|J|=k}\prod_{j\in J}a_j(\omega)
+\]
+is measurable. Then every function
+$\omega\mapsto a_{\pi_\omega(i)}(\omega)$ is measurable.
+\end{lemma}
+\begin{proof}
+Lemma~\ref{lem:ordered-subset-product} identifies $P_k$ with the product
+of the first $k$ entries in the chosen ordering. These products are
+strictly positive, including $P_0=1$. Hence
+$a_{\pi_\omega(i)}(\omega)=P_{i+1}(\omega)/P_i(\omega)$.
+A quotient of measurable real functions is measurable. No measurability
+of the permutations is used.
+\end{proof}
+
 \begin{lemma}[Measurable ordered conjugate values]\label{lem:ordered-conjugate-values}
 \source{chen-moriwaki-adelic:page-0198}
-\uses{lem:orbit-maximum}
+\uses{lem:orbit-maximum,lem:measurable-ordered-tuple}
 \notready
 If $a\ne0$ is separable with conjugates $\gamma_1,\ldots,\gamma_m$,
 let $s_1(\omega)\geq\cdots\geq s_m(\omega)>0$ be their absolute values
@@ -616,9 +670,26 @@ weight is strictly positive, no $x\in X_\omega$ belongs to $N$.
 The functions therefore agree on that entire fibre, as do their integrals.
 \end{proof}
 
+\begin{lemma}[Almost everywhere statements on fibres]\label{lem:separable-ae-fibres}
+\source{chen-moriwaki-adelic:page-0201,chen-moriwaki-adelic:page-0202}
+\uses{def:separable-induced-measure,lem:measurable-fibre-lintegral}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.ae_ae_fibre_of_ae}
+If a property holds for $\nu_L$-almost every $x\in\Omega_L$, then
+for $\nu$-almost every $\omega$ it holds for $P_\omega$-almost every
+$x\in X_\omega$.
+\end{lemma}
+\begin{proof}
+The exceptional set is contained in a measurable $\nu_L$-null set $N$.
+The defining formula for $\nu_L$ gives
+$\int_\Omega P_\omega(N\cap X_\omega)\,d\nu=0$.
+The integrand is measurable and nonnegative, so it is zero almost
+everywhere. Outside this exceptional base set, the original property
+fails only on the $P_\omega$-null set $N\cap X_\omega$.
+\end{proof}
+
 \begin{theorem}[Real integration formula]\label{thm:separable-integral}
 \source{chen-moriwaki-adelic:page-0201,chen-moriwaki-adelic:page-0202}
-\uses{thm:separable-lintegral,thm:separable-integrability,lem:finite-fibre-ae,lem:fibre-additivity,lem:fibre-homogeneity,thm:measurable-fibre-integral}
+\uses{thm:separable-lintegral,thm:separable-integrability,lem:separable-ae-fibres,lem:fibre-additivity,lem:fibre-homogeneity,thm:measurable-fibre-integral}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_inducedMeasure}
 For every $\nu_L$-integrable real function $f$,
 \[
@@ -639,7 +710,7 @@ $g=f$ almost everywhere. Such a representative is obtained from the
 measurable simple functions witnessing almost everywhere strong
 measurability, taking their limit where it exists and zero elsewhere.
 It is integrable with the same integral as $f$. By
-Lemma~\ref{lem:finite-fibre-ae}, $If=Ig$ almost everywhere. Thus $If$
+Lemma~\ref{lem:separable-ae-fibres}, $If=Ig$ almost everywhere. Thus $If$
 is integrable and has the same integral as $Ig$. Apply the measurable
 case to $g$ to conclude. This extends the measurable-integrand formulation
 of Theorem 3.3.7(2) by equality almost everywhere.
