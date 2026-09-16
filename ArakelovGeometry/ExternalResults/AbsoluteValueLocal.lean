@@ -102,18 +102,19 @@ theorem apply_completion_algHom {K L : Type*} [Field K] [Field L] [Algebra K L]
     ((existsUnique_extension_of_complete (L := w.Completion) n).unique ht hn)
 
 
-/-- The number of embeddings inducing a fixed absolute value is its local degree. -/
-theorem card_embeddings_eq_localDegree {K L : Type*} [Field K] [Field L] [Algebra K L]
-    [FiniteDimensional K L] [Algebra.IsSeparable K L] (w : AbsoluteValue L ℝ)
+/-- Completed embeddings are exactly embeddings inducing the given absolute value. -/
+noncomputable def completionEmbeddingEquiv {K L : Type*} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] (w : AbsoluteValue L ℝ)
     (u : AbsoluteValue (AlgebraicClosure (w.restriction K).Completion) ℝ)
     (hu : u.restriction (w.restriction K).Completion =
       NormedField.toAbsoluteValue (w.restriction K).Completion) :
-    Nat.card {σ : L →ₐ[K] AlgebraicClosure (w.restriction K).Completion //
-      u.pullback σ.toRingHom = w} = w.localDegree K := by
+    (w.Completion →ₐ[(w.restriction K).Completion]
+      AlgebraicClosure (w.restriction K).Completion) ≃
+    {σ : L →ₐ[K] AlgebraicClosure (w.restriction K).Completion //
+      u.pullback σ.toRingHom = w} := by
   let B := (w.restriction K).Completion
   let C := AlgebraicClosure B
   have : FiniteDimensional B w.Completion := finiteDimensional_completion w K
-  have : Algebra.IsSeparable B w.Completion := isSeparable_completion w
   have : IsScalarTower K B w.Completion := by
     apply IsScalarTower.of_algebraMap_eq
     intro x
@@ -148,11 +149,37 @@ theorem card_embeddings_eq_localDegree {K L : Type*} [Field K] [Field L] [Algebr
       apply Subtype.ext
       ext x
       exact hτ x
+  exact Equiv.ofBijective f hf
+
+/-- The number of embeddings inducing a place is its local separable degree. -/
+theorem card_embeddings_eq_localFinSepDegree {K L : Type*} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] (w : AbsoluteValue L ℝ)
+    (u : AbsoluteValue (AlgebraicClosure (w.restriction K).Completion) ℝ)
+    (hu : u.restriction (w.restriction K).Completion =
+      NormedField.toAbsoluteValue (w.restriction K).Completion) :
+    Nat.card {σ : L →ₐ[K] AlgebraicClosure (w.restriction K).Completion //
+      u.pullback σ.toRingHom = w} =
+      Field.finSepDegree (w.restriction K).Completion w.Completion := by
+  have : FiniteDimensional (w.restriction K).Completion w.Completion :=
+    finiteDimensional_completion w K
   calc
-    _ = Nat.card (w.Completion →ₐ[B] C) := (Nat.card_congr (Equiv.ofBijective f hf)).symm
-    _ = Module.finrank B w.Completion :=
-      AlgHom.natCard_of_splits B w.Completion C (fun _ ↦ IsAlgClosed.splits _)
-    _ = w.localDegree K := rfl
+    _ = Nat.card (w.Completion →ₐ[(w.restriction K).Completion]
+        AlgebraicClosure (w.restriction K).Completion) :=
+      (Nat.card_congr (completionEmbeddingEquiv w u hu)).symm
+    _ = Field.finSepDegree (w.restriction K).Completion w.Completion :=
+      (Field.finSepDegree_eq_of_isAlgClosed _ _ _).symm
+
+/-- The number of embeddings inducing a fixed absolute value is its local degree. -/
+theorem card_embeddings_eq_localDegree {K L : Type*} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [Algebra.IsSeparable K L] (w : AbsoluteValue L ℝ)
+    (u : AbsoluteValue (AlgebraicClosure (w.restriction K).Completion) ℝ)
+    (hu : u.restriction (w.restriction K).Completion =
+      NormedField.toAbsoluteValue (w.restriction K).Completion) :
+    Nat.card {σ : L →ₐ[K] AlgebraicClosure (w.restriction K).Completion //
+      u.pullback σ.toRingHom = w} = w.localDegree K := by
+  have : Algebra.IsSeparable (w.restriction K).Completion w.Completion := isSeparable_completion w
+  simpa only [Field.finSepDegree_eq_finrank_of_isSeparable, localDegree] using
+    card_embeddings_eq_localFinSepDegree w u hu
 
 /-- The sum of the local degrees over a finite separable extension equals its degree. -/
 theorem sum_localDegree {K L : Type*} [Field K] [Field L] [Algebra K L]
@@ -194,14 +221,14 @@ theorem sum_localDegree {K L : Type*} [Field K] [Field L] [Algebra K L]
   simpa only [Finset.sum_const, Finset.card_univ, smul_eq_mul, mul_one, hf,
     AlgHom.card] using hh
 
-/-- The number of embeddings inducing a fixed place is independent of the
-algebraically closed ambient field. -/
-theorem card_embeddings_eq_localDegree_of_isAlgClosed {K L C₀ : Type*}
+/-- Local separable embedding counts are independent of the algebraically closed ambient field. -/
+theorem card_embeddings_eq_localFinSepDegree_of_isAlgClosed {K L C₀ : Type*}
     [Field K] [Field L] [Field C₀] [Algebra K L] [Algebra K C₀]
-    [FiniteDimensional K L] [Algebra.IsSeparable K L] [IsAlgClosed C₀]
+    [FiniteDimensional K L] [IsAlgClosed C₀]
     (w : AbsoluteValue L ℝ) (u₀ : AbsoluteValue C₀ ℝ)
     (hu₀ : u₀.restriction K = w.restriction K) :
-    Nat.card {σ : L →ₐ[K] C₀ // u₀.pullback σ.toRingHom = w} = w.localDegree K := by
+    Nat.card {σ : L →ₐ[K] C₀ // u₀.pullback σ.toRingHom = w} =
+      Field.finSepDegree (w.restriction K).Completion w.Completion := by
   let v := w.restriction K
   let B := v.Completion
   let C := AlgebraicClosure B
@@ -235,7 +262,20 @@ theorem card_embeddings_eq_localDegree_of_isAlgClosed {K L C₀ : Type*}
   calc
     _ = Nat.card {σ : L →ₐ[K] C // u.pullback σ.toRingHom = w} :=
       Nat.card_congr (e.subtypeEquiv (fun σ ↦ by rw [he]))
-    _ = w.localDegree K := card_embeddings_eq_localDegree w u hu
+    _ = Field.finSepDegree (w.restriction K).Completion w.Completion :=
+      card_embeddings_eq_localFinSepDegree w u hu
+
+/-- The number of embeddings inducing a fixed place is independent of the
+algebraically closed ambient field. -/
+theorem card_embeddings_eq_localDegree_of_isAlgClosed {K L C₀ : Type*}
+    [Field K] [Field L] [Field C₀] [Algebra K L] [Algebra K C₀]
+    [FiniteDimensional K L] [Algebra.IsSeparable K L] [IsAlgClosed C₀]
+    (w : AbsoluteValue L ℝ) (u₀ : AbsoluteValue C₀ ℝ)
+    (hu₀ : u₀.restriction K = w.restriction K) :
+    Nat.card {σ : L →ₐ[K] C₀ // u₀.pullback σ.toRingHom = w} = w.localDegree K := by
+  have : Algebra.IsSeparable (w.restriction K).Completion w.Completion := isSeparable_completion w
+  simpa only [Field.finSepDegree_eq_finrank_of_isSeparable, localDegree] using
+    card_embeddings_eq_localFinSepDegree_of_isAlgClosed w u₀ hu₀
 
 /-- Counting embeddings with their induced absolute values, in multiplicative form. -/
 theorem prod_pow_localDegree_eq_prod_embeddings {K L C M : Type*}
@@ -264,6 +304,35 @@ theorem prod_pow_localDegree_eq_prod_embeddings {K L C M : Type*}
   have hh := Fintype.prod_fiberwise' f (fun w : E ↦ φ w.val)
   simpa only [Finset.prod_const, Finset.card_univ, hf] using hh
 
+/-- Counting embeddings by their absolute values for any finite extension. -/
+theorem sum_localFinSepDegree_nsmul_eq_sum_embeddings {K L C M : Type*}
+    [Field K] [Field L] [Field C] [Algebra K L] [Algebra K C] [IsAlgClosed C]
+    [FiniteDimensional K L] [AddCommMonoid M]
+    (v : AbsoluteValue K ℝ)
+    [Fintype {w : AbsoluteValue L ℝ // w.restriction K = v}]
+    (u : AbsoluteValue C ℝ) (hu : u.restriction K = v) (φ : AbsoluteValue L ℝ → M) :
+    ∑ w : {w : AbsoluteValue L ℝ // w.restriction K = v},
+      Field.finSepDegree (w.val.restriction K).Completion w.val.Completion • φ w.val =
+      ∑ σ : L →ₐ[K] C, φ (u.pullback σ.toRingHom) := by
+  classical
+  let E := {w : AbsoluteValue L ℝ // w.restriction K = v}
+  have hr (σ : L →ₐ[K] C) : (u.pullback σ.toRingHom).restriction K = v := by
+    ext a
+    change u (σ (algebraMap K L a)) = v a
+    rw [σ.commutes]
+    exact congrArg (fun z : AbsoluteValue K ℝ ↦ z a) hu
+  let f (σ : L →ₐ[K] C) : E := ⟨u.pullback σ.toRingHom, hr σ⟩
+  have hf (w : E) : Fintype.card {σ : L →ₐ[K] C // f σ = w} =
+      Field.finSepDegree (w.val.restriction K).Completion w.val.Completion := by
+    rw [Fintype.card_eq_nat_card]
+    calc
+      _ = Nat.card {σ : L →ₐ[K] C // u.pullback σ.toRingHom = w.val} :=
+        Nat.card_congr (Equiv.subtypeEquivRight (fun σ ↦ Subtype.ext_iff))
+      _ = Field.finSepDegree (w.val.restriction K).Completion w.val.Completion :=
+        card_embeddings_eq_localFinSepDegree_of_isAlgClosed w.val u (hu.trans w.property.symm)
+  have hh := Fintype.sum_fiberwise' f (fun w : E ↦ φ w.val)
+  simpa only [Finset.sum_const, Finset.card_univ, hf] using hh
+
 /-- Counting embeddings with their induced absolute values, in additive form. -/
 theorem sum_localDegree_nsmul_eq_sum_embeddings {K L C M : Type*}
     [Field K] [Field L] [Field C] [Algebra K L] [Algebra K C] [IsAlgClosed C]
@@ -274,22 +343,13 @@ theorem sum_localDegree_nsmul_eq_sum_embeddings {K L C M : Type*}
     ∑ w : {w : AbsoluteValue L ℝ // w.restriction K = v}, w.val.localDegree K • φ w.val =
       ∑ σ : L →ₐ[K] C, φ (u.pullback σ.toRingHom) := by
   classical
-  let E := {w : AbsoluteValue L ℝ // w.restriction K = v}
-  have hr (σ : L →ₐ[K] C) : (u.pullback σ.toRingHom).restriction K = v := by
-    ext a
-    change u (σ (algebraMap K L a)) = v a
-    rw [σ.commutes]
-    exact congrArg (fun z : AbsoluteValue K ℝ ↦ z a) hu
-  let f (σ : L →ₐ[K] C) : E := ⟨u.pullback σ.toRingHom, hr σ⟩
-  have hf (w : E) : Fintype.card {σ : L →ₐ[K] C // f σ = w} = w.val.localDegree K := by
-    rw [Fintype.card_eq_nat_card]
-    calc
-      _ = Nat.card {σ : L →ₐ[K] C // u.pullback σ.toRingHom = w.val} :=
-        Nat.card_congr (Equiv.subtypeEquivRight (fun σ ↦ Subtype.ext_iff))
-      _ = w.val.localDegree K :=
-        card_embeddings_eq_localDegree_of_isAlgClosed w.val u (hu.trans w.property.symm)
-  have hh := Fintype.sum_fiberwise' f (fun w : E ↦ φ w.val)
-  simpa only [Finset.sum_const, Finset.card_univ, hf] using hh
+  rw [← sum_localFinSepDegree_nsmul_eq_sum_embeddings v u hu φ]
+  apply Finset.sum_congr rfl
+  intro w hw
+  have : Algebra.IsSeparable (w.val.restriction K).Completion w.val.Completion :=
+    isSeparable_completion w.val
+  rw [Field.finSepDegree_eq_finrank_of_isSeparable]
+  rfl
 
 /-- The absolute value of a field norm is the product over all extending places,
 with each absolute value raised to its local degree. -/
@@ -397,15 +457,14 @@ theorem sum_localDegree_nsmul_restriction {K L M : Type*}
   simp_rw [← Finset.sum_smul, hf, mul_nsmul]
   exact (Finset.smul_sum).symm
 
-/-- An embedding of the intermediate field into an algebraically closed field
-has as many extensions as the relative separable degree. -/
-theorem _root_.AlgHom.natCard_comp_eq_finrank {K F L C : Type*}
+/-- Extensions of an embedding are counted by the relative separable degree. -/
+theorem _root_.AlgHom.natCard_comp_eq_finSepDegree {K F L C : Type*}
     [Field K] [Field F] [Field L] [Field C]
     [Algebra K F] [Algebra K L] [Algebra K C] [Algebra F L]
-    [IsScalarTower K F L] [FiniteDimensional F L] [Algebra.IsSeparable F L] [IsAlgClosed C]
+    [IsScalarTower K F L] [FiniteDimensional F L] [IsAlgClosed C]
     (τ : F →ₐ[K] C) :
     Nat.card {σ : L →ₐ[K] C // σ.comp (IsScalarTower.toAlgHom K F L) = τ} =
-      Module.finrank F L := by
+      Field.finSepDegree F L := by
   let : Algebra F C := τ.toRingHom.toAlgebra
   have : IsScalarTower K F C := IsScalarTower.of_algebraMap_eq (fun a ↦ (τ.commutes a).symm)
   let e : {σ : L →ₐ[K] C // σ.comp (IsScalarTower.toAlgHom K F L) = τ} ≃
@@ -416,7 +475,55 @@ theorem _root_.AlgHom.natCard_comp_eq_finrank {K F L C : Type*}
     invFun σ := ⟨σ.restrictScalars K, by ext a; exact σ.commutes a⟩
     left_inv _ := rfl
     right_inv _ := rfl }
-  exact (Nat.card_congr e).trans (AlgHom.natCard_of_splits F L C (fun _ ↦ IsAlgClosed.splits _))
+  exact (Nat.card_congr e).trans (Field.finSepDegree_eq_of_isAlgClosed F L C).symm
+
+/-- An embedding of the intermediate field into an algebraically closed field
+has as many extensions as the relative separable degree. -/
+theorem _root_.AlgHom.natCard_comp_eq_finrank {K F L C : Type*}
+    [Field K] [Field F] [Field L] [Field C]
+    [Algebra K F] [Algebra K L] [Algebra K C] [Algebra F L]
+    [IsScalarTower K F L] [FiniteDimensional F L] [Algebra.IsSeparable F L] [IsAlgClosed C]
+    (τ : F →ₐ[K] C) :
+    Nat.card {σ : L →ₐ[K] C // σ.comp (IsScalarTower.toAlgHom K F L) = τ} =
+      Module.finrank F L := by
+  simpa only [Field.finSepDegree_eq_finrank_of_isSeparable] using
+    AlgHom.natCard_comp_eq_finSepDegree (L := L) τ
+
+/-- Local separable-degree weighted sums commute with pullback along any finite field embedding. -/
+theorem finSepDegree_nsmul_sum_localFinSepDegree_pullback {K F L M : Type*}
+    [Field K] [Field F] [Field L] [Algebra K F] [Algebra K L]
+    [FiniteDimensional K F] [FiniteDimensional K L]
+    [AddCommMonoid M]
+    (i : F →ₐ[K] L) (v : AbsoluteValue K ℝ)
+    [Fintype {w : AbsoluteValue L ℝ // w.restriction K = v}]
+    [Fintype {w : AbsoluteValue F ℝ // w.restriction K = v}]
+    (φ : AbsoluteValue F ℝ → M) :
+    Field.finSepDegree K F •
+        (∑ w : {w : AbsoluteValue L ℝ // w.restriction K = v},
+          Field.finSepDegree (w.val.restriction K).Completion w.val.Completion •
+            φ (w.val.pullback i.toRingHom)) =
+      Field.finSepDegree K L •
+        ∑ w : {w : AbsoluteValue F ℝ // w.restriction K = v},
+          Field.finSepDegree (w.val.restriction K).Completion w.val.Completion • φ w.val := by
+  classical
+  let : Algebra F L := i.toRingHom.toAlgebra
+  have : IsScalarTower K F L :=
+    IsScalarTower.of_algebraMap_eq (fun a ↦ (i.commutes a).symm)
+  have : FiniteDimensional F L := Module.Finite.of_restrictScalars_finite K F L
+  obtain ⟨u, hu⟩ := exists_extension (L := AlgebraicClosure K) v
+  rw [sum_localFinSepDegree_nsmul_eq_sum_embeddings v u hu (fun w ↦ φ (w.pullback i.toRingHom)),
+    sum_localFinSepDegree_nsmul_eq_sum_embeddings v u hu φ]
+  let C := AlgebraicClosure K
+  let r (σ : L →ₐ[K] C) := σ.comp i
+  have hc (τ : F →ₐ[K] C) : Fintype.card {σ : L →ₐ[K] C // r σ = τ} =
+      Field.finSepDegree F L := by
+    rw [Fintype.card_eq_nat_card]
+    exact AlgHom.natCard_comp_eq_finSepDegree τ
+  have hh := Fintype.sum_fiberwise' r (fun τ : F →ₐ[K] C ↦ φ (u.pullback τ.toRingHom))
+  simp only [Finset.sum_const, Finset.card_univ, hc, ← Finset.smul_sum] at hh
+  change Field.finSepDegree K F •
+      (∑ σ : L →ₐ[K] C, φ (u.pullback (r σ).toRingHom)) = _
+  rw [← hh, ← mul_smul, Field.finSepDegree_mul_finSepDegree_of_isAlgebraic K F L]
 
 /-- Local-degree weighted sums commute with pullback along a field embedding,
 after multiplying by the corresponding global degrees. -/
@@ -455,5 +562,71 @@ theorem finrank_nsmul_sum_localDegree_pullback {K F L M : Type*}
   change Module.finrank K F •
       (∑ σ : L →ₐ[K] C, φ (u.pullback (r σ).toRingHom)) = _
   rw [← hh, ← mul_smul, Module.finrank_mul_finrank K F L]
+
+end AbsoluteValue
+
+namespace IntermediateField
+
+/-- Generating descent with unchanged separable degree preserves all embeddings. -/
+theorem bijective_restrict_embeddings_of_adjoin_eq_top
+    {A B N C : Type*} [Field A] [Field B] [Field N] [Field C]
+    [Algebra A B] [Algebra A N] [Algebra B N] [IsScalarTower A B N]
+    [Algebra A C] [Algebra B C] [IsScalarTower A B C]
+    [IsAlgClosed C] [FiniteDimensional B N]
+    (E : IntermediateField A N) [FiniteDimensional A E]
+    (hgen : IntermediateField.adjoin B (E : Set N) = ⊤)
+    (hsep : Field.finSepDegree A E = Field.finSepDegree B N) :
+    Function.Bijective (fun σ : N →ₐ[B] C ↦ (σ.restrictScalars A).comp E.val) := by
+  classical
+  rw [Fintype.bijective_iff_injective_and_card]
+  constructor
+  · intro σ τ h
+    ext x
+    have hx : x ∈ IntermediateField.adjoin B (E : Set N) := by rw [hgen]; trivial
+    induction hx using IntermediateField.adjoin_induction with
+    | mem a ha => exact congrArg (fun f : E →ₐ[A] C ↦ f ⟨a, ha⟩) h
+    | algebraMap a => rw [σ.commutes, τ.commutes]
+    | add a b ha hb ia ib => simp only [map_add, ia, ib]
+    | inv a ha ia => simp only [map_inv₀, ia]
+    | mul a b ha hb ia ib => simp only [map_mul, ia, ib]
+  · rw [Fintype.card_eq_nat_card, Fintype.card_eq_nat_card,
+      ← Field.finSepDegree_eq_of_isAlgClosed B N C,
+      ← Field.finSepDegree_eq_of_isAlgClosed A E C, hsep]
+
+end IntermediateField
+
+namespace AbsoluteValue
+
+/-- Weighted absolute-value sums are preserved by descended finite base change. -/
+theorem sum_localFinSepDegree_nsmul_baseChange
+    {A B N M : Type*} [Field A] [Field B] [Field N]
+    [Algebra A B] [Algebra A N] [Algebra B N] [IsScalarTower A B N]
+    [FiniteDimensional B N] [AddCommMonoid M]
+    (E : IntermediateField A N) [FiniteDimensional A E]
+    (hgen : IntermediateField.adjoin B (E : Set N) = ⊤)
+    (hsep : Field.finSepDegree A E = Field.finSepDegree B N)
+    (y : AbsoluteValue B ℝ) (x : AbsoluteValue A ℝ) (hxy : y.restriction A = x)
+    [Fintype {w : AbsoluteValue N ℝ // w.restriction B = y}]
+    [Fintype {v : AbsoluteValue E ℝ // v.restriction A = x}]
+    (φ : AbsoluteValue E ℝ → M) :
+    (∑ w : {w : AbsoluteValue N ℝ // w.restriction B = y},
+      Field.finSepDegree (w.val.restriction B).Completion w.val.Completion •
+        φ (w.val.restriction E)) =
+    ∑ v : {v : AbsoluteValue E ℝ // v.restriction A = x},
+      Field.finSepDegree (v.val.restriction A).Completion v.val.Completion • φ v.val := by
+  classical
+  subst x
+  obtain ⟨u, hu⟩ := exists_extension (L := AlgebraicClosure B) y
+  have huA : u.restriction A = y.restriction A := by
+    ext a
+    change u (algebraMap A (AlgebraicClosure B) a) = y (algebraMap A B a)
+    rw [IsScalarTower.algebraMap_apply A B (AlgebraicClosure B)]
+    exact congrArg (fun v : AbsoluteValue B ℝ ↦ v (algebraMap A B a)) hu
+  rw [sum_localFinSepDegree_nsmul_eq_sum_embeddings y u hu
+      (fun w ↦ φ (w.restriction E)),
+    sum_localFinSepDegree_nsmul_eq_sum_embeddings (y.restriction A) u huA φ]
+  exact (Equiv.ofBijective _ (IntermediateField.bijective_restrict_embeddings_of_adjoin_eq_top
+    (C := AlgebraicClosure B) E hgen hsep)).sum_comp
+      (fun σ : E →ₐ[A] AlgebraicClosure B ↦ φ (u.pullback σ.toRingHom))
 
 end AbsoluteValue

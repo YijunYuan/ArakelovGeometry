@@ -13,6 +13,36 @@ give transitivity of finite extension of adelic structures, including inseparabl
 This is Chen–Moriwaki, Proposition 3.4.4.
 -/
 
+open MeasureTheory
+
+namespace ArakelovGeometry.AdelicStructure.ParameterSpaceExtension
+variable {K : Type*} [Field K] (AS : AdelicStructure K)
+variable (L : Type*) [Field L] [Algebra K L]
+variable (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+
+/-- Restriction of a parameter along an arbitrary tower of field embeddings. -/
+def restrictScalars (x : ParameterSpaceExtension AS L) : ParameterSpaceExtension AS F where
+  base := x.base
+  abv := x.abv.restriction F
+  restrict_eq := by
+    ext a
+    change x.abv (algebraMap F L (algebraMap K F a)) = AS.ϕ x.base a
+    rw [← IsScalarTower.algebraMap_apply K F L]
+    exact congrArg (fun v : AbsoluteValue K ℝ ↦ v a) x.restrict_eq
+
+/-- Restriction along a field tower is measurable for the evaluation sigma algebras. -/
+theorem measurable_restrictScalars : Measurable (restrictScalars AS L F) := by
+  apply Measurable.of_comap_le
+  change MeasurableSpace.comap _ (_ ⊔ ⨆ a : F, _) ≤ _
+  rw [MeasurableSpace.comap_sup, MeasurableSpace.comap_iSup]
+  refine sup_le ?_ (iSup_le fun a ↦ ?_)
+  · rw [MeasurableSpace.comap_comp]
+    exact (measurable_proj AS L).comap_le
+  · rw [MeasurableSpace.comap_comp]
+    exact (measurable_eval AS L (algebraMap F L a)).comap_le
+
+end ArakelovGeometry.AdelicStructure.ParameterSpaceExtension
+
 namespace ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension
 open MeasureTheory
 open scoped ENNReal
@@ -105,21 +135,27 @@ variable {K : Type*} [Field K] (AS : AdelicStructure K)
 variable (L : Type*) [Field L] [Algebra K L] [FiniteDimensional K L]
 /-- Composing extension places gives a measurable equivalence before the final
 restriction to the separable part. -/
-noncomputable def fullTowerEquiv (F : IntermediateField K L) :
+noncomputable def fullTowerEquiv (F : Type*) [Field F] [Algebra K F]
+    [Algebra F L] [IsScalarTower K F L] [FiniteDimensional K F] [FiniteDimensional F L] :
     ParameterSpaceExtension (AS.finiteExtension F) L ≃ᵐ ParameterSpaceExtension AS L where
   toFun x := {
     base := x.base.base
     abv := x.abv
     restrict_eq := by
-      change (x.abv.restriction F).restriction K = _
-      rw [x.restrict_eq]
-      exact (measurableEquivFull AS F x.base).restrict_eq }
+      ext a
+      change x.abv (algebraMap K L a) = AS.ϕ x.base.base a
+      rw [IsScalarTower.algebraMap_apply K F L]
+      exact (congrArg (fun v : AbsoluteValue F ℝ ↦ v (algebraMap K F a))
+        x.restrict_eq).trans
+        (congrArg (fun v : AbsoluteValue K ℝ ↦ v a)
+          (measurableEquivFull AS F x.base).restrict_eq) }
   invFun y := {
-    base := (measurableEquivFull AS F).symm (ParameterSpaceExtension.restrict AS L y F)
+    base := (measurableEquivFull AS F).symm (ParameterSpaceExtension.restrictScalars AS L F y)
     abv := y.abv
     restrict_eq := by
       have h := congrArg ParameterSpaceExtension.abv
-        ((measurableEquivFull AS F).apply_symm_apply (ParameterSpaceExtension.restrict AS L y F))
+        ((measurableEquivFull AS F).apply_symm_apply
+          (ParameterSpaceExtension.restrictScalars AS L F y))
       exact h.symm }
   left_inv x := by
     refine ParameterSpaceExtension.ext (AS.finiteExtension F) L ?_ rfl
@@ -147,12 +183,13 @@ noncomputable def fullTowerEquiv (F : IntermediateField K L) :
     refine sup_le ?_ (iSup_le fun a ↦ ?_)
     · rw [MeasurableSpace.comap_comp]
       exact ((measurableEquivFull AS F).symm.measurable.comp
-        (ParameterSpaceExtension.measurable_restrict AS L F)).comap_le
+        (ParameterSpaceExtension.measurable_restrictScalars AS L F)).comap_le
     · rw [MeasurableSpace.comap_comp]
       exact (ParameterSpaceExtension.measurable_eval AS L a).comap_le
 
 /-- The canonical measurable equivalence between successive and direct finite parameters. -/
-noncomputable def towerMeasurableEquiv (F : IntermediateField K L) :
+noncomputable def towerMeasurableEquiv (F : Type*) [Field F] [Algebra K F]
+    [Algebra F L] [IsScalarTower K F L] [FiniteDimensional K F] [FiniteDimensional F L] :
     ParameterSpaceFinExtension (AS.finiteExtension F) L ≃ᵐ ParameterSpaceFinExtension AS L :=
   ((measurableEquivFull (AS.finiteExtension F) L).trans (fullTowerEquiv AS L F)).trans
     (measurableEquivFull AS L).symm
@@ -163,19 +200,42 @@ end ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension
 namespace AbsoluteValue
 
 /-- Separable local degrees multiply in a finite tower. -/
-theorem localFinSepDegree_mul {K L : Type*} [Field K] [Field L] [Algebra K L]
-    [FiniteDimensional K L] (w : AbsoluteValue L ℝ) (F : IntermediateField K L) :
+theorem localFinSepDegree_mul {K L : Type*} [Field K] [Field L]
+    [instKL : Algebra K L] [FiniteDimensional K L] (w : AbsoluteValue L ℝ)
+    (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    [FiniteDimensional F L] :
     Field.finSepDegree ((w.restriction F).restriction K).Completion
         (w.restriction F).Completion *
       Field.finSepDegree (w.restriction F).Completion w.Completion =
         Field.finSepDegree (w.restriction K).Completion w.Completion := by
+  have heq : instKL = Algebra.compHom L (algebraMap K F) :=
+    Algebra.algebra_ext _ _ (fun a ↦ IsScalarTower.algebraMap_apply K F L a)
+  subst instKL
+  let : Algebra K L := Algebra.compHom L (algebraMap K F)
   let B := (w.restriction K).Completion
   let D := (w.restriction F).Completion
   let : Algebra B D := algebraCompletion (w.restriction F) K
-  have : IsScalarTower B D w.Completion := isScalarTower_completion_restriction w F
+  have : IsScalarTower B D w.Completion := by
+    apply IsScalarTower.of_algebraMap_eq
+    intro x
+    refine UniformSpace.Completion.induction_on x ?_ ?_
+    · exact isClosed_eq (isometry_algebraMap_completion w K).continuous
+        ((isometry_algebraMap_completion w F).continuous.comp
+          (isometry_algebraMap_completion (w.restriction F) K).continuous)
+    · intro a
+      change (algebraMap (w.restriction K).Completion w.Completion)
+            (a : (w.restriction K).Completion) =
+          (algebraMap (w.restriction F).Completion w.Completion)
+            ((algebraMap ((w.restriction F).restriction K).Completion
+              (w.restriction F).Completion)
+              ((show WithAbs ((w.restriction F).restriction K) from a) :
+                ((w.restriction F).restriction K).Completion))
+      rw [algebraMap_completion_def, algebraMap_completion_def, algebraMap_completion_def]
+      erw [UniformSpace.Completion.mapRingHom_coe, UniformSpace.Completion.mapRingHom_coe,
+        UniformSpace.Completion.mapRingHom_coe]
+      rfl
   have : FiniteDimensional D w.Completion := finiteDimensional_completion w F
   exact Field.finSepDegree_mul_finSepDegree_of_isAlgebraic B D w.Completion
-
 end AbsoluteValue
 
 namespace ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension
@@ -185,19 +245,22 @@ variable {K : Type*} [Field K] (AS : AdelicStructure K)
 variable (L : Type*) [Field L] [Algebra K L] [FiniteDimensional K L]
 
 @[simp]
-theorem towerMeasurableEquiv_proj (F : IntermediateField K L)
+theorem towerMeasurableEquiv_proj (F : Type*) [Field F] [Algebra K F]
+    [Algebra F L] [IsScalarTower K F L] [FiniteDimensional K F] [FiniteDimensional F L]
     (x : ParameterSpaceFinExtension (AS.finiteExtension F) L) :
     ParameterSpaceExtension.proj (towerMeasurableEquiv AS L F x) =
       ParameterSpaceExtension.proj (ParameterSpaceExtension.proj x) := rfl
 
 @[simp]
-theorem towerMeasurableEquiv_ϕ (F : IntermediateField K L)
+theorem towerMeasurableEquiv_ϕ (F : Type*) [Field F] [Algebra K F]
+    [Algebra F L] [IsScalarTower K F L] [FiniteDimensional K F] [FiniteDimensional F L]
     (x : ParameterSpaceFinExtension (AS.finiteExtension F) L) :
     ϕ AS L (towerMeasurableEquiv AS L F x) = ϕ (AS.finiteExtension F) L x :=
   extendAbsoluteValue_restriction L (ϕ (AS.finiteExtension F) L x)
 
 /-- A direct finite fibre is the disjoint union of the successive finite fibres. -/
-noncomputable def towerFiberEquiv (F : IntermediateField K L) (ω : AS.Ω) :
+noncomputable def towerFiberEquiv (F : Type*) [Field F] [Algebra K F]
+    [Algebra F L] [IsScalarTower K F L] [FiniteDimensional K F] [FiniteDimensional F L] (ω : AS.Ω) :
     (Σ x : BaseFiber (AS := AS) F ω,
       BaseFiber (AS := AS.finiteExtension F) L x.val) ≃ BaseFiber (AS := AS) L ω :=
   (Equiv.sigmaSubtypeFiberEquivSubtype
@@ -208,7 +271,8 @@ noncomputable def towerFiberEquiv (F : IntermediateField K L) (ω : AS.Ω) :
     ((towerMeasurableEquiv AS L F).toEquiv.subtypeEquiv (fun _ ↦ Iff.rfl))
 
 /-- The weight of a direct place is the product of its two successive weights. -/
-theorem tower_fibreWeight (F : IntermediateField K L) (ω : AS.Ω)
+theorem tower_fibreWeight (F : Type*) [Field F] [Algebra K F]
+    [Algebra F L] [IsScalarTower K F L] [FiniteDimensional K F] [FiniteDimensional F L] (ω : AS.Ω)
     (x : BaseFiber (AS := AS) F ω) (y : BaseFiber (AS := AS.finiteExtension F) L x.val) :
     ParameterSpaceExtension.fibreWeight AS (separableClosure K F) ω x *
       ParameterSpaceExtension.fibreWeight (AS.finiteExtension F)
@@ -242,7 +306,8 @@ variable {K : Type*} [Field K] (AS : AdelicStructure K)
 variable (L : Type*) [Field L] [Algebra K L] [FiniteDimensional K L]
 
 /-- Real fibre integration is transitive through finite extensions. -/
-theorem fibreIntegral_tower (F : IntermediateField K L)
+theorem fibreIntegral_tower (F : Type*) [Field F] [Algebra K F]
+    [Algebra F L] [IsScalarTower K F L] [FiniteDimensional K F] [FiniteDimensional F L]
     (g : ParameterSpaceFinExtension (AS.finiteExtension F) L → ℝ) (ω : AS.Ω) :
     fibreIntegral AS F (fibreIntegral (AS.finiteExtension F) L g) ω =
       fibreIntegral AS L (g ∘ (towerMeasurableEquiv AS L F).symm) ω := by
@@ -277,7 +342,8 @@ variable {K : Type*} [Field K] (AS : AdelicStructure K)
 variable (L : Type*) [Field L] [Algebra K L] [FiniteDimensional K L]
 
 /-- Nonnegative fibre integration is transitive through finite extensions. -/
-theorem fibreLIntegral_tower (F : IntermediateField K L)
+theorem fibreLIntegral_tower (F : Type*) [Field F] [Algebra K F]
+    [Algebra F L] [IsScalarTower K F L] [FiniteDimensional K F] [FiniteDimensional F L]
     (g : ParameterSpaceFinExtension (AS.finiteExtension F) L → ℝ≥0∞) (ω : AS.Ω) :
     fibreLIntegral AS F (fibreLIntegral (AS.finiteExtension F) L g) ω =
       fibreLIntegral AS L (g ∘ (towerMeasurableEquiv AS L F).symm) ω := by
@@ -312,7 +378,8 @@ variable {K : Type*} [Field K] (AS : AdelicStructure K)
 variable (L : Type*) [Field L] [Algebra K L] [FiniteDimensional K L]
 
 /-- The canonical finite tower identification preserves the induced measure. -/
-theorem map_towerMeasurableEquiv (F : IntermediateField K L) :
+theorem map_towerMeasurableEquiv (F : Type*) [Field F] [Algebra K F]
+    [Algebra F L] [IsScalarTower K F L] [FiniteDimensional K F] [FiniteDimensional F L] :
     Measure.map (towerMeasurableEquiv AS L F)
       ((AS.finiteExtension F).finiteExtension L).v = (AS.finiteExtension L).v := by
   apply Measure.ext_of_lintegral
@@ -334,7 +401,8 @@ theorem map_towerMeasurableEquiv (F : IntermediateField K L) :
   exact congrArg f ((towerMeasurableEquiv AS L F).apply_symm_apply x)
 
 /-- Successive and direct finite extensions are canonically equivalent adelic structures. -/
-noncomputable def towerEquiv (F : IntermediateField K L) :
+noncomputable def towerEquiv (F : Type*) [Field F] [Algebra K F]
+    [Algebra F L] [IsScalarTower K F L] [FiniteDimensional K F] [FiniteDimensional F L] :
     AdelicStructure.Equiv ((AS.finiteExtension F).finiteExtension L) (AS.finiteExtension L) where
   toMeasurableEquiv := towerMeasurableEquiv AS L F
   ϕ_comp := towerMeasurableEquiv_ϕ AS L F

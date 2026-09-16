@@ -16,6 +16,11 @@ import ArakelovGeometry.AdelicCurve.Amalgamation
 import ArakelovGeometry.AdelicCurve.Restriction
 import ArakelovGeometry.AdelicCurve.Extension
 import ArakelovGeometry.AdelicCurve.FiniteTower
+import ArakelovGeometry.AdelicCurve.AlgebraicProbability
+import ArakelovGeometry.AdelicCurve.AlgebraicBaseChange
+import ArakelovGeometry.AdelicCurve.AlgebraicFiniteProjection
+import ArakelovGeometry.AdelicCurve.AlgebraicTowerBasic
+import ArakelovGeometry.ExternalResults.AlgebraicTowerSupport
 import ArakelovGeometry.AdelicCurve.Examples.Trivial
 import ArakelovGeometry.AdelicCurve.Examples.NumberFields
 import ArakelovGeometry.AdelicCurve.Examples.FunctionFields

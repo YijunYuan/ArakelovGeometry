@@ -1,8 +1,8 @@
 # Extension proof status
 
 The task is unfinished. The configured `horizon check --json` passed on
-2026-09-16 at 06:07:04 UTC (3423 jobs), with 1 direct sorry occurrence.
-The subsequent compiled inventory contains 768 project constants, including
+2026-09-16 at 06:35:41 UTC (3430 jobs), with 1 direct sorry occurrence.
+The subsequent compiled inventory contains 864 project constants, including
 1 transitively using `sorryAx`; no other nonstandard axioms occur.
 
 ## Mathematical route and coverage
@@ -13,8 +13,8 @@ finite extensions including inseparability, algebraic cylinder measures,
 nonnegative and signed disintegration, and tower compatibility. Every direct
 gap and every extension-module constant has a blueprint mapping. Additional
 unwritten mathematical producers have explicit nodes and complete proofs;
-129 nodes with axiom-clean attachments are marked `\leanok`. The combined route has 261
-mathematical nodes, including 24 explicitly unwritten producer nodes. All 768
+149 nodes with axiom-clean attachments are marked `\leanok`. The combined route has 276
+mathematical nodes, including 19 explicitly unwritten producer nodes. All 864
 project constants have an attachment or an explicitly classified support
 mapping; every compiled mathematical dependency between attached nodes has
 a blueprint path, with zero cycles or dangling links.
@@ -66,8 +66,17 @@ discrete probability attachments. The global separable-degree formula remains
 an external library reference, without adding a dependency declaration to the
 project graph.
 
+Finite descent now constructs a finite base and extension preserving both
+total and separable degrees. Generalized embedding counts give normalized
+base-change probabilities and restriction along arbitrary finite embeddings.
+Finite marginal uniqueness and the canonical algebraic parameter equivalence
+are proved. The iterated measurable fibre kernel defines a probability and
+computes iterated nonnegative integration; its equality with the direct fibre
+probability remains the next obligation. Independent honesty review checked
+62 declarations in this producer batch.
+
 Only the algebraic tower-equivalence theorem remains sorry-backed.
-The complete 768-constant audit finds exactly this gap and no new axioms.
+The complete 864-constant audit finds exactly this gap and no new axioms.
 Additional source statements without direct Lean attachments remain visible;
 their status is not inferred from narrower results.
 
