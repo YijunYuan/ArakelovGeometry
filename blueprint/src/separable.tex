@@ -225,56 +225,79 @@ The argument uses the full Vandermonde matrix over the original field.
 \end{proof}
 
 \begin{lemma}[A separable orbit as an embedding set]
-\label{lem:separable-orbit-embeddings}\notready
+\label{lem:separable-orbit-embeddings}
+\leanok
+\lean{ArakelovGeometry.AdelicStructure.adjoin_restrict_aut_surjective,ArakelovGeometry.AdelicStructure.adjoin_embeddings_gen_injective}
 \uses{lem:algebraic-embedding-extension}
 \source{chen-moriwaki-adelic:page-0198}
 Let $c$ be separable over $K$ in an algebraic closure $C$, and let
-$E=K(c)$. The finite set of $K$-embeddings $E\hookrightarrow C$ has
-$[E:K]$ elements. Evaluation at $c$ is injective and its image is
-$\{\tau(c):\tau\in\operatorname{Aut}_K(C)\}$, the set of distinct roots
-of the minimal polynomial of $c$.
+$E=K(c)$. Restriction from $\operatorname{Aut}_K(C)$ onto the set of
+$K$-embeddings $E\hookrightarrow C$ is surjective, and evaluation at
+$c$ is injective on that embedding set.
 \end{lemma}
 \begin{proof}
-An embedding is determined by its value at the generator $c$, and that
-value is a root of its minimal polynomial. Conversely each root defines
-an embedding by evaluation on $K[T]/(P_c)$. Separability gives exactly
-$\deg P_c=[E:K]$ roots. Every embedding $E\to C$ extends to an embedding
-$C\to C$ by Lemma~\ref{lem:algebraic-embedding-extension}.
+An embedding is determined by its value at the generator $c$, which
+proves injectivity of evaluation. Every embedding $E\to C$ extends
+to an embedding $C\to C$ by Lemma~\ref{lem:algebraic-embedding-extension}.
 Its image is algebraically closed, and $C$ is algebraic over that image
 because the image contains $K$. An algebraically closed field has no
 proper algebraic extension, so this extended embedding is surjective.
-It is therefore an automorphism. Conversely every automorphism restricts
-to an embedding of $E$.
+It is therefore an automorphism restricting to the given embedding.
+\end{proof}
+
+\begin{lemma}[Counting a separable orbit]\label{lem:separable-orbit-cardinality}
+\notready
+\uses{lem:separable-orbit-embeddings}
+\source{chen-moriwaki-adelic:page-0198}
+For a separable element $c$ over $K$ in an algebraic closure $C$, the
+orbit $\{\tau(c):\tau\in\operatorname{Aut}_K(C)\}$ is the set of roots
+of the minimal polynomial $P_c$ and has $[K(c):K]$ elements.
+\end{lemma}
+\begin{proof}
+Every image of $c$ under a $K$-embedding is a root of $P_c$.
+Conversely, each root defines an embedding by evaluation on
+$K[T]/(P_c)\simeq K(c)$. Lemma~\ref{lem:separable-orbit-embeddings}
+identifies these embeddings with distinct orbit elements. The polynomial
+$P_c$ splits in $C$ and has distinct roots by separability, so their
+number is $\deg P_c=[K(c):K]$.
 \end{proof}
 
 \begin{lemma}[Power sums of a separable orbit lie in the base]\label{lem:orbit-power-sums}
+\leanok
 \source{chen-moriwaki-adelic:page-0198}
 \uses{lem:separable-orbit-embeddings}
-\notready
-If $c$ is separable over $K$ and $\alpha_1,\ldots,\alpha_d$ are its
-distinct conjugates in an algebraic closure, then for every integer
-$N\geq0$,
+\lean{ArakelovGeometry.AdelicStructure.sum_pow_embeddings_eq_trace}
+Let $E/K$ be a finite separable extension, $C$ an algebraic closure
+of $K$, and $b\in E$. For every integer $N\geq0$,
 \[
- \sum_i\alpha_i^N=\operatorname{Tr}_{K(c)/K}(c^N)\in K.
+ \sum_{\sigma:E\hookrightarrow C}\sigma(b)^N
+ =\operatorname{Tr}_{E/K}(b^N)\in K\subseteq C.
 \]
+In particular, if $E=K(c)$ and $\alpha_1,\ldots,\alpha_d$ are the
+distinct conjugates of $c$, then
+$\sum_i\alpha_i^N=\operatorname{Tr}_{K(c)/K}(c^N)$.
 \end{lemma}
 \begin{proof}
-Write $E=K(c)$ and let $C$ be the algebraic closure. The separable
-minimal polynomial of $c$ factors in $C[T]$ into distinct linear factors.
+Choose a primitive element $\theta$ of the finite separable extension
+$E/K$. Its separable minimal polynomial factors in $C[T]$ into
+distinct linear factors.
 The Chinese remainder theorem gives
 $C\otimes_K E\simeq\prod_{\sigma:E\hookrightarrow C}C$.
-Multiplication by $c^N$ on the right is diagonal, with entries
-$\sigma(c)^N$, so its trace is their sum. The trace of a matrix is
+Multiplication by $b^N$ on the right is diagonal, with entries
+$\sigma(b)^N$, so its trace is their sum. The trace of a matrix is
 unchanged by extending scalars, since it is the sum of its diagonal
-entries. Thus this sum is the image of $\operatorname{Tr}_{E/K}(c^N)$.
-Lemma~\ref{lem:separable-orbit-embeddings} identifies the summands with
-the distinct conjugates. This proof involves no division by an integer
-and applies in positive characteristic as well.
+entries. Thus this sum is the image of $\operatorname{Tr}_{E/K}(b^N)$.
+For $E=K(c)$ and $b=c$, Lemma~\ref{lem:separable-orbit-embeddings}
+identifies the summands with the distinct conjugates. This trace identity
+is the power-sum case of the symmetric-polynomial argument in the
+reference. It involves no division by an integer and applies in
+positive characteristic as well.
 \end{proof}
 
 \begin{lemma}[Measurability of orbit maxima]\label{lem:orbit-maximum}
+\leanok
 \source{chen-moriwaki-adelic:page-0196,chen-moriwaki-adelic:page-0198}
-\uses{def:adelic-structure,lem:power-sum-radius,lem:orbit-power-sums,lem:separable-orbit-embeddings,def:extension-parameters}
+\uses{def:adelic-structure,lem:power-sum-radius,lem:orbit-power-sums,lem:separable-orbit-embeddings,lem:separable-orbit-cardinality,def:extension-parameters,lem:extension-coordinates}
 \lean{ArakelovGeometry.AdelicStructure.measurable_iSup_abv_aut}
 Choose for each $\omega$ any extension $v_\omega$ of $\phi_\omega$ to
 an algebraic closure $\overline K$. For every separable $c\in\overline K$,
@@ -498,17 +521,22 @@ of each fibre, giving the claimed measurability.
 
 \begin{lemma}[Measurability of nonnegative fibre integration]\label{lem:measurable-fibre-lintegral}
 \source{chen-moriwaki-adelic:page-0200,chen-moriwaki-adelic:page-0201}
-\uses{thm:measurable-fibre-integral,lem:finite-fibre-sums}
-\notready
+\uses{thm:measurable-fibre-integral,lem:finite-fibre-integrability}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_fibreLIntegral}
 For every measurable $f:\Omega_L\to[0,\infty]$, the function $I^+f$
 is measurable.
 \end{lemma}
 \begin{proof}
-The truncations $f_j=\min(j,f)$ are finite nonnegative measurable functions.
-Their real fibre integrals are measurable by the preceding theorem.
-Viewed in $[0,\infty]$, they equal $I^+f_j$ by the finite-sum formula
-and increase to $I^+f$. An increasing supremum of measurable functions
-is measurable.
+For a measurable set $A$, its real indicator has a measurable fibre
+integral. This integral is $P_\omega(A\cap X_\omega)$, a finite
+nonnegative number since $P_\omega$ is a probability measure.
+Thus $\omega\mapsto P_\omega(A\cap X_\omega)$ is measurable also
+as an extended nonnegative function. For any $c\in[0,\infty]$,
+$I^+(c\mathbf1_A)=cP_\omega(A\cap X_\omega)$ is measurable.
+Additivity of nonnegative integrals proves the assertion for finite
+nonnegative measurable simple functions. Choose such functions
+$s_j\uparrow f$. Monotone convergence on each fibre gives
+$I^+f=\sup_j I^+s_j$, a measurable function.
 \end{proof}
 
 \subsection{The induced measure and integral identities}

@@ -170,6 +170,31 @@ claim follows. A vector space spanned by $d$ elements has dimension at most
 $d$, proving the degree bound and finite dimensionality.
 \end{proof}
 
+\begin{lemma}[Separability of completed extensions]
+\label{lem:completion-separable}
+\leanok
+\source{chen-moriwaki-adelic:page-0205}
+\uses{lem:completion-finite,lem:completion-embedding}
+\lean{AbsoluteValue.isSeparable_completion}
+If $L/K$ is finite separable and $w$ extends an absolute value $v$ of $K$,
+then $L_w/K_v$ is separable. This is the separability assertion in the
+proof of Lemma 3.4.2 of \cite{chen-moriwaki}; the following argument uses
+a spanning basis in place of the factorization of a primitive element's
+minimal polynomial.
+\end{lemma}
+\begin{proof}
+Choose a $K$-basis $b_1,\ldots,b_d$ of $L$. For each $i$, the image of
+$b_i$ in $L_w$ is annihilated by its separable minimal polynomial over
+$K$. This polynomial remains separable over $K_v$: a Bezout identity
+between the polynomial and its derivative over $K$ remains an identity
+after the coefficients are embedded in $K_v$. The minimal polynomial of
+the image of $b_i$ over $K_v$ divides that polynomial and is therefore
+separable. Thus each image lies in the separable closure $E$ of $K_v$
+inside $L_w$. The field $E$ is a $K_v$-linear subspace and hence contains
+the span of these images. Lemma~\ref{lem:completion-finite} identifies
+that span with $L_w$. Therefore $E=L_w$, proving separability.
+\end{proof}
+
 \begin{definition}[Local degree]\label{def:local-degree}
 \source{chen-moriwaki-adelic:page-0194}
 \uses{lem:completion-embedding,lem:completion-finite}
@@ -342,6 +367,92 @@ of the basis, and hence there are finitely many embeddings. Their
 pullback absolute values form a finite set containing every $w$.
 \end{proof}
 
+\begin{lemma}[Lifting an isometric embedding]\label{lem:completed-embedding-lift}
+\leanok
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0208}
+\uses{lem:complete-extension,lem:completion-finite}
+\lean{AbsoluteValue.existsUnique_completion_algHom}
+Let $L/K$ be finite, let $w$ be an absolute value on $L$, and put
+$v=w|_K$, $B=K_v$ and $C=B^{\mathrm{ac}}$. Let $u$ be the unique
+absolute value on $C$ extending the norm of $B$.
+Every $K$-embedding $\sigma:L\to C$ satisfying $u\circ\sigma=w$
+extends uniquely to a $B$-embedding $L_w\to C$.
+\end{lemma}
+\begin{proof}
+The embedding $\sigma$ is isometric and
+extends uniquely to an isometric field embedding
+$\widehat\sigma:L_w\to C_u$. This extension is $B$-linear: it commutes
+with the embeddings of $K$, and the two maps from $B$ to $C_u$ in this
+assertion are continuous and agree on the dense subfield $K$.
+Every element of $L_w$ is algebraic over $B$ by
+Lemma~\ref{lem:completion-finite}. Its image under $\widehat\sigma$
+is thus a root of a polynomial over $B$. That polynomial splits into
+linear factors over $C$, so each of its roots in the field $C_u$ belongs
+to the image of $C$. Consequently $\widehat\sigma$ factors uniquely
+through $C\hookrightarrow C_u$, giving a $B$-embedding $L_w\to C$
+whose restriction is $\sigma$. For uniqueness, a $K$-basis of $L$
+spans $L_w$ as a $B$-vector space by
+Lemma~\ref{lem:completion-finite}. Two $B$-linear maps agreeing on $L$
+therefore agree everywhere.
+\end{proof}
+
+\begin{lemma}[Norm preservation by completed embeddings]\label{lem:completed-embedding-norm}
+\leanok
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0208}
+\uses{lem:complete-extension,lem:completion-finite,lem:completion-embedding}
+\lean{AbsoluteValue.apply_completion_algHom}
+Let $L/K$ be finite, let $w$ be an absolute value on $L$, put
+$B=K_{w|_K}$ and $C=B^{\mathrm{ac}}$, and let $u$ extend the norm of
+$B$ to $C$. For every $B$-embedding $\tau:L_w\to C$ and every
+$x\in L_w$, one has $u(\tau(x))=\lVert x\rVert$.
+\end{lemma}
+\begin{proof}
+The functions $u\circ\tau$ and the norm on $L_w$ are absolute values
+extending the norm of $B$. The extension $L_w/B$ is finite by
+Lemma~\ref{lem:completion-finite}, and $B$ is complete. Uniqueness in
+Lemma~\ref{lem:complete-extension} therefore identifies these two values.
+\end{proof}
+
+\begin{lemma}[Embeddings of a completed extension]\label{lem:completed-embedding-fibres}
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0208}
+\uses{lem:completed-embedding-lift,lem:completed-embedding-norm}
+\notready
+Let $L/K$ be finite, let $w$ be an absolute value on $L$, and put
+$v=w|_K$, $B=K_v$ and $C=B^{\mathrm{ac}}$. Let $u$ extend the norm of
+$B$ to $C$. Restriction induces a bijection
+\[
+ \operatorname{Hom}_B(L_w,C)\longrightarrow
+ \{\sigma\in\operatorname{Hom}_K(L,C):u\circ\sigma=w\}.
+\]
+\end{lemma}
+\begin{proof}
+Norm preservation shows that restriction takes values in the displayed set.
+The unique lifting property proves surjectivity and injectivity.
+\end{proof}
+
+\begin{theorem}[Sum of local degrees]\label{thm:local-degree-sum}
+\source{chen-moriwaki-adelic:page-0194}
+\uses{lem:completed-embedding-fibres,lem:completion-separable,lem:finite-extension-count,def:local-degree}
+\notready
+Let $L/K$ be finite separable and let $v$ be an absolute value on $K$.
+Then
+\[
+ \sum_{w|_K=v}[L_w:K_v]=[L:K].
+\]
+\end{theorem}
+\begin{proof}
+Put $B=K_v$, $C=B^{\mathrm{ac}}$, and extend the norm of $B$ uniquely
+to an absolute value $u$ of $C$. There are $[L:K]$ embeddings of $L$
+into $C$ over $K$, because $L/K$ is separable and all minimal polynomials
+split in $C$. Partition these embeddings according to their pulled-back
+absolute value $u\circ\sigma$. For each extending $w$, the preceding
+lemma identifies its part with $\operatorname{Hom}_B(L_w,C)$.
+The extension $L_w/B$ is finite and separable by
+Lemmas~\ref{lem:completion-finite} and~\ref{lem:completion-separable},
+so this part has cardinality $[L_w:B]$. Summing the cardinalities of the
+parts proves the formula.
+\end{proof}
+
 \begin{proposition}[Local factorization]\label{lem:local-factorization}
 \source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0202,chen-moriwaki-adelic:page-0205}
 \uses{lem:complete-extension,lem:completion-finite,def:local-degree}
@@ -389,19 +500,39 @@ $v(N_{E_j/K_v}(b))=w_j(b)^{[E_j:K_v]}$ and proves the last formula.
 \end{proof}
 
 \begin{lemma}[Number of extending absolute values]\label{lem:finite-extension-count}
+\leanok
 \source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0204}
-\uses{lem:local-factorization,lem:finite-separable-part,lem:inseparable-extension-unique}
-\notready
+\uses{lem:finite-values-via-embeddings,lem:algebraic-absolute-value-extension}
+\lean{AbsoluteValue.natCard_extensions_pos,AbsoluteValue.natCard_extensions_le_finrank}
 For any finite extension $L/K$, an absolute value of $K$ has at least one
-and at most $[L:K]$ extensions to $L$.
+and at most $[L:K]$ extensions to $L$. The embedding argument below proves
+the bound for inseparable extensions as well as the finite separable
+extensions considered in \S3.3 of \cite{chen-moriwaki}.
 \end{lemma}
 \begin{proof}
-Let $E$ be the separable closure of $K$ in $L$. Restriction gives a
-bijection between extensions to $L$ and extensions to $E$, because $L/E$
-is purely inseparable and the extension formula is unique. The latter
-set is nonempty by local factorization. Its cardinality is at most
-$[E:K]$, since the positive local degrees sum to $[E:K]$. Finally
-$[E:K]\leq[L:K]$ by the dimension formula in the tower.
+Existence follows from Lemma~\ref{lem:algebraic-absolute-value-extension}.
+For the upper bound, let $C$ be an algebraic closure of $K_v$, equipped
+with its unique extending absolute value $u$. By
+Lemma~\ref{lem:finite-values-via-embeddings}, each extending value is
+$u\circ\sigma$ for a $K$-embedding $\sigma:L\hookrightarrow C$.
+Choosing one realizing embedding for each value gives an injection into
+the set of such embeddings: equal embeddings have equal pullbacks.
+
+Distinct embeddings are linearly independent over $C$ as $K$-linear
+maps $L\to C$. Indeed, suppose that a nonzero relation
+$\sum_{i=1}^r c_i\sigma_i=0$ has as few nonzero coefficients as possible.
+All $c_i$ are nonzero, and $r=1$ is impossible by evaluation at $1$.
+Choose $a\in L$ with $\sigma_1(a)\ne\sigma_r(a)$. Evaluate the relation
+at $ax$ and subtract $\sigma_r(a)$ times its value at $x$. The result,
+valid for every $x\in L$, is
+\[
+ \sum_{i=1}^{r-1}c_i\bigl(\sigma_i(a)-\sigma_r(a)\bigr)\sigma_i(x)=0.
+\]
+Its first coefficient is nonzero, contradicting minimality of $r$.
+The space of $K$-linear maps $L\to C$ has dimension $[L:K]$ over $C$:
+evaluation on a $K$-basis identifies it with $C^{[L:K]}$. Therefore the
+number of embeddings, and consequently the number of extending absolute
+values, is at most $[L:K]$.
 \end{proof}
 
 \begin{lemma}[Archimedean exponent]\label{lem:archimedean-bound}

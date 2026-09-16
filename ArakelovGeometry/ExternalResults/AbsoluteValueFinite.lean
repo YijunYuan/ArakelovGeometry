@@ -5,6 +5,7 @@ Authors: Yijun Yuan
 -/
 import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
 import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
+import Mathlib.FieldTheory.SeparableClosure
 
 /-!
 # Finiteness of extending absolute values
@@ -77,5 +78,62 @@ theorem finite_extensions {K L : Type*} [Field K] [Field L]
   intro w hw
   obtain ⟨σ, hσ⟩ := exists_algHom_eq_pullback v w hw u hu
   exact ⟨σ, hσ.symm⟩
+
+/-- A finite separable field extension remains separable after completion. -/
+theorem isSeparable_completion {K L : Type*} [Field K] [Field L]
+    [Algebra K L] [FiniteDimensional K L] [Algebra.IsSeparable K L]
+    (w : AbsoluteValue L ℝ) :
+    Algebra.IsSeparable (w.restriction K).Completion w.Completion := by
+  let B := (w.restriction K).Completion
+  have : IsScalarTower K B w.Completion := by
+    apply IsScalarTower.of_algebraMap_eq
+    intro x
+    change ((WithAbs.toAbs w (algebraMap K L x)) : w.Completion) = _
+    rw [algebraMap_completion_def]
+    exact (UniformSpace.Completion.mapRingHom_coe
+      (isometry_algebraMap_withAbs w K).continuous (WithAbs.toAbs (w.restriction K) x)).symm
+  let j : L →ₐ[K] w.Completion := {
+    toRingHom := UniformSpace.Completion.coeRingHom.comp (WithAbs.equiv w).symm.toRingHom
+    commutes' _ := rfl }
+  let b := Module.Free.chooseBasis K L
+  have hspan : Submodule.span B (Set.range fun i ↦ (WithAbs.toAbs w (b i) : w.Completion)) ≤
+      (separableClosure B w.Completion).toSubalgebra.toSubmodule := by
+    apply Submodule.span_le.mpr
+    rintro _ ⟨i, rfl⟩
+    apply mem_separableClosure_iff.mpr
+    exact (IsSeparable.map j j.injective (Algebra.IsSeparable.isSeparable K (b i))).tower_top B
+  rw [span_coe_basis_eq_top w K b] at hspan
+  exact ⟨fun x ↦ mem_separableClosure_iff.mp (hspan Submodule.mem_top)⟩
+
+/-- Every absolute value has at least one extension to a finite field extension. -/
+theorem natCard_extensions_pos {K L : Type*} [Field K] [Field L]
+    [Algebra K L] [FiniteDimensional K L] (v : AbsoluteValue K ℝ) :
+    0 < Nat.card {w : AbsoluteValue L ℝ // w.restriction K = v} := by
+  have : Finite {w : AbsoluteValue L ℝ // w.restriction K = v} :=
+    (finite_extensions (L := L) v).to_subtype
+  obtain ⟨w, hw⟩ := exists_extension (L := L) v
+  have : Nonempty {w : AbsoluteValue L ℝ // w.restriction K = v} := ⟨⟨w, hw⟩⟩
+  exact Nat.card_pos
+
+/-- The number of extending absolute values is bounded by the degree of the field extension. -/
+theorem natCard_extensions_le_finrank {K L : Type*} [Field K] [Field L]
+    [Algebra K L] [FiniteDimensional K L] (v : AbsoluteValue K ℝ) :
+    Nat.card {w : AbsoluteValue L ℝ // w.restriction K = v} ≤ Module.finrank K L := by
+  classical
+  let B := v.Completion
+  let n : AbsoluteValue B ℝ := NormedField.toAbsoluteValue B
+  let e : WithAbs n ≃ᵢ B := {
+    (WithAbs.equiv n).toEquiv with
+    isometry_toFun := AddMonoidHomClass.isometry_of_norm (WithAbs.equiv n) (fun _ ↦ rfl) }
+  have : CompleteSpace (WithAbs n) := e.completeSpace
+  obtain ⟨u, hu, -⟩ := existsUnique_extension_of_complete (L := AlgebraicClosure B) n
+  choose f hf using fun w : {w : AbsoluteValue L ℝ // w.restriction K = v} ↦
+    exists_algHom_eq_pullback v w.val w.property u hu
+  have hinj : Function.Injective f := by
+    intro x y h
+    apply Subtype.ext
+    rw [hf x, hf y, h]
+  exact (Nat.card_le_card_of_injective f hinj).trans
+    (card_algHom_le_finrank K L (AlgebraicClosure B))
 
 end AbsoluteValue

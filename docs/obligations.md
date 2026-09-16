@@ -5,52 +5,48 @@ Every project constant, including generated declarations, and every direct depen
 is recorded in `blueprint-coverage.json`. External constants remain library references.
 A mapped obligation is still open until its transitive axiom audit is clean.
 
-Project constants: 579; extension constants: 274; direct gaps: 36.
-Sorry-backed constants: 54; blueprint nodes: 215.
+Project constants: 593; extension constants: 283; direct gaps: 32.
+Sorry-backed constants: 56; blueprint nodes: 221.
 Unmapped extension constants: 0; unmapped gaps: 0.
 
 Unmapped project constants: 0; missing compiled dependency routes: 0.
-Unwritten mathematical blueprint nodes: 45.
+Unwritten mathematical blueprint nodes: 44.
 Changed or unrecorded inventory inputs: 0.
 
 | Gap | Source line | Declaration | Blueprint nodes |
 | --- | --- | --- | --- |
-| 1 | 318 | `ArakelovGeometry.AdelicStructure.measurable_iSup_abv_aut` | lem:orbit-maximum |
-| 2 | 388 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.tsum_fibreWeight` | lem:fibre-normalization |
-| 3 | 476 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_comp_restrict` | prop:fibre-restriction |
-| 4 | 482 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_fibreIntegral` | thm:measurable-fibre-integral |
-| 5 | 492 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.inducedMeasure` | def:separable-induced-measure |
-| 6 | 505 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.lintegral_inducedMeasure` | thm:separable-lintegral |
-| 7 | 513 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_inducedMeasure_iff` | thm:separable-integrability |
-| 8 | 520 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_inducedMeasure` | thm:separable-integral |
-| 9 | 526 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_comp_proj_inducedMeasure` | cor:separable-pullback-integral |
-| 10 | 534 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.finrank_mul_integral_log_inducedMeasure` | prop:separable-norm-integral |
-| 11 | 542 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_log_inducedMeasure` | thm:separable-log-integrable |
-| 12 | 549 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.map_inducedMeasure_proj` | prop:separable-pushforward |
-| 13 | 566 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.isProper_finiteSeparableExtension` | prop:separable-proper |
-| 14 | 762 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreWeight_eq_finSepDegree` | lem:finite-separable-weight |
-| 15 | 829 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fieldRange_completion_separableClosure` | lem:completion-separable-closure |
-| 16 | 1142 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderIntegral_congr` | lem:cylinder-integral-independent |
-| 17 | 1162 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure` | def:algebraic-fibre-probability |
-| 18 | 1162 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure` | def:algebraic-fibre-probability |
-| 19 | 1169 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure_isProbability` | prop:algebraic-fibre-marginals |
-| 20 | 1179 | `ArakelovGeometry.AdelicStructure.Algebraic.map_fibreProbabilityMeasure_projFiniteFiber` | prop:algebraic-fibre-marginals |
-| 21 | 1186 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_fibreProbabilityMeasure_descend` | lem:algebraic-cylinder-integral |
-| 22 | 1208 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_proj` | lem:algebraic-integral-pullback |
-| 23 | 1216 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_projFinite` | lem:algebraic-integral-pullback |
-| 24 | 1242 | `ArakelovGeometry.AdelicStructure.Algebraic.measurable_fibreLIntegral` | prop:algebraic-kernel-measurable |
-| 25 | 1258 | `ArakelovGeometry.AdelicStructure.Algebraic.measure` | def:algebraic-measure |
-| 26 | 1277 | `ArakelovGeometry.AdelicStructure.Algebraic.lintegral_measure` | prop:algebraic-lintegral |
-| 27 | 1287 | `ArakelovGeometry.AdelicStructure.Algebraic.integrable_measure_iff` | prop:algebraic-integrability |
-| 28 | 1294 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_abs_fibreIntegral_le` | prop:algebraic-signed-disintegration |
-| 29 | 1301 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_measure` | prop:algebraic-signed-disintegration |
-| 30 | 1308 | `ArakelovGeometry.AdelicStructure.Algebraic.integrable_comp_proj_measure` | prop:algebraic-base-pullback |
-| 31 | 1314 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_comp_proj_measure` | prop:algebraic-base-pullback |
-| 32 | 1321 | `ArakelovGeometry.AdelicStructure.Algebraic.integrable_log_measure` | prop:algebraic-log-integrable |
-| 33 | 1329 | `ArakelovGeometry.AdelicStructure.Algebraic.map_measure_proj` | lem:algebraic-base-pushforward |
-| 34 | 1346 | `ArakelovGeometry.AdelicStructure.Algebraic.isProper_algebraicExtension` | prop:algebraic-proper |
-| 35 | 1373 | `ArakelovGeometry.exists_equiv_finiteExtension_finiteExtension` | prop:finite-tower |
-| 36 | 1402 | `ArakelovGeometry.exists_equiv_algebraicExtension_algebraicExtension` | thm:algebraic-tower |
+| 1 | 469 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.tsum_fibreWeight` | lem:fibre-normalization |
+| 2 | 557 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_comp_restrict` | prop:fibre-restriction |
+| 3 | 563 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_fibreIntegral` | thm:measurable-fibre-integral |
+| 4 | 685 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_inducedMeasure` | thm:separable-integral |
+| 5 | 691 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integral_comp_proj_inducedMeasure` | cor:separable-pullback-integral |
+| 6 | 699 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.finrank_mul_integral_log_inducedMeasure` | prop:separable-norm-integral |
+| 7 | 707 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_log_inducedMeasure` | thm:separable-log-integrable |
+| 8 | 714 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.map_inducedMeasure_proj` | prop:separable-pushforward |
+| 9 | 731 | `ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.isProper_finiteSeparableExtension` | prop:separable-proper |
+| 10 | 927 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreWeight_eq_finSepDegree` | lem:finite-separable-weight |
+| 11 | 994 | `ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fieldRange_completion_separableClosure` | lem:completion-separable-closure |
+| 12 | 1307 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreCylinderIntegral_congr` | lem:cylinder-integral-independent |
+| 13 | 1327 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure` | def:algebraic-fibre-probability |
+| 14 | 1327 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure` | def:algebraic-fibre-probability |
+| 15 | 1334 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreProbabilityMeasure_isProbability` | prop:algebraic-fibre-marginals |
+| 16 | 1344 | `ArakelovGeometry.AdelicStructure.Algebraic.map_fibreProbabilityMeasure_projFiniteFiber` | prop:algebraic-fibre-marginals |
+| 17 | 1351 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_fibreProbabilityMeasure_descend` | lem:algebraic-cylinder-integral |
+| 18 | 1373 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_proj` | lem:algebraic-integral-pullback |
+| 19 | 1381 | `ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegral_comp_projFinite` | lem:algebraic-integral-pullback |
+| 20 | 1407 | `ArakelovGeometry.AdelicStructure.Algebraic.measurable_fibreLIntegral` | prop:algebraic-kernel-measurable |
+| 21 | 1423 | `ArakelovGeometry.AdelicStructure.Algebraic.measure` | def:algebraic-measure |
+| 22 | 1442 | `ArakelovGeometry.AdelicStructure.Algebraic.lintegral_measure` | prop:algebraic-lintegral |
+| 23 | 1452 | `ArakelovGeometry.AdelicStructure.Algebraic.integrable_measure_iff` | prop:algebraic-integrability |
+| 24 | 1459 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_abs_fibreIntegral_le` | prop:algebraic-signed-disintegration |
+| 25 | 1466 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_measure` | prop:algebraic-signed-disintegration |
+| 26 | 1473 | `ArakelovGeometry.AdelicStructure.Algebraic.integrable_comp_proj_measure` | prop:algebraic-base-pullback |
+| 27 | 1479 | `ArakelovGeometry.AdelicStructure.Algebraic.integral_comp_proj_measure` | prop:algebraic-base-pullback |
+| 28 | 1486 | `ArakelovGeometry.AdelicStructure.Algebraic.integrable_log_measure` | prop:algebraic-log-integrable |
+| 29 | 1494 | `ArakelovGeometry.AdelicStructure.Algebraic.map_measure_proj` | lem:algebraic-base-pushforward |
+| 30 | 1511 | `ArakelovGeometry.AdelicStructure.Algebraic.isProper_algebraicExtension` | prop:algebraic-proper |
+| 31 | 1538 | `ArakelovGeometry.exists_equiv_finiteExtension_finiteExtension` | prop:finite-tower |
+| 32 | 1567 | `ArakelovGeometry.exists_equiv_algebraicExtension_algebraicExtension` | thm:algebraic-tower |
 
 All gap source lines are in `ArakelovGeometry/AdelicCurve/Extension.lean`.
 The machine-readable inventory also retains the prior chapters and examples,
