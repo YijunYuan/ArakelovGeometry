@@ -289,9 +289,10 @@ this existing norm theorem in the form recorded in
 \end{proof}
 
 \begin{lemma}[Extension over a complete field]\label{lem:complete-extension}
+\leanok
 \source{chen-moriwaki-adelic:page-0208}
 \uses{lem:trivial-algebraic-extension,lem:complete-nonarchimedean-extension,lem:complete-extension-unique,lem:completion-nonarchimedean,thm:complete-archimedean,lem:algebraic-embedding-extension}
-\notready
+\lean{AbsoluteValue.existsUnique_extension_of_complete}
 If $(F,v)$ is complete and $E/F$ is algebraic, there is exactly one
 absolute value on $E$ extending $v$.
 \end{lemma}
@@ -311,6 +312,34 @@ and multiplicativity follow from those of the modulus, and
 $(r+t)^s\leq r^s+t^s$ for nonnegative $r,t$ proves the triangle
 inequality. It restricts to $v$. Uniqueness follows from
 Lemma~\ref{lem:complete-extension-unique}.
+\end{proof}
+
+\begin{lemma}[Realizing extension values by embeddings into a fixed field]
+\label{lem:finite-values-via-embeddings}
+\leanok
+\lean{AbsoluteValue.exists_algHom_eq_pullback,AbsoluteValue.finite_extensions}
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0208}
+\uses{lem:complete-extension,lem:completion-finite,lem:completion-embedding,lem:algebraic-embedding-extension}
+Let $L/K$ be finite, let $v$ be an absolute value on $K$, and let
+$C$ be an algebraic closure of $K_v$ with its unique absolute value
+$u$ extending the completed value. Every absolute value $w$ on $L$
+extending $v$ has the form $u\circ\sigma$ for a $K$-embedding
+$\sigma:L\hookrightarrow C$. In particular the set of such $w$ is finite.
+\end{lemma}
+\begin{proof}
+For an extending $w$, the completed field $L_w$ is finite over $K_v$
+by Lemma~\ref{lem:completion-finite}. Embed $L_w$ into $C$ over $K_v$.
+Both its completed absolute value and the pullback of $u$ extend the
+same value on the complete field $K_v$, so they agree by
+Lemma~\ref{lem:complete-extension}. Restriction to $L$ gives the required
+$\sigma$ and the equality $w=u\circ\sigma$.
+
+There are finitely many $K$-embeddings $L\hookrightarrow C$.
+Indeed, choose a finite $K$-basis of $L$. The image of each basis
+element is a root of its nonzero minimal polynomial, so it has only
+finitely many possibilities. An embedding is determined by the images
+of the basis, and hence there are finitely many embeddings. Their
+pullback absolute values form a finite set containing every $w$.
 \end{proof}
 
 \begin{proposition}[Local factorization]\label{lem:local-factorization}

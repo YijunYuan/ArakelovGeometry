@@ -51,21 +51,39 @@ irreducible minimal polynomial, so this is an embedding of $D(a)$.
 This contradicts maximality. Hence $D=E$.
 \end{proof}
 
+\begin{lemma}[Extension of an absolute value to an algebraic field extension]
+\label{lem:algebraic-absolute-value-extension}
+\leanok
+\uses{def:absolute-value-restriction,lem:complete-extension,lem:completion-embedding,lem:algebraic-embedding-extension}
+\source{chen-moriwaki-adelic:page-0208}
+\lean{AbsoluteValue.exists_extension}
+Every real absolute value $v$ on a field $F$ extends to every algebraic
+field extension $E/F$.
+\end{lemma}
+\begin{proof}
+Embed $F$ isometrically into its completion $F_v$, and let $C$ be an
+algebraic closure of $F_v$. Extend the composite embedding $F\to C$
+to an embedding $E\to C$ by Lemma~\ref{lem:algebraic-embedding-extension}.
+The completed absolute value has a unique extension to $C$ by
+Lemma~\ref{lem:complete-extension}. Pulling it back along $E\to C$
+gives an absolute value whose restriction to $F$ is $v$.
+\end{proof}
+
 \begin{proposition}[Surjectivity of restriction]\label{prop:algebraic-restriction-surjective}
-\uses{def:extension-parameters,def:restriction-parameters,lem:complete-extension,lem:algebraic-embedding-extension}
+\leanok
+\uses{def:extension-parameters,def:restriction-parameters,lem:algebraic-absolute-value-extension,lem:extension-coordinates}
 \source{chen-moriwaki-adelic:page-0208}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.surjective_restrict,ArakelovGeometry.AdelicStructure.Algebraic.surjective_proj}
 For every intermediate field $F$ of $L/K$, restriction $\Omega_L\to\Omega_F$
 is surjective. In particular $\pi_{L/K}:\Omega_L\to\Omega$ is surjective.
 \end{proposition}
 \begin{proof}
-Fix $(\omega,v)\in\Omega_F$. Embed $F$ in its completion $F_v$ and
-extend this embedding to $L\hookrightarrow F_v^{\mathrm{ac}}$ by
-Lemma~\ref{lem:algebraic-embedding-extension}. The absolute value of the
-complete field extends uniquely to its algebraic closure: on each finite
-subextension take its unique extension, and uniqueness makes these
-extensions agree on overlaps. Pullback gives an absolute value of $L$
-restricting to $v$. For the base projection use $F=K$ and $v=\phi_\omega$.
+Fix $(\omega,v)\in\Omega_F$. By
+Lemma~\ref{lem:algebraic-absolute-value-extension}, $v$ extends to an
+absolute value $w$ on $L$. Its restriction to $K$ equals the restriction
+of $v$, namely $\phi_\omega$. Thus $(\omega,w)$ is a point of
+$\Omega_L$ restricting to $(\omega,v)$. For the base projection extend
+$\phi_\omega$ directly from $K$ to $L$.
 \end{proof}
 
 \begin{definition}[Finite projections and fibres]\label{def:algebraic-projections}
@@ -105,6 +123,7 @@ restrict to the asserted maps on each fibre.
 \end{proof}
 
 \begin{lemma}[Finite fibres are discrete]\label{lem:finite-stage-discrete}
+\leanok
 \uses{def:algebraic-projections,lem:finite-fibre-sum,lem:fibre-separation}
 \source{chen-moriwaki-adelic:page-0208}
 \lean{ArakelovGeometry.AdelicStructure.Algebraic.measurableSet_finiteBaseFiber}

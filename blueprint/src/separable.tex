@@ -11,19 +11,19 @@ from measurable to almost everywhere measurable integrands are made explicit.
 \subsection{Finite fibres and their integrals}
 
 \begin{lemma}[Finiteness of extension fibres]\label{lem:finite-extension-fibres}
+\leanok
 \source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0204}
-\uses{def:extension-parameters,lem:finite-extension-count}
+\uses{def:extension-parameters,lem:finite-values-via-embeddings,lem:extension-coordinates}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.finite_extensionFiber}
 For every finite extension $L/K$, separable or not, and every $\omega\in\Omega$,
 the set $X_\omega$ is finite.
 \end{lemma}
 \begin{proof}
 Sending $(\omega,w)$ to $w$ identifies the fibre with the set of absolute
-values on $L$ extending $\phi_\omega$. The finite extension-count theorem
-bounds this set by $[L:K]$.
-The assertion includes inseparable extensions: restriction to the separable
-part is bijective by the uniqueness of purely inseparable extension of an
-absolute value.
+values on $L$ extending $\phi_\omega$. Lemma~\ref{lem:finite-values-via-embeddings}
+realizes these as pullbacks along the finitely many embeddings into a fixed
+algebraic closure of $K_{\phi_\omega}$. It applies equally to inseparable
+finite extensions.
 \end{proof}
 
 \begin{lemma}[Normalization of local degrees]\label{lem:fibre-normalization}
@@ -40,9 +40,27 @@ gives $n=\sum_x[L_x:K_\omega]$. Division by the positive integer $n$
 gives the assertion.
 \end{proof}
 
+\begin{lemma}[Probability and integrability on finite fibres]
+\label{lem:finite-fibre-integrability}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.isProbabilityMeasure_fibreProbabilityMeasure,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.integrable_fibre}
+\source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0195}
+\uses{def:weighted-fibre-integral,lem:finite-extension-fibres,lem:fibre-separation,lem:fibre-normalization}
+The measure $P_\omega$ is a probability measure, and every real-valued
+function on $X_\omega$ is integrable for $P_\omega$.
+\end{lemma}
+\begin{proof}
+The mass of $P_\omega=\sum_x p_\omega(x)\delta_x$ is
+$\sum_x p_\omega(x)=1$. The finite fibre has a separating measurable
+structure: intersecting, for each fixed point, measurable sets which
+separate it from the other finitely many points shows that its singleton
+is measurable. Hence all functions on the fibre are measurable. Such
+a real-valued function is bounded, and the integral of its absolute
+value is bounded by its maximum absolute value times $P_\omega(X_\omega)=1$.
+\end{proof}
+
 \begin{lemma}[Finite weighted sums]\label{lem:finite-fibre-sums}
 \source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0195}
-\uses{def:weighted-fibre-integral,lem:finite-extension-fibres,lem:fibre-separation,lem:fibre-normalization,lem:completion-finite}
+\uses{def:weighted-fibre-integral,lem:finite-extension-fibres,lem:fibre-separation,lem:fibre-normalization,lem:completion-finite,lem:finite-fibre-integrability}
 \notready
 The measurable space $X_\omega$ is discrete, every weight $p_\omega(x)$
 is positive, and $P_\omega$ is a probability measure. Every real function
@@ -72,34 +90,37 @@ term is infinite.
 
 \begin{lemma}[Integral of one]\label{lem:fibre-one}
 \source{chen-moriwaki-adelic:page-0194,chen-moriwaki-adelic:page-0195}
-\uses{lem:finite-fibre-sums}
+\uses{lem:finite-fibre-integrability}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_one}
 $I1=1$.
 \end{lemma}
 \begin{proof}
-At $\omega$ the finite-sum formula gives $I1(\omega)=\sum_xp_\omega(x)=1$.
+The integral of the constant function $1$ is the total mass
+of the probability measure $P_\omega$, which is $1$.
 \end{proof}
 
 \begin{lemma}[Additivity]\label{lem:fibre-additivity}
 \source{chen-moriwaki-adelic:page-0195}
-\uses{lem:finite-fibre-sums}
+\uses{lem:finite-fibre-integrability}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_add}
 For all real functions $f,g$ on $\Omega_L$, $I(f+g)=If+Ig$.
 \end{lemma}
 \begin{proof}
-For each $\omega$, distribute $p_\omega(x)$ over $f(x)+g(x)$ and separate
-the two finite sums.
+Both restrictions to $X_\omega$ are integrable by
+Lemma~\ref{lem:finite-fibre-integrability}. Additivity of the real integral
+therefore gives the assertion at every $\omega$.
 \end{proof}
 
 \begin{corollary}[Retraction of base pullback]\label{cor:fibre-pullback}
 \source{chen-moriwaki-adelic:page-0196}
-\uses{lem:fibre-one,prop:fibre-base-multiplication}
+\uses{lem:finite-fibre-integrability}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreIntegral_comp_proj}
 For every real function $\varphi$ on $\Omega$, $I(\varphi\circ\pi)=\varphi$.
 \end{corollary}
 \begin{proof}
-Apply multiplication by a base function to $f=1$, and use $I1=1$.
-No measurability hypothesis is needed for this finite-sum identity.
+On $X_\omega$, the function $\varphi\circ\pi$ is the constant
+$\varphi(\omega)$. Its integral against the probability measure
+$P_\omega$ is $\varphi(\omega)$.
 \end{proof}
 
 \begin{proposition}[Compatibility with intermediate fields]\label{prop:fibre-restriction}
@@ -130,8 +151,48 @@ $\sum_x[F_x:K_\omega]f(x)/[F:K]$, as required.
 
 \subsection{Power sums and measurable conjugate averages}
 
-\begin{lemma}[Recovering the largest absolute value]\label{lem:power-sum-radius}
+\begin{lemma}[Recovering powers from consecutive power sums]
+\label{lem:vandermonde-power-recovery}
+\leanok
+\lean{ArakelovGeometry.exists_pow_eq_sum_shifted_sum_pow}
 \source{chen-moriwaki-adelic:page-0196,chen-moriwaki-adelic:page-0197}
+Let $\alpha_1,\ldots,\alpha_d$ be pairwise distinct elements of a field,
+and put $s_N=\sum_i\alpha_i^N$. There are coefficients $c_{ir}$,
+independent of $N$, such that
+\[
+ \alpha_i^N=\sum_{r=0}^{d-1}c_{ir}s_{N+r}
+ \quad\text{for every }i\text{ and every }N\geq0.
+\]
+\end{lemma}
+\begin{proof}
+Let $V$ have entries $V_{ri}=\alpha_i^r$ for $0\leq r<d$.
+The Vandermonde determinant is
+$\prod_{i<j}(\alpha_j-\alpha_i)$, which is nonzero by distinctness.
+Set $c_{ir}=(V^{-1})_{ir}$. If $u_i=\alpha_i^N$, then
+$(Vu)_r=\sum_i\alpha_i^{N+r}=s_{N+r}$. Multiplying by $V^{-1}$
+gives the asserted identities.
+\end{proof}
+
+\begin{lemma}[Decay of powers from decay of power sums]
+\label{lem:power-sum-decay}
+\leanok
+\lean{ArakelovGeometry.tendsto_pow_zero_of_tendsto_sum_pow_zero}
+\uses{lem:vandermonde-power-recovery}
+\source{chen-moriwaki-adelic:page-0196,chen-moriwaki-adelic:page-0197}
+Let $\alpha_1,\ldots,\alpha_d$ be pairwise distinct elements of a
+normed field. If $\sum_i\alpha_i^N\to0$ as $N\to\infty$, then
+$\alpha_i^N\to0$ for each $i$.
+\end{lemma}
+\begin{proof}
+Each shifted sequence $s_{N+r}$ tends to zero. The fixed finite linear
+combination in Lemma~\ref{lem:vandermonde-power-recovery} therefore
+tends to zero, proving the claim.
+\end{proof}
+
+\begin{lemma}[Recovering the largest absolute value]\label{lem:power-sum-radius}
+\leanok
+\source{chen-moriwaki-adelic:page-0196,chen-moriwaki-adelic:page-0197}
+\uses{lem:power-sum-decay}
 \lean{AbsoluteValue.iSup_eq_limsup_sum_pow_rpow}
 For a real absolute value $v$ on a field and pairwise distinct elements
 $\alpha_1,\ldots,\alpha_d$, where $d\geq1$, one has
@@ -141,70 +202,79 @@ $\alpha_1,\ldots,\alpha_d$, where $d\geq1$, one has
 \]
 \end{lemma}
 \begin{proof}
-Put $M=\max_i v(\alpha_i)$. For $N\geq1$, the triangle inequality bounds the $N$th
-term by $d^{1/N}M$, giving the upper bound. If $M=0$, the same estimate
-proves the assertion. Suppose $M>0$, and number the elements so that
-$v(\alpha_i)=M$ exactly for $1\leq i\leq\ell$. Write
-$\beta_i=\alpha_i/\alpha_1$. For $i\leq\ell$ these are distinct of
-absolute value one; for $i>\ell$ their absolute values are less than one.
+Put $M=\max_i v(\alpha_i)$ and $s_N=\sum_i\alpha_i^N$.
+For $N\geq1$, the triangle inequality gives $v(s_N)\leq dM^N$,
+so $v(s_N)^{1/N}\leq d^{1/N}M$. Since $d^{1/N}\to1$, this
+proves the upper bound and shows that the root sequence is bounded.
+Its terms are nonnegative. If $M=0$, the upper bound proves equality.
 
-Let $V=(\beta_i^r)_{0\leq r<\ell,\,1\leq i\leq\ell}$. Its determinant
-is the nonzero product $\prod_{i<j}(\beta_j-\beta_i)$. Write
-$B=V^{-1}$ and put $C=\max_i\sum_r v(B_{ir})$. Since an invertible
-matrix has a nonzero entry, $C>0$. For
-$u_i=\beta_i^N$ and $s_r=\sum_{i\leq\ell}\beta_i^{N+r}$, the equation
-$u=Bs$ implies $1\leq C\max_r v(s_r)$. Thus in every block
-$N,\ldots,N+\ell-1$ at least one such sum has absolute value at least
-$C^{-1}$. The omitted tail satisfies, uniformly for these finitely many
-$r$,
+Suppose $M>0$. If the limsup were less than $M$, choose a real number
+$b$ strictly between that limsup and $M$, with $b>0$. Eventually
+$v(s_N)^{1/N}\leq b$, hence $v(s_N)\leq b^N$.
+Choose $j$ with $v(\alpha_j)=M$ and put $\beta_i=\alpha_i/\alpha_j$.
+The elements $\beta_i$ are pairwise distinct, $\beta_j=1$, and
 \[
- v\left(\sum_{i>\ell}\beta_i^{N+r}\right)
- \leq\sum_{i>\ell}v(\beta_i)^{N+r}\longrightarrow0.
+ v\left(\sum_i\beta_i^N\right)
+ =v(s_N)/M^N\leq (b/M)^N
 \]
-For all sufficiently large $N$, one index $m\in[N,N+\ell-1]$ therefore
-satisfies $v(\sum_{i=1}^d\beta_i^m)\geq(2C)^{-1}$: use
-$v(s_r)\leq v(s_r+\text{tail})+v(\text{tail})$.
-Choosing such indices along disjoint blocks gives $m\to\infty$ and
-\[
- v\left(\sum_i\alpha_i^m\right)^{1/m}
- \geq M(2C)^{-1/m}\longrightarrow M.
-\]
-This proves the reverse bound and the equality.
-The inverse-matrix estimate makes the Vandermonde lower bound explicit
-over the original valued field; passing to its completion is unnecessary.
+for all sufficiently large $N$. Since $0<b/M<1$, the right side
+tends to zero. Equip the field with the norm defined by $v$ and apply
+Lemma~\ref{lem:power-sum-decay}. It implies $\beta_j^N\to0$,
+contradicting $\beta_j^N=1$. This proves the lower bound.
+The argument uses the full Vandermonde matrix over the original field.
+\end{proof}
+
+\begin{lemma}[A separable orbit as an embedding set]
+\label{lem:separable-orbit-embeddings}\notready
+\uses{lem:algebraic-embedding-extension}
+\source{chen-moriwaki-adelic:page-0198}
+Let $c$ be separable over $K$ in an algebraic closure $C$, and let
+$E=K(c)$. The finite set of $K$-embeddings $E\hookrightarrow C$ has
+$[E:K]$ elements. Evaluation at $c$ is injective and its image is
+$\{\tau(c):\tau\in\operatorname{Aut}_K(C)\}$, the set of distinct roots
+of the minimal polynomial of $c$.
+\end{lemma}
+\begin{proof}
+An embedding is determined by its value at the generator $c$, and that
+value is a root of its minimal polynomial. Conversely each root defines
+an embedding by evaluation on $K[T]/(P_c)$. Separability gives exactly
+$\deg P_c=[E:K]$ roots. Every embedding $E\to C$ extends to an embedding
+$C\to C$ by Lemma~\ref{lem:algebraic-embedding-extension}.
+Its image is algebraically closed, and $C$ is algebraic over that image
+because the image contains $K$. An algebraically closed field has no
+proper algebraic extension, so this extended embedding is surjective.
+It is therefore an automorphism. Conversely every automorphism restricts
+to an embedding of $E$.
 \end{proof}
 
 \begin{lemma}[Power sums of a separable orbit lie in the base]\label{lem:orbit-power-sums}
 \source{chen-moriwaki-adelic:page-0198}
+\uses{lem:separable-orbit-embeddings}
 \notready
 If $c$ is separable over $K$ and $\alpha_1,\ldots,\alpha_d$ are its
-distinct conjugates in an algebraic closure, then
-$\sum_i\alpha_i^N\in K$ for every integer $N\geq1$.
+distinct conjugates in an algebraic closure, then for every integer
+$N\geq0$,
+\[
+ \sum_i\alpha_i^N=\operatorname{Tr}_{K(c)/K}(c^N)\in K.
+\]
 \end{lemma}
 \begin{proof}
-Write $\prod_i(1-\alpha_iT)=Q(T)=\sum_{j=0}^d(-1)^je_jT^j$.
-The $e_j$ belong to $K$, since they are coefficients of the minimal
-polynomial. In formal power series,
-\[
- -TQ'(T)=Q(T)\sum_{N\geq1}\left(\sum_i\alpha_i^N\right)T^N.
-\]
-Indeed logarithmic differentiation of the finite product gives
-\[
- -TQ'/Q=\sum_i\frac{\alpha_iT}{1-\alpha_iT},
-\]
-and expansion of each geometric series gives the right side of the
-previous identity. The constant coefficient of $Q$ is one.
-Comparing coefficients in increasing order of $N$ therefore expresses
-the $N$th power sum as a $K$-linear combination of earlier power sums
-and a coefficient of $-TQ'$. Induction proves membership in $K$ without
-division by an integer, so this proof also applies in positive characteristic.
-This gives directly the power-sum consequence of the symmetric-polynomial
-argument in Lemma 3.3.5(2).
+Write $E=K(c)$ and let $C$ be the algebraic closure. The separable
+minimal polynomial of $c$ factors in $C[T]$ into distinct linear factors.
+The Chinese remainder theorem gives
+$C\otimes_K E\simeq\prod_{\sigma:E\hookrightarrow C}C$.
+Multiplication by $c^N$ on the right is diagonal, with entries
+$\sigma(c)^N$, so its trace is their sum. The trace of a matrix is
+unchanged by extending scalars, since it is the sum of its diagonal
+entries. Thus this sum is the image of $\operatorname{Tr}_{E/K}(c^N)$.
+Lemma~\ref{lem:separable-orbit-embeddings} identifies the summands with
+the distinct conjugates. This proof involves no division by an integer
+and applies in positive characteristic as well.
 \end{proof}
 
 \begin{lemma}[Measurability of orbit maxima]\label{lem:orbit-maximum}
 \source{chen-moriwaki-adelic:page-0196,chen-moriwaki-adelic:page-0198}
-\uses{def:adelic-structure,lem:power-sum-radius,lem:orbit-power-sums,def:extension-parameters}
+\uses{def:adelic-structure,lem:power-sum-radius,lem:orbit-power-sums,lem:separable-orbit-embeddings,def:extension-parameters}
 \lean{ArakelovGeometry.AdelicStructure.measurable_iSup_abv_aut}
 Choose for each $\omega$ any extension $v_\omega$ of $\phi_\omega$ to
 an algebraic closure $\overline K$. For every separable $c\in\overline K$,
