@@ -11,7 +11,7 @@ is finite even when the measure of the archimedean locus is infinite.
 
 \begin{lemma}[Heights under finite field embeddings]
 \label{lem:height-finite-embedding}
-\uses{def:tuple-height,def:affine-height,lem:local-height-integrable,lem:algebraic-finite-embedding-projection}
+\uses{def:tuple-height,def:affine-height,def:algebraic-extension,lem:local-height-integrable,lem:algebraic-finite-embedding-projection}
 \lean{ArakelovGeometry.AdelicStructure.localHeight_comp_finiteEmbedding,ArakelovGeometry.AdelicStructure.logHeight_comp_finiteEmbedding,ArakelovGeometry.AdelicStructure.affineHeight_comp_finiteEmbedding}
 \leanok
 Let $S$ be any adelic structure, let $E/K$ be finite, let $L/K$ be algebraic, and let
@@ -169,7 +169,7 @@ both sides represent finite real numbers, giving the real inequality.
 \begin{lemma}[The exponent in an algebraic extension]
 \label{lem:height-archimedean-extension}
 \lean{ArakelovGeometry.AdelicStructure.κ_algebraicExtension,ArakelovGeometry.AdelicStructure.integral_κ_algebraicExtension,ArakelovGeometry.AdelicStructure.heightArchimedeanConstant_algebraicExtension,ArakelovGeometry.AdelicStructure.Ωinf_algebraicExtension,ArakelovGeometry.AdelicStructure.v_Ωinf_algebraicExtension}
-\uses{def:height-archimedean-constant,lem:nonarchimedean-restriction,lem:archimedean-complex-embedding,prop:algebraic-base-pullback}
+\uses{def:height-archimedean-constant,def:algebraic-extension,lem:nonarchimedean-restriction,lem:archimedean-complex-embedding,prop:algebraic-base-pullback}
 \leanok
 For an algebraic extension $L/K$ and $x\in\Omega_L$,
 \[
@@ -194,7 +194,7 @@ and the base archimedean locus is measurable, which proves the mass equality.
 
 \begin{lemma}[Finite sums and the archimedean exponent]
 \label{lem:height-finite-sum-bound}
-\uses{lem:archimedean-complex-embedding,lem:powered-complex-sum-bound}
+\uses{def:adelic-structure,lem:archimedean-bound,lem:archimedean-complex-embedding,lem:powered-complex-sum-bound}
 \lean{ArakelovGeometry.AdelicStructure.sum_le_card_rpow_mul}
 \leanok
 For a place $\omega$ of an adelic structure, a nonempty finite set $I$,
