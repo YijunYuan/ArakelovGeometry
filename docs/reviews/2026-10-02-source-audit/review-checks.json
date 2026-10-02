@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "revision": "fe4feea1cf1c818fc0011473b31e9205687c6f66",
+  "phase": "evidence checkpoint; report not yet complete",
+  "independent_reviews": [
+    {
+      "role": "source-fidelity-reviewer",
+      "scope": "T1–T12, E1, F1–F2; PDF194–215 and78",
+      "evidence": "evidence/review-33.json",
+      "status": "completed_with_corrections"
+    },
+    {
+      "role": "mathematical-correctness-reviewer",
+      "scope": "S1/S2; PDF184–185,204–214",
+      "evidence": "evidence/review-34.txt",
+      "status": "completed; actual adelic counterexample pending second adjudication"
+    },
+    {
+      "role": "mathematical-correctness-reviewer",
+      "scope": "Sections3.5–3.6, F3; PDF57,184–186,215–219",
+      "evidence": "evidence/review-35.txt",
+      "status": "completed"
+    }
+  ],
+  "adjudications": [
+    {
+      "id": "S1",
+      "status": "confirmed",
+      "decision": "Cubic-field witness satisfies hypotheses; downstream irreducibility is not an independent error once the asserted degree equality is assumed."
+    },
+    {
+      "id": "S2-general",
+      "status": "confirmed",
+      "decision": "Unrestricted cylinder/Borel inference fails; original source already uses clopen compactness and Caratheodory."
+    },
+    {
+      "id": "S2-adelic-witness",
+      "status": "candidate",
+      "decision": "Complete explicit adelic-fibre construction derived; second independent adjudication pending.",
+      "evidence": "evidence/actual-adelic-cube.txt"
+    },
+    {
+      "id": "S3",
+      "status": "confirmed",
+      "decision": "Proper Northcott example with infinite archimedean mass verified; extended-real lemma is true but insufficient for finite coefficient bound."
+    },
+    {
+      "id": "T6-second-old-claim",
+      "status": "withdrawn",
+      "decision": "Quotient-isomorphism subscript w is correctly printed. Reviewers initial attempt to relocate v to the following sentence was also withdrawn: both are w. Only factorization-ring sc typo survives.",
+      "evidence": "evidence/t6-original.png",
+      "inbox": "I-0007"
+    },
+    {
+      "id": "T12-old-literal",
+      "status": "corrected",
+      "decision": "Original denominator is L, not L1; intended replacement remains K."
+    },
+    {
+      "id": "E1",
+      "status": "downgraded",
+      "decision": "Relative clause admits restriction to cylinders; prior monotone-class reduction supplies context. Clarification, not confirmed manuscript error."
+    },
+    {
+      "id": "F3",
+      "status": "confirmed_model_boundary",
+      "decision": "Finite-place representative and weight differ from source but weighted logarithms agree; properness is not refuted.",
+      "inbox": "I-0008"
+    }
+  ],
+  "final_claim_review": "pending",
+  "honesty_review": "pending",
+  "pdf_compile": "pending",
+  "pdf_visual_inspection": "pending"
+}

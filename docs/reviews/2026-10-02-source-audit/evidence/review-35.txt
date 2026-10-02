@@ -1,0 +1,164 @@
+# §§3.5–3.6 独立数学及原文复核
+
+Status: mismatch（原文 Northcott 证明存在可修复缺口；当前形式化相应路线 satisfactory）
+Snapshot: ledger `fe4feea1cf1c818fc0011473b31e9205687c6f66`。
+Source: `ArakelovGeometry/adelic_curve.pdf`, Chen–Moriwaki v1.2, SHA256 `83ccb69c22ad7d449248bbb26c48216d9b414f672af6f7f4f172d5ba17be57cc`。
+Confidence: high。
+
+接受的 Lean、blueprint、旧报告均未修改。已用 ledger diff 检查本次阅读的 height/automorphism/fibre-maximum 文件与指定基线相同。未新编写 Lean 证明，也未重复全项目编译。
+
+## S35-MASS：Northcott 证明所需的有限常数没有从原稿假设推出
+
+- 分类：确认的原文证明缺口，严重程度 major；Lemma 3.5.5 的陈述需明确数值域，不宜笼统宣布为假。
+- 位置：PDF **217**／印刷 **201**，Lemma 3.5.5 首个陈列式及其证明最后一项；同页 Claim 3.5.6 证明中四行系数高度估计，及紧接其后的“so that there are finitely many possibilities for F”一句。
+- 相邻假设：PDF **215**／印刷 **199**，§3.5 开头只要求 proper adelic curve；PDF **216**／印刷 **200**，Definition 3.5.2 将 Northcott 性质定义为每个有限实数 C≥0 的高度子水平集有限。PDF **184**／印刷 **168**，§3.1 定义只要求每个非零元素的对数绝对值可测、可积及（proper 时）乘积公式；明确不要求参数映射单射或满射。PDF **185**／印刷 **169**，Proposition 3.1.2 只证明 κ 可积，另加 κ 在 Ω∞ 上有正下界时才推出 ν(Ω∞)<∞。
+
+令 m=min(deg F+1,deg G+1)≥1。原式为
+
+    h_S(FG) ≤ h_S(F)+h_S(G)+log(m) ν(Ω∞).
+
+应严格区分以下读法：
+
+1. 若 ν(Ω∞)<∞，该式作为实数不等式为真。
+2. 若 ν(Ω∞)=∞，将右侧强行要求为有限实数是不合法的；特别 m=1 时还需说明 0·∞ 的约定。这是表达式的数值域问题，不能直接称为反例推翻了该不等式。
+3. 在 [0,∞] 中，采用 0·∞=0，原式为真。m>1 时右侧是∞，不等式没有提供有限估计；m=1 时一个因子为非零常数，properness 的标量不变性给出所需结论。原稿证明最后写成常数函数的非负积分时，也自然得到这个解释。
+4. 因此实质缺口出现在 Claim 3.5.6：原稿把
+
+    h_S(F) ≤ δ C + (δ−1) log(2) ν(Ω∞)
+
+   作为固定有限实数界来应用 Definition 3.5.2。δ>1 且质量∞时，这只说明系数高度≤∞；所有基域元素都符合这个无效上界，不能由 Northcott 性质推出有限多项式。
+
+### 满足全部有关原文假设的例子
+
+取 K=Q。记 V={∞}∪{所有素数}，标准绝对值为 |q|∞=|q|，|q|p=p^(−ord_p(q))。设
+
+    Ω=V×{1,2,…},  A=P(Ω),  ν=计数测度,
+    ε_n=2^(−n),  |q|_(v,n)=|q|_v^(ε_n).
+
+这是原稿意义下的 proper adelic curve，且具有 Northcott 性质：
+
+- 每个指数 ε_n 属于(0,1]，故通常实绝对值的 ε_n 次幂仍满足三角不等式；p-adic 绝对值的正次幂仍是非阿基米德绝对值。
+- 全幂集使所有函数可测。对 q∈Q×，只有有限多个标准位满足 |q|v≠1，因此
+
+      ∑_(v,n) |log |q|_(v,n)|
+      = (∑_n ε_n) ∑_v |log |q|v|
+      = ∑_v |log |q|v| < ∞.
+
+  所有原稿要求的对数函数均绝对可积。
+- ∑_n ε_n=1，由有理数通常的乘积公式（也可直接从素因子分解看出）得
+
+      ∫Ω log |q|ω dν = ∑_v log |q|v = 0.
+
+- 若 q=a/b 既约、b>0，则
+
+      h_S(1:q) = ∑_(v,n) log max(1,|q|v^ε_n)
+               = ∑_v log max(1,|q|v)
+               = log max(|a|,b).
+
+  这里 Definition 3.5.1 在代数闭包上定义的高度限制回 Q，等于基曲线的积分，因为每个扩张纤维有质量1。故高度≤C 的既约整数对满足 |a|,b≤exp(C)，只有有限多对；这直接证明 Northcott 性质，没有引用正在讨论的 Theorem 3.5.3。
+- Ω∞={∞}×N_{≥1}，每一点质量1，故 ν(Ω∞)=∞；κ(∞,n)=ε_n，其他点κ=0，故
+
+      A_S := ∫Ω κ dν = ∑_n ε_n = 1.
+
+这个例子不是只在抽象测度空间上造“正可积函数支撑无限”的例子；它满足 §3.5 的 proper 与 Northcott 两项条件，排除了“Northcott 性质也许已隐含有限阿基米德质量”的解释。
+
+### 最小修补及数学影响
+
+保留可积指数，而不把它粗略放大成Ω∞的示性函数。对扩张位χ映到ω，局部绝对值为复嵌入的 κ(ω) 次幂，且有限系数卷积中至多有m项，故
+
+    ||FG||χ ≤ m^κ(ω) ||F||χ ||G||χ.
+
+κ 在代数扩张后由基底拉回，积分不变。积分后得到有限的实数估计
+
+    h_S(FG) ≤ h_S(F)+h_S(G)+log(m) A_S,
+    A_S=∫Ω κ dν <∞.
+
+从而最小多项式的系数具有有限上界
+
+    h_S(F) ≤ d h_S(1:α)+(d−1)log(2) A_S
+           ≤ D C+(D−1)log(2) A_S,   D=floor(δ), C≥0, δ≥1.
+
+原证明此后的有限系数组合、有限根集、有限多个仿射图的论证可继续使用。Theorem 3.5.3、Claim 3.5.6、Corollary 3.5.7 不需增加有限质量假设，也没有被本例推翻。若仅给 Lemma 3.5.5 增加 finite mass 而不改后续证明，则只能证明该附加假设下的 Northcott 结论，会不必要地削弱原定理。
+
+### 不能归咎于原稿的 totalized-integral 误读
+
+在上述同一个 proper Northcott 曲线上取 F=G=X+1。各位处F的系数最大值为1，所以 h_S(F)=h_S(G)=0；FG=X²+2X+1 在非阿基米德位系数最大值为1，在(∞,n)为2^ε_n，故 h_S(FG)=log2。
+
+若在 Lean 中把无限质量先做 `ENNReal.toReal`（∞变成0），或把不可积的实值函数1在Ω∞上的 Bochner 积分直接用于 RHS（Mathlib totalization 返回0），就会错误得到 log2≤0。这个反例反驳的是这种过强的实数编码，不是按扩展实数解释的原稿 Lemma 3.5.5。当前 fe4feea 的 Lean 已把有限质量的实数版和无条件 ENNReal 版分开，并未犯此错误。
+
+### 基线的精确对应位置
+
+全名共同前缀为 `ArakelovGeometry.AdelicStructure.`，下列文件均相对于项目 `ArakelovGeometry/`：
+
+- `ArakelovGeometry/AdelicCurve/Basic.lean:119`：`integrable_κ`；`:135`：`v_Ωinf_lt_top_of_κ_bddBelow`。
+- `ArakelovGeometry/AdelicCurve/Height/Polynomial.lean:144`：`heightArchimedeanConstant`；`:150`：`ofReal_heightArchimedeanConstant_le_measure_Ωinf`；`:167`：有 finite-mass 前提的实数版比较。
+- 同文件`:172`：`sum_le_card_rpow_mul`；`:228`：`polynomialLocalHeight_mul_le`；`:239`：`polynomialHeight_mul_le`（有限 A_S 误差）；`:274`：`polynomialHeight_mul_le_measure_Ωinf`（明确要求 mass≠∞）；`:331`：`ofReal_polynomialHeight_mul_le_measure_Ωinf`（无条件扩展非负实数版）。
+- `ArakelovGeometry/AdelicCurve/Height/Extension.lean:31`：`κ_algebraicExtension`；`:53`：`integral_κ_algebraicExtension`；`:60`：`heightArchimedeanConstant_algebraicExtension`；`:72`：`v_Ωinf_algebraicExtension`；`:90`：`polynomialHeight_mul_le_algebraicExtension`；`:101`：实数有限质量版本；`:202`：`ofReal_polynomialHeight_mul_le_measure_Ωinf_algebraicExtension`，其 measure 正是原基域曲线的Ω∞质量。
+- `ArakelovGeometry/AdelicCurve/Height/MinimalPolynomial.lean:65`：`polynomialHeight_minpoly_le`；`:109`：`affineHeight_minpoly_coeff_le`。
+- `ArakelovGeometry/AdelicCurve/Height/Northcott.lean:25`：`finite_roots_of_coeff_height_le`；`:44`：`finite_affineHeight_le_minpoly_natDegree_le`；`:65`：`finite_affineHeight_le_degree_le`。
+- `ArakelovGeometry/AdelicCurve/Height/ProjectiveNorthcott.lean:45`：`finite_projectiveHeight_le_degree_le`；`:65`：`finite_absoluteHeight_le_degree_le`。
+- `ArakelovGeometry/AdelicCurve/Height/FiniteExtension.lean:22`：`hasNorthcott_algebraicExtension_of_finite`；`:34`：`hasNorthcott_finiteExtension`。
+- `blueprint/src/northcott.tex:148`：`def:height-archimedean-constant`；`:170`：`lem:height-archimedean-extension`；`:216`：`lem:polynomial-local-product-bound`；`:246`：`lem:polynomial-height-product-sharp`；`:271`：`lem:polynomial-height-product`；`:297`：`rem:northcott-archimedean-error`；`:384`：`lem:minimal-polynomial-height`；`:435`：`lem:northcott-algebraic-elements`；`:574`：`thm:northcott`；`:609`：`cor:northcott-finite-extension`。
+
+当前 Lean 证明实际消耗上述可积指数界来证明最小多项式系数界，再进入有限根集、代数元素 finiteness 和 projective finiteness。它没有将源定理作为假设返回，也没有假设 Ω∞ finite mass。这个具体消耗路线已读过 proof bodies。
+
+## N-INTRO-REFERENCES：章导读的两个节号笔误
+
+- 分类：确认的排版／交叉引用错误，minor，confidence high。
+- 位置：PDF **184**／印刷 **168**，§3.1 标题之前第二段“The chapter is organized as follows.”。该段将各种 adelic-curve examples 写成“Section 1.2”，将 finite separable extension case 写成“Section 1.3”。
+- 修正：分别为 **Section 3.2** 和 **Section 3.3**。同一段所给 Theorems 3.3.4、3.3.7 及下一句 Section 3.4 已足以排除跨章引用的解释；实际 Chapter 3 内容与目录也一致。
+- 影响：只影响导航，不影响任何定理或证明。两个笔误可在报告的完整小勘误表中合成一行，或分列两行。
+- Lean/blueprint：导读散文没有直接 Lean 声明；不应杜撰 attachment。相关内容的真实蓝图入口为 `blueprint/src/number-fields.tex` 等 §3.2 示例及 `blueprint/src/separable.tex` 的 §3.3 结果，源 index 的3.3.4和3.3.7记录保留正确节号。此项是在为 S35-MASS 核验 standing hypotheses 时新发现，旧报告没有记录。
+
+## §3.6 复核：未发现新的实质原稿错误
+
+视觉核验 PDF218–219／印刷202–203 上 Proposition3.6.1 和3.6.2 的全部陈述与证明；Lean比较：
+
+- Proposition3.6.1 对任意代数扩张、任意K自同构；源使用 `|a|_(Tτx)=|τ(a)|x`，与 `Extension/Automorphism.lean:26 aut`、`:43 aut_eval`、`:100 measurable_aut_projective` 对应；blueprint `automorphisms.tex:9 def:automorphism-pullback`、`:37 prop:automorphism-measurable`。
+- 源 pullback 约定反转复合，因此按通常复合乘法是右作用：Tτ∘Tσ=T_(σ∘τ)。`Automorphism.lean:55 aut_trans` 与 `automorphisms.tex:19` 附近已明确这一点。这是约定澄清，不宜仅凭原文写“action”就列作新的定理错误；各自同构的可测性和群轨道论证均不受影响。
+- Proposition3.6.2 只要求有限扩张，无 normal/separable 前提，函数F是任意可测实函数，最大值为有限非空纤维上的真最大值。`Extension/FibreMaximum.lean:122 measurable_fibreMaximum`、`:136 measurable_fibreMaximum_projective` 保留这些内容；blueprint `fibre-maximum.tex:85 prop:fibre-maximum-measurable`。
+- 源先 normal extension 再 finite normal closure 的证明有效，包括非可分情形（可分正规部分上自同构传递，纯不可分部分延拓唯一）。当前 Lean 以正纤维权重刻画 projection images，再以超水平集证明最大值可测；这是普通有效证明路线变化，不是原稿错误。
+- 源在 finite fibre 上使用signed fibre integration，即使F全局不可积，有限纤维仍逐点可积；不能把原来无限纤维的 Bochner totalization 反例套用在此处。可测性也可通过正负部分得到。
+
+## 其余 §3.5 结果与边界
+
+- Definition3.5.1：非零 tuple 的局部对数最大值由有限和 |log|ai|| 控制，积分存在；properness 给scalar invariance；相应 `Height/Basic.lean:83 integrable_log_localHeight`、`:96 logHeight`、`:127 logHeight_smul_eq`、`:148 projectiveHeight`，以及 `Height/Extension.lean:214 absoluteHeight` 符合原义。形式化为零tuple补值0是显式的域扩展，不应列成原文错误。
+- Definition3.5.2：`Height/Affine.lean:75 HasNorthcott` 对所有C≥0；`:79 hasNorthcott_iff` 由非负高度处理C<0，无额外假设遗漏。
+- Lemma3.5.4：源finite normal extension中inseparable power reduction正确；Lean `Height/Extension.lean:185 logHeight_comp_aut`、`:192 affineHeight_comp_aut` 经finite embedding marginal得到更强版本，并非源反例。
+- Claim3.5.6：根有重数时仍可逐根比较高度；`Height/MinimalPolynomial.lean:38 affineHeight_eq_of_aeval_minpoly_eq_zero` 通过simple extension的两次embedding比较，包括inseparable roots。这是正确替代normal closure的路线。唯一实质问题为前述finite-error常数。
+- Theorem3.5.3：原稿以有限多个chart reduction结束，未发现其他问题。Lean `Projective.lean:37 fieldOfDefinition` 经`:126 fieldOfDefinition_le_iff`证明最小性，`:152 finiteDimensional_fieldOfDefinition` 排除finrank=0伪度数问题，`:160 finrank_adjoin_div_le`参与Northcott证明。
+- Corollary3.5.7：有限扩张中每个元素的degree≤[E:K]，由Claim即得；原陈述与Lean一致。
+- Remark3.5.8：视觉看过其指向Proposition6.2.3的句子；未审查Chapter6，也没有宣称证明了向adelic vector bundle推广。
+
+## 与既有材料的关系
+
+- 旧 `docs/chen-moriwaki-formalization-review.tex` 在其source范围说明（line64）明确排除§3.5开头，故S35-MASS是该报告范围以外的新核验，不能说旧报告已经覆盖或已否定它。
+- 当前 `docs/source-corrections.md` 已记录A_S修补；本次没有照抄其“mass may be infinite”的断言，而是回看§3.1和§3.5原页，并给出满足 proper+Northcott 的完整曲线例子。其对Lemma的ENNReal解释与当前Lean一致。
+- 阅读相关历史：`77d5464aeac6137b7ead06b2018573ba9fdd86d8` 的有限误差产品界；`3148ff069ba482052831dbe467b890259689ba29` 的projective Northcott和finite-extension ascent；§3.6 的 `4ece5ec` 与 `f6e1621`。
+- 阅读此前§3.5 `0005` session source-fidelity/honesty reviews，以及§3.6 `0002` session honesty review；这些报告都将现有路线分类为proved producers，本次独立原文与proof-body检视未发现需撤销它们的接口结论。
+- 没有发现本切片新的 Lean/source mismatch，所以不为现有accepted Lean提出修补，也未创建要求修补Lean的inbox issue。
+
+## 逐页覆盖和证据
+
+用原PDF的pdftoppm栅格页面进行AI vision检查；现成转录仅辅助，未据转录判源错。
+
+| PDF页（one-based） | 印刷页 | 实际视觉检查内容 |
+|---|---|---|
+|57|41|§1.1.15 polynomial norm及Proposition1.1.72局部乘积界；只作3.5.5前提检查，未审查其他Chapter1结果|
+|184|168|Chapter3导读；§3.1 adelic structure / properness定义、Eq.(3.1)|
+|185|169|Propositions3.1.1–3.1.3；着重κ定义及3.1.2的有限质量附加前提|
+|215|199|§3.5开头和Definition3.5.1；上半页3.4.13证明仅视为上下文，未本切片审查|
+|216|200|Definition3.5.2、Theorem3.5.3、Lemma3.5.4全部；polynomial height定义|
+|217|201|Lemma3.5.5全部；Claim3.5.6全部；Theorem3.5.3的chart reduction起始|
+|218|202|Theorem3.5.3末段、Corollary3.5.7、Remark3.5.8；§3.6设置、Proposition3.6.1全及3.6.2前半|
+|219|203|Proposition3.6.2证明末段；§3.7下文不属本切片|
+
+原图位于同目录 `source-215.png`…`source-219.png`、`context-184.png`、`context-185.png`、`poly-local.png`。`navigation.txt` 是pdftotext导航文件，仅用于找到页码，不是声称原文缺陷的视觉证据。
+
+未重新核验整个§§3.3–3.4依赖锥、Mathlib内核及axiom闭包；本切片未对第6章推广、全部§3.2实例作审计。没有用成功编译推断原稿无其他问题。
+
+## 追加独立裁决 F3（主代理后续指定）
+
+已额外视觉检查PDF186／印刷170的§3.2.2，并读`Examples/NumberFields.lean`、`blueprint/src/number-fields.tex`及Mathlib有限位norm定义。确认此项是**形式化模型边界，不是原稿错误**：源页要求finite place延拓标准Q_p绝对值（|p|=1/p），质量为local degree；Lean模型用 `N(𝔭)^(-ord_𝔭)`、质量1。K=Q(√2)、𝔭=(√2)、元素2给出源数据(1/2,2)和Lean数据(1/4,1)。两者weighted logs相同，raw measure/absolute-value data不同。
+
+header16–22和蓝图4–5、362以后已公开所用Mathlib规范化公式，因此不能称为隐藏错误或虚假product formula；但未见明确的source-normalization比较或桥，不能据此声称§3.2.2数据已逐项原样形式化。完整证据、假设核验与精确位置见本目录 `f3-adjudication.md`。按主代理决定，由主代理登记focused inbox issue；本代理不改accepted code。
