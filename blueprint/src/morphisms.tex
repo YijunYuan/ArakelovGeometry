@@ -1,0 +1,224 @@
+\section{Morphisms of adelic curves}
+
+We follow \cite[\S3.7]{chen-moriwaki}. Throughout this section,
+$L^1(\Omega,\mathcal A,\nu)$ is the real vector space of integrable
+real functions modulo equality almost everywhere. A morphism acts
+contravariantly on fields and covariantly on places and fibre integrals.
+
+\begin{definition}[Morphism of adelic curves]
+\label{def:adelic-morphism}
+\notready
+\source{chen-moriwaki-adelic:page-0219}
+\uses{def:adelic-structure}
+\lean{ArakelovGeometry.AdelicCurve.Hom,ArakelovGeometry.AdelicCurve.Hom.pullback,ArakelovGeometry.AdelicCurve.Hom.coeFn_pullback,ArakelovGeometry.AdelicCurve.Hom.integrable_comp,ArakelovGeometry.AdelicCurve.Hom.integral_comp}
+Let $S'=(K',(\Omega',\mathcal A',\nu'),\phi')$ and
+$S=(K,(\Omega,\mathcal A,\nu),\phi)$ be adelic curves.
+A morphism $\alpha:S'\to S$ is a triple
+$(\alpha^\#,\alpha_\#,I_\alpha)$ with the following properties:
+\begin{enumerate}
+\item $\alpha^\#:K\to K'$ is a field homomorphism.
+\item $\alpha_\#: \Omega'\to\Omega$ is measurable,
+$(\alpha_\#)_*\nu'=\nu$, and, for every $\omega'\in\Omega'$ and
+$a\in K$,
+\[
+ \phi'_{\omega'}(\alpha^\#(a))
+   =\phi_{\alpha_\#(\omega')}(a).
+\]
+\item $I_\alpha:L^1(\Omega',\mathcal A',\nu')
+\to L^1(\Omega,\mathcal A,\nu)$ is real-linear and satisfies
+\[
+ \int_\Omega I_\alpha(g)\,d\nu
+   =\int_{\Omega'}g\,d\nu'
+ \quad(g\in L^1(\Omega',\mathcal A',\nu')),
+ \qquad
+ I_\alpha\alpha^*=\operatorname{id}_{L^1(\Omega,\mathcal A,\nu)},
+\]
+where $\alpha^*[f]=[f\circ\alpha_\#]$ denotes pullback.
+\end{enumerate}
+In particular, for every integrable real $f$ on $\Omega$,
+$f\circ\alpha_\#$ is integrable and
+\[
+ \int_{\Omega'}f\circ\alpha_\#\,d\nu'
+   =\int_\Omega f\,d\nu.
+\]
+Only real linearity is required of $I_\alpha$; positivity and
+continuity are not additional morphism axioms.
+\end{definition}
+\begin{proof}
+The pullback appearing in the definition is well-defined as follows.
+For a measurable integrable $f$, the pushforward equality gives
+$\int_{\Omega'}|f\circ\alpha_\#|\,d\nu'
+=\int_\Omega|f|\,d\nu<\infty$.
+If $f_1=f_2$ almost everywhere, the exceptional set is contained in a
+measurable null set $N$. Its inverse image is measurable and has measure
+$\nu(N)=0$, so the two pullbacks agree almost everywhere.
+For an arbitrary integrable representative, choose a measurable
+representative and apply this null-set argument. This proves both
+integrability and independence of representatives. Pullback preserves
+addition and scalar multiplication pointwise. Applying the pushforward
+formula to the positive and negative parts proves the displayed equality
+of real integrals. Thus the class identity in (3) says exactly that
+$I_\alpha$ sends the class of $f\circ\alpha_\#$ to the class of $f$.
+\end{proof}
+
+\begin{lemma}[Identity morphism]
+\label{lem:adelic-morphism-id}
+\notready
+\source{chen-moriwaki-adelic:page-0219}
+\uses{def:adelic-morphism}
+\lean{ArakelovGeometry.AdelicCurve.Hom.id}
+For every adelic curve $S=(K,(\Omega,\mathcal A,\nu),\phi)$,
+the triple
+\[
+ \operatorname{id}_S=
+ (\operatorname{id}_K,\operatorname{id}_\Omega,
+  \operatorname{id}_{L^1(\Omega,\mathcal A,\nu)})
+\]
+is a morphism from $S$ to itself.
+\end{lemma}
+\begin{proof}
+The identity of $K$ is a field homomorphism. The identity of $\Omega$
+is measurable and preserves $\nu$. Its compatibility with the absolute
+values is $\phi_\omega(a)=\phi_\omega(a)$.
+The identity of $L^1$ is real-linear and preserves every integral.
+Pullback by $\operatorname{id}_\Omega$ fixes each representative, so
+the identity of $L^1$ is also a left inverse to that pullback.
+\end{proof}
+
+\begin{lemma}[Composition of morphisms]
+\label{lem:adelic-morphism-comp}
+\notready
+\source{chen-moriwaki-adelic:page-0219}
+\uses{def:adelic-morphism}
+\lean{ArakelovGeometry.AdelicCurve.Hom.comp}
+Let $\alpha:S'\to S$ and $\beta:S''\to S'$ be morphisms of
+adelic curves. Then
+\[
+ \alpha\circ\beta=
+ (\beta^\#\circ\alpha^\#,
+  \alpha_\#\circ\beta_\#,
+  I_\alpha\circ I_\beta)
+\]
+is a morphism from $S''$ to $S$.
+\end{lemma}
+\begin{proof}
+Composition preserves field homomorphisms and measurable maps.
+Writing $\nu'',\nu',\nu$ for the three measures, functoriality of
+pushforward gives
+\[
+ (\alpha_\#\circ\beta_\#)_*\nu''
+ = (\alpha_\#)_*((\beta_\#)_*\nu'')
+ = (\alpha_\#)_*\nu'=\nu.
+\]
+For $\omega''\in\Omega''$ and $a\in K$, the two absolute-value
+compatibilities give
+\[
+ \phi''_{\omega''}(\beta^\#(\alpha^\#(a)))
+ =\phi'_{\beta_\#(\omega'')}(\alpha^\#(a))
+ =\phi_{\alpha_\#(\beta_\#(\omega''))}(a).
+\]
+The composite $I_\alpha I_\beta$ is real-linear. For every
+$g\in L^1(\Omega'',\mathcal A'',\nu'')$, its integral is
+\[
+ \int_\Omega I_\alpha(I_\beta g)\,d\nu
+ =\int_{\Omega'}I_\beta g\,d\nu'
+ =\int_{\Omega''}g\,d\nu''.
+\]
+On representatives,
+$(\alpha\circ\beta)^*=\beta^*\alpha^*$.
+Consequently, for $f\in L^1(\Omega,\mathcal A,\nu)$,
+\[
+ I_\alpha I_\beta(\beta^*\alpha^*f)
+ =I_\alpha(\alpha^*f)=f.
+\]
+All the morphism axioms follow.
+\end{proof}
+
+\begin{theorem}[The category of adelic curves]
+\label{thm:adelic-curve-category}
+\notready
+\source{chen-moriwaki-adelic:page-0219}
+\uses{def:adelic-morphism,lem:adelic-morphism-id,lem:adelic-morphism-comp}
+\lean{ArakelovGeometry.AdelicCurve.Hom.id_comp,ArakelovGeometry.AdelicCurve.Hom.comp_id,ArakelovGeometry.AdelicCurve.Hom.comp_assoc,ArakelovGeometry.AdelicCurve.category}
+Adelic curves, with the morphisms of Definition~\ref{def:adelic-morphism},
+the identities above, and the stated composition, form a category.
+\end{theorem}
+\begin{proof}
+The preceding lemmas supply the identity at each object and composition
+for every composable pair. A morphism is determined by its field map,
+place map, and linear map. Composing each of these three maps with its
+identity leaves it unchanged, on either side. This proves the two unit
+laws. For morphisms $\gamma:S'''\to S''$, $\beta:S''\to S'$, and
+$\alpha:S'\to S$, both bracketings have field map
+$\gamma^\#\circ\beta^\#\circ\alpha^\#$, place map
+$\alpha_\#\circ\beta_\#\circ\gamma_\#$, and linear map
+$I_\alpha\circ I_\beta\circ I_\gamma$.
+Associativity of composition of functions therefore proves the
+associativity law for morphisms.
+\end{proof}
+
+\begin{example}[The morphism from an algebraic extension]
+\label{ex:algebraic-extension-morphism}
+\notready
+\source{chen-moriwaki-adelic:page-0220}
+\uses{def:adelic-morphism,def:algebraic-extension,cor:algebraic-L1-operator,lem:algebraic-base-pushforward,prop:algebraic-signed-disintegration,lem:algebraic-integral-pullback,prop:algebraic-base-pullback}
+\lean{ArakelovGeometry.AdelicCurve.Hom.algebraicExtension,ArakelovGeometry.AdelicCurve.Hom.algebraicExtension_fibreIntegral_toL1}
+Let $S=(K,(\Omega,\mathcal A,\nu),\phi)$ be an adelic curve and
+let $L/K$ be an algebraic field extension. For its adelic extension
+$S\otimes_K L$, the triple
+\[
+ (K\hookrightarrow L,\pi_{L/K},\overline I_{L/K})
+ :S\otimes_K L\longrightarrow S
+\]
+is a morphism, where
+$\overline I_{L/K}[f]=[I_{L/K}f]$ is the induced real-linear
+operator on $L^1$.
+\end{example}
+\begin{proof}
+The field inclusion is a homomorphism. The projection $\pi_{L/K}$
+is measurable by the construction of the adelic extension, and
+Lemma~\ref{lem:algebraic-base-pushforward} gives
+$(\pi_{L/K})_*\nu_L=\nu$. A place of $S\otimes_K L$ over
+$\omega$ is an absolute value on $L$ whose restriction to $K$ is
+$\phi_\omega$. This is precisely the required absolute-value
+compatibility.
+
+Corollary~\ref{cor:algebraic-L1-operator} gives the real-linear
+operator $\overline I_{L/K}$ with the asserted representative formula.
+For every integrable $f$ on $\Omega_L$,
+Proposition~\ref{prop:algebraic-signed-disintegration} gives
+\[
+ \int_\Omega\overline I_{L/K}[f]\,d\nu
+ =\int_\Omega I_{L/K}f\,d\nu
+ =\int_{\Omega_L}f\,d\nu_L.
+\]
+For integrable $h$ on $\Omega$, the pullback $h\circ\pi_{L/K}$
+is integrable by Proposition~\ref{prop:algebraic-base-pullback}.
+Lemma~\ref{lem:algebraic-integral-pullback} says
+$I_{L/K}(h\circ\pi_{L/K})=h$. Passing to equivalence classes gives
+$\overline I_{L/K}[h\circ\pi_{L/K}]=[h]$.
+Thus both axioms for the fibre integration operator hold.
+\end{proof}
+
+\begin{example}[The morphism to a subfield restriction]
+\label{ex:subfield-restriction-morphism}
+\notready
+\source{chen-moriwaki-adelic:page-0220}
+\uses{def:adelic-morphism,def:subfield-restriction}
+Let $S=(K,(\Omega,\mathcal A,\nu),\phi)$ be an adelic curve and
+let $K_0\subseteq K$ be a subfield. There is a morphism
+\[
+ (K_0\hookrightarrow K,\operatorname{id}_\Omega,
+       \operatorname{id}_{L^1(\Omega,\mathcal A,\nu)})
+ :S\longrightarrow S|_{K_0}.
+\]
+\end{example}
+\begin{proof}
+The inclusion of the subfield is a field homomorphism. The source and
+target have the same measure space, so the identity on $\Omega$ is
+measurable and preserves the measure. For $a\in K_0$, the absolute value
+of its image in $K$ equals its restricted absolute value by the definition
+of $S|_{K_0}$. The two real $L^1$ spaces are identical. Their identity
+map is real-linear and preserves every integral, and pullback along the
+identity place map is the identity. Hence it has the required left inverse.
+\end{proof}
