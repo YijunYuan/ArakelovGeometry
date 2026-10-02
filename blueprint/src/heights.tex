@@ -1,0 +1,190 @@
+\section{Height functions}
+
+Let $S=(K,(\Omega,\mathcal A,\nu),\phi)$ be an adelic structure and
+let $I$ be a finite nonempty index set. We first construct heights over
+$K$ itself; applying the construction to $S\otimes_K K^{\mathrm{ac}}$
+gives Definition 3.5.1 of \cite{chen-moriwaki}. Properness is required
+for descent to projective space, but not for integrability.
+
+\begin{definition}[Local maximum and its logarithm]\label{def:local-height}
+\uses{def:adelic-structure}
+\notready
+For $a=(a_i)_{i\in I}\in K^I$ set
+$M_S(a,\omega)=\max_{i\in I}|a_i|_\omega$ and
+$\ell_S(a,\omega)=\log M_S(a,\omega)$ for $a\ne0$.
+For the zero tuple put $\ell_S(0,\omega)=0$.
+\end{definition}
+
+\begin{lemma}[Measurability and integrability of local heights]
+\label{lem:local-height-integrable}
+\uses{def:local-height}
+\notready
+For every $a\in K^I$, the function $\ell_S(a,\cdot)$ is measurable
+and integrable.
+\end{lemma}
+\begin{proof}
+For $b\ne0$, $|b|_\omega=\exp(\log|b|_\omega)$ is measurable;
+for $b=0$ it is constant. Thus the finite maximum $M_S(a,\cdot)$
+is measurable. For $a\ne0$, any nonzero coordinate shows that this
+maximum is positive, so its logarithm is measurable. At each $\omega$
+choose an index attaining the maximum. Its coordinate is nonzero and
+therefore
+\[
+ |\ell_S(a,\omega)|\leq
+ \sum_{i:a_i\ne0}|\log|a_i|_\omega|.
+\]
+Every summand is integrable by the adelic-structure axiom; their finite
+sum dominates the absolute value of the measurable local height.
+This proves integrability. The zero tuple gives the zero function.
+\end{proof}
+
+\begin{definition}[Height of a tuple]\label{def:tuple-height}
+\uses{lem:local-height-integrable}
+\notready
+Define $h_S(a)=\int_\Omega\ell_S(a,\omega)\,d\nu(\omega)$.
+\end{definition}
+
+\begin{lemma}[Effect of scaling]\label{lem:height-scaling}
+\uses{def:tuple-height}
+\notready
+If $a\ne0$ and $t\in K^\times$, then
+\[
+ \ell_S(ta,\omega)=\log|t|_\omega+\ell_S(a,\omega),\qquad
+ h_S(ta)=\int_\Omega\log|t|_\omega\,d\nu(\omega)+h_S(a).
+\]
+\end{lemma}
+\begin{proof}
+Multiplicativity and $|t|_\omega>0$ give
+$M_S(ta,\omega)=|t|_\omega M_S(a,\omega)$.
+Both factors are positive; take their logarithms. The logarithmic
+evaluation and local height are integrable, so integration is additive.
+\end{proof}
+
+\begin{proposition}[Scalar invariance]\label{prop:height-scalar-invariant}
+\uses{lem:height-scaling,def:adelic-structure}
+\notready
+If $S$ is proper, $a\ne0$ and $t\ne0$, then $h_S(ta)=h_S(a)$.
+\end{proposition}
+\begin{proof}
+The integral of $\log|t|$ in Lemma~\ref{lem:height-scaling} is zero
+by the product formula.
+\end{proof}
+
+\begin{lemma}[Nonnegativity]\label{lem:height-nonnegative}
+\uses{def:tuple-height,def:adelic-structure}
+\notready
+If $S$ is proper, then $h_S(a)\geq0$ for every tuple $a$.
+\end{lemma}
+\begin{proof}
+For $a\ne0$ choose $j$ with $a_j\ne0$. The pointwise inequality
+$\log|a_j|_\omega\leq\ell_S(a,\omega)$ integrates to
+$0\leq h_S(a)$ by integrability and the product formula.
+The height of the zero tuple is zero by definition.
+\end{proof}
+
+\begin{definition}[Projective height]\label{def:projective-height}
+\uses{prop:height-scalar-invariant,lem:height-nonnegative}
+\notready
+For proper $S$ define $h_S:\mathbb P(K^I)\to\mathbb R_{\geq0}$ by
+$h_S([a])=h_S(a)$ for any nonzero representative $a$.
+\end{definition}
+\begin{proof}
+Two nonzero representatives of a projective point differ by a nonzero
+scalar, so scalar invariance proves independence of the representative.
+Nonnegativity gives the indicated range.
+\end{proof}
+
+\begin{definition}[Affine height]\label{def:affine-height}
+\uses{def:tuple-height}
+\notready
+For $b\in K$, write
+$h_S^{\mathrm{aff}}(b)=\int_\Omega\log\max(1,|b|_\omega)\,d\nu(\omega)$.
+Then $h_S^{\mathrm{aff}}(b)=h_S(1,b)$ and, if $S$ is proper,
+$h_S^{\mathrm{aff}}(b)=h_S([1:b])$.
+\end{definition}
+\begin{proof}
+The coordinate $1$ has absolute value one at every place, so the
+two local integrands agree. The projective equality follows from the
+definition of projective height.
+\end{proof}
+
+\begin{lemma}[Affine heights and powers]\label{lem:affine-height-power}
+\uses{def:affine-height}
+\notready
+Affine heights are nonnegative, $h_S^{\mathrm{aff}}(0)=0$, and
+$h_S^{\mathrm{aff}}(b^m)=m h_S^{\mathrm{aff}}(b)$ for every $m\geq0$.
+Also $h_S^{\mathrm{aff}}(-b)=h_S^{\mathrm{aff}}(b)$.
+\end{lemma}
+\begin{proof}
+The local maximum is at least one, so its logarithm is nonnegative.
+For $b=0$ the maximum is one. For $m=0$ both sides of the power
+identity are zero. For $m>0$, multiplicativity and monotonicity of
+$x\mapsto x^m$ on $[0,\infty)$ give
+$\max(1,|b^m|)=\max(1,|b|)^m$; its logarithm is
+$m\log\max(1,|b|)$. Integrating proves the formula.
+Finally $|-b|=|b|$ at every place.
+\end{proof}
+
+\begin{proposition}[Bounds on affine chart coordinates]
+\label{prop:height-coordinate-bound}
+\uses{prop:height-scalar-invariant,def:affine-height}
+\notready
+If $S$ is proper, $a_j\ne0$, and $i\in I$, then
+$h_S^{\mathrm{aff}}(a_i/a_j)\leq h_S(a)$.
+\end{proposition}
+\begin{proof}
+Set $b=a_j^{-1}a$, so $b_j=1$ and $b_i=a_i/a_j$.
+Consequently $\max(1,|b_i|_\omega)\leq M_S(b,\omega)$.
+The two positive expressions have integrable logarithms. Integrate
+their logarithmic inequality and use $h_S(b)=h_S(a)$.
+\end{proof}
+
+\begin{proposition}[Invariance under algebraic extension]
+\label{prop:height-algebraic-extension}
+\uses{def:tuple-height,def:affine-height,def:algebraic-extension,prop:algebraic-base-pullback}
+\notready
+If $L/K$ is algebraic and $a\in K^I$, then
+$h_{S\otimes_K L}(a)=h_S(a)$. In particular affine heights of
+elements of $K$ are unchanged by algebraic extension.
+\end{proposition}
+\begin{proof}
+For $x\in\Omega_L$ and $b\in K$, one has
+$|b|_x=|b|_{\pi_{L/K}(x)}$. Finite maxima and their logarithms
+therefore pull back along $\pi_{L/K}$. The base local height is
+integrable, so Proposition~\ref{prop:algebraic-base-pullback} gives
+equality of its integrals. Apply this to $(1,b)$ for the last assertion.
+\end{proof}
+
+\begin{definition}[Height over an algebraic closure]
+\label{def:absolute-projective-height}
+\dcref{Definition 3.5.1}
+\uses{def:projective-height,def:algebraic-extension,prop:algebraic-proper}
+\notready
+Let $S$ be proper and let $\overline K$ be an algebraic closure of $K$.
+The height of $x\in\mathbb P^n(\overline K)$ with respect to $S$ is
+$h_S(x):=h_{S\otimes_K\overline K}(x)$.
+Equivalently, for any nonzero representative $(a_0,\ldots,a_n)$,
+\[
+ h_S(x)=\int_{\Omega_{\overline K}}
+ \log\max_{0\leq i\leq n}|a_i|_\chi\,d\nu_{\overline K}(\chi).
+\]
+\end{definition}
+\begin{proof}
+The extension is proper by Proposition~\ref{prop:algebraic-proper}.
+Its projective height is well-defined by
+Definition~\ref{def:projective-height}, with precisely the displayed integral.
+\end{proof}
+
+\begin{definition}[Northcott property]\label{def:northcott-property}
+\dcref{Definition 3.5.2}
+\uses{def:affine-height,prop:height-algebraic-extension,def:absolute-projective-height}
+\notready
+A proper adelic curve $S$ has the Northcott property if
+$\{b\in K:h_S^{\mathrm{aff}}(b)\leq C\}$ is finite for every real
+$C\geq0$. Equivalently, use the heights $h_S([1:b])$ over $\overline K$.
+The same finiteness then holds for every real $C$.
+\end{definition}
+\begin{proof}
+The two height functions agree by algebraic-extension invariance.
+For $C<0$, nonnegativity makes the set empty, which is finite.
+\end{proof}
