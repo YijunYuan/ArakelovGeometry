@@ -85,8 +85,9 @@ nor the normality hypothesis in the stated source result.
 \begin{definition}[Polynomial height]
 \label{def:polynomial-height}
 \source{chen-moriwaki-adelic:page-0216}
-\uses{def:absolute-projective-height,lem:local-height-integrable,prop:height-scalar-invariant}
-\notready
+\uses{def:absolute-projective-height,lem:local-height-integrable,prop:height-scalar-invariant,lem:height-nonnegative}
+\lean{ArakelovGeometry.AdelicStructure.polynomialLocalHeight,ArakelovGeometry.AdelicStructure.polynomialHeight,ArakelovGeometry.AdelicStructure.polynomialLocalHeight_nonneg,ArakelovGeometry.AdelicStructure.coeff_le_polynomialLocalHeight,ArakelovGeometry.AdelicStructure.polynomialLocalHeight_le,ArakelovGeometry.AdelicStructure.polynomialLocalHeight_pos,ArakelovGeometry.AdelicStructure.polynomialHeight_eq_integral,ArakelovGeometry.AdelicStructure.integrable_log_polynomialLocalHeight,ArakelovGeometry.AdelicStructure.polynomialLocalHeight_eq_localHeight,ArakelovGeometry.AdelicStructure.polynomialHeight_eq_logHeight,ArakelovGeometry.AdelicStructure.polynomialLocalHeight_eq_localHeight_reindex,ArakelovGeometry.AdelicStructure.polynomialHeight_eq_logHeight_reindex,ArakelovGeometry.AdelicStructure.polynomialLocalHeight_C_mul,ArakelovGeometry.AdelicStructure.polynomialHeight_C_mul,ArakelovGeometry.AdelicStructure.polynomialHeight_nonneg}
+\leanok
 For a nonzero polynomial $F=\sum_{j=0}^d a_jX^j\in\overline K[X]$
 of degree $d$, put
 \[
@@ -96,23 +97,29 @@ of degree $d$, put
  =\int_{\Omega_{\overline K}}\log\|F\|_\chi\,d\nu_{\overline K}(\chi).
 \]
 The norm $\|F\|_\chi$ is positive and its logarithm is integrable.
+It bounds every coefficient absolute value; conversely any common upper
+bound for the coefficient absolute values bounds $\|F\|_\chi$.
+The height is nonnegative.
 Adding zero coefficients or permuting the coefficient list leaves
 the height unchanged, and $h_S(cF)=h_S(F)$ for every $c\ne0$.
 \end{definition}
 \begin{proof}
+The defining finite maximum bounds each coefficient, including the zero
+coefficients beyond the degree, and is bounded by any common upper bound.
 At least one coefficient is nonzero, so its strictly positive absolute
-value bounds the maximum from below. Integrability and the integral
+value bounds the maximum from below. Nonnegativity of the height follows
+from properness and nonnegativity of tuple heights. Integrability and the integral
 formula follow from the corresponding assertions for nonzero tuples.
 Adding zero entries does not change a maximum of nonnegative numbers,
-and a permutation does not change its set of values. Multiplying every
-coefficient by $c$ does not change the projective height, by scalar
-invariance.
+and a permutation does not change its set of values. Multiplying every coefficient by $c$ multiplies the local maximum by
+$|c|_\chi$, and does not change the projective height, by scalar invariance.
 \end{proof}
 
 \begin{lemma}[Heights of linear factors]
 \label{lem:polynomial-height-linear}
 \uses{def:polynomial-height,def:affine-height,lem:affine-height-power}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.polynomialLocalHeight_X_sub_C,ArakelovGeometry.AdelicStructure.polynomialHeight_X_sub_C}
+\leanok
 For $\alpha\in\overline K$, one has
 $h_S(X-\alpha)=h_S([1:\alpha])$.
 \end{lemma}
@@ -126,7 +133,8 @@ hence their heights, are equal.
 \begin{lemma}[Height bounds for monic coefficients]
 \label{lem:polynomial-height-monic-coefficient}
 \uses{def:polynomial-height,prop:height-coordinate-bound}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.affineHeight_coeff_le_polynomialHeight}
+\leanok
 If $F=X^d+a_{d-1}X^{d-1}+\cdots+a_0\in\overline K[X]$ is monic,
 then $h_S([1:a_j])\leq h_S(F)$ for every $0\leq j<d$.
 \end{lemma}
@@ -338,11 +346,32 @@ invariance. This is the minimal-polynomial estimate in the
 proof of Claim 3.5.6, strengthened by using $A_S$ in its error term.
 \end{proof}
 
+\begin{lemma}[Finitely many roots from bounded coefficient heights]
+\label{lem:northcott-bounded-coefficient-roots}
+\uses{def:northcott-property}
+\notready
+Suppose an adelic structure $S$ on $K$ has the Northcott property.
+For any extension field $L/K$, real number $B$, and natural number $D$,
+the set of elements of $L$ that are roots of some nonzero polynomial
+$F\in K[X]$ of degree at most $D$, with
+$h_S^{\mathrm{aff}}(F_j)\leq B$ for every coefficient $F_j$, is finite.
+\end{lemma}
+\begin{proof}
+The allowed coefficient set $T=\{b\in K:h_S^{\mathrm{aff}}(b)\leq B\}$
+is finite by the Northcott property, including when $B<0$ since then
+it is empty. A polynomial of degree at most $D$ is determined by its
+$D+1$ coefficients in degrees $0$ through $D$. Thus the allowed
+polynomials form a finite set. Each nonzero polynomial has at most its
+degree many roots in the field $L$, by repeated division by linear
+factors. The stated set is contained in the finite union of these finite
+root sets, hence is finite.
+\end{proof}
+
 \begin{lemma}[Northcott finiteness for algebraic elements]
 \label{lem:northcott-algebraic-elements}
 \dcref{Claim 3.5.6}
 \source{chen-moriwaki-adelic:page-0217}
-\uses{def:northcott-property,lem:affine-height-power,lem:minimal-polynomial-height,def:height-archimedean-constant}
+\uses{def:northcott-property,lem:affine-height-power,lem:minimal-polynomial-height,def:height-archimedean-constant,lem:northcott-bounded-coefficient-roots}
 \notready
 Assume $S$ has the Northcott property. For every $C,\delta\in\mathbb R$,
 the set
@@ -369,17 +398,11 @@ coefficient $a_j$ satisfies
 For the last inequality use $h_S([1:\alpha])\leq C$, $C\geq0$,
 $d\leq\delta$, and $(\log2)A_S\geq0$.
 
-By the Northcott property the set
-$T=\{a\in K:h_S^{\mathrm{aff}}(a)\leq B\}$ is finite.
-For each $d\in\{1,\ldots,D\}$ there are only finitely many
-monic degree-$d$ polynomials with nonleading coefficients in $T$:
-they are indexed by the finite set $T^d$. The union over the
-finitely many possible degrees is finite. A nonzero polynomial of
-degree $d$ has at most $d$ roots in a field: if a root $b$ exists,
-factor out $X-b$; every other root is a root of the quotient, and
-induction on the degree proves the bound, starting with a nonzero
-constant. The union of the root sets of the finitely many possible
-minimal polynomials is thus finite and contains the desired set.
+The leading coefficient is $1$ and coefficients beyond the degree
+are zero, so all the other coefficient heights are zero, hence at
+most $B$. Lemma~\ref{lem:northcott-bounded-coefficient-roots}
+now gives a finite set of roots of all these nonzero polynomials
+of degree at most $D$. It contains every element under consideration.
 \end{proof}
 
 \begin{definition}[Field of definition of a projective point]
