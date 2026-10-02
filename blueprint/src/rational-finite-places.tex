@@ -1,0 +1,57 @@
+\subsection{The finite components over the rational function field}
+
+Put $K=\mathbb Q(T)$ and let $\Omega_h$ be the closed points of
+$\mathbb A^1_{\mathbb Q}$. We equip $\Omega_h$ with its discrete
+$\sigma$-algebra and counting measure, as in
+\cite[\S3.2.5]{chen-moriwaki}.
+
+\begin{definition}[The horizontal absolute values]
+\label{def:rational-horizontal-place}
+\source{chen-moriwaki-adelic:page-0188}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.HorizontalPlace,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalPolynomial,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalPolynomial_isPrimitive,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalPolynomial_span,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalHeight,ArakelovGeometry.AdelicCurve.RationalFunction.one_le_horizontalHeight,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalAbv,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalAbv_apply,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalAbv_rat}
+For $x\in\Omega_h$, choose a generator of the corresponding nonzero prime
+ideal of $\mathbb Q[T]$, clear its denominators, and take its primitive
+part $F_x\in\mathbb Z[T]$. Then $F_x$ generates the same ideal over
+$\mathbb Q$. Let $H(x)=M(F_x)$ be its Mahler measure. We have $H(x)\geq1$.
+The horizontal absolute value is
+\[
+ |0|_x=0,\qquad |f|_x=H(x)^{-\operatorname{ord}_x(f)}\quad(f\ne0).
+\]
+It restricts to the trivial absolute value on $\mathbb Q$; when
+$H(x)=1$, it is the trivial absolute value on $K$ itself.
+\end{definition}
+\begin{proof}
+Clearing denominators multiplies a generator by a nonzero integer.
+Taking the primitive part divides it by its nonzero integral content.
+Both scalars are units in $\mathbb Q[T]$, so the resulting polynomial
+still generates the ideal of $x$, is nonzero, and is primitive.
+For every nonzero integral polynomial the Mahler measure is at least
+the absolute value of its leading coefficient, hence at least one.
+If $H(x)>1$, the valuation inequalities and multiplicativity of
+$\operatorname{ord}_x$ imply the nonarchimedean triangle inequality and
+multiplicativity of the displayed absolute value. If $H(x)=1$, the
+displayed formula is the trivial absolute value and satisfies the same
+axioms directly. Finally a nonzero constant is a unit in
+$\mathbb Q[T]$, so its order at $x$ is zero and its absolute value is one.
+\end{proof}
+
+\begin{lemma}[Integrability at the horizontal places]
+\label{lem:rational-horizontal-log-integrable}
+\source{chen-moriwaki-adelic:page-0188,chen-moriwaki-adelic:page-0189}
+\uses{def:rational-horizontal-place}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.finite_support_log_horizontalAbv,ArakelovGeometry.AdelicCurve.RationalFunction.integrable_log_horizontalAbv,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalAdelicStructure}
+For $f\in K^\times$, the function $x\mapsto\log|f|_x$ has finite
+support on $\Omega_h$. Consequently it is integrable for counting
+measure and defines the horizontal adelic structure on $K$.
+\end{lemma}
+\begin{proof}
+Write $f=P/Q$ with nonzero $P,Q\in\mathbb Q[T]$.
+Outside the finite union of the prime divisors of $P$ and $Q$,
+$\operatorname{ord}_x(f)=0$. The preceding formula then gives
+$|f|_x=1$, so its logarithm is zero.
+Every function on the discrete space $\Omega_h$ is measurable.
+Since each singleton has counting measure one, the integral of the
+absolute value of a finitely supported real function is a finite sum
+of finite real numbers. This proves integrability, and hence every
+axiom of the asserted adelic structure.
+\end{proof}
