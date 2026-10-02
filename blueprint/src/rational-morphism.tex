@@ -1,16 +1,30 @@
 \section{The rational-function example}
 
+\begin{definition}[Transcendental unit-circle parameters]
+\label{def:rational-circle-parameters}
+\source{chen-moriwaki-adelic:page-0189}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.circlePoint, ArakelovGeometry.AdelicCurve.RationalFunction.circlePoint_eq_exp, ArakelovGeometry.AdelicCurve.RationalFunction.continuous_circlePoint, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanDomain, ArakelovGeometry.AdelicCurve.RationalFunction.ArchimedeanPlace, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanMeasure}
 Write $z(t)=\exp(2\pi it)$ and
 $T=\{t\in[0,1]:z(t)\text{ is transcendental over }\mathbb Q\}$.
-The measure on $T$ is the restriction of Lebesgue measure.
+The map $z:\mathbb R\to\mathbb C$ is continuous. Equip $T$ with the
+trace Borel $\sigma$-algebra and induced Lebesgue measure.
+\end{definition}
+\begin{proof}
+Multiplication by $2\pi i$ and the complex exponential are continuous,
+so their composition $z$ is continuous. The trace $\sigma$-algebra and
+the induced measure are the subspace constructions for the inclusion
+$T\hookrightarrow\mathbb R$.
+\end{proof}
 
 \begin{lemma}[Full measure of the transcendental parameters]
 \label{lem:rational-transcendental-circle-conull}
 \source{chen-moriwaki-adelic:page-0189}
+\uses{def:rational-circle-parameters}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.countable_algebraic_circle_parameters, ArakelovGeometry.AdelicCurve.RationalFunction.measurableSet_archimedeanDomain, ArakelovGeometry.AdelicCurve.RationalFunction.volume_archimedeanDomain}
 \leanok
-The set $[0,1]\setminus T$ is countable. Consequently $T$ is Borel measurable
-and has Lebesgue measure one.
+The set $\{t\in\mathbb R:z(t)\text{ is algebraic over }\mathbb Q\}$
+is countable. Consequently $[0,1]\setminus T$ is countable, $T$ is Borel
+measurable, and its induced Lebesgue measure is a probability measure.
 \end{lemma}
 \begin{proof}
 The algebraic complex numbers form a countable set: there are countably many
@@ -19,18 +33,23 @@ $t\mapsto z(t)$ is injective on $(0,1]$, because equality of its values implies
 that the difference of its arguments is an integer, and this difference has
 absolute value less than one. Thus its inverse image of the algebraic numbers
 inside $(0,1]$ is countable. Adding the endpoint $0$ still gives a countable
-set. Countable subsets of the real line are Borel and Lebesgue null. Removing
+set. By periodicity the entire exceptional set is contained in the union
+of its integer translates, which is again countable.
+Countable subsets of the real line are Borel and Lebesgue null. Removing
 this set from the Borel interval $[0,1]$, of measure one, proves the claim.
 \end{proof}
 
 \begin{definition}[Archimedean rational-function places]
 \label{def:rational-archimedean-place}
 \source{chen-moriwaki-adelic:page-0189}
-\lean{ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanEval, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAbv, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAbv_rat, ArakelovGeometry.AdelicCurve.RationalFunction.not_isNonarchimedean_archimedeanAbv}
+\uses{def:rational-circle-parameters}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanEval, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAbv, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAbv_apply, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAbv_rat, ArakelovGeometry.AdelicCurve.RationalFunction.not_isNonarchimedean_archimedeanAbv}
 \leanok
 For $t\in T$, evaluation at $z(t)$ defines a field homomorphism
 $e_t:\mathbb Q(T)\longrightarrow\mathbb C$. Set $|f|_t=|e_t(f)|$.
 This is an archimedean absolute value extending the usual absolute value of $\mathbb Q$.
+If $p_f,q_f$ are the canonical numerator and denominator of $f$, then
+$|f|_t=|p_f(z(t))/q_f(z(t))|$.
 \end{definition}
 \begin{proof}
 Transcendence says that no nonzero rational polynomial vanishes at $z(t)$.
@@ -41,20 +60,18 @@ evaluation fixes rational constants, which proves the extension assertion.
 It is archimedean because $|2|_t=2>1=\max\{|1|_t,|1|_t\}$.
 \end{proof}
 
-\begin{lemma}[Integrability on the archimedean component]
-\label{lem:rational-archimedean-log-integrable}
+\begin{lemma}[Polynomial logarithms on the transcendental circle]
+\label{lem:rational-polynomial-circle-log-integrable}
 \source{chen-moriwaki-adelic:page-0189}
-\uses{def:rational-archimedean-place,lem:rational-transcendental-circle-conull}
-\lean{ArakelovGeometry.AdelicCurve.RationalFunction.measurable_log_archimedeanAbv, ArakelovGeometry.AdelicCurve.RationalFunction.integrable_log_archimedeanAbv}
-\leanok
-For every nonzero $f\in\mathbb Q(T)$, the function
-$t\mapsto\log|f|_t$ is measurable and integrable on $T$.
+\uses{def:rational-circle-parameters,lem:rational-transcendental-circle-conull}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.integrable_log_polynomial_circle}
+For every rational polynomial $p$, the function
+$t\mapsto\log|p(z(t))|$ is integrable on $T$, with the logarithm extended
+by zero at zero.
 \end{lemma}
 \begin{proof}
-Write $f=p/q$ with nonzero rational polynomials $p,q$. Each function
-$t\mapsto\log|p(z(t))|$ is Borel measurable, since polynomial evaluation,
-the exponential, the norm, and the real logarithm (extended by zero at zero)
-are Borel measurable. The logarithm of the absolute value of a nonzero
+The zero polynomial gives the zero function. For a nonzero polynomial,
+the logarithm of the absolute value of a nonzero
 complex polynomial is integrable on the unit circle. Indeed, factor the
 polynomial as $a\prod_j(X-\alpha_j)$; away from its finitely many zeros
 the logarithm is continuous and bounded on compact arcs. A root off the
@@ -69,7 +86,24 @@ while $\int_0^\varepsilon|\log u|\,du$ is finite, as follows from the
 antiderivative $u\log u-u$. Thus each root contributes an integrable
 function and their finite sum is integrable. The linear change of
 variables $\theta=2\pi t$ gives integrability on $[0,1]$.
-Restriction preserves integrability. On $T$, neither $p(z(t))$ nor
+Restriction to the measurable subset $T$ preserves integrability.
+\end{proof}
+
+\begin{lemma}[Integrability on the archimedean component]
+\label{lem:rational-archimedean-log-integrable}
+\source{chen-moriwaki-adelic:page-0189}
+\uses{def:rational-archimedean-place,lem:rational-polynomial-circle-log-integrable}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.measurable_log_archimedeanAbv, ArakelovGeometry.AdelicCurve.RationalFunction.integrable_log_archimedeanAbv}
+\leanok
+For every nonzero $f\in\mathbb Q(T)$, the function
+$t\mapsto\log|f|_t$ is measurable and integrable on $T$.
+\end{lemma}
+\begin{proof}
+Write $f=p/q$ with nonzero rational polynomials $p,q$. Each function
+$t\mapsto\log|p(z(t))|$ is Borel measurable, since polynomial evaluation,
+the exponential, the norm, and the real logarithm extended by zero at zero
+are Borel measurable. The preceding lemma proves integrability of the
+numerator and denominator logarithms. On $T$, neither $p(z(t))$ nor
 $q(z(t))$ vanishes, so
 $\log|f|_t=\log|p(z(t))|-\log|q(z(t))|$.
 The difference is measurable and integrable.
@@ -95,7 +129,7 @@ lemma. The measure has mass one by the full-measure lemma.
 \label{def:rational-function-adelic-curve}
 \source{chen-moriwaki-adelic:page-0188,chen-moriwaki-adelic:page-0189,chen-moriwaki-adelic:page-0220}
 \uses{def:rational-horizontal-place,lem:rational-horizontal-log-integrable,def:rational-prime-place,lem:rational-prime-log-integrable,def:rational-archimedean-structure}
-\lean{ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.adelicCurve}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.finiteAdelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.adelicCurve, ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure_horizontal, ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure_prime, ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure_archimedean, ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure_measure}
 Let $\Omega_h$ be the closed points of $\mathbb A^1_{\mathbb Q}$ and
 $\mathcal P$ the rational primes. The parameter space
 \[
@@ -105,7 +139,8 @@ has counting measure on its first two components and Lebesgue measure on
 $T$. Equip $\mathbb Q(T)$ with the horizontal Mahler absolute values, the
 $p$-adic Gauss absolute values, and the transcendental evaluation absolute
 values on these three components respectively. This defines an adelic
-structure $S$.
+structure $S$, obtained by first amalgamating the horizontal and prime
+component structures and then amalgamating with the archimedean component.
 \end{definition}
 \begin{proof}
 The component absolute values have already been constructed. Every function
@@ -130,12 +165,15 @@ measure here use the construction in Subsection~3.2.5.
 \label{def:augmented-rational-adelic-curve}
 \source{chen-moriwaki-adelic:page-0220}
 \uses{def:rational-function-adelic-curve,def:rational-horizontal-place,def:rational-prime-place}
-\lean{ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_horizontal, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_prime, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_infinite, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_measure}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.rationalFiniteAdelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.rationalInfiniteAdelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicCurve, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_horizontal, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_prime, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_infinite, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_measure}
 Let $\widetilde\Omega_{\mathbb Q}=(\Omega_h\amalg\mathcal P)\amalg\{\infty\}$,
 with counting measure, and attach the trivial absolute value of $\mathbb Q$
 to each $x\in\Omega_h$, the standard $p$-adic absolute value to each
 $p\in\mathcal P$, and the usual real absolute value to $\infty$.
 This defines an adelic curve $\widetilde S_{\mathbb Q}$.
+Its finite component is the restriction of the finite component of $S$
+along $\mathbb Q\hookrightarrow\mathbb Q(T)$; the full structure is its
+amalgamation with the singleton infinite component.
 It is the amalgamation of the standard rational adelic curve with
 counting-measure copies of the trivial absolute value, with the three
 components regrouped as displayed.
@@ -155,7 +193,7 @@ with the stated amalgamation; regrouping does not change them.
 \label{ex:adelic-morphism-rational-function}
 \source{chen-moriwaki-adelic:page-0220}
 \uses{def:adelic-morphism,def:rational-function-adelic-curve,def:augmented-rational-adelic-curve,lem:rational-transcendental-circle-conull,lem:probability-collapse}
-\lean{ArakelovGeometry.AdelicCurve.RationalFunction.morphismToRationals, ArakelovGeometry.AdelicCurve.RationalFunction.morphismToRationals_fibreIntegral_toL1}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.morphismToRationals, ArakelovGeometry.AdelicCurve.RationalFunction.morphismToRationals_fieldMap, ArakelovGeometry.AdelicCurve.RationalFunction.morphismToRationals_baseMap_finite, ArakelovGeometry.AdelicCurve.RationalFunction.morphismToRationals_baseMap_archimedean, ArakelovGeometry.AdelicCurve.RationalFunction.fibreAverage, ArakelovGeometry.AdelicCurve.RationalFunction.fibreAverage_finite, ArakelovGeometry.AdelicCurve.RationalFunction.fibreAverage_infinite, ArakelovGeometry.AdelicCurve.RationalFunction.integrable_fibreAverage, ArakelovGeometry.AdelicCurve.RationalFunction.morphismToRationals_fibreIntegral_toL1}
 There is a morphism $\alpha:S\to\widetilde S_{\mathbb Q}$ whose field map
 is the inclusion $\mathbb Q\hookrightarrow\mathbb Q(T)$, whose parameter
 map fixes $\Omega_h\amalg\mathcal P$ and collapses $T$ to $\infty$, and
@@ -166,6 +204,7 @@ the class represented by
  (\omega\in\Omega_h\amalg\mathcal P),\qquad
  (I_\alpha f)(\infty)=\int_T f(t)\,dt.
 \]
+This representative is integrable for every integrable $f$.
 \end{example}
 \begin{proof}
 The parameter map is measurable and preserves the measure by the
