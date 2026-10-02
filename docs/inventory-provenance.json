@@ -39,9 +39,13 @@
     "ArakelovGeometry/AdelicCurve/Height/Affine.lean": "0965c6f8f4dc0dd1c74dca562d83a3ae4d8e7388a5f0e4917f692bfc3c62c448",
     "ArakelovGeometry/AdelicCurve/Height/Basic.lean": "a0b04d3ac43f8f31f8abf298fa6f852b2891d2a4aa3900348a1dd7757b88d415",
     "ArakelovGeometry/AdelicCurve/Height/Extension.lean": "48db8771e1db6f23ea82147cf2bd25c6314e9b50824d47b07a316759543719b2",
-    "ArakelovGeometry/AdelicCurve/Height/Northcott.lean": "7b1c120bfa5b9518e56f2c14335abc60656a3769911190dad17e1df7f1cfbf92",
+    "ArakelovGeometry/AdelicCurve/Height/FiniteExtension.lean": "ed38378369bc1926a1bb55f693ff9efea4baf1841964bbd9d3cafc8bb0009e4e",
+    "ArakelovGeometry/AdelicCurve/Height/MinimalPolynomial.lean": "eca4e22002120748f62ceedcc11f11863e19db656f6151793c1fdadd70d51497",
+    "ArakelovGeometry/AdelicCurve/Height/Northcott.lean": "4fa867b87819bb771058191607c14d2e22edaea5a6b39155bad89cd3b6859b18",
     "ArakelovGeometry/AdelicCurve/Height/Polynomial.lean": "ef84df9ef880e8c4c4da418b2883d9f7f77a3249824db05a9c6d835c486d3f30",
-    "ArakelovGeometry/AdelicCurve/Height.lean": "7f93f389b3960558dd833e3fb7c6450c1ce1608f68ba87de6ed01efce0550992",
+    "ArakelovGeometry/AdelicCurve/Height/Projective.lean": "0683311e6ee2039a8996ae0e598c34eaa4fd56e1d26deea223c1038246193643",
+    "ArakelovGeometry/AdelicCurve/Height/ProjectiveNorthcott.lean": "3930d2122a3cda2e124b1c4e186c261b193458612c1a16447b456703b1a0cf7b",
+    "ArakelovGeometry/AdelicCurve/Height.lean": "4708425345e036be7704c888a0f1517d76fcaf190db29cfaf2ee4b3a5d3f305f",
     "ArakelovGeometry/AdelicCurve/Restriction.lean": "3534074ec9ee41e7176f254351d0ed962f3116054474e2c5101671f35882b2aa",
     "ArakelovGeometry/ExternalResults/AbsoluteValue.lean": "826166a966403c2bc65257748a7040fabbd601fe323ad6887994c6b7ae2b7b5f",
     "ArakelovGeometry/ExternalResults/AbsoluteValueCompact.lean": "d39caee536f2117c807f331a348e270b3be56aa46e5fc28001ded8b92b309d7a",
@@ -58,7 +62,7 @@
     "ArakelovGeometry/ExternalResults/Place.lean": "1410c16d0750fde9796b3ed40ba08edc42f9d99d4afd5a074d7afeea11f8c22b",
     "ArakelovGeometry.lean": "f415483483d4131e21cca96f5911eef3eb7597c079424885983781f3457ae6e3",
     "scripts/declaration_inventory.lean": "eeb8cf644ca1086525583111909d9a0df4dcdc378a75ff5084c89aacec315559",
-    "docs/declaration-inventory.json": "85630047713e16428cff41abfb9228d1cb075a8642b7fe3986650c899a213c05"
+    "docs/declaration-inventory.json": "f34d454905cd85de96cf761bc1e6b082f6277ced3aa311155713e638bb439333"
   },
   "compiled_artifacts_sha256": {
     ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Amalgamation.olean": "3ed42a67360c85f7e4527c670834ca2546c446f17f7b6f815fa339c192f40d65",
@@ -100,9 +104,13 @@
     ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Height/Affine.olean": "9562b688473dcb480f42faa8b37a5350dd27ba0f3e5598d5253d0e4b99949fbe",
     ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Height/Basic.olean": "b5b6d53338ad0d4fac9a4bf6cefcabd48cf4b3c3fe8381bafe749528108f62c4",
     ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Height/Extension.olean": "0cd0c0c2e14ecb361d56ca610a52f5ff41d44bcbc3a79ee34e6a46c51c5a8162",
-    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Height/Northcott.olean": "1d8c4e8beadc82203c4e4438d8541124f7ae38838d515c523f3b7603dafd1c62",
+    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Height/FiniteExtension.olean": "96bcd0a4f58f6264a4d6bf085a36fe7fae5682fd1ba71fcf66f02fc234b8a664",
+    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Height/MinimalPolynomial.olean": "9b9eddb845c7156b7667dcf721336f9d0ed7047392818e42e845962ca4f0d6e3",
+    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Height/Northcott.olean": "597a6e0b9e08b5c899cde0972d62cd5e63e38e10426d82f3bfd7f140da419b16",
     ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Height/Polynomial.olean": "bd9842e08a52ffd072ac95b2e33fa50901ab346f7ec2fde05fbd36e6d4dc41a3",
-    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Height.olean": "96b2722cf99727e629c29d55962633529fb7fb10e2f4cc957915dd1963a0db05",
+    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Height/Projective.olean": "3e4efb4f535b919cc41a69821fd7576f490e91bd0517a40a6cb77e218d0ce35f",
+    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Height/ProjectiveNorthcott.olean": "8f1b0d7ea51916a69cc087e5cb5b703933db2f6138d89e62d2b69fe12f8fff3d",
+    ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Height.olean": "2d04bf509208aa1bee5f539dc24f7182f1ad38d752798f330386b6509b4cfac6",
     ".lake/build/lib/lean/ArakelovGeometry/AdelicCurve/Restriction.olean": "b7b17bfffb6daa56a0372aeb0cf3bb5ebe6f7a876715cfbf478db86548fa9bf5",
     ".lake/build/lib/lean/ArakelovGeometry/ExternalResults/AbsoluteValue.olean": "c1485b5d43550582157fc636480853e5de32fc014e8d06b924490a7f65331924",
     ".lake/build/lib/lean/ArakelovGeometry/ExternalResults/AbsoluteValueCompact.olean": "d60d4ece1c1bc7f9bbc57e9368d9b2160cc19741b763daa60a0e20a20dcb74d0",
@@ -133,10 +141,10 @@
     "timed_out": false,
     "reused": false,
     "wait_seconds": 0.001,
-    "duration_seconds": 12.725,
-    "started_at": "2026-10-02T04:40:30.088557+00:00",
-    "finished_at": "2026-10-02T04:40:42.813849+00:00",
-    "finished_epoch": 1790916042.813849
+    "duration_seconds": 8.903,
+    "started_at": "2026-10-02T05:09:51.072479+00:00",
+    "finished_at": "2026-10-02T05:09:59.975205+00:00",
+    "finished_epoch": 1790917799.975205
   },
   "inventory_check": {
     "schema_version": 1,
@@ -153,10 +161,10 @@
     "returncode": 0,
     "timed_out": false,
     "reused": false,
-    "wait_seconds": 0.001,
-    "duration_seconds": 274.149,
-    "started_at": "2026-10-02T04:41:47.706376+00:00",
-    "finished_at": "2026-10-02T04:46:17.218763+00:00",
-    "finished_epoch": 1790916377.218763
+    "wait_seconds": 0.0,
+    "duration_seconds": 85.042,
+    "started_at": "2026-10-02T05:11:11.211646+00:00",
+    "finished_at": "2026-10-02T05:12:36.253798+00:00",
+    "finished_epoch": 1790917956.253798
   }
 }

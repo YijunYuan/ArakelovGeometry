@@ -383,6 +383,7 @@
     ],
     "claim": "Finiteness of projective points of bounded height and field-of-definition degree, for every dimension and real bounds.",
     "nodes": [
+      "lem:projective-normalized-representatives",
       "def:projective-field-of-definition",
       "lem:projective-chart-height-degree",
       "lem:finite-projective-representatives",
