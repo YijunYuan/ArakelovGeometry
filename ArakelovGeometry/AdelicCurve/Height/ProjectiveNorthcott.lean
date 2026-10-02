@@ -38,7 +38,7 @@ namespace ArakelovGeometry.AdelicStructure
 
 variable {K L ι : Type*} [Field K] [Field L] [Algebra K L]
     [Algebra.IsAlgebraic K L] [Fintype ι] [Nonempty ι]
-    (AS : AdelicStructure K) [AS.toAdelicCurve.IsProper]
+    (AS : AdelicStructure K) [AS.IsProper]
 
 /-- Northcott's theorem for projective points over any algebraic extension:
 both the height and the degree of the intrinsic field of definition are bounded. -/

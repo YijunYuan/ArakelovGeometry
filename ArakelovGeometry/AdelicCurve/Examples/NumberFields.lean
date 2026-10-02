@@ -246,17 +246,6 @@ noncomputable def numberFieldAdelicStructure (K : Type*) [Field K] [NumberField 
       ((placeRep_equiv ω : ω.out.IsEquiv (placeRep ω)).eq_one_iff).mp hc
     rw [h1, Real.log_one, norm_zero, mul_zero]
 
-end ArakelovGeometry.AdelicStructure
-
-namespace ArakelovGeometry.AdelicCurve
-open ArakelovGeometry.AdelicStructure NumberField AbsoluteValue MeasureTheory
-open scoped ENNReal
-
-/-- The adelic curve of a number field `K`. -/
-noncomputable abbrev numberFieldAdelicCurve (K : Type*) [Field K] [NumberField K] :
-    AdelicCurve :=
-  (numberFieldAdelicStructure K).toAdelicCurve
-
 /-- The product formula `NumberField.prod_abs_eq_one` (K. Conrad, *Ostrowski for number
 fields*, Theorem 4) in logarithmic form, integrated against the place measure of the
 number-field adelic structure. -/
@@ -372,13 +361,32 @@ theorem numberField_product_formula {K : Type*} [Field K] [NumberField K] {x : K
       prod_abs_eq_one hx, Real.log_one]
   exact hint.trans key
 
-/-- The number-field adelic curve is proper: this is the product formula
+/-- The number-field adelic structure is proper: this is the product formula
 `NumberField.prod_abs_eq_one` (K. Conrad, *Ostrowski for number fields*, Theorem 4),
 in logarithmic form. -/
-noncomputable instance instIsProperNumberFieldAdelicCurve (K : Type*) [Field K] [NumberField K] :
-    IsProper (numberFieldAdelicCurve K) := by
+instance instIsProperNumberFieldAdelicStructure (K : Type*) [Field K] [NumberField K] :
+    IsProper (numberFieldAdelicStructure K) := by
   constructor
   intro x hx
   exact numberField_product_formula (K := K) (x := x) hx
+
+end ArakelovGeometry.AdelicStructure
+
+namespace ArakelovGeometry.AdelicCurve
+
+open NumberField
+
+/-- The adelic curve of a number field `K`. -/
+noncomputable abbrev numberFieldAdelicCurve (K : Type*) [Field K] [NumberField K] :
+    AdelicCurve :=
+  (AdelicStructure.numberFieldAdelicStructure K).toAdelicCurve
+
+/-- The logarithmic product formula, exposed in the curve namespace for compatibility. -/
+alias numberField_product_formula := AdelicStructure.numberField_product_formula
+
+/-- Properness of the number-field adelic curve, inherited from its adelic structure. -/
+abbrev instIsProperNumberFieldAdelicCurve (K : Type*) [Field K] [NumberField K] :
+    IsProper (numberFieldAdelicCurve K) :=
+  AdelicStructure.instIsProperNumberFieldAdelicStructure K
 
 end ArakelovGeometry.AdelicCurve

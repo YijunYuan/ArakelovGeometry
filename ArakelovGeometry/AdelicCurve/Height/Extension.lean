@@ -195,7 +195,7 @@ theorem affineHeight_comp_aut (i : E →ₐ[K] L) (σ : E ≃ₐ[K] E) (a : E) :
   exact (AS.affineHeight_comp_finiteEmbedding (i.comp σ.toAlgHom) a).trans
     (AS.affineHeight_comp_finiteEmbedding i a).symm
 
-variable [AS.toAdelicCurve.IsProper]
+variable [AS.IsProper]
 
 /-- Chen–Moriwaki, Lemma 3.5.5, with the original base measure and without a
 finite-mass assumption. Specialize `L` to the algebraic closure for the printed statement. -/

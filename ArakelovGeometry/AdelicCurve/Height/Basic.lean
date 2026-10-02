@@ -121,12 +121,12 @@ theorem logHeight_smul {a : ι → K} (ha : a ≠ 0) {t : K} (ht : t ≠ 0) :
   simp only [logHeight, AS.log_localHeight_smul ha ht]
   exact integral_add (AS.integrable_log t ht) (AS.integrable_log_localHeight a)
 
-variable [AS.toAdelicCurve.IsProper]
+variable [AS.IsProper]
 
 /-- The product formula makes height invariant under nonzero scalar multiplication. -/
 theorem logHeight_smul_eq {a : ι → K} (ha : a ≠ 0) {t : K} (ht : t ≠ 0) :
     AS.logHeight (t • a) = AS.logHeight a := by
-  have hp := AdelicCurve.IsProper.product_formula (C := AS.toAdelicCurve) t ht
+  have hp := AdelicStructure.IsProper.product_formula (AS := AS) t ht
   change (∫ ω, Real.log (AS.ϕ ω t) ∂AS.v) = 0 at hp
   rw [AS.logHeight_smul ha ht, hp, zero_add]
 
@@ -140,7 +140,7 @@ theorem logHeight_nonneg (a : ι → K) : 0 ≤ AS.logHeight a := by
   have h := integral_mono (AS.integrable_log (a i) hi)
     (AS.integrable_log_localHeight a)
     (fun ω ↦ Real.log_le_log ((AS.ϕ ω).pos hi) (AS.eval_le_localHeight a ω i))
-  have hp := AdelicCurve.IsProper.product_formula (C := AS.toAdelicCurve) (a i) hi
+  have hp := AdelicStructure.IsProper.product_formula (AS := AS) (a i) hi
   change (∫ ω, Real.log (AS.ϕ ω (a i)) ∂AS.v) = 0 at hp
   rwa [hp] at h
 

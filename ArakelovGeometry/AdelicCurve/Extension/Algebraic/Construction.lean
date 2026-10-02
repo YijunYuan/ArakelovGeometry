@@ -50,8 +50,8 @@ noncomputable def _root_.ArakelovGeometry.AdelicStructure.algebraicExtension :
 
 /-- Chen--Moriwaki, Proposition 3.4.10: the algebraic extension of a proper adelic curve is
 proper. -/
-theorem isProper_algebraicExtension [AS.toAdelicCurve.IsProper] :
-    (AS.algebraicExtension L).toAdelicCurve.IsProper := by
+theorem isProper_algebraicExtension [AS.IsProper] :
+    (AS.algebraicExtension L).IsProper := by
   constructor
   change ∀ a : L, a ≠ 0 →
     ∫ x, Real.log (ParameterSpaceExtension.ϕ x a) ∂measure AS L = 0
@@ -59,10 +59,10 @@ theorem isProper_algebraicExtension [AS.toAdelicCurve.IsProper] :
   let F := ofElement (K := K) L a
   let b : F := ⟨a, mem_ofElement L a⟩
   have hb : b ≠ 0 := fun h ↦ ha (congrArg Subtype.val h)
-  let : (AS.finiteExtension F).toAdelicCurve.IsProper :=
+  let : (AS.finiteExtension F).IsProper :=
     ParameterSpaceFinExtension.isProper_finiteExtension AS F
-  have hzero := AdelicCurve.IsProper.product_formula
-    (C := (AS.finiteExtension F).toAdelicCurve) b hb
+  have hzero := AdelicStructure.IsProper.product_formula
+    (AS := AS.finiteExtension F) b hb
   change ∫ y, Real.log (ParameterSpaceFinExtension.ϕ AS F y b)
     ∂ParameterSpaceFinExtension.measure AS F = 0 at hzero
   rw [← integral_comp_projFinite_measure AS L F

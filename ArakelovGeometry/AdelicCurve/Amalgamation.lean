@@ -46,18 +46,17 @@ scope they are disambiguated by the operand type, since `amalgamation` acts on
 `AdelicStructure K`. -/
 scoped notation:20 AS1 " ⨿ " AS2:20 => amalgamation AS1 AS2
 
-open ArakelovGeometry.AdelicCurve in
 /-- The amalgamation of two proper adelic structures is proper: the product formula for the
 amalgamation is the sum of the two product formulas. -/
 theorem isProper_amalgamation {K : Type*} [Field K] (AS1 AS2 : AdelicStructure K)
-    [IsProper AS1.toAdelicCurve] [IsProper AS2.toAdelicCurve] :
-    IsProper (AS1 ⨿ AS2).toAdelicCurve := by
+    [AS1.IsProper] [AS2.IsProper] :
+    (AS1 ⨿ AS2).IsProper := by
   constructor
   intro x hx
   have e1 : ∫ ω, Real.log ((AS1.ϕ ω) x) ∂AS1.v = 0 :=
-    IsProper.product_formula (C := AS1.toAdelicCurve) x hx
+    IsProper.product_formula (AS := AS1) x hx
   have e2 : ∫ ω, Real.log ((AS2.ϕ ω) x) ∂AS2.v = 0 :=
-    IsProper.product_formula (C := AS2.toAdelicCurve) x hx
+    IsProper.product_formula (AS := AS2) x hx
   have key : ∫ ω, Real.log ((Sum.elim AS1.ϕ AS2.ϕ ω) x)
       ∂(AS1.v.map Sum.inl + AS2.v.map Sum.inr) = 0 := by
     rw [integral_add_measure

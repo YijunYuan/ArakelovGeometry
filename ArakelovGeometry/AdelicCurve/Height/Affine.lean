@@ -90,7 +90,7 @@ theorem hasNorthcott_iff : AS.HasNorthcott ↔
       exact Set.finite_empty
   · exact fun h C _ ↦ h C
 
-variable [AS.toAdelicCurve.IsProper]
+variable [AS.IsProper]
 
 theorem affineHeight_eq_projectiveHeight (a : K) :
     AS.affineHeight a = AS.projectiveHeight
@@ -111,3 +111,10 @@ theorem affineHeight_div_le_logHeight (a : ι → K) {j : ι} (hj : a j ≠ 0) (
     div_eq_mul_inv, mul_comm] using h
 
 end ArakelovGeometry.AdelicStructure
+
+namespace ArakelovGeometry.AdelicCurve
+
+/-- The Northcott property of an adelic curve is that of its adelic structure. -/
+abbrev HasNorthcott (C : AdelicCurve) : Prop := C.AS.HasNorthcott
+
+end ArakelovGeometry.AdelicCurve

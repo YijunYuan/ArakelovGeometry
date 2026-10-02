@@ -252,16 +252,16 @@ theorem integral_log_eq_inv_finInsepDegree_mul (a : L) :
 
 /-- The closing remark of Definition 3.4.1 together with Theorem 3.3.7(5): the finite
 (possibly inseparable) extension of a proper adelic curve is proper. -/
-theorem isProper_finiteExtension [AS.toAdelicCurve.IsProper] :
-    (AS.finiteExtension L).toAdelicCurve.IsProper := by
-  let : (AS.finiteSeparableExtension (separableClosure K L)).toAdelicCurve.IsProper :=
+theorem isProper_finiteExtension [AS.IsProper] :
+    (AS.finiteExtension L).IsProper := by
+  let : (AS.finiteSeparableExtension (separableClosure K L)).IsProper :=
     ParameterSpaceExtension.isProper_finiteSeparableExtension AS (separableClosure K L)
   constructor
   change ∀ a : L, a ≠ 0 → ∫ x, Real.log (ϕ AS L x a) ∂measure AS L = 0
   intro a ha
   rw [integral_log_eq_inv_finInsepDegree_mul]
-  have hzero := AdelicCurve.IsProper.product_formula
-    (C := (AS.finiteSeparableExtension (separableClosure K L)).toAdelicCurve)
+  have hzero := AdelicStructure.IsProper.product_formula
+    (AS := AS.finiteSeparableExtension (separableClosure K L))
     ⟨a ^ Field.finInsepDegree K L, pow_finInsepDegree_mem_separableClosure K a⟩
     (fun h ↦ pow_ne_zero _ ha (congrArg Subtype.val h))
   change ∫ x, Real.log (ParameterSpaceExtension.ϕ x
