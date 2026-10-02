@@ -1,0 +1,74 @@
+\section{The rational-function example}
+
+Write $z(t)=\exp(2\pi it)$ and
+$T=\{t\in[0,1]:z(t)\text{ is transcendental over }\mathbb Q\}$.
+The measure on $T$ is the restriction of Lebesgue measure.
+
+\begin{lemma}[Full measure of the transcendental parameters]
+\label{lem:rational-transcendental-circle-conull}
+\source{chen-moriwaki-adelic:page-0220}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.countable_algebraic_circle_parameters, ArakelovGeometry.AdelicCurve.RationalFunction.measurableSet_archimedeanDomain, ArakelovGeometry.AdelicCurve.RationalFunction.volume_archimedeanDomain}
+\leanok
+The set $[0,1]\setminus T$ is countable. Consequently $T$ is Borel measurable
+and has Lebesgue measure one.
+\end{lemma}
+\begin{proof}
+The algebraic complex numbers form a countable set: there are countably many
+nonzero rational polynomials, and each has finitely many roots. The map
+$t\mapsto z(t)$ is injective on $(0,1]$, because equality of its values implies
+that the difference of its arguments is an integer, and this difference has
+absolute value less than one. Thus its inverse image of the algebraic numbers
+inside $(0,1]$ is countable. Adding the endpoint $0$ still gives a countable
+set. Countable subsets of the real line are Borel and Lebesgue null. Removing
+this set from the Borel interval $[0,1]$, of measure one, proves the claim.
+\end{proof}
+
+\begin{definition}[Archimedean rational-function places]
+\label{def:rational-archimedean-place}
+\source{chen-moriwaki-adelic:page-0220}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanEval, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAbv, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAbv_rat}
+\leanok
+For $t\in T$, evaluation at $z(t)$ defines a field homomorphism
+$e_t:\mathbb Q(T)\longrightarrow\mathbb C$. Set $|f|_t=|e_t(f)|$.
+This is an absolute value extending the usual absolute value of $\mathbb Q$.
+\end{definition}
+\begin{proof}
+Transcendence says that no nonzero rational polynomial vanishes at $z(t)$.
+Polynomial evaluation is therefore injective and extends uniquely to the
+fraction field by $e_t(p/q)=p(z(t))/q(z(t))$. This is a field homomorphism.
+Pulling back the complex absolute value gives an absolute value, and
+evaluation fixes rational constants, which proves the final assertion.
+\end{proof}
+
+\begin{lemma}[Integrability on the archimedean component]
+\label{lem:rational-archimedean-log-integrable}
+\uses{def:rational-archimedean-place,lem:rational-transcendental-circle-conull}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.measurable_log_archimedeanAbv, ArakelovGeometry.AdelicCurve.RationalFunction.integrable_log_archimedeanAbv}
+\leanok
+For every nonzero $f\in\mathbb Q(T)$, the function
+$t\mapsto\log|f|_t$ is measurable and integrable on $T$.
+\end{lemma}
+\begin{proof}
+Write $f=p/q$ with nonzero rational polynomials $p,q$. Each function
+$t\mapsto\log|p(z(t))|$ is Borel measurable, since polynomial evaluation,
+the exponential, the norm, and the real logarithm (extended by zero at zero)
+are Borel measurable. The logarithm of the absolute value of a nonzero
+complex polynomial is integrable on the unit circle. Indeed, factor the
+polynomial as $a\prod_j(X-\alpha_j)$; away from its finitely many zeros
+the logarithm is continuous and bounded on compact arcs. A root off the
+circle contributes a continuous function. For a root
+$\alpha_j=e^{i\theta_j}$ on the circle, write $u=\theta-\theta_j$ modulo
+$2\pi$, with $|u|\leq\pi$. Then
+\[
+\frac{2}{\pi}|u|\leq|e^{iu}-1|=2|\sin(u/2)|\leq|u|.
+\]
+Consequently $\log|e^{iu}-1|-\log|u|$ is bounded for $u\ne0$,
+while $\int_0^\varepsilon|\log u|\,du$ is finite, as follows from the
+antiderivative $u\log u-u$. Thus each root contributes an integrable
+function and their finite sum is integrable. The linear change of
+variables $\theta=2\pi t$ gives integrability on $[0,1]$.
+Restriction preserves integrability. On $T$, neither $p(z(t))$ nor
+$q(z(t))$ vanishes, so
+$\log|f|_t=\log|p(z(t))|-\log|q(z(t))|$.
+The difference is measurable and integrable.
+\end{proof}
