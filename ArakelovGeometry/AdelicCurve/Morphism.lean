@@ -6,10 +6,12 @@ Authors: Yijun Yuan
 import ArakelovGeometry.AdelicCurve.Morphism.Basic
 import ArakelovGeometry.AdelicCurve.Morphism.Algebraic
 import ArakelovGeometry.AdelicCurve.Morphism.Restriction
+import ArakelovGeometry.AdelicCurve.Morphism.RationalFunction
 
 /-!
 # Morphisms of adelic curves
 
 Entry point for Chen–Moriwaki, Section 3.7: morphisms, their category structure,
-and the morphisms arising from algebraic extension and subfield restriction.
+and all three examples: algebraic extension, subfield restriction, and the
+concrete rational-function curve with its circle-averaging morphism.
 -/
