@@ -453,5 +453,16 @@
     "nodes": [
       "cor:northcott-finite-extension"
     ]
+  },
+  {
+    "result": "3.6.1",
+    "sources": [
+      "chen-moriwaki-adelic:page-0218"
+    ],
+    "claim": "Pullback by every base-field automorphism of an algebraic extension is measurable for the sigma algebra of the extended adelic structure, with the source evaluation convention.",
+    "nodes": [
+      "def:automorphism-pullback",
+      "prop:automorphism-measurable"
+    ]
   }
 ]
