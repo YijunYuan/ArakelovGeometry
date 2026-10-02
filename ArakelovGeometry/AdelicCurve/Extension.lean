@@ -17,6 +17,7 @@ import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Tower
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerCylinder
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerIntegral
+import ArakelovGeometry.AdelicCurve.Extension.Automorphism
 import ArakelovGeometry.AdelicCurve.Extension.BoundedEvaluationGenerators
 import ArakelovGeometry.AdelicCurve.Extension.Finite.BaseChange
 import ArakelovGeometry.AdelicCurve.Extension.Finite.Construction
@@ -35,9 +36,10 @@ import ArakelovGeometry.AdelicCurve.Extension.Separable.Measure
 /-!
 # Scalar extensions of adelic structures
 
-Import entry point for Chen–Moriwaki, §§3.3–3.4. The implementation is organized
+Import entry point for Chen–Moriwaki, §§3.3–3.4 and §3.6. The implementation is organized
 under `Extension/`: shared parameter spaces and analytic tools, finite separable
-extensions, arbitrary finite extensions, and general algebraic extensions.
+extensions, arbitrary finite extensions, general algebraic extensions, and measurable
+automorphism pullbacks.
 
 Internal modules import their specific dependencies rather than this entry point.
 -/
