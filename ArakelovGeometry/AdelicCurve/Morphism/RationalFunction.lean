@@ -18,11 +18,12 @@ place of `ℚ`, and the fibre integral that averages over that component.
 namespace ArakelovGeometry.AdelicCurve.RationalFunction
 
 open MeasureTheory ProbabilityCollapse
+open scoped AdelicStructure
 
 /-- The concrete morphism of Example 3.7.2(3), from the rational-function curve
 to the rational curve augmented by horizontal copies of the trivial place. -/
 noncomputable def morphismToRationals :
-    AdelicStructure.Hom adelicStructure augmentedRationalAdelicStructure where
+    adelicStructure ⟶ augmentedRationalAdelicStructure where
   fieldMap := algebraMap ℚ (RatFunc ℚ)
   baseMap := collapse
   measurePreserving := measurePreserving_collapse finiteAdelicStructure.v archimedeanMeasure

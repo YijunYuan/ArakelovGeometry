@@ -90,8 +90,7 @@ theorem map_measure_towerMeasurableEquiv :
 
 /-- The canonical equivalence between iterated and direct algebraic adelic extensions. -/
 noncomputable def towerEquiv :
-    AdelicStructure.Equiv ((AS.algebraicExtension F).algebraicExtension L)
-      (AS.algebraicExtension L) where
+    (AS ⊗[K] F) ⊗[F] L ≃ AS ⊗[K] L where
   toMeasurableEquiv := towerMeasurableEquiv AS F
   ϕ_comp _ := rfl
   map_v := map_measure_towerMeasurableEquiv AS F
@@ -152,7 +151,7 @@ end ArakelovGeometry.AdelicStructure.Algebraic
 
 namespace ArakelovGeometry
 open AdelicStructure MeasureTheory
-open scoped ENNReal
+open scoped ENNReal AdelicStructure
 universe u v w
 variable {K : Type u} [Field K] (AS : AdelicStructure.{u, v} K)
 variable (M : Type w) [Field M] [Algebra K M]
@@ -166,8 +165,7 @@ its integrability domain (PDF pages 210–211); totalizing it does not give an i
 for arbitrary real functions. -/
 theorem exists_equiv_algebraicExtension_algebraicExtension [Algebra.IsAlgebraic K M]
     (F : IntermediateField K M) :
-    ∃ e : AdelicStructure.Equiv
-        ((AS.algebraicExtension F).algebraicExtension M) (AS.algebraicExtension M),
+    ∃ e : (AS ⊗[K] F) ⊗[F] M ≃ AS ⊗[K] M,
       (∀ x, ParameterSpaceExtension.proj (ParameterSpaceExtension.proj x) =
         ParameterSpaceExtension.proj (e.toMeasurableEquiv x)) ∧
       (∀ g : ((AS.algebraicExtension F).algebraicExtension M).Ω → ℝ≥0∞,

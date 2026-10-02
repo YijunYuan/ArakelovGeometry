@@ -15,6 +15,7 @@ This is Chen–Moriwaki, Proposition 3.4.4.
 -/
 
 open MeasureTheory
+open scoped ArakelovGeometry.AdelicStructure
 
 namespace ArakelovGeometry.AdelicStructure.ParameterSpaceExtension
 variable {K : Type*} [Field K] (AS : AdelicStructure K)
@@ -404,7 +405,7 @@ theorem map_towerMeasurableEquiv (F : Type*) [Field F] [Algebra K F]
 /-- Successive and direct finite extensions are canonically equivalent adelic structures. -/
 noncomputable def towerEquiv (F : Type*) [Field F] [Algebra K F]
     [Algebra F L] [IsScalarTower K F L] [FiniteDimensional K F] [FiniteDimensional F L] :
-    AdelicStructure.Equiv ((AS.finiteExtension F).finiteExtension L) (AS.finiteExtension L) where
+    (AS.finiteExtension F).finiteExtension L ≃ AS.finiteExtension L where
   toMeasurableEquiv := towerMeasurableEquiv AS L F
   ϕ_comp := towerMeasurableEquiv_ϕ AS L F
   map_v := map_towerMeasurableEquiv AS L F
@@ -420,8 +421,7 @@ variable (M : Type*) [Field M] [Algebra K M]
 the base projection and every real fibre integral. -/
 theorem exists_equiv_finiteExtension_finiteExtension [FiniteDimensional K M]
     (F : IntermediateField K M) :
-    ∃ e : AdelicStructure.Equiv
-        ((AS.finiteExtension F).finiteExtension M) (AS.finiteExtension M),
+    ∃ e : (AS.finiteExtension F).finiteExtension M ≃ AS.finiteExtension M,
       (∀ x, ParameterSpaceExtension.proj (ParameterSpaceExtension.proj x) =
         ParameterSpaceExtension.proj (e.toMeasurableEquiv x)) ∧
       ∀ g : ((AS.finiteExtension F).finiteExtension M).Ω → ℝ,

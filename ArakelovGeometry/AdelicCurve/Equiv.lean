@@ -10,6 +10,9 @@ import ArakelovGeometry.AdelicCurve.Defs
 
 Measurable equivalences preserving absolute values and transporting the measure,
 as used in the scalar-extension tower identities of Chen–Moriwaki, §3.4.
+
+The `AdelicStructure` scope provides `S ≃ T` for equivalences of adelic structures
+on the same field. Ordinary equivalences of types retain their usual meaning.
 -/
 
 namespace ArakelovGeometry
@@ -31,5 +34,11 @@ structure AdelicStructure.Equiv {K : Type u} [Field K] (S : AdelicStructure.{u, 
   ϕ_comp : ∀ x : S.Ω, T.ϕ (toMeasurableEquiv x) = S.ϕ x
   /-- The equivalence transports the measure of `S` to the measure of `T`. -/
   map_v : MeasureTheory.Measure.map toMeasurableEquiv S.v = T.v
+
+namespace AdelicStructure
+
+scoped infixl:25 " ≃ " => Equiv
+
+end AdelicStructure
 
 end ArakelovGeometry
