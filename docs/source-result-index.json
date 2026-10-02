@@ -418,6 +418,9 @@
     ],
     "claim": "Polynomial product height bound with archimedean mass; the unrestricted proof route uses the sharper finite integral of the archimedean exponent.",
     "nodes": [
+      "def:height-archimedean-constant",
+      "lem:height-archimedean-extension",
+      "lem:height-finite-sum-bound",
       "lem:polynomial-local-product-bound",
       "lem:polynomial-height-product-sharp",
       "lem:polynomial-height-product",
@@ -434,6 +437,7 @@
       "lem:minimal-polynomial-root-conjugacy",
       "lem:polynomial-height-split-bound",
       "lem:minimal-polynomial-height",
+      "lem:northcott-bounded-coefficient-roots",
       "lem:northcott-algebraic-elements"
     ]
   },

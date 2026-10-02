@@ -146,6 +146,28 @@ noncomputable def heightArchimedeanConstant : ℝ := ∫ ω, AS.κ ω ∂AS.v
 theorem heightArchimedeanConstant_nonneg : 0 ≤ AS.heightArchimedeanConstant :=
   integral_nonneg (fun ω ↦ (AS.κ_mem_Icc ω).1)
 
+/-- The integrated exponent is bounded by archimedean mass, including infinite mass. -/
+theorem ofReal_heightArchimedeanConstant_le_measure_Ωinf :
+    ENNReal.ofReal AS.heightArchimedeanConstant ≤ AS.v AS.Ωinf := by
+  rw [heightArchimedeanConstant, ofReal_integral_eq_lintegral_ofReal AS.integrable_κ
+    (Filter.Eventually.of_forall (fun ω ↦ (AS.κ_mem_Icc ω).1))]
+  calc
+    ∫⁻ ω, ENNReal.ofReal (AS.κ ω) ∂AS.v ≤
+        ∫⁻ ω, AS.Ωinf.indicator (fun _ ↦ (1 : ENNReal)) ω ∂AS.v := by
+      apply lintegral_mono
+      intro ω
+      by_cases hω : ω ∈ AS.Ωinf
+      · rw [Set.indicator_of_mem hω]
+        simpa only [ENNReal.ofReal_one] using ENNReal.ofReal_le_ofReal (AS.κ_mem_Icc ω).2
+      · simp only [Set.indicator_of_notMem hω]
+        simp [κ, hω]
+    _ = AS.v AS.Ωinf := by rw [lintegral_indicator_const AS.measurableSet_Ωinf, one_mul]
+
+/-- The corresponding real inequality when the archimedean locus has finite measure. -/
+theorem heightArchimedeanConstant_le_toReal_measure_Ωinf (hfin : AS.v AS.Ωinf ≠ ⊤) :
+    AS.heightArchimedeanConstant ≤ (AS.v AS.Ωinf).toReal :=
+  (ENNReal.ofReal_le_iff_le_toReal hfin).mp AS.ofReal_heightArchimedeanConstant_le_measure_Ωinf
+
 /-- A finite sum costs the cardinality raised to the local archimedean exponent. -/
 theorem sum_le_card_rpow_mul (ω : AS.Ω) {ι : Type*} (t : Finset ι) (ht : t.Nonempty)
     (f : ι → K) {M : ℝ} (hM : ∀ i ∈ t, AS.ϕ ω (f i) ≤ M) :
@@ -248,12 +270,80 @@ theorem polynomialHeight_mul_le {p q : K[X]} (hp : p ≠ 0) (hq : q ≠ 0) :
       rw [integral_add hiadd hik, integral_add hip hiq, integral_const_mul]
       rfl
 
+/-- The polynomial-height product estimate with finite archimedean mass. -/
+theorem polynomialHeight_mul_le_measure_Ωinf {p q : K[X]} (hp : p ≠ 0) (hq : q ≠ 0)
+    (hfin : AS.v AS.Ωinf ≠ ⊤) :
+    AS.polynomialHeight (p * q) ≤ AS.polynomialHeight p + AS.polynomialHeight q +
+      Real.log (min (p.natDegree + 1) (q.natDegree + 1) : ℕ) * (AS.v AS.Ωinf).toReal :=
+  (AS.polynomialHeight_mul_le hp hq).trans
+    (add_le_add le_rfl
+      (mul_le_mul_of_nonneg_left (AS.heightArchimedeanConstant_le_toReal_measure_Ωinf hfin)
+        (Real.log_natCast_nonneg _)))
+
+/-- Multiplication by a linear factor costs at most `log 2` times the integrated exponent. -/
+theorem polynomialHeight_X_sub_C_mul_le (a : K) {p : K[X]} (hp : p ≠ 0) :
+    AS.polynomialHeight ((X - C a) * p) ≤ AS.affineHeight a + AS.polynomialHeight p +
+      Real.log 2 * AS.heightArchimedeanConstant := by
+  have h := AS.polynomialHeight_mul_le (X_sub_C_ne_zero a) hp
+  rw [AS.polynomialHeight_X_sub_C, natDegree_X_sub_C] at h
+  apply h.trans
+  apply add_le_add le_rfl
+  apply mul_le_mul_of_nonneg_right _ AS.heightArchimedeanConstant_nonneg
+  apply Real.log_le_log
+  · exact Nat.cast_pos.mpr (by omega)
+  · exact_mod_cast min_le_left (1 + 1) (p.natDegree + 1)
+
+private theorem prod_X_sub_C_ne_zero (l : List K) :
+    (l.map (fun a ↦ (X - C a : K[X]))).prod ≠ 0 := by
+  apply List.prod_ne_zero
+  intro h
+  obtain ⟨a, _, he⟩ := List.mem_map.mp h
+  exact X_sub_C_ne_zero a he
+
+/-- A nonempty product of linear factors has the sum of the root heights as main term.
+The error counts exactly one multiplication for each factor after the first. -/
+theorem polynomialHeight_prod_X_sub_C_le (l : List K) (hl : l ≠ []) :
+    AS.polynomialHeight (l.map (fun a ↦ (X - C a : K[X]))).prod ≤
+      (l.map AS.affineHeight).sum + (l.length - 1 : ℕ) * Real.log 2 *
+        AS.heightArchimedeanConstant := by
+  induction l with
+  | nil => exact (hl rfl).elim
+  | cons a l ih =>
+    cases l with
+    | nil => simp [AS.polynomialHeight_X_sub_C]
+    | cons b l =>
+      have hi := ih (by simp)
+      have h := AS.polynomialHeight_X_sub_C_mul_le a (prod_X_sub_C_ne_zero (b :: l))
+      simp only [List.map_cons, List.prod_cons, List.sum_cons, List.length_cons,
+        Nat.add_sub_cancel, Nat.cast_add, Nat.cast_one] at hi ⊢
+      simp only [List.map_cons, List.prod_cons] at h
+      nlinarith only [hi, h]
+
 section Proper
 
 variable [AS.toAdelicCurve.IsProper]
 
 theorem polynomialHeight_nonneg (p : K[X]) : 0 ≤ AS.polynomialHeight p :=
   AS.logHeight_nonneg _
+
+/-- The extended-real product-height estimate, valid also for infinite archimedean mass.
+The multiplication in `ℝ≥0∞` includes the convention `0 * ∞ = 0`. -/
+theorem ofReal_polynomialHeight_mul_le_measure_Ωinf {p q : K[X]} (hp : p ≠ 0) (hq : q ≠ 0) :
+    ENNReal.ofReal (AS.polynomialHeight (p * q)) ≤
+      ENNReal.ofReal (AS.polynomialHeight p) + ENNReal.ofReal (AS.polynomialHeight q) +
+        ENNReal.ofReal (Real.log (min (p.natDegree + 1) (q.natDegree + 1) : ℕ)) *
+          AS.v AS.Ωinf := by
+  have hlog : 0 ≤ Real.log (min (p.natDegree + 1) (q.natDegree + 1) : ℕ) :=
+    Real.log_natCast_nonneg _
+  have h := ENNReal.ofReal_le_ofReal (AS.polynomialHeight_mul_le hp hq)
+  rw [ENNReal.ofReal_add (add_nonneg (AS.polynomialHeight_nonneg p)
+    (AS.polynomialHeight_nonneg q))
+    (mul_nonneg hlog AS.heightArchimedeanConstant_nonneg),
+    ENNReal.ofReal_add (AS.polynomialHeight_nonneg p) (AS.polynomialHeight_nonneg q),
+    ENNReal.ofReal_mul hlog] at h
+  apply h.trans
+  gcongr
+  exact AS.ofReal_heightArchimedeanConstant_le_measure_Ωinf
 
 /-- The product formula makes nonzero scalar multiplication preserve polynomial height. -/
 theorem polynomialHeight_C_mul {p : K[X]} (hp : p ≠ 0) {t : K} (ht : t ≠ 0) :

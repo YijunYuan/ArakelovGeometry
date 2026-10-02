@@ -146,29 +146,39 @@ the asserted inequality for each $a_j$.
 
 \begin{definition}[The integrated archimedean exponent]
 \label{def:height-archimedean-constant}
+\lean{ArakelovGeometry.AdelicStructure.heightArchimedeanConstant,ArakelovGeometry.AdelicStructure.heightArchimedeanConstant_nonneg,ArakelovGeometry.AdelicStructure.ofReal_heightArchimedeanConstant_le_measure_Ωinf,ArakelovGeometry.AdelicStructure.heightArchimedeanConstant_le_toReal_measure_Ωinf}
 \uses{lem:archimedean-bound}
-\notready
+\leanok
 Let $\kappa_S$ be the archimedean exponent, extended by zero on
 the nonarchimedean locus. Define the nonnegative finite real number
 \[
  A_S=\int_\Omega\kappa_S(\omega)\,d\nu(\omega).
 \]
+Then $A_S\leq\nu(\Omega_\infty)$ in $[0,\infty]$; when the
+archimedean mass is finite this is also an inequality of real numbers.
 \end{definition}
 \begin{proof}
 The exponent is a nonnegative integrable real function by
 Lemma~\ref{lem:archimedean-bound}; its integral is consequently
-a finite nonnegative real number.
+a finite nonnegative real number. The pointwise bound
+$0\leq\kappa_S\leq\mathbf1_{\Omega_\infty}$ gives the mass bound
+by monotonicity of the nonnegative integral. If the mass is finite,
+both sides represent finite real numbers, giving the real inequality.
 \end{proof}
 
 \begin{lemma}[The exponent in an algebraic extension]
 \label{lem:height-archimedean-extension}
+\lean{ArakelovGeometry.AdelicStructure.κ_algebraicExtension,ArakelovGeometry.AdelicStructure.integral_κ_algebraicExtension,ArakelovGeometry.AdelicStructure.heightArchimedeanConstant_algebraicExtension,ArakelovGeometry.AdelicStructure.Ωinf_algebraicExtension,ArakelovGeometry.AdelicStructure.v_Ωinf_algebraicExtension}
 \uses{def:height-archimedean-constant,lem:nonarchimedean-restriction,lem:archimedean-complex-embedding,prop:algebraic-base-pullback}
-\notready
+\leanok
 For an algebraic extension $L/K$ and $x\in\Omega_L$,
 \[
  \kappa_{S\otimes_K L}(x)=\kappa_S(\pi_{L/K}(x)).
 \]
 In particular $A_{S\otimes_K L}=A_S$.
+The archimedean locus is $\Omega_{L,\infty}=\pi_{L/K}^{-1}(\Omega_\infty)$,
+and its measure is $\nu_L(\Omega_{L,\infty})=\nu(\Omega_\infty)$,
+including when this value is infinite.
 \end{lemma}
 \begin{proof}
 Restriction preserves the nonarchimedean property in both directions,
@@ -177,18 +187,43 @@ the latter case the characteristic is zero. The two absolute values
 agree on $2$, and their exponents $s,t$ satisfy $2^s=2^t$. Taking
 logarithms and using $\log2>0$ yields $s=t$. The equality of integrals
 now follows from pullback of the integrable base function $\kappa_S$.
+The locus equality follows from preservation of the nonarchimedean
+property. The base projection pushes $\nu_L$ forward to $\nu$,
+and the base archimedean locus is measurable, which proves the mass equality.
+\end{proof}
+
+\begin{lemma}[Finite sums and the archimedean exponent]
+\label{lem:height-finite-sum-bound}
+\uses{lem:archimedean-complex-embedding,lem:powered-complex-sum-bound}
+\lean{ArakelovGeometry.AdelicStructure.sum_le_card_rpow_mul}
+\leanok
+For a place $\omega$ of an adelic structure, a nonempty finite set $I$,
+elements $a_i$ with $|a_i|_\omega\leq M$ for all $i\in I$, one has
+\[
+ \left|\sum_{i\in I}a_i\right|_\omega\leq |I|^{\kappa_S(\omega)}M.
+\]
+\end{lemma}
+\begin{proof}
+Nonemptiness implies $M\geq0$. At a nonarchimedean place,
+$\kappa_S(\omega)=0$ and the ultrametric finite-sum inequality gives
+the bound $M$. Otherwise write $|a|_\omega=|\sigma(a)|^s$ with
+$0<s\leq1$. Evaluation at $2$ gives $2^s=2^{\kappa_S(\omega)}$,
+so $s=\kappa_S(\omega)$. The powered complex finite-sum inequality
+then gives the asserted estimate.
 \end{proof}
 
 \begin{lemma}[Local norm of a polynomial product]
 \label{lem:polynomial-local-product-bound}
-\uses{def:polynomial-height,lem:height-archimedean-extension,lem:archimedean-complex-embedding,lem:powered-complex-sum-bound}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.polynomialLocalHeight_mul_le_left,ArakelovGeometry.AdelicStructure.polynomialLocalHeight_mul_le,ArakelovGeometry.AdelicStructure.polynomialLocalHeight_mul_le_algebraicExtension}
+\uses{def:polynomial-height,lem:height-archimedean-extension,lem:height-finite-sum-bound}
+\leanok
 Let $F,G\in\overline K[X]\setminus\{0\}$ and set
 $m=\min(\deg F+1,\deg G+1)\geq1$. For
 $\chi\in\Omega_{\overline K}$ above $\omega\in\Omega$,
 \[
  \|FG\|_\chi\leq m^{\kappa_S(\omega)}\|F\|_\chi\|G\|_\chi.
 \]
+The same bound holds with $m$ replaced by $\deg F+1$.
 \end{lemma}
 \begin{proof}
 Write $F=\sum_{i=0}^d a_iX^i$ and $G=\sum_{j=0}^e b_jX^j$.
@@ -209,8 +244,9 @@ inequality. Taking the maximum over all coefficients proves the claim.
 
 \begin{lemma}[Polynomial height bound with finite error]
 \label{lem:polynomial-height-product-sharp}
+\lean{ArakelovGeometry.AdelicStructure.polynomialHeight_mul_le,ArakelovGeometry.AdelicStructure.polynomialHeight_mul_le_algebraicExtension}
 \uses{def:polynomial-height,def:height-archimedean-constant,lem:height-archimedean-extension,lem:polynomial-local-product-bound}
-\notready
+\leanok
 For nonzero $F,G\in\overline K[X]$, with
 $m=\min(\deg F+1,\deg G+1)$, one has the real inequality
 \[
@@ -235,8 +271,9 @@ integrals, and replace the integral of the extended exponent by $A_S$.
 \label{lem:polynomial-height-product}
 \dcref{Lemma 3.5.5}
 \source{chen-moriwaki-adelic:page-0217}
+\lean{ArakelovGeometry.AdelicStructure.polynomialHeight_mul_le_measure_Ωinf,ArakelovGeometry.AdelicStructure.ofReal_polynomialHeight_mul_le_measure_Ωinf,ArakelovGeometry.AdelicStructure.polynomialHeight_mul_le_measure_Ωinf_algebraicExtension,ArakelovGeometry.AdelicStructure.ofReal_polynomialHeight_mul_le_measure_Ωinf_algebraicExtension}
 \uses{lem:polynomial-height-product-sharp,lem:archimedean-bound}
-\notready
+\leanok
 Let $F,G\in\overline K[X]\setminus\{0\}$ and
 $m=\min(\deg F+1,\deg G+1)$. Then
 \[
@@ -301,8 +338,13 @@ separability assumption was used.
 
 \begin{lemma}[Height of a product of linear factors]
 \label{lem:polynomial-height-split-bound}
+\lean{ArakelovGeometry.AdelicStructure.polynomialHeight_X_sub_C_mul_le,ArakelovGeometry.AdelicStructure.polynomialHeight_prod_X_sub_C_le,ArakelovGeometry.AdelicStructure.polynomialHeight_prod_X_sub_C_le_algebraicExtension}
 \uses{lem:polynomial-height-linear,lem:polynomial-height-product-sharp,def:height-archimedean-constant}
-\notready
+\leanok
+For $\alpha\in\overline K$ and nonzero $F\in\overline K[X]$, one has
+\[
+ h_S((X-\alpha)F)\leq h_S([1:\alpha])+h_S(F)+(\log2)A_S.
+\]
 If $d\geq1$ and $\alpha_1,\ldots,\alpha_d\in\overline K$, then
 \[
  h_S\left(\prod_{j=1}^d(X-\alpha_j)\right)
@@ -310,6 +352,8 @@ If $d\geq1$ and $\alpha_1,\ldots,\alpha_d\in\overline K$, then
 \]
 \end{lemma}
 \begin{proof}
+The preliminary inequality is the sharp product bound, since the
+coefficient-count minimum is at most $2$, and $A_S\geq0$.
 For $d=1$ this is the linear-factor equality. If the bound holds
 for $d=r\geq1$, its product is monic of degree $r$. Multiplying
 by $X-\alpha_{r+1}$ gives $m=\min(r+1,2)=2$ in the sharp
@@ -348,8 +392,9 @@ proof of Claim 3.5.6, strengthened by using $A_S$ in its error term.
 
 \begin{lemma}[Finitely many roots from bounded coefficient heights]
 \label{lem:northcott-bounded-coefficient-roots}
+\lean{ArakelovGeometry.AdelicStructure.finite_roots_of_coeff_height_le}
 \uses{def:northcott-property}
-\notready
+\leanok
 Suppose an adelic structure $S$ on $K$ has the Northcott property.
 For any extension field $L/K$, real number $B$, and natural number $D$,
 the set of elements of $L$ that are roots of some nonzero polynomial
