@@ -1,15 +1,16 @@
 Command: lake env lean /home/yijunyuan/ageo-workspace/ArakelovGeometry/scripts/audit_axioms.lean
 Configured cwd: ArakelovGeometry
-Started: 2026-10-02T05:13:22.037123+00:00
-Finished: 2026-10-02T05:15:12.862594+00:00
-Duration: 110.825 seconds
+Started: 2026-10-02T05:41:32.822156+00:00
+Finished: 2026-10-02T05:42:53.821135+00:00
+Duration: 80.999 seconds
 Return code: 0
 Status: passed
-AUDIT checked=1154 sorryAx=0
+AUDIT checked=1202 sorryAx=0
 No NONSTANDARD errors. Every project constant was checked transitively;
 the only permitted axioms are propext, Classical.choice, Quot.sound.
 Source/artifact provenance: docs/inventory-provenance.json.
-Imported boundary audit: passed 2026-10-02T05:15:36.849334+00:00;
+Imported boundary audit: passed 2026-10-02T05:42:57.952993+00:00;
 3 imported mathematical boundaries, 13 producers, standard axioms only.
 Imported evidence: docs/imported-boundary-audit.json and
   docs/imported-boundary-provenance.json.
+Section 3.6 producers and consumers also passed scripts/audit_automorphisms.lean.

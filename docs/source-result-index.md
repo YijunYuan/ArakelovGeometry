@@ -1,4 +1,4 @@
-# Source-result coverage: sections 3.3–3.5
+# Source-result coverage: sections 3.3–3.6
 
 Every numbered result and all five clauses of Theorem 3.3.7 are indexed below.
 PDF page numbers are sixteen greater than printed page numbers. The JSON index
@@ -41,6 +41,8 @@ by `scripts/blueprint_coverage.py`.
 | 3.5.5 | 217 | Polynomial product height bound with archimedean mass; the unrestricted proof route uses the sharper finite integral of the archimedean exponent. | `def:height-archimedean-constant`, `lem:height-archimedean-extension`, `lem:height-finite-sum-bound`, `lem:polynomial-local-product-bound`, `lem:polynomial-height-product-sharp`, `lem:polynomial-height-product`, `rem:northcott-archimedean-error` |
 | 3.5.6 | 217 | Finiteness of algebraic elements of bounded affine height and simple-extension degree; proved for every algebraic extension, including inseparable elements and arbitrary real bounds. | `lem:minimal-polynomial-root-conjugacy`, `lem:polynomial-height-split-bound`, `lem:polynomial-height-base-extension`, `lem:minimal-polynomial-height`, `lem:northcott-bounded-coefficient-roots`, `lem:northcott-algebraic-elements` |
 | 3.5.7 | 218 | Preservation of the Northcott property by every finite field extension, for both the finite and algebraic extension constructions. | `cor:northcott-finite-extension` |
+| 3.6.1 | 218 | Pullback by every base-field automorphism of an algebraic extension is measurable for the sigma algebra of the extended adelic structure, with the source evaluation convention. | `def:automorphism-pullback`, `prop:automorphism-measurable` |
+| 3.6.2 | 218, 219 | For every finite extension and every measurable real function on its intrinsic parameter space, the attained maximum on each fibre is measurable on the base; the proof uses positive fibre probabilities instead of normal closure. | `lem:measurable-orbit-maximum`, `def:fibre-maximum`, `lem:finite-fibre-indicator-positive`, `lem:finite-projection-measurable-image`, `prop:fibre-maximum-measurable` |
 
 Section 3.5 uses finite embedding compatibility from Section 3.4; it does not
 require Sections 3.6 or 3.7. Its polynomial proof retains the finite integrated
@@ -49,4 +51,9 @@ archimedean exponent, as explained in [source-corrections.md](source-corrections
 The examples mentioned after Definition 3.5.2 refer to Section 3.2 and remain
 outside this task. Remark 3.5.8 points forward to Chapter 6 and adds no
 prerequisite to these results. Earlier missing source transcriptions are tracked
-in Horizon issue I-0001; Section 3.5 pages 215–218 are registered.
+in Horizon issue I-0001; Sections 3.5–3.6 pages 215–219 are registered.
+
+Section 3.6 retains algebraicity in Proposition 3.6.1 and finiteness alone in
+Proposition 3.6.2. The latter uses positive fibre probabilities and measurable
+projection images in place of the source normal-closure argument. Both statements
+use the projective sigma algebra of the existing extension adelic structure.

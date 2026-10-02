@@ -494,7 +494,8 @@ def main():
                         {f"3.3.{n}" for n in range(1, 7)} |
                         {f"3.3.7({n})" for n in range(1, 6)} |
                         {f"3.4.{n}" for n in range(1, 14)} |
-                        {f"3.5.{n}" for n in range(1, 8)})
+                        {f"3.5.{n}" for n in range(1, 8)} |
+                        {f"3.6.{n}" for n in range(1, 3)})
     indexed_results = [r["result"] for r in source_index]
     source_index_errors = []
     if set(indexed_results) != expected_results or len(indexed_results) != len(expected_results):

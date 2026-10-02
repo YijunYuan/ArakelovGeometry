@@ -61,18 +61,20 @@ line bundles, heights, and equidistribution over it.
 - [x] **3.5 Height function and Northcott property** — height construction,
   polynomial estimates, bounded-height-and-degree finiteness (Theorem 3.5.3),
   and preservation under finite extension (Corollary 3.5.7).
-- [ ] **3.6 Measurability of automorphism actions**.
+- [x] **3.6 Measurability of automorphism actions** — automorphism pullbacks
+  for algebraic extensions, measurable attained maxima on finite fibres, and
+  invariant measurable majorants (Propositions 3.6.1–3.6.2).
 - [ ] **3.7 Morphisms of adelic curves**.
 
-The full mathematical route for §§3.3–3.5 is written in `blueprint/src`.
+The full mathematical route for §§3.3–3.6 is written in `blueprint/src`.
 All project declarations and mathematical obligations in that route are proved. The
 [declaration inventory](docs/obligations.md) covers every project constant;
 the [source-result index](docs/source-result-index.md) covers every numbered
 result, including all five clauses of Theorem 3.3.7. The authored blueprint
-has **319 project-proved nodes and three explicitly imported Mathlib nodes**,
+has **327 project-proved nodes and three explicitly imported Mathlib nodes**,
 with no unwritten mathematical nodes. Missing pre-Horizon transcriptions for
 PDF pages 194–214 still prevent globally complete source-provenance coverage;
-the registered Section 3.5 pages are available. See [proof status](docs/proof-status.md).
+the registered Sections 3.5–3.6 pages are available. See [proof status](docs/proof-status.md).
 
 ## Repository layout
 
@@ -80,7 +82,8 @@ the registered Section 3.5 pages are available. See [proof status](docs/proof-st
   basic measure theory (`Basic.lean`), the constructions of §3.2
   (`Amalgamation.lean`, `Restriction.lean`, `Examples/`), and equivalences
   (`Equiv.lean`).
-- `ArakelovGeometry/AdelicCurve/Extension/` — the extension theory of §§3.3–3.4.
+- `ArakelovGeometry/AdelicCurve/Extension/` — the extension theory of §§3.3–3.4
+  and measurable automorphism actions and fibre maxima of §3.6.
   Shared tools live in `ParameterSpace.lean`, `FiniteIntermediateField.lean`,
   `PowerSums.lean`, `RootBounds.lean`, and `BoundedEvaluationGenerators.lean`.
   The three subdirectories follow the mathematical progression:
@@ -92,6 +95,8 @@ the registered Section 3.5 pages are available. See [proof status](docs/proof-st
     arbitrary algebraic adelic curves, inverse limits, and tower compatibility.
   `AdelicCurve/Extension.lean` is an import-only entry point for this theory;
   individual modules can be imported for a smaller dependency set.
+  `Automorphism.lean`, `FibreMaximum.lean`, and `InvariantMaximum.lean` prove
+  Section 3.6 on the existing parameter spaces and measures.
 - `ArakelovGeometry/AdelicCurve/Height/` — heights, polynomial bounds, intrinsic
   projective fields of definition, Northcott finiteness and finite-extension ascent.
   `AdelicCurve/Height.lean` imports the complete Section 3.5 development.
@@ -105,8 +110,8 @@ the registered Section 3.5 pages are available. See [proof status](docs/proof-st
 ## Building
 
 The project uses Lean `v4.33.0` (see `lean-toolchain`) and the pinned mathlib version in
-`lake-manifest.json`. The 2026-10-02 configured Horizon build passes all 3488 jobs.
-The compiled inventory and a separate transitive axiom audit check **1154 project
+`lake-manifest.json`. The 2026-10-02 configured Horizon build passes all 3491 jobs.
+The compiled inventory and a separate transitive axiom audit check **1202 project
 constants: zero direct gaps, zero sorry-backed constants, and no axioms beyond
 `propext`, `Classical.choice`, and `Quot.sound`**.
 See [source corrections](docs/source-corrections.md) for the signed tower domain
