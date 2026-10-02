@@ -8,11 +8,12 @@ $\sigma$-algebra and counting measure, as in
 \begin{definition}[The horizontal absolute values]
 \label{def:rational-horizontal-place}
 \source{chen-moriwaki-adelic:page-0188}
-\lean{ArakelovGeometry.AdelicCurve.RationalFunction.HorizontalPlace,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalPolynomial,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalPolynomial_isPrimitive,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalPolynomial_span,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalHeight,ArakelovGeometry.AdelicCurve.RationalFunction.one_le_horizontalHeight,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalAbv,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalAbv_apply,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalAbv_rat}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.HorizontalPlace,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalMeasurableSpace,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalPolynomial,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalPolynomial_isPrimitive,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalPolynomial_ne_zero,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalPolynomial_span,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalHeight,ArakelovGeometry.AdelicCurve.RationalFunction.one_le_horizontalHeight,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalAbv,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalAbv_apply,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalAbv_rat}
 For $x\in\Omega_h$, choose a generator of the corresponding nonzero prime
 ideal of $\mathbb Q[T]$, clear its denominators, and take its primitive
-part $F_x\in\mathbb Z[T]$. Then $F_x$ generates the same ideal over
-$\mathbb Q$. Let $H(x)=M(F_x)$ be its Mahler measure. We have $H(x)\geq1$.
+part $F_x\in\mathbb Z[T]$. Then $F_x\ne0$ and generates the same ideal
+over $\mathbb Q$. Equip $\Omega_h$ with the discrete $\sigma$-algebra.
+Let $H(x)=M(F_x)$ be its Mahler measure. We have $H(x)\geq1$.
 The horizontal absolute value is
 \[
  |0|_x=0,\qquad |f|_x=H(x)^{-\operatorname{ord}_x(f)}\quad(f\ne0).
@@ -33,6 +34,78 @@ multiplicativity of the displayed absolute value. If $H(x)=1$, the
 displayed formula is the trivial absolute value and satisfies the same
 axioms directly. Finally a nonzero constant is a unit in
 $\mathbb Q[T]$, so its order at $x$ is zero and its absolute value is one.
+\end{proof}
+
+\begin{definition}[The prime Gauss absolute values]
+\label{def:rational-prime-place}
+\source{chen-moriwaki-adelic:page-0188,chen-moriwaki-adelic:page-0189}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.rationalPadicAbv,ArakelovGeometry.AdelicCurve.RationalFunction.primeMeasurableSpace,ArakelovGeometry.AdelicCurve.RationalFunction.isNonarchimedean_rationalPadicAbv,ArakelovGeometry.AdelicCurve.RationalFunction.primePolynomialValuation,ArakelovGeometry.AdelicCurve.RationalFunction.primePolynomialValuation_ne_zero,ArakelovGeometry.AdelicCurve.RationalFunction.primeValuation,ArakelovGeometry.AdelicCurve.RationalFunction.primeAbv,ArakelovGeometry.AdelicCurve.RationalFunction.primeAbv_polynomial,ArakelovGeometry.AdelicCurve.RationalFunction.isNonarchimedean_primeAbv,ArakelovGeometry.AdelicCurve.RationalFunction.primeAbv_num_div_denom,ArakelovGeometry.AdelicCurve.RationalFunction.primeAbv_rat}
+For a rational prime $p$ and a polynomial $P=\sum_i a_iT^i$, put
+\[
+ \lVert P\rVert_p=\max_i|a_i|_p,
+\]
+where the maximum is zero when $P=0$ and $|\cdot|_p$ is the usual
+nonarchimedean rational $p$-adic absolute value. Equip the prime index
+set with the discrete $\sigma$-algebra. The Gauss norm, regarded as a
+valuation with values in $\mathbb R_{\geq0}$, is nonzero on every
+nonzero polynomial. It defines a nonarchimedean absolute value on
+$\mathbb Q[T]$ and extends to $K$ by
+\[
+ |P/Q|_p=\lVert P\rVert_p/\lVert Q\rVert_p\qquad(Q\ne0).
+\]
+Its restriction to the constant field is the original rational
+$p$-adic absolute value.
+\end{definition}
+\begin{proof}
+The coefficientwise nonarchimedean inequality gives
+$\lVert P+Q\rVert_p\leq\max(\lVert P\rVert_p,\lVert Q\rVert_p)$;
+nonnegativity and vanishing only on the zero polynomial are immediate.
+For nonzero $P,Q$, choose the least indices $i,j$ attaining their
+respective coefficient maxima. In the coefficient of degree $i+j$ of
+$PQ$, the term $a_ib_j$ has absolute value
+$\lVert P\rVert_p\lVert Q\rVert_p$. Every other term has strictly
+smaller absolute value: a smaller first index gives a smaller first
+factor, and a larger first index gives a second index smaller than $j$.
+The strong triangle inequality then shows that this coefficient has
+absolute value exactly $\lVert P\rVert_p\lVert Q\rVert_p$.
+All coefficients are bounded above by that product, so the Gauss norm
+is multiplicative. The zero cases follow immediately.
+If $P/Q=P'/Q'$ with nonzero denominators, then $PQ'=P'Q$;
+multiplicativity and division by the nonzero denominator norms prove
+that the quotient formula is independent of the presentation.
+Applying this formula after putting two fractions over a common
+denominator proves the nonarchimedean inequality on $K$.
+It also proves multiplicativity and vanishing precisely at zero.
+For a constant polynomial the Gauss norm is its single coefficient's
+absolute value, which proves the restriction assertion.
+\end{proof}
+
+\begin{lemma}[Integrability at the rational primes]
+\label{lem:rational-prime-log-integrable}
+\source{chen-moriwaki-adelic:page-0188,chen-moriwaki-adelic:page-0189}
+\uses{def:rational-prime-place}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.rationalPadicAbv_eq_one_of_large,ArakelovGeometry.AdelicCurve.RationalFunction.finite_rationalPadicAbv_ne_one,ArakelovGeometry.AdelicCurve.RationalFunction.finite_primeAbv_polynomial_ne_one,ArakelovGeometry.AdelicCurve.RationalFunction.finite_support_log_primeAbv,ArakelovGeometry.AdelicCurve.RationalFunction.integrable_log_primeAbv,ArakelovGeometry.AdelicCurve.RationalFunction.primeAdelicStructure}
+For $a=m/n\in\mathbb Q^\times$ in lowest terms, $|a|_p=1$ whenever
+$p>\max(|m|,n)$, so only finitely many primes have $|a|_p\ne1$.
+For every nonzero polynomial $P\in\mathbb Q[T]$, only finitely many
+primes have $\lVert P\rVert_p\ne1$.
+For $f\in K^\times$, the function $p\mapsto\log|f|_p$ has finite
+support on the set of rational primes. It is therefore integrable for
+counting measure and defines the prime adelic structure on $K$.
+\end{lemma}
+\begin{proof}
+For $a=m/n\in\mathbb Q^\times$ in lowest terms, a prime exceeding
+$\max(|m|,n)$ divides neither $m$ nor $n$, so $|a|_p=1$.
+There are only finitely many smaller primes. Thus each nonzero rational
+coefficient has absolute value one outside a finite set of primes.
+For a nonzero polynomial, take the union of these exceptional sets
+over its finitely many nonzero coefficients. Outside this finite
+union all nonzero coefficients have norm one, so their maximum is one.
+Finally write $f=P/Q$ with $P,Q\ne0$. Outside the union of the finite
+exceptional sets for $P$ and $Q$, its absolute value is $1/1=1$.
+The logarithm vanishes there. On the discrete prime space measurability
+is automatic, and counting measure integrates its absolute value as a
+finite sum. This proves all the adelic integrability axioms.
 \end{proof}
 
 \begin{lemma}[Integrability at the horizontal places]
