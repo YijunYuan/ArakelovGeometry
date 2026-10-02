@@ -45,7 +45,8 @@ line bundles, heights, and equidistribution over it.
   - [x] 3.2.3 Copies of the trivial absolute value — `trivialAdelicCurve`
     (`AdelicCurve/Examples/Trivial.lean`).
   - [ ] 3.2.4 Polarised varieties.
-  - [ ] 3.2.5 Function field over `ℚ`.
+  - [ ] 3.2.5 Function field over `ℚ` — the concrete adelic structure is constructed
+    as a prerequisite to §3.7. Its separate product formula remains unproved.
   - [ ] 3.2.6 Polarised arithmetic variety.
   - [x] 3.2.7 Amalgamation of adelic structures — `amalgamation`, `isProper_amalgamation`
     (`AdelicCurve/Amalgamation.lean`).
@@ -64,17 +65,19 @@ line bundles, heights, and equidistribution over it.
 - [x] **3.6 Measurability of automorphism actions** — automorphism pullbacks
   for algebraic extensions, measurable attained maxima on finite fibres, and
   invariant measurable majorants (Propositions 3.6.1–3.6.2).
-- [ ] **3.7 Morphisms of adelic curves**.
+- [x] **3.7 Morphisms of adelic curves** — the full source definition on real `L¹`
+  spaces, category laws, algebraic-extension and subfield-restriction morphisms,
+  and the concrete rational-function example with transcendental-circle averaging.
 
-The full mathematical route for §§3.3–3.6 is written in `blueprint/src`.
+The full mathematical route for §§3.3–3.7 is written in `blueprint/src`.
 All project declarations and mathematical obligations in that route are proved. The
 [declaration inventory](docs/obligations.md) covers every project constant;
 the [source-result index](docs/source-result-index.md) covers every numbered
 result, including all five clauses of Theorem 3.3.7. The authored blueprint
-has **327 project-proved nodes and three explicitly imported Mathlib nodes**,
+separates project proofs from three explicitly imported Mathlib nodes,
 with no unwritten mathematical nodes. Missing pre-Horizon transcriptions for
 PDF pages 194–214 still prevent globally complete source-provenance coverage;
-the registered Sections 3.5–3.6 pages are available. See [proof status](docs/proof-status.md).
+the registered Sections 3.5–3.7 and prerequisite §3.2.5 pages are available. See [proof status](docs/proof-status.md).
 
 ## Repository layout
 
@@ -100,6 +103,10 @@ the registered Sections 3.5–3.6 pages are available. See [proof status](docs/p
 - `ArakelovGeometry/AdelicCurve/Height/` — heights, polynomial bounds, intrinsic
   projective fields of definition, Northcott finiteness and finite-extension ascent.
   `AdelicCurve/Height.lean` imports the complete Section 3.5 development.
+- `ArakelovGeometry/AdelicCurve/Morphism/` — morphisms on `L¹` classes, the category
+  structure, and all three examples of §3.7. `AdelicCurve/Morphism.lean` is its entry point.
+- `ArakelovGeometry/AdelicCurve/Examples/RationalFunction/` — the Mahler horizontal,
+  prime Gauss, and transcendental-circle components and their adelic amalgamation.
 - `ArakelovGeometry/ExternalResults/` — supporting results that morally belong to mathlib:
   places and the archimedean/nonarchimedean dichotomy (`Place.lean`,
   `AbsoluteValue.lean`), an Ostrowski-type classification of archimedean absolute values
@@ -110,10 +117,11 @@ the registered Sections 3.5–3.6 pages are available. See [proof status](docs/p
 ## Building
 
 The project uses Lean `v4.33.0` (see `lean-toolchain`) and the pinned mathlib version in
-`lake-manifest.json`. The 2026-10-02 configured Horizon build passes all 3491 jobs.
-The compiled inventory and a separate transitive axiom audit check **1202 project
-constants: zero direct gaps, zero sorry-backed constants, and no axioms beyond
-`propext`, `Classical.choice`, and `Quot.sound`**.
+`lake-manifest.json`. The 2026-10-02 configured Horizon build passes all 3749 jobs.
+The compiled inventory and separate transitive axiom audit check **1,413 project
+constants: zero direct gaps, zero sorry-backed constants, and only
+`propext`, `Classical.choice`, and `Quot.sound`**. The recorded evidence is in
+[proof status](docs/proof-status.md).
 See [source corrections](docs/source-corrections.md) for the signed tower domain
 and [proof status](docs/proof-status.md) for reproducible build, axiom, source-coverage and imported-boundary evidence.
 

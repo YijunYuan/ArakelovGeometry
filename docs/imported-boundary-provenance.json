@@ -5,7 +5,7 @@
     "scripts/audit_imported_boundaries.lean": "2dd5d884140c77b68c6090c2024a172559e1eb61bbdeb735a0f3cd6d36ab64d5",
     "lake-manifest.json": "419436eb1de0c09f823f05d2dfb06298449e1ad5948662853bbc07a099746855",
     "lean-toolchain": "302cd63c54178885b89e669f33b38f12f4dd7ae7e5cac537b3203e3768d8fb2b",
-    ".lake/build/lib/lean/ArakelovGeometry.olean": "6fea62a718ab32ef56c67c11d5c29e4c9672f7d61f60882f86988e8c4291521f",
+    ".lake/build/lib/lean/ArakelovGeometry.olean": "b6ae01c72b21ae97f6db1fd335690fa1a70fc0dd23f779cace20a655eb9a9f67",
     ".lake/packages/mathlib/.lake/build/lib/lean/Mathlib/FieldTheory/IntermediateField/Algebraic.olean": "a055170a37fb800acce40986c726272b51fc409e52ee53a206677baab9f06d54",
     ".lake/packages/mathlib/.lake/build/lib/lean/Mathlib/FieldTheory/IsAlgClosed/Basic.olean": "b0d3f97d129dc98f116844872d789f386b6899aaf81d066222fda0d10a09f93e",
     ".lake/packages/mathlib/.lake/build/lib/lean/Mathlib/FieldTheory/Perfect.olean": "ccbfc14cc6ee9eb510f1be92e6b2b6eaa7ce698111ff0e91290d295c2610de71",
@@ -27,10 +27,10 @@
     "timed_out": false,
     "reused": false,
     "wait_seconds": 0.001,
-    "duration_seconds": 4.945,
-    "started_at": "2026-10-02T05:37:45.593973+00:00",
-    "finished_at": "2026-10-02T05:37:50.539434+00:00",
-    "finished_epoch": 1790919470.539434
+    "duration_seconds": 14.045,
+    "started_at": "2026-10-02T06:20:12.417223+00:00",
+    "finished_at": "2026-10-02T06:20:26.462299+00:00",
+    "finished_epoch": 1790922026.462299
   },
   "audit": {
     "schema_version": 1,
@@ -47,10 +47,10 @@
     "returncode": 0,
     "timed_out": false,
     "reused": false,
-    "wait_seconds": 0.0,
-    "duration_seconds": 3.329,
-    "started_at": "2026-10-02T05:42:54.624011+00:00",
-    "finished_at": "2026-10-02T05:42:57.952993+00:00",
-    "finished_epoch": 1790919777.952993
+    "wait_seconds": 0.002,
+    "duration_seconds": 9.362,
+    "started_at": "2026-10-02T06:34:16.148390+00:00",
+    "finished_at": "2026-10-02T06:34:25.510874+00:00",
+    "finished_epoch": 1790922865.510874
   }
 }
