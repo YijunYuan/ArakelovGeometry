@@ -13,6 +13,10 @@ Chen–Moriwaki, Definition 3.7.1: a contravariant field homomorphism, a
 measure-preserving map of parameter spaces compatible with the absolute values,
 and a real-linear retraction of pullback on `L¹` preserving integrals.
 The fibre operator is part of a morphism; no positivity or continuity is imposed.
+
+The `AdelicStructure` scope provides `S ⟶ T` for morphisms of adelic structures,
+including structures on different fields. The bundled category uses the usual
+category-theoretic arrow notation.
 -/
 
 namespace ArakelovGeometry.AdelicStructure
@@ -46,6 +50,8 @@ structure Hom (C : AdelicStructure.{u₁, v₁} K) (D : AdelicStructure.{u₂, v
   fibreIntegral_pullback : ∀ f : Lp ℝ 1 D.v,
     fibreIntegral (Lp.compMeasurePreserving baseMap measurePreserving f) = f
 
+scoped infixr:10 " ⟶ " => Hom
+
 namespace Hom
 
 variable {C : AdelicStructure.{u₁, v₁} K} {D : AdelicStructure.{u₂, v₂} L}
@@ -53,7 +59,7 @@ variable {C : AdelicStructure.{u₁, v₁} K} {D : AdelicStructure.{u₂, v₂} 
 
 /-- Equality of all three data determines a morphism. -/
 @[ext]
-theorem ext {f g : Hom C D} (hfield : f.fieldMap = g.fieldMap)
+theorem ext {f g : C ⟶ D} (hfield : f.fieldMap = g.fieldMap)
     (hbase : f.baseMap = g.baseMap) (hintegral : f.fibreIntegral = g.fibreIntegral) : f = g := by
   cases f
   cases g
@@ -63,35 +69,35 @@ theorem ext {f g : Hom C D} (hfield : f.fieldMap = g.fieldMap)
   rfl
 
 /-- The parameter map of a morphism is measurable. -/
-theorem measurable_baseMap (f : Hom C D) : Measurable f.baseMap :=
+theorem measurable_baseMap (f : C ⟶ D) : Measurable f.baseMap :=
   f.measurePreserving.measurable
 
 /-- The pushforward of the source measure is the target measure. -/
-theorem map_measure (f : Hom C D) : Measure.map f.baseMap C.v = D.v :=
+theorem map_measure (f : C ⟶ D) : Measure.map f.baseMap C.v = D.v :=
   f.measurePreserving.map_eq
 
 /-- Pullback along an adelic morphism, as a linear isometry of `L¹` spaces. -/
-noncomputable def pullback (f : Hom C D) : Lp ℝ 1 D.v →ₗᵢ[ℝ] Lp ℝ 1 C.v :=
+noncomputable def pullback (f : C ⟶ D) : Lp ℝ 1 D.v →ₗᵢ[ℝ] Lp ℝ 1 C.v :=
   Lp.compMeasurePreservingₗᵢ ℝ f.baseMap f.measurePreserving
 
 /-- Pullback is represented by composition with the map on parameter spaces. -/
-theorem coeFn_pullback (f : Hom C D) (g : Lp ℝ 1 D.v) :
+theorem coeFn_pullback (f : C ⟶ D) (g : Lp ℝ 1 D.v) :
     f.pullback g =ᵐ[C.v] g ∘ f.baseMap :=
   Lp.coeFn_compMeasurePreserving g f.measurePreserving
 
 /-- A morphism retracts its pullback on `L¹`. -/
 @[simp]
-theorem fibreIntegral_pullback_apply (f : Hom C D) (g : Lp ℝ 1 D.v) :
+theorem fibreIntegral_pullback_apply (f : C ⟶ D) (g : Lp ℝ 1 D.v) :
     f.fibreIntegral (f.pullback g) = g :=
   f.fibreIntegral_pullback g
 
 /-- Pullback preserves integrability. -/
-theorem integrable_comp (f : Hom C D) {g : D.Ω → ℝ} (hg : Integrable g D.v) :
+theorem integrable_comp (f : C ⟶ D) {g : D.Ω → ℝ} (hg : Integrable g D.v) :
     Integrable (g ∘ f.baseMap) C.v :=
   f.measurePreserving.integrable_comp_of_integrable hg
 
 /-- The function-level integral identity in Definition 3.7.1(b). -/
-theorem integral_comp (f : Hom C D) {g : D.Ω → ℝ} (hg : Integrable g D.v) :
+theorem integral_comp (f : C ⟶ D) {g : D.Ω → ℝ} (hg : Integrable g D.v) :
     ∫ ω, g (f.baseMap ω) ∂C.v = ∫ ω, g ω ∂D.v := by
   have hm : AEStronglyMeasurable g (Measure.map f.baseMap C.v) := by
     rw [f.map_measure]
@@ -100,7 +106,7 @@ theorem integral_comp (f : Hom C D) {g : D.Ω → ℝ} (hg : Integrable g D.v) :
     (integral_map f.measurable_baseMap.aemeasurable hm).symm
 
 /-- The identity morphism. -/
-noncomputable def id (C : AdelicStructure.{u₁, v₁} K) : Hom C C where
+noncomputable def id (C : AdelicStructure.{u₁, v₁} K) : C ⟶ C where
   fieldMap := RingHom.id K
   baseMap := _root_.id
   measurePreserving := MeasurePreserving.id C.v
@@ -111,7 +117,7 @@ noncomputable def id (C : AdelicStructure.{u₁, v₁} K) : Hom C C where
 
 /-- Composition of adelic morphisms, in the same order as function composition.
 The field maps compose contravariantly and the fibre operators covariantly. -/
-noncomputable def comp (g : Hom D E) (f : Hom C D) : Hom C E where
+noncomputable def comp (g : D ⟶ E) (f : C ⟶ D) : C ⟶ E where
   fieldMap := f.fieldMap.comp g.fieldMap
   baseMap := g.baseMap ∘ f.baseMap
   measurePreserving := g.measurePreserving.comp f.measurePreserving
@@ -129,20 +135,20 @@ noncomputable def comp (g : Hom D E) (f : Hom C D) : Hom C E where
       g.fibreIntegral_pullback]
 
 @[simp]
-theorem id_comp (f : Hom C D) : (id D).comp f = f := by
+theorem id_comp (f : C ⟶ D) : (id D).comp f = f := by
   apply ext <;> rfl
 
 @[simp]
-theorem comp_id (f : Hom C D) : f.comp (id C) = f := by
+theorem comp_id (f : C ⟶ D) : f.comp (id C) = f := by
   apply ext <;> rfl
 
-theorem comp_assoc (h : Hom E F) (g : Hom D E) (f : Hom C D) :
+theorem comp_assoc (h : E ⟶ F) (g : D ⟶ E) (f : C ⟶ D) :
     (h.comp g).comp f = h.comp (g.comp f) := by
   apply ext <;> rfl
 
 /-- Pullback reverses composition. -/
 @[simp]
-theorem pullback_comp (g : Hom D E) (f : Hom C D) (h : Lp ℝ 1 E.v) :
+theorem pullback_comp (g : D ⟶ E) (f : C ⟶ D) (h : Lp ℝ 1 E.v) :
     (g.comp f).pullback h = f.pullback (g.pullback h) :=
   Lp.compMeasurePreserving_comp_apply h g.measurePreserving f.measurePreserving
 

@@ -21,7 +21,7 @@ variable {K : Type*} [Field K]
 
 /-- Example 3.7.2(2): restriction to a subfield is a morphism of adelic structures. -/
 noncomputable def fRestriction (C : AdelicStructure K) (F : Subfield K) :
-    Hom C (C.fRestriction F) where
+    C ⟶ C.fRestriction F where
   fieldMap := F.subtype
   baseMap := _root_.id
   measurePreserving := MeasurePreserving.id C.v

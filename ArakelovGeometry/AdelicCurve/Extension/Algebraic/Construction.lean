@@ -10,6 +10,10 @@ import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integral
 
 Integrability of logarithmic evaluations, construction of the extended adelic
 structure and preservation of properness in Proposition 3.4.10 and Definition 3.4.11.
+
+The `AdelicStructure` scope provides `S ⊗[K] L` for `S.algebraicExtension L`.
+This always denotes the algebraic extension construction; the finite and
+finite separable constructions retain their explicit names.
 -/
 
 namespace ArakelovGeometry.AdelicStructure.Algebraic
@@ -48,10 +52,13 @@ noncomputable def _root_.ArakelovGeometry.AdelicStructure.algebraicExtension :
   measurable_log := fun a _ha ↦ measurable_log_projective AS L a
   integrable_log := integrable_log_measure AS L
 
+scoped[ArakelovGeometry.AdelicStructure] notation:100 S:100 " ⊗[" R "] " L:101 =>
+  AdelicStructure.algebraicExtension (K := R) S L
+
 /-- Chen--Moriwaki, Proposition 3.4.10: the algebraic extension of a proper adelic curve is
 proper. -/
 theorem isProper_algebraicExtension [AS.IsProper] :
-    (AS.algebraicExtension L).IsProper := by
+    (AS ⊗[K] L).IsProper := by
   constructor
   change ∀ a : L, a ≠ 0 →
     ∫ x, Real.log (ParameterSpaceExtension.ϕ x a) ∂measure AS L = 0
@@ -75,3 +82,18 @@ theorem isProper_algebraicExtension [AS.IsProper] :
       ((ParameterSpaceExtension.ϕ x).restriction F))).symm
 
 end ArakelovGeometry.AdelicStructure.Algebraic
+
+namespace ArakelovGeometry.AdelicStructure
+
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Display the implicit base field in tensor notation when the scope is open. -/
+@[scoped app_delab algebraicExtension]
+meta def delabAlgebraicExtension : Delab := whenPPOption getPPNotation <|
+    whenNotPPOption getPPExplicit do
+  withOverApp 7 do
+    let R ← withNaryArg 0 delab
+    let S ← withNaryArg 2 delab
+    let L ← withNaryArg 3 delab
+    `($S ⊗[$R] $L)
+
+end ArakelovGeometry.AdelicStructure

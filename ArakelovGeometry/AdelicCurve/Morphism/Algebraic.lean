@@ -59,7 +59,7 @@ variable (L : Type*) [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
 /-- Chen–Moriwaki, Example 3.7.2 (1): an algebraic extension gives a morphism
 back to the original adelic curve, with its prescribed fibre-integration operator. -/
 noncomputable def algebraicExtension :
-    Hom (AS.algebraicExtension L) AS where
+    (AS ⊗[K] L) ⟶ AS where
   fieldMap := algebraMap K L
   baseMap := ParameterSpaceExtension.proj
   measurePreserving := Algebraic.measurePreserving_proj AS L
@@ -109,7 +109,7 @@ variable (L : Type*) [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
 
 /-- The bundled form of the algebraic-extension morphism. -/
 noncomputable abbrev algebraicExtension :
-    Hom (AS.algebraicExtension L).toAdelicCurve AS.toAdelicCurve :=
+    Hom (AS ⊗[K] L).toAdelicCurve AS.toAdelicCurve :=
   AdelicStructure.Hom.algebraicExtension AS L
 
 theorem algebraicExtension_fieldMap :

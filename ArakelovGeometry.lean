@@ -31,4 +31,14 @@ import ArakelovGeometry.AdelicCurve.Examples.FunctionFields
 Library root. Aggregates every module so that a plain `lake build` compiles the
 whole development. Follows Chen–Moriwaki, *Arakelov Geometry over Adelic Curves*
 (Springer LNM 2258), Chapter 3.
+
+After `open ArakelovGeometry`, use `open scoped AdelicStructure` to enable:
+* `S ⊗[K] L` for the algebraic extension `S.algebraicExtension L`;
+* `S ⟶ T` for `AdelicStructure.Hom S T`, allowing different base fields;
+* `S ≃ T` for `AdelicStructure.Equiv S T`, over the same base field;
+* `S ⨿ T` for amalgamation.
+
+These coexist with the usual tensor products, equivalences of types and arrows
+in the bundled category. The finite and finite separable extension constructions
+retain their explicit names; `≅` retains its categorical meaning.
 -/
