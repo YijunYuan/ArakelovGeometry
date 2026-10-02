@@ -65,7 +65,7 @@ The full mathematical route for §3.3–3.4 is written in `blueprint/src`.
 All project declarations and required source obligations are proved. The
 [declaration inventory](docs/obligations.md) covers every project constant;
 the [source-result index](docs/source-result-index.md) covers every numbered
-result, including all five clauses of Theorem 3.3.7. The synchronized graph
+result, including all five clauses of Theorem 3.3.7. The authored blueprint
 has **283 project-proved nodes and three explicitly imported Mathlib nodes**,
 with no remaining TODO nodes.
 
@@ -73,7 +73,20 @@ with no remaining TODO nodes.
 
 - `ArakelovGeometry/AdelicCurve/` — the main development: definitions (`Defs.lean`),
   basic measure theory (`Basic.lean`), the constructions of §3.2
-  (`Amalgamation.lean`, `Restriction.lean`, `Examples/`).
+  (`Amalgamation.lean`, `Restriction.lean`, `Examples/`), and equivalences
+  (`Equiv.lean`).
+- `ArakelovGeometry/AdelicCurve/Extension/` — the extension theory of §§3.3–3.4.
+  Shared tools live in `ParameterSpace.lean`, `FiniteIntermediateField.lean`,
+  `PowerSums.lean`, `RootBounds.lean`, and `BoundedEvaluationGenerators.lean`.
+  The three subdirectories follow the mathematical progression:
+  - `Separable/` — embeddings, fibre integrals, measurability, induced measures,
+    and the finite separable adelic-curve construction.
+  - `Finite/` — the general finite extension construction, tower compatibility,
+    fibre probabilities, and base change.
+  - `Algebraic/` — finite-cylinder probabilities, extension measures and integrals,
+    arbitrary algebraic adelic curves, inverse limits, and tower compatibility.
+  `AdelicCurve/Extension.lean` is an import-only entry point for this theory;
+  individual modules can be imported for a smaller dependency set.
 - `ArakelovGeometry/ExternalResults/` — supporting results that morally belong to mathlib:
   places and the archimedean/nonarchimedean dichotomy (`Place.lean`,
   `AbsoluteValue.lean`), an Ostrowski-type classification of archimedean absolute values
@@ -84,8 +97,8 @@ with no remaining TODO nodes.
 ## Building
 
 The project uses Lean `v4.33.0` (see `lean-toolchain`) and the pinned mathlib version in
-`lake-manifest.json`. The configured build on 2026-09-16 passes all 3462 jobs.
-The compiled inventory and a separate transitive axiom audit check **998 project
+`lake-manifest.json`. The configured build after the 2026-10-01 module reorganization passes all 3477 jobs.
+The compiled inventory and a separate transitive axiom audit check **1006 project
 constants: zero direct gaps, zero sorry-backed constants, and no axioms beyond
 `propext`, `Classical.choice`, and `Quot.sound`**.
 See [source corrections](docs/source-corrections.md) for the signed tower domain

@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """Audit project-only kernel inventory against the authored mathematical route.
 
-Run declaration_inventory.lean after the build, then run this from the project
-root. No dependency source tree or generated graph is scanned. An absent
-attachment is reported explicitly, never treated as mathematical completion.
+Run with --verify to build the project, run its three Lean audits, and record
+provenance. Without --verify, check the existing inventory and evidence only.
+Check records live in .lake/proof-checks unless --checks-dir is supplied.
+No dependency source tree or generated graph is scanned. An absent attachment
+is reported explicitly, never treated as mathematical completion.
 """
 
 import argparse
 import hashlib
 import json
-import os
 import re
+import subprocess
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -43,7 +46,33 @@ def sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def inventory_provenance(paths, record):
+def run_verification(checks_dir):
+    """Run the actual build and audits, recording each process result."""
+    commands = [["lake", "build"]] + [
+        ["lake", "env", "lean", f"scripts/{name}.lean"]
+        for name in ("declaration_inventory", "audit_axioms", "audit_imported_boundaries")
+    ]
+    checks_dir.mkdir(parents=True, exist_ok=True)
+    for index, command in enumerate(commands, 1):
+        print(f"[{index}/{len(commands)}] {' '.join(command)}", flush=True)
+        started = time.time()
+        completed = subprocess.run(command, cwd=ROOT, check=False)
+        finished = time.time()
+        result = {"command": command, "cwd": str(ROOT),
+                  "returncode": completed.returncode, "ok": completed.returncode == 0,
+                  "started_epoch": started, "finished_epoch": finished,
+                  "duration_seconds": round(finished - started, 3)}
+        (checks_dir / f"{time.time_ns()}-{index}.json").write_text(
+            json.dumps(result, indent=2) + "\n")
+        if completed.returncode:
+            print(f"Check failed with exit code {completed.returncode}; see {checks_dir}",
+                  flush=True)
+            raise SystemExit(completed.returncode)
+    print("Build and Lean audits passed; recording provenance and checking coverage.",
+          flush=True)
+
+
+def inventory_provenance(paths, record, checks_dir):
     """Bind the compiled inventory to sources, artifacts and successful checks.
 
     Recording requires the configured build followed by the inventory check.
@@ -55,8 +84,7 @@ def inventory_provenance(paths, record):
     current["scripts/declaration_inventory.lean"] = sha256(ROOT / "scripts/declaration_inventory.lean")
     current["docs/declaration-inventory.json"] = sha256(ROOT / "docs/declaration-inventory.json")
     if record:
-        session = Path(os.environ["ARCHON_HORIZON_SESSION_DIR"])
-        checks = [json.loads(p.read_text()) for p in (session / "checks").glob("*.json")]
+        checks = [json.loads(p.read_text()) for p in checks_dir.glob("*.json")]
         builds = [c for c in checks if c.get("ok") and c.get("command") == ["lake", "build"]]
         inventories = [c for c in checks if c.get("ok") and
                        c.get("command", [""])[-1].endswith("scripts/declaration_inventory.lean")]
@@ -108,7 +136,7 @@ def included_blueprints():
     return sorted(seen)
 
 
-def imported_boundary_provenance(record, audited):
+def imported_boundary_provenance(record, audited, checks_dir):
     """Bind imported producer evidence to its check and exact library inputs."""
     manifest = ROOT / "docs/imported-boundary-provenance.json"
     paths = [ROOT / p for p in (
@@ -123,8 +151,7 @@ def imported_boundary_provenance(record, audited):
         return ["Missing imported audit input: " + p for p in absent]
     current = {str(p.relative_to(ROOT)): sha256(p) for p in paths}
     if record:
-        session = Path(os.environ["ARCHON_HORIZON_SESSION_DIR"])
-        checks = [json.loads(p.read_text()) for p in (session / "checks").glob("*.json")]
+        checks = [json.loads(p.read_text()) for p in checks_dir.glob("*.json")]
         builds = [c for c in checks if c.get("ok") and c.get("command") == ["lake", "build"]]
         audits = [c for c in checks if c.get("ok") and
                   c.get("command", [""])[-1].endswith("scripts/audit_imported_boundaries.lean")]
@@ -230,8 +257,16 @@ def main():
     parser.add_argument("--require-complete", action="store_true")
     parser.add_argument("--require-closed", action="store_true",
                         help="also reject proof gaps and uncovered mathematical nodes")
-    parser.add_argument("--record-provenance", action="store_true")
+    parser.add_argument("--verify", action="store_true",
+                        help="run the build and Lean audits, then record provenance")
+    parser.add_argument("--checks-dir", type=Path, default=ROOT / ".lake/proof-checks",
+                        help="check-record directory (default: .lake/proof-checks)")
+    parser.add_argument("--record-provenance", action="store_true",
+                        help="record evidence from --checks-dir; implied by --verify")
     args = parser.parse_args()
+    if args.verify:
+        run_verification(args.checks_dir)
+    record_provenance = args.record_provenance or args.verify
     rows = json.loads((ROOT / "docs/declaration-inventory.json").read_text())
     by_name = {r["name"]: r for r in rows}
     nodes, attached = blueprint_nodes()
@@ -239,7 +274,8 @@ def main():
     for path in sorted((ROOT / "ArakelovGeometry").rglob("*.lean")) + [ROOT / "ArakelovGeometry.lean"]:
         sources[str(path.relative_to(ROOT)).replace("/", ".")[:-5]] = (
             path, lean_code(path.read_text()))
-    stale_inventory = inventory_provenance([p for p, _ in sources.values()], args.record_provenance)
+    stale_inventory = inventory_provenance(
+        [p for p, _ in sources.values()], record_provenance, args.checks_dir)
     # A namespace prefix is not an attachment: e.g. mapping AdelicStructure
     # must never silently map every theorem in its namespace. Determine the
     # nearest *authored declaration*, then inherit only for its generated
@@ -271,24 +307,17 @@ def main():
             gaps.append({"file": str(path.relative_to(ROOT)), "line": line,
                          "token": match[1], "declaration": owner,
                          "nodes": attached.get(owner, [])})
+    # Keep all extension modules in scope as the development is split further.
+    # Equivalences were extracted from Extension into their own general module.
+    extension_module = "ArakelovGeometry.AdelicCurve.Extension"
     target_modules = {
-        "ArakelovGeometry.AdelicCurve.Extension",
-        "ArakelovGeometry.AdelicCurve.FiniteTower",
-        "ArakelovGeometry.AdelicCurve.FiniteProbability",
-        "ArakelovGeometry.AdelicCurve.AlgebraicTower",
-        "ArakelovGeometry.AdelicCurve.AlgebraicTowerBasic",
-        "ArakelovGeometry.AdelicCurve.AlgebraicTowerCylinder",
-        "ArakelovGeometry.AdelicCurve.AlgebraicTowerIntegral",
-        "ArakelovGeometry.AdelicCurve.AlgebraicIntegrable",
-        "ArakelovGeometry.AdelicCurve.AlgebraicCylinder",
-        "ArakelovGeometry.AdelicCurve.AlgebraicInverseLimit",
-        "ArakelovGeometry.AdelicCurve.BoundedEvaluationGenerators",
+        mod for mod in sources
+        if mod == extension_module or mod.startswith(extension_module + ".")
+    } | {
+        "ArakelovGeometry.AdelicCurve.Equiv",
         "ArakelovGeometry.ExternalResults.AbsoluteValueTensor",
         "ArakelovGeometry.ExternalResults.BoundedFunctionalMonotoneClass",
         "ArakelovGeometry.ExternalResults.AlgebraicTowerSupport",
-        "ArakelovGeometry.AdelicCurve.AlgebraicProbability",
-        "ArakelovGeometry.AdelicCurve.AlgebraicFiniteProjection",
-        "ArakelovGeometry.AdelicCurve.AlgebraicBaseChange",
     }
     target = [r for r in rows if r["module"] in target_modules]
     for row in rows:
@@ -418,7 +447,8 @@ def main():
                             (label not in boundaries or node["lean"] or node["leanok"]))
     audited = json.loads(audit_path.read_text()) if audit_path.exists() else []
     checked = {(r["node"], r["name"]): r for r in audited}
-    boundary_errors = imported_boundary_provenance(args.record_provenance, audited) if boundaries else []
+    boundary_errors = imported_boundary_provenance(
+        record_provenance, audited, args.checks_dir) if boundaries else []
     for label, boundary in boundaries.items():
         node = nodes.get(label)
         if node is None:

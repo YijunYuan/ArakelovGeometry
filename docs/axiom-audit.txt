@@ -1,15 +1,15 @@
-Command: horizon check --lean scripts/audit_axioms.lean --json
+Command: lake env lean scripts/audit_axioms.lean
 Configured cwd: ArakelovGeometry
-Started: 2026-09-16T07:29:11.969225+00:00
-Finished: 2026-09-16T07:30:45.749450+00:00
-Duration: 93.780 seconds
+Started: 2026-10-01T14:05:47.166395+00:00
+Finished: 2026-10-01T14:07:05.221116+00:00
+Duration: 78.055 seconds
 Return code: 0
 Status: passed
-AUDIT checked=998 sorryAx=0
+AUDIT checked=1006 sorryAx=0
 No NONSTANDARD errors. Every project constant was checked transitively;
 the only permitted non-sorry axioms are propext, Classical.choice, Quot.sound.
 Source/artifact provenance: docs/inventory-provenance.json.
-Imported boundary audit: passed 2026-09-16T07:30:48.627230+00:00;
+Imported boundary audit: passed 2026-10-01T14:07:07.673519+00:00;
 3 imported mathematical boundaries, 13 producers, standard axioms only.
 Imported evidence: docs/imported-boundary-audit.json and
   docs/imported-boundary-provenance.json.

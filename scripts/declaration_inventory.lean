@@ -4,8 +4,8 @@ import Lean
 /-!
 # Compiled declaration inventory
 
-Run after the configured build with
-`horizon check --lean scripts/declaration_inventory.lean`.
+Run after `lake build` with
+`lake env lean scripts/declaration_inventory.lean`.
 The JSON records every project constant (including generated declarations),
 its direct constant dependencies and its transitive axioms. Dependencies in
 external libraries remain references; they are not project blueprint nodes.
