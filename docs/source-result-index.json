@@ -346,5 +346,105 @@
     "nodes": [
       "prop:projective-measurable-equality"
     ]
+  },
+  {
+    "result": "3.5.1",
+    "sources": [
+      "chen-moriwaki-adelic:page-0215",
+      "chen-moriwaki-adelic:page-0216"
+    ],
+    "claim": "Height integral on the algebraic closure, integrability, invariance under nonzero scaling, and descent to projective space.",
+    "nodes": [
+      "def:local-height",
+      "lem:local-height-integrable",
+      "def:tuple-height",
+      "lem:height-scaling",
+      "prop:height-scalar-invariant",
+      "def:projective-height",
+      "def:absolute-projective-height"
+    ]
+  },
+  {
+    "result": "3.5.2",
+    "sources": [
+      "chen-moriwaki-adelic:page-0216"
+    ],
+    "claim": "Base-field Northcott property for every nonnegative real bound, with compatibility of base and algebraic-closure heights.",
+    "nodes": [
+      "def:northcott-property"
+    ]
+  },
+  {
+    "result": "3.5.3",
+    "sources": [
+      "chen-moriwaki-adelic:page-0216",
+      "chen-moriwaki-adelic:page-0217",
+      "chen-moriwaki-adelic:page-0218"
+    ],
+    "claim": "Finiteness of projective points of bounded height and field-of-definition degree, for every dimension and real bounds.",
+    "nodes": [
+      "def:projective-field-of-definition",
+      "lem:projective-chart-height-degree",
+      "thm:northcott"
+    ]
+  },
+  {
+    "result": "3.5.4",
+    "sources": [
+      "chen-moriwaki-adelic:page-0216"
+    ],
+    "claim": "Conjugate-height equality for finite normal extensions; proved more generally via finite embedding measure marginals, including inseparable extensions.",
+    "nodes": [
+      "lem:height-finite-embedding",
+      "lem:height-conjugate"
+    ]
+  },
+  {
+    "result": "3.5.polynomial",
+    "sources": [
+      "chen-moriwaki-adelic:page-0216"
+    ],
+    "claim": "Height of the coefficient vector of a nonzero polynomial.",
+    "nodes": [
+      "def:polynomial-height",
+      "lem:polynomial-height-linear",
+      "lem:polynomial-height-monic-coefficient"
+    ]
+  },
+  {
+    "result": "3.5.5",
+    "sources": [
+      "chen-moriwaki-adelic:page-0217"
+    ],
+    "claim": "Polynomial product height bound with archimedean mass; the unrestricted proof route uses the sharper finite integral of the archimedean exponent.",
+    "nodes": [
+      "lem:polynomial-local-product-bound",
+      "lem:polynomial-height-product-sharp",
+      "lem:polynomial-height-product",
+      "rem:northcott-archimedean-error"
+    ]
+  },
+  {
+    "result": "3.5.6",
+    "sources": [
+      "chen-moriwaki-adelic:page-0217"
+    ],
+    "claim": "Finiteness of algebraic elements of bounded affine height and simple-extension degree.",
+    "nodes": [
+      "lem:minimal-polynomial-root-conjugacy",
+      "lem:polynomial-height-split-bound",
+      "lem:minimal-polynomial-height",
+      "lem:northcott-algebraic-elements"
+    ]
+  },
+  {
+    "result": "3.5.7",
+    "sources": [
+      "chen-moriwaki-adelic:page-0218"
+    ],
+    "claim": "Preservation of the Northcott property by every finite field extension.",
+    "nodes": [
+      "cor:northcott-finite-extension"
+    ]
   }
 ]
