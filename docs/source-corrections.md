@@ -1,4 +1,4 @@
-# Source adjudications for extension statements
+# Source adjudications for extension and height statements
 
 The registered Chen–Moriwaki manuscript is version 1.2, 5 October 2019.
 PDF page numbers are printed page numbers plus 16.
@@ -60,3 +60,23 @@ The faithful Lean criterion is finiteness of the double ENNReal integral of
 integrand is not integrable, so its value cannot replace this nonnegative
 criterion on an infinite fibre. The signed operator is used on almost every
 integrable fibre, and its L1 construction respects almost-everywhere equality.
+
+## The archimedean error in Northcott finiteness
+
+Lemma 3.5.5 (PDF 217) uses the mass of the archimedean locus in its
+polynomial product bound. Section 3.5 imposes no explicit finite-mass
+hypothesis. The adelic axioms give integrability of the archimedean exponent
+`κ`, but do not imply that the measure of its positive locus is finite.
+
+The formalization proves the sharper real bound with finite error
+`log(min(deg F + 1, deg G + 1)) * ∫ κ`. The exponent is preserved by
+restriction of places and its integral by algebraic extension. Since
+`0 ≤ κ ≤ 1` on the archimedean locus and it vanishes elsewhere, the printed
+mass bound follows in extended nonnegative reals, with `0 * ∞ = 0`; it also
+holds as a real inequality whenever that mass is finite. The finite exponent
+bound is then used for minimal-polynomial coefficients and Northcott finiteness.
+No finite-mass hypothesis is added to Theorem 3.5.3 or Corollary 3.5.7.
+
+Conjugate root heights are compared using two finite embeddings of a simple
+extension, instead of passing through its normal closure. Claim 3.5.6 is proved
+for every algebraic extension and suffices directly for the corollary.
