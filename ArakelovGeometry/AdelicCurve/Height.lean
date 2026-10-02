@@ -7,13 +7,17 @@ import ArakelovGeometry.AdelicCurve.Height.Basic
 import ArakelovGeometry.AdelicCurve.Height.Affine
 import ArakelovGeometry.AdelicCurve.Height.Extension
 import ArakelovGeometry.AdelicCurve.Height.Polynomial
+import ArakelovGeometry.AdelicCurve.Height.MinimalPolynomial
 import ArakelovGeometry.AdelicCurve.Height.Northcott
+import ArakelovGeometry.AdelicCurve.Height.Projective
+import ArakelovGeometry.AdelicCurve.Height.ProjectiveNorthcott
+import ArakelovGeometry.AdelicCurve.Height.FiniteExtension
 
 /-!
-# Height functions and producers for Northcott finiteness
+# Height functions and Northcott finiteness
 
-Import entry point for the formalized part of Chen–Moriwaki, Section 3.5:
+Import entry point for Chen–Moriwaki, Section 3.5:
 tuple and projective heights, the Northcott property, extension and conjugate
-invariance, and polynomial-height and root-finiteness results.
-The full bounded-height-and-degree theorem remains an open blueprint node.
+invariance, polynomial estimates, affine and projective Northcott finiteness,
+and preservation of the Northcott property under finite extension.
 -/

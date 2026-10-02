@@ -385,6 +385,7 @@
     "nodes": [
       "def:projective-field-of-definition",
       "lem:projective-chart-height-degree",
+      "lem:finite-projective-representatives",
       "thm:northcott"
     ]
   },
@@ -432,10 +433,11 @@
     "sources": [
       "chen-moriwaki-adelic:page-0217"
     ],
-    "claim": "Finiteness of algebraic elements of bounded affine height and simple-extension degree.",
+    "claim": "Finiteness of algebraic elements of bounded affine height and simple-extension degree; proved for every algebraic extension, including inseparable elements and arbitrary real bounds.",
     "nodes": [
       "lem:minimal-polynomial-root-conjugacy",
       "lem:polynomial-height-split-bound",
+      "lem:polynomial-height-base-extension",
       "lem:minimal-polynomial-height",
       "lem:northcott-bounded-coefficient-roots",
       "lem:northcott-algebraic-elements"
@@ -446,7 +448,7 @@
     "sources": [
       "chen-moriwaki-adelic:page-0218"
     ],
-    "claim": "Preservation of the Northcott property by every finite field extension.",
+    "claim": "Preservation of the Northcott property by every finite field extension, for both the finite and algebraic extension constructions.",
     "nodes": [
       "cor:northcott-finite-extension"
     ]
