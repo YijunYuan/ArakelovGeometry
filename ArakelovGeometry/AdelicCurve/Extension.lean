@@ -19,6 +19,7 @@ import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerCylinder
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerIntegral
 import ArakelovGeometry.AdelicCurve.Extension.Automorphism
 import ArakelovGeometry.AdelicCurve.Extension.BoundedEvaluationGenerators
+import ArakelovGeometry.AdelicCurve.Extension.FibreMaximum
 import ArakelovGeometry.AdelicCurve.Extension.Finite.BaseChange
 import ArakelovGeometry.AdelicCurve.Extension.Finite.Construction
 import ArakelovGeometry.AdelicCurve.Extension.Finite.Probability
