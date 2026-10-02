@@ -479,5 +479,60 @@
       "lem:finite-projection-measurable-image",
       "prop:fibre-maximum-measurable"
     ]
+  },
+  {
+    "result": "3.7.1",
+    "sources": [
+      "chen-moriwaki-adelic:page-0219"
+    ],
+    "claim": "The source triple of a field map, a measurable measure-preserving base map compatible with absolute values, and a real-linear L1 disintegration preserving integrals and retracting pullback.",
+    "nodes": [
+      "def:adelic-morphism"
+    ]
+  },
+  {
+    "result": "3.7.composition",
+    "sources": [
+      "chen-moriwaki-adelic:page-0219"
+    ],
+    "claim": "Identity and composition with contravariant field maps, covariant base maps and fibre operators, including every category law.",
+    "nodes": [
+      "lem:adelic-morphism-id",
+      "lem:adelic-morphism-comp",
+      "thm:adelic-curve-category"
+    ]
+  },
+  {
+    "result": "3.7.2(1)",
+    "sources": [
+      "chen-moriwaki-adelic:page-0220"
+    ],
+    "claim": "The canonical morphism from every algebraic extension, using the existing quotient L1 fibre-integration operator.",
+    "nodes": [
+      "ex:algebraic-extension-morphism"
+    ]
+  },
+  {
+    "result": "3.7.2(2)",
+    "sources": [
+      "chen-moriwaki-adelic:page-0220"
+    ],
+    "claim": "The morphism from an adelic curve to its restriction to a subfield, with identity base map and L1 operator.",
+    "nodes": [
+      "ex:subfield-restriction-morphism"
+    ]
+  },
+  {
+    "result": "3.7.2(3)",
+    "sources": [
+      "chen-moriwaki-adelic:page-0188",
+      "chen-moriwaki-adelic:page-0189",
+      "chen-moriwaki-adelic:page-0220"
+    ],
+    "claim": "The concrete rational-function morphism: inclusion of Q, collapse of transcendental-circle parameters to the infinite place, and identity on finite places plus circle averaging on L1; horizontal places follow the cited affine-line construction.",
+    "nodes": [
+      "lem:probability-collapse",
+      "ex:adelic-morphism-rational-function"
+    ]
   }
 ]
