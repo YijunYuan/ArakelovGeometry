@@ -106,7 +106,8 @@ The values are nonnegative by Lemma~\ref{lem:height-nonnegative}.
 
 \begin{definition}[Affine height]\label{def:affine-height}
 \uses{def:tuple-height}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.localHeight_pair,ArakelovGeometry.AdelicStructure.affineHeight,ArakelovGeometry.AdelicStructure.affineHeight_eq_integral,ArakelovGeometry.AdelicStructure.integrable_log_max_one,ArakelovGeometry.AdelicStructure.affineHeight_eq_projectiveHeight}
+\leanok
 For $b\in K$, write
 $h_S^{\mathrm{aff}}(b)=\int_\Omega\log\max(1,|b|_\omega)\,d\nu(\omega)$.
 Then $h_S^{\mathrm{aff}}(b)=h_S(1,b)$ and, if $S$ is proper,
@@ -120,7 +121,8 @@ definition of projective height.
 
 \begin{lemma}[Affine heights and powers]\label{lem:affine-height-power}
 \uses{def:affine-height}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.affineHeight_nonneg,ArakelovGeometry.AdelicStructure.affineHeight_zero,ArakelovGeometry.AdelicStructure.affineHeight_one,ArakelovGeometry.AdelicStructure.affineHeight_neg,ArakelovGeometry.AdelicStructure.affineHeight_pow}
+\leanok
 Affine heights are nonnegative, $h_S^{\mathrm{aff}}(0)=0$, and
 $h_S^{\mathrm{aff}}(b^m)=m h_S^{\mathrm{aff}}(b)$ for every $m\geq0$.
 Also $h_S^{\mathrm{aff}}(-b)=h_S^{\mathrm{aff}}(b)$.
@@ -138,7 +140,8 @@ Finally $|-b|=|b|$ at every place.
 \begin{proposition}[Bounds on affine chart coordinates]
 \label{prop:height-coordinate-bound}
 \uses{prop:height-scalar-invariant,def:affine-height}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.affineHeight_le_logHeight_of_eq_one,ArakelovGeometry.AdelicStructure.affineHeight_div_le_logHeight}
+\leanok
 If $S$ is proper, $a_j\ne0$, and $i\in I$, then
 $h_S^{\mathrm{aff}}(a_i/a_j)\leq h_S(a)$.
 \end{proposition}
@@ -187,6 +190,7 @@ Definition~\ref{def:projective-height}, with precisely the displayed integral.
 \end{proof}
 
 \begin{definition}[Northcott property]\label{def:northcott-property}
+\lean{ArakelovGeometry.AdelicStructure.HasNorthcott,ArakelovGeometry.AdelicStructure.hasNorthcott_iff}
 \source{chen-moriwaki-adelic:page-0216}
 \dcref{Definition 3.5.2}
 \uses{def:affine-height,prop:height-algebraic-extension,def:absolute-projective-height}
