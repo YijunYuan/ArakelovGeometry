@@ -223,7 +223,7 @@ def blueprint_nodes():
     for path in included_blueprints():
         text = re.sub(r"(?m)%.*$", "", path.read_text())
         for match in re.finditer(
-            r"\\begin\{(definition|lemma|theorem|proposition|corollary|remark|notation)\}"
+            r"\\begin\{(definition|lemma|theorem|proposition|corollary|remark|notation|example|convention)\}"
             r"(.*?)\\end\{\1\}", text, re.S
         ):
             body = match[2]
