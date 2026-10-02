@@ -25,6 +25,10 @@ open scoped ENNReal
 /-- The unit-circle point with parameter `t ∈ [0,1]`. -/
 noncomputable def circlePoint (t : ℝ) : ℂ := circleMap 0 1 (t * (2 * Real.pi))
 
+theorem circlePoint_eq_exp (t : ℝ) :
+    circlePoint t = Complex.exp (((2 * Real.pi * t : ℝ) : ℂ) * Complex.I) := by
+  simp [circlePoint, circleMap, mul_comm t]
+
 theorem continuous_circlePoint : Continuous circlePoint := by
   exact (continuous_circleMap 0 1).comp (continuous_id.mul continuous_const)
 
@@ -84,6 +88,14 @@ theorem archimedeanAbv_rat (t : ArchimedeanPlace) (a : ℚ) :
     archimedeanAbv t (algebraMap ℚ (RatFunc ℚ) a) = Rat.AbsoluteValue.real a := by
   change ‖archimedeanEval t (algebraMap ℚ (RatFunc ℚ) a)‖ = _
   simp [Rat.AbsoluteValue.real_eq_abs]
+
+theorem not_isNonarchimedean_archimedeanAbv (t : ArchimedeanPlace) :
+    ¬IsNonarchimedean (archimedeanAbv t) := by
+  intro h
+  have htwo := archimedeanAbv_rat t 2
+  norm_num [Rat.AbsoluteValue.real_eq_abs] at htwo
+  have hone := h 1 1
+  norm_num [show (1 : RatFunc ℚ) + 1 = 2 by norm_num, htwo] at hone
 
 theorem measurable_log_archimedeanAbv (f : RatFunc ℚ) :
     Measurable (fun t : ArchimedeanPlace ↦ Real.log (archimedeanAbv t f)) := by
