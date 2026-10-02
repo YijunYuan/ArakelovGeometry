@@ -19,6 +19,7 @@ import ArakelovGeometry.AdelicCurve.Restriction
 import ArakelovGeometry.AdelicCurve.Equiv
 import ArakelovGeometry.AdelicCurve.Extension
 import ArakelovGeometry.AdelicCurve.Height
+import ArakelovGeometry.AdelicCurve.Morphism
 import ArakelovGeometry.ExternalResults.AlgebraicTowerSupport
 import ArakelovGeometry.AdelicCurve.Examples.Trivial
 import ArakelovGeometry.AdelicCurve.Examples.NumberFields

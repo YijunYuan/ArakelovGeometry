@@ -1,4 +1,4 @@
-# Source-result coverage: sections 3.3–3.6
+# Source-result coverage: sections 3.3–3.7
 
 Every numbered result and all five clauses of Theorem 3.3.7 are indexed below.
 PDF page numbers are sixteen greater than printed page numbers. The JSON index
@@ -43,6 +43,11 @@ by `scripts/blueprint_coverage.py`.
 | 3.5.7 | 218 | Preservation of the Northcott property by every finite field extension, for both the finite and algebraic extension constructions. | `cor:northcott-finite-extension` |
 | 3.6.1 | 218 | Pullback by every base-field automorphism of an algebraic extension is measurable for the sigma algebra of the extended adelic structure, with the source evaluation convention. | `def:automorphism-pullback`, `prop:automorphism-measurable` |
 | 3.6.2 | 218, 219 | For every finite extension and every measurable real function on its intrinsic parameter space, the attained maximum on each fibre is measurable on the base; the proof uses positive fibre probabilities instead of normal closure. | `lem:measurable-orbit-maximum`, `def:fibre-maximum`, `lem:finite-fibre-indicator-positive`, `lem:finite-projection-measurable-image`, `prop:fibre-maximum-measurable` |
+| 3.7.1 | 219 | The source triple of a field map, a measurable measure-preserving base map compatible with absolute values, and a real-linear L1 disintegration preserving integrals and retracting pullback. | `def:adelic-morphism` |
+| 3.7.composition | 219 | Identity and composition with contravariant field maps, covariant base maps and fibre operators, including every category law. | `lem:adelic-morphism-id`, `lem:adelic-morphism-comp`, `thm:adelic-curve-category` |
+| 3.7.2(1) | 220 | The canonical morphism from every algebraic extension, using the existing quotient L1 fibre-integration operator. | `ex:algebraic-extension-morphism` |
+| 3.7.2(2) | 220 | The morphism from an adelic curve to its restriction to a subfield, with identity base map and L1 operator. | `ex:subfield-restriction-morphism` |
+| 3.7.2(3) | 188, 189, 220 | The concrete rational-function morphism: inclusion of Q, collapse of transcendental-circle parameters to the infinite place, and identity on finite places plus circle averaging on L1; horizontal places follow the cited affine-line construction. | `lem:probability-collapse`, `ex:adelic-morphism-rational-function` |
 
 Section 3.5 uses finite embedding compatibility from Section 3.4; it does not
 require Sections 3.6 or 3.7. Its polynomial proof retains the finite integrated
@@ -57,3 +62,9 @@ Section 3.6 retains algebraicity in Proposition 3.6.1 and finiteness alone in
 Proposition 3.6.2. The latter uses positive fibre probabilities and measurable
 projection images in place of the source normal-closure argument. Both statements
 use the projective sigma algebra of the existing extension adelic structure.
+
+Section 3.7 includes all clauses of Definition 3.7.1, its category statement,
+and all three examples. Example 3.7.2(3) uses the concrete Section 3.2.5
+adelic structure; the separate product formula for that structure is not
+part of this coverage claim. Its horizontal-place correction is documented
+in [source-corrections.md](source-corrections.md).

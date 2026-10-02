@@ -1,4 +1,4 @@
-# Source adjudications for extension and height statements
+# Source adjudications for Chapter 3
 
 The registered Chen–Moriwaki manuscript is version 1.2, 5 October 2019.
 PDF page numbers are printed page numbers plus 16.
@@ -80,3 +80,18 @@ No finite-mass hypothesis is added to Theorem 3.5.3 or Corollary 3.5.7.
 Conjugate root heights are compared using two finite embeddings of a simple
 extension, instead of passing through its normal closure. Claim 3.5.6 is proved
 for every algebraic extension and suffices directly for the corollary.
+
+## Horizontal places in the rational-function morphism
+
+Example 3.7.2(3) on PDF 220 describes the horizontal places as the closed
+points of the projective line. The construction it explicitly refers to,
+Section 3.2.5 on PDF 188–189, uses the closed points of the affine line
+`ℙ¹_ℚ \ {∞}`. The formalization follows that construction: horizontal places
+are height-one prime ideals of `ℚ[T]`, with the Mahler weights prescribed
+there. This preserves the source curve and the morphism's three components;
+it does not add another horizontal point. Both passages have registered
+vision transcriptions.
+
+The Section 3.2.5 adelic structure is constructed as a prerequisite to the
+morphism. Its separate product-formula assertion is not required by
+Definition 3.7.1 and is not claimed as part of this task.

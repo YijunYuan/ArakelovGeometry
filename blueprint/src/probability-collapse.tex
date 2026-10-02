@@ -8,9 +8,10 @@ transcendental points of the unit circle as $B$.
 \label{lem:sum-measure-integration}
 \leanok
 \source{chen-moriwaki-adelic:page-0220}
-\lean{ArakelovGeometry.ProbabilityCollapse.integrable_sumMeasure_iff,ArakelovGeometry.ProbabilityCollapse.ae_sumMeasure_iff,ArakelovGeometry.ProbabilityCollapse.integral_sumMeasure}
+\lean{ArakelovGeometry.ProbabilityCollapse.integrable_sumMeasure_iff,ArakelovGeometry.ProbabilityCollapse.ae_sumMeasure_iff,ArakelovGeometry.ProbabilityCollapse.integral_sumMeasure,ArakelovGeometry.ProbabilityCollapse.sumMeasure,ArakelovGeometry.ProbabilityCollapse.embedding_inl,ArakelovGeometry.ProbabilityCollapse.embedding_inr}
 Let $(A,\mu)$ and $(B,\nu)$ be measure spaces, and equip $A\amalg B$ with
 $\lambda=(\iota_A)_*\mu+(\iota_B)_*\nu$.
+The two inclusions are measurable embeddings.
 A real function $f$ is integrable for $\lambda$ if and only if both
 $f_A=f\circ\iota_A$ and $f_B=f\circ\iota_B$ are integrable, and then
 $\int f\,d\lambda=\int f_A\,d\mu+\int f_B\,d\nu$.
@@ -33,7 +34,7 @@ positive and negative parts gives the claimed real integral formula.
 \leanok
 \source{chen-moriwaki-adelic:page-0220}
 \uses{lem:sum-measure-integration}
-\lean{ArakelovGeometry.ProbabilityCollapse.measurePreserving_collapse,ArakelovGeometry.ProbabilityCollapse.averageL1LinearMap,ArakelovGeometry.ProbabilityCollapse.averageL1_toL1,ArakelovGeometry.ProbabilityCollapse.integral_averageL1,ArakelovGeometry.ProbabilityCollapse.averageL1_compMeasurePreserving}
+\lean{ArakelovGeometry.ProbabilityCollapse.measurePreserving_collapse,ArakelovGeometry.ProbabilityCollapse.averageL1LinearMap,ArakelovGeometry.ProbabilityCollapse.averageL1_toL1,ArakelovGeometry.ProbabilityCollapse.integral_averageL1,ArakelovGeometry.ProbabilityCollapse.averageL1_compMeasurePreserving,ArakelovGeometry.ProbabilityCollapse.collapse,ArakelovGeometry.ProbabilityCollapse.measurable_collapse,ArakelovGeometry.ProbabilityCollapse.average,ArakelovGeometry.ProbabilityCollapse.integrable_average,ArakelovGeometry.ProbabilityCollapse.average_congr_ae,ArakelovGeometry.ProbabilityCollapse.average_add,ArakelovGeometry.ProbabilityCollapse.average_smul,ArakelovGeometry.ProbabilityCollapse.integral_average,ArakelovGeometry.ProbabilityCollapse.average_comp_collapse,ArakelovGeometry.ProbabilityCollapse.averageL1,ArakelovGeometry.ProbabilityCollapse.coeFn_averageL1,ArakelovGeometry.ProbabilityCollapse.averageL1_add,ArakelovGeometry.ProbabilityCollapse.averageL1_smul}
 Assume $\nu(B)=1$. Give $A\amalg\{*\}$ the measure
 $\lambda_0=(\iota_A)_*\mu+\delta_*$.
 The map $q:A\amalg B\to A\amalg\{*\}$ which fixes $A$ and sends
@@ -43,6 +44,8 @@ The formula
  Jf(a)=f(a)\quad(a\in A),\qquad
  Jf(*)=\int_B f_B\,d\nu
 \]
+is integrable for integrable $f$, respects equality almost everywhere,
+and is additive and homogeneous on integrable representatives. It therefore
 induces a real-linear map $J:L^1(\lambda)\to L^1(\lambda_0)$.
 It preserves the integral and satisfies $Jq^*=\operatorname{id}$.
 \end{lemma}

@@ -7,10 +7,10 @@ contravariantly on fields and covariantly on places and fibre integrals.
 
 \begin{definition}[Morphism of adelic curves]
 \label{def:adelic-morphism}
-\notready
+\leanok
 \source{chen-moriwaki-adelic:page-0219}
 \uses{def:adelic-structure}
-\lean{ArakelovGeometry.AdelicCurve.Hom,ArakelovGeometry.AdelicCurve.Hom.pullback,ArakelovGeometry.AdelicCurve.Hom.coeFn_pullback,ArakelovGeometry.AdelicCurve.Hom.integrable_comp,ArakelovGeometry.AdelicCurve.Hom.integral_comp}
+\lean{ArakelovGeometry.AdelicCurve.Hom,ArakelovGeometry.AdelicCurve.Hom.pullback,ArakelovGeometry.AdelicCurve.Hom.coeFn_pullback,ArakelovGeometry.AdelicCurve.Hom.integrable_comp,ArakelovGeometry.AdelicCurve.Hom.integral_comp,ArakelovGeometry.AdelicCurve.Hom.ext,ArakelovGeometry.AdelicCurve.Hom.measurable_baseMap,ArakelovGeometry.AdelicCurve.Hom.map_measure,ArakelovGeometry.AdelicCurve.Hom.fibreIntegral_pullback_apply}
 Let $S'=(K',(\Omega',\mathcal A',\nu'),\phi')$ and
 $S=(K,(\Omega,\mathcal A,\nu),\phi)$ be adelic curves.
 A morphism $\alpha:S'\to S$ is a triple
@@ -41,6 +41,7 @@ $f\circ\alpha_\#$ is integrable and
  \int_{\Omega'}f\circ\alpha_\#\,d\nu'
    =\int_\Omega f\,d\nu.
 \]
+Two morphisms are equal precisely when their three data are equal.
 Only real linearity is required of $I_\alpha$; positivity and
 continuity are not additional morphism axioms.
 \end{definition}
@@ -63,7 +64,7 @@ $I_\alpha$ sends the class of $f\circ\alpha_\#$ to the class of $f$.
 
 \begin{lemma}[Identity morphism]
 \label{lem:adelic-morphism-id}
-\notready
+\leanok
 \source{chen-moriwaki-adelic:page-0219}
 \uses{def:adelic-morphism}
 \lean{ArakelovGeometry.AdelicCurve.Hom.id}
@@ -87,10 +88,10 @@ the identity of $L^1$ is also a left inverse to that pullback.
 
 \begin{lemma}[Composition of morphisms]
 \label{lem:adelic-morphism-comp}
-\notready
+\leanok
 \source{chen-moriwaki-adelic:page-0219}
 \uses{def:adelic-morphism}
-\lean{ArakelovGeometry.AdelicCurve.Hom.comp}
+\lean{ArakelovGeometry.AdelicCurve.Hom.comp,ArakelovGeometry.AdelicCurve.Hom.pullback_comp}
 Let $\alpha:S'\to S$ and $\beta:S''\to S'$ be morphisms of
 adelic curves. Then
 \[
@@ -136,7 +137,7 @@ All the morphism axioms follow.
 
 \begin{theorem}[The category of adelic curves]
 \label{thm:adelic-curve-category}
-\notready
+\leanok
 \source{chen-moriwaki-adelic:page-0219}
 \uses{def:adelic-morphism,lem:adelic-morphism-id,lem:adelic-morphism-comp}
 \lean{ArakelovGeometry.AdelicCurve.Hom.id_comp,ArakelovGeometry.AdelicCurve.Hom.comp_id,ArakelovGeometry.AdelicCurve.Hom.comp_assoc,ArakelovGeometry.AdelicCurve.category}
@@ -159,10 +160,10 @@ associativity law for morphisms.
 
 \begin{example}[The morphism from an algebraic extension]
 \label{ex:algebraic-extension-morphism}
-\notready
+\leanok
 \source{chen-moriwaki-adelic:page-0220}
 \uses{def:adelic-morphism,def:algebraic-extension,cor:algebraic-L1-operator,lem:algebraic-base-pushforward,prop:algebraic-signed-disintegration,lem:algebraic-integral-pullback,prop:algebraic-base-pullback}
-\lean{ArakelovGeometry.AdelicCurve.Hom.algebraicExtension,ArakelovGeometry.AdelicCurve.Hom.algebraicExtension_fibreIntegral_toL1}
+\lean{ArakelovGeometry.AdelicCurve.Hom.algebraicExtension,ArakelovGeometry.AdelicCurve.Hom.algebraicExtension_fibreIntegral_toL1,ArakelovGeometry.AdelicStructure.Algebraic.measurePreserving_proj,ArakelovGeometry.AdelicStructure.Algebraic.integral_fibreIntegralL1,ArakelovGeometry.AdelicStructure.Algebraic.fibreIntegralL1_compMeasurePreserving,ArakelovGeometry.AdelicCurve.Hom.algebraicExtension_fieldMap,ArakelovGeometry.AdelicCurve.Hom.algebraicExtension_baseMap,ArakelovGeometry.AdelicCurve.Hom.algebraicExtension_fibreIntegral,ArakelovGeometry.AdelicCurve.Hom.coeFn_algebraicExtension_fibreIntegral}
 Let $S=(K,(\Omega,\mathcal A,\nu),\phi)$ be an adelic curve and
 let $L/K$ be an algebraic field extension. For its adelic extension
 $S\otimes_K L$, the triple
@@ -202,7 +203,7 @@ Thus both axioms for the fibre integration operator hold.
 
 \begin{example}[The morphism to a subfield restriction]
 \label{ex:subfield-restriction-morphism}
-\notready
+\leanok
 \source{chen-moriwaki-adelic:page-0220}
 \uses{def:adelic-morphism,def:subfield-restriction}
 \lean{ArakelovGeometry.AdelicCurve.Hom.fRestriction,ArakelovGeometry.AdelicCurve.Hom.fRestriction_fieldMap,ArakelovGeometry.AdelicCurve.Hom.fRestriction_baseMap,ArakelovGeometry.AdelicCurve.Hom.fRestriction_fibreIntegral}
