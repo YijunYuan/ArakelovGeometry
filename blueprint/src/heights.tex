@@ -8,7 +8,8 @@ for descent to projective space, but not for integrability.
 
 \begin{definition}[Local maximum and its logarithm]\label{def:local-height}
 \uses{def:adelic-structure}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.localHeight,ArakelovGeometry.AdelicStructure.localHeight_zero,ArakelovGeometry.AdelicStructure.eval_le_localHeight,ArakelovGeometry.AdelicStructure.localHeight_pos}
+\leanok
 For $a=(a_i)_{i\in I}\in K^I$ set
 $M_S(a,\omega)=\max_{i\in I}|a_i|_\omega$ and
 $\ell_S(a,\omega)=\log M_S(a,\omega)$ for $a\ne0$.
@@ -18,7 +19,8 @@ For the zero tuple put $\ell_S(0,\omega)=0$.
 \begin{lemma}[Measurability and integrability of local heights]
 \label{lem:local-height-integrable}
 \uses{def:local-height}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.measurable_log_eval,ArakelovGeometry.AdelicStructure.integrable_log_eval,ArakelovGeometry.AdelicStructure.measurable_eval,ArakelovGeometry.AdelicStructure.measurable_localHeight,ArakelovGeometry.AdelicStructure.integrable_log_localHeight}
+\leanok
 For every $a\in K^I$, the function $\ell_S(a,\cdot)$ is measurable
 and integrable.
 \end{lemma}
@@ -39,14 +41,17 @@ This proves integrability. The zero tuple gives the zero function.
 \end{proof}
 
 \begin{definition}[Height of a tuple]\label{def:tuple-height}
+\source{chen-moriwaki-adelic:page-0215}
 \uses{lem:local-height-integrable}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.logHeight,ArakelovGeometry.AdelicStructure.logHeight_zero}
+\leanok
 Define $h_S(a)=\int_\Omega\ell_S(a,\omega)\,d\nu(\omega)$.
 \end{definition}
 
 \begin{lemma}[Effect of scaling]\label{lem:height-scaling}
 \uses{def:tuple-height}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.localHeight_smul,ArakelovGeometry.AdelicStructure.log_localHeight_smul,ArakelovGeometry.AdelicStructure.logHeight_smul}
+\leanok
 If $a\ne0$ and $t\in K^\times$, then
 \[
  \ell_S(ta,\omega)=\log|t|_\omega+\ell_S(a,\omega),\qquad
@@ -61,8 +66,10 @@ evaluation and local height are integrable, so integration is additive.
 \end{proof}
 
 \begin{proposition}[Scalar invariance]\label{prop:height-scalar-invariant}
+\source{chen-moriwaki-adelic:page-0215}
 \uses{lem:height-scaling,def:adelic-structure}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.logHeight_smul_eq}
+\leanok
 If $S$ is proper, $a\ne0$ and $t\ne0$, then $h_S(ta)=h_S(a)$.
 \end{proposition}
 \begin{proof}
@@ -72,7 +79,8 @@ by the product formula.
 
 \begin{lemma}[Nonnegativity]\label{lem:height-nonnegative}
 \uses{def:tuple-height,def:adelic-structure}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.logHeight_nonneg}
+\leanok
 If $S$ is proper, then $h_S(a)\geq0$ for every tuple $a$.
 \end{lemma}
 \begin{proof}
@@ -83,15 +91,17 @@ The height of the zero tuple is zero by definition.
 \end{proof}
 
 \begin{definition}[Projective height]\label{def:projective-height}
+\source{chen-moriwaki-adelic:page-0216}
 \uses{prop:height-scalar-invariant,lem:height-nonnegative}
-\notready
-For proper $S$ define $h_S:\mathbb P(K^I)\to\mathbb R_{\geq0}$ by
-$h_S([a])=h_S(a)$ for any nonzero representative $a$.
+\lean{ArakelovGeometry.AdelicStructure.projectiveHeight,ArakelovGeometry.AdelicStructure.projectiveHeight_mk,ArakelovGeometry.AdelicStructure.projectiveHeight_nonneg}
+\leanok
+For proper $S$ define $h_S:\mathbb P(K^I)\to\mathbb R$ by
+$h_S([a])=h_S(a)$ for any nonzero representative $a$. Its values are nonnegative.
 \end{definition}
 \begin{proof}
 Two nonzero representatives of a projective point differ by a nonzero
 scalar, so scalar invariance proves independence of the representative.
-Nonnegativity gives the indicated range.
+The values are nonnegative by Lemma~\ref{lem:height-nonnegative}.
 \end{proof}
 
 \begin{definition}[Affine height]\label{def:affine-height}
@@ -157,6 +167,7 @@ equality of its integrals. Apply this to $(1,b)$ for the last assertion.
 
 \begin{definition}[Height over an algebraic closure]
 \label{def:absolute-projective-height}
+\source{chen-moriwaki-adelic:page-0215}
 \dcref{Definition 3.5.1}
 \uses{def:projective-height,def:algebraic-extension,prop:algebraic-proper}
 \notready
@@ -176,6 +187,7 @@ Definition~\ref{def:projective-height}, with precisely the displayed integral.
 \end{proof}
 
 \begin{definition}[Northcott property]\label{def:northcott-property}
+\source{chen-moriwaki-adelic:page-0216}
 \dcref{Definition 3.5.2}
 \uses{def:affine-height,prop:height-algebraic-extension,def:absolute-projective-height}
 \notready
