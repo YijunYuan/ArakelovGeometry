@@ -1,0 +1,17 @@
+[
+  {
+    "file": "t6-original.png",
+    "source_sha256": "83ccb69c22ad7d449248bbb26c48216d9b414f672af6f7f4f172d5ba17be57cc",
+    "pdf_page": 205,
+    "printed_page": 189,
+    "crop_pdf_points": [
+      50,
+      493,
+      386,
+      555
+    ],
+    "scale": 3,
+    "method": "PyMuPDF page.get_pixmap; original PDF rasterization only",
+    "purpose": "T6: factorization ring and two correctly printed w subscripts"
+  }
+]
