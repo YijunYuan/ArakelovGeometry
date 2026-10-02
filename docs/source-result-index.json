@@ -464,5 +464,20 @@
       "def:automorphism-pullback",
       "prop:automorphism-measurable"
     ]
+  },
+  {
+    "result": "3.6.2",
+    "sources": [
+      "chen-moriwaki-adelic:page-0218",
+      "chen-moriwaki-adelic:page-0219"
+    ],
+    "claim": "For every finite extension and every measurable real function on its intrinsic parameter space, the attained maximum on each fibre is measurable on the base; the proof uses positive fibre probabilities instead of normal closure.",
+    "nodes": [
+      "lem:measurable-orbit-maximum",
+      "def:fibre-maximum",
+      "lem:finite-fibre-indicator-positive",
+      "lem:finite-projection-measurable-image",
+      "prop:fibre-maximum-measurable"
+    ]
   }
 ]
