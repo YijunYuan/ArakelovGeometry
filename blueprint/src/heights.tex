@@ -105,7 +105,7 @@ The values are nonnegative by Lemma~\ref{lem:height-nonnegative}.
 \end{proof}
 
 \begin{definition}[Affine height]\label{def:affine-height}
-\uses{def:tuple-height}
+\uses{def:tuple-height,def:projective-height}
 \lean{ArakelovGeometry.AdelicStructure.localHeight_pair,ArakelovGeometry.AdelicStructure.affineHeight,ArakelovGeometry.AdelicStructure.affineHeight_eq_integral,ArakelovGeometry.AdelicStructure.integrable_log_max_one,ArakelovGeometry.AdelicStructure.affineHeight_eq_projectiveHeight}
 \leanok
 For $b\in K$, write
@@ -174,7 +174,7 @@ equality of its integrals. Apply this to $(1,b)$ for the last assertion.
 \source{chen-moriwaki-adelic:page-0215}
 \dcref{Definition 3.5.1}
 \uses{def:projective-height,def:algebraic-extension,prop:algebraic-proper}
-\lean{ArakelovGeometry.AdelicStructure.absoluteHeight,ArakelovGeometry.AdelicStructure.absoluteHeight_mk,ArakelovGeometry.AdelicStructure.absoluteHeight_nonneg,ArakelovGeometry.AdelicStructure.absoluteHeight_mk_one}
+\lean{ArakelovGeometry.AdelicStructure.absoluteHeight,ArakelovGeometry.AdelicStructure.absoluteHeight_mk,ArakelovGeometry.AdelicStructure.absoluteHeight_nonneg}
 \leanok
 Let $S$ be proper and let $\overline K$ be an algebraic closure of $K$.
 The height of $x\in\mathbb P^n(\overline K)$ with respect to $S$ is
@@ -192,7 +192,7 @@ Definition~\ref{def:projective-height}, with precisely the displayed integral.
 \end{proof}
 
 \begin{definition}[Northcott property]\label{def:northcott-property}
-\lean{ArakelovGeometry.AdelicStructure.HasNorthcott,ArakelovGeometry.AdelicStructure.hasNorthcott_iff}
+\lean{ArakelovGeometry.AdelicStructure.HasNorthcott,ArakelovGeometry.AdelicStructure.hasNorthcott_iff,ArakelovGeometry.AdelicStructure.absoluteHeight_mk_one}
 \source{chen-moriwaki-adelic:page-0216}
 \dcref{Definition 3.5.2}
 \uses{def:affine-height,prop:height-algebraic-extension,def:absolute-projective-height}
