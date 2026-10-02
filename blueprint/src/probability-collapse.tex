@@ -1,0 +1,71 @@
+\section{Collapsing a probability component}
+
+The measure-theoretic construction in Example~3.7.2(3) admits the following
+general form. It will be applied with the finite places as $A$ and the
+transcendental points of the unit circle as $B$.
+
+\begin{lemma}[Integration on a disjoint union]
+\label{lem:sum-measure-integration}
+\leanok
+\source{chen-moriwaki-adelic:page-0220}
+\lean{ArakelovGeometry.ProbabilityCollapse.integrable_sumMeasure_iff,ArakelovGeometry.ProbabilityCollapse.ae_sumMeasure_iff,ArakelovGeometry.ProbabilityCollapse.integral_sumMeasure}
+Let $(A,\mu)$ and $(B,\nu)$ be measure spaces, and equip $A\amalg B$ with
+$\lambda=(\iota_A)_*\mu+(\iota_B)_*\nu$.
+A real function $f$ is integrable for $\lambda$ if and only if both
+$f_A=f\circ\iota_A$ and $f_B=f\circ\iota_B$ are integrable, and then
+$\int f\,d\lambda=\int f_A\,d\mu+\int f_B\,d\nu$.
+An equality of functions holds $\lambda$-almost everywhere if and only
+if it holds almost everywhere on both components.
+\end{lemma}
+\begin{proof}
+Each inclusion is a measurable embedding. Pullback along it identifies
+measurable representatives and null sets for its image measure with those
+on the corresponding component. A set has zero measure for a sum of two
+positive measures precisely when it has zero measure for both. Similarly,
+the nonnegative integral of $|f|$ for the sum is the sum of the two
+nonnegative integrals. This is finite precisely when both summands are
+finite, proving the integrability assertion. Applying additivity to the
+positive and negative parts gives the claimed real integral formula.
+\end{proof}
+
+\begin{lemma}[Collapsing a probability space]
+\label{lem:probability-collapse}
+\leanok
+\source{chen-moriwaki-adelic:page-0220}
+\uses{lem:sum-measure-integration}
+\lean{ArakelovGeometry.ProbabilityCollapse.measurePreserving_collapse,ArakelovGeometry.ProbabilityCollapse.averageL1LinearMap,ArakelovGeometry.ProbabilityCollapse.averageL1_toL1,ArakelovGeometry.ProbabilityCollapse.integral_averageL1,ArakelovGeometry.ProbabilityCollapse.averageL1_compMeasurePreserving}
+Assume $\nu(B)=1$. Give $A\amalg\{*\}$ the measure
+$\lambda_0=(\iota_A)_*\mu+\delta_*$.
+The map $q:A\amalg B\to A\amalg\{*\}$ which fixes $A$ and sends
+$B$ to $*$ is measurable and satisfies $q_*\lambda=\lambda_0$.
+The formula
+\[
+ Jf(a)=f(a)\quad(a\in A),\qquad
+ Jf(*)=\int_B f_B\,d\nu
+\]
+induces a real-linear map $J:L^1(\lambda)\to L^1(\lambda_0)$.
+It preserves the integral and satisfies $Jq^*=\operatorname{id}$.
+\end{lemma}
+\begin{proof}
+The restrictions of $q$ to the two components are respectively the
+inclusion of $A$ and a constant map, so $q$ is measurable. Its pushforward
+is $(\iota_A)_*\mu+\nu(B)\delta_*=\lambda_0$.
+For an integrable $f$, the preceding lemma shows that $f_A$ is integrable
+and that the integral defining $Jf(*)$ exists. Every real constant on the
+one-point probability space is integrable. Thus $Jf$ is integrable.
+If $f=g$ almost everywhere, the componentwise criterion gives
+$f_A=g_A$ almost everywhere and $f_B=g_B$ almost everywhere. The latter
+equality implies equality of their integrals, proving that $J$ is
+well-defined on classes. Additivity of the integral on integrable
+functions and homogeneity prove real linearity. The disjoint-union formula
+gives
+\[
+ \int Jf\,d\lambda_0
+ =\int_A f_A\,d\mu+\int_B f_B\,d\nu
+ =\int f\,d\lambda.
+\]
+For a function $g$ on $A\amalg\{*\}$, its pullback restricts to $g$
+on $A$ and the constant $g(*)$ on $B$. Since $\nu(B)=1$, averaging this
+constant gives $g(*)$. Therefore $J(g\circ q)=g$ pointwise, which gives
+the asserted identity on integrable equivalence classes.
+\end{proof}
