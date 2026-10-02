@@ -1,0 +1,501 @@
+\section{The Northcott theorem}
+
+Throughout this section, $S=(K,(\Omega,\mathcal A,\nu),\phi)$ is a
+proper adelic curve and $\overline K$ is an algebraic closure of $K$.
+Heights on $\overline K$ are taken with respect to
+$S\otimes_K\overline K$ as in Definition~\ref{def:absolute-projective-height}.
+We prove the assertions of \cite[Section 3.5]{chen-moriwaki} using the
+finite-embedding compatibility of the extension measures. For polynomial
+products we retain the archimedean exponent in the estimate; its integral
+is finite even when the measure of the archimedean locus is infinite.
+
+\begin{lemma}[Heights under finite field embeddings]
+\label{lem:height-finite-embedding}
+\uses{def:tuple-height,lem:local-height-integrable,lem:algebraic-finite-embedding-projection}
+\lean{ArakelovGeometry.AdelicStructure.localHeight_comp_finiteEmbedding,ArakelovGeometry.AdelicStructure.logHeight_comp_finiteEmbedding,ArakelovGeometry.AdelicStructure.affineHeight_comp_finiteEmbedding}
+\leanok
+Let $S$ be any adelic structure, let $E/K$ be finite, let $L/K$ be algebraic, and let
+$i:E\hookrightarrow L$ be a $K$-embedding. If $I$ is finite and nonempty
+and $a=(a_j)_{j\in I}\in E^I$, then
+\[
+ h_{S\otimes_K L}\bigl((i(a_j))_{j\in I}\bigr)
+ =h_{S\otimes_K E}(a).
+\]
+In particular, the height of an algebraic tuple can be computed over
+any finite extension containing its coordinates.
+\end{lemma}
+\begin{proof}
+Let $p_i:\Omega_L\to\Omega_E$ be pullback of absolute values along
+$i$. It is measurable, its measure pushforward is $\nu_E$, and
+$|i(b)|_x=|b|_{p_i(x)}$. Taking the maximum over the coordinates and
+then its logarithm gives
+$\ell_{S\otimes_K L}(i(a),x)=\ell_{S\otimes_K E}(a,p_i(x))$.
+This also holds for the zero tuple by its stipulated zero local height.
+The local height on $\Omega_E$ is measurable and integrable. The
+pushforward identity gives equality of the integrals of its nonnegative
+positive and negative parts and of its absolute value. Subtracting the
+first two equalities proves the displayed equality of heights. Every
+finite family of algebraic elements generates a finite extension, and
+its inclusion in $\overline K$ gives the last assertion.
+\end{proof}
+
+\begin{lemma}[Heights of conjugates]
+\label{lem:height-conjugate}
+\dcref{Lemma 3.5.4}
+\source{chen-moriwaki-adelic:page-0216}
+\uses{lem:height-finite-embedding,def:affine-height,def:absolute-projective-height}
+\lean{ArakelovGeometry.AdelicStructure.logHeight_comp_aut,ArakelovGeometry.AdelicStructure.affineHeight_comp_aut}
+\leanok
+Let $S$ be any adelic structure, let $E/K$ be finite and $L/K$
+algebraic, and let $i:E\hookrightarrow L$ be a $K$-embedding.
+For $\sigma\in\operatorname{Aut}_K(E)$ and a tuple
+$a\in E^I$, where $I$ is finite and nonempty, one has
+\[
+ h_{S\otimes_K L}\bigl((i(\sigma(a_j)))_{j\in I}\bigr)
+ =h_{S\otimes_K L}\bigl((i(a_j))_{j\in I}\bigr).
+\]
+In particular, for every $\alpha\in E$,
+\[
+ h_{S\otimes_K L}^{\mathrm{aff}}(i(\sigma(\alpha)))
+ =h_{S\otimes_K L}^{\mathrm{aff}}(i(\alpha)).
+\]
+For proper $S$, a finite normal subextension
+$E\subseteq\overline K$, and its inclusion $i:E\hookrightarrow\overline K$,
+this specializes to Lemma 3.5.4:
+\[
+ h_S([1:\sigma(\alpha)])=h_S([1:\alpha]).
+\]
+\end{lemma}
+\begin{proof}
+Apply Lemma~\ref{lem:height-finite-embedding} to $a$, first with
+$i$ and then with $i\circ\sigma$. Both heights equal
+$h_{S\otimes_K E}(a)$. Taking $a=(1,\alpha)$, and using that
+field embeddings and automorphisms send $1$ to $1$, gives the affine
+equality. When $S$ is proper and $L=\overline K$, these affine
+heights equal the heights of the indicated projective representatives.
+
+The finite-embedding measure identity used here is formulated with
+separable-degree weights and holds for arbitrary finite extensions.
+Thus the argument includes inseparable extensions directly; neither
+separability nor a transitive action on the places is required. In
+fact the tuple and affine assertions above require neither properness
+nor the normality hypothesis in the stated source result.
+\end{proof}
+
+\begin{definition}[Polynomial height]
+\label{def:polynomial-height}
+\source{chen-moriwaki-adelic:page-0216}
+\uses{def:absolute-projective-height,lem:local-height-integrable,prop:height-scalar-invariant}
+\notready
+For a nonzero polynomial $F=\sum_{j=0}^d a_jX^j\in\overline K[X]$
+of degree $d$, put
+\[
+ \|F\|_\chi=\max_{0\leq j\leq d}|a_j|_\chi,
+ \qquad
+ h_S(F)=h_S([a_d:\cdots:a_0])
+ =\int_{\Omega_{\overline K}}\log\|F\|_\chi\,d\nu_{\overline K}(\chi).
+\]
+The norm $\|F\|_\chi$ is positive and its logarithm is integrable.
+Adding zero coefficients or permuting the coefficient list leaves
+the height unchanged, and $h_S(cF)=h_S(F)$ for every $c\ne0$.
+\end{definition}
+\begin{proof}
+At least one coefficient is nonzero, so its strictly positive absolute
+value bounds the maximum from below. Integrability and the integral
+formula follow from the corresponding assertions for nonzero tuples.
+Adding zero entries does not change a maximum of nonnegative numbers,
+and a permutation does not change its set of values. Multiplying every
+coefficient by $c$ does not change the projective height, by scalar
+invariance.
+\end{proof}
+
+\begin{lemma}[Heights of linear factors]
+\label{lem:polynomial-height-linear}
+\uses{def:polynomial-height,def:affine-height,lem:affine-height-power}
+\notready
+For $\alpha\in\overline K$, one has
+$h_S(X-\alpha)=h_S([1:\alpha])$.
+\end{lemma}
+\begin{proof}
+The coefficient tuple of $X-\alpha$ is $(1,-\alpha)$, whose local
+maximum equals $\max(1,|\alpha|_\chi)$ because
+$|-\alpha|_\chi=|\alpha|_\chi$. Their logarithmic integrands, and
+hence their heights, are equal.
+\end{proof}
+
+\begin{lemma}[Height bounds for monic coefficients]
+\label{lem:polynomial-height-monic-coefficient}
+\uses{def:polynomial-height,prop:height-coordinate-bound}
+\notready
+If $F=X^d+a_{d-1}X^{d-1}+\cdots+a_0\in\overline K[X]$ is monic,
+then $h_S([1:a_j])\leq h_S(F)$ for every $0\leq j<d$.
+\end{lemma}
+\begin{proof}
+In the coefficient tuple, the leading coordinate is $1$. The affine
+coordinate bound applied with this coordinate as denominator gives
+the asserted inequality for each $a_j$.
+\end{proof}
+
+\begin{definition}[The integrated archimedean exponent]
+\label{def:height-archimedean-constant}
+\uses{lem:archimedean-bound}
+\notready
+Let $\kappa_S$ be the archimedean exponent, extended by zero on
+the nonarchimedean locus. Define the nonnegative finite real number
+\[
+ A_S=\int_\Omega\kappa_S(\omega)\,d\nu(\omega).
+\]
+\end{definition}
+\begin{proof}
+The exponent is a nonnegative integrable real function by
+Lemma~\ref{lem:archimedean-bound}; its integral is consequently
+a finite nonnegative real number.
+\end{proof}
+
+\begin{lemma}[The exponent in an algebraic extension]
+\label{lem:height-archimedean-extension}
+\uses{def:height-archimedean-constant,lem:nonarchimedean-restriction,lem:archimedean-complex-embedding,prop:algebraic-base-pullback}
+\notready
+For an algebraic extension $L/K$ and $x\in\Omega_L$,
+\[
+ \kappa_{S\otimes_K L}(x)=\kappa_S(\pi_{L/K}(x)).
+\]
+In particular $A_{S\otimes_K L}=A_S$.
+\end{lemma}
+\begin{proof}
+Restriction preserves the nonarchimedean property in both directions,
+so either both exponents vanish or both places are archimedean. In
+the latter case the characteristic is zero. The two absolute values
+agree on $2$, and their exponents $s,t$ satisfy $2^s=2^t$. Taking
+logarithms and using $\log2>0$ yields $s=t$. The equality of integrals
+now follows from pullback of the integrable base function $\kappa_S$.
+\end{proof}
+
+\begin{lemma}[Local norm of a polynomial product]
+\label{lem:polynomial-local-product-bound}
+\uses{def:polynomial-height,lem:height-archimedean-extension,lem:archimedean-complex-embedding,lem:powered-complex-sum-bound}
+\notready
+Let $F,G\in\overline K[X]\setminus\{0\}$ and set
+$m=\min(\deg F+1,\deg G+1)\geq1$. For
+$\chi\in\Omega_{\overline K}$ above $\omega\in\Omega$,
+\[
+ \|FG\|_\chi\leq m^{\kappa_S(\omega)}\|F\|_\chi\|G\|_\chi.
+\]
+\end{lemma}
+\begin{proof}
+Write $F=\sum_{i=0}^d a_iX^i$ and $G=\sum_{j=0}^e b_jX^j$.
+The coefficient of $X^k$ in their product is the sum of the terms
+$a_ib_j$ with $i+j=k$, $0\leq i\leq d$, and $0\leq j\leq e$.
+There are at most $m$ such terms, since either index determines
+the other. Every term has absolute value at most
+$M=\|F\|_\chi\|G\|_\chi$.
+
+At a nonarchimedean place, the ultrametric inequality bounds each
+coefficient by $M$; here the exponent is zero. At an archimedean
+place, write $|b|_\chi=|\tau(b)|^s$ for a complex embedding $\tau$,
+where $s=\kappa_S(\omega)>0$. If the coefficient sum has $r>0$
+terms, the powered finite-sum bound gives absolute value at most
+$r^sM\leq m^sM$. An empty sum is zero and satisfies the same
+inequality. Taking the maximum over all coefficients proves the claim.
+\end{proof}
+
+\begin{lemma}[Polynomial height bound with finite error]
+\label{lem:polynomial-height-product-sharp}
+\uses{def:polynomial-height,def:height-archimedean-constant,lem:height-archimedean-extension,lem:polynomial-local-product-bound}
+\notready
+For nonzero $F,G\in\overline K[X]$, with
+$m=\min(\deg F+1,\deg G+1)$, one has the real inequality
+\[
+ h_S(FG)\leq h_S(F)+h_S(G)+(\log m)A_S.
+\]
+\end{lemma}
+\begin{proof}
+All three polynomial norms are positive. Taking logarithms in the
+local product estimate gives
+\[
+ \log\|FG\|_\chi\leq
+ \log\|F\|_\chi+\log\|G\|_\chi
+ +(\log m)\kappa_{S\otimes_K\overline K}(\chi).
+\]
+Each term is integrable: the first three are local heights of
+coefficient tuples and the last is a constant multiple of the
+integrable exponent. Integrate the inequality, use additivity of
+integrals, and replace the integral of the extended exponent by $A_S$.
+\end{proof}
+
+\begin{lemma}[Polynomial height bound using archimedean mass]
+\label{lem:polynomial-height-product}
+\dcref{Lemma 3.5.5}
+\source{chen-moriwaki-adelic:page-0217}
+\uses{lem:polynomial-height-product-sharp,lem:archimedean-bound}
+\notready
+Let $F,G\in\overline K[X]\setminus\{0\}$ and
+$m=\min(\deg F+1,\deg G+1)$. Then
+\[
+ h_S(FG)\leq h_S(F)+h_S(G)+(\log m)\nu(\Omega_\infty).
+\]
+When $\nu(\Omega_\infty)=\infty$, the right side is interpreted
+in $[0,\infty]$, with $0\cdot\infty=0$. When this measure is finite,
+the displayed formula is an inequality of real numbers.
+\end{lemma}
+\begin{proof}
+If $m=1$, its logarithm is zero and the sharper estimate is exactly
+the displayed inequality. Suppose $m>1$. If the archimedean mass is
+infinite, its product with $\log m>0$ is infinite and the inequality
+holds. If the mass is finite, the pointwise inequality
+$0\leq\kappa_S\leq\mathbf1_{\Omega_\infty}$ implies
+$A_S\leq\nu(\Omega_\infty)$. Multiply by $\log m\geq0$ and use
+Lemma~\ref{lem:polynomial-height-product-sharp}.
+\end{proof}
+
+\begin{remark}[Finite error without a finite archimedean mass]
+\label{rem:northcott-archimedean-error}
+\source{chen-moriwaki-adelic:page-0217}
+\uses{lem:polynomial-height-product,lem:polynomial-height-product-sharp}
+\notready
+The archimedean-mass bound is the formula in Lemma 3.5.5 of
+\cite{chen-moriwaki}. Integrability of $\kappa_S$ does not impose
+finiteness of $\nu(\Omega_\infty)$, since its positive values need
+not be bounded away from zero. The proof of Northcott finiteness
+below therefore uses the stronger finite error $(\log m)A_S$.
+\end{remark}
+
+\begin{lemma}[Roots of an irreducible polynomial are conjugate]
+\label{lem:minimal-polynomial-root-conjugacy}
+\uses{lem:algebraic-embedding-extension,lem:height-conjugate}
+\notready
+Let $F\in K[X]$ be monic and irreducible of degree $d\geq1$, let
+$\alpha\in\overline K$ be a root, and write
+$F=\prod_{j=1}^d(X-\alpha_j)$ in $\overline K[X]$, with roots
+listed with multiplicity. Then
+$h_S([1:\alpha_j])=h_S([1:\alpha])$ for every $j$.
+This assertion includes inseparable irreducible polynomials.
+\end{lemma}
+\begin{proof}
+Let $E$ be the subfield of $\overline K$ generated over $K$ by
+the roots of $F$. It is finite over $K$, since it is generated by
+finitely many algebraic elements. Each $K$-embedding of $E$ into
+$\overline K$ maps the finite set of distinct roots of $F$
+injectively into itself and therefore permutes that set. It follows
+that the image is $E$, so $E/K$ is normal.
+
+For a root $\beta$ of $F$, the assignments $X\mapsto\alpha$ and
+$X\mapsto\beta$ identify both $K(\alpha)$ and $K(\beta)$ with
+$K[X]/(F)$. Consequently there is a $K$-embedding
+$K(\alpha)\to E$ sending $\alpha$ to $\beta$. Extend it to an
+embedding $E\to\overline K$. The preceding permutation argument
+makes this extension an automorphism of $E$. Apply
+Lemma~\ref{lem:height-conjugate} to obtain equality of the two
+heights. Every entry in the root list is a root, so the equality
+holds also for repeated entries. No count of distinct roots or
+separability assumption was used.
+\end{proof}
+
+\begin{lemma}[Height of a product of linear factors]
+\label{lem:polynomial-height-split-bound}
+\uses{lem:polynomial-height-linear,lem:polynomial-height-product-sharp,def:height-archimedean-constant}
+\notready
+If $d\geq1$ and $\alpha_1,\ldots,\alpha_d\in\overline K$, then
+\[
+ h_S\left(\prod_{j=1}^d(X-\alpha_j)\right)
+ \leq\sum_{j=1}^d h_S([1:\alpha_j])+(d-1)(\log2)A_S.
+\]
+\end{lemma}
+\begin{proof}
+For $d=1$ this is the linear-factor equality. If the bound holds
+for $d=r\geq1$, its product is monic of degree $r$. Multiplying
+by $X-\alpha_{r+1}$ gives $m=\min(r+1,2)=2$ in the sharp
+product bound. Add $h_S(X-\alpha_{r+1})+(\log2)A_S$ to the
+inductive bound and use the linear-factor equality. The sum of the
+two error coefficients is $(r-1)+1=r$, which gives the assertion
+for $r+1$. Induction proves every case.
+\end{proof}
+
+\begin{lemma}[Height of the minimal polynomial]
+\label{lem:minimal-polynomial-height}
+\source{chen-moriwaki-adelic:page-0217}
+\uses{lem:minimal-polynomial-root-conjugacy,lem:polynomial-height-split-bound,lem:polynomial-height-monic-coefficient,prop:height-algebraic-extension}
+\notready
+Let $\alpha\in\overline K$, let $d=[K(\alpha):K]$, and let
+$F=X^d+a_{d-1}X^{d-1}+\cdots+a_0\in K[X]$ be its monic
+minimal polynomial. Then
+\[
+ h_S(F)\leq d\,h_S([1:\alpha])+(d-1)(\log2)A_S,
+ \qquad
+ h_S^{\mathrm{aff}}(a_j)\leq h_S(F)\quad(0\leq j<d).
+\]
+\end{lemma}
+\begin{proof}
+The degree $d$ is positive, and $F$ factors over $\overline K$
+as a product of $d$ linear factors, counting multiplicities.
+Every root has the same height as $\alpha$ by
+Lemma~\ref{lem:minimal-polynomial-root-conjugacy}. Substitute
+these equal heights in the split-product bound. Since $F$ is monic,
+the monic-coefficient bound gives the second inequality with
+$h_S([1:a_j])$ on the left. The height of a base-field coefficient
+agrees with $h_S^{\mathrm{aff}}(a_j)$ by algebraic-extension
+invariance. This is the minimal-polynomial estimate in the
+proof of Claim 3.5.6, strengthened by using $A_S$ in its error term.
+\end{proof}
+
+\begin{lemma}[Northcott finiteness for algebraic elements]
+\label{lem:northcott-algebraic-elements}
+\dcref{Claim 3.5.6}
+\source{chen-moriwaki-adelic:page-0217}
+\uses{def:northcott-property,lem:affine-height-power,lem:minimal-polynomial-height,def:height-archimedean-constant}
+\notready
+Assume $S$ has the Northcott property. For every $C,\delta\in\mathbb R$,
+the set
+\[
+ \{\alpha\in\overline K:
+       h_S([1:\alpha])\leq C,\ [K(\alpha):K]\leq\delta\}
+\]
+is finite.
+\end{lemma}
+\begin{proof}
+An affine height is nonnegative and a simple field-extension degree
+is a positive integer. The set is therefore empty if $C<0$ or
+$\delta<1$. Otherwise let $D=\lfloor\delta\rfloor\geq1$ and put
+\[
+ B=\delta C+(\delta-1)(\log2)A_S\geq0.
+\]
+This is a finite real number. For an element in the stated set, its
+minimal polynomial has degree $1\leq d\leq D$, and each nonleading
+coefficient $a_j$ satisfies
+\[
+ h_S^{\mathrm{aff}}(a_j)\leq h_S(F)
+ \leq d\,h_S([1:\alpha])+(d-1)(\log2)A_S\leq B.
+\]
+For the last inequality use $h_S([1:\alpha])\leq C$, $C\geq0$,
+$d\leq\delta$, and $(\log2)A_S\geq0$.
+
+By the Northcott property the set
+$T=\{a\in K:h_S^{\mathrm{aff}}(a)\leq B\}$ is finite.
+For each $d\in\{1,\ldots,D\}$ there are only finitely many
+monic degree-$d$ polynomials with nonleading coefficients in $T$:
+they are indexed by the finite set $T^d$. The union over the
+finitely many possible degrees is finite. A nonzero polynomial of
+degree $d$ has at most $d$ roots in a field: if a root $b$ exists,
+factor out $X-b$; every other root is a root of the quotient, and
+induction on the degree proves the bound, starting with a nonzero
+constant. The union of the root sets of the finitely many possible
+minimal polynomials is thus finite and contains the desired set.
+\end{proof}
+
+\begin{definition}[Field of definition of a projective point]
+\label{def:projective-field-of-definition}
+\source{chen-moriwaki-adelic:page-0216,chen-moriwaki-adelic:page-0217,chen-moriwaki-adelic:page-0218}
+\notready
+Let $x=[a_0:\cdots:a_n]\in\mathbb P^n(\overline K)$ and
+choose $j$ with $a_j\ne0$. Define
+\[
+ K(x)=K(a_0/a_j,\ldots,a_n/a_j)\subseteq\overline K.
+\]
+This field does not depend on the representative or on $j$, and
+it is finite over $K$. It is the smallest intermediate field $F$
+of $\overline K/K$ over which $x$ has a projective representative.
+\end{definition}
+\begin{proof}
+Replacing $a$ by $ca$ with $c\ne0$ leaves every ratio unchanged.
+If $a_k\ne0$, then
+$a_i/a_k=(a_i/a_j)/(a_k/a_j)$ belongs to the field defined using
+$j$. This proves containment of the field defined using $k$ in
+the field defined using $j$. Reversing $j$ and $k$ proves equality.
+Each ratio is algebraic over $K$, and adjoining finitely many
+algebraic elements gives a finite extension by the tower formula
+for degrees.
+
+The tuple $(a_i/a_j)_{i=0}^n$ has coordinate $1$ at $j$, is a
+representative of $x$, and belongs to $K(x)^{n+1}$. Conversely,
+if $b\in F^{n+1}\setminus\{0\}$ represents $x$, then $a=cb$
+for a nonzero $c\in\overline K$. Thus $b_j\ne0$ and
+$a_i/a_j=b_i/b_j\in F$ for every $i$. Hence $K(x)\subseteq F$,
+proving the asserted minimality.
+\end{proof}
+
+\begin{lemma}[Degree and height bounds on projective charts]
+\label{lem:projective-chart-height-degree}
+\source{chen-moriwaki-adelic:page-0217,chen-moriwaki-adelic:page-0218}
+\uses{def:projective-field-of-definition,prop:height-coordinate-bound,def:absolute-projective-height}
+\notready
+For $x=[a_0:\cdots:a_n]\in\mathbb P^n(\overline K)$ with
+$a_j\ne0$, put $b_i=a_i/a_j$. Then
+\[
+ [K(b_i):K]\leq[K(x):K],\qquad
+ h_S([1:b_i])\leq h_S(x)\quad(0\leq i\leq n).
+\]
+On the chart $a_j\ne0$, the normalized tuple $(b_i)_{i=0}^n$
+determines $x$ uniquely.
+\end{lemma}
+\begin{proof}
+There is a tower $K\subseteq K(b_i)\subseteq K(x)$ of finite
+extensions. Its degrees multiply:
+$[K(x):K]=[K(x):K(b_i)]\,[K(b_i):K]$.
+The first factor is a positive integer, proving the degree bound.
+Apply the affine coordinate-height bound to the representative $a$
+over the proper curve $S\otimes_K\overline K$ to get the height
+inequality. Finally $(b_i)$ represents $x$ and has coordinate $1$
+at $j$. Two points with the same normalized tuple have the same
+representative and are equal.
+\end{proof}
+
+\begin{theorem}[Northcott's theorem]
+\label{thm:northcott}
+\dcref{Theorem 3.5.3}
+\source{chen-moriwaki-adelic:page-0216,chen-moriwaki-adelic:page-0217,chen-moriwaki-adelic:page-0218}
+\uses{def:northcott-property,lem:northcott-algebraic-elements,def:projective-field-of-definition,lem:projective-chart-height-degree}
+\notready
+If $S$ has the Northcott property, then for every $n\in\mathbb N$
+and every $C,\delta\in\mathbb R$, the set
+\[
+ \{x\in\mathbb P^n(\overline K):
+       h_S(x)\leq C,\ [K(x):K]\leq\delta\}
+\]
+is finite.
+\end{theorem}
+\begin{proof}
+By Lemma~\ref{lem:northcott-algebraic-elements}, the set
+\[
+ T=\{b\in\overline K:
+       h_S([1:b])\leq C,\ [K(b):K]\leq\delta\}
+\]
+is finite. Fix $j\in\{0,\ldots,n\}$ and restrict to points
+in the displayed set with nonzero $j$th coordinate. By
+Lemma~\ref{lem:projective-chart-height-degree}, their normalized
+tuples belong to $T^{n+1}$ and determine the points injectively.
+This chart subset is finite because $T^{n+1}$ is finite. Every
+projective point has some nonzero coordinate, so the full set is
+the union of these $n+1$ finite chart subsets and is finite.
+\end{proof}
+
+\begin{corollary}[Northcott property under finite extension]
+\label{cor:northcott-finite-extension}
+\dcref{Corollary 3.5.7}
+\source{chen-moriwaki-adelic:page-0218}
+\uses{def:northcott-property,thm:northcott,def:projective-field-of-definition,lem:height-finite-embedding,lem:algebraic-embedding-extension,prop:finite-proper}
+\notready
+Assume $S$ has the Northcott property and let $E/K$ be a finite
+extension. Then $S\otimes_K E$ has the Northcott property.
+\end{corollary}
+\begin{proof}
+The extended adelic curve is proper. Choose a $K$-embedding
+$i:E\hookrightarrow\overline K$, which exists by extension of
+the inclusion $K\hookrightarrow\overline K$. Let $C\geq0$ and
+$d=[E:K]$. For any $a\in E$, the field $K(i(a))$ is an
+intermediate field of the finite degree-$d$ extension $i(E)/K$,
+so the degree tower formula gives $[K(i(a)):K]\leq d$.
+Finite-embedding compatibility also gives
+\[
+ h_{S\otimes_K E}^{\mathrm{aff}}(a)=h_S([1:i(a)]).
+\]
+For $x=[1:i(a)]$, the ratio definition gives $K(x)=K(i(a))$.
+Consequently $a\mapsto[1:i(a)]$ maps the elements of $E$ with
+affine height at most $C$ into the set of projective points of
+height at most $C$ and degree at most $d$ in
+$\mathbb P^1(\overline K)$. This map is injective: proportional
+representatives whose first coordinates are both $1$ have scalar
+factor $1$, and $i$ is injective. The target is finite by
+Theorem~\ref{thm:northcott}; its subset and the injectively mapped
+source set are finite. Since this holds for every $C\geq0$, the
+extended curve has the Northcott property.
+\end{proof}

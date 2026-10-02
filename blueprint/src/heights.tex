@@ -155,7 +155,8 @@ their logarithmic inequality and use $h_S(b)=h_S(a)$.
 \begin{proposition}[Invariance under algebraic extension]
 \label{prop:height-algebraic-extension}
 \uses{def:tuple-height,def:affine-height,def:algebraic-extension,prop:algebraic-base-pullback}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.localHeight_algebraicExtension,ArakelovGeometry.AdelicStructure.logHeight_algebraicExtension,ArakelovGeometry.AdelicStructure.affineHeight_algebraicExtension}
+\leanok
 If $L/K$ is algebraic and $a\in K^I$, then
 $h_{S\otimes_K L}(a)=h_S(a)$. In particular affine heights of
 elements of $K$ are unchanged by algebraic extension.
@@ -173,7 +174,8 @@ equality of its integrals. Apply this to $(1,b)$ for the last assertion.
 \source{chen-moriwaki-adelic:page-0215}
 \dcref{Definition 3.5.1}
 \uses{def:projective-height,def:algebraic-extension,prop:algebraic-proper}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.absoluteHeight,ArakelovGeometry.AdelicStructure.absoluteHeight_mk,ArakelovGeometry.AdelicStructure.absoluteHeight_nonneg,ArakelovGeometry.AdelicStructure.absoluteHeight_mk_one}
+\leanok
 Let $S$ be proper and let $\overline K$ be an algebraic closure of $K$.
 The height of $x\in\mathbb P^n(\overline K)$ with respect to $S$ is
 $h_S(x):=h_{S\otimes_K\overline K}(x)$.
@@ -194,7 +196,7 @@ Definition~\ref{def:projective-height}, with precisely the displayed integral.
 \source{chen-moriwaki-adelic:page-0216}
 \dcref{Definition 3.5.2}
 \uses{def:affine-height,prop:height-algebraic-extension,def:absolute-projective-height}
-\notready
+\leanok
 A proper adelic curve $S$ has the Northcott property if
 $\{b\in K:h_S^{\mathrm{aff}}(b)\leq C\}$ is finite for every real
 $C\geq0$. Equivalently, use the heights $h_S([1:b])$ over $\overline K$.
