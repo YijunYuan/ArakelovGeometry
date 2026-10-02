@@ -4,6 +4,7 @@
 \label{def:rational-circle-parameters}
 \source{chen-moriwaki-adelic:page-0189}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.circlePoint, ArakelovGeometry.AdelicCurve.RationalFunction.circlePoint_eq_exp, ArakelovGeometry.AdelicCurve.RationalFunction.continuous_circlePoint, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanDomain, ArakelovGeometry.AdelicCurve.RationalFunction.ArchimedeanPlace, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanMeasure}
+\leanok
 Write $z(t)=\exp(2\pi it)$ and
 $T=\{t\in[0,1]:z(t)\text{ is transcendental over }\mathbb Q\}$.
 The map $z:\mathbb R\to\mathbb C$ is continuous. Equip $T$ with the
@@ -65,6 +66,7 @@ It is archimedean because $|2|_t=2>1=\max\{|1|_t,|1|_t\}$.
 \source{chen-moriwaki-adelic:page-0189}
 \uses{def:rational-circle-parameters,lem:rational-transcendental-circle-conull}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.integrable_log_polynomial_circle}
+\leanok
 For every rational polynomial $p$, the function
 $t\mapsto\log|p(z(t))|$ is integrable on $T$, with the logarithm extended
 by zero at zero.
@@ -73,8 +75,10 @@ by zero at zero.
 The zero polynomial gives the zero function. For a nonzero polynomial,
 the logarithm of the absolute value of a nonzero
 complex polynomial is integrable on the unit circle. Indeed, factor the
-polynomial as $a\prod_j(X-\alpha_j)$; away from its finitely many zeros
-the logarithm is continuous and bounded on compact arcs. A root off the
+polynomial as $a\prod_j(X-\alpha_j)$; outside its finitely many zeros,
+its logarithm is $\log|a|+\sum_j\log|z-\alpha_j|$.
+Changing its values at the finitely many zeros does not affect integrability.
+Away from those zeros the logarithm is continuous and bounded on compact arcs. A root off the
 circle contributes a continuous function. For a root
 $\alpha_j=e^{i\theta_j}$ on the circle, write $u=\theta-\theta_j$ modulo
 $2\pi$, with $|u|\leq\pi$. Then
@@ -114,6 +118,7 @@ The difference is measurable and integrable.
 \source{chen-moriwaki-adelic:page-0189}
 \uses{def:rational-archimedean-place,lem:rational-transcendental-circle-conull,lem:rational-archimedean-log-integrable}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAdelicStructure}
+\leanok
 The field $\mathbb Q(T)$, the probability space $T$ with induced Lebesgue
 measure, and the absolute values $|\cdot|_t$ form an adelic structure.
 \end{definition}
@@ -130,6 +135,7 @@ lemma. The measure has mass one by the full-measure lemma.
 \source{chen-moriwaki-adelic:page-0188,chen-moriwaki-adelic:page-0189,chen-moriwaki-adelic:page-0220}
 \uses{def:rational-horizontal-place,lem:rational-horizontal-log-integrable,def:rational-prime-place,lem:rational-prime-log-integrable,def:rational-archimedean-structure}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.finiteAdelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.adelicCurve, ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure_horizontal, ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure_prime, ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure_archimedean, ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure_measure}
+\leanok
 Let $\Omega_h$ be the closed points of $\mathbb A^1_{\mathbb Q}$ and
 $\mathcal P$ the rational primes. The parameter space
 \[
@@ -166,6 +172,7 @@ measure here use the construction in Subsection~3.2.5.
 \source{chen-moriwaki-adelic:page-0220}
 \uses{def:rational-function-adelic-curve,def:rational-horizontal-place,def:rational-prime-place}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.rationalFiniteAdelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.rationalInfiniteAdelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicCurve, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_horizontal, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_prime, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_infinite, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_measure}
+\leanok
 Let $\widetilde\Omega_{\mathbb Q}=(\Omega_h\amalg\mathcal P)\amalg\{\infty\}$,
 with counting measure, and attach the trivial absolute value of $\mathbb Q$
 to each $x\in\Omega_h$, the standard $p$-adic absolute value to each
@@ -194,6 +201,7 @@ with the stated amalgamation; regrouping does not change them.
 \source{chen-moriwaki-adelic:page-0220}
 \uses{def:adelic-morphism,def:rational-function-adelic-curve,def:augmented-rational-adelic-curve,lem:rational-transcendental-circle-conull,lem:probability-collapse}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.morphismToRationals, ArakelovGeometry.AdelicCurve.RationalFunction.morphismToRationals_fieldMap, ArakelovGeometry.AdelicCurve.RationalFunction.morphismToRationals_baseMap_finite, ArakelovGeometry.AdelicCurve.RationalFunction.morphismToRationals_baseMap_archimedean, ArakelovGeometry.AdelicCurve.RationalFunction.fibreAverage, ArakelovGeometry.AdelicCurve.RationalFunction.fibreAverage_finite, ArakelovGeometry.AdelicCurve.RationalFunction.fibreAverage_infinite, ArakelovGeometry.AdelicCurve.RationalFunction.integrable_fibreAverage, ArakelovGeometry.AdelicCurve.RationalFunction.morphismToRationals_fibreIntegral_toL1}
+\leanok
 There is a morphism $\alpha:S\to\widetilde S_{\mathbb Q}$ whose field map
 is the inclusion $\mathbb Q\hookrightarrow\mathbb Q(T)$, whose parameter
 map fixes $\Omega_h\amalg\mathcal P$ and collapses $T$ to $\infty$, and
