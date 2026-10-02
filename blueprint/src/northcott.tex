@@ -297,7 +297,6 @@ Lemma~\ref{lem:polynomial-height-product-sharp}.
 \label{rem:northcott-archimedean-error}
 \source{chen-moriwaki-adelic:page-0217}
 \uses{lem:polynomial-height-product,lem:polynomial-height-product-sharp}
-\notready
 The archimedean-mass bound is the formula in Lemma 3.5.5 of
 \cite{chen-moriwaki}. Integrability of $\kappa_S$ does not impose
 finiteness of $\nu(\Omega_\infty)$, since its positive values need
@@ -308,13 +307,17 @@ below therefore uses the stronger finite error $(\log m)A_S$.
 \begin{lemma}[Roots of an irreducible polynomial are conjugate]
 \label{lem:minimal-polynomial-root-conjugacy}
 \uses{lem:height-finite-embedding}
-\notready
+\lean{ArakelovGeometry.AdelicStructure.affineHeight_eq_of_aeval_minpoly_eq_zero,ArakelovGeometry.AdelicStructure.affineHeight_eq_of_irreducible}
+\leanok
 Let $F\in K[X]$ be monic and irreducible of degree $d\geq1$, let
 $\alpha\in\overline K$ be a root, and write
 $F=\prod_{j=1}^d(X-\alpha_j)$ in $\overline K[X]$, with roots
 listed with multiplicity. Then
 $h_S([1:\alpha_j])=h_S([1:\alpha])$ for every $j$.
 This assertion includes inseparable irreducible polynomials.
+More generally, if $E/K$ and $L/K$ are algebraic extensions,
+$a\in E$, and $b\in L$ is a root of the minimal polynomial of $a$,
+then $h_{S\otimes_K L}^{\mathrm{aff}}(b)=h_{S\otimes_K E}^{\mathrm{aff}}(a)$.
 \end{lemma}
 \begin{proof}
 Since $F$ is monic and irreducible and vanishes at $\alpha$, it is
@@ -330,7 +333,9 @@ root heights with $h_{S\otimes_K E}^{\mathrm{aff}}(\alpha)$.
 Every entry in the root list is a root, so the equality also holds
 for repeated entries. This uses the finite-embedding form of
 conjugate invariance directly and needs neither a normal closure
-nor a separability assumption.
+nor a separability assumption. For the more general assertion use
+the inclusion $K(a)\hookrightarrow E$ and the root embedding
+$K(a)\hookrightarrow L$ in the same height comparison.
 \end{proof}
 
 \begin{lemma}[Height of a product of linear factors]
@@ -360,30 +365,47 @@ two error coefficients is $(r-1)+1=r$, which gives the assertion
 for $r+1$. Induction proves every case.
 \end{proof}
 
+\begin{lemma}[Polynomial heights under base extension]
+\label{lem:polynomial-height-base-extension}
+\uses{def:polynomial-height,prop:height-algebraic-extension}
+\lean{ArakelovGeometry.AdelicStructure.polynomialHeight_map_algebraicExtension}
+\leanok
+For an algebraic extension $L/K$ and a polynomial $F\in K[X]$,
+one has $h_{S\otimes_K L}(F)=h_S(F)$.
+\end{lemma}
+\begin{proof}
+The inclusion $K\hookrightarrow L$ is injective, so it preserves
+the degree and the coefficient tuple of a nonzero polynomial.
+Apply height invariance under algebraic extension to that tuple.
+For the zero polynomial both heights equal zero.
+\end{proof}
+
 \begin{lemma}[Height of the minimal polynomial]
 \label{lem:minimal-polynomial-height}
 \source{chen-moriwaki-adelic:page-0217}
-\uses{lem:minimal-polynomial-root-conjugacy,lem:polynomial-height-split-bound,lem:polynomial-height-monic-coefficient,prop:height-algebraic-extension}
-\notready
-Let $\alpha\in\overline K$, let $d=[K(\alpha):K]$, and let
+\uses{lem:minimal-polynomial-root-conjugacy,lem:polynomial-height-split-bound,lem:polynomial-height-monic-coefficient,lem:polynomial-height-base-extension}
+\lean{ArakelovGeometry.AdelicStructure.polynomialHeight_minpoly_le,ArakelovGeometry.AdelicStructure.polynomialHeight_minpoly_le_finrank,ArakelovGeometry.AdelicStructure.affineHeight_minpoly_coeff_le}
+\leanok
+Let $L/K$ be algebraic, $\alpha\in L$, let $d=[K(\alpha):K]$, and let
 $F=X^d+a_{d-1}X^{d-1}+\cdots+a_0\in K[X]$ be its monic
 minimal polynomial. Then
 \[
- h_S(F)\leq d\,h_S([1:\alpha])+(d-1)(\log2)A_S,
+ h_S(F)\leq d\,h_{S\otimes_K L}^{\mathrm{aff}}(\alpha)+(d-1)(\log2)A_S,
  \qquad
- h_S^{\mathrm{aff}}(a_j)\leq h_S(F)\quad(0\leq j<d).
+ h_S^{\mathrm{aff}}(F_j)\leq h_S(F)\quad(j\geq0).
 \]
 \end{lemma}
 \begin{proof}
 The degree $d$ is positive, and $F$ factors over $\overline K$
 as a product of $d$ linear factors, counting multiplicities.
-Every root has the same height as $\alpha$ by
+Every root has the same affine height as $\alpha$ by
 Lemma~\ref{lem:minimal-polynomial-root-conjugacy}. Substitute
-these equal heights in the split-product bound. Since $F$ is monic,
-the monic-coefficient bound gives the second inequality with
-$h_S([1:a_j])$ on the left. The height of a base-field coefficient
-agrees with $h_S^{\mathrm{aff}}(a_j)$ by algebraic-extension
-invariance. This is the minimal-polynomial estimate in the
+these equal heights in the split-product bound, and identify the
+height of $F$ over $K$ with its height over $\overline K$ by
+Lemma~\ref{lem:polynomial-height-base-extension}. Since $F$ is monic,
+the monic-coefficient bound over $K$ gives the second inequality
+for every coefficient, including the leading and zero coefficients.
+This is the minimal-polynomial estimate in the
 proof of Claim 3.5.6, strengthened by using $A_S$ in its error term.
 \end{proof}
 
@@ -414,31 +436,33 @@ root sets, hence is finite.
 \dcref{Claim 3.5.6}
 \source{chen-moriwaki-adelic:page-0217}
 \uses{def:northcott-property,lem:affine-height-power,lem:minimal-polynomial-height,def:height-archimedean-constant,lem:northcott-bounded-coefficient-roots}
-\notready
-Assume $S$ has the Northcott property. For every $C,\delta\in\mathbb R$,
+\lean{ArakelovGeometry.AdelicStructure.finite_affineHeight_le_minpoly_natDegree_le,ArakelovGeometry.AdelicStructure.finite_affineHeight_le_degree_le}
+\leanok
+Assume $S$ has the Northcott property and let $L/K$ be any algebraic
+extension. For every $C,\delta\in\mathbb R$,
 the set
 \[
- \{\alpha\in\overline K:
-       h_S([1:\alpha])\leq C,\ [K(\alpha):K]\leq\delta\}
+ \{\alpha\in L:
+       h_{S\otimes_K L}^{\mathrm{aff}}(\alpha)\leq C,\ [K(\alpha):K]\leq\delta\}
 \]
-is finite.
+is finite. In particular this gives Claim 3.5.6 when $L=\overline K$.
 \end{lemma}
 \begin{proof}
 An affine height is nonnegative and a simple field-extension degree
 is a positive integer. The set is therefore empty if $C<0$ or
 $\delta<1$. Otherwise let $D=\lfloor\delta\rfloor\geq1$ and put
 \[
- B=\delta C+(\delta-1)(\log2)A_S\geq0.
+ B=DC+(D-1)(\log2)A_S\geq0.
 \]
 This is a finite real number. For an element in the stated set, its
 minimal polynomial has degree $1\leq d\leq D$, and each nonleading
 coefficient $a_j$ satisfies
 \[
  h_S^{\mathrm{aff}}(a_j)\leq h_S(F)
- \leq d\,h_S([1:\alpha])+(d-1)(\log2)A_S\leq B.
+ \leq d\,h_{S\otimes_K L}^{\mathrm{aff}}(\alpha)+(d-1)(\log2)A_S\leq B.
 \]
-For the last inequality use $h_S([1:\alpha])\leq C$, $C\geq0$,
-$d\leq\delta$, and $(\log2)A_S\geq0$.
+For the last inequality use $h_{S\otimes_K L}^{\mathrm{aff}}(\alpha)\leq C$,
+$C\geq0$, $d\leq D$, and $(\log2)A_S\geq0$.
 
 The leading coefficient is $1$ and coefficients beyond the degree
 are zero, so all the other coefficient heights are zero, hence at
