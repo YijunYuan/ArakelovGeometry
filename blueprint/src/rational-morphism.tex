@@ -43,7 +43,7 @@ this set from the Borel interval $[0,1]$, of measure one, proves the claim.
 \begin{definition}[Archimedean rational-function places]
 \label{def:rational-archimedean-place}
 \source{chen-moriwaki-adelic:page-0189}
-\uses{def:rational-circle-parameters}
+\uses{def:rational-circle-parameters,def:absolute-value-restriction}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanEval, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAbv, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAbv_apply, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAbv_rat, ArakelovGeometry.AdelicCurve.RationalFunction.not_isNonarchimedean_archimedeanAbv}
 \leanok
 For $t\in T$, evaluation at $z(t)$ defines a field homomorphism
@@ -116,7 +116,7 @@ The difference is measurable and integrable.
 \begin{definition}[The archimedean component adelic structure]
 \label{def:rational-archimedean-structure}
 \source{chen-moriwaki-adelic:page-0189}
-\uses{def:rational-archimedean-place,lem:rational-transcendental-circle-conull,lem:rational-archimedean-log-integrable}
+\uses{def:rational-archimedean-place,lem:rational-transcendental-circle-conull,lem:rational-archimedean-log-integrable,def:adelic-structure}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAdelicStructure}
 \leanok
 The field $\mathbb Q(T)$, the probability space $T$ with induced Lebesgue
@@ -133,7 +133,7 @@ lemma. The measure has mass one by the full-measure lemma.
 \begin{definition}[The adelic structure on $\mathbb Q(T)$]
 \label{def:rational-function-adelic-curve}
 \source{chen-moriwaki-adelic:page-0188,chen-moriwaki-adelic:page-0189,chen-moriwaki-adelic:page-0220}
-\uses{def:rational-horizontal-place,lem:rational-horizontal-log-integrable,def:rational-prime-place,lem:rational-prime-log-integrable,def:rational-archimedean-structure}
+\uses{def:rational-horizontal-place,lem:rational-horizontal-log-integrable,def:rational-prime-place,lem:rational-prime-log-integrable,def:rational-archimedean-structure,def:adelic-amalgamation}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.finiteAdelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.adelicCurve, ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure_horizontal, ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure_prime, ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure_archimedean, ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure_measure}
 \leanok
 Let $\Omega_h$ be the closed points of $\mathbb A^1_{\mathbb Q}$ and
@@ -170,7 +170,7 @@ measure here use the construction in Subsection~3.2.5.
 \begin{definition}[The augmented rational adelic curve]
 \label{def:augmented-rational-adelic-curve}
 \source{chen-moriwaki-adelic:page-0220}
-\uses{def:rational-function-adelic-curve,def:rational-horizontal-place,def:rational-prime-place}
+\uses{def:rational-function-adelic-curve,def:rational-horizontal-place,def:rational-prime-place,def:adelic-amalgamation,def:absolute-value-restriction}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.rationalFiniteAdelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.rationalInfiniteAdelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicCurve, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_horizontal, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_prime, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_infinite, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_measure}
 \leanok
 Let $\widetilde\Omega_{\mathbb Q}=(\Omega_h\amalg\mathcal P)\amalg\{\infty\}$,

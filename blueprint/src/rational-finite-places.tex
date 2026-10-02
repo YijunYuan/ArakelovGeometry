@@ -7,6 +7,7 @@ $\sigma$-algebra and counting measure, as in
 
 \begin{definition}[The horizontal absolute values]
 \label{def:rational-horizontal-place}
+\uses{lem:ff-constant-valuation}
 \source{chen-moriwaki-adelic:page-0188}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.HorizontalPlace,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalMeasurableSpace,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalPolynomial,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalPolynomial_isPrimitive,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalPolynomial_ne_zero,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalPolynomial_span,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalHeight,ArakelovGeometry.AdelicCurve.RationalFunction.one_le_horizontalHeight,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalAbv,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalAbv_apply,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalAbv_rat}
 \leanok
@@ -85,7 +86,7 @@ absolute value, which proves the restriction assertion.
 \begin{lemma}[Integrability at the rational primes]
 \label{lem:rational-prime-log-integrable}
 \source{chen-moriwaki-adelic:page-0188,chen-moriwaki-adelic:page-0189}
-\uses{def:rational-prime-place}
+\uses{def:rational-prime-place,def:adelic-structure,lem:finite-support-integrability}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.rationalPadicAbv_eq_one_of_large,ArakelovGeometry.AdelicCurve.RationalFunction.finite_rationalPadicAbv_ne_one,ArakelovGeometry.AdelicCurve.RationalFunction.finite_primeAbv_polynomial_ne_one,ArakelovGeometry.AdelicCurve.RationalFunction.finite_support_log_primeAbv,ArakelovGeometry.AdelicCurve.RationalFunction.integrable_log_primeAbv,ArakelovGeometry.AdelicCurve.RationalFunction.primeAdelicStructure}
 \leanok
 For $a=m/n\in\mathbb Q^\times$ in lowest terms, $|a|_p=1$ whenever
@@ -114,7 +115,7 @@ finite sum. This proves all the adelic integrability axioms.
 \begin{lemma}[Integrability at the horizontal places]
 \label{lem:rational-horizontal-log-integrable}
 \source{chen-moriwaki-adelic:page-0188,chen-moriwaki-adelic:page-0189}
-\uses{def:rational-horizontal-place}
+\uses{def:rational-horizontal-place,lem:ff-finite-log-support,lem:ff-finite-log,def:adelic-structure,lem:finite-support-integrability}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.finite_support_log_horizontalAbv,ArakelovGeometry.AdelicCurve.RationalFunction.integrable_log_horizontalAbv,ArakelovGeometry.AdelicCurve.RationalFunction.horizontalAdelicStructure}
 \leanok
 For $f\in K^\times$, the function $x\mapsto\log|f|_x$ has finite
