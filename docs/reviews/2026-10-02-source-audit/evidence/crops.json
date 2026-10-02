@@ -6,9 +6,9 @@
     "printed_page": 189,
     "crop_pdf_points": [
       50,
-      493,
+      491,
       386,
-      555
+      553
     ],
     "scale": 3,
     "method": "PyMuPDF page.get_pixmap; original PDF rasterization only",

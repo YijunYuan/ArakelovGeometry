@@ -38,5 +38,21 @@
     "old_reports_preserved": true,
     "no_broad_rebuild": true
   },
-  "status": "provenance fixed; mathematical findings and report pending"
+  "status": "final report and evidence complete; see review-checks.json for verification and ledger history for delivery commit",
+  "language": "English",
+  "language_authority": "Human conversation I-0010 superseded the initial Chinese requirement before final review.",
+  "report": {
+    "pdf": "report.pdf",
+    "tex": "report.tex",
+    "catalogue": "findings.json",
+    "build_script": "build.sh",
+    "pages": 17,
+    "findings": 29,
+    "sha256": {
+      "report.pdf": "9e6c18333fe01594af1001a7a0829f033bff916a3a08043c10876cd8e3876af0",
+      "report.tex": "18566b986ee296684e671c52d3f424504c8e0fc4cbb3ea542f2240a24a0620d7",
+      "findings.json": "f53c138620bf8d5da05785619384ac2b878e217ff4727aba9d0268da1c387e75",
+      "build.sh": "08ffe8acd08cf0efc3f2869851290ba5ef0d7b92e6f6d084b5df35bc0a5c0b0c"
+    }
+  }
 }

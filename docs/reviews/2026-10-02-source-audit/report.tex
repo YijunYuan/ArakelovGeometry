@@ -48,7 +48,7 @@ High S1 & False divisibility; substantive proof error & \pageref{s1}\\
 High S2 & False Borel equality inside the probability proof & \pageref{s2}\\
 High S3 & Infinite mass cannot supply a finite Northcott bound & \pageref{s3}\\
 Medium T13 & Horizontal infinity mistakenly included in a recalled definition & \pageref{horizontal}\\
-Low T1--T20 & Notation/reference corrections; T6 partly withdrawn & \pageref{notation}\\
+Low (other T) & Notation/reference corrections; T6 partly withdrawn & \pageref{notation}\\
 Notes E1--E3 & Expository qualifications, not additional major errors & \pageref{e1}\\
 Boundary F1--F3 & Formalization corrections and a normalization difference & \pageref{formal}\\\bottomrule
 \end{tabularx}
@@ -105,14 +105,7 @@ Finite descent must allow a sufficiently large finite base field, instead of for
 \]
 Base change and embedding counts then give compatible local probability weights. Prove the tower identity on finite cylinders and extend by uniqueness of finite measures on a generating $\pi$-system. This repairs the proof of Theorem 3.4.12 without refuting its conclusion.
 
-The actual producer is \code{IntermediateField.exists_finite_descent} in
-\code{ArakelovGeometry/ExternalResults/AlgebraicTowerSupport.lean:242};
-its finite-subset precursor is at line 152. Consumers are
-\code{fibreLIntegral_tower_projFinite} in \code{TowerCylinder.lean:54},
-and \code{towerFibreMeasure_eq} and \code{fibreLIntegral_tower} in
-\code{Tower.lean:25,46}. Blueprint nodes include
-\code{lem:finite-descent-separable}, \code{lem:descended-base-change}, and
-\code{thm:algebraic-tower}. Full paths appear in Appendix A.
+The repair uses \code{IntermediateField.exists_finite_descent}; Appendix A identifies its cylinder and measure consumers and exact blueprint attachments.
 
 \clearpage
 \section{S2: cylinder measurability need not equal full Borel measurability}\label{s2}
@@ -279,7 +272,7 @@ After correction, horizontal points remain the height-one primes of $\Q[T]$; the
 T1--T12 retain the older report's IDs; T13--T20 extend the review. “Complete” means all old notation candidates and all newly confirmed slips in this audit, not every typo in the book. Confidence is high except for the inferred editorial diagnosis in T17. These are local corrections preserving the intended result, except that T13 affects the recalled parameter set and T10--T11 still depend on repairing S1. Appendix A gives code and blueprint counterparts by ID.
 
 \small
-\begin{longtable}{@{}p{9mm}p{29mm}p{\dimexpr\linewidth-38mm-4\tabcolsep\relax}@{}}
+\begin{longtable}{@{}p{9mm}>{\raggedright\arraybackslash}p{29mm}>{\raggedright\arraybackslash}p{\dimexpr\linewidth-38mm-4\tabcolsep\relax}@{}}
 \toprule ID & PDF / printed; locator & Printed defect and correction\\\midrule\endhead
 T1 & 194 / 178; (3.3) &
 $[K'_x:K_w]$ uses Latin $w$ instead of the base parameter $\omega$. Replace $K_w$ by $K_\omega$ in the normalized local-degree sum.\\[4pt]
@@ -310,7 +303,7 @@ T13 & 188--189,220 / 172--173,204; Ex.~3.7.2(3) recall &
 T14 & 189 / 173; paragraph after the definition of $\nu$ &
 The phrase $f\in K[T]\setminus\{0\}$ uses $K=\Q(T)$, already fixed on p.~188. The Mahler/factorization argument is for $f\in\Q[T]\setminus\{0\}$; extend to $\Q(T)^\times$ by quotients.\\[4pt]
 T15 & 190 / 174; last paragraph of \S3.2.5 &
-The archimedean contribution is said to come from $\Omega_{h,\mathrm P}$ and $I_*$. No $I_*$ was defined here; use the parameter set $[0,1]_*$ defined on p.~189.\\[4pt]
+The third (archimedean) component is denoted $I_*$. No $I_*$ was defined here; use the parameter set $[0,1]_*$ defined on p.~189.\\[4pt]
 T16 & 219 / 203; composition paragraph after Def.~3.7.1 &
 With $\alpha:S'\to S$, the second morphism is printed $\beta:S''\to S$. For the stated composition use $\beta:S''\to S'$.\\[4pt]
 T17 & 220 / 204; after the augmented target's disjoint union &
@@ -331,7 +324,7 @@ The original page instead shows:
 \begin{center}
 \includegraphics[width=\linewidth]{evidence/t6-original.png}
 \end{center}
-\noindent{\small Original PDF205 / printed189; crop rectangle $(50,493,386,555)$ in PDF coordinates.}
+\noindent{\small Original PDF205 / printed189; crop rectangle $(50,491,386,553)$ in PDF coordinates.}
 
 The extra $\mathrm{sc}$ in the factorization ring is real and should be removed.
 But the quotient's left side \emph{already reads} $K_w^{\rm sc}$, and the following “Therefore” sentence also correctly uses $w$. The old second allegation is withdrawn; moving it to the next sentence would reproduce the same misreading. Inbox issue I-0007 records the blueprint's inaccurate quotation. The accepted blueprint and old report are preserved.
@@ -348,7 +341,7 @@ After (3.11), the integrability sentence treats $\ln|\mu_i|_\omega$ for every co
 
 
 \clearpage
-\section{Formalization corrections and model boundaries: not manuscript errors}\label{formal}
+\section{Formalization corrections and boundaries}\label{formal}
 \subsection{F1: integrability must be tested by a nonnegative integral}
 \loc{210--211}{194--195}
 After (3.18), the source defines signed fibre integration only when $I_{L/K}(|f|)$ is real-valued. Proposition 3.4.9 then treats integrable functions and $L^1$. Using a totalized real Bochner integral to test integrability of an infinite fibre can conceal divergence, because it returns 0 for a nonintegrable function. For measurable $f$, the correct test is
@@ -393,7 +386,6 @@ Proposition 3.6.2 uses a normal closure in the manuscript; current Lean uses pos
 
 Zero elements and zero vectors require care when comparing source domains with totalized Lean definitions; the chosen totalization alone is not a manuscript error. The three audited imported-Mathlib graph warnings (I-0004) and missing legacy page transcriptions (I-0001) are project metadata limitations. They are not errors in the original PDF. The audit used that PDF directly where transcriptions were missing.
 
-\clearpage
 \section{What changes relative to the older report}
 The eight-page report dated 16 September 2026,
 \code{docs/chen-moriwaki-formalization-review.tex/pdf}, is preserved. The present report independently revisits its claims rather than translating or concatenating them.
@@ -460,7 +452,6 @@ F3 & \code{placeRep}\newline \code{Examples/NumberFields.lean:105}\par\smallskip
 \end{longtable}
 \normalsize
 
-\clearpage
 \section{Coverage and limitations}
 All 41 entries in \code{docs/source-result-index.json} for \S\S3.3--3.7 were checked against blueprint attachments, source-facing statements, and issue-relevant proof bodies. This does not mean independently re-proving all 1,413 constants in the declaration inventory or auditing every imported Mathlib proof.
 
@@ -513,7 +504,7 @@ No broad rebuild or Lean probe was run. Global strict source coverage remains li
 Raw independent review records and the separate S2 adjudication are retained under \code{evidence/}; the final English catalogue and this report contain the adjudicated conclusions.
 
 Compile with XeLaTeX and the installed TeX Gyre Pagella / DejaVu Sans Mono fonts:
-\begin{quote}\code{bash build.sh}\end{quote}
+\begin{quote}\texttt{bash build.sh}\end{quote}
 The script runs three passes, rejects missing-glyph, unresolved-reference, and overfull-box diagnostics, keeps auxiliaries in a temporary directory, and updates only \code{report.pdf} in the report directory.
 The final factual/locator review, honesty review, and per-page rendering inspection are recorded in \code{review-checks.json}. These checks certify the delivered report's reviewed scope and layout; they do not certify the manuscript as error-free.
 All deliverables are committed in the Horizon ledger, with accepted project sources and old reports preserved.
