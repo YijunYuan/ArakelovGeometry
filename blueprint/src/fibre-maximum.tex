@@ -4,6 +4,11 @@ Throughout this subsection $S=(K,(\Omega,\mathcal A,\nu),\phi)$ is an
 adelic curve and $L/K$ is a finite extension, with no separability or
 normality hypothesis. Write $X_\omega=\pi_{L/K}^{-1}(\{\omega\})$
 inside the intrinsic parameter space $\Omega\times_{M_K}M_L$.
+For the finite integration operator, write $E$ for the separable part of
+$L/K$, $\Omega_L^{\mathrm{fin}}=\Omega_E$ for its parameter model, and
+$X_\omega^{\mathrm{fin}}$ for its fibre. Unique extension over $L/E$
+gives the base-preserving measurable identification
+$e:\Omega_L^{\mathrm{fin}}\to\Omega_L$.
 
 \begin{definition}[Fibre maximum]
 \label{def:fibre-maximum}
@@ -35,11 +40,11 @@ bound of that range.
 \source{chen-moriwaki-adelic:page-0218,chen-moriwaki-adelic:page-0219}
 \uses{lem:finite-fibre-sum,def:finite-fibre-lintegral}
 \lean{ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreLIntegral_indicator_pos_iff}
-For any subset $B$ of the finite extension parameter space and any
+For any subset $B\subseteq\Omega_L^{\mathrm{fin}}$ and any
 $\omega\in\Omega$,
 \[
- I^+_{L/K}(\mathbf1_B)(\omega)>0
- \quad\Longleftrightarrow\quad B\cap X_\omega\ne\varnothing.
+ I^{\mathrm{fin},+}_{L/K}(\mathbf1_B)(\omega)>0
+ \quad\Longleftrightarrow\quad B\cap X_\omega^{\mathrm{fin}}\ne\varnothing.
 \]
 \end{lemma}
 \begin{proof}

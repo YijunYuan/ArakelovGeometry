@@ -27,10 +27,10 @@
     "timed_out": false,
     "reused": false,
     "wait_seconds": 0.001,
-    "duration_seconds": 8.903,
-    "started_at": "2026-10-02T05:09:51.072479+00:00",
-    "finished_at": "2026-10-02T05:09:59.975205+00:00",
-    "finished_epoch": 1790917799.975205
+    "duration_seconds": 4.945,
+    "started_at": "2026-10-02T05:37:45.593973+00:00",
+    "finished_at": "2026-10-02T05:37:50.539434+00:00",
+    "finished_epoch": 1790919470.539434
   },
   "audit": {
     "schema_version": 1,
@@ -47,10 +47,10 @@
     "returncode": 0,
     "timed_out": false,
     "reused": false,
-    "wait_seconds": 0.001,
-    "duration_seconds": 3.542,
-    "started_at": "2026-10-02T05:15:33.307813+00:00",
-    "finished_at": "2026-10-02T05:15:36.849334+00:00",
-    "finished_epoch": 1790918136.849334
+    "wait_seconds": 0.0,
+    "duration_seconds": 3.329,
+    "started_at": "2026-10-02T05:42:54.624011+00:00",
+    "finished_at": "2026-10-02T05:42:57.952993+00:00",
+    "finished_epoch": 1790919777.952993
   }
 }
