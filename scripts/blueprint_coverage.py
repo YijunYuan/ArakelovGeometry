@@ -547,9 +547,9 @@ def main():
              "A mapped obligation is still open until its transitive axiom audit is clean.", "",
              f"Project constants: {len(rows)}; extension and height constants: {len(target)}; direct gaps: {len(gaps)}.",
              f"Sorry-backed constants: {result['summary']['sorry_backed_constants']}; blueprint nodes: {len(nodes)}.",
-             f"Unmapped extension constants: {len(missing)}; unmapped gaps: {result['summary']['unmapped_direct_gaps']}.", "",
+             f"Unmapped extension and height constants: {len(missing)}; unmapped gaps: {result['summary']['unmapped_direct_gaps']}.", "",
              f"Unmapped project constants: {len(unmapped_project)}; missing compiled dependency routes: {len(missing_routes)}.",
-             f"Unwritten mathematical blueprint nodes: {result['summary']['unwritten_mathematical_nodes']}.",
+             f"Blueprint nodes awaiting written Lean: {result['summary']['unwritten_mathematical_nodes']}.",
              f"Changed or unrecorded inventory inputs: {len(stale_inventory)}.", "",
              "| Gap | Source | Declaration | Blueprint nodes |", "| --- | --- | --- | --- |"]
     for i, gap in enumerate(gaps, 1):
