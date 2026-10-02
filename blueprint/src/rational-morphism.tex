@@ -6,7 +6,7 @@ The measure on $T$ is the restriction of Lebesgue measure.
 
 \begin{lemma}[Full measure of the transcendental parameters]
 \label{lem:rational-transcendental-circle-conull}
-\source{chen-moriwaki-adelic:page-0220}
+\source{chen-moriwaki-adelic:page-0189}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.countable_algebraic_circle_parameters, ArakelovGeometry.AdelicCurve.RationalFunction.measurableSet_archimedeanDomain, ArakelovGeometry.AdelicCurve.RationalFunction.volume_archimedeanDomain}
 \leanok
 The set $[0,1]\setminus T$ is countable. Consequently $T$ is Borel measurable
@@ -25,23 +25,25 @@ this set from the Borel interval $[0,1]$, of measure one, proves the claim.
 
 \begin{definition}[Archimedean rational-function places]
 \label{def:rational-archimedean-place}
-\source{chen-moriwaki-adelic:page-0220}
-\lean{ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanEval, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAbv, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAbv_rat}
+\source{chen-moriwaki-adelic:page-0189}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanEval, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAbv, ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAbv_rat, ArakelovGeometry.AdelicCurve.RationalFunction.not_isNonarchimedean_archimedeanAbv}
 \leanok
 For $t\in T$, evaluation at $z(t)$ defines a field homomorphism
 $e_t:\mathbb Q(T)\longrightarrow\mathbb C$. Set $|f|_t=|e_t(f)|$.
-This is an absolute value extending the usual absolute value of $\mathbb Q$.
+This is an archimedean absolute value extending the usual absolute value of $\mathbb Q$.
 \end{definition}
 \begin{proof}
 Transcendence says that no nonzero rational polynomial vanishes at $z(t)$.
 Polynomial evaluation is therefore injective and extends uniquely to the
 fraction field by $e_t(p/q)=p(z(t))/q(z(t))$. This is a field homomorphism.
 Pulling back the complex absolute value gives an absolute value, and
-evaluation fixes rational constants, which proves the final assertion.
+evaluation fixes rational constants, which proves the extension assertion.
+It is archimedean because $|2|_t=2>1=\max\{|1|_t,|1|_t\}$.
 \end{proof}
 
 \begin{lemma}[Integrability on the archimedean component]
 \label{lem:rational-archimedean-log-integrable}
+\source{chen-moriwaki-adelic:page-0189}
 \uses{def:rational-archimedean-place,lem:rational-transcendental-circle-conull}
 \lean{ArakelovGeometry.AdelicCurve.RationalFunction.measurable_log_archimedeanAbv, ArakelovGeometry.AdelicCurve.RationalFunction.integrable_log_archimedeanAbv}
 \leanok
@@ -71,4 +73,112 @@ Restriction preserves integrability. On $T$, neither $p(z(t))$ nor
 $q(z(t))$ vanishes, so
 $\log|f|_t=\log|p(z(t))|-\log|q(z(t))|$.
 The difference is measurable and integrable.
+\end{proof}
+
+\begin{definition}[The archimedean component adelic structure]
+\label{def:rational-archimedean-structure}
+\source{chen-moriwaki-adelic:page-0189}
+\uses{def:rational-archimedean-place,lem:rational-transcendental-circle-conull,lem:rational-archimedean-log-integrable}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.archimedeanAdelicStructure}
+The field $\mathbb Q(T)$, the probability space $T$ with induced Lebesgue
+measure, and the absolute values $|\cdot|_t$ form an adelic structure.
+\end{definition}
+\begin{proof}
+The component places are absolute values by construction, and the required
+measurability and integrability of logarithms are precisely the preceding
+lemma. The measure has mass one by the full-measure lemma.
+\end{proof}
+
+\input{rational-finite-places}
+
+\begin{definition}[The adelic structure on $\mathbb Q(T)$]
+\label{def:rational-function-adelic-curve}
+\source{chen-moriwaki-adelic:page-0188,chen-moriwaki-adelic:page-0189,chen-moriwaki-adelic:page-0220}
+\uses{def:rational-horizontal-place,lem:rational-horizontal-log-integrable,def:rational-prime-place,lem:rational-prime-log-integrable,def:rational-archimedean-structure}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.adelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.adelicCurve}
+Let $\Omega_h$ be the closed points of $\mathbb A^1_{\mathbb Q}$ and
+$\mathcal P$ the rational primes. The parameter space
+\[
+ \Omega=(\Omega_h\amalg\mathcal P)\amalg T
+\]
+has counting measure on its first two components and Lebesgue measure on
+$T$. Equip $\mathbb Q(T)$ with the horizontal Mahler absolute values, the
+$p$-adic Gauss absolute values, and the transcendental evaluation absolute
+values on these three components respectively. This defines an adelic
+structure $S$.
+\end{definition}
+\begin{proof}
+The component absolute values have already been constructed. Every function
+on either discrete component is measurable. The preceding archimedean
+integrability lemma gives measurability on the third component. For a nonzero
+rational function the logarithmic evaluation has finite support on each
+discrete component, hence is integrable there for counting measure. It is
+integrable on the third component by the same lemma. Integrability and
+measurability on a disjoint union are equivalent to the corresponding
+properties on its components. These are exactly the adelic-structure axioms.
+\end{proof}
+
+\begin{remark}
+The horizontal component is the one specified in Subsection~3.2.5, namely
+the closed points of $\mathbb P^1_{\mathbb Q}\setminus\{\infty\}$.
+The phrase ``closed points of $\mathbb P^1_{\mathbb Q}$'' in
+Example~3.7.2(3) omits this exclusion. All absolute values and the parameter
+measure here use the construction in Subsection~3.2.5.
+\end{remark}
+
+\begin{definition}[The augmented rational adelic curve]
+\label{def:augmented-rational-adelic-curve}
+\source{chen-moriwaki-adelic:page-0220}
+\uses{def:rational-function-adelic-curve,def:rational-horizontal-place,def:rational-prime-place}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_horizontal, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_prime, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_infinite, ArakelovGeometry.AdelicCurve.RationalFunction.augmentedRationalAdelicStructure_measure}
+Let $\widetilde\Omega_{\mathbb Q}=(\Omega_h\amalg\mathcal P)\amalg\{\infty\}$,
+with counting measure, and attach the trivial absolute value of $\mathbb Q$
+to each $x\in\Omega_h$, the standard $p$-adic absolute value to each
+$p\in\mathcal P$, and the usual real absolute value to $\infty$.
+This defines an adelic curve $\widetilde S_{\mathbb Q}$.
+It is the amalgamation of the standard rational adelic curve with
+counting-measure copies of the trivial absolute value, with the three
+components regrouped as displayed.
+\end{definition}
+\begin{proof}
+The logarithmic functions are measurable since every component is discrete.
+On $\Omega_h$ every nonzero rational has absolute value one, so its logarithm
+vanishes. On the primes the logarithmic function is the restriction of the
+corresponding Gauss logarithmic function for the constant rational function,
+and thus is integrable. The infinite component is one point of mass one and
+every real function there is integrable. This proves the adelic axioms.
+The listed measures and absolute values coincide component by component
+with the stated amalgamation; regrouping does not change them.
+\end{proof}
+
+\begin{example}[The rational-function morphism]
+\label{ex:adelic-morphism-rational-function}
+\source{chen-moriwaki-adelic:page-0220}
+\uses{def:adelic-morphism,def:rational-function-adelic-curve,def:augmented-rational-adelic-curve,lem:rational-transcendental-circle-conull,lem:probability-collapse}
+\lean{ArakelovGeometry.AdelicCurve.RationalFunction.morphismToRationals, ArakelovGeometry.AdelicCurve.RationalFunction.morphismToRationals_fibreIntegral_toL1}
+There is a morphism $\alpha:S\to\widetilde S_{\mathbb Q}$ whose field map
+is the inclusion $\mathbb Q\hookrightarrow\mathbb Q(T)$, whose parameter
+map fixes $\Omega_h\amalg\mathcal P$ and collapses $T$ to $\infty$, and
+whose fibre operator sends the class of an integrable real function $f$ to
+the class represented by
+\[
+ (I_\alpha f)(\omega)=f(\omega)\quad
+ (\omega\in\Omega_h\amalg\mathcal P),\qquad
+ (I_\alpha f)(\infty)=\int_T f(t)\,dt.
+\]
+\end{example}
+\begin{proof}
+The parameter map is measurable and preserves the measure by the
+probability-collapse lemma, since $T$ has measure one. On a horizontal
+place every nonzero rational constant has valuation zero, so restriction
+gives the trivial absolute value. On a prime place the Gauss absolute value
+of a constant is its $p$-adic absolute value. On an archimedean place
+evaluation fixes rational constants, so restriction gives the usual real
+absolute value. At zero all of these equalities hold because absolute
+values vanish at zero. This proves the absolute-value compatibility at
+every parameter and every rational number. The same probability-collapse
+lemma proves that the displayed function-level operator descends to a
+real-linear map on integrable equivalence classes, preserves their
+integrals, and retracts pullback. These facts verify every axiom of an
+adelic-curve morphism.
 \end{proof}
