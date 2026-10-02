@@ -5,7 +5,7 @@ Every project constant, including generated declarations, and every direct depen
 is recorded in `blueprint-coverage.json`. External constants remain library references.
 A mapped obligation is still open until its transitive axiom audit is clean.
 
-Project constants: 998; extension constants: 608; direct gaps: 0.
+Project constants: 1006; extension constants: 627; direct gaps: 0.
 Sorry-backed constants: 0; blueprint nodes: 291.
 Unmapped extension constants: 0; unmapped gaps: 0.
 

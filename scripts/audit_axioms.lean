@@ -4,7 +4,7 @@ import Lean
 /-!
 # Transitive project axiom inventory
 
-Run after `lake build`, using `horizon check --lean scripts/audit_axioms.lean`.
+Run after `lake build`, using `lake env lean scripts/audit_axioms.lean`.
 Every constant whose defining module belongs to this project is inspected,
 including generated declarations and names outside the project namespace.
 `GAP` lines identify transitive dependencies on `sorryAx`; the summary is an

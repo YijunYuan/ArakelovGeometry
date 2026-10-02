@@ -2,11 +2,32 @@
 
 The project has **zero direct proof gaps and zero sorry-backed declarations**.
 All source obligations for Chen–Moriwaki §§3.3–3.4 are covered and discharged.
-The graph and blueprint are synchronized: 283 project-proved nodes, three
-explicitly imported Mathlib nodes, and no displayed TODO nodes. Five additional
+The authored blueprint contains 283 project-proved nodes, three
+explicitly imported Mathlib nodes, and no TODO nodes. Five additional
 blueprint remarks explain source corrections; they are not proof obligations.
 
-## Verified snapshot
+## Module reorganization (2026-10-01)
+
+The extension development is split into shared tools and `Separable/`, `Finite/`,
+and `Algebraic/` modules. `Extension.lean` is an import-only entry point. Authored
+declarations, their namespaces and proof bodies are preserved. The compiled
+inventory contains 1006 constants; the increase from 998 is due to generated
+auxiliary constants being shared differently across module boundaries.
+
+Verification runs directly through `lake build` and `lake env lean`. The full
+build passes all 3477 jobs. The declaration inventory and transitive axiom audit
+report zero proof gaps, zero `sorryAx`, and only `propext`, `Classical.choice`, and
+`Quot.sound`. The imported-boundary audit passes for all three boundaries and
+13 producers. Coverage reports no unmapped declarations, missing compiled
+dependency routes, dependency cycles, false completion markers or stale evidence.
+
+This checkout lacks the external `../references/<slug>/tex/<page>.tex` source
+transcriptions required by the coverage checker. Full closed-obligation coverage
+therefore cannot pass its source-file checks in this environment. These checks
+remain enabled; the local book PDF is not substituted for the registered
+transcriptions. See `blueprint-coverage.json` for the current detailed results.
+
+## Previous verified snapshot
 
 All checks ran on 2026-09-16 through Horizon:
 
@@ -75,14 +96,13 @@ coverage checks. No mathematical or proof obligation is hidden by those statuses
 From the project root:
 
 ```sh
-"$HORIZON_BIN" check --json
-"$HORIZON_BIN" check --lean scripts/declaration_inventory.lean --json
-"$HORIZON_BIN" check --lean scripts/audit_axioms.lean --json
-"$HORIZON_BIN" check --lean scripts/audit_imported_boundaries.lean --json
-python3 scripts/blueprint_coverage.py --record-provenance --require-closed
-"$HORIZON_BIN" graph -p ArakelovGeometry sync
-"$HORIZON_BIN" blueprint --json
+python3 scripts/blueprint_coverage.py --verify --require-closed
 ```
+
+`--verify` runs the build and all three Lean audit scripts directly, records their
+exit statuses in `.lake/proof-checks/`, and refreshes both provenance manifests.
+To check existing evidence without rebuilding, omit `--verify`. The source
+transcriptions must be available under `../references/` for the full check.
 
 The closed-obligation check rejects direct or transitive proof gaps, unproved
 source nodes, unsupported nodes, unknown attachments, invalid imported evidence,

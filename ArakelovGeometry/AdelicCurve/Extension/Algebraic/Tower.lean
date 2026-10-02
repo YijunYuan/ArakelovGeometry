@@ -3,9 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.AlgebraicTowerCylinder
-import ArakelovGeometry.AdelicCurve.AlgebraicTowerIntegral
-import ArakelovGeometry.AdelicCurve.AlgebraicIntegrable
+import ArakelovGeometry.AdelicCurve.Equiv
+import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerCylinder
+import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerIntegral
+import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integrable
 /-!
 # Compatibility of algebraic extensions
 

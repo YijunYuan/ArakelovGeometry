@@ -3,7 +3,7 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.FiniteTower
+import ArakelovGeometry.AdelicCurve.Extension.Finite.Tower
 
 /-!
 # Finite fibre probabilities and pullbacks

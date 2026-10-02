@@ -3,7 +3,7 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.AlgebraicTowerBasic
+import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
 import Mathlib.Probability.Kernel.Composition.IntegralCompProd
 
 /-!
