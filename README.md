@@ -28,7 +28,8 @@ line bundles, heights, and equidistribution over it.
   `AdelicStructure`, `AdelicCurve`, `IsProper` (`AdelicCurve/Defs.lean`); the archimedean
   locus `Ωinf`, the archimedean exponent `κ` via an Ostrowski-type classification, and
   Propositions 3.1.1–3.1.3 (measurability of `Ωinf`, measurability/integrability of `κ`,
-  finiteness of `ν(Ωinf)`) in `AdelicCurve/Basic.lean`.
+  finiteness of `ν(Ωinf)` when `κ` has a positive lower bound on `Ωinf`)
+  in `AdelicCurve/Basic.lean`.
 - [ ] **3.2 Examples**
   - [x] 3.2.1 Function fields — `functionFieldAdelicCurve`
     (`AdelicCurve/Examples/FunctionFields.lean`), for the case `C = ℙ¹_k`, i.e.
@@ -57,17 +58,21 @@ line bundles, heights, and equidistribution over it.
 - [x] **3.4 General algebraic extensions** — finite and arbitrary algebraic
   extensions, projective fibre probabilities, disintegration and tower compatibility.
   The signed tower formula assumes integrability and holds almost everywhere.
-- [ ] **3.5 Height function and Northcott property** (Theorem 3.5.3).
+- [x] **3.5 Height function and Northcott property** — height construction,
+  polynomial estimates, bounded-height-and-degree finiteness (Theorem 3.5.3),
+  and preservation under finite extension (Corollary 3.5.7).
 - [ ] **3.6 Measurability of automorphism actions**.
 - [ ] **3.7 Morphisms of adelic curves**.
 
-The full mathematical route for §3.3–3.4 is written in `blueprint/src`.
-All project declarations and required source obligations are proved. The
+The full mathematical route for §§3.3–3.5 is written in `blueprint/src`.
+All project declarations and mathematical obligations in that route are proved. The
 [declaration inventory](docs/obligations.md) covers every project constant;
 the [source-result index](docs/source-result-index.md) covers every numbered
 result, including all five clauses of Theorem 3.3.7. The authored blueprint
-has **283 project-proved nodes and three explicitly imported Mathlib nodes**,
-with no remaining TODO nodes.
+has **319 project-proved nodes and three explicitly imported Mathlib nodes**,
+with no unwritten mathematical nodes. Missing pre-Horizon transcriptions for
+PDF pages 194–214 still prevent globally complete source-provenance coverage;
+the registered Section 3.5 pages are available. See [proof status](docs/proof-status.md).
 
 ## Repository layout
 
@@ -87,6 +92,9 @@ with no remaining TODO nodes.
     arbitrary algebraic adelic curves, inverse limits, and tower compatibility.
   `AdelicCurve/Extension.lean` is an import-only entry point for this theory;
   individual modules can be imported for a smaller dependency set.
+- `ArakelovGeometry/AdelicCurve/Height/` — heights, polynomial bounds, intrinsic
+  projective fields of definition, Northcott finiteness and finite-extension ascent.
+  `AdelicCurve/Height.lean` imports the complete Section 3.5 development.
 - `ArakelovGeometry/ExternalResults/` — supporting results that morally belong to mathlib:
   places and the archimedean/nonarchimedean dichotomy (`Place.lean`,
   `AbsoluteValue.lean`), an Ostrowski-type classification of archimedean absolute values
@@ -97,8 +105,8 @@ with no remaining TODO nodes.
 ## Building
 
 The project uses Lean `v4.33.0` (see `lean-toolchain`) and the pinned mathlib version in
-`lake-manifest.json`. The configured build after the 2026-10-01 module reorganization passes all 3477 jobs.
-The compiled inventory and a separate transitive axiom audit check **1006 project
+`lake-manifest.json`. The 2026-10-02 configured Horizon build passes all 3488 jobs.
+The compiled inventory and a separate transitive axiom audit check **1154 project
 constants: zero direct gaps, zero sorry-backed constants, and no axioms beyond
 `propext`, `Classical.choice`, and `Quot.sound`**.
 See [source corrections](docs/source-corrections.md) for the signed tower domain
