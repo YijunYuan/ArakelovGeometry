@@ -403,17 +403,6 @@ noncomputable def functionFieldAdelicStructure (k : Type*) [Field k] :
     · rw [Measure.ofSingletons_singleton]
       exact pointWeight_ne_top x
 
-end ArakelovGeometry.AdelicStructure
-
-namespace ArakelovGeometry.AdelicCurve
-
-open ArakelovGeometry.AdelicStructure MeasureTheory AbsoluteValue IsDedekindDomain
-open scoped ENNReal
-
-/-- The adelic curve of the function field `k(X)` of `ℙ¹_k` (Chen–Moriwaki §3.2.1). -/
-noncomputable abbrev functionFieldAdelicCurve (k : Type*) [Field k] : AdelicCurve :=
-  (functionFieldAdelicStructure k).toAdelicCurve
-
 /-- The product formula `∑_x n_x ord_x (f) = 0` of Chen–Moriwaki §3.2.1, integrated against
 the point measure of the function-field adelic structure. -/
 theorem functionField_product_formula {k : Type*} [Field k] {f : RatFunc k} (hf : f ≠ 0) :
@@ -430,12 +419,28 @@ theorem functionField_product_formula {k : Type*} [Field k] {f : RatFunc k} (hf 
     exact support_weighted_log_subset f)]
   exact finsum_weighted_log_eq_zero hf
 
-/-- The function-field adelic curve is proper: this is the vanishing of the degree of
+/-- The function-field adelic structure is proper: this is the vanishing of the degree of
 principal divisors on `ℙ¹_k`, i.e. the product formula of Chen–Moriwaki §3.2.1. -/
-noncomputable instance instIsProperFunctionFieldAdelicCurve (k : Type*) [Field k] :
-    IsProper (functionFieldAdelicCurve k) := by
+instance instIsProperFunctionFieldAdelicStructure (k : Type*) [Field k] :
+    IsProper (functionFieldAdelicStructure k) := by
   constructor
   intro f hf
   exact functionField_product_formula hf
+
+end ArakelovGeometry.AdelicStructure
+
+namespace ArakelovGeometry.AdelicCurve
+
+/-- The adelic curve of the function field `k(X)` of `ℙ¹_k` (Chen–Moriwaki §3.2.1). -/
+noncomputable abbrev functionFieldAdelicCurve (k : Type*) [Field k] : AdelicCurve :=
+  (AdelicStructure.functionFieldAdelicStructure k).toAdelicCurve
+
+/-- The logarithmic product formula, exposed in the curve namespace for compatibility. -/
+alias functionField_product_formula := AdelicStructure.functionField_product_formula
+
+/-- Properness of the function-field adelic curve, inherited from its adelic structure. -/
+abbrev instIsProperFunctionFieldAdelicCurve (k : Type*) [Field k] :
+    IsProper (functionFieldAdelicCurve k) :=
+  AdelicStructure.instIsProperFunctionFieldAdelicStructure k
 
 end ArakelovGeometry.AdelicCurve

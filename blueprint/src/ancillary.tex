@@ -142,7 +142,7 @@ It is therefore measurable and integrable, as required.
 \begin{proposition}[Properness under subfield restriction]
 \label{prop:proper-subfield-restriction}
 \leanok
-\lean{ArakelovGeometry.AdelicCurve.isProper_fRestriction}
+\lean{ArakelovGeometry.AdelicStructure.isProper_fRestriction}
 \uses{def:subfield-restriction,def:adelic-structure}
 If $S$ is proper, then $S|_F$ is proper.
 \end{proposition}
@@ -237,7 +237,7 @@ Both terms vanish by properness, which proves the product formula.
 \begin{definition}[Trivial adelic curve]
 \label{def:trivial-adelic-curve}
 \leanok
-\lean{ArakelovGeometry.AdelicCurve.trivialAdelicStructure,ArakelovGeometry.AdelicCurve.trivialAdelicCurve}
+\lean{ArakelovGeometry.AdelicStructure.trivialAdelicStructure,ArakelovGeometry.AdelicCurve.trivialAdelicCurve}
 \uses{def:adelic-structure}
 For every field $K$ and every measure space $(\Omega,\mathcal A,\nu)$,
 assign the trivial absolute value to each point:
@@ -256,7 +256,7 @@ It is measurable and integrable for every measure $\nu$.
 \label{prop:proper-trivial-adelic-curve}
 \leanok
 \uses{def:trivial-adelic-curve,def:adelic-structure}
-\lean{ArakelovGeometry.AdelicCurve.instIsProperTrivialAdelicCurve}
+\lean{ArakelovGeometry.AdelicStructure.instIsProperTrivialAdelicStructure}
 Every trivial adelic curve is proper.
 \end{proposition}
 \begin{proof}

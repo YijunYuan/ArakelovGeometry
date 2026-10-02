@@ -18,6 +18,8 @@ holds for every nonzero `x`.
 
 This file also defines the archimedean locus `Ωinf`, its complement `Ωfin`, and the
 archimedean exponent `κ` provided by the Ostrowski-type normalization.
+Properness is defined on `AdelicStructure`; `AdelicCurve.IsProper` is an abbreviation
+for the same property of the underlying structure.
 -/
 
 namespace ArakelovGeometry
@@ -47,6 +49,12 @@ namespace AdelicStructure
 
 instance instMeasurableSpaceΩ {K : Type*} [Field K] (AS : AdelicStructure K) :
     MeasurableSpace AS.Ω := AS.A
+
+/-- An adelic structure is *proper* if the product formula holds for all nonzero
+elements of its field (Chen–Moriwaki, §3.1). -/
+class IsProper {K : Type u} [Field K] (AS : AdelicStructure.{u, v} K) : Prop where
+  /-- The product formula. -/
+  product_formula : ∀ x : K, x ≠ 0 → ∫ ω, Real.log (AS.ϕ ω x) ∂AS.v = 0
 
 /-- The nonarchimedean (finite) locus of an adelic structure. -/
 def Ωfin {K : Type*} [Field K] (AS : AdelicStructure K) : Set AS.Ω :=
@@ -133,18 +141,21 @@ abbrev Ωfin (C : AdelicCurve) := C.AS.Ωfin
 /-- The archimedean locus of an adelic curve. -/
 abbrev Ωinf (C : AdelicCurve) := C.AS.Ωinf
 
-/-- An adelic curve is *proper* if the product formula holds for all nonzero elements
-of `K` (Chen–Moriwaki, §3.1). -/
-class IsProper (C : AdelicCurve) where
-  /-- The product formula. -/
-  product_formula : ∀ x : C.K, x ≠ 0 → ∫ ω, Real.log ((C.AS.ϕ ω) x) ∂C.AS.v = 0
+/-- Properness of a bundled adelic curve is properness of its underlying structure. -/
+abbrev IsProper (C : AdelicCurve) : Prop := C.AS.IsProper
+
+/-- The product formula for a bundled adelic curve. -/
+theorem IsProper.product_formula {C : AdelicCurve} [C.IsProper] (x : C.K) (hx : x ≠ 0) :
+    ∫ ω, Real.log (C.ϕ ω x) ∂C.v = 0 :=
+  AdelicStructure.IsProper.product_formula (AS := C.AS) x hx
 
 end AdelicCurve
 
 namespace AdelicStructure
 
-/-- Bundle an adelic structure on `K` into an adelic curve. -/
-def toAdelicCurve {K : Type*} [Field K] (AS : AdelicStructure K) : AdelicCurve where
+/-- Bundle an adelic structure on `K` into an adelic curve. This is reducible so that
+typeclass inference can reuse properties of the underlying structure. -/
+abbrev toAdelicCurve {K : Type*} [Field K] (AS : AdelicStructure K) : AdelicCurve where
   K := K
   hK := ‹Field K›
   AS := AS

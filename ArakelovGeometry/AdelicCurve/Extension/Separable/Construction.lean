@@ -121,15 +121,15 @@ noncomputable def _root_.ArakelovGeometry.AdelicStructure.finiteSeparableExtensi
 
 /-- Chen--Moriwaki, Theorem 3.3.7(5): the finite separable extension of a proper adelic curve
 is proper. -/
-theorem isProper_finiteSeparableExtension [AS.toAdelicCurve.IsProper] :
-    (AS.finiteSeparableExtension L).toAdelicCurve.IsProper := by
+theorem isProper_finiteSeparableExtension [AS.IsProper] :
+    (AS.finiteSeparableExtension L).IsProper := by
   constructor
   change ∀ a : L, a ≠ 0 → ∫ x, Real.log (ϕ x a) ∂inducedMeasure AS L = 0
   intro a ha
   have hn : Algebra.norm K a ≠ 0 := Algebra.norm_ne_zero_iff.mpr ha
   have h := finrank_mul_integral_log_inducedMeasure AS L a ha
   have hzero : (∫ ω, Real.log (AS.ϕ ω (Algebra.norm K a)) ∂AS.v) = 0 :=
-    AdelicCurve.IsProper.product_formula (C := AS.toAdelicCurve) (Algebra.norm K a) hn
+    AdelicStructure.IsProper.product_formula (AS := AS) (Algebra.norm K a) hn
   rw [hzero] at h
   exact (mul_eq_zero.mp h).resolve_left
     (by exact_mod_cast (Module.finrank_pos (R := K) (M := L)).ne')

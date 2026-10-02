@@ -321,7 +321,7 @@ theorem polynomialHeight_prod_X_sub_C_le (l : List K) (hl : l ≠ []) :
 
 section Proper
 
-variable [AS.toAdelicCurve.IsProper]
+variable [AS.IsProper]
 
 theorem polynomialHeight_nonneg (p : K[X]) : 0 ≤ AS.polynomialHeight p :=
   AS.logHeight_nonneg _

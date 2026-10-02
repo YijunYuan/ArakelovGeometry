@@ -32,6 +32,16 @@ def fRestriction {K : Type*} [Field K] (AS : AdelicStructure K) (F : Subfield K)
   measurable_log x hx := AS.measurable_log (x : K) (by exact_mod_cast hx)
   integrable_log x hx := AS.integrable_log (x : K) (by exact_mod_cast hx)
 
+/-- Properness is inherited by the restriction to a subfield: the product formula for
+`F ⊆ K` is a special case of the one for `K`. -/
+theorem isProper_fRestriction {K : Type*} [Field K] {AS : AdelicStructure K}
+    [AS.IsProper] (F : Subfield K) : (AS.fRestriction F).IsProper := by
+  constructor
+  intro x hx
+  have hx' : F.subtype x ≠ 0 := fun h ↦
+    hx (F.subtype.injective (h.trans (map_zero F.subtype).symm))
+  exact IsProper.product_formula (AS := AS) (F.subtype x) hx'
+
 /-- The restriction of an adelic structure to a measurable subset `Ω₀` of its index space
 (Chen–Moriwaki, §3.2.9): keep the absolute values and restrict the measure to `Ω₀`. -/
 noncomputable def sRestriction {K : Type*} [Field K] (AS : AdelicStructure K)
@@ -58,15 +68,10 @@ namespace AdelicCurve
 abbrev fRestriction (AC : AdelicCurve) (F : Subfield AC.K) : AdelicCurve :=
   (AC.AS.fRestriction F).toAdelicCurve
 
-/-- Properness is inherited by the restriction to a subfield: the product formula for
-`F ⊆ K` is a special case of the one for `K`. -/
+/-- Properness of a bundled curve is inherited by restriction to a subfield. -/
 theorem isProper_fRestriction {AC : AdelicCurve} [IsProper AC] (F : Subfield AC.K) :
-    IsProper (AC.fRestriction F) := by
-  constructor
-  intro x hx
-  have hx' : F.subtype x ≠ 0 := fun h ↦
-    hx (F.subtype.injective (h.trans (map_zero F.subtype).symm))
-  exact IsProper.product_formula (C := AC) (F.subtype x) hx'
+    IsProper (AC.fRestriction F) :=
+  AdelicStructure.isProper_fRestriction (AS := AC.AS) F
 
 /-- The restriction of an adelic curve to a measurable subset of its index space. -/
 noncomputable abbrev sRestriction (AC : AdelicCurve) (Ω₀ : Set AC.AS.Ω)

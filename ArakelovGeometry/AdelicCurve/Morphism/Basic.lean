@@ -7,7 +7,7 @@ import ArakelovGeometry.AdelicCurve.Defs
 import Mathlib.CategoryTheory.Category.Basic
 
 /-!
-# Morphisms of adelic curves
+# Morphisms of adelic structures and the category of adelic curves
 
 Chen–Moriwaki, Definition 3.7.1: a contravariant field homomorphism, a
 measure-preserving map of parameter spaces compatible with the absolute values,
@@ -15,24 +15,27 @@ and a real-linear retraction of pullback on `L¹` preserving integrals.
 The fibre operator is part of a morphism; no positivity or continuity is imposed.
 -/
 
-namespace ArakelovGeometry.AdelicCurve
+namespace ArakelovGeometry.AdelicStructure
 
 open MeasureTheory
 
 universe u₁ v₁ u₂ v₂ u₃ v₃ u₄ v₄
 
-/-- A morphism of adelic curves, with all three data and all compatibilities of
+variable {K : Type u₁} {L : Type u₂} {M : Type u₃} {N : Type u₄}
+  [Field K] [Field L] [Field M] [Field N]
+
+/-- A morphism of adelic structures, with all three data and all compatibilities of
 Chen–Moriwaki, Definition 3.7.1. The direction of the field map is opposite to
 the direction of the map on parameter spaces. -/
-structure Hom (C : AdelicCurve.{u₁, v₁}) (D : AdelicCurve.{u₂, v₂}) where
+structure Hom (C : AdelicStructure.{u₁, v₁} K) (D : AdelicStructure.{u₂, v₂} L) where
   /-- The homomorphism of underlying fields. -/
-  fieldMap : D.K →+* C.K
+  fieldMap : L →+* K
   /-- The map of parameter spaces. -/
   baseMap : C.Ω → D.Ω
   /-- The parameter map is measurable and sends the source measure to the target measure. -/
   measurePreserving : MeasurePreserving baseMap C.v D.v
   /-- Restricting a source absolute value along the field map gives the target value. -/
-  absoluteValue_comp : ∀ (ω : C.Ω) (a : D.K),
+  absoluteValue_comp : ∀ (ω : C.Ω) (a : L),
     C.ϕ ω (fieldMap a) = D.ϕ (baseMap ω) a
   /-- The disintegration operator on equivalence classes of integrable real functions. -/
   fibreIntegral : Lp ℝ 1 C.v →ₗ[ℝ] Lp ℝ 1 D.v
@@ -45,8 +48,8 @@ structure Hom (C : AdelicCurve.{u₁, v₁}) (D : AdelicCurve.{u₂, v₂}) wher
 
 namespace Hom
 
-variable {C : AdelicCurve.{u₁, v₁}} {D : AdelicCurve.{u₂, v₂}}
-  {E : AdelicCurve.{u₃, v₃}} {F : AdelicCurve.{u₄, v₄}}
+variable {C : AdelicStructure.{u₁, v₁} K} {D : AdelicStructure.{u₂, v₂} L}
+  {E : AdelicStructure.{u₃, v₃} M} {F : AdelicStructure.{u₄, v₄} N}
 
 /-- Equality of all three data determines a morphism. -/
 @[ext]
@@ -97,8 +100,8 @@ theorem integral_comp (f : Hom C D) {g : D.Ω → ℝ} (hg : Integrable g D.v) :
     (integral_map f.measurable_baseMap.aemeasurable hm).symm
 
 /-- The identity morphism. -/
-noncomputable def id (C : AdelicCurve.{u₁, v₁}) : Hom C C where
-  fieldMap := RingHom.id C.K
+noncomputable def id (C : AdelicStructure.{u₁, v₁} K) : Hom C C where
+  fieldMap := RingHom.id K
   baseMap := _root_.id
   measurePreserving := MeasurePreserving.id C.v
   absoluteValue_comp _ _ := rfl
@@ -142,6 +145,80 @@ theorem comp_assoc (h : Hom E F) (g : Hom D E) (f : Hom C D) :
 theorem pullback_comp (g : Hom D E) (f : Hom C D) (h : Lp ℝ 1 E.v) :
     (g.comp f).pullback h = f.pullback (g.pullback h) :=
   Lp.compMeasurePreserving_comp_apply h g.measurePreserving f.measurePreserving
+
+end Hom
+
+end ArakelovGeometry.AdelicStructure
+
+namespace ArakelovGeometry.AdelicCurve
+
+open MeasureTheory
+
+universe u₁ v₁ u₂ v₂ u₃ v₃ u₄ v₄
+
+/-- Morphisms of bundled adelic curves are morphisms of their adelic structures. -/
+abbrev Hom (C : AdelicCurve.{u₁, v₁}) (D : AdelicCurve.{u₂, v₂}) :=
+  AdelicStructure.Hom C.AS D.AS
+
+namespace Hom
+
+variable {C : AdelicCurve.{u₁, v₁}} {D : AdelicCurve.{u₂, v₂}}
+  {E : AdelicCurve.{u₃, v₃}} {F : AdelicCurve.{u₄, v₄}}
+
+/-- Equality of all three data determines a bundled morphism. -/
+theorem ext {f g : Hom C D} (hfield : f.fieldMap = g.fieldMap)
+    (hbase : f.baseMap = g.baseMap) (hintegral : f.fibreIntegral = g.fibreIntegral) : f = g :=
+  AdelicStructure.Hom.ext hfield hbase hintegral
+
+/-- The parameter map of a bundled morphism is measurable. -/
+theorem measurable_baseMap (f : Hom C D) : Measurable f.baseMap :=
+  AdelicStructure.Hom.measurable_baseMap f
+
+/-- The pushforward of the source measure is the target measure. -/
+theorem map_measure (f : Hom C D) : Measure.map f.baseMap C.v = D.v :=
+  AdelicStructure.Hom.map_measure f
+
+/-- Pullback along a bundled morphism. -/
+noncomputable abbrev pullback (f : Hom C D) : Lp ℝ 1 D.v →ₗᵢ[ℝ] Lp ℝ 1 C.v :=
+  AdelicStructure.Hom.pullback f
+
+theorem coeFn_pullback (f : Hom C D) (g : Lp ℝ 1 D.v) :
+    f.pullback g =ᵐ[C.v] g ∘ f.baseMap :=
+  AdelicStructure.Hom.coeFn_pullback f g
+
+theorem fibreIntegral_pullback_apply (f : Hom C D) (g : Lp ℝ 1 D.v) :
+    f.fibreIntegral (f.pullback g) = g :=
+  AdelicStructure.Hom.fibreIntegral_pullback_apply f g
+
+theorem integrable_comp (f : Hom C D) {g : D.Ω → ℝ} (hg : Integrable g D.v) :
+    Integrable (g ∘ f.baseMap) C.v :=
+  AdelicStructure.Hom.integrable_comp f hg
+
+theorem integral_comp (f : Hom C D) {g : D.Ω → ℝ} (hg : Integrable g D.v) :
+    ∫ ω, g (f.baseMap ω) ∂C.v = ∫ ω, g ω ∂D.v :=
+  AdelicStructure.Hom.integral_comp f hg
+
+/-- The identity morphism of a bundled curve. -/
+noncomputable abbrev id (C : AdelicCurve.{u₁, v₁}) : Hom C C :=
+  AdelicStructure.Hom.id C.AS
+
+/-- Composition of bundled morphisms. -/
+noncomputable abbrev comp (g : Hom D E) (f : Hom C D) : Hom C E :=
+  AdelicStructure.Hom.comp g f
+
+theorem id_comp (f : Hom C D) : (id D).comp f = f :=
+  AdelicStructure.Hom.id_comp f
+
+theorem comp_id (f : Hom C D) : f.comp (id C) = f :=
+  AdelicStructure.Hom.comp_id f
+
+theorem comp_assoc (h : Hom E F) (g : Hom D E) (f : Hom C D) :
+    (h.comp g).comp f = h.comp (g.comp f) :=
+  AdelicStructure.Hom.comp_assoc h g f
+
+theorem pullback_comp (g : Hom D E) (f : Hom C D) (h : Lp ℝ 1 E.v) :
+    (g.comp f).pullback h = f.pullback (g.pullback h) :=
+  AdelicStructure.Hom.pullback_comp g f h
 
 end Hom
 

@@ -13,7 +13,7 @@ trivial absolute value to every point.  The resulting adelic curve is proper: th
 of the product formula vanishes identically.
 -/
 
-namespace ArakelovGeometry.AdelicCurve
+namespace ArakelovGeometry.AdelicStructure
 
 open MeasureTheory AbsoluteValue
 
@@ -31,17 +31,12 @@ noncomputable def trivialAdelicStructure (K : Type*) [Field K]
     simp only [AbsoluteValue.trivial_apply ha, Real.log_one]
     exact integrable_zero _ _ _
 
-/-- The trivial adelic curve on `K` over a measure space `(Ω, A, v)`. -/
-noncomputable abbrev trivialAdelicCurve (K : Type*) [Field K]
-    (Ω : Type*) [A : MeasurableSpace Ω] (v : Measure Ω) : AdelicCurve :=
-  (trivialAdelicStructure K Ω v).toAdelicCurve
-
 open Classical in
-/-- The trivial adelic curve is proper: the integrand of the product formula vanishes
+/-- The trivial adelic structure is proper: the integrand of the product formula vanishes
 identically. -/
-noncomputable instance instIsProperTrivialAdelicCurve
+instance instIsProperTrivialAdelicStructure
     (K : Type*) [Field K] (Ω : Type*) [A : MeasurableSpace Ω]
-    (v : Measure Ω) : IsProper (trivialAdelicCurve K Ω v) := by
+    (v : Measure Ω) : IsProper (trivialAdelicStructure K Ω v) := by
   constructor
   intro x hx
   -- the integrand is identically `log 1 = 0`
@@ -50,5 +45,27 @@ noncomputable instance instIsProperTrivialAdelicCurve
     intro y hy
     rw [AbsoluteValue.trivial_apply hy, Real.log_one, integral_zero]
   exact key x hx
+
+end ArakelovGeometry.AdelicStructure
+
+namespace ArakelovGeometry.AdelicCurve
+
+open MeasureTheory
+
+/-- The trivial adelic structure, exposed in the curve namespace for compatibility. -/
+noncomputable abbrev trivialAdelicStructure (K : Type*) [Field K]
+    (Ω : Type*) [A : MeasurableSpace Ω] (v : Measure Ω) : AdelicStructure K :=
+  AdelicStructure.trivialAdelicStructure K Ω v
+
+/-- The trivial adelic curve on `K` over a measure space `(Ω, A, v)`. -/
+noncomputable abbrev trivialAdelicCurve (K : Type*) [Field K]
+    (Ω : Type*) [A : MeasurableSpace Ω] (v : Measure Ω) : AdelicCurve :=
+  (AdelicStructure.trivialAdelicStructure K Ω v).toAdelicCurve
+
+/-- Properness of the trivial adelic curve, inherited from its adelic structure. -/
+abbrev instIsProperTrivialAdelicCurve
+    (K : Type*) [Field K] (Ω : Type*) [A : MeasurableSpace Ω]
+    (v : Measure Ω) : IsProper (trivialAdelicCurve K Ω v) :=
+  AdelicStructure.instIsProperTrivialAdelicStructure K Ω v
 
 end ArakelovGeometry.AdelicCurve

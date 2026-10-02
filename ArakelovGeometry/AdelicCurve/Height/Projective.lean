@@ -169,7 +169,7 @@ end Projectivization
 namespace ArakelovGeometry.AdelicStructure
 
 variable {L ι : Type*} [Field L] [Fintype ι] [Nonempty ι]
-    (AS : AdelicStructure L) [AS.toAdelicCurve.IsProper]
+    (AS : AdelicStructure L) [AS.IsProper]
 
 /-- Every coordinate in a nonzero projective chart has height bounded by the point's height. -/
 theorem affineHeight_normalizedCoordinates_le (x : Projectivization L (ι → L))

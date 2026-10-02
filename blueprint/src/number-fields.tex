@@ -459,7 +459,7 @@ of an adelic structure.
 \begin{theorem}[The logarithmic product formula]\label{thm:number-field-product-formula}
 \leanok
 \uses{def:number-field-adelic-structure,prop:number-field-place-classification,lem:finite-place-type,lem:infinite-place-type,lem:finite-place-injectivity,lem:number-field-finite-normalization,lem:number-field-infinite-normalization,lem:number-field-weights}
-\lean{ArakelovGeometry.AdelicCurve.numberField_product_formula}
+\lean{ArakelovGeometry.AdelicStructure.numberField_product_formula}
 For every $a\in K^\times$,
 \[
  \int_{\mathcal P_K}\log r_\omega(a)\,d\nu_K(\omega)=0.
@@ -498,7 +498,7 @@ the product one. Its logarithm is zero, as required.
 \begin{corollary}[Properness of the number-field adelic curve]\label{cor:number-field-proper}
 \leanok
 \uses{def:adelic-structure,def:number-field-adelic-structure,thm:number-field-product-formula}
-\lean{ArakelovGeometry.AdelicCurve.instIsProperNumberFieldAdelicCurve}
+\lean{ArakelovGeometry.AdelicStructure.instIsProperNumberFieldAdelicStructure}
 The adelic curve associated with $K$ is proper.
 \end{corollary}
 \begin{proof}

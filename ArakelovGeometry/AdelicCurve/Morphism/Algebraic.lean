@@ -49,7 +49,7 @@ theorem fibreIntegralL1_compMeasurePreserving (f : Lp ℝ 1 AS.v) :
 
 end ArakelovGeometry.AdelicStructure.Algebraic
 
-namespace ArakelovGeometry.AdelicCurve.Hom
+namespace ArakelovGeometry.AdelicStructure.Hom
 
 open AdelicStructure
 
@@ -59,7 +59,7 @@ variable (L : Type*) [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
 /-- Chen–Moriwaki, Example 3.7.2 (1): an algebraic extension gives a morphism
 back to the original adelic curve, with its prescribed fibre-integration operator. -/
 noncomputable def algebraicExtension :
-    Hom (AS.algebraicExtension L).toAdelicCurve AS.toAdelicCurve where
+    Hom (AS.algebraicExtension L) AS where
   fieldMap := algebraMap K L
   baseMap := ParameterSpaceExtension.proj
   measurePreserving := Algebraic.measurePreserving_proj AS L
@@ -97,5 +97,43 @@ theorem algebraicExtension_fibreIntegral_toL1 {f : ParameterSpaceExtension AS L 
     (algebraicExtension AS L).fibreIntegral (hf.toL1 f) =
       (Algebraic.integrable_fibreIntegral AS L hf).toL1 (Algebraic.fibreIntegral AS L f) :=
   Algebraic.fibreIntegralL1_toL1 AS L hf
+
+end ArakelovGeometry.AdelicStructure.Hom
+
+namespace ArakelovGeometry.AdelicCurve.Hom
+
+open MeasureTheory AdelicStructure
+
+variable {K : Type*} [Field K] (AS : AdelicStructure K)
+variable (L : Type*) [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
+
+/-- The bundled form of the algebraic-extension morphism. -/
+noncomputable abbrev algebraicExtension :
+    Hom (AS.algebraicExtension L).toAdelicCurve AS.toAdelicCurve :=
+  AdelicStructure.Hom.algebraicExtension AS L
+
+theorem algebraicExtension_fieldMap :
+    (algebraicExtension AS L).fieldMap = algebraMap K L :=
+  AdelicStructure.Hom.algebraicExtension_fieldMap AS L
+
+theorem algebraicExtension_baseMap :
+    (algebraicExtension AS L).baseMap = ParameterSpaceExtension.proj :=
+  AdelicStructure.Hom.algebraicExtension_baseMap AS L
+
+theorem algebraicExtension_fibreIntegral :
+    (algebraicExtension AS L).fibreIntegral =
+      (Algebraic.fibreIntegralL1ContinuousLinearMap AS L).toLinearMap :=
+  AdelicStructure.Hom.algebraicExtension_fibreIntegral AS L
+
+theorem coeFn_algebraicExtension_fibreIntegral (f : Lp ℝ 1 (Algebraic.measure AS L)) :
+    (algebraicExtension AS L).fibreIntegral f =ᵐ[AS.v]
+      Algebraic.fibreIntegral AS L f :=
+  AdelicStructure.Hom.coeFn_algebraicExtension_fibreIntegral AS L f
+
+theorem algebraicExtension_fibreIntegral_toL1 {f : ParameterSpaceExtension AS L → ℝ}
+    (hf : Integrable[Algebraic.projectiveMeasurableSpace AS L] f (Algebraic.measure AS L)) :
+    (algebraicExtension AS L).fibreIntegral (hf.toL1 f) =
+      (Algebraic.integrable_fibreIntegral AS L hf).toL1 (Algebraic.fibreIntegral AS L f) :=
+  AdelicStructure.Hom.algebraicExtension_fibreIntegral_toL1 AS L hf
 
 end ArakelovGeometry.AdelicCurve.Hom

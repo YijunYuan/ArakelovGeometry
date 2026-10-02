@@ -22,11 +22,11 @@ ROOT = Path(__file__).resolve().parents[1]
 # explicit mathematical owner. These mappings do not claim a separate theorem
 # attachment; their axioms and compiled dependency paths remain audited.
 IMPLEMENTATION_OWNER_NODES = {
-    "ArakelovGeometry.AdelicCurve.instIsProperTrivialAdelicCurve":
+    "ArakelovGeometry.AdelicStructure.instIsProperTrivialAdelicStructure":
         "prop:proper-trivial-adelic-curve",
-    "ArakelovGeometry.AdelicCurve.instIsProperNumberFieldAdelicCurve":
+    "ArakelovGeometry.AdelicStructure.instIsProperNumberFieldAdelicStructure":
         "cor:number-field-proper",
-    "ArakelovGeometry.AdelicCurve.instIsProperFunctionFieldAdelicCurve":
+    "ArakelovGeometry.AdelicStructure.instIsProperFunctionFieldAdelicStructure":
         "thm:ff-integral-product-formula",
 }
 
