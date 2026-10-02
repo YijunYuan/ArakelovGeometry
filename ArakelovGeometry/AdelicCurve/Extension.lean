@@ -25,6 +25,7 @@ import ArakelovGeometry.AdelicCurve.Extension.Finite.Construction
 import ArakelovGeometry.AdelicCurve.Extension.Finite.Probability
 import ArakelovGeometry.AdelicCurve.Extension.Finite.Tower
 import ArakelovGeometry.AdelicCurve.Extension.FiniteIntermediateField
+import ArakelovGeometry.AdelicCurve.Extension.InvariantMaximum
 import ArakelovGeometry.AdelicCurve.Extension.ParameterSpace
 import ArakelovGeometry.AdelicCurve.Extension.PowerSums
 import ArakelovGeometry.AdelicCurve.Extension.RootBounds
@@ -40,7 +41,7 @@ import ArakelovGeometry.AdelicCurve.Extension.Separable.Measure
 Import entry point for Chen–Moriwaki, §§3.3–3.4 and §3.6. The implementation is organized
 under `Extension/`: shared parameter spaces and analytic tools, finite separable
 extensions, arbitrary finite extensions, general algebraic extensions, and measurable
-automorphism pullbacks.
+automorphism pullbacks and fibre maxima.
 
 Internal modules import their specific dependencies rather than this entry point.
 -/

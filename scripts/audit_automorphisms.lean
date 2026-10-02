@@ -1,0 +1,25 @@
+import ArakelovGeometry.AdelicCurve.Extension.Automorphism
+import ArakelovGeometry.AdelicCurve.Extension.FibreMaximum
+import ArakelovGeometry.AdelicCurve.Extension.InvariantMaximum
+
+/-!
+Transitive axiom evidence for Chen–Moriwaki, Section 3.6.
+Run with `horizon check --lean scripts/audit_automorphisms.lean` after the configured build.
+-/
+
+#print axioms ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.aut_symm_aut
+#print axioms ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_aut_projective
+#print axioms ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_orbitMaximum
+#print axioms ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.orbitMaximum_aut
+#print axioms ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.exists_eq_fibreMaximum
+#print axioms
+  ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension.fibreLIntegral_indicator_pos_iff
+#print axioms ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurableSet_image_proj
+#print axioms
+  ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_fibreMaximum_projective
+#print axioms ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreMaximum_comp_aut
+#print axioms ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreMaximum_orbitMaximum
+#print axioms
+  ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_fibreMaximum_comp_proj
+#print axioms
+  ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreMaximum_le_iff_le_comp_proj

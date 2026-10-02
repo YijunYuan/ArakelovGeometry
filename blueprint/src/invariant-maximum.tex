@@ -1,0 +1,33 @@
+\subsection{Invariant measurable majorants}
+
+\begin{corollary}[Automorphisms and maxima over full fibres]
+\label{cor:invariant-fibre-maximum}
+\source{chen-moriwaki-adelic:page-0218,chen-moriwaki-adelic:page-0219}
+\uses{def:automorphism-pullback,prop:automorphism-measurable,lem:measurable-orbit-maximum,def:fibre-maximum,prop:fibre-maximum-measurable,lem:extension-coordinates}
+\lean{ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreMaximum_comp_aut,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreMaximum_orbitMaximum,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.measurable_fibreMaximum_comp_proj,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreMaximum_proj_aut,ArakelovGeometry.AdelicStructure.ParameterSpaceExtension.fibreMaximum_le_iff_le_comp_proj}
+\leanok
+For a finite extension $L/K$, write $M_F(\omega)=\max_{\pi(x)=\omega}F(x)$.
+For every real function $F$ and every $\tau\in\operatorname{Aut}_K(L)$,
+\[
+ M_{F\circ T_\tau}=M_F=M_{\widetilde F}.
+\]
+If $F$ is measurable, the pullback $M_F\circ\pi$ is measurable and
+invariant under all automorphisms. It is the least function constant on
+fibres which dominates $F$; hence also the least measurable such function.
+\end{corollary}
+\begin{proof}
+The map $T_\tau$ permutes each fibre, with inverse $T_{\tau^{-1}}$.
+Consequently $F\circ T_\tau$ and $F$ have exactly the same set of
+values on a fixed fibre, and their maxima agree. For each $x$ in that
+fibre and every $\sigma$, the point $T_\sigma x$ belongs to the same
+fibre, so $F(T_\sigma x)\leq M_F(\pi(x))$. Taking the orbit maximum
+and then the fibre maximum gives $M_{\widetilde F}\leq M_F$.
+The identity automorphism gives $F\leq\widetilde F$, proving the
+reverse inequality. Proposition 3.6.2 and measurability of $\pi$ show
+that $M_F\circ\pi$ is measurable. Since $\pi T_\tau=\pi$, it is
+invariant. Finally, $F(x)\leq g(\pi(x))$ for every $x$ holds if and
+only if $M_F(\omega)\leq g(\omega)$ for every $\omega$: one direction
+takes the maximum on a fibre, and the other bounds each value by its
+maximum. Any function constant on fibres is of the form $g\circ\pi$,
+because every fibre is nonempty. This proves the minimality assertion.
+\end{proof}
