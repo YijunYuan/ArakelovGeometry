@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Finite.Probability
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Basic
-import Mathlib.Order.ConditionallyCompleteLattice.Finset
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Basic
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.Probability
+public import Mathlib.Order.ConditionallyCompleteLattice.Finset
 
 /-!
 # Measurable maxima over finite extension fibres
@@ -16,6 +18,8 @@ The proof uses positive masses in the finite fibre probabilities and their
 measurable integration operator. The existing measurable equivalence with the
 separable model transports the argument to the intrinsic parameter space.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped ENNReal

@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDualOriginalCovolume
-import ArakelovGeometry.NumberTheory.NumberFieldPrincipalBasisScalarCovolume
-import ArakelovGeometry.NumberTheory.NumberFieldMinkowskiRadius
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldMinkowskiRadius
+public import ArakelovGeometry.NumberTheory.NumberFieldPrincipalBasisScalarCovolume
+public import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDualOriginalCovolume
 
 /-! # Actual scalar dualizing-line metric and reciprocal ordinary covolume -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory
@@ -23,11 +27,15 @@ open AdelicStructure NumberFieldCodifferentDual NumberFieldTraceDualizingLine
 attribute [local instance 2000] Algebra.toModule Algebra.toSMul
 attribute [local instance 3000] AddCommGroup.toIntModule
 attribute [local instance] normalizedNumberFieldAdelicStructure_isProper
+attribute [local instance] NumberFieldFullLattice.degreeCovolumeDiscrete
 
 variable (K : Type*) [Field K] [NumberField K]
 
-private abbrev scalarBasis : Module.Basis (Fin 1) K K := Module.Basis.singleton (Fin 1) K
-private abbrev scalarFamily := basisFamily (scalarBasis K)
+/-- The basis consisting of one for the scalar line. -/
+abbrev scalarBasis : Module.Basis (Fin 1) K K := Module.Basis.singleton (Fin 1) K
+
+/-- The norm family induced by the canonical scalar-line basis. -/
+abbrev scalarFamily := basisFamily (scalarBasis K)
 
 /-- Canonical scalar evaluation duality, the inverse of evaluation at one. -/
 def scalarDualEquiv : K ≃ₗ[K] Module.Dual K K :=

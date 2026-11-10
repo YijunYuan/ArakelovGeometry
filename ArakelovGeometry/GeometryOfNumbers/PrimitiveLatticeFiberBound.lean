@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.PrimitiveAffineSections
-import ArakelovGeometry.GeometryOfNumbers.LatticeFiberCount
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.LatticeFiberCount
+public import ArakelovGeometry.GeometryOfNumbers.PrimitiveAffineSections
 
 /-! # Actual lattice-fibre counting along a primitive vector -/
+
+@[expose] public section
 
 noncomputable section
 

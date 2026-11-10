@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.IntervalRationalNorms
-import ArakelovGeometry.AdelicVectorBundle.Determinant
-import ArakelovGeometry.Analysis.IntervalDeterminant
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Determinant
+public import ArakelovGeometry.AdelicVectorBundle.IntervalRationalNorms
+public import ArakelovGeometry.Analysis.IntervalDeterminant
 
 /-!
 # Actual completed determinant contraction for the rational interval factors
@@ -14,6 +16,8 @@ The actual real completion and its coordinates carry the all-column interval
 bounds to the original completed fibres. A unit-volume criterion consumes an
 all-tuple determinant contraction directly, without Hermitian hypotheses.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -39,7 +43,7 @@ theorem determinant_norm_completedBasis_eq_one_of_det_bound
   · refine (ξ.determinant_norm_ιMulti_le ω b).trans ?_
     calc
       _ ≤ ∏ _ : Fin (Module.finrank K E), (1 : ℝ) :=
-        Finset.prod_le_prod (fun i _ => ξ.norm_nonneg ω (b i)) (fun i _ => hb i)
+        Finset.prod_le_prod₀ (fun i _ => ξ.norm_nonneg ω (b i)) (fun i _ => hb i)
       _ = 1 := by simp
   rw [ξ.determinant_norm_eq_sInf_ιMulti hr]
   refine le_csInf ?_ ?_

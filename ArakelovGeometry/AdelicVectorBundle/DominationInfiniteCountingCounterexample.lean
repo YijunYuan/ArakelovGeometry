@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicStructure.TrivialPlace
-import ArakelovGeometry.AdelicVectorBundle.Domination
-import Mathlib.MeasureTheory.Measure.Count
+module
+
+public import ArakelovGeometry.AdelicStructure.TrivialPlace
+public import ArakelovGeometry.AdelicVectorBundle.Domination
+public import Mathlib.MeasureTheory.Measure.Count
 
 /-!
 # Upper and lower domination do not imply domination
@@ -15,6 +17,8 @@ The sigma-algebra consists of all subsets; no countability is assumed.
 Norms use the existing genuine trivial completed tensor fibres and their
 canonical operator duals, in every characteristic.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -78,17 +82,18 @@ theorem rawNorm_le_one (a : K) (x : (Plane K)) : (rawNorm K) a x ≤ 1 := by
 
 theorem half_le_rawNorm (a : K) {x : (Plane K)} (hx : x ≠ 0) :
     (1 / 2 : ℝ) ≤ (rawNorm K) a x := by
-  simp only [rawNorm, if_neg hx]
+  simp only [rawNorm, ite_eq_right hx]
   split_ifs <;> norm_num
 
 theorem rawNorm_eq_zero_iff (a : K) (x : (Plane K)) :
     (rawNorm K) a x = 0 ↔ x = 0 := by
   by_cases hx : x = 0
   · simp [hx]
-  · simp only [rawNorm, if_neg hx]
+  · simp only [rawNorm, ite_eq_right hx]
     split_ifs <;> norm_num [hx]
 
-private theorem rawNorm_add_le (a : K) (x y : (Plane K)) :
+/-- The weighted coordinate norm satisfies the triangle inequality. -/
+theorem rawNorm_add_le (a : K) (x y : (Plane K)) :
     (rawNorm K) a (x + y) ≤ (rawNorm K) a x + (rawNorm K) a y := by
   by_cases hx : x = 0
   · simp [hx]
@@ -111,7 +116,7 @@ private theorem rawNorm_smul (a c : K) (x : (Plane K)) :
   have hline : c * x.2 = a * (c * x.1) ↔ x.2 = a * x.1 := by
     rw [mul_left_comm a c x.1]
     exact ⟨mul_left_cancel₀ hc, fun h ↦ congrArg (c * ·) h⟩
-  simp only [rawNorm, if_neg hcx, if_neg hx, Prod.smul_fst, Prod.smul_snd,
+  simp only [rawNorm, ite_eq_right hcx, ite_eq_right hx, Prod.smul_fst, Prod.smul_snd,
     smul_eq_mul, hline]
 
 open Classical in
@@ -177,7 +182,7 @@ theorem logNorm_eq (a : (countingCurve K).Ω) {x : (Plane K)} (hx : x ≠ 0) :
   have hn : (normFamily K).logNorm x a = Real.log ((rawNorm K) a x) :=
     congrArg Real.log ((normFamily_norm_rational K) a x)
   rw [hn]
-  simp only [rawNorm, if_neg hx]
+  simp only [rawNorm, ite_eq_right hx]
   split_ifs
   · rw [Real.log_div (by norm_num) (by norm_num), Real.log_one, zero_sub]
   · exact Real.log_one
@@ -196,7 +201,7 @@ theorem integrable_logNorm {x : (Plane K)} (hx : x ≠ 0) :
       exact hx (Prod.ext hx1 hx2)
     · have hae : x.2 / x.1 = a := (div_eq_iff hx1).mpr h
       exact ha (by simpa only [Finset.mem_singleton] using hae.symm)
-  rw [(logNorm_eq K) a hx, if_neg hline]
+  rw [(logNorm_eq K) a hx, ite_eq_right hline]
   exact _root_.norm_zero
 
 /-- The primal norm family is upper dominated by its actual logarithmic
@@ -239,7 +244,7 @@ private theorem eval_le_rawNorm_of_annihilates (a : K) (ℓ : Module.Dual K (Pla
     have hval : ℓ x = 0 := by rw [he, map_smul, hcheap, smul_zero]
     rw [hval, map_zero]
     exact apply_nonneg ((localSeminorm K) a) x
-  · rw [rawNorm, if_neg hx, if_neg hline]
+  · rw [rawNorm, ite_eq_right hx, ite_eq_right hline]
     exact (trivial_apply_le_one K) (ℓ x)
 
 open Classical in
@@ -292,15 +297,15 @@ theorem dual_norm_rational (a : (countingCurve K).Ω) (ℓ : Module.Dual K (Plan
   by_cases hℓ : ℓ = 0
   · subst ℓ
     simp
-  rw [if_neg hℓ]
+  rw [ite_eq_right hℓ]
   by_cases hcheap : ℓ ((1, a) : (Plane K)) = 0
-  · rw [if_pos hcheap]
+  · rw [ite_eq_left hcheap]
     apply le_antisymm
     · apply (dual_norm_le_of_rational_bound K) a ℓ zero_le_one
       intro x
       simpa only [one_mul] using (eval_le_rawNorm_of_annihilates K) a ℓ hcheap x
     · exact (one_le_dual_norm_of_ne_zero K) a ℓ hℓ
-  · rw [if_neg hcheap]
+  · rw [ite_eq_right hcheap]
     apply le_antisymm
     · apply (dual_norm_le_of_rational_bound K) a ℓ (by norm_num)
       intro x
@@ -390,7 +395,7 @@ theorem firstCoordinate_dual_norm (a : (countingCurve K).Ω) :
     (normFamily K).dual.norm a
       ((1 : ((countingCurve K).ϕ a).Completion) ⊗ₜ[K] (firstCoordinate K)) = 2 := by
   have he : (firstCoordinate K) ((1, a) : (Plane K)) ≠ 0 := by simp [firstCoordinate]
-  rw [(dual_norm_rational K), if_neg (firstCoordinate_ne_zero K), if_neg he]
+  rw [(dual_norm_rational K), ite_eq_right (firstCoordinate_ne_zero K), ite_eq_right he]
 
 /-- Its genuine base-field logarithmic dual norm is the positive constant log two. -/
 theorem firstCoordinate_dual_logNorm (a : (countingCurve K).Ω) :
@@ -425,7 +430,7 @@ theorem all_nonzero_functionals_cofinite_profile (ℓ : Module.Dual K (Plane K))
       rw [heval, hv, mul_zero, add_zero]
       exact hu
     unfold NormFamily.logNorm
-    rw [dual_norm_rational K, if_neg hℓ, if_neg hc]
+    rw [dual_norm_rational K, ite_eq_right hℓ, ite_eq_right hc]
   · refine ⟨{-ℓ ((1, 0) : (Plane K)) / ℓ ((0, 1) : (Plane K))}, by simp, ?_⟩
     intro a ha
     have hc : ℓ ((1, a) : (Plane K)) ≠ 0 := by
@@ -435,7 +440,7 @@ theorem all_nonzero_functionals_cofinite_profile (ℓ : Module.Dual K (Plane K))
         (eq_div_iff hv).mpr (by linear_combination hz)
       exact ha (by simpa only [Finset.mem_singleton] using he)
     unfold NormFamily.logNorm
-    rw [dual_norm_rational K, if_neg hℓ, if_neg hc]
+    rw [dual_norm_rational K, ite_eq_right hℓ, ite_eq_right hc]
 
 
 variable [Infinite K]

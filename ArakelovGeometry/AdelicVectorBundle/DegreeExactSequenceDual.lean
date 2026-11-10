@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequence
-import ArakelovGeometry.AdelicVectorBundle.DegreeIsometry
-import ArakelovGeometry.AdelicVectorBundle.Discrepancy
-import ArakelovGeometry.AdelicVectorBundle.DualRestriction
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequence
+public import ArakelovGeometry.AdelicVectorBundle.DegreeIsometry
+public import ArakelovGeometry.AdelicVectorBundle.Discrepancy
+public import ArakelovGeometry.AdelicVectorBundle.DualRestriction
 
 /-!
 # Exact-sequence degree bounds by duality
@@ -15,6 +17,8 @@ Canonical completed annihilator isometries identify the genuine dual
 subquotient degrees. The lower degree inequality for the actual dual bundle
 then gives the determinant-discrepancy bound and Hermitian degree additivity.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicVectorBundle
 

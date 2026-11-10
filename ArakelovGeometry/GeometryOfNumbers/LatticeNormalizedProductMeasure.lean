@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.LatticeNormalizedMeasure
-import Mathlib.LinearAlgebra.Basis.Prod
-import Mathlib.MeasureTheory.Measure.Haar.OfBasis
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.LatticeNormalizedMeasure
+public import Mathlib.LinearAlgebra.Basis.Prod
+public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 
 /-! # The actual normalized Haar measure of a product lattice -/
+
+@[expose] public section
 
 noncomputable section
 open Module MeasureTheory MeasureTheory.Measure Set

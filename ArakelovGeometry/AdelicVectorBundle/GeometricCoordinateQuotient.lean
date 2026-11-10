@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.UltrametricCoordinateSplit
-import ArakelovGeometry.AdelicVectorBundle.BasisNorm
-import ArakelovGeometry.AdelicVectorBundle.Quotient
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BasisNorm
+public import ArakelovGeometry.AdelicVectorBundle.Quotient
+public import ArakelovGeometry.Analysis.UltrametricCoordinateSplit
 
 /-!
 # Minimum lifts for actual completed coordinate quotients
@@ -13,6 +15,8 @@ import ArakelovGeometry.AdelicVectorBundle.Quotient
 Maximal minors produce minimum lifts for the canonical quotient family on
 actual completed tensor fibres, without assuming an adapted basis.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct Matrix
 

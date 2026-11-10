@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.MeasurableArchimedean
-import ArakelovGeometry.AdelicVectorBundle.HermitianTensor
-import ArakelovGeometry.AdelicVectorBundle.Measurable
-import ArakelovGeometry.Analysis.ComplexPolarization
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianTensor
+public import ArakelovGeometry.AdelicVectorBundle.Measurable
+public import ArakelovGeometry.AdelicVectorBundle.MeasurableArchimedean
+public import ArakelovGeometry.Analysis.ComplexPolarization
 
 /-!
 # Measurable completed coordinates and Hermitian Gram matrices
@@ -15,6 +17,8 @@ The coordinate evaluations use the actual completed fibres and compatible
 norm-preserving complex embeddings. The countable density assumption is needed
 only at the places visited by the parameter map.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 open Filter Topology
@@ -51,8 +55,8 @@ theorem IsMeasurable.norm_of_measurable_coordinates {ξ : NormFamily S E}
     σ a ((b.baseChange (S.ϕ (p a)).Completion).equivFun (y a) i)
   let d : ℕ → α → ι → ℂ := fun n a i =>
     σ a (algebraMap K (S.ϕ (p a)).Completion (c n i : K))
-  have hz : Measurable z := measurable_pi_lambda _ hy
-  have hd (n : ℕ) : Measurable (d n) := measurable_pi_lambda _ (fun i => hm _)
+  have hz : Measurable z := Measurable.of_eval hy
+  have hd (n : ℕ) : Measurable (d n) := Measurable.of_eval (fun i => hm _)
   have hi (a : α) : Isometry (fun x : ι → (S.ϕ (p a)).Completion =>
       fun i => σ a (x i)) :=
     Isometry.piMap _ (fun _ => isometry_complexEmbedding_of_norm (σ a) (hσ a))
@@ -168,7 +172,7 @@ theorem IsMeasurable.archimedeanInner_of_measurable_coordinates {ξ : NormFamily
   have hc (a : α) : σ a (c a) =
       if Function.Surjective (σ a) then Complex.I else 0 := by
     by_cases h : Function.Surjective (σ a)
-    · simp only [c, dif_pos h, if_pos h]
+    · simp only [c, dite_eq_left h, ite_eq_left h]
       exact (h Complex.I).choose_spec
     · simp [c, h]
   have hmc : Measurable (fun a => σ a (c a)) := by

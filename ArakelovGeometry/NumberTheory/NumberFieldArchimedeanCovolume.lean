@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanEuclidean
-import Mathlib.Algebra.Module.ZLattice.Covolume
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanEuclidean
+public import Mathlib.Algebra.Module.ZLattice.Covolume
 
 /-!
 # Covolumes of original Archimedean diagonal lattices
@@ -13,6 +15,8 @@ The Euclidean measure comes from the actual Hermitian completed fibre
 norms. Relative indices are transported from the original integral
 submodules by their literal diagonal embedding.
 -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory

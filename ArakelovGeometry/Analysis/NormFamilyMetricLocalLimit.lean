@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Analysis.Seminorm
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Topology.MetricSpace.Cauchy
+module
+
+public import Mathlib.Analysis.Normed.Module.Seminorm.Basic
+public import Mathlib.Analysis.SpecialFunctions.Log.Basic
+public import Mathlib.Topology.MetricSpace.Cauchy
 
 /-!
 # Limits of uniformly logarithmically Cauchy norms
@@ -16,6 +18,8 @@ seminorm, with both pointwise norm convergence and uniform logarithmic
 convergence. The argument works over any normed field, including trivial
 valuations, and does not require finite dimensionality.
 -/
+
+@[expose] public section
 
 open Filter
 
@@ -45,10 +49,10 @@ theorem exists_seminorm_limit_of_uniform_log_cauchy
   have hqt (x : V) : Tendsto (fun n ↦ p n x) atTop (nhds (qf x)) := by
     by_cases hx : x = 0
     · subst x
-      simpa only [map_zero, qf, if_pos rfl] using
+      simpa only [map_zero, qf, ite_eq_left rfl] using
         (tendsto_const_nhds : Tendsto (fun _ : ℕ ↦ (0 : ℝ)) atTop (nhds 0))
     · have h := (Real.continuous_exp.tendsto (r x)).comp (hr x)
-      simpa only [Function.comp_def, qf, if_neg hx, Real.exp_log (hp_pos _ x hx)] using h
+      simpa only [Function.comp_def, qf, ite_eq_right hx, Real.exp_log (hp_pos _ x hx)] using h
   have hqzero : qf 0 = 0 := by simp [qf]
   let q : Seminorm 𝕜 V :=
     { toFun := qf

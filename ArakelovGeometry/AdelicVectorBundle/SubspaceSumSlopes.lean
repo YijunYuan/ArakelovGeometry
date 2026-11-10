@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.SlopesExtension
-import ArakelovGeometry.AdelicVectorBundle.DegreeSupermodular
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeSupermodular
+public import ArakelovGeometry.AdelicVectorBundle.SlopesExtension
 
 /-!
 # Minimal slope of an actual subspace sum
@@ -15,6 +17,8 @@ nonzero-map slope inequality and actual quotient infimum then preserve any
 common real lower bound for the minimal slopes of the summands.
 No Hermitian hypothesis or nonempty-family premise is required.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

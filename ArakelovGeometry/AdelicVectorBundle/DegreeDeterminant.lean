@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Degree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Degree
 
 /-!
 # Degree from measurability of the actual determinant
@@ -12,6 +14,8 @@ The canonical determinant adelic line defines vector degree whenever its actual
 norm family is measurable. The usual discrete-or-common-density degree context
 is a sufficient producer of this analytic property and gives the same degree.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

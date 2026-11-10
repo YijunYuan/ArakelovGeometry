@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.NormFamilyCompletionLocal
-import ArakelovGeometry.AdelicVectorBundle.NormFamilyCompletionMetric
-import ArakelovGeometry.Analysis.NormFamilyMetricSummation
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.NormFamilyCompletionLocal
+public import ArakelovGeometry.AdelicVectorBundle.NormFamilyCompletionMetric
+public import ArakelovGeometry.Analysis.NormFamilyMetricSummation
 
 /-!
 # Completeness of strongly dominated norm families
@@ -15,6 +17,8 @@ dominated limit family. This proves completeness of the upper-integral
 pseudometric and its canonical quotient by almost-everywhere fibre equality,
 as in Chen–Moriwaki, Remark 4.1.20.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 

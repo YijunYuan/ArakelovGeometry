@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.ExternalResults.AbsoluteValueFinite
-import Mathlib.Topology.Compactness.Compact
+module
+
+public import ArakelovGeometry.ExternalResults.AbsoluteValueFinite
+public import Mathlib.Topology.Compactness.Compact
 
 /-!
 # Compact spaces of extending absolute values
@@ -12,6 +14,8 @@ import Mathlib.Topology.Compactness.Compact
 For an algebraic extension, evaluation embeds the extending absolute values as a closed
 subset of a product of finite subsets of the real line.
 -/
+
+@[expose] public section
 
 namespace AbsoluteValue
 variable {K L : Type*} [Field K] [Field L] [Algebra K L]

@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.LatticeSubspaceCoordinates
-import ArakelovGeometry.GeometryOfNumbers.IntegralDualCovolume
-import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.IntegralDualCovolume
+public import ArakelovGeometry.GeometryOfNumbers.LatticeSubspaceCoordinates
+public import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
 
 /-! # Actual integral subspace projections and integral dual coordinates -/
+
+@[expose] public section
 
 noncomputable section
 

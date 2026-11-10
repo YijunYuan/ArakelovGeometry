@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.LinearAlgebra.FiniteDimensional.Basic
-import Mathlib.Data.Fin.Tuple.Basic
-import Mathlib.Order.Interval.Finset.Nat
-import Mathlib.Data.Real.Basic
+module
+
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Data.Fin.Tuple.Basic
+public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
+public import Mathlib.Order.Interval.Finset.Nat
 
 /-!
 # Rank blocks of complete finite flags
@@ -15,6 +17,8 @@ Successive rank intervals partition the ambient slots, including repeated
 flag terms. Counting these intervals and summing over their fibres
 generalizes the rank-block calculation for actual Hermitian HN factors.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

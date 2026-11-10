@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.HermitianScalarExtension
+module
+
+public import ArakelovGeometry.Analysis.HermitianScalarExtension
 
 /-!
 # A real norm does not determine a Hermitian extension
@@ -12,6 +14,8 @@ The positive Hermitian matrix with rows `(1, I/2)` and `(-I/2, 1)`
 defines a norm on the complex plane which restricts to the Euclidean norm on
 the real plane, but differs from its canonical Hermitian complexification.
 -/
+
+@[expose] public section
 
 noncomputable section
 

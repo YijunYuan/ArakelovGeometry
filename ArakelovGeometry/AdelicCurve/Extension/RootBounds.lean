@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Basic
-import ArakelovGeometry.ExternalResults.AbsoluteValueRootBounds
+module
+
+public import ArakelovGeometry.AdelicCurve.Basic
+public import ArakelovGeometry.ExternalResults.AbsoluteValueRootBounds
 
 /-!
 # Logarithmic root bounds over an adelic structure
@@ -12,6 +14,8 @@ import ArakelovGeometry.ExternalResults.AbsoluteValueRootBounds
 The coefficient maximum and archimedean exponent give the integrable majorant
 in Chen–Moriwaki, Theorem 3.3.7, formulas (3.11)–(3.12).
 -/
+
+@[expose] public section
 
 open MeasureTheory
 

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionRestriction
-import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionDual
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionQuotientEquiv
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionDual
+public import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionRestriction
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionQuotientEquiv
 
 /-!
 # Genuine quotient and Hermitian scalar extension
@@ -13,6 +15,8 @@ import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionQuotientEquiv
 Dual transport and pullback isometry compare the actual pushforward dual norms.
 Ultrametric and Archimedean biduality then identify the genuine quotient norms.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

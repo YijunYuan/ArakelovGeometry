@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.ResidueDirectionBump
-import ArakelovGeometry.NumberTheory.NumberFieldResidueDirectionSelection
-import ArakelovGeometry.AdelicVectorBundle.NormFamilyCompletionNumberField
-import ArakelovGeometry.AdelicVectorBundle.NumberFieldMeasurable
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.NormFamilyCompletionNumberField
+public import ArakelovGeometry.AdelicVectorBundle.NumberFieldMeasurable
+public import ArakelovGeometry.Analysis.ResidueDirectionBump
+public import ArakelovGeometry.NumberTheory.NumberFieldResidueDirectionSelection
 
 /-!
 # An actual dominated residue-bump family on the normalized rational curve
@@ -15,6 +17,8 @@ The expensive directions use the selected actual prime completions. Each fixed
 rational vector meets only finitely many of them, while the completed dual
 family is unchanged. This is the family for the corrected Remark 4.1.36.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -60,7 +64,8 @@ theorem referenceFamily_norm_finite (ω : S.Ω) (hω : ω ∈ S.Ωfin)
     · exact le_max_right _ _
   · exact max_le (norm_le_pi_norm c 0) (norm_le_pi_norm c 1)
 
-private def bumpSeminorm (ω : S.Ω) (hω : ω ∈ S.Ωfin) (a : ℚ) (ha : S.ϕ ω a = 1) :
+/-- The residue-direction seminorm transported to the completed rational plane. -/
+def bumpSeminorm (ω : S.Ω) (hω : ω ∈ S.Ωfin) (a : ℚ) (ha : S.ϕ ω a = 1) :
     Seminorm (S.ϕ ω).Completion ((S.ϕ ω).Completion ⊗[ℚ] Plane) := by
   letI := IsUltrametricDist.isUltrametricDist_of_forall_norm_add_le_max_norm
     (S.norm_add_le_max_of_finite ω hω)
@@ -72,7 +77,8 @@ private theorem bumpSeminorm_apply (ω : S.Ω) (hω : ω ∈ S.Ωfin) (a : ℚ)
     bumpSeminorm ω hω a ha z = value
       (slopeFunctional (algebraMap ℚ (S.ϕ ω).Completion a)) (coordinates ω z) := rfl
 
-private theorem bumpSeminorm_zero (ω : S.Ω) (hω : ω ∈ S.Ωfin) (a : ℚ)
+/-- The transported residue-direction seminorm vanishes exactly at the zero vector. -/
+theorem bumpSeminorm_zero (ω : S.Ω) (hω : ω ∈ S.Ωfin) (a : ℚ)
     (ha : S.ϕ ω a = 1) (z : (S.ϕ ω).Completion ⊗[ℚ] Plane) :
     bumpSeminorm ω hω a ha z = 0 ↔ z = 0 := by
   rw [bumpSeminorm_apply, value_eq_zero_iff, LinearEquiv.map_eq_zero_iff]
@@ -93,7 +99,7 @@ def family : NormFamily S Plane := by
 theorem family_norm_of_notMem_range (ω : S.Ω) (hω : ω ∉ Set.range point)
     (z : (S.ϕ ω).Completion ⊗[ℚ] Plane) : family.norm ω z = referenceFamily.norm ω z := by
   change ¬∃ n, point n = ω at hω
-  simp only [family, dif_neg hω]
+  simp only [family, dite_eq_right hω]
 
 theorem family_norm_point (n : ℕ) (z : (S.ϕ (point n)).Completion ⊗[ℚ] Plane) :
     family.norm (point n) z = value
@@ -102,7 +108,7 @@ theorem family_norm_point (n : ℕ) (z : (S.ϕ (point n)).Completion ⊗[ℚ] Pl
   classical
   have h : ∃ m, point m = point n := ⟨n, rfl⟩
   have hc : h.choose = n := point_injective h.choose_spec
-  simp only [family, dif_pos h, bumpSeminorm_apply, hc]
+  simp only [family, dite_eq_left h, bumpSeminorm_apply, hc]
 
 /-- Every original norm is bounded above by the bumped norm at the same completed vector. -/
 theorem referenceFamily_le_family (ω : S.Ω) (z : (S.ϕ ω).Completion ⊗[ℚ] Plane) :
@@ -178,7 +184,7 @@ theorem finite_logNorm_difference_support (z : Plane) :
     have hn : ¬S.ϕ (point n) (z.2 - slope n * z.1) <
         max (S.ϕ (point n) z.1) (S.ϕ (point n) z.2) :=
       fun hh ↦ hnot ⟨n, rfl, hh⟩
-    rw [family_norm_rational_point, if_neg hn,
+    rw [family_norm_rational_point, ite_eq_right hn,
       referenceFamily_norm_finite _ (point_mem_fin n), coordinates_one_tmul, Prod.norm_def,
       S.norm_algebraMap_eq_absValue, S.norm_algebraMap_eq_absValue]
   · exact family_norm_of_notMem_range ω h _
@@ -228,11 +234,11 @@ theorem one_le_singleton_mass (ω : S.Ω) : (1 : ENNReal) ≤ S.v {ω} := by
   apply le_trans _ hm.ge
   exact_mod_cast Nat.succ_le_of_lt hd
 
-private instance : MeasurableSingletonClass S.Ω :=
+local instance : MeasurableSingletonClass S.Ω :=
   inferInstanceAs (MeasurableSingletonClass
     {ω : AbsoluteValue.Place ℚ // ω ≠ AbsoluteValue.trivialPlace ℚ})
 
-private instance : DiscreteMeasurableSpace S.Ω :=
+local instance : DiscreteMeasurableSpace S.Ω :=
   inferInstanceAs (DiscreteMeasurableSpace
     {ω : AbsoluteValue.Place ℚ // ω ≠ AbsoluteValue.trivialPlace ℚ})
 

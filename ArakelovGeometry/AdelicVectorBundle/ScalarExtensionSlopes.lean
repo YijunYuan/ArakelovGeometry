@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspaceDegree
-import ArakelovGeometry.AdelicVectorBundle.DegreeSupermodular
-import ArakelovGeometry.AdelicVectorBundle.PositiveDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeSupermodular
+public import ArakelovGeometry.AdelicVectorBundle.PositiveDegree
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspaceDegree
 
 /-!
 # Actual degrees and slopes increase on algebraic closure
@@ -15,6 +17,8 @@ completed norm is bounded by the extension of the original restricted norm.
 Determinant contraction and degree preservation then compare actual degrees;
 taking the actual suprema compares positive degree and maximal slope.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle

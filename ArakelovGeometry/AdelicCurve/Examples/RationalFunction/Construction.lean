@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Amalgamation
-import ArakelovGeometry.AdelicCurve.Examples.RationalFunction.Archimedean
-import ArakelovGeometry.AdelicCurve.Examples.RationalFunction.FinitePlaces
+module
+
+public import ArakelovGeometry.AdelicCurve.Amalgamation
+public import ArakelovGeometry.AdelicCurve.Examples.RationalFunction.Archimedean
+public import ArakelovGeometry.AdelicCurve.Examples.RationalFunction.FinitePlaces
 
 /-!
 # The rational-function adelic curve and the augmented rational curve
@@ -20,6 +22,8 @@ The target model groups the source's amalgamation as
 restrictions along `ℚ → ℚ(T)`, identified below with trivial and `p`-adic values.
 The final point has mass one and carries the usual real absolute value.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicCurve.RationalFunction
 

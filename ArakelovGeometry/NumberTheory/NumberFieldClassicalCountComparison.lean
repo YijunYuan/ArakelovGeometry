@@ -3,15 +3,19 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.LatticePolarCountLower
-import ArakelovGeometry.NumberTheory.NumberFieldArithmeticPolarCount
-import ArakelovGeometry.NumberTheory.NumberFieldArithmeticSectionCount
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.LatticePolarCountLower
+public import ArakelovGeometry.NumberTheory.NumberFieldArithmeticPolarCount
+public import ArakelovGeometry.NumberTheory.NumberFieldArithmeticSectionCount
 
 /-! # Sharp classical arithmetic section-count and degree comparison
 
 The ordinary native polar volume and actual trace-dual sections give the
 one-sided corrected Gillet–Soulé inequality used in Chen–Moriwaki 4.3.24.
 -/
+
+@[expose] public section
 
 noncomputable section
 

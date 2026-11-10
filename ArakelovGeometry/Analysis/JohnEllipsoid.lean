@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.CompactPositiveCone
-import Mathlib.Analysis.Matrix.Order
-import Mathlib.Analysis.Matrix.Normed
+module
+
+public import ArakelovGeometry.Analysis.CompactPositiveCone
+public import Mathlib.Analysis.Matrix.Normed
+public import Mathlib.Analysis.Matrix.Order
 
 /-!
 # Real and complex ellipsoid infrastructure
@@ -14,6 +16,8 @@ The finite Hermitian spectral calculus gives the positive polar factor of an
 invertible matrix. This is the local normalization step in the contact-cone
 proof of the dimension-sharp ellipsoid bounds.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped MatrixOrder ComplexOrder

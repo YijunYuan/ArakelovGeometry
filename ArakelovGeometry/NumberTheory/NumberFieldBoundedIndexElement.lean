@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.NumberTheory.NumberField.ClassNumber
-import Mathlib.LinearAlgebra.Quotient.Basic
-import Mathlib.RingTheory.PicardGroup
+module
+
+public import Mathlib.LinearAlgebra.Quotient.Basic
+public import Mathlib.NumberTheory.NumberField.ClassNumber
+public import Mathlib.RingTheory.PicardGroup
 
 /-!
 # Bounded-index elements in actual number-field ideals
@@ -15,6 +17,8 @@ quotient of every nonzero integral or fractional ideal. The existing
 classification of invertible modules as ideals then proves source Lemma
 4.4.11 for arbitrary actual invertible modules over the ring of integers.
 -/
+
+@[expose] public section
 
 open scoped NumberField nonZeroDivisors
 

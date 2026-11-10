@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Basic
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Basic
 
 /-!
 # Algebraic fibres as inverse limits
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Basic
 The actual absolute-value fibre is homeomorphic to the closed subspace of
 compatible finite-stage families, as in Chen–Moriwaki, Proposition 3.4.6.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.Algebraic
 open MeasureTheory

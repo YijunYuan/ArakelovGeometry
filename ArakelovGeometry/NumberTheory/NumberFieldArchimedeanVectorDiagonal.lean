@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanDiagonal
-import Mathlib.LinearAlgebra.TensorProduct.Pi
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanDiagonal
+public import Mathlib.LinearAlgebra.TensorProduct.Pi
 /-! # Archimedean vector diagonals in the actual completed fibres
 
 The scalar decomposition induces the canonical real tensor decomposition of the
@@ -12,6 +14,8 @@ original vector space into its literal normalized completed fibres. An actual
 norm family supplies the product norm, and a full integral submodule supplies
 the integer basis of its literal diagonal image. No covolume assertion is made.
 -/
+
+@[expose] public section
 
 open NumberField
 open scoped TensorProduct
@@ -102,7 +106,7 @@ theorem completedScalarTensorEquiv_tmul (r : ℝ) (a : K) :
 theorem completedScalar_isPushout :
     Algebra.IsPushout ℚ ℝ K (CompletedScalarProduct K) := by
   apply Algebra.IsPushout.mk
-  apply IsBaseChange.of_equiv completedScalarTensorEquiv.toLinearEquiv
+  apply IsBaseChange.of_equiv (completedScalarTensorEquiv (K := K)).toLinearEquiv
   intro a
   exact completedScalarTensorEquiv_one_tmul a
 
@@ -126,8 +130,7 @@ def coefficientTensorPiEquiv :
   { (TensorProduct.piLeft K E (fun w => CompletedCoefficient w)).toAddEquiv with
     map_smul' := by
       intro r z
-      induction z using TensorProduct.induction_on with
-      | zero => simp
+      induction z using TensorProduct.inductionOn with
       | tmul c x =>
         ext w
         simp [TensorProduct.piLeft, TensorProduct.piRight_apply,

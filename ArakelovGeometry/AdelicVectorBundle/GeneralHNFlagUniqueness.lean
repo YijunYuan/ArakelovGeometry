@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNFactors
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNFactors
 
 /-!
 # Uniqueness of actual general HN flags
@@ -12,6 +14,8 @@ Every flag factor carries its actual restriction and quotient norms.
 The actual extension minimum bound controls initial flag terms.
 Contractive images of eligible subspaces give the reverse containment.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicVectorBundle
 
@@ -286,7 +290,7 @@ theorem existsUnique_generalHNFlag :
   simp only [Nat.card_fin] at hcardU hcardF
   have hmn : m = n := by omega
   subst m
-  have hFU : F = U := (hF.range_inj hU).mp hRange
+  have hFU : F = U := (hF.range_inj_of_wellFoundedLT hU).mp hRange
   cases hFU
   rfl
 

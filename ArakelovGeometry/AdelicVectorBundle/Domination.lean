@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Comparison
-import ArakelovGeometry.AdelicVectorBundle.Bidual
-import ArakelovGeometry.AdelicVectorBundle.DualMap
-import ArakelovGeometry.Analysis.IntegrableEnvelope
-import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Bidual
+public import ArakelovGeometry.AdelicVectorBundle.Comparison
+public import ArakelovGeometry.AdelicVectorBundle.DualMap
+public import ArakelovGeometry.Analysis.IntegrableEnvelope
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
 
 /-!
 # Domination of norm families
@@ -17,6 +19,8 @@ logarithmic norms, without assuming measurability of the norm family.
 Domination requires upper domination of both the family and its actual dual
 (Chen–Moriwaki, Definitions 4.1.1–2 and Remark 4.1.3, PDF page 225).
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct

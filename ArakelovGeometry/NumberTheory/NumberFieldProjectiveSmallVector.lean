@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldProjectiveGenericFibre
-import ArakelovGeometry.NumberTheory.NumberFieldArithmeticSmallVector
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldArithmeticSmallVector
+public import ArakelovGeometry.NumberTheory.NumberFieldProjectiveGenericFibre
 
 /-! # The arithmetic large-degree bound on the original finite projective module -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField
@@ -18,6 +22,7 @@ open AdelicStructure NumberFieldInvertibleGeneric NumberFieldFullLattice
   NumberFieldArchimedeanVectorDiagonal
 
 attribute [local instance] normalizedNumberFieldAdelicStructure_isProper
+attribute [local instance] NumberFieldFullLattice.degreeCovolumeDiscrete
 
 variable {K : Type*} [Field K] [NumberField K]
   (M : Type*) [AddCommGroup M] [Module (𝓞 K) M]

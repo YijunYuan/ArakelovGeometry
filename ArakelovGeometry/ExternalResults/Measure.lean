@@ -3,9 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.MeasureTheory.Measure.MeasureSpaceDef
-import Mathlib.MeasureTheory.Measure.Dirac
-import Mathlib.MeasureTheory.Integral.Bochner.Set
+module
+
+public import Mathlib.MeasureTheory.Integral.Bochner.Set
+public import Mathlib.MeasureTheory.Measure.Dirac.Basic
+public import Mathlib.MeasureTheory.Measure.Dirac.Def
+public import Mathlib.MeasureTheory.Measure.MeasureSpaceDef
 
 /-!
 # Measures prescribed on singletons
@@ -22,6 +25,8 @@ weighted sum of its values (`MeasureTheory.integral_eq_sum_of_support_subset_fin
 Unlike the Dirac-sum criteria of `Mathlib.MeasureTheory.Integral.Bochner.SumMeasure`, these
 do not require the ambient space to be countable.
 -/
+
+@[expose] public section
 
 namespace MeasureTheory
 
@@ -77,13 +82,13 @@ theorem eq_sum_indicator_of_support_subset (hsupp : Function.support g ⊆ s) :
     intro x₀
     by_cases h : x₀ = x
     · subst h
-      rw [if_pos rfl, Set.indicator_of_mem (Set.mem_singleton x₀)]
-    · rw [if_neg h, Set.indicator_of_notMem (by simpa using Ne.symm h)]
+      rw [ite_eq_left rfl, Set.indicator_of_mem (Set.mem_singleton x₀)]
+    · rw [ite_eq_right h, Set.indicator_of_notMem (by simpa using Ne.symm h)]
   simp_rw [key]
   rw [Finset.sum_ite_eq' s x (fun x₀ ↦ g x₀)]
   by_cases hx : x ∈ s
-  · rw [if_pos hx]
-  · rw [if_neg hx]
+  · rw [ite_eq_left hx]
+  · rw [ite_eq_right hx]
     exact Function.notMem_support.mp fun h ↦ hx (hsupp h)
 
 /-- A function supported in a finite set whose points have finite measure is integrable.

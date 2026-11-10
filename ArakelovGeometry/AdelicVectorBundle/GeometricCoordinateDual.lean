@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricMeasurableQuotient
-import ArakelovGeometry.AdelicVectorBundle.DualRestriction
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DualRestriction
+public import ArakelovGeometry.AdelicVectorBundle.GeometricMeasurableQuotient
 
 /-!
 # Measurable actual coordinate subspace and quotient duals
@@ -13,6 +15,8 @@ On an all-finite adelic curve, the actual dual-basis identity and annihilator
 isometries combine with the produced measurable quotient theorem. Neither the
 field nor the evaluation-generated parameter space is assumed countable.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.NormFamily

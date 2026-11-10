@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Defs
-import Mathlib.Analysis.Seminorm
-import Mathlib.LinearAlgebra.TensorProduct.Basis
-import Mathlib.LinearAlgebra.Dimension.Finrank
+module
+
+public import ArakelovGeometry.AdelicCurve.Defs
+public import Mathlib.Analysis.Normed.Module.Seminorm.Basic
+public import Mathlib.LinearAlgebra.Dimension.Finrank
+public import Mathlib.LinearAlgebra.TensorProduct.Basis
 
 /-!
 # Norm families on completed scalar extensions
@@ -20,6 +22,8 @@ absolute values. Finite dimensionality is used for existence via a finite basis.
 No measurability, domination, Hermitian structure or Archimedean normalization
 is asserted here.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -50,8 +54,7 @@ theorem comm_map_mul (ω : S.Ω) (a : (S.ϕ ω).Completion)
     TensorProduct.comm K E (S.ϕ ω).Completion
         (TensorProduct.map LinearMap.id (LinearMap.mulLeft K a) z) =
       a • TensorProduct.comm K E (S.ϕ ω).Completion z := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | tmul x b => simp [TensorProduct.smul_tmul']
   | add x y hx hy => simp [hx, hy, smul_add]
 

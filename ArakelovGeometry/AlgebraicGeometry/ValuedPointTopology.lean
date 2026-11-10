@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AlgebraicGeometry.ValuedPointBaseChange
-import Mathlib.Topology.Order
+module
+
+public import ArakelovGeometry.AlgebraicGeometry.ValuedPointBaseChange
+public import Mathlib.Topology.Order
 
 /-!
 # The evaluation topology on intrinsic valued points
@@ -14,6 +16,8 @@ of real open sets under absolute-value evaluations of local regular functions.
 Restriction along a scheme morphism is continuous; finite valued base change
 therefore gives a continuous surjection on the specified analytic fibres.
 -/
+
+@[expose] public section
 
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits TopologicalSpace
 

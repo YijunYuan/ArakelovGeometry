@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AlgebraicGeometry.CompletedLineFibre
+module
+
+public import ArakelovGeometry.AlgebraicGeometry.CompletedLineFibre
 
 /-!
 # Completed line-fibre base change and evaluation of actual sections
@@ -13,6 +15,8 @@ base change holds without an affine hypothesis on the original scheme.
 Evaluation uses the actual pullback adjunction unit and commutes with the
 canonical completed-field square.
 -/
+
+@[expose] public section
 
 open AlgebraicGeometry CategoryTheory
 

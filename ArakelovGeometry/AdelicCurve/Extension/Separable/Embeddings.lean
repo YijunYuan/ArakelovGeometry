@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.ParameterSpace
-import ArakelovGeometry.AdelicCurve.Extension.PowerSums
-import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
-import Mathlib.FieldTheory.Minpoly.IsConjRoot
-import Mathlib.FieldTheory.Normal.Basic
-import Mathlib.RingTheory.Trace.Basic
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.ParameterSpace
+public import ArakelovGeometry.AdelicCurve.Extension.PowerSums
+public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
+public import Mathlib.FieldTheory.Minpoly.IsConjRoot
+public import Mathlib.FieldTheory.Normal.Basic
+public import Mathlib.RingTheory.Trace.Basic
 
 /-!
 # Measurable averages over embeddings
@@ -16,6 +18,8 @@ import Mathlib.RingTheory.Trace.Basic
 Orbit maxima and ordered absolute values prove measurability of embedding averages
 for finite separable extensions (Chen–Moriwaki, Lemma 3.3.5).
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure
 

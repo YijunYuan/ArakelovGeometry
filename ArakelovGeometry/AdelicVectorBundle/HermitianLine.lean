@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Hermitian
-import ArakelovGeometry.AdelicVectorBundle.Line
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Hermitian
+public import ArakelovGeometry.AdelicVectorBundle.Line
 
 /-!
 # Hermitian norms on lines
@@ -13,6 +15,8 @@ Every norm family in rank at most one is Hermitian under the source's usual
 Archimedean normalization. The proof transports the scalar parallelogram
 identity along a completed generator, without changing the completed scalar action.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

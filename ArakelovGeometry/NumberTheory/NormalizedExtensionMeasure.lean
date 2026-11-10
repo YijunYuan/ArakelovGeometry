@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormalizedExtensionPlace
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscrete
-import ArakelovGeometry.AdelicCurve.Extension.Finite.Probability
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.Probability
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscrete
+public import ArakelovGeometry.NumberTheory.NormalizedExtensionPlace
 
 /-!
 # Actual singleton masses of normalized number-field extension parameters
@@ -13,6 +15,8 @@ import ArakelovGeometry.AdelicCurve.Extension.Finite.Probability
 The canonical rational curve's actual separable extension has point mass
 `localDegree / [K : ℚ]`; its degree-scaled measure has mass `localDegree`.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped ENNReal

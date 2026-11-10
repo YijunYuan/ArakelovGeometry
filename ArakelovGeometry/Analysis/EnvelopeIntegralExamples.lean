@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.EnvelopeIntegral
+module
+
+public import ArakelovGeometry.Analysis.EnvelopeIntegral
 
 /-!
 # Envelope integrals on an infinite atom
@@ -13,6 +15,8 @@ singleton of infinite mass, the only such functions vanish, so its value on
 the real constant `-1`, or on the extended constant `⊥`, is zero. This records
 why no identification with ordinary extended integration is asserted.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 

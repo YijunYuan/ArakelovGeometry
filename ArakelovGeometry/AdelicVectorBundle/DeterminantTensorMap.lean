@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.DeterminantTensor
-import ArakelovGeometry.AdelicVectorBundle.DeterminantMap
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantMap
+public import ArakelovGeometry.Analysis.DeterminantTensor
 
 /-!
 # The canonical tensor determinant isomorphism
@@ -13,6 +15,8 @@ The basis-independent algebraic producer acts on the existing determinant
 lines and finite tensor powers. The final exterior-degree transport is the
 accepted equality transport to the actual top exterior power of the tensor.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

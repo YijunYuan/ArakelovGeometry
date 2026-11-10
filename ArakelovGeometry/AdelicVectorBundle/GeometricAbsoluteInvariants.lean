@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicRestrictionDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicRestrictionDegree
 
 /-!
 # Actual positive-atomic geometric absolute invariants
@@ -13,6 +15,8 @@ measurable-determinant degree. Produced uniform native degree bounds establish
 finiteness. Exact bridges identify these with the existing common-density and
 countable-discrete invariants on their common domains.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

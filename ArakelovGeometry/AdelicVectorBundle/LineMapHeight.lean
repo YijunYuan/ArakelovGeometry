@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.MapHeight
-import ArakelovGeometry.AdelicVectorBundle.LineDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LineDegree
+public import ArakelovGeometry.AdelicVectorBundle.MapHeight
 
 /-!
 # Heights of maps from adelic lines
@@ -13,6 +15,8 @@ The completed operator norm on a one-dimensional source is its ratio at any
 nonzero rational generator. The height of a nonzero map between adelic lines
 is consequently the source degree minus the target degree.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

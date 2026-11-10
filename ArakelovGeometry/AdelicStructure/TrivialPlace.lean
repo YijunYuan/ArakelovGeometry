@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Examples.Trivial
-import ArakelovGeometry.ExternalResults.Place
-import Mathlib.LinearAlgebra.TensorProduct.Basic
+module
+
+public import ArakelovGeometry.AdelicCurve.Examples.Trivial
+public import ArakelovGeometry.ExternalResults.Place
+public import Mathlib.LinearAlgebra.TensorProduct.Basic
 
 /-!
 # The mass-one trivial place and its actual completed fibre
@@ -14,6 +16,8 @@ The single place specializes the existing proper trivial adelic structure.
 The canonical algebra map is bijective at the trivial absolute value;
 the completed tensor fibre is therefore canonically the original space.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -146,8 +150,7 @@ theorem trivialCompletedTensorEquiv_smul
     (z : (AbsoluteValue.trivial : AbsoluteValue K ℝ).Completion ⊗[K] E) :
     trivialCompletedTensorEquiv K E (a • z) =
       trivialCompletionAlgEquiv K a • trivialCompletedTensorEquiv K E z := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | tmul b x => simp [TensorProduct.smul_tmul', mul_smul]
   | add x y hx hy => simp only [smul_add, map_add, hx, hy]
 

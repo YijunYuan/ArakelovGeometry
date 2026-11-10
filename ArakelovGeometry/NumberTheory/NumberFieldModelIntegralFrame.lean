@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.CompletedLatticeGauge
-import ArakelovGeometry.NumberTheory.NormFamilyGlobalUnitBall
-import Mathlib.RingTheory.Localization.Free
-import Mathlib.RingTheory.DedekindDomain.Factorization
+module
+
+public import ArakelovGeometry.NumberTheory.CompletedLatticeGauge
+public import ArakelovGeometry.NumberTheory.NormFamilyGlobalUnitBall
+public import Mathlib.RingTheory.DedekindDomain.Factorization
+public import Mathlib.RingTheory.Localization.Free
 
 /-!
 # Actual generic and principal frames of integral number-field lattices
@@ -16,6 +18,8 @@ generic-fibre equivalence. Finite generation then produces a principal-open
 integral frame and its finite actual prime-divisor set. These algebraic
 producers do not identify an arbitrary open-set coherent sheaf with a lattice.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct

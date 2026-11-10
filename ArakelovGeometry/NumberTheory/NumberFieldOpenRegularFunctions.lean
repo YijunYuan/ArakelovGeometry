@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.AlgebraicGeometry.StructureSheaf
-import ArakelovGeometry.NumberTheory.NumberFieldPrincipalCompletedFrame
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldPrincipalCompletedFrame
+public import Mathlib.AlgebraicGeometry.StructureSheaf
 
 /-!
 # Actual regular functions on a nonempty number-field open
@@ -12,6 +14,8 @@ import ArakelovGeometry.NumberTheory.NumberFieldPrincipalCompletedFrame
 Nonempty opens of the actual ring-of-integers spectrum are principal, and
 their actual structure-sheaf section rings are principal localizations.
 -/
+
+@[expose] public section
 
 open CategoryTheory Opposite NumberField IsDedekindDomain
 open scoped NumberField
@@ -261,13 +265,14 @@ theorem regularFunctionsToField_eq_genericGerm
     RingHom.comp_apply, regularFunctionsToLocalization_algebraMap]
   exact (IsLocalization.lift_eq _ a).symm
 
-private abbrev openNormalizedStructure := AdelicStructure.normalizedNumberFieldAdelicStructure K
-private abbrev openPrimeParameter (p : HeightOneSpectrum (𝓞 K)) :=
+local notation "openNormalizedStructure" => AdelicStructure.normalizedNumberFieldAdelicStructure K
+local notation "openPrimeParameter" => fun (p : HeightOneSpectrum (𝓞 K)) ↦
   ActualPrimeIndexing.normalizedPrimeParameter p
-private abbrev openPrimeMem (p : HeightOneSpectrum (𝓞 K)) :=
+local notation "openPrimeMem" => fun (p : HeightOneSpectrum (𝓞 K)) ↦
   ActualPrimeIndexing.normalizedPrimeParameter_mem_fin p
-private abbrev openCompletedRing (p : HeightOneSpectrum (𝓞 K)) :=
-  (openNormalizedStructure (K := K)).completedLocalRing (openPrimeParameter p) (openPrimeMem p)
+local notation "openCompletedRing" => fun (p : HeightOneSpectrum (𝓞 K)) ↦
+  AdelicStructure.completedLocalRing (openNormalizedStructure)
+    (openPrimeParameter p) (openPrimeMem p)
 
 /-- The canonical actual completed coefficient map on genuine regular functions. -/
 def regularFunctionsToCompleted (U : TopologicalSpace.Opens (PrimeSpectrum (𝓞 K)))
@@ -284,7 +289,7 @@ theorem regularFunctionsToCompleted_algebraMap
     (hU : (U : Set (PrimeSpectrum (𝓞 K))).Nonempty) (p : HeightOneSpectrum (𝓞 K))
     (hp : primePoint p ∈ U) (a : 𝓞 K) :
     regularFunctionsToCompleted U hU p hp (algebraMap (𝓞 K) (regularFunctions U) a) =
-      (openNormalizedStructure (K := K)).integralCompletedLocalCoefficientMap
+      (openNormalizedStructure).integralCompletedLocalCoefficientMap
         (openPrimeParameter p) (openPrimeMem p) a := by
   let := regularFunctionsLocalization U hU
   exact IsLocalization.Away.lift_eq (openGenerator U hU)
@@ -295,7 +300,7 @@ theorem regularFunctionsToCompleted_algebraMap
 def primeLocalizationToCompleted (p : HeightOneSpectrum (𝓞 K)) :
     Localization.AtPrime p.asIdeal →+* openCompletedRing p :=
   IsLocalization.lift (M := p.asIdeal.primeCompl)
-    (g := (openNormalizedStructure (K := K)).integralCompletedLocalCoefficientMap
+    (g := (openNormalizedStructure).integralCompletedLocalCoefficientMap
       (openPrimeParameter p) (openPrimeMem p))
     fun s => NumberFieldModel.isUnit_completed_integral_of_not_mem _ p s.property
 
@@ -324,7 +329,7 @@ theorem regularFunctionsToCompleted_coe
     (hU : (U : Set (PrimeSpectrum (𝓞 K))).Nonempty) (p : HeightOneSpectrum (𝓞 K))
     (hp : primePoint p ∈ U) (s : regularFunctions U) :
     (regularFunctionsToCompleted U hU p hp s :
-      ((openNormalizedStructure (K := K)).ϕ (openPrimeParameter p)).Completion) =
+      ((openNormalizedStructure).ϕ (openPrimeParameter p)).Completion) =
       algebraMap K _ (regularFunctionsToField U hU s) := by
   let := regularFunctionsLocalization U hU
   have heq : (openCompletedRing p).subtype.comp (regularFunctionsToCompleted U hU p hp) =

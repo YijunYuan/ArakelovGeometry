@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Measurable
-import ArakelovGeometry.AdelicVectorBundle.Rational
-import ArakelovGeometry.AdelicVectorBundle.StrongDomination
-import ArakelovGeometry.AdelicCurve.Basic
-import ArakelovGeometry.Analysis.CoordinateNorm
-import Mathlib.Analysis.Normed.Lp.PiLp
+module
+
+public import ArakelovGeometry.AdelicCurve.Basic
+public import ArakelovGeometry.AdelicVectorBundle.Measurable
+public import ArakelovGeometry.AdelicVectorBundle.Rational
+public import ArakelovGeometry.AdelicVectorBundle.StrongDomination
+public import ArakelovGeometry.Analysis.CoordinateNorm
+public import Mathlib.Analysis.Normed.Lp.PiLp
 
 /-!
 # The mixed coordinate norm family
@@ -17,6 +19,8 @@ Chen–Moriwaki, Example 4.1.5 (PDF pages 226–227), uses the coordinate
 maximum at finite places and the coordinate sum at infinite places.  Both
 norms here are transported through the actual completed basis.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -123,14 +127,14 @@ theorem ofBasisMixed_norm_of_finite (ω : S.Ω) (hω : ω ∈ S.Ωfin)
     (x : (S.ϕ ω).Completion ⊗[K] E) :
     (ofBasisMixed S E b).norm ω x = (ofBasis S E b).norm ω x := by
   have hn : ω ∉ S.Ωinf := fun h => h hω
-  simp only [ofBasisMixed, if_neg hn]
+  simp only [ofBasisMixed, ite_eq_right hn]
 
 /-- At infinite places the mixed family is the coordinate sum norm. -/
 theorem ofBasisMixed_norm_of_infinite (ω : S.Ω) (hω : ω ∈ S.Ωinf)
     (x : (S.ϕ ω).Completion ⊗[K] E) :
     (ofBasisMixed S E b).norm ω x =
       ∑ i, ‖(b.baseChange (S.ϕ ω).Completion).equivFun x i‖ := by
-  simp only [ofBasisMixed, if_pos hω, ofBasisSum_norm]
+  simp only [ofBasisMixed, ite_eq_left hω, ofBasisSum_norm]
 
 /-- Every completed basis vector has norm one for the sum norm. -/
 @[simp]
@@ -148,7 +152,7 @@ theorem ofBasisMixed_norm_tmul_basis (ω : S.Ω) (a : (S.ϕ ω).Completion) (i :
   by_cases hω : ω ∈ S.Ωinf
   · have ht : a ⊗ₜ[K] b i = a • (b.baseChange (S.ϕ ω).Completion) i := by
       simp [Module.Basis.baseChange_apply, TensorProduct.smul_tmul']
-    simp only [ofBasisMixed, if_pos hω, ht, norm_smul, ofBasisSum_norm_basis, mul_one]
+    simp only [ofBasisMixed, ite_eq_left hω, ht, norm_smul, ofBasisSum_norm_basis, mul_one]
   · have hf : ω ∈ S.Ωfin := not_not.mp hω
     rw [ofBasisMixed_norm_of_finite b ω hf, ofBasis_norm_tmul_basis]
 
@@ -201,14 +205,14 @@ theorem ofBasisMixed_norm_rational (ω : S.Ω) (x : E) :
       else ‖fun i => (S.ϕ ω) (b.equivFun x i)‖ := by
   classical
   by_cases hω : ω ∈ S.Ωinf
-  · simp only [ofBasisMixed, if_pos hω, ofBasisSum_norm_rational]
-  · simp only [ofBasisMixed, if_neg hω, ofBasis_norm_rational]
+  · simp only [ofBasisMixed, ite_eq_left hω, ofBasisSum_norm_rational]
+  · simp only [ofBasisMixed, ite_eq_right hω, ofBasis_norm_rational]
 
 /-- The coordinate supremum family is measurable for every adelic structure. -/
 theorem ofBasis_isMeasurable : (ofBasis S E b).IsMeasurable := by
   intro x
   simp only [ofBasis_norm_rational]
-  exact (measurable_pi_lambda _ fun i => S.measurable_absValue (b.equivFun x i)).norm
+  exact (Measurable.of_eval fun i => S.measurable_absValue (b.equivFun x i)).norm
 
 /-- The mixed basis family is measurable; the Archimedean partition is the
 measurable partition supplied by the adelic structure. -/
@@ -218,7 +222,7 @@ theorem ofBasisMixed_isMeasurable : (ofBasisMixed S E b).IsMeasurable := by
   simp only [ofBasisMixed_norm_rational]
   apply Measurable.ite (S.measurableSet_Ωinf)
   · exact Finset.measurable_sum _ fun i _ => S.measurable_absValue (b.equivFun x i)
-  · exact (measurable_pi_lambda _ fun i => S.measurable_absValue (b.equivFun x i)).norm
+  · exact (Measurable.of_eval fun i => S.measurable_absValue (b.equivFun x i)).norm
 
 /-- The coordinate maximum has an integrable upper logarithmic bound for
 every adelic structure. -/
@@ -251,7 +255,7 @@ theorem ofBasisMixed_isUpperDominated_of_measure_lt_top (hfin : S.v S.Ωinf < �
   apply (Real.log_le_iff_le_exp ((ofBasisMixed S E b).norm_rational_pos ω hx)).mpr
   rw [ofBasisMixed_norm_rational]
   by_cases hω : ω ∈ S.Ωinf
-  · simp only [if_pos hω, Set.indicator_of_mem hω, Real.exp_add, Real.exp_log hN]
+  · simp only [ite_eq_left hω, Set.indicator_of_mem hω, Real.exp_add, Real.exp_log hN]
     calc
       ∑ i, (S.ϕ ω) (b.equivFun x i) ≤
           ∑ _ : ι, Real.exp (∑ i, |Real.log ((S.ϕ ω) (b.equivFun x i))|) :=
@@ -261,7 +265,7 @@ theorem ofBasisMixed_isUpperDominated_of_measure_lt_top (hfin : S.v S.Ωinf < �
       _ ≤ N * Real.exp (∑ i, |Real.log ((S.ϕ ω) (b.equivFun x i))|) :=
         mul_le_mul_of_nonneg_right (le_max_right _ _) (Real.exp_pos _).le
       _ = _ := mul_comm _ _
-  · simp only [if_neg hω, Set.indicator_of_notMem hω, add_zero]
+  · simp only [ite_eq_right hω, Set.indicator_of_notMem hω, add_zero]
     apply (pi_norm_le_iff_of_nonneg (Real.exp_pos _).le).mpr
     intro i
     rw [Real.norm_eq_abs, abs_of_nonneg (apply_nonneg _ _)]
@@ -354,8 +358,7 @@ theorem dualBaseChange_apply_basis_eq {ι' : Type*} [Finite ι'] [DecidableEq ι
     dualBaseChangeEquiv K (S.ϕ ω).Completion E z
         ((b.baseChange (S.ϕ ω).Completion) i) =
       (b.dualBasis.baseChange (S.ϕ ω).Completion).equivFun z i := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | tmul a ℓ =>
       simp only [Module.Basis.baseChange_apply, dualBaseChangeEquiv_tmul_apply_tmul,
         Module.Basis.equivFun_apply, Module.Basis.baseChange_repr_tmul,

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Rational
-import ArakelovGeometry.Analysis.CountableNormEvaluation
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Rational
+public import ArakelovGeometry.Analysis.CountableNormEvaluation
 
 /-!
 # Countable rational sets dense in completed fibres
@@ -13,6 +15,8 @@ A single countable subfield dense in the completed ground fields supplies a
 single countable set of rational vectors dense for every completed norm.
 All constructions use the prescribed fibre and its actual scalar action.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

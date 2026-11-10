@@ -3,13 +3,17 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldPrincipalDeterminantGauge
-import ArakelovGeometry.NumberTheory.NumberFieldGlobalLatticeIndex
-import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanDeterminantIntegral
-import ArakelovGeometry.NumberTheory.NumberFieldIntegralBasisCovolume
-import ArakelovGeometry.AdelicVectorBundle.Degree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Degree
+public import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanDeterminantIntegral
+public import ArakelovGeometry.NumberTheory.NumberFieldGlobalLatticeIndex
+public import ArakelovGeometry.NumberTheory.NumberFieldIntegralBasisCovolume
+public import ArakelovGeometry.NumberTheory.NumberFieldPrincipalDeterminantGauge
 
 /-! # The determinant degree and actual covolume of a full number-field lattice -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField IsDedekindDomain MeasureTheory
@@ -28,7 +32,8 @@ variable {K E : Type*} [Field K] [NumberField K]
 
 attribute [local instance] normalizedNumberFieldAdelicStructure_isProper
 
-private instance degreeCovolumeDiscrete :
+/-- Every subset of the normalized number-field place space is measurable. -/
+instance degreeCovolumeDiscrete :
     DiscreteMeasurableSpace (normalizedNumberFieldAdelicStructure K).Ω :=
   inferInstanceAs
     (DiscreteMeasurableSpace {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})

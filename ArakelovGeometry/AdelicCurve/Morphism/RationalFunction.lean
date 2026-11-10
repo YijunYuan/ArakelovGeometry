@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Examples.RationalFunction.Construction
-import ArakelovGeometry.AdelicCurve.Morphism.Basic
-import ArakelovGeometry.ExternalResults.ProbabilityCollapse
+module
+
+public import ArakelovGeometry.AdelicCurve.Examples.RationalFunction.Construction
+public import ArakelovGeometry.AdelicCurve.Morphism.Basic
+public import ArakelovGeometry.ExternalResults.ProbabilityCollapse
 
 /-!
 # The rational-function morphism of adelic curves
@@ -14,6 +16,8 @@ Chen–Moriwaki, Example 3.7.2(3): the field inclusion `ℚ → ℚ(T)`, the map
 collapsing the transcendental unit-circle component to the ordinary infinite
 place of `ℚ`, and the fibre integral that averages over that component.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicCurve.RationalFunction
 

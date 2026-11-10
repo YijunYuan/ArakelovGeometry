@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.DeterminantExactSequence
-import ArakelovGeometry.AdelicVectorBundle.DeterminantMap
-import Mathlib.LinearAlgebra.Multilinear.Basis
-import Mathlib.LinearAlgebra.Multilinear.TensorProduct
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantMap
+public import ArakelovGeometry.Analysis.DeterminantExactSequence
+public import Mathlib.LinearAlgebra.Multilinear.Basis
+public import Mathlib.LinearAlgebra.Multilinear.TensorProduct
 
 /-!
 # The canonical determinant map for a subspace and quotient
@@ -15,6 +17,8 @@ The map uses the existing top exterior powers and the canonical equality
 between the sum of the two ranks and the ambient rank. Its adapted-coordinate
 construction is independent of both chosen bases.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

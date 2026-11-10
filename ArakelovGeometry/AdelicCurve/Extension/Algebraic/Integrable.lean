@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integral
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integral
 
 /-!
 # Almost everywhere algebraic fibre integration
@@ -12,6 +14,8 @@ Algebraic fibre integration respects almost everywhere equality. Integrable
 functions admit measurable representatives, and the fibre operator descends
 to equivalence classes of integrable functions.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped ENNReal

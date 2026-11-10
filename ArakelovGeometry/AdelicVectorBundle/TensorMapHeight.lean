@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TensorPair
-import ArakelovGeometry.AdelicVectorBundle.StrongMapHeight
-import ArakelovGeometry.AdelicVectorBundle.VectorDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.StrongMapHeight
+public import ArakelovGeometry.AdelicVectorBundle.TensorPair
+public import ArakelovGeometry.AdelicVectorBundle.VectorDegree
 
 /-!
 # Map heights as injective tensor vector degrees
@@ -13,6 +15,8 @@ import ArakelovGeometry.AdelicVectorBundle.VectorDegree
 The map is represented by Mathlib's canonical dual-tensor/Hom equivalence.
 Both local norms and global degrees use the actual injective tensor family.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

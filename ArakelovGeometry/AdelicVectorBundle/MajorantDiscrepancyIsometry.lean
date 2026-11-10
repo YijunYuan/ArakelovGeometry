@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ElementaryRestrictionQuotient
-import ArakelovGeometry.AdelicVectorBundle.Discrepancy
-import ArakelovGeometry.AdelicVectorBundle.RestrictionFunctor
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Discrepancy
+public import ArakelovGeometry.AdelicVectorBundle.ElementaryRestrictionQuotient
+public import ArakelovGeometry.AdelicVectorBundle.RestrictionFunctor
 
 /-!
 # Majorant discrepancy under actual completed isometries
@@ -15,6 +17,8 @@ linear equivalence. The determinant ratios and their infimum are therefore
 preserved, as is the global lower-envelope integral. Canonical nested and
 total restrictions are included without rank restrictions.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

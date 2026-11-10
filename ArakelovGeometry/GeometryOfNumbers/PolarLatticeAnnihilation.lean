@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.ConvexBodyPolar
-import ArakelovGeometry.GeometryOfNumbers.IntegralDualCovolume
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.ConvexBodyPolar
+public import ArakelovGeometry.GeometryOfNumbers.IntegralDualCovolume
 
 /-! # Actual interior lattice points annihilate actual polar lattice points -/
+
+@[expose] public section
 
 noncomputable section
 open Set Topology
@@ -62,7 +66,7 @@ theorem integralDual_eval_eq_zero_of_mem_interior_polar (L : Submodule ℤ V)
 theorem span_polar_integralDual_le_eval_ker (L : Submodule ℤ V)
     {C : Set V} {x : V} (hxL : x ∈ L) (hx : x ∈ interior C) :
     Submodule.span ℝ {f : StrongDual ℝ V | f ∈ integralDual L ∧ f ∈ StrongDual.polar ℝ C} ≤
-      LinearMap.ker (ContinuousLinearMap.apply ℝ ℝ (E := V) x).toLinearMap := by
+      LinearMap.ker (ContinuousLinearMap.apply ℝ ℝ (E' := V) x).toLinearMap := by
   apply Submodule.span_le.mpr
   intro f hf
   change f x = 0

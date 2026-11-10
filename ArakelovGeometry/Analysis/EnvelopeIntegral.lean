@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.IntegrableEnvelope
-import Mathlib.Data.EReal.Operations
-import Mathlib.Data.EReal.Inv
+module
+
+public import ArakelovGeometry.Analysis.IntegrableEnvelope
+public import Mathlib.Data.EReal.Inv
+public import Mathlib.Data.EReal.Operations
 
 /-!
 # Calculus of integrable-envelope integrals
@@ -14,6 +16,8 @@ The extended upper integral is the infimum of integrals of real integrable
 majorants. It agrees exactly with the existing real-function envelope integral.
 Translation by an integrable function is valid even at infinite values.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 

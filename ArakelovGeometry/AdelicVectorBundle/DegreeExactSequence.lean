@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantSequenceOperator
-import ArakelovGeometry.AdelicVectorBundle.Degree
-import ArakelovGeometry.AdelicVectorBundle.DeterminantDiscrepancy
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Degree
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantDiscrepancy
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantSequenceOperator
 
 /-!
 # The lower degree bound in an exact sequence
@@ -14,6 +16,8 @@ The canonical determinant contraction is integrated on the actual restriction
 and quotient adelic bundles. No auxiliary determinant norm or integrability
 certificate is assumed. Empty subspaces and zero quotients are included.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

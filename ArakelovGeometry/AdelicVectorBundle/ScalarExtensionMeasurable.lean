@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.CountableMeasurable
-import ArakelovGeometry.AdelicVectorBundle.Bidual
-import ArakelovGeometry.AdelicVectorBundle.FiniteExtensionDense
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDomination
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Bidual
+public import ArakelovGeometry.AdelicVectorBundle.CountableMeasurable
+public import ArakelovGeometry.AdelicVectorBundle.FiniteExtensionDense
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDomination
 
 /-!
 # Measurability of actual scalar-extension norms
@@ -20,6 +22,8 @@ The dual of projective scalar extension is computed by restriction to the
 original completed vector space. Countable base vector tests prove its
 measurability for arbitrary algebraic extensions as well.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -368,15 +372,13 @@ def completedScalarExtensionDualEvaluation (x : S.ParameterSpaceExtension L)
       (dualBaseChangeEquiv K (S.ϕ x.base).Completion E f) y
     map_add' := fun f g => ?_
     map_smul' := fun a f => ?_ }
-  · induction y using TensorProduct.induction_on with
-    | zero => simp
+  · induction y using TensorProduct.inductionOn with
     | tmul a t => simp [scalarExtensionDualEval_tmul, mul_add]
     | add y t hy ht =>
       simp only [map_add] at hy ht ⊢
       rw [hy, ht]
       ring
-  · induction y using TensorProduct.induction_on with
-    | zero => simp
+  · induction y using TensorProduct.inductionOn with
     | tmul b t =>
       simp [scalarExtensionDualEval_tmul, Algebra.smul_def, mul_left_comm]
     | add y t hy ht => simp only [map_add, hy, ht, smul_add]

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.RootBounds
-import Mathlib.RingTheory.Algebraic.Integral
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.RootBounds
+public import Mathlib.RingTheory.Algebraic.Integral
 
 /-!
 # Uniform envelopes for arbitrary extending-place choices
@@ -12,6 +14,8 @@ import Mathlib.RingTheory.Algebraic.Integral
 The coefficient estimate in Chen–Moriwaki, Proposition 4.1.15, is uniform
 in every extension of each absolute value. No measurable choice is needed.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 

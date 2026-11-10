@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
-import ArakelovGeometry.AdelicVectorBundle.Bidual
-import ArakelovGeometry.Analysis.ScalarExtensionIdentity
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Bidual
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
+public import ArakelovGeometry.Analysis.ScalarExtensionIdentity
 
 /-!
 # Identity scalar extension of norm families
@@ -14,6 +16,8 @@ The actual completed identity extension agrees with the bidual family under
 canonical evaluation. Archimedean bidual equality uses the usual normalized
 real or complex norm explicitly.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -119,12 +123,10 @@ theorem completedScalarExtensionEquiv_self (v : AbsoluteValue K ℝ)
     change a.toAlgebra.algebraMap r * 1 = r
     rw [mul_one]
     exact AbsoluteValue.algebraMap_normedAlgebraCompletionOfEq_self v h r
-  induction z using TensorProduct.induction_on with
-  | zero => simp only [map_zero, TensorProduct.tmul_zero]
+  induction z using TensorProduct.inductionOn with
   | add z t hz ht => simp only [map_add, TensorProduct.tmul_add, hz, ht]
   | tmul b y =>
-    induction y using TensorProduct.induction_on with
-    | zero => simp only [TensorProduct.tmul_zero, map_zero]
+    induction y using TensorProduct.inductionOn with
     | add y t hy ht => simp only [TensorProduct.tmul_add, map_add, hy, ht]
     | tmul c x =>
       rw [completedScalarExtensionEquiv_tmul]

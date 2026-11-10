@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.CountableTensorFormula
-import ArakelovGeometry.AdelicVectorBundle.CountableMeasurable
-import ArakelovGeometry.AdelicVectorBundle.TensorDomination
-import ArakelovGeometry.AdelicVectorBundle.Determinant
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.CountableMeasurable
+public import ArakelovGeometry.AdelicVectorBundle.Determinant
+public import ArakelovGeometry.AdelicVectorBundle.TensorDomination
+public import ArakelovGeometry.Analysis.CountableTensorFormula
 
 /-!
 # Countable projective tensor and determinant measurability
@@ -15,6 +17,8 @@ One countable dense rational subfield supplies countable exact tensor
 decompositions. Their cost infimum proves projective tensor measurability;
 the actual projective top tensor quotient then gives determinant measurability.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianClosedMaximalSlope
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianClosedMaximalSlope
 
 /-!
 # The actual largest destabilizer under closed Hermitian extension
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicVectorBundle.HermitianClosedMaximalSlope
 Produced infinite rational descent and actual closed maximal-slope equality
 identify the native original largest destabilizer with the actual target one.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

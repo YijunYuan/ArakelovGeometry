@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.HermitianScalarExtension
-import ArakelovGeometry.Analysis.HermitianNorm
-import ArakelovGeometry.Analysis.ScalarExtensionDual
-import Mathlib.Analysis.InnerProductSpace.Dual
+module
+
+public import ArakelovGeometry.Analysis.HermitianNorm
+public import ArakelovGeometry.Analysis.HermitianScalarExtension
+public import ArakelovGeometry.Analysis.ScalarExtensionDual
+public import Mathlib.Analysis.InnerProductSpace.Dual
 
 /-!
 # Duality for Hermitian scalar extension
@@ -14,6 +16,8 @@ import Mathlib.Analysis.InnerProductSpace.Dual
 Orthonormal coordinates compute actual operator norms. They identify the
 Hermitian extension of the dual with the dual of the Hermitian extension.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -148,8 +152,7 @@ theorem hermitianScalarExtension_dual_transport {A κ : Type*}
   have heval (t : L ⊗[k] A) (i : ι) :
       hermitianScalarExtensionCoordinates c' t i =
         dualBaseChangeEquiv k L E (e.toLinearMap.baseChange L t) (1 ⊗ₜ[k] b i) := by
-    induction t using TensorProduct.induction_on with
-    | zero => simp
+    induction t using TensorProduct.inductionOn with
     | add t u ht hu => simp [map_add, ht, hu]
     | tmul a x =>
       rw [hermitianScalarExtensionCoordinates_tmul, LinearMap.baseChange_tmul,

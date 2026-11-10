@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.EnvelopeIntegral
-import Mathlib.Analysis.SpecificLimits.Basic
-import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
+module
+
+public import ArakelovGeometry.Analysis.EnvelopeIntegral
+public import Mathlib.Analysis.SpecificLimits.Basic
+public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 /-!
 # Upper-integral calculus for the distance of norm families
@@ -13,6 +15,8 @@ import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 The functions need not be measurable. These are the nonnegative upper-integral
 producers used in Chen–Moriwaki, Remark 4.1.20 and Appendix A.4.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped ENNReal

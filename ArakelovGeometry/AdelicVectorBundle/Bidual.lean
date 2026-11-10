@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Dual
-import ArakelovGeometry.Analysis.UltrametricDual
-import ArakelovGeometry.Analysis.ArchimedeanDual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Dual
+public import ArakelovGeometry.Analysis.ArchimedeanDual
+public import ArakelovGeometry.Analysis.UltrametricDual
 
 /-!
 # Bidual norms on completed fibres
@@ -14,6 +16,8 @@ The canonical evaluation map is an isometry at every ultrametric fibre.
 The lower norm bound consumes approximate extension of actual functionals;
 the upper bound is the evaluation contraction from the dual construction.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

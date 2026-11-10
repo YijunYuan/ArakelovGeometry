@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.LinearAlgebra.Matrix.Rank
-import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
-import Mathlib.Algebra.Order.AbsoluteValue.Basic
-import Mathlib.Data.Finset.Max
-import Mathlib.Data.Real.Basic
+module
+
+public import Mathlib.Algebra.Order.AbsoluteValue.Basic
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Data.Finset.Max
+public import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+public import Mathlib.LinearAlgebra.Matrix.Rank
 
 /-!
 # Maximal row minors
@@ -17,6 +19,8 @@ A full-column-rank rectangular matrix has a nonzero maximal row minor for any
 absolute value. Normalizing by that minor gives identity rows and coefficients
 of absolute value at most one, including the empty-column case.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -54,7 +58,7 @@ theorem exists_row_minor_det_ne_zero [Finite m] (A : Matrix m n K)
     rw [heq]
     exact hli.comp e e.injective
   exact ((_root_.Matrix.isUnit_iff_isUnit_det _).mp
-    (_root_.Matrix.linearIndependent_rows_iff_isUnit.mp hrows)).ne_zero
+    (_root_.Matrix.linearIndependent_row_iff_isUnit.mp hrows)).ne_zero
 
 omit [Fintype m] in
 /-- Selecting an actual largest minor produces bounded normalization coefficients. -/

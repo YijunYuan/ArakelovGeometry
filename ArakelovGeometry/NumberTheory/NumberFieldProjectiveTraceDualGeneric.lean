@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDualMetric
-import Mathlib.LinearAlgebra.Contraction
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDualMetric
+public import Mathlib.LinearAlgebra.Contraction
 
 /-! # Canonical generic transport of the original projective trace-dual tensor -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField
@@ -24,16 +28,17 @@ variable {K : Type u} [Field K] [NumberField K]
   (M : Type u) [AddCommGroup M] [Module (𝓞 K) M]
   [Module.Finite (𝓞 K) M] [Module.Projective (𝓞 K) M]
 
-private def dualHomEquiv :
+/-- Base change of the integral dual identifies with scalar-valued integral linear maps. -/
+def dualHomEquiv :
     K ⊗[𝓞 K] Module.Dual (𝓞 K) M ≃ₗ[𝓞 K] (M →ₗ[𝓞 K] K) :=
   (TensorProduct.comm (𝓞 K) _ _).trans (dualTensorHomEquiv (𝓞 K) M K)
 
 omit [NumberField K] in
-private theorem dualHomEquiv_smul (c : K)
+/-- The integral dual base-change equivalence respects the extended scalar action. -/
+theorem dualHomEquiv_smul (c : K)
     (z : K ⊗[𝓞 K] Module.Dual (𝓞 K) M) :
     dualHomEquiv M (c • z) = c • dualHomEquiv M z := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | tmul a φ =>
       ext m
       change (φ m) • (c * a) = c * ((φ m) • a)
@@ -85,10 +90,7 @@ theorem traceTensorGenericPairEquiv_contract
     TensorProduct.rid K (Module.Dual K (K ⊗[𝓞 K] M))
       (traceTensorGenericPairEquiv M (c ⊗ₜ[𝓞 K] z)) =
         c • traceTensorInclusion (K := K) M z := by
-  induction z using TensorProduct.induction_on with
-  | zero =>
-      simp only [TensorProduct.tmul_zero, map_zero, smul_zero]
-      rfl
+  induction z using TensorProduct.inductionOn with
   | tmul a φ =>
       rw [traceTensorGenericPairEquiv_tmul, TensorProduct.rid_tmul]
       apply TensorProduct.AlgebraTensorModule.ext

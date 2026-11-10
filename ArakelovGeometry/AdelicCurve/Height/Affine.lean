@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Height.Basic
+module
+
+public import ArakelovGeometry.AdelicCurve.Height.Basic
 
 /-!
 # Affine heights and the Northcott property
@@ -12,6 +14,8 @@ The height of `(1, a)` is nonnegative and homogeneous under powers.
 For a proper adelic structure it bounds the heights of all normalized coordinates.
 The Northcott property of Definition 3.5.2 is finiteness of its bounded sublevel sets.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure
 

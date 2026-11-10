@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeModel
-import Mathlib.AlgebraicGeometry.Modules.Tilde
-import Mathlib.Algebra.Category.ModuleCat.Sheaf.LocallyFree
-import Mathlib.RingTheory.Localization.Free
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeModel
+public import Mathlib.Algebra.Category.ModuleCat.Sheaf.LocallyFree
+public import Mathlib.AlgebraicGeometry.Modules.Tilde
+public import Mathlib.RingTheory.Localization.Free
 
 /-!
 # The actual associated sheaf of an integral number-field lattice
@@ -14,6 +16,8 @@ import Mathlib.RingTheory.Localization.Free
 The construction uses the usual associated sheaf of the literal integral
 submodule. Prime-local free bases descend to actual principal neighborhoods.
 -/
+
+@[expose] public section
 
 open NumberField AlgebraicGeometry CategoryTheory
 open scoped NumberField TensorProduct

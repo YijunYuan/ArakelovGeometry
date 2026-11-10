@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantDualBaseChange
-import ArakelovGeometry.AdelicVectorBundle.HermitianTensor
-import ArakelovGeometry.Analysis.DeterminantPairing
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantDualBaseChange
+public import ArakelovGeometry.AdelicVectorBundle.HermitianTensor
+public import ArakelovGeometry.Analysis.DeterminantPairing
 
 /-!
 # Duality of completed determinant norms
@@ -13,6 +15,8 @@ import ArakelovGeometry.Analysis.DeterminantPairing
 The determinant pairing is transported along the canonical completed dual and
 exterior maps. All norm comparisons use the actual determinant quotient norms.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

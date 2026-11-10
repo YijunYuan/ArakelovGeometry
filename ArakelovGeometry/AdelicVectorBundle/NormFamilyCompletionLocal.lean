@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.NormFamilyMetricLocalLimit
-import ArakelovGeometry.AdelicVectorBundle.Comparison
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Comparison
+public import ArakelovGeometry.Analysis.NormFamilyMetricLocalLimit
 
 /-!
 # Actual completed-fibre limits of norm families
@@ -14,6 +16,8 @@ completed-fibre norm limits. Choosing these at every place gives an actual
 norm family and convergence in every local distance, without measurability
 or domination assumptions.
 -/
+
+@[expose] public section
 
 open Filter
 open scoped TensorProduct

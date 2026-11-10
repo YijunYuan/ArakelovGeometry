@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.MapHeight
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.MapHeight
 
 /-!
 # Operator norms under changes of norm
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicVectorBundle.MapHeight
 Local distance bounds the change of local map height. Canonical pullback along
 a linear equivalence leaves the completed operator norm unchanged.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

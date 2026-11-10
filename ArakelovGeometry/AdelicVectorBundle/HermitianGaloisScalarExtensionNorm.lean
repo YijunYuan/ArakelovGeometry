@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianDegree
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismDeterminantRational
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.EquivMeasure
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.EquivMeasure
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianDegree
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismDeterminantRational
 
 /-!
 # Actual Hermitian completed-fibre transport under coefficient automorphisms
@@ -14,6 +16,8 @@ The extending Archimedean normalization is produced from the original one.
 Coefficient transport preserves the exact Hermitian extension, including
 arbitrary completed vectors, actual restrictions and their determinants.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -32,8 +36,7 @@ private theorem hermitianTensor_norm_algEquiv
   have hc (i : ι) : hermitianScalarExtensionCoordinates (L := B) b
       (TensorProduct.congr e.toLinearEquiv (LinearEquiv.refl k V) z) i =
       e (hermitianScalarExtensionCoordinates (L := A) b z i) := by
-    induction z using TensorProduct.induction_on with
-    | zero => simp only [map_zero, PiLp.zero_apply]
+    induction z using TensorProduct.inductionOn with
     | tmul a v =>
       simp only [TensorProduct.congr_tmul, LinearEquiv.refl_apply,
         hermitianScalarExtensionCoordinates_tmul, map_mul, e.commutes]

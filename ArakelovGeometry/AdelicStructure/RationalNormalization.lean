@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Examples.RationalFunction.Construction
-import ArakelovGeometry.Analysis.NormalizedCompletion
-import Mathlib.Data.Nat.Factorization.Induction
+module
+
+public import ArakelovGeometry.AdelicCurve.Examples.RationalFunction.Construction
+public import ArakelovGeometry.Analysis.NormalizedCompletion
+public import Mathlib.Data.Nat.Factorization.Induction
 
 /-!
 # The standard normalized rational adelic structure
@@ -15,6 +17,8 @@ mass one with `|p| = p⁻¹`, and one real place of mass one. It reuses the
 actual rational absolute values already constructed in the rational-function
 example. The general number-field model is not changed.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 

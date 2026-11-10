@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldCodifferentDual
-import Mathlib.LinearAlgebra.Contraction
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldCodifferentDual
+public import Mathlib.LinearAlgebra.Contraction
 
 /-! # The actual codifferent tensor and original trace-integral dual
 
@@ -14,6 +16,8 @@ evaluation formula. Full span then identifies its target with the original
 trace-integral dual and the actual integer dual. No freeness over the number
 field's integer ring or target duality certificate is assumed.
 -/
+
+@[expose] public section
 
 open scoped NumberField TensorProduct
 

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianClosedScalarExtensionDegree
-import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionQuotient
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianClosedScalarExtensionDegree
+public import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionQuotient
 
 /-!
 # Actual native quotient degree and mean under closed Hermitian extension
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionQuotient
 The genuine completed quotient isometry and the actual closed ambient degree
 producer preserve both canonical native quotient invariants in every rank.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

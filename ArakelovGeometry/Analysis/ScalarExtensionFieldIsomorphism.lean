@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.ScalarExtensionNorm
+module
+
+public import ArakelovGeometry.Analysis.ScalarExtensionNorm
 
 /-!
 # Scalar-extension norms under coefficient-field isomorphisms
@@ -11,6 +13,8 @@ import ArakelovGeometry.Analysis.ScalarExtensionNorm
 The canonical tensor equivalence preserves the actual decomposition costs
 and extended base-field evaluations, hence both scalar-extension norms.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 namespace ArakelovGeometry
@@ -24,8 +28,7 @@ theorem scalarExtensionDualEval_algEquiv (e : L ≃ₐ[k] M) (f : E →ₗ[k] k)
     scalarExtensionDualEval f
       (TensorProduct.congr e.toLinearEquiv (LinearEquiv.refl k E) z) =
       e (scalarExtensionDualEval f z) := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp only [map_zero]
+  induction z using TensorProduct.inductionOn with
   | add z t hz ht => simp only [map_add, hz, ht]
   | tmul a x =>
     rw [TensorProduct.congr_tmul, LinearEquiv.refl_apply,

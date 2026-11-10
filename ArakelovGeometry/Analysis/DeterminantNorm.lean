@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.TensorNorm
-import Mathlib.LinearAlgebra.PiTensorProduct.Finite
-import Mathlib.LinearAlgebra.Determinant
-import Mathlib.LinearAlgebra.ExteriorPower.Basis
+module
+
+public import ArakelovGeometry.Analysis.TensorNorm
+public import Mathlib.LinearAlgebra.Determinant
+public import Mathlib.LinearAlgebra.ExteriorPower.Basis
+public import Mathlib.LinearAlgebra.PiTensorProduct.Finite
 
 /-!
 # Determinant norms and nearly optimal bases
@@ -15,6 +17,8 @@ Local determinant estimates over complete valued fields, including trivial
 valuations. The separated projective tensor norm supplies actual bounds for
 multilinear maps; no determinant norm or optimal basis is assumed.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -340,7 +344,7 @@ theorem norm_linearMap_le_injective_of_ultrametric {W : Type*}
             ring
           _ ≤ injectiveTensorSeminorm z * ∏ _ : ι, α⁻¹ := by
             apply mul_le_mul_of_nonneg_left _ (apply_nonneg _ _)
-            exact Finset.prod_le_prod (fun _ _ ↦ mul_nonneg (norm_nonneg _) (apply_nonneg _ _))
+            exact Finset.prod_le_prod₀ (fun _ _ ↦ mul_nonneg (norm_nonneg _) (apply_nonneg _ _))
               (fun i _ ↦ (he (p i)).2)
           _ = injectiveTensorSeminorm z * α⁻¹ ^ Fintype.card ι := by
             rw [Finset.prod_const, Finset.card_univ]

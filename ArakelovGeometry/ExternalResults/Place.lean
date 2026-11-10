@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
+module
+
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
 
 /-!
 # Places of a field
@@ -12,6 +14,8 @@ A *place* of a field `K` is an equivalence class of absolute values `K → ℝ`.
 defines the type `AbsoluteValue.Place K` of places, the trivial place, and the archimedean /
 nonarchimedean dichotomy on places (via the chosen representative `Quotient.out`).
 -/
+
+@[expose] public section
 
 namespace AbsoluteValue
 

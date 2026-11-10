@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteLogarithmicMinima
-import ArakelovGeometry.AdelicVectorBundle.TowerLogarithmicMinima
-import ArakelovGeometry.AdelicVectorBundle.DegreeIsometryDual
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantIsometry
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteLogarithmicMinima
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantIsometry
+public import ArakelovGeometry.AdelicVectorBundle.DegreeIsometryDual
+public import ArakelovGeometry.AdelicVectorBundle.TowerLogarithmicMinima
 
 /-!
 # Actual nested scalar bundles and rational sections through the associator
@@ -16,6 +18,8 @@ through tower transport and the canonical tensor associator. Its norm family
 is fixed to the actual nested scalar extension. Intermediate place regularity
 is not assumed. Canonical closure-field identification remains separate.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

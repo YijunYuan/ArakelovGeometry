@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Basic
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationDual
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedGlobalFiniteGeneration
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Basic
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedGlobalFiniteGeneration
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationDual
 
 /-!
 # Actual normalized number-field adelic bundles
@@ -13,6 +15,8 @@ import ArakelovGeometry.NumberTheory.NormFamilyNormalizedGlobalFiniteGeneration
 The completed norm transport and dual comparison produce all the adelic-bundle
 properties. Its dominated global finite-place ball is finitely generated.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicVectorBundle
 

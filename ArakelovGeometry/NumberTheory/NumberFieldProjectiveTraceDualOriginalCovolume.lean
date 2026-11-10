@@ -3,9 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDualGeneric
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDualGeneric
 
 /-! # Reciprocal covolume of the original projective trace tensor in its prescribed metric -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory
@@ -27,12 +31,12 @@ variable {K : Type u} [Field K] [NumberField K]
 
 attribute [local instance] NumberFieldProjectiveGeneric.genericFiniteDimensional
 
-private abbrev originalGenericFiniteDimensional :
+/-- The trace-dual generic fibre is finite-dimensional over the number field. -/
+local instance originalGenericFiniteDimensional :
     FiniteDimensional K
       (K ⊗[𝓞 K] (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M)) :=
   (traceTensorGenericPairEquiv (K := K) M).symm.finiteDimensional
 
-attribute [local instance] originalGenericFiniteDimensional
 
 private theorem comap_of_map_equiv
     {V W : Type*} [AddCommGroup V] [Module ℤ V] [AddCommGroup W] [Module ℤ W]

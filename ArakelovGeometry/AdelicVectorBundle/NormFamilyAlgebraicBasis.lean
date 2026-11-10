@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.NormFamilyAlgebraicBounds
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtension
-import ArakelovGeometry.AdelicVectorBundle.BasisComparison
-import Mathlib.RingTheory.Flat.Basic
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BasisComparison
+public import ArakelovGeometry.AdelicVectorBundle.NormFamilyAlgebraicBounds
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension
+public import Mathlib.RingTheory.Flat.Basic
 
 /-!
 # Restricted coordinate maxima at arbitrarily chosen extending places
@@ -14,6 +16,8 @@ import Mathlib.RingTheory.Flat.Basic
 The actual completed restriction in Chen–Moriwaki, Proposition 4.1.15.
 Choices of extending places carry no measurability hypothesis.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.CompletedUnitBallGaugeComparison
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldIntegralComparison
+module
+
+public import ArakelovGeometry.NumberTheory.CompletedUnitBallGaugeComparison
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldIntegralComparison
 
 /-!
 # Global impurity on the actual normalized number-field curve
@@ -12,6 +14,8 @@ import ArakelovGeometry.NumberTheory.NormalizedNumberFieldIntegralComparison
 The extended nonnegative weighted sum of the actual completed unit-ball
 impurities, including infinite impurity and the zero-dimensional convention.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped ENNReal
@@ -67,7 +71,7 @@ theorem globalImpurity_eq_lintegral : ξ.globalImpurity =
           (normalizedNumberFieldAdelicStructure K).v {ω.val} := by
       apply tsum_congr
       intro ω
-      simp only [finiteImpurityProfile, if_pos ω.property]
+      simp only [finiteImpurityProfile, ite_eq_left ω.property]
     _ = _ := tsum_subtype_eq_of_support_subset
       (f := fun ω : (normalizedNumberFieldAdelicStructure K).Ω =>
         ENNReal.ofReal (ξ.finiteImpurityProfile ω) *

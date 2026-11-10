@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalTraceDual
-import ArakelovGeometry.NumberTheory.NumberFieldArithmeticPolarVolume
-import Mathlib.Analysis.Normed.Module.DoubleDual
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldArithmeticPolarVolume
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalTraceDual
+public import Mathlib.Analysis.Normed.Module.DoubleDual
 
 /-! # Infinite-place metric compatibility of the actual original trace bidual -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField
@@ -282,10 +286,14 @@ theorem traceBidualProductEquiv_norm_infinite
     (genericTraceBidualEquiv (K := K) M) z
   have hs : traceBidualProductEquiv (K := K) M (Pi.single w z) = Pi.single w y := by
     ext v
+    simp only [traceBidualProductEquiv, LinearEquiv.piCongrRight_apply,
+      LinearEquiv.restrictScalars_apply]
     by_cases hv : v = w
     · subst v
-      simp [traceBidualProductEquiv, y]
-    · simp [traceBidualProductEquiv, hv]
+      simp only [Pi.single_eq_same, y]
+    · rw [Pi.single_eq_of_ne hv, Pi.single_eq_of_ne hv]
+      exact (LinearEquiv.baseChange K (CompletedCoefficient v) _ _
+        (genericTraceBidualEquiv (K := K) M)).map_zero
   have h := congrArg (fun r : ℝ => r ^ 2)
     (traceBidualProductEquiv_norm M hη (Pi.single w z))
   rw [hs] at h

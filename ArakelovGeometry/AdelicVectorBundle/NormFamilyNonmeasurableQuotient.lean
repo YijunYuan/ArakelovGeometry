@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicStructure.TrivialPlace
-import ArakelovGeometry.AdelicVectorBundle.Measurable
-import ArakelovGeometry.AdelicVectorBundle.Quotient
-import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
-import Mathlib.MeasureTheory.MeasurableSpace.Card
-import Mathlib.Analysis.Real.Cardinality
+module
+
+public import ArakelovGeometry.AdelicStructure.TrivialPlace
+public import ArakelovGeometry.AdelicVectorBundle.Measurable
+public import ArakelovGeometry.AdelicVectorBundle.Quotient
+public import Mathlib.Analysis.Real.Cardinality
+public import Mathlib.MeasureTheory.MeasurableSpace.Card
+public import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 
 /-!
 # A measurable norm family with a nonmeasurable quotient
@@ -16,6 +18,8 @@ import Mathlib.Analysis.Real.Cardinality
 The actual real trivial-completion plane in Chen–Moriwaki Remark 4.1.23.
 A fixed parameter set changes the cheap-line norm between one half and one.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -73,7 +77,7 @@ theorem rawNorm_le_one (B : Set ℝ) (t : ℝ) (x : Plane) : rawNorm B t x ≤ 1
 theorem half_le_rawNorm (B : Set ℝ) (t : ℝ) {x : Plane} (hx : x ≠ 0) :
     (1 / 2 : ℝ) ≤ rawNorm B t x := by
   classical
-  simp only [rawNorm, if_neg hx, weight]
+  simp only [rawNorm, ite_eq_right hx, weight]
   split_ifs <;> norm_num
 
 theorem rawNorm_eq_zero_iff (B : Set ℝ) (t : ℝ) (x : Plane) :
@@ -82,7 +86,8 @@ theorem rawNorm_eq_zero_iff (B : Set ℝ) (t : ℝ) (x : Plane) :
   · simp [hx]
   · exact iff_of_false (ne_of_gt (lt_of_lt_of_le (by norm_num) (half_le_rawNorm B t hx))) hx
 
-private theorem rawNorm_add_le (B : Set ℝ) (t : ℝ) (x y : Plane) :
+/-- The weighted plane norm satisfies the triangle inequality. -/
+theorem rawNorm_add_le (B : Set ℝ) (t : ℝ) (x y : Plane) :
     rawNorm B t (x + y) ≤ rawNorm B t x + rawNorm B t y := by
   by_cases hx : x = 0
   · simp [hx]
@@ -102,7 +107,8 @@ private theorem rawNorm_smul (B : Set ℝ) (t c : ℝ) (x : Plane) :
   have hline : c * x.2 = t * (c * x.1) ↔ x.2 = t * x.1 := by
     rw [mul_left_comm t c x.1]
     exact ⟨mul_left_cancel₀ hc, fun h => congrArg (c * ·) h⟩
-  simp only [rawNorm, if_neg hcx, if_neg hx, Prod.smul_fst, Prod.smul_snd, smul_eq_mul, hline]
+  simp only [rawNorm, ite_eq_right hcx, ite_eq_right hx, Prod.smul_fst, Prod.smul_snd,
+    smul_eq_mul, hline]
 
 open Classical in
 /-- A separating seminorm over the trivially normed original field. -/
@@ -155,15 +161,17 @@ theorem rawNorm_add_le_max (B : Set ℝ) (t : ℝ) (x y : Plane) :
         simp only [Prod.fst_add, Prod.snd_add, hxl, hyl, mul_add]
       by_cases hs : x + y = 0
       · rw [hs, rawNorm_zero]
-        exact le_max_of_le_left (by rw [rawNorm, if_neg hx, if_pos hxl]; exact (weight_pos B t).le)
-      · simp only [rawNorm, if_neg hx, if_neg hy, if_neg hs, if_pos hxl,
-          if_pos hyl, if_pos hsl, max_self, le_refl]
-    · simpa only [rawNorm, if_neg hx, if_neg hy, if_pos hxl, if_neg hyl,
+        exact le_max_of_le_left (by
+          rw [rawNorm, ite_eq_right hx, ite_eq_left hxl]
+          exact (weight_pos B t).le)
+      · simp only [rawNorm, ite_eq_right hx, ite_eq_right hy, ite_eq_right hs, ite_eq_left hxl,
+          ite_eq_left hyl, ite_eq_left hsl, max_self, le_refl]
+    · simpa only [rawNorm, ite_eq_right hx, ite_eq_right hy, ite_eq_left hxl, ite_eq_right hyl,
         max_eq_right (weight_le_one B t)] using rawNorm_le_one B t (x + y)
   · by_cases hyl : y.2 = t * y.1
-    · simpa only [rawNorm, if_neg hx, if_neg hy, if_neg hxl, if_pos hyl,
+    · simpa only [rawNorm, ite_eq_right hx, ite_eq_right hy, ite_eq_right hxl, ite_eq_left hyl,
         max_eq_left (weight_le_one B t)] using rawNorm_le_one B t (x + y)
-    · simpa only [rawNorm, if_neg hx, if_neg hy, if_neg hxl, if_neg hyl,
+    · simpa only [rawNorm, ite_eq_right hx, ite_eq_right hy, ite_eq_right hxl, ite_eq_right hyl,
         max_self] using rawNorm_le_one B t (x + y)
 
 /-- Actual completed fibres inherit the ultrametric inequality. -/
@@ -196,7 +204,7 @@ theorem normFamily_isMeasurable (B : Set ℝ) : (normFamily B).IsMeasurable := b
       dsimp [c]
       exact ⟨fun h => (eq_div_iff hx1).mpr h.symm,
         fun h => ((eq_div_iff hx1).mp h).symm⟩
-    simp only [rawNorm, if_neg hx, hl]
+    simp only [rawNorm, ite_eq_right hx, hl]
     split_ifs with ht
     · rw [ht]
     · rfl
@@ -217,7 +225,7 @@ def quotientFamily (B : Set ℝ) : NormFamily curve ℝ :=
 private theorem weight_le_rawNorm (B : Set ℝ) (t : ℝ) {x : Plane} (hx : x ≠ 0) :
     weight B t ≤ rawNorm B t x := by
   classical
-  simp only [rawNorm, if_neg hx]
+  simp only [rawNorm, ite_eq_right hx]
   split_ifs
   · exact le_rfl
   · exact weight_le_one B t

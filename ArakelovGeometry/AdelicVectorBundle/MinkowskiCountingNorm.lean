@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DominationCountingCounterexample
-import ArakelovGeometry.AdelicVectorBundle.BasisNorm
-import Mathlib.LinearAlgebra.Basis.Fin
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BasisNorm
+public import ArakelovGeometry.AdelicVectorBundle.DominationCountingCounterexample
+public import Mathlib.LinearAlgebra.Basis.Fin
 
 /-!
 # Generic cheap-line norms on the rational counting curve
@@ -13,6 +15,8 @@ import Mathlib.LinearAlgebra.Basis.Fin
 The cost remains an arbitrary real number in `(0, 1]`. The canonical
 completed tensor equivalence is the accepted trivial-completion map.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -46,7 +50,7 @@ theorem rawNorm_le_one {c : ℝ} (hc : c ≤ 1) (a : ℚ) (x : Plane) :
 /-- Every nonzero vector has the positive generic lower bound. -/
 theorem cost_le_rawNorm {c : ℝ} (hc : c ≤ 1) (a : ℚ) {x : Plane} (hx : x ≠ 0) :
     c ≤ rawNorm c a x := by
-  simp only [rawNorm, if_neg hx]
+  simp only [rawNorm, ite_eq_right hx]
   split_ifs
   · exact le_rfl
   · exact hc
@@ -56,7 +60,7 @@ theorem rawNorm_eq_zero_iff {c : ℝ} (hc : 0 < c) (a : ℚ) (x : Plane) :
     rawNorm c a x = 0 ↔ x = 0 := by
   by_cases hx : x = 0
   · simp [hx]
-  · simp only [rawNorm, if_neg hx]
+  · simp only [rawNorm, ite_eq_right hx]
     split_ifs <;> simp [hc.ne', hx]
 
 /-- The generic cost works because the cheap locus is an actual subspace. -/
@@ -71,7 +75,8 @@ theorem rawNorm_add_le_max {c : ℝ} (hc : 0 ≤ c) (hc1 : c ≤ 1)
   · by_cases hyl : y.2 = a * y.1
     · have hsum : (x + y).2 = a * (x + y).1 := by
         simp only [Prod.fst_add, Prod.snd_add, hxl, hyl, mul_add]
-      simp only [rawNorm, if_neg hx, if_neg hy, if_pos hxl, if_pos hyl, max_self]
+      simp only [rawNorm, ite_eq_right hx, ite_eq_right hy, ite_eq_left hxl, ite_eq_left hyl,
+        max_self]
       by_cases hxy : x + y = 0
       · simpa [hxy] using hc
       · simp [hxy, hsum]
@@ -82,7 +87,7 @@ theorem rawNorm_add_le_max {c : ℝ} (hc : 0 ≤ c) (hc1 : c ≤ 1)
     rw [hleft]
     exact (rawNorm_le_one hc1 a (x + y)).trans (le_max_left _ _)
 
-private theorem rawNorm_add_le {c : ℝ} (hc : 0 ≤ c) (hc1 : c ≤ 1)
+theorem rawNorm_add_le {c : ℝ} (hc : 0 ≤ c) (hc1 : c ≤ 1)
     (a : ℚ) (x y : Plane) : rawNorm c a (x + y) ≤ rawNorm c a x + rawNorm c a y := by
   have hn (z : Plane) : 0 ≤ rawNorm c a z := by
     simp only [rawNorm]
@@ -94,7 +99,7 @@ private theorem rawNorm_add_le {c : ℝ} (hc : 0 ≤ c) (hc1 : c ≤ 1)
     (by linarith [hn x]))
 
 open Classical in
-private theorem rawNorm_smul (c : ℝ) (a q : ℚ) (x : Plane) :
+theorem rawNorm_smul (c : ℝ) (a q : ℚ) (x : Plane) :
     rawNorm c a (q • x) = (AbsoluteValue.trivial : AbsoluteValue ℚ ℝ) q *
       rawNorm c a x := by
   by_cases hq : q = 0
@@ -106,7 +111,7 @@ private theorem rawNorm_smul (c : ℝ) (a q : ℚ) (x : Plane) :
   have hline : q * x.2 = a * (q * x.1) ↔ x.2 = a * x.1 := by
     rw [mul_left_comm a q x.1]
     exact ⟨mul_left_cancel₀ hq, fun h ↦ congrArg (q * ·) h⟩
-  simp only [rawNorm, if_neg hqx, if_neg hx, Prod.smul_fst, Prod.smul_snd,
+  simp only [rawNorm, ite_eq_right hqx, ite_eq_right hx, Prod.smul_fst, Prod.smul_snd,
     smul_eq_mul, hline]
 
 open Classical in
@@ -192,10 +197,10 @@ theorem rawNorm_weighted_coordinates (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1)
       intro hz
       have hx2 : x.2 = 0 := by simpa only [hz, mul_zero] using hline
       exact hx (Prod.ext hz hx2)
-    rw [rawNorm, if_neg hx, if_pos hline, AbsoluteValue.trivial_apply hx1]
+    rw [rawNorm, ite_eq_right hx, ite_eq_left hline, AbsoluteValue.trivial_apply hx1]
     simp [hline, max_eq_left hc.le]
   · have hdiff : x.2 - a * x.1 ≠ 0 := sub_ne_zero.mpr hline
-    rw [rawNorm, if_neg hx, if_neg hline, AbsoluteValue.trivial_apply hdiff]
+    rw [rawNorm, ite_eq_right hx, ite_eq_right hline, AbsoluteValue.trivial_apply hdiff]
     by_cases hx1 : x.1 = 0
     · simp [hx1]
     · rw [AbsoluteValue.trivial_apply hx1, mul_one, max_eq_right hc1]

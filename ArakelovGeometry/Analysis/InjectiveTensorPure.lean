@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.TensorNorm
-import ArakelovGeometry.Analysis.UltrametricDual
+module
+
+public import ArakelovGeometry.Analysis.TensorNorm
+public import ArakelovGeometry.Analysis.UltrametricDual
 
 /-!
 # Pure tensors for ultrametric injective norms
@@ -13,6 +15,8 @@ Approximate norming functionals on each factor prove the exact crossnorm
 identity by letting their loss decrease to one. No norm-attaining extension
 or spherical completeness is assumed.
 -/
+
+@[expose] public section
 
 open Filter
 open scoped TensorProduct Topology
@@ -53,7 +57,7 @@ theorem injectiveTensorSeminorm_tprod_eq_of_ultrametric (x : ∀ i, E i) :
       have hd' : (∏ i, linearMapOperatorSeminorm (φ i)) ≤
           A ^ Fintype.card ι / ∏ i, ‖x i‖ := by
         calc
-          _ ≤ ∏ i, A / ‖x i‖ := Finset.prod_le_prod (fun i _ => (hφpos i).le)
+          _ ≤ ∏ i, A / ‖x i‖ := Finset.prod_le_prod₀ (fun i _ => (hφpos i).le)
             (fun i _ => hnorm i)
           _ = _ := by rw [Finset.prod_div_distrib]; simp only [Finset.prod_const,
             Finset.card_univ]

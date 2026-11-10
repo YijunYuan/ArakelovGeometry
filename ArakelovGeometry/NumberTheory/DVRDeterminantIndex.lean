@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.RingTheory.DiscreteValuationRing.Basic
-import Mathlib.LinearAlgebra.FreeModule.PID
-import Mathlib.LinearAlgebra.Quotient.Pi
-import Mathlib.LinearAlgebra.Determinant
+module
+
+public import Mathlib.LinearAlgebra.Determinant
+public import Mathlib.LinearAlgebra.FreeModule.PID
+public import Mathlib.LinearAlgebra.Quotient.Pi
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 
 /-!
 # Determinants and lengths of full-rank inclusions over a DVR
@@ -15,6 +17,8 @@ Smith coordinates identify the actual quotient of a full-rank submodule
 with the product of its principal cyclic quotients. Its module length is
 the additive valuation of the determinant of the inclusion.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -43,7 +47,7 @@ theorem diagonal_coordinates [Finite ι] (N : Submodule R M) (b : Basis ι R M)
   have hx := congrArg (fun y : N => b.repr (y : M) i) (c.sum_repr x)
   simpa only [Submodule.coe_sum, Submodule.coe_smul, h, map_sum, map_smul,
     Finsupp.finsetSum_apply, Finsupp.smul_apply, Basis.repr_self_apply, smul_eq_mul,
-    mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     using hx.symm
 
 omit [Fintype ι] [IsDomain R] [IsDiscreteValuationRing R] in

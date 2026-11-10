@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.PositiveAtomicMeasure
-import ArakelovGeometry.AdelicVectorBundle.BasisComparison
-import ArakelovGeometry.AdelicCurve.Examples.FunctionFields
+module
+
+public import ArakelovGeometry.AdelicCurve.Examples.FunctionFields
+public import ArakelovGeometry.AdelicVectorBundle.BasisComparison
+public import ArakelovGeometry.Analysis.PositiveAtomicMeasure
 
 /-!
 # Actual bidual-coordinate exceptions on a geometric atomic base
@@ -15,6 +17,8 @@ actual support. The specialization uses the genuine projective-line curve
 for any constant field, including an uncountable field. Every norm equality
 holds on the canonical completed fibre and on every vector in it.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct ENNReal

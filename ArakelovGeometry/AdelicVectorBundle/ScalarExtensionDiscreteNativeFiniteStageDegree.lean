@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteNativeDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteNativeDegree
 
 /-!
 # Actual native finite-stage degrees over a countable discrete base
@@ -12,6 +14,8 @@ Produced native determinant measurability and canonical completed isometries
 identify actual native degrees with the genuine finite-stage degrees, without
 assuming target common density or a discrete target place space.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -50,6 +54,38 @@ private theorem discreteNative_degree_tower [S.IsProper]
   exact congrArg (fun t : ℝ => -t)
     ((measurePreserving_scalarExtensionTowerPlace (S := S) F).integral_comp
       (AdelicStructure.Algebraic.towerMeasurableEquiv S F).measurableEmbedding _)
+
+/-- A completed isometry over a measure-preserving place tower preserves determinant degree. -/
+theorem degreeOfMeasurableDeterminant_eq_of_tower_isometry [S.IsProper]
+    (F : IntermediateField K L)
+    {X Y : Type*} [AddCommGroup X] [Module L X] [FiniteDimensional L X]
+    [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
+    (W : AdelicVectorBundle ((S.algebraicExtension F).algebraicExtension L) X)
+    (R : AdelicVectorBundle (S.algebraicExtension L) Y) (e : X ≃ₗ[L] Y)
+    (hdetW : W.toNormFamily.determinant.IsMeasurable)
+    (hdetR : R.toNormFamily.determinant.IsMeasurable)
+    (hND : ∀ x ∈ (S.algebraicExtension L).Ωinf,
+      IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion)
+    (hNT : ∀ x ∈ ((S.algebraicExtension F).algebraicExtension L).Ωinf,
+      IsRCLikeNormedField (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion)
+    (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
+      (z : x.abv.Completion ⊗[L] X), R.toNormFamily.norm (scalarExtensionTowerPlace x)
+        (e.toLinearMap.baseChange x.abv.Completion z) = W.toNormFamily.norm x z) :
+    let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
+    let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
+    let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
+    R.degreeOfMeasurableDeterminant hdetR hND =
+      W.degreeOfMeasurableDeterminant hdetW hNT := by
+  let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
+  let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
+  let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
+  have hdetT : (R.towerPullback F).toNormFamily.determinant.IsMeasurable := by
+    change (R.toNormFamily.towerPullback F).determinant.IsMeasurable
+    rw [NormFamily.towerPullback_determinant]
+    exact hdetR.towerPullback F
+  exact (discreteNative_degree_tower R F hdetR hdetT hND hNT).symm.trans
+    (W.degreeOfMeasurableDeterminant_eq_of_completed_isometry
+      (R.towerPullback F) e hdetW hNT he).symm
 
 variable {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] [IsAlgClosed L]
@@ -95,24 +131,14 @@ theorem degree_nativeRestrictionOfCountableDiscreteBase_finiteStage [S.IsProper]
     B (Or.inl inferInstance)
   let W := B₀.scalarExtensionOfCountableDiscreteBase (L := L) hFN
   let R := V.scalarExtensionRestrictionOfCountableDiscreteBase (L := L) hN A
-  let T := R.towerPullback F.toIntermediateField
   let hdetW := B₀.scalarExtensionOfCountableDiscreteBase_determinant_isMeasurable (L := L) hFN
   have hdetR : R.toNormFamily.determinant.IsMeasurable :=
     V.toNormFamily.scalarExtension_restrict_determinant_isMeasurable_of_countable_discrete hN A
-  have hdetT : T.toNormFamily.determinant.IsMeasurable := by
-    change (R.toNormFamily.towerPullback F.toIntermediateField).determinant.IsMeasurable
-    rw [NormFamily.towerPullback_determinant]
-    exact hdetR.towerPullback F.toIntermediateField
   change R.degreeOfMeasurableDeterminant hdetR hLN = B₀.degree (Or.inl inferInstance) hFN
-  have he : W.degreeOfMeasurableDeterminant hdetW hTN =
-      T.degreeOfMeasurableDeterminant hdetT hTN :=
-    W.degreeOfMeasurableDeterminant_eq_of_completed_isometry T e hdetW hTN
-      (fun x z => V.toNormFamily.scalarExtension_restrict_finiteStage_norm_eq hN F hi B x z)
-  have ht : T.degreeOfMeasurableDeterminant hdetT hTN =
-      R.degreeOfMeasurableDeterminant hdetR hLN :=
-    discreteNative_degree_tower R F.toIntermediateField hdetR hdetT hLN hTN
-  exact ht.symm.trans (he.symm.trans
-    (B₀.degreeOfMeasurableDeterminant_scalarExtensionOfCountableDiscreteBase hFN))
+  exact (degreeOfMeasurableDeterminant_eq_of_tower_isometry F.toIntermediateField W R e
+    hdetW hdetR hLN hTN (fun x z ↦
+      V.toNormFamily.scalarExtension_restrict_finiteStage_norm_eq hN F hi B x z)).trans
+        (B₀.degreeOfMeasurableDeterminant_scalarExtensionOfCountableDiscreteBase hFN)
 
 /-- Actual native quotient determinant degree has the genuine finite-stage
 degree, with both determinant measurabilities produced and no target regularity. -/
@@ -150,28 +176,18 @@ theorem degree_nativeQuotientOfCountableDiscreteBase_finiteStage [S.IsProper]
   let hTN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hFN
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E
   let A := (B.baseChange L).map c.toLinearMap
-  let e := finiteStageQuotientEquiv F B
+  let e := finiteStageQuotientEquiv (L := L) F B
   let B₀ := (V.scalarExtensionOfCountableDiscreteBase (L := F) hN).quotientOfMeasurableBase
     B (Or.inl inferInstance)
   let W := B₀.scalarExtensionOfCountableDiscreteBase (L := L) hFN
   let R := V.scalarExtensionQuotientOfCountableDiscreteBase (L := L) hN A
-  let T := R.towerPullback F.toIntermediateField
   let hdetW := B₀.scalarExtensionOfCountableDiscreteBase_determinant_isMeasurable (L := L) hFN
   have hdetR : R.toNormFamily.determinant.IsMeasurable :=
     V.toNormFamily.scalarExtension_quotient_determinant_isMeasurable_of_countable_discrete hN A
-  have hdetT : T.toNormFamily.determinant.IsMeasurable := by
-    change (R.toNormFamily.towerPullback F.toIntermediateField).determinant.IsMeasurable
-    rw [NormFamily.towerPullback_determinant]
-    exact hdetR.towerPullback F.toIntermediateField
   change R.degreeOfMeasurableDeterminant hdetR hLN = B₀.degree (Or.inl inferInstance) hFN
-  have he : W.degreeOfMeasurableDeterminant hdetW hTN =
-      T.degreeOfMeasurableDeterminant hdetT hTN :=
-    W.degreeOfMeasurableDeterminant_eq_of_completed_isometry T e hdetW hTN
-      (fun x z => V.toNormFamily.scalarExtension_quotient_finiteStage_equiv_norm_eq hN F hi B x z)
-  have ht : T.degreeOfMeasurableDeterminant hdetT hTN =
-      R.degreeOfMeasurableDeterminant hdetR hLN :=
-    discreteNative_degree_tower R F.toIntermediateField hdetR hdetT hLN hTN
-  exact ht.symm.trans (he.symm.trans
-    (B₀.degreeOfMeasurableDeterminant_scalarExtensionOfCountableDiscreteBase hFN))
+  exact (degreeOfMeasurableDeterminant_eq_of_tower_isometry F.toIntermediateField W R e
+    hdetW hdetR hLN hTN (fun x z ↦
+      V.toNormFamily.scalarExtension_quotient_finiteStage_equiv_norm_eq hN F hi B x z)).trans
+        (B₀.degreeOfMeasurableDeterminant_scalarExtensionOfCountableDiscreteBase hFN)
 
 end ArakelovGeometry.AdelicVectorBundle

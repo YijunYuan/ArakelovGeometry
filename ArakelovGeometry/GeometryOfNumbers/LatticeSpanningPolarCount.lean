@@ -3,12 +3,16 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.LatticeSpanningBody
-import ArakelovGeometry.GeometryOfNumbers.LatticeDualCentralSection
-import ArakelovGeometry.GeometryOfNumbers.PrimitiveLatticeFiberBound
-import ArakelovGeometry.GeometryOfNumbers.PrimitiveLineDualMeasure
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.LatticeDualCentralSection
+public import ArakelovGeometry.GeometryOfNumbers.LatticeSpanningBody
+public import ArakelovGeometry.GeometryOfNumbers.PrimitiveLatticeFiberBound
+public import ArakelovGeometry.GeometryOfNumbers.PrimitiveLineDualMeasure
 
 /-! # Actual spanning-polar lattice counting -/
+
+@[expose] public section
 
 noncomputable section
 

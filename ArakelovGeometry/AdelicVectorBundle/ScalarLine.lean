@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Basic
-import ArakelovGeometry.AdelicVectorBundle.BasisNorm
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Basic
+public import ArakelovGeometry.AdelicVectorBundle.BasisNorm
 
 /-!
 # The scalar adelic line
@@ -14,6 +16,8 @@ actual scalar space `K`. Its completed norms are the singleton basis norms.
 The norm of `1` is exactly one, so rank-one domination needs no finite-measure
 or Archimedean hypothesis.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

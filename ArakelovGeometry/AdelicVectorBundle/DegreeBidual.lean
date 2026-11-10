@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Degree
-import ArakelovGeometry.AdelicVectorBundle.DeterminantBidual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Degree
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantBidual
 
 /-!
 # Bidual invariance of Arakelov degree
@@ -13,6 +15,8 @@ The canonical bidual adelic bundle uses the established dual and pullback
 constructors and the evaluation map on the original vector space. The actual
 completed determinant equality proves source equation(4.23), also in rank zero.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 

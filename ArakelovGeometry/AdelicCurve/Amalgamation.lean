@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Basic
+module
+
+public import ArakelovGeometry.AdelicCurve.Basic
 
 /-!
 # Amalgamation of adelic structures
@@ -14,15 +16,19 @@ absolute values.  Properness is preserved: the product formula for the amalgamat
 sum of the two product formulas.
 -/
 
+@[expose] public section
+
 namespace ArakelovGeometry.AdelicStructure
 
 open MeasureTheory
 
-private theorem measurableEmbedding_inl {α β : Type*} [MeasurableSpace α]
+/-- The left inclusion of a measurable disjoint union is a measurable embedding. -/
+theorem measurableEmbedding_inl {α β : Type*} [MeasurableSpace α]
     [MeasurableSpace β] : MeasurableEmbedding (@Sum.inl α β) :=
   ⟨Sum.inl_injective, measurable_inl, fun _ hs ↦ hs.inl_image⟩
 
-private theorem measurableEmbedding_inr {α β : Type*} [MeasurableSpace α]
+/-- The right inclusion of a measurable disjoint union is a measurable embedding. -/
+theorem measurableEmbedding_inr {α β : Type*} [MeasurableSpace α]
     [MeasurableSpace β] : MeasurableEmbedding (@Sum.inr α β) :=
   ⟨Sum.inr_injective, measurable_inr, fun _ hs ↦ hs.inr_image⟩
 

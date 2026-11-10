@@ -3,12 +3,16 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.LatticePrimitiveVector
-import ArakelovGeometry.GeometryOfNumbers.LatticeSubspaceCoordinates
-import Mathlib.Analysis.Normed.Module.Span
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.LatticePrimitiveVector
+public import ArakelovGeometry.GeometryOfNumbers.LatticeSubspaceCoordinates
+public import Mathlib.Analysis.Normed.Module.Span
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic
 
 /-! # Actual primitive-line coordinates and their normalized Haar measure -/
+
+@[expose] public section
 
 noncomputable section
 

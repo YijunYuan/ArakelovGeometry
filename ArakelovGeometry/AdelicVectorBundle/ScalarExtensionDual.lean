@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
-import ArakelovGeometry.AdelicVectorBundle.Dual
-import ArakelovGeometry.Analysis.ScalarExtensionLine
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Dual
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
+public import ArakelovGeometry.Analysis.ScalarExtensionLine
 
 /-!
 # Duality for scalar extensions of norm families
@@ -13,6 +15,8 @@ import ArakelovGeometry.Analysis.ScalarExtensionLine
 Canonical completed-fibre pairings transport the local scalar-extension
 duality theorems to the actual norm families.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -38,20 +42,16 @@ theorem completedScalarExtensionEquiv_dual_apply
         ((dualBaseChangeEquiv K L E).toLinearMap.baseChange w.Completion z) x := by
   intro aVW
   let := aVW
-  induction z using TensorProduct.induction_on with
-  | zero => simp only [map_zero, LinearMap.zero_apply]
+  induction z using TensorProduct.inductionOn with
   | add z t hz ht => simp only [map_add, LinearMap.add_apply, hz, ht]
   | tmul a y =>
-    induction y using TensorProduct.induction_on with
-    | zero => simp only [TensorProduct.tmul_zero, map_zero, LinearMap.zero_apply]
+    induction y using TensorProduct.inductionOn with
     | add y t hy ht => simp only [TensorProduct.tmul_add, map_add, LinearMap.add_apply, hy, ht]
     | tmul b f =>
-      induction x using TensorProduct.induction_on with
-      | zero => simp only [map_zero]
+      induction x using TensorProduct.inductionOn with
       | add x y hx hy => simp only [map_add, hx, hy]
       | tmul c y =>
-        induction y using TensorProduct.induction_on with
-        | zero => simp only [TensorProduct.tmul_zero, map_zero]
+        induction y using TensorProduct.inductionOn with
         | add y t hy ht => simp only [TensorProduct.tmul_add, map_add, hy, ht]
         | tmul d e =>
           simp only [completedScalarExtensionEquiv_tmul, LinearMap.baseChange_tmul,

@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.ScalarExtensionDual
+module
+
+public import ArakelovGeometry.Analysis.ScalarExtensionDual
 
 /-!
 # Norms under the identity scalar extension
@@ -12,6 +14,8 @@ The projective norm on `k ⊗[k] E` is the original norm under the canonical
 left-unit equivalence. The injective norm is its bidual supremum, including
 trivially valued fields and zero-dimensional spaces.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

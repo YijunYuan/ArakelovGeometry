@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspaceComplexDescent
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteBundle
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteBundle
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspaceComplexDescent
 
 /-!
 # Actual subspaces over algebraic extensions of a countable discrete base
@@ -13,6 +15,8 @@ Complexifying finite-stage descent identifies native target restrictions with
 extensions of the genuine native finite-stage restrictions on every completed
 vector. The target parameter sigma algebra is not assumed discrete.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -24,6 +28,49 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 namespace NormFamily
+
+private theorem scalarExtension_restrict_subtype_norm_eq (ξ : NormFamily S E)
+    (hξ : ξ.IsUltrametric)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hi : ∃ a : K, a ^ 2 = -1) (A : Submodule K E)
+    (x : S.ParameterSpaceExtension L) (z : x.abv.Completion ⊗[L] (L ⊗[K] A)) :
+    (ξ.scalarExtension (L := L)).norm x
+        ((A.subtype.baseChange L).baseChange x.abv.Completion z) =
+      ((ξ.restrict A).scalarExtension (L := L)).norm x z := by
+  exact ξ.scalarExtension_pullback_norm_eq_of_sqrt_neg_one hξ hN hi A.subtype
+    A.subtype_injective x z
+
+/-- A commuting subspace inclusion transports restriction norms through an algebraic tower. -/
+theorem scalarExtension_restrict_tower_norm_eq
+    {F : Type*} [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L]
+    (ξ : NormFamily S E)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hi : ∃ a : F, a ^ 2 = -1) (B : Submodule F (F ⊗[K] E))
+    (A : Submodule L (L ⊗[K] E)) (e : L ⊗[F] B →ₗ[L] A)
+    (he : A.subtype.comp e =
+      (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E).toLinearMap.comp
+        (B.subtype.baseChange L))
+    (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
+    (z : x.abv.Completion ⊗[L] (L ⊗[F] B)) :
+    ((ξ.scalarExtension (L := L)).restrict A).norm
+      (scalarExtensionTowerPlace x) (e.baseChange x.abv.Completion z) =
+    (((ξ.scalarExtension (L := F)).restrict B).scalarExtension (L := L)).norm x z := by
+  have hz := DFunLike.congr_fun
+    (congrArg (fun f ↦ f.baseChange x.abv.Completion) he) z
+  simp only [LinearMap.baseChange_comp, LinearMap.comp_apply] at hz
+  erw [(ξ.scalarExtension (L := L)).restrict_norm A (scalarExtensionTowerPlace x)]
+  erw [hz]
+  have hξF : (ξ.scalarExtension (L := F)).IsUltrametric :=
+    ξ.scalarExtension_isUltrametric
+  have hNF := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN
+  calc
+    _ = ((ξ.scalarExtension (L := F)).scalarExtension (L := L)).norm x
+        ((B.subtype.baseChange L).baseChange x.abv.Completion z) :=
+      (ξ.scalarExtension_trans x
+        ((B.subtype.baseChange L).baseChange x.abv.Completion z)).symm
+    _ = _ := scalarExtension_restrict_subtype_norm_eq (ξ.scalarExtension (L := F))
+      hξF hNF hi B x z
 
 /-- Actual finite-stage restriction and direct native restriction agree on
 all completed vectors through the canonical subspace tensor equivalence.
@@ -39,24 +86,7 @@ theorem scalarExtension_restrict_finiteStage_norm_eq (ξ : NormFamily S E)
     ((ξ.scalarExtension (L := L)).restrict ((B.baseChange L).map c.toLinearMap)).norm
       (scalarExtensionTowerPlace x) (e.toLinearMap.baseChange x.abv.Completion z) =
     (((ξ.scalarExtension (L := F)).restrict B).scalarExtension (L := L)).norm x z := by
-  let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E
-  let e := (Submodule.toBaseChange.toLinearEquiv L B).trans (c.submoduleMap (B.baseChange L))
-  have hc : ((B.baseChange L).map c.toLinearMap).subtype.comp e.toLinearMap =
-      c.toLinearMap.comp (B.subtype.baseChange L) := by
-    rfl
-  have hz := DFunLike.congr_fun
-    (congrArg (fun f => f.baseChange x.abv.Completion) hc) z
-  simp only [LinearMap.baseChange_comp, LinearMap.comp_apply] at hz
-  change (ξ.scalarExtension (L := L)).norm (scalarExtensionTowerPlace x)
-    (((B.baseChange L).map c.toLinearMap).subtype.baseChange x.abv.Completion
-      (e.toLinearMap.baseChange x.abv.Completion z)) = _
-  rw [hz]
-  exact (ξ.scalarExtension_trans x
-    ((B.subtype.baseChange L).baseChange x.abv.Completion z)).symm.trans
-    ((ξ.scalarExtension (L := F)).scalarExtension_pullback_norm_eq_of_sqrt_neg_one
-      ξ.scalarExtension_isUltrametric
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN)
-      hi B.subtype B.subtype_injective x z)
+  exact scalarExtension_restrict_tower_norm_eq ξ hN hi B _ _ rfl x z
 
 /-- Every finite actual target subspace family admits one produced complexifying
 field and actual finite-stage native restrictions whose extended norms are

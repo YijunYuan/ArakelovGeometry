@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanTracePairing
-import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanWeightedEuclidean
-import Mathlib.Analysis.InnerProductSpace.Dual
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanTracePairing
+public import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanWeightedEuclidean
+public import Mathlib.Analysis.InnerProductSpace.Dual
 
 /-! # Operator norms of the actual Archimedean vector trace pairing
 
@@ -13,6 +15,8 @@ The local factor uses the canonical dual family and the original primal norm.
 A phase in the actual completed field makes any nonzero evaluation positive
 real without changing its norm. No metric is defined by pulling back the trace.
 -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField

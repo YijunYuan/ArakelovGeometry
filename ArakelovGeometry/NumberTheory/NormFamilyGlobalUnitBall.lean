@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldLocalCoefficientRingLocalization
-import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldLocalCoefficientRingLocalization
+public import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
 
 /-!
 # Literal global rational unit balls
@@ -15,6 +17,8 @@ is the genuine coherence condition in Chen–Moriwaki Proposition 4.4.2(1),
 not a consequence of domination. It produces actual integral absorption
 and global spanning through the proved local arithmetic absorption theorem.
 -/
+
+@[expose] public section
 
 open scoped NumberField TensorProduct BigOperators
 

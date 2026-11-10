@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.LinearAlgebra.Dimension.Constructions
-import Mathlib.LinearAlgebra.ExteriorPower.Basis
-import Mathlib.LinearAlgebra.Determinant
+module
+
+public import Mathlib.LinearAlgebra.Determinant
+public import Mathlib.LinearAlgebra.Dimension.Constructions
+public import Mathlib.LinearAlgebra.ExteriorPower.Basis
 
 /-!
 # Determinant coordinates in a subspace and quotient
@@ -14,6 +16,8 @@ The block determinant formula gives independence of the quotient-vector
 lifts in an adapted basis. These are algebraic producers for the canonical
 exact-sequence determinant map, before any norm comparison.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

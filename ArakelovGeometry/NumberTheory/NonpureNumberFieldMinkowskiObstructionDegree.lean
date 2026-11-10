@@ -3,9 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstructionFiniteArithmetic
+module
+
+public import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstructionFiniteArithmetic
 
 /-! # Actual vector degrees of the nonpure rational plane -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain MeasureTheory
 open scoped NumberField TensorProduct
@@ -102,13 +106,13 @@ theorem bundle_primitive_vectorDegree_le (p : Nat.Primes) (a x y : ℤ)
   classical
   rw [bundle_primitive_vectorDegree p a x y hxy]
   by_cases hc : (p.val : ℤ) ∣ y - a * x
-  · simp only [hc, if_true, sub_zero]
+  · simp only [hc, ite_true, sub_zero]
     have hroot := primitive_good_congruence_euclidean_bound p a x y ha hxy hc
     have hlog := Real.log_le_log (Real.sqrt_pos.mpr
       (by exact_mod_cast p.property.pos)) hroot
     rw [Real.log_sqrt (by positivity)] at hlog
     linarith
-  · simp only [hc, if_false]
+  · simp only [hc, ite_false]
     have hlog := Real.log_nonneg (primitive_one_le_euclidean x y hxy)
     linarith
 

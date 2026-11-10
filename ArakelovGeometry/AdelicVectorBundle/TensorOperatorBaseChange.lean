@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.TensorOperator
-import ArakelovGeometry.AdelicVectorBundle.TensorBaseChange
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.TensorBaseChange
+public import ArakelovGeometry.Analysis.TensorOperator
 
 /-!
 # Tensor evaluation operators and scalar extension
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.TensorBaseChange
 These maps use the canonical algebraic dual and the existing tensor base-change
 equivalence. No choice of coordinates enters the resulting operator.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -71,8 +75,7 @@ theorem binaryTensorToHom_baseChange (z : ⨂[K] i, E i)
       (binaryTensorToHom K E z).baseChange L f := by
   induction z using PiTensorProduct.induction_on with
   | smul_tprod a x =>
-      induction f using TensorProduct.induction_on with
-      | zero => simp
+      induction f using TensorProduct.inductionOn with
       | add f g hf hg => simp_all only [map_add]
       | tmul b φ =>
           simp [TensorProduct.tmul_smul, TensorProduct.smul_tmul',

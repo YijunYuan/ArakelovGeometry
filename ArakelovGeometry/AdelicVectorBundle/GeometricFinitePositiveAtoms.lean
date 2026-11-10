@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
-import ArakelovGeometry.AdelicCurve.Extension.Finite.Probability
-import ArakelovGeometry.AdelicVectorBundle.GeometricScalarExtensionMeasurable
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.Probability
+public import ArakelovGeometry.AdelicVectorBundle.GeometricScalarExtensionMeasurable
 
 /-!
 # Positive atoms at genuine finite algebraic stages
@@ -14,6 +16,8 @@ Finite projective fibre probabilities have positive singleton masses, including
 inseparable finite extensions. This supplies the finite-stage positive-atomic
 hypothesis needed for geometric native regularity over an algebraic closure.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped ENNReal

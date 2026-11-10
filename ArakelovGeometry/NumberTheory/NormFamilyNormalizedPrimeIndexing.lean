@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldProductFormulaComparison
-import ArakelovGeometry.NumberTheory.NormFamilyRoundedValuationModule
-import ArakelovGeometry.NumberTheory.NormFamilyGlobalUnitBall
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyGlobalUnitBall
+public import ArakelovGeometry.NumberTheory.NormFamilyRoundedValuationModule
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldProductFormulaComparison
 
 /-!
 # Actual prime indexing for normalized scalar unit balls
@@ -15,6 +17,8 @@ rationally normalized number-field curve. Positive-power equivalence, rather
 than any assumed ramification or completion-degree formula, supplies local
 logarithmic scales.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct NNReal WithZero
@@ -90,9 +94,7 @@ theorem finitePlace_log_value (p : HeightOneSpectrum (𝓞 K)) {a : K} (ha : a �
         (p.valuation K a) : ℝ) := by
     rw [← FinitePlace.norm_embedding_eq, FinitePlace.maximalIdeal_mk,
       FinitePlace.norm_embedding']
-  have hn : (WithZero.unzero hv).toAdd = (p.valuation K a).log :=
-    congrArg WithZero.log (WithZero.coe_unzero hv)
-  rw [heq, WithZeroMulInt.toNNReal_neg_apply _ hv, NNReal.coe_zpow, Real.log_zpow, hn]
+  rw [heq, WithZeroMulInt.toNNReal_neg_apply _ hv, NNReal.coe_zpow, Real.log_zpow]
   push_cast
   ring
 
@@ -144,7 +146,7 @@ def normalizedPlaceLogScale (ω : (normalizedNumberFieldAdelicStructure K).Ω) :
 theorem normalizedPlaceLogScale_prime (p : HeightOneSpectrum (𝓞 K)) :
     normalizedPlaceLogScale (normalizedPrimeParameter p) = normalizedPrimeLogScale p := by
   classical
-  rw [normalizedPlaceLogScale, dif_pos (normalizedPrimeParameter_mem_fin p)]
+  rw [normalizedPlaceLogScale, dite_eq_left (normalizedPrimeParameter_mem_fin p)]
   have hinv : normalizedPrimeEquivFinite.symm
       ⟨normalizedPrimeParameter p, normalizedPrimeParameter_mem_fin p⟩ = p :=
     normalizedPrimeEquivFinite.symm_apply_apply p

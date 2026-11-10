@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaOrderedSlopes
-import ArakelovGeometry.AdelicVectorBundle.Minkowski
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaOrderedSlopes
+public import ArakelovGeometry.AdelicVectorBundle.Minkowski
 
 /-!
 # Actual ordered logarithmic-minimum bounds from the strong Minkowski property
@@ -15,6 +17,8 @@ its rank with the ambient rank, gives the actual shifted minima filtration
 inclusion and the valid-index ordered converse. The finite-place admissibility
 hypothesis omitted by the printed Proposition4.3.80 remains explicit here.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle

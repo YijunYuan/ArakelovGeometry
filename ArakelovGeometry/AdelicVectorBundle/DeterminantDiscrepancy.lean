@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeDual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDual
 
 /-!
 # Determinant discrepancy and the defect in degree duality
@@ -12,6 +14,8 @@ The discrepancy uses the actual completed determinant and dual determinant
 norms. Independence of a paired determinant generator gives its intrinsic
 interpretation, while rational generators yield measurability and integrability.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

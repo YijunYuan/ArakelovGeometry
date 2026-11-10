@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.LinearMapBound
-import Mathlib.Analysis.Normed.Module.HahnBanach
+module
+
+public import ArakelovGeometry.Analysis.LinearMapBound
+public import Mathlib.Analysis.Normed.Module.HahnBanach
 
 /-!
 # Exact extension of functionals at normalized Archimedean places
@@ -14,6 +16,8 @@ used by norm families. The `IsRCLikeNormedField` hypothesis specifies the
 usual real or complex absolute value; an arbitrary power normalization is
 not silently identified with it.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

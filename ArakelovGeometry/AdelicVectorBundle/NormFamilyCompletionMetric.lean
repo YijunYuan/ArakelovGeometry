@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.NormFamilyMetricEnvelope
-import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
-import Mathlib.Topology.MetricSpace.Gluing
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
+public import ArakelovGeometry.Analysis.NormFamilyMetricEnvelope
+public import Mathlib.Topology.MetricSpace.Gluing
 
 /-!
 # The metric of strongly dominated norm families
@@ -17,6 +19,8 @@ Finite measure of the infinite locus is explicit; the source's usual
 Archimedean normalization implies this hypothesis. No measurability of
 norm families is imposed. Completeness is a separate result.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 

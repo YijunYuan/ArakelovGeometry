@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.PositiveDegreeIsometry
-import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceDual
-import ArakelovGeometry.AdelicVectorBundle.DegreeBidual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeBidual
+public import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceDual
+public import ArakelovGeometry.AdelicVectorBundle.PositiveDegreeIsometry
 
 /-!
 # Riemann--Roch for actual positive degree
@@ -16,6 +18,8 @@ determinant degree then give both source error bounds. Positive degrees are
 proved finite before subtraction is reduced to real arithmetic; no maximizing
 subspace or numerical Riemann--Roch hypothesis is used.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicVectorBundle
 

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.NormalizedCompletion
-import ArakelovGeometry.Analysis.ScalarExtensionRetraction
-import Mathlib.Analysis.Complex.Polynomial.Basic
+module
+
+public import ArakelovGeometry.Analysis.NormalizedCompletion
+public import ArakelovGeometry.Analysis.ScalarExtensionRetraction
+public import Mathlib.Analysis.Complex.Polynomial.Basic
 
 /-!
 # Actual extension of normalized complex fields
@@ -14,6 +16,8 @@ A square root of minus one excludes the real Archimedean case. The canonical
 map to a complete normed extension is consequently onto, and projective scalar
 extension preserves every actual isometric embedding on every tensor.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section
@@ -66,8 +70,7 @@ theorem one_tmul_surjective_of_isRCLikeNormedField_sqrt_neg_one
   have h := (algebraMap_bijective_of_isRCLikeNormedField_sqrt_neg_one
     (l := l) hi).surjective
   intro z
-  induction z using TensorProduct.induction_on with
-  | zero => exact ⟨0, by simp⟩
+  induction z using TensorProduct.inductionOn with
   | add z t hz ht =>
     obtain ⟨x, rfl⟩ := hz
     obtain ⟨y, rfl⟩ := ht

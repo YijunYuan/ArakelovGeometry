@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.IntervalPolytope
-import ArakelovGeometry.Analysis.DeterminantNorm
-import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+module
+
+public import ArakelovGeometry.Analysis.DeterminantNorm
+public import ArakelovGeometry.Analysis.IntervalPolytope
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 /-!
 # Determinant bounds for interval norms
@@ -15,6 +17,8 @@ multilinearity to their actual convex hulls, and then by homogeneity to all
 real columns. The norm and unit-ball identification are the produced endpoint
 variation norms, rather than assumptions about a determinant gauge.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

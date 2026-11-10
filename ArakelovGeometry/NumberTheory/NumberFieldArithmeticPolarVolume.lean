@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArithmeticPolar
-import ArakelovGeometry.GeometryOfNumbers.WeightedEuclideanSumBall
-import ArakelovGeometry.GeometryOfNumbers.EuclideanProductMeasure
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.EuclideanProductMeasure
+public import ArakelovGeometry.GeometryOfNumbers.WeightedEuclideanSumBall
+public import ArakelovGeometry.NumberTheory.NumberFieldArithmeticPolar
 
 /-! # Canonical ordinary volume of the actual arithmetic product-ball polar -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory

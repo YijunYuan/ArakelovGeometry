@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDualGeneric
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDualGeneric
 
 /-! # Original classical trace tensors and integer biduality
 
@@ -11,6 +13,8 @@ The original codifferent tensor is finite projective, has the original generic
 rank, and its second trace tensor is the original integer bidual. The metric
 involution is a separate assertion.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -59,8 +63,7 @@ attribute [local instance] traceTensor_projective
 theorem integerTensorEquiv_smul_pairing (a : 𝓞 K)
     (z : codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M) (m : M) :
     integerTensorEquiv (K := K) M (a • z) m = integerTensorEquiv (K := K) M z (a • m) := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | add z t hz ht => simp only [smul_add, map_add, LinearMap.add_apply, hz, ht]
   | tmul b f =>
       apply (Int.cast_injective (α := ℚ))

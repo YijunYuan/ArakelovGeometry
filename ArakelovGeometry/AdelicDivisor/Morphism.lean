@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicDivisor.Principal
-import ArakelovGeometry.AdelicCurve.Morphism.Basic
+module
+
+public import ArakelovGeometry.AdelicCurve.Morphism.Basic
+public import ArakelovGeometry.AdelicDivisor.Principal
 
 /-!
 # Divisors under morphisms of adelic curves
@@ -13,6 +15,8 @@ The maps are the canonical `L¹` pullback and fibre integral already supplied
 by a Chapter 3 morphism. Degree preservation, effectivity of pullback and
 compatibility with actual principal logarithms follow from its defining laws.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 
@@ -75,7 +79,7 @@ theorem pullback_ofIntegrable (f : D.Ω → ℝ) (hf : Integrable f D.v) :
       ofIntegrable C (f ∘ α.baseMap) (α.integrable_comp hf) := by
   apply Lp.ext
   exact (coeFn_pullback α _).trans
-    ((α.measurePreserving.quasiMeasurePreserving.ae_eq hf.coeFn_toL1).trans
+    ((α.measurePreserving.quasiMeasurePreserving.ae_eq_comp hf.coeFn_toL1).trans
       (α.integrable_comp hf).coeFn_toL1.symm)
 
 /-- Compatibility of absolute values transports the actual logarithmic

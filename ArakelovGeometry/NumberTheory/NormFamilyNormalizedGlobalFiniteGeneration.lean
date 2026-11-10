@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedPrimeIndexing
-import ArakelovGeometry.AdelicVectorBundle.BasisNorm
-import Mathlib.RingTheory.Noetherian.Basic
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BasisNorm
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedPrimeIndexing
+public import Mathlib.RingTheory.Noetherian.Basic
 
 /-!
 # Finite generation of the actual normalized global unit ball
@@ -14,6 +16,8 @@ Actual completed dual norms construct rank-one coefficient norm families.
 Their lower domination and the actual evaluation inequality embed the literal
 global integral unit ball into a finite product of produced rank-one modules.
 -/
+
+@[expose] public section
 
 open scoped NumberField TensorProduct
 
@@ -26,7 +30,8 @@ universe u v w
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
-private def scalarBasisFamily : NormFamily S K :=
+/-- The scalar norm family defined by the one-element basis of the base field. -/
+def scalarBasisFamily : NormFamily S K :=
   ofBasis S K (Module.Basis.singleton PUnit.{1} K)
 
 private theorem scalarBasisFamily_norm_rational (ω : S.Ω) (a : K) :

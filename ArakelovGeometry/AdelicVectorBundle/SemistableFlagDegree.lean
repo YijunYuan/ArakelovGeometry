@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.QuotientRestriction
-import ArakelovGeometry.AdelicVectorBundle.DegreeFlagHermitian
-import ArakelovGeometry.AdelicVectorBundle.Destabilizing
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeFlagHermitian
+public import ArakelovGeometry.AdelicVectorBundle.Destabilizing
+public import ArakelovGeometry.AdelicVectorBundle.QuotientRestriction
 
 /-!
 # Subspace degrees under actual semistable flags
@@ -15,6 +17,8 @@ factor. Semistability bounds its degree; Hermitian degree additivity then
 sums the bounds. The comparison is a contraction on every completed vector,
 without an isometry assumption on the intersection quotient.
 -/
+
+@[expose] public section
 
 open scoped BigOperators TensorProduct
 

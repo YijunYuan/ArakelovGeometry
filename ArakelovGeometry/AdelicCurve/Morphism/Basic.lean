@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Defs
-import Mathlib.CategoryTheory.Category.Basic
+module
+
+public import ArakelovGeometry.AdelicCurve.Defs
+public import Mathlib.CategoryTheory.Category.Basic
 
 /-!
 # Morphisms of adelic structures and the category of adelic curves
@@ -18,6 +20,8 @@ The `AdelicStructure` scope provides `S ⟶ T` for morphisms of adelic structure
 including structures on different fields. The bundled category uses the usual
 category-theoretic arrow notation.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure
 

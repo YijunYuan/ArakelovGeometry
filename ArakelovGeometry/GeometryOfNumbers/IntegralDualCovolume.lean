@@ -3,12 +3,17 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Algebra.Module.ZLattice.Covolume
-import Mathlib.Analysis.InnerProductSpace.Dual
-import Mathlib.Analysis.InnerProductSpace.OfNorm
-import Mathlib.LinearAlgebra.Matrix.Dual
+module
+
+public import Mathlib.Algebra.Module.ZLattice.Covolume
+public import Mathlib.Analysis.InnerProductSpace.Dual
+public import Mathlib.Analysis.InnerProductSpace.OfNorm
+public import Mathlib.LinearAlgebra.Matrix.Dual
+public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
 /-! # The actual integer dual in normed spaces and Euclidean reciprocal covolume -/
+
+@[expose] public section
 
 noncomputable section
 open Module MeasureTheory

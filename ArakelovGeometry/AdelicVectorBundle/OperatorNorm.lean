@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Comparison
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Comparison
 
 /-!
 # Local operator norms between norm families
@@ -12,6 +14,8 @@ A rational linear map is extended to the actual completed fibres before its
 operator norm is evaluated. The operator seminorm API works also for trivial
 absolute values and zero-dimensional source or target spaces.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNOrdered
-import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
-import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
-import Mathlib.MeasureTheory.Integral.Bochner.Set
-import Mathlib.MeasureTheory.VectorMeasure.Integral
-import Mathlib.MeasureTheory.Integral.IntegralEqImproper
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNOrdered
+public import Mathlib.MeasureTheory.Integral.Bochner.Set
+public import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
+public import Mathlib.MeasureTheory.Integral.IntegralEqImproper
+public import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
+public import Mathlib.MeasureTheory.VectorMeasure.Integral
 
 /-!
 # Integrals and the signed jump measure of the actual general HN filtration
@@ -18,6 +20,8 @@ its genuine Lebesgue integrals and finite signed jump measure, without a
 Hermitian hypothesis. Compactly supported C¹ tests identify the measure
 as its weak derivative. The degree inequalities are separate results.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 open MeasureTheory

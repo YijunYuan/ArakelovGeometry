@@ -3,12 +3,16 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.IntegerFiberCount
-import Mathlib.Analysis.Convex.PathConnected
-import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
-import Mathlib.Topology.Order.Compact
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.IntegerFiberCount
+public import Mathlib.Analysis.Convex.PathConnected
+public import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
+public import Mathlib.Topology.Order.Compact
 
 /-! # Integer points of actual compact convex subsets of the real line -/
+
+@[expose] public section
 
 noncomputable section
 

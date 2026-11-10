@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeneralHN
-import Mathlib.Data.Fintype.Fin
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHN
+public import Mathlib.Data.Fintype.Fin
 
 /-!
 # The actual ordered slopes of a general adelic bundle
@@ -12,6 +14,8 @@ import Mathlib.Data.Fintype.Fin
 Source Definition 4.3.47 is the literal real supremum of the actual
 filtration rank cuts. Left constancy makes every such supremum attained.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.MeasureTheory.Measure.WithDensity
-import Mathlib.MeasureTheory.Integral.Bochner.Basic
-import Mathlib.MeasureTheory.Integral.Lebesgue.Countable
+module
+
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.MeasureTheory.Integral.Lebesgue.Countable
+public import Mathlib.MeasureTheory.Measure.WithDensity
 
 /-!
 # Positive atoms on an arbitrary index space
@@ -15,6 +17,8 @@ Integrable functions have countable support when every singleton has positive
 mass: their norm-density measure is finite and has positive mass at each
 point of the support.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 

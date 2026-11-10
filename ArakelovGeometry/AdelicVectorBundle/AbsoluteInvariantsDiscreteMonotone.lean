@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariantsDiscrete
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantContraction
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariantsDiscrete
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantContraction
 
 /-!
 # Original invariants bounded by actual countable discrete absolute invariants
@@ -13,6 +15,8 @@ Every original subspace gives its actual tensor extension. The genuine completed
 contraction compares the produced measurable determinant degrees; the suprema
 then compare the original and absolute positive degrees and maximal slopes.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeGauge
-import ArakelovGeometry.NumberTheory.NormFamilyGlobalUnitBall
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldInfiniteMass
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaBasisSupremum
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaBasisSupremum
+public import ArakelovGeometry.NumberTheory.NormFamilyGlobalUnitBall
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeGauge
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldInfiniteMass
 
 /-!
 # The actual number-field integral-basis invariant
@@ -17,6 +19,8 @@ define an extended-real supremum, with top in rank zero. Gauge replacement
 preserves this invariant. Analytic hypotheses enter only the comparison with
 the actual last logarithmic minimum, not the invariant's definition.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped NumberField TensorProduct BigOperators

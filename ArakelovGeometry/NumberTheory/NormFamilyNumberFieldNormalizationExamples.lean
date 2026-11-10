@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationDeterminant
-import ArakelovGeometry.AdelicVectorBundle.Rescaling
-import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
-import Mathlib.NumberTheory.Padics.HeightOneSpectrum
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
+public import ArakelovGeometry.AdelicVectorBundle.Rescaling
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationDeterminant
+public import Mathlib.NumberTheory.Padics.HeightOneSpectrum
 
 /-! # Rational examples of actual number-field normalization
 
@@ -15,6 +17,8 @@ Arakelov degree `-log 2` on both the original and normalized number-field curves
 The same completed-fibre transport is evaluated at arbitrary rank-two vectors
 and at the rank-zero empty exterior wedge.
 -/
+
+@[expose] public section
 
 open ArakelovGeometry ArakelovGeometry.NormFamily ArakelovGeometry.AdelicStructure
 open ArakelovGeometry.AdelicVectorBundle ArakelovGeometry.ActualPrimeIndexing

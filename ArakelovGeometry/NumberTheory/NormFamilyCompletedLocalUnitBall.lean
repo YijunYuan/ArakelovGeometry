@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyUnitBallSpanning
-import ArakelovGeometry.AdelicVectorBundle.CountableDensity
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.CountableDensity
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
+public import ArakelovGeometry.NumberTheory.NormFamilyUnitBallSpanning
 
 /-!
 # Actual completed local unit balls and rational density
@@ -14,6 +16,8 @@ The completed unit ball is the literal ball of the given completed fibre norm.
 Rational scalar completion density produces its rational unit-ball density;
 no density, local lattice or global coherence certificate is assumed.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

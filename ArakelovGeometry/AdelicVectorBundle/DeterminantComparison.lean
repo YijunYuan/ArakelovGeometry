@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Determinant
-import ArakelovGeometry.AdelicVectorBundle.Comparison
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Comparison
+public import ArakelovGeometry.AdelicVectorBundle.Determinant
 
 /-!
 # Order and scaling of determinant norms
@@ -14,6 +16,8 @@ by the rank-th power under rescaling, and increases local distance by at most
 the rank. The proofs use nearly optimal single wedge presentations, with a
 separate zero-dimensional argument.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -42,7 +46,7 @@ theorem determinant_norm_le_mul_pow (ξ η : NormFamily S E) (ω : S.Ω)
     have hp : (∏ i, ξ.norm ω (x i)) ≤ C ^ Module.finrank K E * ∏ i, η.norm ω (x i) := by
       calc
         _ ≤ ∏ i, C * η.norm ω (x i) :=
-          Finset.prod_le_prod (fun _ _ ↦ ξ.norm_nonneg ω _) (fun i _ ↦ h (x i))
+          Finset.prod_le_prod₀ (fun _ _ ↦ ξ.norm_nonneg ω _) (fun i _ ↦ h (x i))
         _ = _ := by rw [Finset.prod_mul_distrib]; simp
     have he' := mul_lt_mul_of_pos_left he hCr
     rw [mul_add, mul_div_cancel₀ _ hCr.ne'] at he'

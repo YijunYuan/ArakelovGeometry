@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Line
-import ArakelovGeometry.AdelicDivisor.Principal
+module
+
+public import ArakelovGeometry.AdelicDivisor.Principal
+public import ArakelovGeometry.AdelicVectorBundle.Line
 
 /-!
 # Divisors and degrees of nonzero rational vectors
@@ -14,6 +16,8 @@ norms. The negative sign agrees with the source degree formula and corrects
 its inconsistent descriptive sentence. Properness is needed only for scalar
 invariance of degree, not for the divisor construction or its transformation law.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 

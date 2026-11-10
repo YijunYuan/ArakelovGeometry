@@ -3,37 +3,39 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Basic
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Cylinder
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.CylinderContent
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integrable
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integral
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.InverseLimit
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Measure
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Probability
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Tower
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerCylinder
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerIntegral
-import ArakelovGeometry.AdelicCurve.Extension.Automorphism
-import ArakelovGeometry.AdelicCurve.Extension.BoundedEvaluationGenerators
-import ArakelovGeometry.AdelicCurve.Extension.FibreMaximum
-import ArakelovGeometry.AdelicCurve.Extension.Finite.BaseChange
-import ArakelovGeometry.AdelicCurve.Extension.Finite.Construction
-import ArakelovGeometry.AdelicCurve.Extension.Finite.Probability
-import ArakelovGeometry.AdelicCurve.Extension.Finite.Tower
-import ArakelovGeometry.AdelicCurve.Extension.FiniteIntermediateField
-import ArakelovGeometry.AdelicCurve.Extension.InvariantMaximum
-import ArakelovGeometry.AdelicCurve.Extension.ParameterSpace
-import ArakelovGeometry.AdelicCurve.Extension.PowerSums
-import ArakelovGeometry.AdelicCurve.Extension.RootBounds
-import ArakelovGeometry.AdelicCurve.Extension.Separable.Construction
-import ArakelovGeometry.AdelicCurve.Extension.Separable.Embeddings
-import ArakelovGeometry.AdelicCurve.Extension.Separable.FibreIntegral
-import ArakelovGeometry.AdelicCurve.Extension.Separable.Measurability
-import ArakelovGeometry.AdelicCurve.Extension.Separable.Measure
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Basic
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Cylinder
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.CylinderContent
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integrable
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integral
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.InverseLimit
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Measure
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Probability
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Tower
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerCylinder
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerIntegral
+public import ArakelovGeometry.AdelicCurve.Extension.Automorphism
+public import ArakelovGeometry.AdelicCurve.Extension.BoundedEvaluationGenerators
+public import ArakelovGeometry.AdelicCurve.Extension.FibreMaximum
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.BaseChange
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.Construction
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.Probability
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.Tower
+public import ArakelovGeometry.AdelicCurve.Extension.FiniteIntermediateField
+public import ArakelovGeometry.AdelicCurve.Extension.InvariantMaximum
+public import ArakelovGeometry.AdelicCurve.Extension.ParameterSpace
+public import ArakelovGeometry.AdelicCurve.Extension.PowerSums
+public import ArakelovGeometry.AdelicCurve.Extension.RootBounds
+public import ArakelovGeometry.AdelicCurve.Extension.Separable.Construction
+public import ArakelovGeometry.AdelicCurve.Extension.Separable.Embeddings
+public import ArakelovGeometry.AdelicCurve.Extension.Separable.FibreIntegral
+public import ArakelovGeometry.AdelicCurve.Extension.Separable.Measurability
+public import ArakelovGeometry.AdelicCurve.Extension.Separable.Measure
 
 /-!
 # Scalar extensions of adelic structures
@@ -45,3 +47,5 @@ automorphism pullbacks and fibre maxima.
 
 Internal modules import their specific dependencies rather than this entry point.
 -/
+
+@[expose] public section

@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismNorms
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismNorms
 
 /-!
 # Actual subspaces under field-isomorphism scalar transport
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismNorms
 Field isomorphisms act semilinearly on actual scalar extensions and transport
 their subspaces, ranks and completed vectors.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section
@@ -30,8 +34,7 @@ def scalarExtensionSemilinearEquiv (σ : L ≃ₐ[K] M) :
   intro a z
   change TensorProduct.congr σ.toLinearEquiv (LinearEquiv.refl K E) (a • z) =
     σ a • TensorProduct.congr σ.toLinearEquiv (LinearEquiv.refl K E) z
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | tmul b e =>
     simp [TensorProduct.smul_tmul', smul_eq_mul]
   | add z w hz hw => simp only [smul_add, map_add, hz, hw]
@@ -79,7 +82,8 @@ theorem scalarExtensionSubspaceOrderIso_finrank [FiniteDimensional K E]
     Module.finrank M (scalarExtensionSubspaceOrderIso (E := E) σ B) = Module.finrank L B :=
   (finrank_eq_of_semilinear σ.toRingEquiv (scalarExtensionSubspaceSemilinearEquiv σ B)).symm
 
-private theorem scalarExtensionSubspace_map_kernel (σ : L ≃ₐ[K] M)
+/-- Semilinear scalar transport preserves the subspace defining a relative quotient. -/
+theorem scalarExtensionSubspace_map_kernel (σ : L ≃ₐ[K] M)
     (B T : Submodule L (L ⊗[K] E)) :
     letI := RingHomInvPair.of_ringEquiv σ.toRingEquiv
     letI := RingHomInvPair.of_ringEquiv_symm σ.toRingEquiv
@@ -149,10 +153,7 @@ theorem completedScalarExtensionAlgEquiv_rational (σ : L ≃ₐ[K] M)
   let := aM
   let := RingHomInvPair.of_ringEquiv σ.toRingEquiv
   let := RingHomInvPair.of_ringEquiv_symm σ.toRingEquiv
-  induction z using TensorProduct.induction_on with
-  | zero =>
-    rw [TensorProduct.tmul_zero, map_zero,
-      (scalarExtensionSemilinearEquiv (E := E) σ).map_zero, TensorProduct.tmul_zero]
+  induction z using TensorProduct.inductionOn with
   | tmul b e => exact completedScalarExtensionAlgEquiv_tmul σ x a b e
   | add z w hz hw => simp only [TensorProduct.tmul_add, map_add, hz, hw]
 

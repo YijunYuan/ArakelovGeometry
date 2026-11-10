@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanWeightedJacobian
-import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanCovolume
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanCovolume
+public import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanWeightedJacobian
 
 /-!
 # Canonical weighted volume on the original completed product
@@ -13,6 +15,8 @@ Both measures are the canonical measures of their actual inner products.
 The weighting equivalence compares two norms on the same original vectors,
 with their prescribed real scalar action and literal diagonal lattice.
 -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory

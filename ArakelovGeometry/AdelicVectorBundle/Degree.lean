@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.BundleCountable
-import ArakelovGeometry.AdelicVectorBundle.BundleTensor
-import ArakelovGeometry.AdelicVectorBundle.CountableTensorMeasurable
-import ArakelovGeometry.AdelicVectorBundle.LineDegree
-import ArakelovGeometry.AdelicVectorBundle.DeterminantComparison
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BundleCountable
+public import ArakelovGeometry.AdelicVectorBundle.BundleTensor
+public import ArakelovGeometry.AdelicVectorBundle.CountableTensorMeasurable
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantComparison
+public import ArakelovGeometry.AdelicVectorBundle.LineDegree
 
 /-!
 # Arakelov degree of an adelic vector bundle
@@ -17,6 +19,8 @@ The source's discrete-base or common-countable-subfield hypothesis supplies
 determinant measurability; it is not a premise on the resulting determinant.
 This file proves the generator formula, rank-zero value and order comparison.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

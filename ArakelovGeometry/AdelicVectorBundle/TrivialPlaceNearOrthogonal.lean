@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TrivialPlaceDualConstancy
-import ArakelovGeometry.AdelicVectorBundle.TrivialPlaceBidualHN
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.TrivialPlaceBidualHN
+public import ArakelovGeometry.AdelicVectorBundle.TrivialPlaceDualConstancy
 
 /-!
 # Actual nearly orthogonal bases at the trivial place
@@ -13,6 +15,8 @@ The all-vector coefficient inequality bounds each original basis radius
 by the constant actual bidual radius divided by the orthogonality factor.
 Actual approximate spans construct such bases in the semistable case.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

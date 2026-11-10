@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DirectSumDomination
-import ArakelovGeometry.AdelicVectorBundle.MeasurableDirectSum
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DirectSumDomination
+public import ArakelovGeometry.AdelicVectorBundle.MeasurableDirectSum
 
 /-!
 # The actual non-Archimedean dual of a profile direct sum
@@ -13,6 +15,8 @@ The finite-place formula used in Chen–Moriwaki Proposition 4.1.35.
 It applies to all completed dual vectors and arbitrary profiles, without
 requiring the input vector norms to be ultrametric.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -37,8 +41,7 @@ theorem dualBaseChange_prod_apply (ω : S.Ω)
   rw [dualBaseChangeEquiv_dualMap, dualBaseChangeEquiv_dualMap]
   simp only [LinearMap.comp_apply, ← map_add]
   congr 1
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | tmul a p =>
       simp only [LinearMap.baseChange_tmul, LinearMap.fst_apply, LinearMap.snd_apply,
         LinearMap.inl_apply, LinearMap.inr_apply]

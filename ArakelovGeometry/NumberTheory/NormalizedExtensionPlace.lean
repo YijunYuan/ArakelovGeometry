@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicStructure.RationalPlaceClasses
-import ArakelovGeometry.AdelicCurve.Extension.ParameterSpace
-import ArakelovGeometry.NumberTheory.InfinitePlaceLocalDegree
-import ArakelovGeometry.Analysis.NonarchimedeanPowerCompletion
-import ArakelovGeometry.ExternalResults.Ostrowski
-import ArakelovGeometry.ExternalResults.Place
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.ParameterSpace
+public import ArakelovGeometry.AdelicStructure.RationalPlaceClasses
+public import ArakelovGeometry.Analysis.NonarchimedeanPowerCompletion
+public import ArakelovGeometry.ExternalResults.Ostrowski
+public import ArakelovGeometry.ExternalResults.Place
+public import ArakelovGeometry.NumberTheory.InfinitePlaceLocalDegree
 
 /-!
 # Actual normalized extension parameters for number-field places
@@ -16,6 +18,8 @@ import ArakelovGeometry.ExternalResults.Place
 Canonical rational restrictions select a unique representative of every
 nontrivial number-field place, independently of local-degree normalization.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalSectionVanishing
-import ArakelovGeometry.AdelicVectorBundle.HermitianHNPositiveDegree
-import ArakelovGeometry.AdelicVectorBundle.HermitianHNTruncations
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHNPositiveDegree
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHNTruncations
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalSectionVanishing
 
 /-! # Effective sections and the actual nonnegative Hermitian HN subspace -/
+
+@[expose] public section
 
 noncomputable section
 open MeasureTheory Set
@@ -36,7 +40,7 @@ def effectiveSectionsEquivHNZero :
   exact (Equiv.Set.imageOfInjOn U.subtype
     (V.restrictOfMeasurableBase U hS).toNormFamily.effectiveSections
       U.subtype_injective.injOn).trans
-      (Equiv.setCongr h.symm)
+      (Set.equivOfEq h.symm)
 
 /-- The actual all-place effective-section count is unchanged at the nonnegative
 HN truncation. The count equality comes from the produced literal bijection. -/

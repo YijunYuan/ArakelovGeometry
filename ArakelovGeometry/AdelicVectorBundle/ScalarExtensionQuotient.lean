@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspace
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDual
-import ArakelovGeometry.AdelicVectorBundle.Bidual
-import ArakelovGeometry.AdelicVectorBundle.DualMap
-import ArakelovGeometry.AdelicVectorBundle.SlopesQuotient
-import Mathlib.LinearAlgebra.TensorProduct.Quotient
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Bidual
+public import ArakelovGeometry.AdelicVectorBundle.DualMap
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDual
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspace
+public import ArakelovGeometry.AdelicVectorBundle.SlopesQuotient
+public import Mathlib.LinearAlgebra.TensorProduct.Quotient
 
 /-!
 # Actual quotients under non-Archimedean scalar extension
@@ -16,6 +18,8 @@ import Mathlib.LinearAlgebra.TensorProduct.Quotient
 Canonical dual base change, the produced restriction isometry on the actual
 dual norm, and ultrametric biduality compare the genuine quotient norms.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

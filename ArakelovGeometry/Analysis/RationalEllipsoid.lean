@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.JohnNorm
+module
+
+public import ArakelovGeometry.Analysis.JohnNorm
 
 /-!
 # Countable strict ellipsoid approximations
@@ -12,6 +14,8 @@ Rational real and imaginary coordinates give a countable dense family of
 matrices over a real or complex scalar field. Approximating a slightly enlarged
 John coordinate map gives positive definite Gram matrices with strict margins.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped Matrix.Norms.Elementwise MatrixOrder ComplexOrder

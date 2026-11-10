@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.SlopesExtension
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.SlopesExtension
 
 /-!
 # Minimal slope along actual finite chains
@@ -14,6 +16,8 @@ nonzero quotient and choosing the first tail it detects gives a nonzero
 map out of that step's actual cokernel. Zero cokernels are omitted from
 the extended-real infimum, which is `⊤` for an empty index type.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

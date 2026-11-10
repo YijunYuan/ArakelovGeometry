@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalComparisonConstants
-import ArakelovGeometry.NumberTheory.NumberFieldPureMinkowskiLevels
-import Mathlib.Data.Nat.Choose.Multinomial
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalComparisonConstants
+public import ArakelovGeometry.NumberTheory.NumberFieldPureMinkowskiLevels
+public import Mathlib.Data.Nat.Choose.Multinomial
 
 /-! # Rank monotonicity of the exact classical comparison constant -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory

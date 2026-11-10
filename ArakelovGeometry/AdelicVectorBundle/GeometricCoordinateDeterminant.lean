@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricCoordinateRestrictionEquiv
-import ArakelovGeometry.AdelicVectorBundle.DeterminantHermitianBasis
-import ArakelovGeometry.Analysis.DeterminantExactSequence
-import ArakelovGeometry.AdelicVectorBundle.Line
-import ArakelovGeometry.AdelicVectorBundle.GeometricCoordinateDual
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantIsometry
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantIsometry
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantHermitianBasis
+public import ArakelovGeometry.AdelicVectorBundle.GeometricCoordinateDual
+public import ArakelovGeometry.AdelicVectorBundle.GeometricCoordinateRestrictionEquiv
+public import ArakelovGeometry.AdelicVectorBundle.Line
+public import ArakelovGeometry.Analysis.DeterminantExactSequence
 
 /-!
 # Actual determinants of finitely selected coordinate norms
@@ -18,6 +20,8 @@ volume through the Hermitian determinant pairing. Finite measurable selection
 then proves rational determinant measurability without ground-field or
 parameter-space countability.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -91,7 +95,7 @@ theorem IsHermitian.determinant_isMeasurable_of_finite_coordinate_bases
   convert hm using 1
   funext ω
   rw [hξ.determinant_norm_rational_eq_absValue_of_coordinates (b (I ω)) ω (hcoord ω)]
-  simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 /-- The actual dual determinant is measurable on the same finite partition,
 using the produced determinant measurability and its genuine line dual. -/
@@ -142,7 +146,7 @@ theorem exists_measurable_ofBasis_restrict_coordinate_bases
   refine ⟨I, hI, d, fun ω z ↦ ?_⟩
   obtain ⟨_, hd, hn⟩ := hs ω
   dsimp only [d]
-  rw [dif_pos hd, selectedSubspaceBasis_completed_coordinates]
+  rw [dite_eq_left hd, selectedSubspaceBasis_completed_coordinates]
   exact hn z
 
 /-- The actual determinant of every coordinate subspace restriction has
@@ -277,7 +281,7 @@ theorem ofBasis_restrict_quotient_determinant_isMeasurable_of_all_finite
   convert hm using 1
   funext ω
   rw [hdet ω]
-  simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 /-- The genuine line dual of the determinant on the native completed fibres
 of every coordinate restricted quotient is measurable. -/

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.IntervalRationalTensorGlobalDegree
-import ArakelovGeometry.AdelicVectorBundle.Slopes
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.IntervalRationalTensorGlobalDegree
+public import ArakelovGeometry.AdelicVectorBundle.Slopes
 
 /-!
 # The rational interval tensor mean-slope counterexample
@@ -13,6 +15,8 @@ The actual interval factors have mean slope zero. Their rank-six mixed tensor
 has mean slope at least `Real.log 2 / 6`, refuting the general equality printed
 in Chen–Moriwaki Proposition 4.3.34 (PDF278, printed262).
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

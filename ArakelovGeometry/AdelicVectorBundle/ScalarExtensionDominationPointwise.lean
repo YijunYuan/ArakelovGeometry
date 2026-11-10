@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDomination
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDomination
 
 /-!
 # Pointwise representatives for algebraic basis-distance envelopes
@@ -13,6 +15,8 @@ bounds every algebraic extension at every place. Modifying the integrable
 base envelope on its single measurable null set gives a pointwise bound
 which is integrable in the almost-everywhere sense.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct
@@ -87,17 +91,17 @@ theorem IsDominated.exists_scalarExtension_localDist_ofBasisMixed_pointwise_boun
     simpa only [not_not, Set.ofPred_mem_eq] using hzero
   have he : C =ᵐ[S.v] H := by
     filter_upwards [hnot] with ω hω
-    simp only [H, if_neg hω]
+    simp only [H, ite_eq_right hω]
   refine ⟨H, hC.congr he, ?_, ?_⟩
   · intro ω
     by_cases hω : ω ∈ N
-    · exact (show H ω = D ω from if_pos hω).symm ▸ hD0 ω
-    · exact (show H ω = C ω from if_neg hω).symm ▸ hC0 ω
+    · exact (show H ω = D ω from ite_eq_left hω).symm ▸ hD0 ω
+    · exact (show H ω = C ω from ite_eq_right hω).symm ▸ hC0 ω
   · intro L _ _ _ x
     by_cases hx : x.base ∈ N
-    · simp only [H, if_pos hx]
+    · simp only [H, ite_eq_left hx]
       exact ξ.scalarExtension_localDist_ofBasisMixed_le_basisLogNorms b x
-    · simp only [H, if_neg hx]
+    · simp only [H, ite_eq_right hx]
       exact hbound L x hx
 
 end ArakelovGeometry.NormFamily

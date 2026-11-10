@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.MinkowskiCountingBundle
-import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
-import ArakelovGeometry.AdelicVectorBundle.Minkowski
-import ArakelovGeometry.AdelicVectorBundle.StrongMinkowskiImplication
-import ArakelovGeometry.AdelicVectorBundle.Destabilizing
-import ArakelovGeometry.Analysis.DeterminantExactSequence
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Destabilizing
+public import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
+public import ArakelovGeometry.AdelicVectorBundle.Minkowski
+public import ArakelovGeometry.AdelicVectorBundle.MinkowskiCountingBundle
+public import ArakelovGeometry.AdelicVectorBundle.StrongMinkowskiImplication
+public import ArakelovGeometry.Analysis.DeterminantExactSequence
 
 /-!
 # The actual counting-curve obstruction to every finite Minkowski level
@@ -21,6 +23,8 @@ The counting curve has zero Archimedean mass, so the same curve also has no
 finite strong Minkowski level. It gives no counterexample to the unrestricted
 same-level strong-to-ordinary implication of source Remark 4.3.81.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -93,11 +97,11 @@ private theorem cost_le_product_of_det_ne_zero (c : ℝ) (hc1 : c ≤ 1)
       rw [finTwoProd_det, h0, h1]
       ring
     have hn : rawNorm c a (v 1) = 1 := by
-      rw [rawNorm, if_neg hy, if_neg h1]
+      rw [rawNorm, ite_eq_right hy, ite_eq_right h1]
     rw [hn, mul_one]
     exact cost_le_rawNorm hc1 a hx
   · have hn : rawNorm c a (v 0) = 1 := by
-      rw [rawNorm, if_neg hx, if_neg h0]
+      rw [rawNorm, ite_eq_right hx, ite_eq_right h0]
     rw [hn, one_mul]
     exact cost_le_rawNorm hc1 a hy
 
@@ -176,7 +180,7 @@ private theorem truncatedFamily_rational_rawNorm (s : Finset ℚ) (c : ℝ)
   rw [truncatedFamily_norm_rational]
   by_cases ha : a ∈ s
   · simp [rawNorm, ha]
-  · simp only [ha, false_and, if_false, rawNorm]
+  · simp only [ha, false_and, ite_false, rawNorm]
     split_ifs <;> rfl
 
 /-- Exact determinant normalization on the genuine rational top-wedge generator. -/
@@ -549,7 +553,7 @@ theorem liftedSourceBundle_vectorDegree (s : Finset ℚ)
     (liftedSourceBundle s).vectorDegree x =
       (sourceBundle s).vectorDegree ⟨x.val.down, by
         intro h
-        exact x.property (ULift.ext _ _ h)⟩ := by
+        exact x.property (ULift.ext h)⟩ := by
   rw [AdelicVectorBundle.vectorDegree, NormFamily.vectorDegree_eq_neg_integral,
     AdelicVectorBundle.vectorDegree, NormFamily.vectorDegree_eq_neg_integral]
   rfl
@@ -565,7 +569,7 @@ theorem liftedSourceBundle_maximalLogarithmicMinimum_le (s : Finset ℚ) :
   have h : (liftedSourceBundle s).vectorDegree (x 0) ≤ 1 := by
     rw [liftedSourceBundle_vectorDegree]
     have h := bundle_vectorDegree_le s (Real.exp (-1)) (Real.exp_pos _) sourceCost_le_one
-      ⟨(x 0).val.down, by intro h; exact (x 0).property (ULift.ext _ _ h)⟩
+      ⟨(x 0).val.down, by intro h; exact (x 0).property (ULift.ext h)⟩
     simpa only [sourceBundle, Real.log_exp, neg_neg] using h
   exact EReal.coe_le_coe_iff.mpr ((hx 0).trans h)
 

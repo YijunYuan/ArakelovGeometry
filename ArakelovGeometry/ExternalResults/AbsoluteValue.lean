@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Analysis.AbsoluteValue.Equivalence
-import Mathlib.Algebra.Order.CauSeq.Completion
-import Mathlib.Analysis.Normed.Module.Completion
-import Mathlib.Analysis.Normed.Field.Instances
-import Mathlib.Analysis.Normed.Module.FiniteDimension
-import ArakelovGeometry.ExternalResults.Ostrowski
+module
+
+public import ArakelovGeometry.ExternalResults.Ostrowski
+public import Mathlib.Algebra.Order.CauSeq.Completion
+public import Mathlib.Analysis.AbsoluteValue.Equivalence
+public import Mathlib.Analysis.Normed.Field.Instances
+public import Mathlib.Analysis.Normed.Module.Completion
+public import Mathlib.Analysis.Normed.Module.FiniteDimension
 
 /-!
 # Completions and restrictions of absolute values
@@ -18,6 +20,8 @@ nonarchimedean property to the completion, characteristic zero and rational norm
 archimedean absolute values (via Gelfand–Tornheim/Ostrowski), pullback and restriction of
 absolute values, and finite-dimensionality of completions in finite extensions.
 -/
+
+@[expose] public section
 
 namespace AbsoluteValue
 
@@ -202,7 +206,7 @@ theorem algebraMap_completion_def :
 theorem isometry_algebraMap_completion :
     Isometry (algebraMap (v.restriction L).Completion v.Completion) := by
   rw [algebraMap_completion_def]
-  exact (isometry_algebraMap_withAbs v L).isometry_mapRingHom
+  exact UniformSpace.Completion.isometry_mapRingHom (isometry_algebraMap_withAbs v L)
 
 /-- The algebra map between the completions preserves the norm. -/
 theorem norm_algebraMap_completion (a : (v.restriction L).Completion) :

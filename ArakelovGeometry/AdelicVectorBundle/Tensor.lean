@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TensorBaseChange
-import ArakelovGeometry.AdelicVectorBundle.Dual
-import ArakelovGeometry.Analysis.TensorNorm
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Dual
+public import ArakelovGeometry.AdelicVectorBundle.TensorBaseChange
+public import ArakelovGeometry.Analysis.TensorNorm
 
 /-!
 # Tensor products of norm families
@@ -14,6 +16,8 @@ The projective and injective tensor norms are transported to the actual
 completed scalar extensions of finite tensor products. The mixed norm uses
 the injective norm at non-Archimedean places and the projective norm elsewhere.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

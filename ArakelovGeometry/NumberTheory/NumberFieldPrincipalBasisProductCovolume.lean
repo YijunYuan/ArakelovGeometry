@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Algebra.Module.ZLattice.Covolume
-import Mathlib.LinearAlgebra.StdBasis
+module
+
+public import Mathlib.Algebra.Module.ZLattice.Covolume
+public import Mathlib.LinearAlgebra.StdBasis
 
 /-! # Block coordinates for products of a full real lattice -/
+
+@[expose] public section
 
 noncomputable section
 open MeasureTheory Module

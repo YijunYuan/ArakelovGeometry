@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldDegreeCovolume
-import Mathlib.MeasureTheory.Group.GeometryOfNumbers
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldDegreeCovolume
+public import Mathlib.MeasureTheory.Group.GeometryOfNumbers
 
 /-! # Minkowski's convex-body theorem on the original arithmetic diagonal lattice -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory

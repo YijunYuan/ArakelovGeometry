@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricNativeDeterminantMeasurable
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionNativeSubquotientFiniteStage
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerDeterminantDegree
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDegreeDeterminant
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantIsometry
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantIsometry
+public import ArakelovGeometry.AdelicVectorBundle.GeometricNativeDeterminantMeasurable
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDegreeDeterminant
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionNativeSubquotientFiniteStage
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerDeterminantDegree
 
 /-!
 # Native geometric determinant regularity over an algebraic closure
@@ -16,6 +18,8 @@ A produced finite-stage completed isometry carries the accepted finite native
 determinant regularity to every native relative quotient over an algebraic
 closure. The original field and place space need not be countable.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

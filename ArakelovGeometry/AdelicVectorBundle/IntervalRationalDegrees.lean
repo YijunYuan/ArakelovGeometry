@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.IntervalRationalDeterminant
-import ArakelovGeometry.AdelicVectorBundle.Degree
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
-import ArakelovGeometry.Analysis.DeterminantPairing
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Degree
+public import ArakelovGeometry.AdelicVectorBundle.IntervalRationalDeterminant
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
+public import ArakelovGeometry.Analysis.DeterminantPairing
 
 /-!
 # Actual global determinant normalization of rational interval factors
@@ -15,6 +17,8 @@ Finite fibres consume the existing non-Archimedean determinant bound. Together
 with the actual real-fibre calculation, this computes the canonical degrees of
 the genuine rational interval bundles used in the tensor counterexample.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -107,7 +111,7 @@ theorem rationalIntervalPlaneBundle_degree_eq_zero :
     have h0 : rationalIntervalPlaneFamily.determinant.norm (.inr ())
         ((1 : (rationalAdelicStructure.ϕ (.inr ())).Completion) ⊗ₜ[ℚ]
           rationalStandardDeterminantVector 2) = 0 := by
-      rw [hz, TensorProduct.tmul_zero, map_zero]
+      rw [hz, TensorProduct.tmul_zero, NormFamily.norm_zero]
     exact zero_ne_one (h0.symm.trans
       (rationalIntervalPlaneFamily_determinant_norm_standard (.inr ())))
   rw [rationalIntervalPlaneBundle.degree_eq_neg_integral (Or.inl inferInstance)
@@ -133,7 +137,7 @@ theorem rationalIntervalThreeBundle_degree_eq_zero :
     have h0 : rationalIntervalThreeFamily.determinant.norm (.inr ())
         ((1 : (rationalAdelicStructure.ϕ (.inr ())).Completion) ⊗ₜ[ℚ]
           rationalStandardDeterminantVector 3) = 0 := by
-      rw [hz, TensorProduct.tmul_zero, map_zero]
+      rw [hz, TensorProduct.tmul_zero, NormFamily.norm_zero]
     exact zero_ne_one (h0.symm.trans
       (rationalIntervalThreeFamily_determinant_norm_standard (.inr ())))
   rw [rationalIntervalThreeBundle.degree_eq_neg_integral (Or.inl inferInstance)

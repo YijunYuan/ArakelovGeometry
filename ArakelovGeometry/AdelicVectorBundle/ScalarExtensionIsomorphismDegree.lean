@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismDeterminantRational
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.EquivMeasure
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteNativeSubquotientDegree
-import ArakelovGeometry.AdelicVectorBundle.AlgebraicClosureApproximation
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.EquivMeasure
+public import ArakelovGeometry.AdelicVectorBundle.AlgebraicClosureApproximation
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteNativeSubquotientDegree
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismDeterminantRational
 
 /-!
 # Actual determinant degree under scalar-field isomorphisms
@@ -15,6 +17,8 @@ The produced rational determinant map intertwines log norms along the actual
 measure-preserving place equivalence. Target determinant measurability and
 native subquotient degrees follow from these two transport producers.
 -/
+
+@[expose] public section
 
 set_option maxSynthPendingDepth 3
 
@@ -120,39 +124,21 @@ namespace AdelicVectorBundle
 variable [IsAlgClosed L] [IsAlgClosed M]
   [Countable S.Ω] [DiscreteMeasurableSpace S.Ω]
 
-private theorem nativeDeterminant_isMeasurable (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (B T : Submodule L (L ⊗[K] E)) (hTB : T ≤ B) :
-    (V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase (L := L) hN B
-      (T.comap B.subtype)).toNormFamily.determinant.IsMeasurable := by
-  rw [scalarExtensionSubspaceQuotientOfCountableDiscreteBase_toNormFamily]
-  exact V.toNormFamily.scalarExtension_subquotient_determinant_isMeasurable_of_countable_discrete
-    hN T B hTB
-
-private theorem transportedNativeDeterminant_isMeasurable (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (σ : L ≃ₐ[K] M) (B T : Submodule L (L ⊗[K] E)) (hTB : T ≤ B) :
-    NormFamily.IsMeasurable
-    (V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase (L := M) hN
-      (scalarExtensionSubspaceOrderIso (E := E) σ B)
-      ((scalarExtensionSubspaceOrderIso (E := E) σ T).comap
-        (scalarExtensionSubspaceOrderIso (E := E) σ B).subtype)).toNormFamily.determinant := by
-  rw [scalarExtensionSubspaceQuotientOfCountableDiscreteBase_toNormFamily]
-  exact V.toNormFamily.scalarExtension_subquotient_determinant_isMeasurable_algEquiv σ B T hTB
-    (V.toNormFamily.scalarExtension_subquotient_determinant_isMeasurable_of_countable_discrete
-      hN T B hTB)
-
 /-- The actual native subquotient degree is preserved under any prescribed
-isomorphism of algebraic closures. Source determinant measurability is produced
-by native descent; target determinant measurability is produced by transport. -/
+isomorphism of algebraic closures. Both determinant measurability proofs come
+from finite-stage descent; the equality follows by transporting the logarithm integral. -/
 theorem degree_nativeSubquotientOfCountableDiscreteBase_algEquiv [S.IsProper]
     (V : AdelicVectorBundle S E)
     (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
     (σ : L ≃ₐ[K] M) (B T : Submodule L (L ⊗[K] E)) (hTB : T ≤ B) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
-    let hdetL := nativeDeterminant_isMeasurable V hN B T hTB
-    let hdetM := transportedNativeDeterminant_isMeasurable V hN σ B T hTB
+    let hdetL := V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase_determinant_isMeasurable
+      hN B (T.comap B.subtype)
+    let hdetM := V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase_determinant_isMeasurable
+      (L := M) hN (scalarExtensionSubspaceOrderIso (E := E) σ B)
+      ((scalarExtensionSubspaceOrderIso (E := E) σ T).comap
+        (scalarExtensionSubspaceOrderIso (E := E) σ B).subtype)
     (V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase (L := M) hN
       (scalarExtensionSubspaceOrderIso (E := E) σ B)
       ((scalarExtensionSubspaceOrderIso (E := E) σ T).comap
@@ -172,9 +158,13 @@ theorem degree_nativeSubquotientOfCountableDiscreteBase_algEquiv [S.IsProper]
     ((scalarExtensionSubspaceOrderIso (E := E) σ T).comap
       (scalarExtensionSubspaceOrderIso (E := E) σ B).subtype)
   have hdetU : U.toNormFamily.determinant.IsMeasurable :=
-    nativeDeterminant_isMeasurable V hN B T hTB
+    V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase_determinant_isMeasurable
+      hN B (T.comap B.subtype)
   have hdetW : W.toNormFamily.determinant.IsMeasurable :=
-    transportedNativeDeterminant_isMeasurable V hN σ B T hTB
+    V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase_determinant_isMeasurable
+      (L := M) hN (scalarExtensionSubspaceOrderIso (E := E) σ B)
+      ((scalarExtensionSubspaceOrderIso (E := E) σ T).comap
+        (scalarExtensionSubspaceOrderIso (E := E) σ B).subtype)
   change W.degreeOfMeasurableDeterminant hdetW hNM =
     U.degreeOfMeasurableDeterminant hdetU hNL
   let s := (U.determinant hdetU hNL).lineGenerator (U.determinant_isLine hdetU hNL)

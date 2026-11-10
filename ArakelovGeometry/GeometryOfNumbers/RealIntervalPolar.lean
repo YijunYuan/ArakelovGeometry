@@ -3,13 +3,17 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.ConvexBodyPolar
-import ArakelovGeometry.GeometryOfNumbers.ConvexIntegerCount
-import ArakelovGeometry.GeometryOfNumbers.IntegralDualCovolume
-import ArakelovGeometry.GeometryOfNumbers.PrimitiveLineMeasure
-import Mathlib.Analysis.Normed.Operator.Mul
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.ConvexBodyPolar
+public import ArakelovGeometry.GeometryOfNumbers.ConvexIntegerCount
+public import ArakelovGeometry.GeometryOfNumbers.IntegralDualCovolume
+public import ArakelovGeometry.GeometryOfNumbers.PrimitiveLineMeasure
+public import Mathlib.Analysis.Normed.Operator.Mul
 
 /-! # The actual continuous-dual polar of a real interval -/
+
+@[expose] public section
 
 noncomputable section
 

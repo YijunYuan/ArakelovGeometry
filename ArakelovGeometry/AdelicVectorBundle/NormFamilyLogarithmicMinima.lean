@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaRestriction
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaRestriction
 
 /-!
 # Intrinsic ordinary minima of actual completed norm families
@@ -13,6 +15,8 @@ rational norm evaluations. Domination and primal measurability suffice for their
 integrable vector degrees. The completed restriction has those properties without
 requiring dual measurability or a measurable-base restriction constructor.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.NormFamily
 

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TensorOperator
-import ArakelovGeometry.AdelicVectorBundle.TensorDomination
-import ArakelovGeometry.AdelicVectorBundle.OperatorComparison
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.OperatorComparison
+public import ArakelovGeometry.AdelicVectorBundle.TensorDomination
+public import ArakelovGeometry.AdelicVectorBundle.TensorOperator
 
 /-!
 # Integrable heights between strongly adelic bundles
@@ -13,6 +15,8 @@ import ArakelovGeometry.AdelicVectorBundle.OperatorComparison
 Actual injective tensors first control the map between bidual norms. Strong
 domination controls the two local distances back to the original norms.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct

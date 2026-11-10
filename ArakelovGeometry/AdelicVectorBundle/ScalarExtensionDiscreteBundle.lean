@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDualDescent
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDualDescent
 
 /-!
 # Actual algebraic scalar bundles over a countable discrete base
@@ -12,6 +14,8 @@ Finite-coordinate primal and dual descent provide the actual bundle for every
 algebraic extension. Canonical coherence retains the existing finite,
 common-density and line constructors.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldUnitBalancing
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeLambda
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeLambda
+public import ArakelovGeometry.NumberTheory.NumberFieldUnitBalancing
 
 /-!
 # Actual unit balancing of a number-field norm family
@@ -13,6 +15,8 @@ Dirichlet's actual units act on the original vector space. Their completed
 finite norms are one, so this action preserves the literal integral ball.
 The weighted mean uses the original completed norm evaluations at infinity.
 -/
+
+@[expose] public section
 
 open MeasureTheory Function
 open scoped NumberField TensorProduct BigOperators

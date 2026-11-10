@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DirectSumDualFinite
-import ArakelovGeometry.Analysis.NormShapeDualOperator
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DirectSumDualFinite
+public import ArakelovGeometry.Analysis.NormShapeDualOperator
 
 /-!
 # The actual Archimedean dual of a profile direct sum
@@ -12,6 +14,8 @@ import ArakelovGeometry.Analysis.NormShapeDualOperator
 The polar-profile formula on the completed algebraic dual and the resulting
 measurability in Chen–Moriwaki Proposition 4.1.35.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -44,14 +48,12 @@ theorem directSum_dual_norm_of_isRCLike (ψ : S.Ω → NormShape) (ω : S.Ω)
     ((LinearMap.inr K E F).dualMap.baseChange (S.ϕ ω).Completion f)
   have hfst (z : (S.ϕ ω).Completion ⊗[K] (E × F)) :
       (LinearMap.fst K E F).baseChange (S.ϕ ω).Completion z = (e z).1 := by
-    induction z using TensorProduct.induction_on with
-    | zero => simp
+    induction z using TensorProduct.inductionOn with
     | tmul a z => rfl
     | add z t hz ht => simp [hz, ht]
   have hsnd (z : (S.ϕ ω).Completion ⊗[K] (E × F)) :
       (LinearMap.snd K E F).baseChange (S.ϕ ω).Completion z = (e z).2 := by
-    induction z using TensorProduct.induction_on with
-    | zero => simp
+    induction z using TensorProduct.inductionOn with
     | tmul a z => rfl
     | add z t hz ht => simp [hz, ht]
   rw [dual_norm_eq_sSup]
@@ -129,9 +131,9 @@ theorem directSum_dual_norm (ψ : S.Ω → NormShape)
       (η.dual.norm ω ((LinearMap.inr K E F).dualMap.baseChange (S.ϕ ω).Completion f)) := by
   classical
   by_cases hω : ω ∈ S.Ωinf
-  · simpa only [NormShape.adelicDual, if_pos hω] using
+  · simpa only [NormShape.adelicDual, ite_eq_left hω] using
       ξ.directSum_dual_norm_of_isRCLike η ψ ω (hS ω hω) f
-  · rw [NormShape.adelicDual, if_neg hω,
+  · rw [NormShape.adelicDual, ite_eq_right hω,
       NormShape.maxShape_perspective (ξ.dual.norm_nonneg ω _) (η.dual.norm_nonneg ω _)]
     exact ξ.directSum_dual_norm_eq_max_of_finite η ψ ω
       (by simpa [AdelicStructure.Ωinf, AdelicStructure.Ωfin] using hω) f

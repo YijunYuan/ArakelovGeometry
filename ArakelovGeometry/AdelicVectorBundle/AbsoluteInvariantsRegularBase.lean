@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.OrdinaryAbsoluteInvariantsClosure
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteFirstMinimumSlope
-import ArakelovGeometry.AdelicVectorBundle.GeometricFirstMinimumSlope
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteFirstMinimumSlope
+public import ArakelovGeometry.AdelicVectorBundle.GeometricFirstMinimumSlope
+public import ArakelovGeometry.AdelicVectorBundle.OrdinaryAbsoluteInvariantsClosure
 
 /-!
 # Canonical absolute invariants from original regularity
@@ -14,6 +16,8 @@ Every native subspace uses the actual restricted scalar norm and its canonical
 measurable determinant. The three accepted constructions agree termwise.
 No regularity of the closure place space or supplied degree bound is assumed.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

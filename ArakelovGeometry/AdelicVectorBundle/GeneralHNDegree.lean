@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNOrdered
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNRestriction
-import ArakelovGeometry.AdelicVectorBundle.DegreeFlag
-import ArakelovGeometry.AdelicVectorBundle.PositiveDegree
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNFlag
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNMeasure
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeFlag
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNFlag
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNMeasure
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNOrdered
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNRestriction
+public import ArakelovGeometry.AdelicVectorBundle.PositiveDegree
 
 /-!
 # Actual general HN degree lower bounds
@@ -16,6 +18,8 @@ import ArakelovGeometry.AdelicVectorBundle.GeneralHNMeasure
 Minimal slopes of actual restricted bundles bound the degrees of their
 actual quotients. Summing uses the accepted genuine flag degree inequality.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped BigOperators

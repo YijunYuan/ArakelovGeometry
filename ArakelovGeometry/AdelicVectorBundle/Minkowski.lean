@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.InjectiveTensorFirstMinimum
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.InjectiveTensorFirstMinimum
 
 /-!
 # Ordinary and strong Minkowski properties on actual bundles
@@ -13,6 +15,8 @@ The ordinary property has the actual injective tensor slope comparison as a
 consumer. Absolute levels and the same-level strong-to-ordinary implication
 are separate mathematical statements.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

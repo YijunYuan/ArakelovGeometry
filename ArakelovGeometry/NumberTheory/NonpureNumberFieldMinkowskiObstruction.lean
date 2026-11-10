@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianBasis
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedLatticeModel
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldInfiniteMass
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationHermitian
-import Mathlib.NumberTheory.Padics.HeightOneSpectrum
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianBasis
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedLatticeModel
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationHermitian
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldInfiniteMass
+public import Mathlib.NumberTheory.Padics.HeightOneSpectrum
 
 /-!
 # The actual nonpure rational plane obstruction
@@ -16,6 +18,8 @@ The norms use the actual completed fibres of the rationally normalized
 number-field curve. One finite norm is a sheared coordinate maximum with
 second weight `sqrt p`; infinity retains the Euclidean coordinate norm.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain MeasureTheory
 open scoped NumberField TensorProduct
@@ -112,7 +116,7 @@ theorem family_norm_off_prime (p : Nat.Primes) (a : ℤ) (ω : S.Ω)
     (hω : ω ≠ primePoint p) (z : (S.ϕ ω).Completion ⊗[ℚ] Plane) :
     (family p a).norm ω z = (ofBasisHermitian S Plane standardBasis).norm ω z := by
   classical
-  simp only [family, if_neg hω]
+  simp only [family, ite_eq_right hω]
 
 theorem exceptionalSeminorm_add_le_max (p : Nat.Primes) (a : ℤ) (ω : S.Ω)
     (hω : ω ∈ S.Ωfin) (z w : (S.ϕ ω).Completion ⊗[ℚ] Plane) :

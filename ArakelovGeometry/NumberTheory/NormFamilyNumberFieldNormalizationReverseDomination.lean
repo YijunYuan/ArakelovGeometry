@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldIntegralComparison
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationDual
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationDual
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldIntegralComparison
 
 /-!
 # Reflection of actual number-field norm domination
@@ -13,6 +15,8 @@ Integrable normalized envelopes pull back through the actual positive exponent.
 For every fixed old ultrametric family, actual normalization preserves and
 reflects upper, lower and full domination, without recovering the trivial norm.
 -/
+
+@[expose] public section
 
 open MeasureTheory NumberField
 open scoped ENNReal
@@ -38,7 +42,7 @@ theorem normalizationExponent_mul_pullback
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K}) :
     numberFieldNormalizationExponent ω * numberFieldNormalizationPullback f ω.val = f ω := by
   classical
-  simp only [numberFieldNormalizationPullback, dif_neg ω.property]
+  simp only [numberFieldNormalizationPullback, dite_eq_right ω.property]
   rw [← mul_assoc, mul_inv_cancel₀ (numberFieldNormalizationExponent_pos ω).ne', one_mul]
 
 /-- Every genuine normalized integrable envelope has an old integrable pullback. -/

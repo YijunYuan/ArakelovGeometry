@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionFiniteStage
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDegree
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionFiniteStage
 
 /-!
 # Actual ordinary scalar-extended adelic bundles
@@ -15,6 +17,8 @@ infinite places. Both measurability clauses and strong domination therefore
 construct the ordinary extended bundle under original common countable density
 and usual Archimedean normalization. No target common dense field is assumed.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

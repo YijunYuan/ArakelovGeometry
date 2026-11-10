@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.ScalarExtensionDual
+module
+
+public import ArakelovGeometry.Analysis.ScalarExtensionDual
 
 /-!
 # Scalar extension of norms on lines
@@ -11,6 +13,8 @@ import ArakelovGeometry.Analysis.ScalarExtensionDual
 Both scalar-extension norms and their duals have the exact one-dimensional
 formula over arbitrary complete normed fields, including trivial valuations.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

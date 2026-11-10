@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.NormShape
-import Mathlib.Analysis.Normed.Lp.ProdLp
+module
+
+public import ArakelovGeometry.Analysis.NormShape
+public import Mathlib.Analysis.Normed.Lp.ProdLp
 
 /-!
 # Euclidean shape for orthogonal direct sums
@@ -13,6 +15,8 @@ The source profile `sqrt (t² + (1-t)²)` is continuous and convex on the
 unit interval.  Its homogeneous perspective is `sqrt (a²+b²)` on the
 nonnegative quadrant, including the origin.
 -/
+
+@[expose] public section
 
 noncomputable section
 

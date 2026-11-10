@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldActualIntegerCovolume
-import ArakelovGeometry.AdelicVectorBundle.DeterminantHermitianBasis
-import ArakelovGeometry.Analysis.DeterminantExactSequence
-import Mathlib.RingTheory.Norm.Transitivity
-import Mathlib.RingTheory.Complex
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantHermitianBasis
+public import ArakelovGeometry.Analysis.DeterminantExactSequence
+public import ArakelovGeometry.NumberTheory.NumberFieldActualIntegerCovolume
+public import Mathlib.RingTheory.Complex
+public import Mathlib.RingTheory.Norm.Transitivity
 
 /-!
 # Actual Hermitian completed-basis volume factors
@@ -18,6 +20,8 @@ Restriction to the prescribed real action gives a first power at real places
 and a second power at complex places. Canonical measures are never defined
 by the resulting formula.
 -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory
@@ -248,7 +252,7 @@ theorem det_dependentBlockDiagonal {ι : Type*} [Fintype ι] [LinearOrder ι] {�
   classical
   have ht : (Matrix.blockDiagonal' M).BlockTriangular Sigma.fst := by
     intro i j hij
-    rw [Matrix.blockDiagonal'_apply, dif_neg (ne_of_gt hij)]
+    rw [Matrix.blockDiagonal'_apply, dite_eq_right (ne_of_gt hij)]
   rw [ht.det_fintype]
   apply Finset.prod_congr rfl
   intro i _

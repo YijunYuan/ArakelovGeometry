@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TensorDual
-import ArakelovGeometry.Analysis.TensorBilinearNorm
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.TensorDual
+public import ArakelovGeometry.Analysis.TensorBilinearNorm
 
 /-!
 # Actual completed tensor dual norm identities
@@ -12,6 +14,8 @@ import ArakelovGeometry.Analysis.TensorBilinearNorm
 The canonical algebraic dual distribution acts on the actual completed
 fibres of the binary tensor families. The factor norms are arbitrary.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -57,8 +61,7 @@ theorem dualDistrib_baseChange_bilinear_apply
   let A := TensorProduct.AlgebraTensorModule.distribBaseChange K L
     (Module.Dual K E) (Module.Dual K F)
   obtain ⟨t, rfl⟩ := A.symm.surjective z
-  induction t using TensorProduct.induction_on with
-  | zero => simp
+  induction t using TensorProduct.inductionOn with
   | add z t hz ht =>
     simpa only [map_add, LinearMap.add_apply] using congrArg₂ (· + ·) hz ht
   | tmul α β =>
@@ -205,7 +208,9 @@ theorem mixedTensorPair_dual_norm_eq_injective (ξ : NormFamily S E) (η : NormF
 canonical algebraic dual-tensor identification. -/
 theorem mixedTensorPair_dual_pullback (ξ : NormFamily S E) (η : NormFamily S F) :
     (ξ.mixedTensorPair η).dual.pullback (TensorProduct.dualDistrib K E F)
-      (TensorProduct.dualDistribEquiv K E F).injective =
+      (by
+        simpa only [← TensorProduct.toLinearMap_dualDistribEquiv, LinearEquiv.coe_coe] using
+          (TensorProduct.dualDistribEquiv K E F).injective) =
         ξ.dual.injectiveTensorPair η.dual := by
   ext ω z
   exact mixedTensorPair_dual_norm_eq_injective ξ η ω z

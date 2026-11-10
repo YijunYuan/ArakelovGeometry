@@ -3,12 +3,16 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.LatticeCentralSection
-import ArakelovGeometry.GeometryOfNumbers.LatticeIntegralDualCoordinates
-import ArakelovGeometry.GeometryOfNumbers.PolarSectionProjection
-import ArakelovGeometry.GeometryOfNumbers.PrimitiveLineDualMeasure
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.LatticeCentralSection
+public import ArakelovGeometry.GeometryOfNumbers.LatticeIntegralDualCoordinates
+public import ArakelovGeometry.GeometryOfNumbers.PolarSectionProjection
+public import ArakelovGeometry.GeometryOfNumbers.PrimitiveLineDualMeasure
 
 /-! # Actual normalized dual volumes of lattice sections and quotient images -/
+
+@[expose] public section
 
 noncomputable section
 

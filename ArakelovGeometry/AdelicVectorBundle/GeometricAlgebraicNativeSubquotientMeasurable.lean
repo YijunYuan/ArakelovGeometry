@@ -3,10 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicNativeDeterminant
-import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicScalarExtensionMeasurable
-import ArakelovGeometry.AdelicVectorBundle.GeometricFinitePositiveAtoms
-import ArakelovGeometry.AdelicVectorBundle.DegreeIsometryDual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeIsometryDual
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicNativeDeterminant
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicScalarExtensionMeasurable
+public import ArakelovGeometry.AdelicVectorBundle.GeometricFinitePositiveAtoms
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteRestriction
 
 /-!
 # Actual geometric native subquotient regularity
@@ -15,6 +18,8 @@ Produced finite stages and their genuine positive atoms supply full primal and
 completed-dual measurability on every native relative quotient over an algebraic
 closure. No original measurability, ultrametricity or countability is required.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -90,7 +95,6 @@ theorem scalarExtension_subquotient_dual_isMeasurable_of_positive_atoms_of_isAlg
   let η₀ := ((ξ.scalarExtension (L := F)).restrict Q₀).quotient (P₀.comap Q₀.subtype)
   let η := η₀.scalarExtension (L := L)
   let θ := ((ξ.scalarExtension (L := L)).restrict Q).quotient (P.comap Q.subtype)
-  let θt := θ.towerPullback F.toIntermediateField
   let : MeasurableSingletonClass (S.algebraicExtension F).Ω :=
     AdelicStructure.measurableSingletonClass_algebraicExtension_of_finiteDimensional
       (S := S) (L := F)
@@ -105,25 +109,7 @@ theorem scalarExtension_subquotient_dual_isMeasurable_of_positive_atoms_of_isAlg
       ).quotient (P₀.comap Q₀.subtype)
   have hm : η.dual.IsMeasurable :=
     hd₀.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlgebraic η₀ hFpos hFS
-  have ht : θt.dual.IsMeasurable := by
-    intro ℓ
-    have hn (x : ((S.algebraicExtension F).algebraicExtension L).Ω) :
-        θt.dual.norm x ((1 : (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion)
-          ⊗ₜ[L] ℓ) =
-        η.dual.norm x ((1 : (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion)
-          ⊗ₜ[L] e.dualMap ℓ) := by
-      symm
-      simpa only [LinearMap.baseChange_tmul, LinearEquiv.coe_coe] using
-        η.dualEquiv_norm_eq_of_completed_isometry θt x e (he x)
-          ((1 : (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion) ⊗ₜ[L] ℓ)
-    change Measurable (fun x : ((S.algebraicExtension F).algebraicExtension L).Ω =>
-      θt.dual.norm x
-        ((1 : (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion) ⊗ₜ[L] ℓ))
-    rw [funext hn]
-    exact hm (e.dualMap ℓ)
-  change (θ.towerPullback F.toIntermediateField).dual.IsMeasurable at ht
-  rw [towerPullback_dual] at ht
-  exact (θ.dual.isMeasurable_towerPullback_iff F.toIntermediateField).mp ht
+  exact IsMeasurable.dual_of_tower_completed_isometry F η θ e he hm
 
 /-- Literal relative quotients have actual primal regularity. -/
 theorem scalarExtension_restrict_quotient_isMeasurable_of_positive_atoms_of_isAlgClosed

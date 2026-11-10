@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.NumberTheory.NumberField.Basic
-import Mathlib.RingTheory.Trace.Basic
-import Mathlib.LinearAlgebra.Dual.Lemmas
-import Mathlib.LinearAlgebra.Dimension.Free
+module
+
+public import Mathlib.LinearAlgebra.Dimension.Free
+public import Mathlib.LinearAlgebra.Dual.Lemmas
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.Trace.Basic
 
 /-!
 # The actual rational trace dual of a number-field vector space
@@ -15,6 +17,8 @@ Trace composition acts on the original linear functionals and original space.
 Nondegeneracy proves injectivity without a dimension hypothesis on the space;
 finite dimension gives the rational-linear equivalence used by integral duality.
 -/
+
+@[expose] public section
 
 noncomputable section
 

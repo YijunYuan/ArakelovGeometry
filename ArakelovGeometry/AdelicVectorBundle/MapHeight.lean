@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.OperatorMeasurable
-import ArakelovGeometry.AdelicVectorBundle.Basic
-import ArakelovGeometry.Analysis.EnvelopeIntegral
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Basic
+public import ArakelovGeometry.AdelicVectorBundle.OperatorMeasurable
+public import ArakelovGeometry.Analysis.EnvelopeIntegral
 
 /-!
 # Local and global heights of linear maps
@@ -15,6 +17,8 @@ is defined for nonzero rational maps. Its integrable lower envelope comes from
 one rational vector with nonzero image. The global height uses the genuine
 lower envelope integral, with the separate zero-map convention `⊥`.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct

@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstructionDeterminant
-import Mathlib.Data.Nat.Factorial.Basic
+module
+
+public import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstructionDeterminant
+public import Mathlib.Data.Nat.Factorial.Basic
 
 /-! # Primitive integer arithmetic for the actual nonpure rational plane -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.NonpureNumberFieldMinkowskiObstruction
 

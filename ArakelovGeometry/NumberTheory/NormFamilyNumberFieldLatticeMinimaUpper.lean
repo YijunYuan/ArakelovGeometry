@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldUnitBalancing
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLineLattice
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLineIndex
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldImpurityDistance
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldImpurityMinima
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldCurve
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldImpurityDistance
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldImpurityMinima
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLineIndex
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLineLattice
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldUnitBalancing
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldCurve
 
 /-!
 # Actual upper comparison for the integral-basis invariant
@@ -16,6 +18,8 @@ import ArakelovGeometry.NumberTheory.NormalizedNumberFieldCurve
 The field-only arithmetic constants act on the original number-field
 vectors and literal integral lattices. No endpoint finiteness is assumed.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped NumberField TensorProduct

@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.IntervalRationalTensorWitness
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.IntervalRationalTensorWitness
 
 /-!
 # Actual determinant lengths for the rational interval mixed tensor
@@ -12,6 +14,8 @@ The rational tensor basis generator is an actual top exterior vector. The
 six rational witnesses give its real completed determinant length at most one half.
 -/
 
+@[expose] public section
+
 open scoped TensorProduct
 open Module MeasureTheory
 
@@ -19,13 +23,16 @@ noncomputable section
 namespace ArakelovGeometry
 open AdelicStructure
 
-private abbrev RationalIntervalTensor := (Fin 2 → ℚ) ⊗[ℚ] (Fin 3 → ℚ)
+/-- The rational tensor product of the interval plane and interval three-space. -/
+abbrev RationalIntervalTensor := (Fin 2 → ℚ) ⊗[ℚ] (Fin 3 → ℚ)
 
-private def rationalIntervalTensorRankEquiv :
+/-- Identify the six tensor coordinates with the rank of the rational tensor space. -/
+def rationalIntervalTensorRankEquiv :
     Fin 6 ≃ Fin (Module.finrank ℚ RationalIntervalTensor) :=
   finCongr (by rw [← finrank_mul_eq_tensor]; simp)
 
-private def rationalIntervalTensorRankBasis :
+/-- The tensor basis indexed by the rank of the rational tensor space. -/
+def rationalIntervalTensorRankBasis :
     Basis (Fin (Module.finrank ℚ RationalIntervalTensor)) ℚ RationalIntervalTensor :=
   rationalIntervalTensorBasis.reindex rationalIntervalTensorRankEquiv
 
@@ -90,7 +97,7 @@ theorem rationalIntervalTensorFamily_determinant_norm_infinite_le_half :
   have hprod : (∏ i, ξ.norm (.inr ()) ((1 : C) ⊗ₜ[ℚ] x i)) ≤ 1 := by
     calc
       _ ≤ ∏ _ : Fin (Module.finrank ℚ RationalIntervalTensor), (1 : ℝ) :=
-        Finset.prod_le_prod (fun i _ => ξ.norm_nonneg _ _)
+        Finset.prod_le_prod₀ (fun i _ => ξ.norm_nonneg _ _)
           (fun i _ => rationalIntervalSixTensor_mixed_norm_infinite_le_one
             (rationalIntervalTensorRankEquiv.symm i))
       _ = 1 := by simp

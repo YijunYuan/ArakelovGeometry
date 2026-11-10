@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianClosedHNFactorScalarExtension
-import ArakelovGeometry.AdelicVectorBundle.HermitianHNPositiveDegree
-import ArakelovGeometry.AdelicVectorBundle.PositiveDegreeIsometry
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianClosedHNFactorScalarExtension
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHNPositiveDegree
+public import ArakelovGeometry.AdelicVectorBundle.PositiveDegreeIsometry
 
 /-!
 # Actual closed Hermitian ordered slopes and positive degree
@@ -15,6 +17,8 @@ Its actual threshold-zero restriction attains positive degree, whose native
 closed restricted degree is preserved. Native quotient positive degree follows
 from the canonical completed quotient isometry.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

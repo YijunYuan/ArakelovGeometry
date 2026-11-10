@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.NormFamilyPowerTransport
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldCompletionComparison
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.NormFamilyPowerTransport
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldCompletionComparison
 
 /-!
 # Norm families on the actual normalized number-field curve
@@ -12,6 +14,8 @@ import ArakelovGeometry.NumberTheory.NormalizedNumberFieldCompletionComparison
 Transport the actual completed tensor fibres. Finite norms use the inverse
 actual completion degree; infinite norms retain their usual absolute values.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct
@@ -114,14 +118,14 @@ def numberFieldNormalize : NormFamily (normalizedNumberFieldAdelicStructure K) E
       fun (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K}) y => by
     classical
     split_ifs with hω
-    · erw [dif_pos hω]
+    · erw [dite_eq_left hω]
       exact AbsoluteValue.powerTransportSeminorm_eq_zero_iff _ _
         (normalizedPlaceValue_isEquiv_placeRep ω).symm E
         ((normalizedPlaceValue ω).localDegree ℚ : ℝ)⁻¹
         (normalizedFiniteExponent_pos ω hω)
         (normalizedPlace_value_rpow_of_mem_fin ω hω) (ξ.norm ω.val)
         (hξ ω.val (normalizedPlace_mem_old_fin ω hω)) (ξ.norm_eq_zero_iff ω.val) y
-    · erw [dif_neg hω]
+    · erw [dite_eq_right hω]
       exact AbsoluteValue.sameValueTransportSeminorm_eq_zero_iff _ _
         (normalizedPlaceValue_isEquiv_placeRep ω).symm E (ξ.norm ω.val)
         (normalizedPlace_value_eq_of_not_mem_fin ω hω) (ξ.norm_eq_zero_iff ω.val) y
@@ -137,7 +141,7 @@ theorem numberFieldNormalize_norm_map_fin
   change IsNonarchimedean (normalizedPlaceValue ω) at hω
   unfold numberFieldNormalize
   dsimp only
-  erw [dif_pos hω]
+  erw [dite_eq_left hω]
   exact AbsoluteValue.powerTransportSeminorm_map _ _ _ _ _ _ _ _ _ z
 
 /-- Every transported actual infinite completed tensor retains its original norm. -/
@@ -151,7 +155,7 @@ theorem numberFieldNormalize_norm_map_inf
   change ¬ IsNonarchimedean (normalizedPlaceValue ω) at hω
   unfold numberFieldNormalize
   dsimp only
-  erw [dif_neg hω]
+  erw [dite_eq_right hω]
   exact AbsoluteValue.sameValueTransportSeminorm_map _ _ _ _ _ _ z
 
 /-- The actual normalized family is ultrametric at every normalized finite place. -/
@@ -161,7 +165,7 @@ theorem numberFieldNormalize_isUltrametric : (ξ.numberFieldNormalize hξ).IsUlt
   change IsNonarchimedean (normalizedPlaceValue ω) at hω
   unfold numberFieldNormalize
   dsimp only
-  erw [dif_pos hω]
+  erw [dite_eq_left hω]
   exact AbsoluteValue.powerTransportSeminorm_isUltrametric _ _ _ _ _ _ _ _ _ y z
 
 /-- The normalization formula for every rational vector at an actual finite place. -/

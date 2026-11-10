@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.BasisComparison
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BasisComparison
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDual
 
 /-!
 # Domination under algebraic scalar extension
@@ -13,6 +15,8 @@ Extended rational functional evaluations are controlled by their original
 completed dual norms. These bounds are the local input for a base-curve
 envelope uniform over algebraic extensions.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct

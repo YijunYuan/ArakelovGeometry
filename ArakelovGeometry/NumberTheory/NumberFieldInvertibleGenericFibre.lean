@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldFullLatticeLineIndex
-import Mathlib.RingTheory.PicardGroup
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldFullLatticeLineIndex
+public import Mathlib.RingTheory.PicardGroup
 
 /-!
 # Original invertible modules in their actual generic and completed fibres
@@ -14,6 +16,8 @@ integral image is a full line. Actual completed tensor images coincide in both
 orientations with the canonical completed image lattice. Its gauges read the
 original cyclic quotient, with positive finite cardinality proved separately.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct nonZeroDivisors
@@ -98,8 +102,7 @@ theorem genericImage_fullSpan :
     Submodule.span K (genericImage (K := K) M : Set (K ⊗[𝓞 K] M)) = ⊤ := by
   apply eq_top_iff.mpr
   intro z _
-  induction z using TensorProduct.induction_on with
-  | zero => exact Submodule.zero_mem _
+  induction z using TensorProduct.inductionOn with
   | tmul a m =>
     have h := (Submodule.span K (genericImage (K := K) M : Set (K ⊗[𝓞 K] M))).smul_mem a
       (Submodule.subset_span
@@ -107,23 +110,24 @@ theorem genericImage_fullSpan :
     simpa only [genericInclusion_apply, TensorProduct.smul_tmul', smul_eq_mul, mul_one] using h
   | add x y hx hy => exact Submodule.add_mem _ (hx trivial) (hy trivial)
 
-private abbrev F (p : HeightOneSpectrum (𝓞 K)) :=
-  ((normalizedNumberFieldAdelicStructure K).ϕ (normalizedPrimeParameter p)).Completion
-private abbrev O (p : HeightOneSpectrum (𝓞 K)) :=
-  (normalizedNumberFieldAdelicStructure K).completedLocalRing (normalizedPrimeParameter p)
-    (normalizedPrimeParameter_mem_fin p)
+local notation "Kᵥ" => (fun p : HeightOneSpectrum (𝓞 K) ↦
+  AbsoluteValue.Completion
+    (AdelicStructure.ϕ (normalizedNumberFieldAdelicStructure K) (normalizedPrimeParameter p)))
+local notation "𝓞ᵥ" => (fun p : HeightOneSpectrum (𝓞 K) ↦
+  AdelicStructure.completedLocalRing (normalizedNumberFieldAdelicStructure K)
+    (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p))
 
 /-- Scalar extension of the original inclusion into the actual completed generic tensor fibre. -/
 def completedTensorMap (p : HeightOneSpectrum (𝓞 K)) :
-    (O p) ⊗[𝓞 K] M →ₗ[O p] F p ⊗[K] (K ⊗[𝓞 K] M) :=
+    (𝓞ᵥ p) ⊗[𝓞 K] M →ₗ[𝓞ᵥ p] Kᵥ p ⊗[K] (K ⊗[𝓞 K] M) :=
   (NumberFieldModel.completedLatticeTensorMap (genericImage (K := K) M) p).comp
-    (LinearEquiv.baseChange (𝓞 K) (O p) M (genericImage (K := K) M)
+    (LinearEquiv.baseChange (𝓞 K) (𝓞ᵥ p) M (genericImage (K := K) M)
       (genericImageEquiv (K := K) M)).toLinearMap
 
 /-- The completed map has the literal original scalar tensor formula. -/
-theorem completedTensorMap_tmul (p : HeightOneSpectrum (𝓞 K)) (a : O p) (m : M) :
+theorem completedTensorMap_tmul (p : HeightOneSpectrum (𝓞 K)) (a : 𝓞ᵥ p) (m : M) :
     completedTensorMap (K := K) M p (a ⊗ₜ[𝓞 K] m) =
-      (a : F p) ⊗ₜ[K] (genericInclusion (K := K) M m) := by
+      (a : Kᵥ p) ⊗ₜ[K] (genericInclusion (K := K) M m) := by
   simp only [completedTensorMap, LinearMap.comp_apply, LinearEquiv.coe_baseChange,
     LinearMap.baseChange_tmul,
     NumberFieldModel.completedLatticeTensorMap_tmul]
@@ -134,28 +138,28 @@ theorem completedTensorMap_range (p : HeightOneSpectrum (𝓞 K)) :
     (completedTensorMap (K := K) M p).range =
       NumberFieldModel.completedLatticeSpan (genericImage (K := K) M) p := by
   rw [completedTensorMap, LinearMap.range_comp_of_range_eq_top _
-    (LinearEquiv.baseChange (𝓞 K) (O p) M (genericImage (K := K) M)
+    (LinearEquiv.baseChange (𝓞 K) (𝓞ᵥ p) M (genericImage (K := K) M)
       (genericImageEquiv (K := K) M)).range]
   exact NumberFieldModel.range_completedLatticeTensorMap (genericImage (K := K) M) p
 
 /-- The source's original completed right-tensor map, through literal commutation. -/
 def completedRightTensorMap (p : HeightOneSpectrum (𝓞 K)) :
-    M ⊗[𝓞 K] (O p) →ₗ[𝓞 K] F p ⊗[K] (K ⊗[𝓞 K] M) :=
+    M ⊗[𝓞 K] (𝓞ᵥ p) →ₗ[𝓞 K] Kᵥ p ⊗[K] (K ⊗[𝓞 K] M) :=
   ((completedTensorMap (K := K) M p).restrictScalars (𝓞 K)).comp
-    (TensorProduct.comm (𝓞 K) M (O p)).toLinearMap
+    (TensorProduct.comm (𝓞 K) M (𝓞ᵥ p)).toLinearMap
 
 /-- The right completed map sends the original tensor to the same completed vector. -/
-theorem completedRightTensorMap_tmul (p : HeightOneSpectrum (𝓞 K)) (m : M) (a : O p) :
+theorem completedRightTensorMap_tmul (p : HeightOneSpectrum (𝓞 K)) (m : M) (a : 𝓞ᵥ p) :
     completedRightTensorMap (K := K) M p (m ⊗ₜ[𝓞 K] a) =
-      (a : F p) ⊗ₜ[K] (genericInclusion (K := K) M m) :=
+      (a : Kᵥ p) ⊗ₜ[K] (genericInclusion (K := K) M m) :=
   completedTensorMap_tmul (K := K) M p a m
 
 /-- Both original completed tensor orientations have exactly the same image set. -/
 theorem completedRightTensorMap_range (p : HeightOneSpectrum (𝓞 K)) :
     Set.range (completedRightTensorMap (K := K) M p) =
       ((completedTensorMap (K := K) M p).range : Set _) := by
-  change Set.range ((completedTensorMap (K := K) M p) ∘ (TensorProduct.comm (𝓞 K) M (O p))) = _
-  rw [Set.range_comp, (TensorProduct.comm (𝓞 K) M (O p)).surjective.range_eq]
+  change Set.range ((completedTensorMap (K := K) M p) ∘ (TensorProduct.comm (𝓞 K) M (𝓞ᵥ p))) = _
+  rw [Set.range_comp, (TensorProduct.comm (𝓞 K) M (𝓞ᵥ p)).surjective.range_eq]
   simp only [Set.image_univ, LinearMap.coe_range]
 
 /-- Every original nonzero element has a positive actual cyclic quotient cardinality. -/
@@ -175,8 +179,8 @@ theorem cyclicQuotient_finite (m : M) (hm : m ≠ 0) :
 theorem completedGauge_finite_log_index (m : M) (hm : m ≠ 0) :
     (∑' p : HeightOneSpectrum (𝓞 K),
       (normalizedNumberFieldAdelicStructure K).v.real {normalizedPrimeParameter p} *
-        (-Real.log (scalarLatticeGauge (F := F p) ((completedTensorMap (K := K) M p).range : Set _)
-          ((1 : F p) ⊗ₜ[K] (genericInclusion (K := K) M m))))) =
+        (-Real.log (scalarLatticeGauge (F := Kᵥ p) ((completedTensorMap (K := K) M p).range : Set _)
+          ((1 : Kᵥ p) ⊗ₜ[K] (genericInclusion (K := K) M m))))) =
       Real.log (Nat.card (M ⧸ Submodule.span (𝓞 K) {m})) := by
   have hm' : genericImageEquiv (K := K) M m ≠ 0 :=
     fun h => hm ((genericImageEquiv (K := K) M).injective (h.trans (map_zero _).symm))
@@ -191,8 +195,8 @@ theorem completedGauge_finite_log_index (m : M) (hm : m ≠ 0) :
 /-- Nonzero original vectors have finite support of their actual completed logarithmic gauges. -/
 theorem completedGauge_log_support_finite (m : M) (hm : m ≠ 0) :
     (Function.support fun p : HeightOneSpectrum (𝓞 K) =>
-      Real.log (scalarLatticeGauge (F := F p) ((completedTensorMap (K := K) M p).range : Set _)
-        ((1 : F p) ⊗ₜ[K] (genericInclusion (K := K) M m)))).Finite := by
+      Real.log (scalarLatticeGauge (F := Kᵥ p) ((completedTensorMap (K := K) M p).range : Set _)
+        ((1 : Kᵥ p) ⊗ₜ[K] (genericInclusion (K := K) M m)))).Finite := by
   have hm' : genericImageEquiv (K := K) M m ≠ 0 :=
     fun h => hm ((genericImageEquiv (K := K) M).injective (h.trans (map_zero _).symm))
   have h := NumberFieldFullLattice.line_completedGauge_log_support_finite (genericImage (K := K) M)

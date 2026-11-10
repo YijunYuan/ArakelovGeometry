@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Dual
-import ArakelovGeometry.AdelicVectorBundle.DirectSum
-import ArakelovGeometry.Analysis.ArchimedeanDual
-import ArakelovGeometry.Analysis.EuclideanNormShape
-import ArakelovGeometry.Analysis.HermitianNorm
-import Mathlib.Analysis.InnerProductSpace.ProdL2
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DirectSum
+public import ArakelovGeometry.AdelicVectorBundle.Dual
+public import ArakelovGeometry.Analysis.ArchimedeanDual
+public import ArakelovGeometry.Analysis.EuclideanNormShape
+public import ArakelovGeometry.Analysis.HermitianNorm
+public import Mathlib.Analysis.InnerProductSpace.ProdL2
 
 /-!
 # Hermitian norm families
@@ -19,6 +21,8 @@ the prescribed norm at infinite places.  The usual Archimedean normalization
 of each completed field is supplied explicitly.  Inner-product cores fix the
 existing completed scalar action.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -231,7 +235,7 @@ theorem orthogonalSum_norm_pair_of_finite (ξ : NormFamily S E) (η : NormFamily
       ((TensorProduct.prodRight K (S.ϕ ω).Completion
         (S.ϕ ω).Completion E F).symm (x, y)) = max (ξ.norm ω x) (η.norm ω y) := by
   have hn : ω ∉ S.Ωinf := fun h => h hω
-  simp only [orthogonalSum, directSum_norm_pair, if_neg hn]
+  simp only [orthogonalSum, directSum_norm_pair, ite_eq_right hn]
   exact NormShape.maxShape_perspective (ξ.norm_nonneg ω x) (η.norm_nonneg ω y)
 
 /-- The orthogonal direct-sum norm is the Euclidean norm at infinite places. -/
@@ -242,7 +246,7 @@ theorem orthogonalSum_norm_pair_of_infinite (ξ : NormFamily S E) (η : NormFami
       ((TensorProduct.prodRight K (S.ϕ ω).Completion
         (S.ϕ ω).Completion E F).symm (x, y)) =
       Real.sqrt ((ξ.norm ω x) ^ 2 + (η.norm ω y) ^ 2) := by
-  simp only [orthogonalSum, directSum_norm_pair, if_pos hω]
+  simp only [orthogonalSum, directSum_norm_pair, ite_eq_left hω]
   exact NormShape.euclideanShape_perspective (ξ.norm_nonneg ω x) (η.norm_nonneg ω y)
 
 /-- Orthogonal direct sums of Hermitian families are Hermitian. -/
@@ -252,8 +256,8 @@ theorem IsHermitian.orthogonalSum {η : NormFamily S F}
   apply hξ.directSum_of_profile_eq hη
   · intro ω hω t ht
     have hn : ω ∉ S.Ωinf := fun h => h hω
-    simp only [if_neg hn]
+    simp only [ite_eq_right hn]
   · intro ω hω t ht
-    simp only [if_pos hω]
+    simp only [ite_eq_left hω]
 
 end ArakelovGeometry.NormFamily

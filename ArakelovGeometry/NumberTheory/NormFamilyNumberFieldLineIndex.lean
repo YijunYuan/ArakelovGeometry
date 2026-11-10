@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldBoundedIndexElement
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeGaugeDomination
-import Mathlib.RingTheory.FractionalIdeal.Norm
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeGaugeDomination
+public import ArakelovGeometry.NumberTheory.NumberFieldBoundedIndexElement
+public import Mathlib.RingTheory.FractionalIdeal.Norm
 
 /-!
 # Actual prime factors and cyclic line indices
@@ -13,6 +15,8 @@ import Mathlib.RingTheory.FractionalIdeal.Norm
 Arithmetic identities for the literal ideal quotient used in the
 finite-place contribution of source Proposition 4.4.10.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField nonZeroDivisors WithZero TensorProduct
@@ -162,7 +166,7 @@ theorem fractionalIdeal_cyclicQuotient_log_card
         FractionalIdeal.absNorm (FractionalIdeal.spanSingleton (𝓞 K)⁰ (x : K)) := by
     rw [← FractionalIdeal.coeIdeal_absNorm (K := K),
       FractionalIdeal.coeIdeal_span_singleton, heq,
-      ← FractionalIdeal.spanSingleton_mul_spanSingleton, map_mul,
+      map_mul, map_mul,
       ← FractionalIdeal.coeIdeal_span_singleton, FractionalIdeal.coeIdeal_absNorm]
   have hnyR : (Ideal.absNorm (Ideal.span {(e x : 𝓞 K)}) : ℝ) =
       Ideal.absNorm (Ideal.span {(J.den : 𝓞 K)}) *
@@ -197,7 +201,7 @@ theorem exists_ideal_member_attaining_valuation (I : Ideal (𝓞 K)) (hI : I ≠
   have hnot : ¬ I ≤ p.asIdeal ^ (n + 1) := by
     rw [ideal_le_prime_pow_iff I hI p (n + 1)]
     omega
-  obtain ⟨a, ha, hanext⟩ := SetLike.not_le_iff_exists.mp hnot
+  obtain ⟨a, ha, hanext⟩ := IsConcreteLE.not_le_iff_exists.mp hnot
   have ha0 : a ≠ 0 := by intro h; exact hanext (h ▸ Ideal.zero_mem _)
   refine ⟨a, ha, ha0, ?_⟩
   have hva := (p.intValuation_le_pow_iff_mem a n).mpr (hle ha)

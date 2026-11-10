@@ -3,12 +3,16 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.PrimitiveLineMeasure
-import ArakelovGeometry.GeometryOfNumbers.ConvexIntegerCount
-import ArakelovGeometry.GeometryOfNumbers.ConvexVolume
-import Mathlib.Tactic.Module
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.ConvexIntegerCount
+public import ArakelovGeometry.GeometryOfNumbers.ConvexVolume
+public import ArakelovGeometry.GeometryOfNumbers.PrimitiveLineMeasure
+public import Mathlib.Tactic.Module
 
 /-! # Actual affine scalar sections and their primitive lattice counts -/
+
+@[expose] public section
 
 noncomputable section
 

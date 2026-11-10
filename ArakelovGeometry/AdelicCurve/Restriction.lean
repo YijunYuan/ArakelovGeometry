@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Basic
-import Mathlib.MeasureTheory.Measure.Restrict
+module
+
+public import ArakelovGeometry.AdelicCurve.Basic
+public import Mathlib.MeasureTheory.Measure.Restrict
 
 /-!
 # Restriction of adelic structures
@@ -14,6 +16,8 @@ subfield `F âŠ† K` (restrict every absolute value) and to a measurable subset `Î
 index space (restrict the measure).  Properness is inherited by the restriction to a
 subfield.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

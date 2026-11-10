@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantFunctor
-import ArakelovGeometry.AdelicVectorBundle.Degree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Degree
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantFunctor
 
 /-!
 # Degree preserved by actual completed-fibre isometries
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.Degree
 A rational linear isomorphism preserving every actual completed fibre norm
 also preserves the actual determinant norm and its Arakelov degree.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

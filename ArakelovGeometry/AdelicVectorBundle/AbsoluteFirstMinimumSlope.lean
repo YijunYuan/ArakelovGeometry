@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricFirstMinimumSlope
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariantsDiscrete
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariantsDiscrete
+public import ArakelovGeometry.AdelicVectorBundle.GeometricFirstMinimumSlope
 
 /-!
 # Absolute first minima on ordinary regularity branches
@@ -13,6 +15,8 @@ Common density gives the ordinary comparison on the actual closure bundle.
 On a countable discrete original base, canonical native rank-one degrees
 give the comparison without assuming regularity of the closure place space.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

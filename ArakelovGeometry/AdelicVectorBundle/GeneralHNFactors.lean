@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.QuotientRestriction
-import ArakelovGeometry.AdelicVectorBundle.SlopesExtension
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNSemistability
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNFlag
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNFlag
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNSemistability
+public import ArakelovGeometry.AdelicVectorBundle.QuotientRestriction
+public import ArakelovGeometry.AdelicVectorBundle.SlopesExtension
 
 /-!
 # Actual factors of general HN filtrations
@@ -16,6 +18,8 @@ Its actual quotient and image restriction norms are canonically isometric
 on completed fibres. The resulting actual extension minimum bound is used
 to prove semistability of the genuine general filtration factors.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicVectorBundle
 

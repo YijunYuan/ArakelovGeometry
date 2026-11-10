@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.HermitianScalarExtension
-import ArakelovGeometry.Analysis.HermitianNorm
-import ArakelovGeometry.Analysis.HermitianTensor
-import ArakelovGeometry.Analysis.TensorOperator
-import Mathlib.Analysis.InnerProductSpace.TensorProduct
+module
+
+public import ArakelovGeometry.Analysis.HermitianNorm
+public import ArakelovGeometry.Analysis.HermitianScalarExtension
+public import ArakelovGeometry.Analysis.HermitianTensor
+public import ArakelovGeometry.Analysis.TensorOperator
+public import Mathlib.Analysis.InnerProductSpace.TensorProduct
 
 /-!
 # Hermitian scalar extension and orthogonal tensor norms
@@ -16,6 +18,8 @@ The extended field carries its given absolute-value norm as an inner-product
 space over the base field. The Hermitian scalar-extension norm agrees with
 the orthogonal tensor norm on the same scalar-extension module.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

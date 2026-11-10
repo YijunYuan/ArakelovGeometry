@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.PositiveDegree
-import ArakelovGeometry.AdelicVectorBundle.QuotientRestriction
-import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceMajorant
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceMajorant
+public import ArakelovGeometry.AdelicVectorBundle.PositiveDegree
+public import ArakelovGeometry.AdelicVectorBundle.QuotientRestriction
 
 /-!
 # Positive degree in actual restriction-quotient sequences
@@ -15,6 +17,8 @@ compares the quotient degree with ambient quotient positive degree. The genuine
 capital discrepancy may be infinite; determinant discrepancy is finite under
 the source ultrametric hypothesis. No supremum attainment is assumed.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeGlobalBall
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeGaugeDomination
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeGlobalBall
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeGaugeDomination
 
 /-!
 # Coherent lattice replacement is the actual full-lattice model
@@ -15,6 +17,8 @@ finite generation permits the full-lattice constructor. No domination of the
 original norm family is assumed, as in the final clause of the model
 construction on Chen–Moriwaki PDF310, printed294.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct

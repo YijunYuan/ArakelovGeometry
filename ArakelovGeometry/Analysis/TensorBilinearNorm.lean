@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.DeterminantNorm
-import ArakelovGeometry.Analysis.TensorOperator
+module
+
+public import ArakelovGeometry.Analysis.DeterminantNorm
+public import ArakelovGeometry.Analysis.TensorOperator
 
 /-!
 # Bilinear bounds and completed tensor dual norms
@@ -13,6 +15,8 @@ The injective contraction principle applies to different finite-dimensional
 factors and arbitrary ultrametric targets. No ultrametric assumption on the
 factor norms is imposed.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -72,7 +76,7 @@ theorem norm_linearMap_le_injective_of_ultrametric_factors
             ring
           _ ≤ injectiveTensorSeminorm z * ∏ _ : ι, α⁻¹ := by
             apply mul_le_mul_of_nonneg_left _ (apply_nonneg _ _)
-            exact Finset.prod_le_prod (fun _ _ ↦ mul_nonneg (norm_nonneg _) (apply_nonneg _ _))
+            exact Finset.prod_le_prod₀ (fun _ _ ↦ mul_nonneg (norm_nonneg _) (apply_nonneg _ _))
               (fun i _ ↦ (he i (p i)).2)
           _ = injectiveTensorSeminorm z * α⁻¹ ^ Fintype.card ι := by
             rw [Finset.prod_const, Finset.card_univ]

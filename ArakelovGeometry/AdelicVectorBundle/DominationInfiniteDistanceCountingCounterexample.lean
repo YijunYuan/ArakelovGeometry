@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DominationInfiniteCountingCounterexample
-import ArakelovGeometry.AdelicVectorBundle.BasisNorm
-import Mathlib.LinearAlgebra.Basis.Fin
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BasisNorm
+public import ArakelovGeometry.AdelicVectorBundle.DominationInfiniteCountingCounterexample
+public import Mathlib.LinearAlgebra.Basis.Fin
 
 /-!
 # Dominated norms need not have a dominated distance
@@ -13,6 +15,8 @@ import Mathlib.LinearAlgebra.Basis.Fin
 The full arbitrary infinite-field counting example of Remark 4.1.9, on the same
 canonical completed fibres as the preceding domination counterexample.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -34,11 +38,12 @@ local instance : DecidablePred (fun x : K ↦ x = 0) :=
 
 private theorem inverse_rawNorm_bounds (a : K) {x : (Plane K)} (hx : x ≠ 0) :
     1 ≤ ((rawNorm K) a x)⁻¹ ∧ ((rawNorm K) a x)⁻¹ ≤ 2 := by
-  simp only [rawNorm, if_neg hx]
+  simp only [rawNorm, ite_eq_right hx]
   split_ifs <;> norm_num
 
 open Classical in
-private theorem inverse_norm_add_le (a : (countingCurve K).Ω)
+/-- Inversion of this two-valued norm preserves the triangle inequality. -/
+theorem inverse_norm_add_le (a : (countingCurve K).Ω)
     (x y : ((countingCurve K).ϕ a).Completion ⊗[K] (Plane K)) :
     ((normFamily K).norm a (x + y))⁻¹ ≤
       ((normFamily K).norm a x)⁻¹ + ((normFamily K).norm a y)⁻¹ := by
@@ -72,7 +77,8 @@ private theorem inverse_norm_add_le (a : (countingCurve K).Ω)
   linarith
 
 open Classical in
-private theorem inverse_norm_smul (a : (countingCurve K).Ω)
+/-- Inversion preserves homogeneity over the trivially valued field. -/
+theorem inverse_norm_smul (a : (countingCurve K).Ω)
     (c : ((countingCurve K).ϕ a).Completion)
     (z : ((countingCurve K).ϕ a).Completion ⊗[K] (Plane K)) :
     ((normFamily K).norm a (c • z))⁻¹ = ‖c‖ * ((normFamily K).norm a z)⁻¹ := by
@@ -167,7 +173,7 @@ theorem expensiveFamily_dual_norm_rational (a : (countingCurve K).Ω)
   by_cases hℓ : ℓ = 0
   · subst ℓ
     simp
-  rw [if_neg hℓ]
+  rw [ite_eq_right hℓ]
   apply le_antisymm
   · apply (expensiveFamily K).dual_norm_le a _ zero_le_one
     intro z
@@ -176,7 +182,7 @@ theorem expensiveFamily_dual_norm_rational (a : (countingCurve K).Ω)
       (expensiveFamily_norm_rational K)]
     by_cases hz : trivialCompletedTensorEquiv K (Plane K) z = 0
     · simp [hz]
-    · rw [if_neg hz, one_mul]
+    · rw [ite_eq_right hz, one_mul]
       have hval : (AbsoluteValue.trivial : AbsoluteValue K ℝ)
           (ℓ (trivialCompletedTensorEquiv K (Plane K) z)) ≤ 1 := by
         by_cases he : ℓ (trivialCompletedTensorEquiv K (Plane K) z) = 0
@@ -190,7 +196,8 @@ theorem expensiveFamily_dual_norm_rational (a : (countingCurve K).Ω)
         algebraMap K ((countingCurve K).ϕ a).Completion (ℓ x)‖ = 1 := by
       rw [one_mul, one_mul, norm_trivialCompletion K, trivialCompletionAlgEquiv_algebraMap,
         AbsoluteValue.trivial_apply he]
-    rw [heval, (expensiveFamily_norm_rational K), if_neg hx, if_neg hline, mul_one] at hb
+    rw [heval, (expensiveFamily_norm_rational K), ite_eq_right hx, ite_eq_right hline,
+      mul_one] at hb
     exact hb
 
 open Classical in
@@ -232,9 +239,9 @@ theorem basisFamily_norm_rational (a : (countingCurve K).Ω) (x : (Plane K)) :
       if x = 0 then 0 else 1 := by
   by_cases hx : x = 0
   · subst x
-    rw [TensorProduct.tmul_zero, if_pos rfl]
+    rw [TensorProduct.tmul_zero, ite_eq_left rfl]
     exact ((basisFamily K).norm_eq_zero_iff a 0).2 rfl
-  rw [if_neg hx]
+  rw [ite_eq_right hx]
   change (NormFamily.ofBasis (countingCurve K) (Plane K) (Module.Basis.finTwoProd K)).norm a _ = 1
   rw [NormFamily.ofBasis_norm_rational]
   apply le_antisymm
@@ -278,7 +285,7 @@ theorem basisFamily_dual_norm_rational (a : (countingCurve K).Ω)
   by_cases hℓ : ℓ = 0
   · subst ℓ
     simp
-  rw [if_neg hℓ]
+  rw [ite_eq_right hℓ]
   apply le_antisymm
   · apply (basisFamily K).dual_norm_le a _ zero_le_one
     intro z
@@ -287,7 +294,7 @@ theorem basisFamily_dual_norm_rational (a : (countingCurve K).Ω)
       (basisFamily_norm_rational K)]
     by_cases hz : trivialCompletedTensorEquiv K (Plane K) z = 0
     · simp [hz]
-    · rw [if_neg hz, mul_one]
+    · rw [ite_eq_right hz, mul_one]
       by_cases he : ℓ (trivialCompletedTensorEquiv K (Plane K) z) = 0
       · simp [he]
       · rw [AbsoluteValue.trivial_apply he]
@@ -300,7 +307,7 @@ theorem basisFamily_dual_norm_rational (a : (countingCurve K).Ω)
         algebraMap K ((countingCurve K).ϕ a).Completion (ℓ x)‖ = 1 := by
       rw [one_mul, one_mul, norm_trivialCompletion K, trivialCompletionAlgEquiv_algebraMap,
         AbsoluteValue.trivial_apply he]
-    rw [heval, (basisFamily_norm_rational K), if_neg hn, mul_one] at hb
+    rw [heval, (basisFamily_norm_rational K), ite_eq_right hn, mul_one] at hb
     exact hb
 
 theorem basisFamily_isDominated : (basisFamily K).IsDominated := by

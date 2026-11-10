@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanWeightedEuclidean
-import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
-import Mathlib.LinearAlgebra.Determinant
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanWeightedEuclidean
+public import Mathlib.LinearAlgebra.Determinant
+public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
 /-!
 # The actual Archimedean coordinate-weight Jacobian
@@ -13,6 +15,8 @@ import Mathlib.LinearAlgebra.Determinant
 The real dimension and determinant calculations use the literal completed
 coefficients and tensor fibres with their already prescribed real action.
 -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory
@@ -120,10 +124,10 @@ theorem det_weightEquiv :
       localWeight w ^ (w.mult * Module.finrank K E) =
         if w.IsComplex then (2 : ℝ) ^ Module.finrank K E else 1 := by
     by_cases hc : w.IsComplex
-    · rw [if_pos hc, localWeight_of_complex hc, hc.mult_eq_two, pow_mul]
+    · rw [ite_eq_left hc, localWeight_of_complex hc, hc.mult_eq_two, pow_mul]
       rw [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
     · have hr := InfinitePlace.not_isComplex_iff_isReal.mp hc
-      rw [if_neg hc, localWeight_of_real hr, one_pow]
+      rw [ite_eq_right hc, localWeight_of_real hr, one_pow]
   simp only [hfac]
   rw [← Finset.prod_filter]
   simp only [Finset.prod_const, ← Fintype.card_subtype, ← pow_mul, Nat.mul_comm]

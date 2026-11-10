@@ -3,13 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Examples.FunctionFields
-import Mathlib.NumberTheory.MahlerMeasure
-import Mathlib.NumberTheory.Ostrowski
-import Mathlib.RingTheory.Localization.Integral
-import Mathlib.RingTheory.Polynomial.Content
-import Mathlib.RingTheory.Polynomial.GaussNorm
-import Mathlib.RingTheory.Valuation.ExtendToLocalization
+module
+
+public import ArakelovGeometry.AdelicCurve.Examples.FunctionFields
+public import Mathlib.NumberTheory.MahlerMeasure
+public import Mathlib.NumberTheory.Ostrowski
+public import Mathlib.RingTheory.Localization.Integral
+public import Mathlib.RingTheory.Polynomial.Content
+public import Mathlib.RingTheory.Polynomial.GaussNorm
+public import Mathlib.RingTheory.Valuation.ExtendToLocalization
 
 /-!
 # Finite places of the rational-function adelic curve over the rationals
@@ -19,6 +21,8 @@ affine line over `ℚ`; their absolute values have base the Mahler measure of a
 primitive integral defining polynomial. The vertical places are Gauss
 extensions of the rational `p`-adic absolute values.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -101,7 +105,7 @@ theorem horizontalAbv_apply (v : HorizontalPlace) {f : RatFunc ℚ} (hf : f ≠ 
   · change (WithZeroMulInt.toNNReal (ne_zero_of_lt h)
       (v.valuation (RatFunc ℚ) f) : ℝ) = _
     rw [WithZeroMulInt.toNNReal_neg_apply _ ((Valuation.ne_zero_iff _).mpr hf),
-      NNReal.coe_zpow, WithZero.toAdd_unzero_eq_log]
+      NNReal.coe_zpow]
   · have hv : horizontalHeight v = 1 := le_antisymm (not_lt.mp h) (one_le_horizontalHeight v)
     simp [AbsoluteValue.trivial_apply hf, hv]
 
@@ -273,7 +277,7 @@ theorem finite_primeAbv_polynomial_ne_one {P : ℚ[X]} (hP : P ≠ 0) :
     exact not_ne_iff.mp fun hne ↦ h (Set.mem_iUnion.mpr ⟨⟨i, hi⟩, hne⟩)
   apply hp
   rw [primeAbv_polynomial, Polynomial.gaussNorm,
-    dif_pos (Polynomial.support_nonempty.mpr hP)]
+    dite_eq_left (Polynomial.support_nonempty.mpr hP)]
   apply le_antisymm
   · apply Finset.sup'_le
     intro i hi

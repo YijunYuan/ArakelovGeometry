@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantMap
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantMap
 
 /-!
 # Canonical determinant isomorphisms and completed isometries
@@ -12,6 +14,8 @@ The actual top exterior map respects composition and identities. An isometry
 on the completed vector fibres therefore induces an isometry on the actual
 completed determinant lines, including the scalar unit lines in rank zero.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianHNOrderedDegree
-import Mathlib.Analysis.Convex.Function
-import Mathlib.Data.Finset.Lattice.Fold
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHNOrderedDegree
+public import Mathlib.Analysis.Convex.Function
+public import Mathlib.Data.Finset.Lattice.Fold
 
 /-!
 # The polygon from actual Hermitian HN factors
@@ -15,6 +17,8 @@ degree by every supporting affine line. Their finite lower envelope
 is the concave HN polygon; its later vertex and convex-hull consumers
 use the actual constructed flag.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 
@@ -110,7 +114,7 @@ theorem hermitianHNPolygon_le_supportLine
       ((V.hermitianHNFactor hS hN hV i).slope hS hN) x := by
   have hp : 0 < V.hermitianHNLength hS hN hV :=
     (Nat.zero_le i.val).trans_lt i.isLt
-  simp only [hermitianHNPolygon, dif_pos hp]
+  simp only [hermitianHNPolygon, dite_eq_left hp]
   exact Finset.inf'_le _ (Finset.mem_univ i)
 
 /-- Every actual subspace degree is bounded by the actual finite envelope. -/
@@ -119,11 +123,11 @@ theorem degree_restrict_le_hermitianHNPolygon (U : Submodule K E) :
       V.hermitianHNPolygon hS hN hV (Module.finrank K U) := by
   classical
   by_cases hp : 0 < V.hermitianHNLength hS hN hV
-  · simp only [hermitianHNPolygon, dif_pos hp]
+  · simp only [hermitianHNPolygon, dite_eq_left hp]
     apply Finset.le_inf'
     intro i _
     exact V.degree_restrict_le_hermitianHNSupportLine hS hN hV U _
-  · simp only [hermitianHNPolygon, dif_neg hp]
+  · simp only [hermitianHNPolygon, dite_eq_right hp]
     have hb := V.degree_restrict_le_hermitianHNSupportLine hS hN hV U 0
     have hs : (∑ i : Fin (V.hermitianHNLength hS hN hV),
         (Module.finrank K ((V.hermitianHNTerm hS hN hV (i.val + 1)).map
@@ -142,12 +146,12 @@ theorem concaveOn_hermitianHNPolygon :
   intro x _ y _ a b ha hb hab
   simp only [smul_eq_mul]
   by_cases hp : 0 < V.hermitianHNLength hS hN hV
-  · simp only [hermitianHNPolygon, dif_pos hp]
+  · simp only [hermitianHNPolygon, dite_eq_left hp]
     apply Finset.le_inf'
     intro i _
     have hx := V.hermitianHNPolygon_le_supportLine hS hN hV i x
     have hy := V.hermitianHNPolygon_le_supportLine hS hN hV i y
-    simp only [hermitianHNPolygon, dif_pos hp] at hx hy
+    simp only [hermitianHNPolygon, dite_eq_left hp] at hx hy
     apply (add_le_add (mul_le_mul_of_nonneg_left hx ha)
       (mul_le_mul_of_nonneg_left hy hb)).trans_eq
     let β := (V.hermitianHNFactor hS hN hV i).slope hS hN
@@ -159,7 +163,7 @@ theorem concaveOn_hermitianHNPolygon :
     calc
       _ = (a * x + b * y) * β + (a + b) * c := by ring
       _ = _ := by rw [hab, one_mul]
-  · simp only [hermitianHNPolygon, dif_neg hp, mul_zero, zero_add, le_refl]
+  · simp only [hermitianHNPolygon, dite_eq_right hp, mul_zero, zero_add, le_refl]
 
 private theorem sum_fin_prefix_eq_sum_filter {n m : ℕ} (hm : m ≤ n) (f : Fin n → ℝ) :
     (∑ j : Fin m, f ⟨j.val, Nat.lt_of_lt_of_le j.isLt hm⟩) =
@@ -313,7 +317,7 @@ theorem hermitianHNPolygon_rank_term (m : ℕ)
   · have hm0 : m = 0 := by omega
     subst m
     rw [V.hermitianHNTerm_zero hS hN hV, finrank_bot]
-    simp only [hermitianHNPolygon, dif_neg hp]
+    simp only [hermitianHNPolygon, dite_eq_right hp]
     exact (degree_eq_zero_of_finrank_eq_zero _ hS hN (finrank_bot K E)).symm
 
 /-- The actual factor supporting line has the following actual flag degree

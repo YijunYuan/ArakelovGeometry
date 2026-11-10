@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.BundleHermitianTensor
-import ArakelovGeometry.AdelicVectorBundle.CountableOrthogonalMeasurable
-import ArakelovGeometry.AdelicVectorBundle.Degree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BundleHermitianTensor
+public import ArakelovGeometry.AdelicVectorBundle.CountableOrthogonalMeasurable
+public import ArakelovGeometry.AdelicVectorBundle.Degree
 
 /-!
 # Automatic adelic tensor bundles
@@ -14,6 +16,8 @@ The discrete or common countable-density alternatives in Remark 4.1.34 prove
 the norm and dual measurability premises of the canonical tensor constructors.
 Usual Archimedean normalization supplies the finite measure needed for domination.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDomination
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIdentity
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDomination
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIdentity
 
 /-!
 # Descent of domination along algebraic scalar extension
@@ -13,6 +15,8 @@ Integrable envelopes descend by the algebraic fibre-integration operator.
 Completed base vectors identify the restricted extended norm with the
 original bidual norm under the usual Archimedean normalization.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct
@@ -116,8 +120,7 @@ theorem scalarExtension_coordinate_completed_one_tmul
         ((b.baseChange (S.ϕ x.base).Completion).equivFun y i) := by
   intro aVW
   let := aVW
-  induction y using TensorProduct.induction_on with
-  | zero => simp
+  induction y using TensorProduct.inductionOn with
   | add y z hy hz =>
       simp only [TensorProduct.tmul_add, map_add, Pi.add_apply, hy, hz]
   | tmul a e =>

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeSupermodular
-import ArakelovGeometry.AdelicVectorBundle.SlopesQuotient
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeSupermodular
+public import ArakelovGeometry.AdelicVectorBundle.SlopesQuotient
 
 /-!
 # Actual quotient and restriction norms
@@ -13,6 +15,8 @@ The canonical quotient by the kernel is compared with the actual image
 restriction. When the original subspace contains the kernel, every ambient
 lift stays in the completed subspace and the comparison is an equality.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

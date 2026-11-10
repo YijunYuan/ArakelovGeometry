@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.ScalarExtensionNorm
+module
+
+public import ArakelovGeometry.Analysis.ScalarExtensionNorm
 
 /-!
 # Contractive scalar retractions
@@ -12,6 +14,8 @@ A contractive linear retraction of the extending scalar field induces a
 contraction from the actual projective scalar extension to the original
 vector space. If it fixes one, rational vectors retain their original norm.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -54,8 +58,7 @@ theorem norm_scalarExtensionRetraction_le_projective
       rw [scalarExtensionRetraction_tmul, norm_smul]
       exact mul_le_mul_of_nonneg_right (hπ q.1) (norm_nonneg q.2)
   have hr : ∃ p : List (l × V), (p.map fun q => q.1 ⊗ₜ[k] q.2).sum = z := by
-    induction z using TensorProduct.induction_on with
-    | zero => exact ⟨[], by simp⟩
+    induction z using TensorProduct.inductionOn with
     | tmul a x => exact ⟨[(a, x)], by simp⟩
     | add z t hz ht =>
       obtain ⟨p, hp⟩ := hz

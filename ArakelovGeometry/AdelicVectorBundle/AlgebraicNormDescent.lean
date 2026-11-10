@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDominationDescent
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDominationDescent
 
 /-!
 # Descent from compatible norms on actual algebraic extensions
@@ -13,6 +15,8 @@ completed-fibre inclusion. It gives a restriction inequality for dual norms
 and for mixed-basis distance, and the actual algebraic fibre integral descends
 the resulting integrable envelopes.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct

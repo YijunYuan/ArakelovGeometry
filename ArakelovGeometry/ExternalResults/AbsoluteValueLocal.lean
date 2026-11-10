@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.ExternalResults.AbsoluteValueFinite
-import Mathlib.FieldTheory.PrimitiveElement
-import Mathlib.RingTheory.Norm.Transitivity
+module
+
+public import ArakelovGeometry.ExternalResults.AbsoluteValueFinite
+public import Mathlib.FieldTheory.PrimitiveElement
+public import Mathlib.RingTheory.Norm.Transitivity
 
 /-!
 # Local degrees and field norms
@@ -16,6 +18,8 @@ are exactly the embeddings of the corresponding completed extension. Counting
 them gives the local-degree sum of Chen–Moriwaki, §3.3, formula (3.3),
 and grouping the conjugates gives the norm product in Theorem 3.3.7(4).
 -/
+
+@[expose] public section
 
 open UniformSpace
 
@@ -39,7 +43,7 @@ theorem existsUnique_completion_algHom {K L : Type*} [Field K] [Field L] [Algebr
   let f : WithAbs w →+* WithAbs u := WithAbs.map w u σ.toRingHom
   have hf : Isometry f := AddMonoidHomClass.isometry_of_norm f (fun x ↦ by
     exact congrArg (fun z : AbsoluteValue L ℝ ↦ z x.ofAbs) hσ)
-  let h : w.Completion →+* u.Completion := hf.mapRingHom
+  let h : w.Completion →+* u.Completion := Completion.mapRingHom f hf.continuous
   have hb : Isometry (algebraMap B u.Completion) :=
     AddMonoidHomClass.isometry_of_norm (algebraMap B u.Completion) fun b ↦ by
       change ‖(WithAbs.toAbs u (algebraMap B C b) : u.Completion)‖ = ‖b‖
@@ -49,10 +53,11 @@ theorem existsUnique_completion_algHom {K L : Type*} [Field K] [Field L] [Algebr
     induction b using Completion.induction_on with
     | hp =>
       exact isClosed_eq
-        (hf.isometry_mapRingHom.continuous.comp (isometry_algebraMap_completion w K).continuous)
+        ((Completion.isometry_mapRingHom hf).continuous.comp
+          (isometry_algebraMap_completion w K).continuous)
         hb.continuous
     | ih a =>
-      rw [algebraMap_completion_def, Completion.mapRingHom_coe, Isometry.mapRingHom_coe]
+      rw [algebraMap_completion_def, Completion.mapRingHom_coe, Completion.mapRingHom_coe]
       change (WithAbs.toAbs u (σ (algebraMap K L a.ofAbs)) : u.Completion) =
         algebraMap B u.Completion (a : B)
       rw [σ.commutes]
@@ -65,7 +70,7 @@ theorem existsUnique_completion_algHom {K L : Type*} [Field K] [Field L] [Algebr
     change e (e.symm ha) (algebraMap L w.Completion x) =
       algebraMap C u.Completion (σ x)
     rw [e.apply_symm_apply]
-    exact hf.mapRingHom_coe (WithAbs.toAbs w x)
+    exact Completion.mapRingHom_coe hf.continuous (WithAbs.toAbs w x)
   refine ⟨e.symm ha, he, fun τ hτ ↦ ?_⟩
   have heq : τ.toLinearMap = (e.symm ha).toLinearMap :=
     LinearMap.ext_on_range (span_coe_basis_eq_top w K (Module.Free.chooseBasis K L))

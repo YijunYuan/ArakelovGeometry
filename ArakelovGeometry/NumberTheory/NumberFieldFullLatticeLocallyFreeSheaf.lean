@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldFullLatticeSheaf
-import ArakelovGeometry.AlgebraicGeometry.LocallyFreeSheaf
+module
+
+public import ArakelovGeometry.AlgebraicGeometry.LocallyFreeSheaf
+public import ArakelovGeometry.NumberTheory.NumberFieldFullLatticeSheaf
 
 /-!
 # Native local freeness of actual integral-lattice associated sheaves
@@ -14,6 +16,8 @@ and the usual tilde counit to actual free sheaf isomorphisms. Their principal
 cover supplies native LocalGeneratorsData with all basis maps isomorphisms.
 Only finite generation of the original integral submodule is required.
 -/
+
+@[expose] public section
 
 open NumberField AlgebraicGeometry CategoryTheory
 open scoped NumberField
@@ -25,32 +29,42 @@ universe u
 
 variable {K E : Type u} [Field K] [AddCommGroup E] [Module K E]
 
-private abbrev X := Spec (CommRingCat.of (𝓞 K))
-private abbrev U (f : 𝓞 K) : (X (K := K)).Opens := PrimeSpectrum.basicOpen f
-private theorem affine (f : 𝓞 K) : IsAffineOpen (U f) :=
+local notation "U" => fun f : 𝓞 K ↦
+  (PrimeSpectrum.basicOpen f : Scheme.Opens (Spec (CommRingCat.of (𝓞 K))))
+
+/-- Principal opens of the integer spectrum are affine. -/
+theorem isAffineOpen_principalOpen (f : 𝓞 K) :
+    IsAffineOpen (X := Spec (CommRingCat.of (𝓞 K))) (U f) :=
   IsAffineOpen.Spec_basicOpen (R := CommRingCat.of (𝓞 K)) f
 
-private def chart (f : 𝓞 K) : Spec (CommRingCat.of (principalSectionRing f)) ⟶ X (K := K) :=
-  (affine f).fromSpec
+/-- The canonical affine chart of a principal open in the integer spectrum. -/
+def principalAffineChart (f : 𝓞 K) :
+    Spec (CommRingCat.of (principalSectionRing f)) ⟶ Spec (CommRingCat.of (𝓞 K)) :=
+  (isAffineOpen_principalOpen f).fromSpec
 
-private instance chart_isOpenImmersion (f : 𝓞 K) : IsOpenImmersion (chart f) := by
-  exact IsAffineOpen.isOpenImmersion_fromSpec (affine f)
+/-- The principal affine chart is an open immersion. -/
+instance principalAffineChart_isOpenImmersion (f : 𝓞 K) :
+    IsOpenImmersion (principalAffineChart f) := by
+  exact IsAffineOpen.isOpenImmersion_fromSpec (isAffineOpen_principalOpen f)
 
-private theorem image_chart_top (f : 𝓞 K) : U f = chart f ''ᵁ ⊤ := by
+/-- The image of the principal affine chart is the corresponding basic open. -/
+theorem basicOpen_eq_principalAffineChart_image_top (f : 𝓞 K) :
+    U f = principalAffineChart f ''ᵁ ⊤ := by
   rw [Scheme.Hom.image_top_eq_opensRange]
-  exact (affine f).opensRange_fromSpec.symm
+  exact (isAffineOpen_principalOpen f).opensRange_fromSpec.symm
 
 /-- Actual restriction along the canonical affine chart of a principal open. -/
 def principalAffineRestriction (L : Submodule (𝓞 K) E) (f : 𝓞 K) :
     (Spec (CommRingCat.of (principalSectionRing f))).Modules :=
-  (associatedSheaf L).restrict (chart f)
+  (associatedSheaf L).restrict (principalAffineChart f)
 
 /-- The actual chart section-ring identification, using only canonical structure maps. -/
 def principalRestrictionRingEquiv (f : 𝓞 K) :
     principalSectionRing f ≃+* principalSectionRing f :=
   ((Scheme.ΓSpecIso (CommRingCat.of (principalSectionRing f))).symm ≪≫
-    (Scheme.Hom.appIso (chart f) ⊤).symm ≪≫
-      (X (K := K)).presheaf.mapIso (eqToIso (image_chart_top f)).op).commRingCatIsoToRingEquiv
+    (Scheme.Hom.appIso (principalAffineChart f) ⊤).symm ≪≫
+      (Spec (CommRingCat.of (𝓞 K))).presheaf.mapIso
+        (eqToIso (basicOpen_eq_principalAffineChart_image_top f)).op).commRingCatIsoToRingEquiv
 
 attribute [local instance] RingHomInvPair.of_ringEquiv
 
@@ -65,15 +79,16 @@ def principalAffineSectionsEquiv (L : Submodule (𝓞 K) E) (f : 𝓞 K) :
       ((moduleSpecΓFunctor (R := CommRingCat.of (principalSectionRing f))).obj
         (principalAffineRestriction L f)) (principalSections L f) := by
   let e : Γ(principalAffineRestriction L f, ⊤) ≅ principalSections L f :=
-    (associatedSheaf L).restrictAppIso (chart f) ⊤ ≪≫
-      (associatedSheaf L).presheaf.mapIso (eqToIso (image_chart_top f)).op
+    (associatedSheaf L).restrictAppIso (principalAffineChart f) ⊤ ≪≫
+      (associatedSheaf L).presheaf.mapIso
+        (eqToIso (basicOpen_eq_principalAffineChart_image_top f)).op
   refine { __ := e.addCommGroupIsoToAddEquiv, map_smul' := ?_ }
   intro r x
   change e.hom (r • x) = _
   rw [Scheme.Modules.smul_Spec_def]
   dsimp only [e, Iso.trans_hom]
   rw [ConcreteCategory.comp_apply]
-  erw [Scheme.Modules.smul_restrictAppIso_hom_apply (chart f) (associatedSheaf L) ⊤]
+  erw [Scheme.Modules.smul_restrictAppIso_hom_apply (principalAffineChart f) (associatedSheaf L) ⊤]
   erw [Scheme.Modules.map_smul]
   rfl
 
@@ -87,22 +102,60 @@ theorem free_principalAffineSections (L : Submodule (𝓞 K) E) (f : 𝓞 K)
 
 attribute [local instance] free_principalAffineSections
 
+/-- Transport a module sheaf on the principal affine chart to the corresponding open. -/
+abbrev principalRestrictionFunctor (f : 𝓞 K) :=
+  Scheme.Modules.restrictFunctor (isAffineOpen_principalOpen f).isoSpec.hom ⋙
+    (Scheme.Modules.overEquiv (X := Spec (CommRingCat.of (𝓞 K))) (U f)).inverse
+
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.isDefEq.respectTransparency false in
-/-- Actual affine free sections produce a native free sheaf on the literal principal open. -/
+/-- The principal-chart transport preserves the unit sheaf. -/
+def principalRestrictionUnitIso (f : 𝓞 K) :
+    SheafOfModules.unit ((Spec (CommRingCat.of (𝓞 K))).ringCatSheaf.over (U f)) ≅
+      (principalRestrictionFunctor f).obj
+        (SheafOfModules.unit (Spec (CommRingCat.of (principalSectionRing f))).ringCatSheaf) :=
+  ((U f).sheafOfModulesEquivOverInverseUnit
+    (Spec (CommRingCat.of (𝓞 K))).ringCatSheaf).symm ≪≫
+    (Scheme.Modules.overEquiv (X := Spec (CommRingCat.of (𝓞 K))) (U f)).inverse.mapIso
+      (Scheme.Modules.restrictUnitIso (isAffineOpen_principalOpen f).isoSpec.hom).symm
+
+set_option backward.isDefEq.respectTransparency.types false in
+set_option backward.isDefEq.respectTransparency false in
+/-- Restricting through the principal chart agrees with restriction to the principal open. -/
+def principalChartRestrictionIso (L : Submodule (𝓞 K) E) (f : 𝓞 K) :
+    (principalAffineRestriction L f).restrict (isAffineOpen_principalOpen f).isoSpec.hom ≅
+      (associatedSheaf L).restrict
+        (Scheme.Opens.ι (X := Spec (CommRingCat.of (𝓞 K))) (U f)) :=
+  ((Scheme.Modules.restrictFunctorComp (isAffineOpen_principalOpen f).isoSpec.hom
+    (principalAffineChart f)).app (associatedSheaf L)).symm ≪≫
+    (Scheme.Modules.restrictFunctorCongr (isAffineOpen_principalOpen f).isoSpec_hom_fromSpec).app
+      (associatedSheaf L)
+
+set_option backward.isDefEq.respectTransparency.types false in
+set_option backward.isDefEq.respectTransparency false in
+/-- The principal-chart transport recovers restriction of the original associated sheaf. -/
+def principalRestrictionSheafIso (L : Submodule (𝓞 K) E) (f : 𝓞 K) :
+    (principalRestrictionFunctor f).obj (principalAffineRestriction L f) ≅
+      (associatedSheaf L).over (U f) := by
+  let G := (Scheme.Modules.overEquiv (X := Spec (CommRingCat.of (𝓞 K))) (U f)).inverse
+  exact G.mapIso (principalChartRestrictionIso L f) ≪≫
+    G.mapIso ((Scheme.Modules.overFunctorEquiv (X := Spec (CommRingCat.of (𝓞 K)))
+      (U f)).app (associatedSheaf L)).symm ≪≫
+    ((Scheme.Modules.overEquiv (X := Spec (CommRingCat.of (𝓞 K))) (U f)).unitIso.app
+      ((associatedSheaf L).over (U f))).symm
+
+set_option backward.isDefEq.respectTransparency.types false in
+set_option backward.isDefEq.respectTransparency false in
+/-- Free affine sections produce a free sheaf on the principal open. -/
 def principalFreeSheafIso (L : Submodule (𝓞 K) E) (f : 𝓞 K)
     [Module.Free (principalSectionRing f) (principalSections L f)] :
     SheafOfModules.free
       (Module.Free.ChooseBasisIndex (principalSectionRing f)
         ((moduleSpecΓFunctor (R := CommRingCat.of (principalSectionRing f))).obj
-          (principalAffineRestriction L f))) ≅ (associatedSheaf L).over (U f) := by
+          (principalAffineRestriction L f))) ≅
+      (associatedSheaf L).over (U f) := by
   let A := principalAffineRestriction L f
-  let e := (affine f).isoSpec
-  let G := (Scheme.Modules.overEquiv (U f)).inverse
-  let F := Scheme.Modules.restrictFunctor e.hom ⋙ G
-  let : Limits.PreservesColimitsOfSize.{u, u} (Scheme.Modules.restrictFunctor e.hom) :=
-    inferInstance
-  let : Limits.PreservesColimitsOfSize.{u, u} G := inferInstance
+  let F := principalRestrictionFunctor f
   let : Limits.PreservesColimitsOfSize.{u, u} F := inferInstance
   let : Module.Free (principalSectionRing f)
       ((moduleSpecΓFunctor (R := CommRingCat.of (principalSectionRing f))).obj A) :=
@@ -111,23 +164,11 @@ def principalFreeSheafIso (L : Submodule (𝓞 K) E) (f : 𝓞 K)
     inferInstanceAs (AlgebraicGeometry.tilde (R := CommRingCat.of (𝓞 K))
       (ModuleCat.of (𝓞 K) L)).IsQuasicoherent
   let : A.IsQuasicoherent :=
-    inferInstanceAs ((Scheme.Modules.restrictFunctor (chart f)).obj
+    inferInstanceAs ((Scheme.Modules.restrictFunctor (principalAffineChart f)).obj
       (associatedSheaf L)).IsQuasicoherent
-  let η : SheafOfModules.unit ((X (K := K)).ringCatSheaf.over (U f)) ≅
-      F.obj (SheafOfModules.unit (Spec (CommRingCat.of (principalSectionRing f))).ringCatSheaf) :=
-    ((U f).sheafOfModulesEquivOverInverseUnit (X (K := K)).ringCatSheaf).symm ≪≫
-      G.mapIso (Scheme.Modules.restrictUnitIso e.hom).symm
-  let i : A.restrict e.hom ≅ (associatedSheaf L).restrict (U f).ι :=
-    ((Scheme.Modules.restrictFunctorComp e.hom (chart f)).app (associatedSheaf L)).symm ≪≫
-      (Scheme.Modules.restrictFunctorCongr (affine f).isoSpec_hom_fromSpec).app
-        (associatedSheaf L)
-  let j : F.obj A ≅ (associatedSheaf L).over (U f) :=
-    G.mapIso i ≪≫ G.mapIso ((Scheme.Modules.overFunctorEquiv (U f)).app
-      (associatedSheaf L)).symm ≪≫
-      ((Scheme.Modules.overEquiv (U f)).unitIso.app ((associatedSheaf L).over (U f))).symm
-  exact SheafOfModules.mapFreeIso F _ η ≪≫
+  exact SheafOfModules.mapFreeIso F _ (principalRestrictionUnitIso f) ≪≫
     F.mapIso (ArakelovGeometry.affineFreeSheafIso
-      (CommRingCat.of (principalSectionRing f)) A) ≪≫ j
+      (CommRingCat.of (principalSectionRing f)) A) ≪≫ principalRestrictionSheafIso L f
 
 variable [NumberField K]
 
@@ -137,7 +178,7 @@ set_option backward.isDefEq.respectTransparency false in
 def latticeLocalGeneratorsData (L : Submodule (𝓞 K) E) (hfg : L.FG) :
     (associatedSheaf L).LocalGeneratorsData where
   I := PrimeSpectrum (𝓞 K)
-  X P := U (exists_free_principalSections_neighborhood L hfg P).choose
+  X P := PrimeSpectrum.basicOpen (exists_free_principalSections_neighborhood L hfg P).choose
   coversTop := by
     rw [Opens.coversTop_iff, TopologicalSpace.IsOpenCover]
     apply eq_top_iff.mpr

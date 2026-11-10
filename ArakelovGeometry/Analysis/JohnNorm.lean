@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.HilbertPolar
+module
+
+public import ArakelovGeometry.Analysis.HilbertPolar
 
 /-!
 # Dimension-sharp Hermitian norm comparison
@@ -12,6 +14,8 @@ The positive determinant optimizer and its actual polar contact decomposition
 give a Hermitian norm between the original norm and its square-root-dimension
 multiple. The scalar field is real or complex with its usual absolute value.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped Matrix.Norms.Elementwise MatrixOrder ComplexOrder

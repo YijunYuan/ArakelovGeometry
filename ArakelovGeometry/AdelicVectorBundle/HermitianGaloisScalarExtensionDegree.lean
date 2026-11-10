@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisScalarExtensionNorm
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianDeterminantDegree
-import ArakelovGeometry.AdelicVectorBundle.Slopes
-import ArakelovGeometry.AdelicVectorBundle.AlgebraicClosureApproximation
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AlgebraicClosureApproximation
+public import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisScalarExtensionNorm
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianDeterminantDegree
+public import ArakelovGeometry.AdelicVectorBundle.Slopes
 
 /-!
 # Actual Hermitian restricted degree under coefficient automorphisms
@@ -15,6 +17,8 @@ Original common countable density produces the degree context on finite and
 algebraically closed algebraic extensions. The genuine restricted determinant
 integral identity then gives degree and mean-slope transport in every rank.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

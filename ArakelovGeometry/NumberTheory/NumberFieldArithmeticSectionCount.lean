@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldProjectiveSections
-import ArakelovGeometry.NumberTheory.NumberFieldProjectiveSmallVector
-import ArakelovGeometry.GeometryOfNumbers.LatticeCount
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.LatticeCount
+public import ArakelovGeometry.NumberTheory.NumberFieldProjectiveSections
+public import ArakelovGeometry.NumberTheory.NumberFieldProjectiveSmallVector
 
 /-! # Actual original-module section counts, volumes and determinant degrees -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory

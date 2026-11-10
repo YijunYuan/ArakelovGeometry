@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationReverseDomination
-import ArakelovGeometry.AdelicVectorBundle.StrongDomination
-import ArakelovGeometry.AdelicVectorBundle.Hermitian
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Hermitian
+public import ArakelovGeometry.AdelicVectorBundle.StrongDomination
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationReverseDomination
 
 /-!
 # Actual strong domination and Hermitian number-field normalization
@@ -14,6 +16,8 @@ Both curves have their actual usual Archimedean completed fields. Strong
 domination is compared through genuine bidual isometries. Hermitianity is
 transported and reflected through the actual completed parallelogram law.
 -/
+
+@[expose] public section
 
 open NumberField
 open scoped TensorProduct

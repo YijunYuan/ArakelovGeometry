@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AlgebraicGeometry.CompletedFibreSections
+module
+
+public import ArakelovGeometry.AlgebraicGeometry.CompletedFibreSections
 
 /-!
 # Section evaluation in the completed-field square
@@ -11,6 +13,8 @@ import ArakelovGeometry.AlgebraicGeometry.CompletedFibreSections
 First prove section compatibility for an arbitrary commuting square of
 actual scheme morphisms, then apply it to the canonical completed-field square.
 -/
+
+@[expose] public section
 
 open AlgebraicGeometry CategoryTheory
 

@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.BasisNorm
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BasisNorm
 
 /-!
 # Comparison with a mixed basis norm
@@ -12,6 +14,8 @@ This module proves the base-field part of the domination criteria by comparing
 the actual completed norms with the mixed basis family. Algebraic-extension
 norms and their compatibility are separate constructions.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct
@@ -70,8 +74,7 @@ theorem dualBaseChange_one_dualBasis_apply {ι' : Type*} [Finite ι'] [Decidable
     dualBaseChangeEquiv K (S.ϕ ω).Completion E
         ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] b.dualBasis i) x =
       (b.baseChange (S.ϕ ω).Completion).equivFun x i := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
+  induction x using TensorProduct.inductionOn with
   | tmul a y =>
       simp only [dualBaseChangeEquiv_tmul_apply_tmul, mul_one,
         Module.Basis.equivFun_apply, Module.Basis.baseChange_repr_tmul,

@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.TensorNorm
-import ArakelovGeometry.Analysis.ArchimedeanDual
-import Mathlib.Analysis.InnerProductSpace.Dual
-import Mathlib.Analysis.InnerProductSpace.PiL2
-import Mathlib.LinearAlgebra.PiTensorProduct.Basis
+module
+
+public import ArakelovGeometry.Analysis.ArchimedeanDual
+public import ArakelovGeometry.Analysis.TensorNorm
+public import Mathlib.Analysis.InnerProductSpace.Dual
+public import Mathlib.Analysis.InnerProductSpace.PiL2
+public import Mathlib.LinearAlgebra.PiTensorProduct.Basis
 
 /-!
 # Hermitian norms on finite tensor products
@@ -17,6 +19,8 @@ pure tensors are products of the factor inner products. Orthonormal bases
 construct the positive definite form through its Euclidean coordinates;
 the pure-tensor identity proves that the form is independent of those bases.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

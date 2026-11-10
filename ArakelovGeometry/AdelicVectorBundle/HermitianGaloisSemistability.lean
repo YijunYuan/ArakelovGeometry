@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisMaximalSlope
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisMaximalSlope
 
 /-!
 # Semistability under actual finite Galois Hermitian extension
@@ -12,6 +14,8 @@ The produced canonical mean and maximal slope equalities preserve and reflect
 semistability. Source semistability retains positive rank; both zero bundles
 therefore fail the predicate.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

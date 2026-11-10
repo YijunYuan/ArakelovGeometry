@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedPrimeIndexing
-import Mathlib.NumberTheory.Padics.HeightOneSpectrum
-import Mathlib.Data.Nat.Prime.Infinite
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedPrimeIndexing
+public import Mathlib.Data.Nat.Prime.Infinite
+public import Mathlib.NumberTheory.Padics.HeightOneSpectrum
 
 /-!
 # Fresh actual rational primes and residue directions
@@ -14,6 +16,8 @@ Choose genuine places on the normalized rational number-field curve, with
 unit slopes avoiding any prescribed finite set of rational plane directions.
 The diagonal sequence is used by the dominated infinite-distance family.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField
@@ -105,23 +109,27 @@ theorem exists_fresh_place_slope (T : Finset S.Ω) (A : Finset Plane) :
     · exact False.elim (hz0 (Prod.ext h₁ h₂))
     all_goals norm_num
 
-private def tests (n : ℕ) : Finset Plane :=
+/-- The first rational vectors in the chosen encoding, used in the diagonal construction. -/
+def tests (n : ℕ) : Finset Plane :=
   (Finset.range n).image fun k ↦ (Encodable.decode (α := Plane) k).getD 0
 
 private theorem mem_tests (z : Plane) {n : ℕ} (hn : Encodable.encode z < n) : z ∈ tests n := by
   apply Finset.mem_image.mpr
   exact ⟨Encodable.encode z, Finset.mem_range.mpr hn, by simp⟩
 
-private theorem exists_choice (n : ℕ) (T : Finset S.Ω) :
+/-- Choose a new finite place and a unit slope avoiding finitely many rational directions. -/
+theorem exists_choice (n : ℕ) (T : Finset S.Ω) :
     ∃ q : S.Ω × ℚ, q.1 ∉ T ∧ q.1 ∈ S.Ωfin ∧ S.ϕ q.1 q.2 = 1 ∧
       ∀ z ∈ tests n, S.ϕ q.1 (z.2 - q.2 * z.1) = max (S.ϕ q.1 z.1) (S.ϕ q.1 z.2) := by
   obtain ⟨ω, a, h⟩ := exists_fresh_place_slope T (tests n)
   exact ⟨(ω, a), h⟩
 
-private def choice (n : ℕ) (T : Finset S.Ω) : S.Ω × ℚ := (exists_choice n T).choose
+/-- A place and slope avoiding the first test vectors and all previously selected places. -/
+def choice (n : ℕ) (T : Finset S.Ω) : S.Ω × ℚ := (exists_choice n T).choose
 
 open Classical in
-private def used : ℕ → Finset S.Ω
+/-- The finite set of places selected before a given step of the diagonal construction. -/
+def used : ℕ → Finset S.Ω
   | 0 => ∅
   | n + 1 => insert (choice n (used n)).1 (used n)
 

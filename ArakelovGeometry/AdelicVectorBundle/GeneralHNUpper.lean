@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNRestriction
-import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceMajorant
-import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceDual
-import ArakelovGeometry.AdelicVectorBundle.PositiveDegree
-import ArakelovGeometry.AdelicVectorBundle.PositiveDegreeExactSequence
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceDual
+public import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceMajorant
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNRestriction
+public import ArakelovGeometry.AdelicVectorBundle.PositiveDegree
+public import ArakelovGeometry.AdelicVectorBundle.PositiveDegreeExactSequence
 
 /-!
 # Discrepancy upper bounds for actual general ordered slopes
@@ -17,6 +19,8 @@ restriction slope comparisons bound the kernel's ordered sum and account
 for the omitted slots by the actual ambient minimum. Exact-sequence
 discrepancy bounds then permit induction on the true dimension.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

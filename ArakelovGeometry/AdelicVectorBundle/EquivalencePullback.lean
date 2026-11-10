@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantIsometry
-import ArakelovGeometry.AdelicVectorBundle.DegreeIsometryDual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantIsometry
+public import ArakelovGeometry.AdelicVectorBundle.DegreeIsometryDual
 
 /-!
 # Pullback of ordinary adelic bundles along linear equivalences
@@ -13,6 +15,8 @@ An equivalence produces the dual measurability required by the canonical
 injective pullback. Completed inverse isometries transport genuine determinant
 measurability and canonical degree without hypotheses on the place space.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

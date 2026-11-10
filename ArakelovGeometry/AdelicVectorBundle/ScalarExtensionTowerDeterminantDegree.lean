@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerTransport
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionFiniteStage
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionFiniteStage
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerTransport
 
 /-!
 # Native determinant measurability and degree through actual place towers
@@ -14,6 +16,8 @@ The canonical measurable tower equivalence reflects fixed-vector norm
 measurability. Actual determinant norms commute with this transport, and
 measurable-determinant degree is preserved without target density hypotheses.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

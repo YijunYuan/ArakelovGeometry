@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyDominatedPrimeThresholds
-import ArakelovGeometry.NumberTheory.ValuationModuleFinite
-import Mathlib.NumberTheory.NumberField.Basic
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyDominatedPrimeThresholds
+public import ArakelovGeometry.NumberTheory.ValuationModuleFinite
+public import Mathlib.NumberTheory.NumberField.Basic
 
 /-!
 # Actual rounded valuation modules from lower domination
@@ -16,6 +18,8 @@ This file consumes that support to produce an actual common denominator and
 actual module finite generation. The arithmetic indexing/gap hypotheses and
 the separate literal-norm identification boundary are explicit.
 -/
+
+@[expose] public section
 
 open scoped NumberField
 

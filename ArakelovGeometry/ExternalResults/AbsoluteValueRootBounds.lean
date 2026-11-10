@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.ExternalResults.AbsoluteValue
-import Mathlib.Algebra.Order.Ring.IsNonarchimedean
-import Mathlib.Algebra.Polynomial.RingDivision
+module
+
+public import ArakelovGeometry.ExternalResults.AbsoluteValue
+public import Mathlib.Algebra.Order.Ring.IsNonarchimedean
+public import Mathlib.Algebra.Polynomial.RingDivision
 
 /-!
 # Root bounds for absolute values
@@ -13,6 +15,8 @@ import Mathlib.Algebra.Polynomial.RingDivision
 Complex representations and finite-sum bounds provide the archimedean input
 to the logarithmic root estimate in Chen–Moriwaki, Theorem 3.3.7.
 -/
+
+@[expose] public section
 
 open UniformSpace
 

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Morphism.Basic
-import ArakelovGeometry.AdelicCurve.Restriction
+module
+
+public import ArakelovGeometry.AdelicCurve.Morphism.Basic
+public import ArakelovGeometry.AdelicCurve.Restriction
 
 /-!
 # The subfield-restriction morphism
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicCurve.Restriction
 The inclusion of a subfield, together with identity maps on the parameter space
 and on `L¹`, is the morphism of Chen–Moriwaki, Example 3.7.2(2).
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.Hom
 

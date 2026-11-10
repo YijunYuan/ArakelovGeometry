@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.CompatibleTowerMeasure
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteLogarithmicMinima
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerTransport
-import ArakelovGeometry.AdelicVectorBundle.DegreeIsometryDual
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantIsometry
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.CompatibleTowerMeasure
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteLogarithmicMinima
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantIsometry
+public import ArakelovGeometry.AdelicVectorBundle.DegreeIsometryDual
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerTransport
 
 /-!
 # Genuine nested scalar bundles in compatible external algebraic towers
@@ -16,6 +18,8 @@ All analytic fields are produced from the original ordinary direct scalar
 bundle and the actual compatible-tower measure. Intermediate regularity is not
 assumed; the resulting norm family is the real nested scalar-extension family.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

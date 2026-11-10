@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Analysis.Normed.Module.RCLike.Extend
-import Mathlib.Analysis.Complex.OperatorNorm
+module
+
+public import Mathlib.Analysis.Complex.OperatorNorm
+public import Mathlib.Analysis.Normed.Module.RCLike.Extend
 
 /-!
 # The actual complex trace factor on continuous duals
@@ -13,6 +15,8 @@ Real-part extension is Mathlib's canonical dual isometry. The trace map
 on the same original normed space is twice its inverse; its exact norm
 factor is needed before transporting weighted Archimedean trace metrics.
 -/
+
+@[expose] public section
 
 noncomputable section
 

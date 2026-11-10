@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldPureFirstMinimum
-import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
-import ArakelovGeometry.AdelicVectorBundle.HermitianSemistability
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianSemistability
+public import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
+public import ArakelovGeometry.NumberTheory.NumberFieldPureFirstMinimum
 
 /-! # Explicit ordinary minimum bounds on the pure number-field subclass -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField
@@ -61,7 +65,7 @@ theorem levels_nonneg :
 open AdelicStructure
 attribute [local instance] normalizedNumberFieldAdelicStructure_isProper
 
-private instance pureLevelsDiscreteMeasurable :
+local instance pureLevelsDiscreteMeasurable :
     DiscreteMeasurableSpace (normalizedNumberFieldAdelicStructure K).Ω :=
   inferInstanceAs
     (DiscreteMeasurableSpace {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})

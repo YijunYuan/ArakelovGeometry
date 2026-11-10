@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
+module
 
-import ArakelovGeometry.AdelicVectorBundle.HermitianAbsoluteDescentSubspace
-import Mathlib.FieldTheory.Galois.GaloisClosure
-import Mathlib.FieldTheory.IsAlgClosed.Basic
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianAbsoluteDescentSubspace
+public import Mathlib.FieldTheory.Galois.GaloisClosure
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
 
 /-!
 # Actual subspace descent over infinite Galois extensions
@@ -14,6 +16,8 @@ import Mathlib.FieldTheory.IsAlgClosed.Basic
 Genuine finite Galois coordinate fields and actual automorphism extension
 reduce stable-subspace descent to the accepted finite trace-dual producer.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section
@@ -69,8 +73,7 @@ theorem finiteGaloisTensorInclusion_semilinear
     (hτ : AlgEquiv.restrictNormalHom F τ = σ) (y : F ⊗[K] E) :
     finiteGaloisTensorInclusion F (scalarExtensionSemilinearEquiv σ y) =
       scalarExtensionSemilinearEquiv τ (finiteGaloisTensorInclusion F y) := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp only [map_zero]
+  induction y using TensorProduct.inductionOn with
   | tmul a e =>
     simp only [scalarExtensionSemilinearEquiv_tmul, finiteGaloisTensorInclusion_tmul]
     have ha : (σ a : L) = τ (a : L) := by

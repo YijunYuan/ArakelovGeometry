@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.NonarchimedeanPowerCompletion
+module
+
+public import ArakelovGeometry.Analysis.NonarchimedeanPowerCompletion
 
 /-!
 # Canonical algebra equivalences between actual equivalent completions
@@ -11,6 +13,8 @@ import ArakelovGeometry.Analysis.NonarchimedeanPowerCompletion
 The map fixes the original field. A specified positive-power identity on the
 original absolute values extends to a norm identity on every completed scalar.
 -/
+
+@[expose] public section
 
 open Topology
 

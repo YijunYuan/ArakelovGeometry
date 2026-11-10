@@ -3,11 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionNativeSubquotientFiniteStage
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerDeterminantDegree
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteSubspaceQuotient
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDegreeDeterminant
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantIsometry
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantIsometry
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDegreeDeterminant
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteNativeFiniteStageDegree
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteSubspaceQuotient
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionNativeSubquotientFiniteStage
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerDeterminantDegree
 
 /-!
 # Actual mixed native determinant degrees over countable discrete bases
@@ -16,6 +19,8 @@ Simultaneous genuine finite-stage subquotient descent produces the native
 mixed determinant measurability. Canonical all-completed isometries and
 measure-preserving tower transport then identify actual finite-stage degrees.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -51,11 +56,7 @@ theorem scalarExtension_subquotient_determinant_isMeasurable_of_countable_discre
   have hm : η.determinant.IsMeasurable :=
     (η₀.isMeasurable_of_discrete.determinant_of_discrete_or_countable
       (Or.inl inferInstance)).determinant_scalarExtension
-  have ht : (θ.towerPullback F.toIntermediateField).determinant.IsMeasurable :=
-    η.determinant_isMeasurable_of_completed_isometry
-      (θ.towerPullback F.toIntermediateField) e he hm
-  rw [towerPullback_determinant] at ht
-  exact (θ.determinant.isMeasurable_towerPullback_iff F.toIntermediateField).mp ht
+  exact determinant_isMeasurable_of_tower_completed_isometry F.toIntermediateField η θ e he hm
 
 /-- Every genuine quotient of an actual native restriction has measurable
 actual determinant, by the proved image/preimage identity for the canonical
@@ -79,7 +80,8 @@ end NormFamily
 
 namespace AdelicVectorBundle
 
-private theorem nativeMixed_determinant_isMeasurable
+/-- The canonical native subspace quotient has a measurable determinant norm family. -/
+theorem scalarExtensionSubspaceQuotientOfCountableDiscreteBase_determinant_isMeasurable
     (V : AdelicVectorBundle S E)
     (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
     (Q : Submodule L (L ⊗[K] E)) (T : Submodule L Q) :
@@ -93,13 +95,11 @@ private theorem nativeMixed_determinant_isMeasurable
 private theorem nativeMixed_norm_eq
     (V : AdelicVectorBundle S E)
     (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (F : AdelicStructure.FiniteIntermediateField K L) (hi : ∃ a : F, a ^ 2 = -1)
+    (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L]
+    [Countable (S.algebraicExtension F).Ω] [DiscreteMeasurableSpace (S.algebraicExtension F).Ω]
+    (hi : ∃ a : F, a ^ 2 = -1)
     (P Q : Submodule F (F ⊗[K] E)) (hPQ : P ≤ Q) :
-    let : Countable (S.algebraicExtension F).Ω :=
-      AdelicStructure.ParameterSpaceExtension.countable_of_finiteDimensional (S := S) (L := F)
-    let : DiscreteMeasurableSpace (S.algebraicExtension F).Ω :=
-      AdelicStructure.discreteMeasurableSpace_algebraicExtension_of_finiteDimensional
-        (S := S) (L := F)
     let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E
     let A := (P.baseChange L).map c.toLinearMap
     let B := (Q.baseChange L).map c.toLinearMap
@@ -109,15 +109,12 @@ private theorem nativeMixed_norm_eq
     let W₀ : AdelicVectorBundle (S.algebraicExtension F) (Q ⧸ C) :=
       ((V.scalarExtensionOfCountableDiscreteBase (L := F) hN).restrictOfMeasurableBase
       Q (Or.inl inferInstance)).quotientOfMeasurableBase C (Or.inl inferInstance)
-    ∀ x z, (R.toNormFamily.towerPullback F.toIntermediateField).norm x
-      ((finiteStageSubquotientEquiv F P Q hPQ).toLinearMap.baseChange
-        (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion z) =
+    ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
+      (z : x.abv.Completion ⊗[L] (L ⊗[F] (Q ⧸ C))),
+      R.toNormFamily.norm (scalarExtensionTowerPlace x)
+      ((finiteStageSubquotientEquiv (L := L) F P Q hPQ).toLinearMap.baseChange
+        x.abv.Completion z) =
       (W₀.toNormFamily.scalarExtension (L := L)).norm x z := by
-  let : Countable (S.algebraicExtension F).Ω :=
-    AdelicStructure.ParameterSpaceExtension.countable_of_finiteDimensional (S := S) (L := F)
-  let : DiscreteMeasurableSpace (S.algebraicExtension F).Ω :=
-    AdelicStructure.discreteMeasurableSpace_algebraicExtension_of_finiteDimensional
-      (S := S) (L := F)
   dsimp only
   intro x z
   simp only [scalarExtensionSubspaceQuotientOfCountableDiscreteBase_toNormFamily,
@@ -136,7 +133,7 @@ private theorem nativeMixed_degree_of_tower_isometry [S.IsProper]
     (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
     (he : ∀ x z, (R.toNormFamily.towerPullback F.toIntermediateField).norm x
       (e.toLinearMap.baseChange
-        (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion z) =
+        x.abv.Completion z) =
       (W₀.toNormFamily.scalarExtension (L := L)).norm x z) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
@@ -161,29 +158,28 @@ private theorem nativeMixed_degree_of_tower_isometry [S.IsProper]
   let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
   let hTN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hFN
   let W := W₀.scalarExtensionOfCountableDiscreteBase (L := L) hFN
-  let T := R.towerPullback F.toIntermediateField
   have hdetW : W.toNormFamily.determinant.IsMeasurable :=
     W₀.scalarExtensionOfCountableDiscreteBase_determinant_isMeasurable (L := L) hFN
-  have hdetT : T.toNormFamily.determinant.IsMeasurable :=
-    R.toNormFamily.determinant_isMeasurable_towerPullback F.toIntermediateField hdetR
   change R.degreeOfMeasurableDeterminant hdetR hLN = W₀.degree (Or.inl inferInstance) hFN
-  have hdeg : W.degreeOfMeasurableDeterminant hdetW hTN =
-      T.degreeOfMeasurableDeterminant hdetT hTN :=
-    W.degreeOfMeasurableDeterminant_eq_of_completed_isometry T e hdetW hTN he
-  have ht : T.degreeOfMeasurableDeterminant hdetT hTN =
-      R.degreeOfMeasurableDeterminant hdetR hLN :=
-    R.degreeOfMeasurableDeterminant_towerPullback F.toIntermediateField hdetR hN
-  exact ht.symm.trans (hdeg.symm.trans
-    (W₀.degreeOfMeasurableDeterminant_scalarExtensionOfCountableDiscreteBase hFN))
+  have hdeg : R.degreeOfMeasurableDeterminant hdetR hLN =
+      W.degreeOfMeasurableDeterminant hdetW hTN :=
+    degreeOfMeasurableDeterminant_eq_of_tower_isometry F.toIntermediateField
+      W R e hdetW hdetR hLN hTN he
+  exact hdeg.trans
+    (W₀.degreeOfMeasurableDeterminant_scalarExtensionOfCountableDiscreteBase hFN)
 
-/-- The actual mixed native determinant degree equals its genuine finite-stage
-mixed degree. All determinant measurabilities and normalizations are produced;
-no target degree context or original ultrametricity is assumed. -/
-theorem degree_nativeSubquotientOfCountableDiscreteBase_finiteStage [S.IsProper]
+universe wF
+
+/-- Equality of the native mixed determinant degree with its finite-stage mixed degree.
+
+The transparent predicate retains the actual quotient bundles and their produced determinant
+measurability and normalization data. -/
+abbrev NativeSubquotientDegreeEq [S.IsProper]
     (V : AdelicVectorBundle S E)
     (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (F : AdelicStructure.FiniteIntermediateField K L) (hi : ∃ a : F, a ^ 2 = -1)
-    (P Q : Submodule F (F ⊗[K] E)) (hPQ : P ≤ Q) :
+    (F : Type wF) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] [FiniteDimensional K F]
+    (P Q : Submodule F (F ⊗[K] E)) : Prop :=
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
     let : Countable (S.algebraicExtension F).Ω :=
@@ -198,12 +194,44 @@ theorem degree_nativeSubquotientOfCountableDiscreteBase_finiteStage [S.IsProper]
     let R : AdelicVectorBundle (S.algebraicExtension L) (B ⧸ A.comap B.subtype) :=
       V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase hN B (A.comap B.subtype)
     R.degreeOfMeasurableDeterminant
-      (nativeMixed_determinant_isMeasurable V hN B (A.comap B.subtype))
+      (scalarExtensionSubspaceQuotientOfCountableDiscreteBase_determinant_isMeasurable
+        V hN B (A.comap B.subtype))
       (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) =
       (((V.scalarExtensionOfCountableDiscreteBase (L := F) hN).restrictOfMeasurableBase
         Q (Or.inl inferInstance)).quotientOfMeasurableBase C (Or.inl inferInstance)).degree
           (Or.inl inferInstance)
-          (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN) := by
+          (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN)
+
+private theorem nativeMixed_generic_canonical_degree [S.IsProper]
+    (V : AdelicVectorBundle S E)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (F : Type wF) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] [FiniteDimensional K F]
+    (hd : ∀ {X : Type (max wF wE)} {Y : Type (max wL wE)}
+      [AddCommGroup X] [Module F X] [FiniteDimensional F X]
+      [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
+      (W₀ : AdelicVectorBundle (S.algebraicExtension F) X)
+      (R : AdelicVectorBundle (S.algebraicExtension L) Y) (e : L ⊗[F] X ≃ₗ[L] Y)
+      (hdetR : R.toNormFamily.determinant.IsMeasurable)
+      (_he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
+        (z : x.abv.Completion ⊗[L] (L ⊗[F] X)),
+        R.toNormFamily.norm (scalarExtensionTowerPlace x)
+          (e.toLinearMap.baseChange x.abv.Completion z) =
+          (W₀.toNormFamily.scalarExtension (L := L)).norm x z),
+      let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
+      let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
+      let : Countable (S.algebraicExtension F).Ω :=
+        AdelicStructure.ParameterSpaceExtension.countable_of_finiteDimensional (S := S) (L := F)
+      let : DiscreteMeasurableSpace (S.algebraicExtension F).Ω :=
+        AdelicStructure.discreteMeasurableSpace_algebraicExtension_of_finiteDimensional
+          (S := S) (L := F)
+      R.degreeOfMeasurableDeterminant hdetR
+        (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) =
+        W₀.degree (Or.inl inferInstance)
+          (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN))
+    (hi : ∃ a : F, a ^ 2 = -1)
+    (P Q : Submodule F (F ⊗[K] E)) (hPQ : P ≤ Q) :
+    V.NativeSubquotientDegreeEq (L := L) hN F P Q := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
   let : Countable (S.algebraicExtension F).Ω :=
@@ -221,10 +249,25 @@ theorem degree_nativeSubquotientOfCountableDiscreteBase_finiteStage [S.IsProper]
   let R : AdelicVectorBundle (S.algebraicExtension L) (B ⧸ A.comap B.subtype) :=
       V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase hN B (A.comap B.subtype)
   have hdetR : R.toNormFamily.determinant.IsMeasurable :=
-    nativeMixed_determinant_isMeasurable V hN B (A.comap B.subtype)
-  exact nativeMixed_degree_of_tower_isometry (X := Q ⧸ C) (Y := B ⧸ A.comap B.subtype) F W₀ R
-    (finiteStageSubquotientEquiv F P Q hPQ) hdetR hN
-    (nativeMixed_norm_eq V hN F hi P Q hPQ)
+    scalarExtensionSubspaceQuotientOfCountableDiscreteBase_determinant_isMeasurable
+        V hN B (A.comap B.subtype)
+  let e := finiteStageSubquotientEquiv (L := L) F P Q hPQ
+  have he := nativeMixed_norm_eq (L := L) V hN F hi P Q hPQ
+  dsimp only [c, A, B, C, W₀, R] at *
+  exact hd (X := Q ⧸ C) (Y := B ⧸ A.comap B.subtype) W₀ R e hdetR he
+
+/-- The actual mixed native determinant degree equals its genuine finite-stage
+mixed degree. All determinant measurabilities and normalizations are produced;
+no target degree context or original ultrametricity is assumed. -/
+theorem degree_nativeSubquotientOfCountableDiscreteBase_finiteStage [S.IsProper]
+    (V : AdelicVectorBundle S E)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (F : AdelicStructure.FiniteIntermediateField K L) (hi : ∃ a : F, a ^ 2 = -1)
+    (P Q : Submodule F (F ⊗[K] E)) (hPQ : P ≤ Q) :
+    V.NativeSubquotientDegreeEq (L := L) hN F P Q := by
+  refine nativeMixed_generic_canonical_degree V hN F ?_ hi P Q hPQ
+  intro X Y _ _ _ _ _ _ W₀ R e hdetR he
+  exact nativeMixed_degree_of_tower_isometry (X := X) (Y := Y) F W₀ R e hdetR hN he
 
 end AdelicVectorBundle
 end ArakelovGeometry

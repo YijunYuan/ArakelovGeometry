@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
+module
+
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 
 /-!
 # Finite intermediate fields
@@ -11,6 +13,8 @@ import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 The filtered family of finite subextensions used in the projective construction
 of algebraic scalar extensions (Chen–Moriwaki, §3.4.2).
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure
 

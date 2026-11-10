@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Quotient
-import ArakelovGeometry.Analysis.ScalarExtensionNorm
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
-import ArakelovGeometry.ExternalResults.AbsoluteValueTensor
-import ArakelovGeometry.ExternalResults.AbsoluteValueRootBounds
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
+public import ArakelovGeometry.AdelicVectorBundle.Quotient
+public import ArakelovGeometry.Analysis.ScalarExtensionNorm
+public import ArakelovGeometry.ExternalResults.AbsoluteValueRootBounds
+public import ArakelovGeometry.ExternalResults.AbsoluteValueTensor
 
 /-!
 # Scalar extension of norm families
@@ -15,6 +17,8 @@ import ArakelovGeometry.ExternalResults.AbsoluteValueRootBounds
 The local projective and injective scalar-extension norms are transported to
 the actual completed fibres over an algebraic extension of the adelic curve.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -159,16 +163,13 @@ theorem completedScalarExtensionEquiv_tower {M : Type*} [Field M]
   let := AbsoluteValue.normedAlgebraCompletionOfEq w u hwu
   let := AbsoluteValue.normedAlgebraCompletionOfEq v u hvu
   let := AbsoluteValue.isScalarTower_completionOfEq_tower v w u hvw hwu hvu
-  induction z using TensorProduct.induction_on with
-  | zero => simp only [map_zero]
+  induction z using TensorProduct.inductionOn with
   | add z t hz ht => simp only [map_add, hz, ht]
   | tmul a y =>
-    induction y using TensorProduct.induction_on with
-    | zero => simp only [TensorProduct.tmul_zero, map_zero]
+    induction y using TensorProduct.inductionOn with
     | add y t hy ht => simp only [TensorProduct.tmul_add, map_add, hy, ht]
     | tmul b t =>
-      induction t using TensorProduct.induction_on with
-      | zero => simp only [TensorProduct.tmul_zero, map_zero]
+      induction t using TensorProduct.inductionOn with
       | add t s ht hs => simp only [TensorProduct.tmul_add, map_add, ht, hs]
       | tmul c x =>
         simp only [completedScalarExtensionEquiv_tmul, LinearEquiv.baseChange_tmul,
@@ -261,9 +262,9 @@ def scalarExtension : NormFamily (S.algebraicExtension L) (L ⊗[K] E) := by
       change (if x.base ∈ S.Ωfin then ξ.injectiveScalarExtensionSeminorm x else
         ξ.projectiveScalarExtensionSeminorm x) z = 0 ↔ z = 0
       by_cases hx : x.base ∈ S.Ωfin
-      · rw [if_pos hx]
+      · rw [ite_eq_left hx]
         exact ξ.injectiveScalarExtensionSeminorm_eq_zero_iff x z
-      · rw [if_neg hx]
+      · rw [ite_eq_right hx]
         exact ξ.projectiveScalarExtensionSeminorm_eq_zero_iff x z }
 
 /-- Exact non-Archimedean branch of scalar extension. -/

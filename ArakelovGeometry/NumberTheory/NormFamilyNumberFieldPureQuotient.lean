@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPurity
-import ArakelovGeometry.AdelicVectorBundle.Quotient
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Quotient
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPurity
 
 /-! # Actual pure finite-place quotient norms
 
@@ -13,6 +15,8 @@ This proves quotient purity without assuming an integral model or a lift
 attainment certificate. Finite ultrametricity is required only for the
 subsequent equality with the quotient's actual lattice gauge family.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct

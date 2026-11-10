@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantDualNorm
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantDualNorm
 
 /-!
 # Isometric determinant duality
@@ -12,6 +14,8 @@ Nearly optimal bases give determinant vectors pairing to one with norm product
 arbitrarily close to one. Combined with the canonical completed pairing bound,
 this proves the actual determinant-dual norm identity for Hermitian families.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -66,7 +70,7 @@ theorem exists_completedDeterminantPairing_eq_one_norm_mul_le (ω : S.Ω)
           ξ.dual.norm ω ((dualBaseChangeEquiv K (S.ϕ ω).Completion E).symm (b.coord i)) := by
         rw [hf, Finset.prod_mul_distrib]
       _ ≤ ∏ _ : Fin (Module.finrank K E), α⁻¹ :=
-        Finset.prod_le_prod (fun i _ ↦ mul_nonneg (ξ.norm_nonneg ω _) (ξ.dual.norm_nonneg ω _))
+        Finset.prod_le_prod₀ (fun i _ ↦ mul_nonneg (ξ.norm_nonneg ω _) (ξ.dual.norm_nonneg ω _))
           (fun i _ ↦ (hb i).2)
       _ = α⁻¹ ^ Module.finrank K E := by simp
 

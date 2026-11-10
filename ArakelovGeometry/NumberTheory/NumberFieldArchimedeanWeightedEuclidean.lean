@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanEuclidean
-import ArakelovGeometry.NumberTheory.InfinitePlaceLocalDegree
+module
+
+public import ArakelovGeometry.NumberTheory.InfinitePlaceLocalDegree
+public import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanEuclidean
 
 /-!
 # The degree-weighted actual Archimedean Euclidean product
@@ -13,6 +15,8 @@ The original completed product has norm squared equal to the sum of the local
 degree times the original fibre norm squared. Its coordinates and real action
 are unchanged. The same original diagonal lattice is discrete and full.
 -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField

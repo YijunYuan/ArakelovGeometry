@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.OrdinaryAbsoluteInvariantsClosure
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.OrdinaryAbsoluteInvariantsClosure
 
 /-!
 # Actual ordinary native absolute suprema through arbitrary towers
@@ -13,6 +15,8 @@ all positive-rank means. The original absolute invariants are consequently
 computed on the actual nested closure norm family, with regularity supplied
 only by the original base.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

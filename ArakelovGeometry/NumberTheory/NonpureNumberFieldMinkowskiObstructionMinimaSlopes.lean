@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstructionDegree
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaBasis
-import ArakelovGeometry.AdelicVectorBundle.HermitianSemistability
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianSemistability
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaBasis
+public import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstructionDegree
 
 /-! # Exact actual minima and slopes of the nonpure rational plane -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct

@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedCompletedCoherence
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeGauge
-import ArakelovGeometry.NumberTheory.NumberFieldBoundedIndexElement
-import ArakelovGeometry.AdelicVectorBundle.Restriction
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Restriction
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedCompletedCoherence
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeGauge
+public import ArakelovGeometry.NumberTheory.NumberFieldBoundedIndexElement
 
 /-!
 # Actual restricted line lattices
@@ -16,6 +18,8 @@ integral ball with each actual subspace. Genuine coherence and domination
 produce spanning and finite generation; in dimension one this produces
 invertibility and an actual bounded-index element.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct Pointwise

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.IntervalDeterminant
-import ArakelovGeometry.Analysis.DeterminantTensor
-import ArakelovGeometry.Analysis.TensorOperator
+module
+
+public import ArakelovGeometry.Analysis.DeterminantTensor
+public import ArakelovGeometry.Analysis.IntervalDeterminant
+public import ArakelovGeometry.Analysis.TensorOperator
 
 /-!
 # Six actual interval tensors and their projective exterior cost
@@ -16,6 +18,8 @@ determinant is two. A normalized single-wedge presentation consequently gives
 the genuine projective exterior quotient length of the standard generator an
 upper bound of one half. No determinant-isometry hypothesis is used.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 open Module
@@ -159,7 +163,8 @@ theorem intervalSixTensorNormalized_wedge :
     smul_smul]
   norm_num
 
-private abbrev IntervalTensorFactors : Unit ⊕ Unit → Type
+/-- The plane and three-space factors of the interval tensor example. -/
+abbrev IntervalTensorFactors : Unit ⊕ Unit → Type
   | .inl _ => Fin 2 → ℝ
   | .inr _ => Fin 3 → ℝ
 
@@ -236,11 +241,11 @@ theorem intervalSixTensorNormalized_projective_prod_le :
         Real.norm_eq_abs]
       norm_num only [abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2)]
       exact mul_le_of_le_one_right (by norm_num) (intervalSixTensor_projective_le_one 0)
-    · simpa only [intervalSixTensorNormalized, Function.update_of_ne hi, if_neg hi] using
+    · simpa only [intervalSixTensorNormalized, Function.update_of_ne hi, ite_eq_right hi] using
         intervalSixTensor_projective_le_one i
   calc
     _ ≤ ∏ i : Fin 6, if i = 0 then (1 / 2 : ℝ) else 1 :=
-      Finset.prod_le_prod (fun _ _ => apply_nonneg _ _) (fun i _ => h i)
+      Finset.prod_le_prod₀ (fun _ _ => apply_nonneg _ _) (fun i _ => h i)
     _ = 1 / 2 := by norm_num [Fin.prod_univ_six]
 
 local instance intervalWitnessTensorSeminormed :

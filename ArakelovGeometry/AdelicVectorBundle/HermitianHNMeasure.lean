@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianHNOrderedDegree
-import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
-import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
-import Mathlib.MeasureTheory.Integral.Bochner.Set
-import Mathlib.MeasureTheory.VectorMeasure.Integral
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHNOrderedDegree
+public import Mathlib.MeasureTheory.Integral.Bochner.Set
+public import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
+public import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
+public import Mathlib.MeasureTheory.VectorMeasure.Integral
 
 /-!
 # Integrals of the actual Hermitian HN rank function
@@ -16,6 +18,8 @@ The actual rank function is a finite sum of half-line indicators.
 Its integral on the nonnegative half-line gives positive degree, and
 its actual atomic jump measure records the ordered-slope multiplicities.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 open MeasureTheory

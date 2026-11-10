@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLineLattice
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLineLattice
 
 /-!
 # Subspace lattices from actual finite global balls
@@ -12,6 +14,8 @@ Finite generation is inherited from the literal global integral ball itself.
 Coherence reconstructs the completed restricted ball, independently of
 whether the original non-pure norm family is dominated.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct

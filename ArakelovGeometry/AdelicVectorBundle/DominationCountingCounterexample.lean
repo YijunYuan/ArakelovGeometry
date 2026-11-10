@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicStructure.TrivialPlace
-import ArakelovGeometry.AdelicVectorBundle.Domination
-import Mathlib.MeasureTheory.Measure.Count
+module
+
+public import ArakelovGeometry.AdelicStructure.TrivialPlace
+public import ArakelovGeometry.AdelicVectorBundle.Domination
+public import Mathlib.MeasureTheory.Measure.Count
 
 /-!
 # Upper and lower domination do not imply domination
@@ -14,6 +16,8 @@ The source's infinite counting-place example (Remark 4.1.4) is specialized
 to `ℚ`. Norms use the genuine trivial completed tensor fibres and their
 canonical operator duals.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -71,17 +75,18 @@ theorem rawNorm_le_one (a : ℚ) (x : Plane) : rawNorm a x ≤ 1 := by
 
 theorem half_le_rawNorm (a : ℚ) {x : Plane} (hx : x ≠ 0) :
     (1 / 2 : ℝ) ≤ rawNorm a x := by
-  simp only [rawNorm, if_neg hx]
+  simp only [rawNorm, ite_eq_right hx]
   split_ifs <;> norm_num
 
 theorem rawNorm_eq_zero_iff (a : ℚ) (x : Plane) :
     rawNorm a x = 0 ↔ x = 0 := by
   by_cases hx : x = 0
   · simp [hx]
-  · simp only [rawNorm, if_neg hx]
+  · simp only [rawNorm, ite_eq_right hx]
     split_ifs <;> norm_num [hx]
 
-private theorem rawNorm_add_le (a : ℚ) (x y : Plane) :
+/-- The weighted coordinate norm satisfies the triangle inequality. -/
+theorem rawNorm_add_le (a : ℚ) (x y : Plane) :
     rawNorm a (x + y) ≤ rawNorm a x + rawNorm a y := by
   by_cases hx : x = 0
   · simp [hx]
@@ -104,7 +109,7 @@ private theorem rawNorm_smul (a c : ℚ) (x : Plane) :
   have hline : c * x.2 = a * (c * x.1) ↔ x.2 = a * x.1 := by
     rw [mul_left_comm a c x.1]
     exact ⟨mul_left_cancel₀ hc, fun h ↦ congrArg (c * ·) h⟩
-  simp only [rawNorm, if_neg hcx, if_neg hx, Prod.smul_fst, Prod.smul_snd,
+  simp only [rawNorm, ite_eq_right hcx, ite_eq_right hx, Prod.smul_fst, Prod.smul_snd,
     smul_eq_mul, hline]
 
 open Classical in
@@ -170,7 +175,7 @@ theorem logNorm_eq (a : countingCurve.Ω) {x : Plane} (hx : x ≠ 0) :
   have hn : normFamily.logNorm x a = Real.log (rawNorm a x) :=
     congrArg Real.log (normFamily_norm_rational a x)
   rw [hn]
-  simp only [rawNorm, if_neg hx]
+  simp only [rawNorm, ite_eq_right hx]
   split_ifs
   · rw [Real.log_div (by norm_num) (by norm_num), Real.log_one, zero_sub]
   · exact Real.log_one
@@ -189,7 +194,7 @@ theorem integrable_logNorm {x : Plane} (hx : x ≠ 0) :
       exact hx (Prod.ext hx1 hx2)
     · have hae : x.2 / x.1 = a := (div_eq_iff hx1).mpr h
       exact ha (by simpa only [Finset.mem_singleton] using hae.symm)
-  rw [logNorm_eq a hx, if_neg hline]
+  rw [logNorm_eq a hx, ite_eq_right hline]
   exact _root_.norm_zero
 
 /-- The primal norm family is upper dominated by its actual logarithmic
@@ -232,7 +237,7 @@ private theorem eval_le_rawNorm_of_annihilates (a : ℚ) (ℓ : Module.Dual ℚ 
     have hval : ℓ x = 0 := by rw [he, map_smul, hcheap, smul_zero]
     rw [hval, map_zero]
     exact apply_nonneg (localSeminorm a) x
-  · rw [rawNorm, if_neg hx, if_neg hline]
+  · rw [rawNorm, ite_eq_right hx, ite_eq_right hline]
     exact trivial_apply_le_one (ℓ x)
 
 open Classical in
@@ -285,15 +290,15 @@ theorem dual_norm_rational (a : countingCurve.Ω) (ℓ : Module.Dual ℚ Plane) 
   by_cases hℓ : ℓ = 0
   · subst ℓ
     simp
-  rw [if_neg hℓ]
+  rw [ite_eq_right hℓ]
   by_cases hcheap : ℓ ((1, a) : Plane) = 0
-  · rw [if_pos hcheap]
+  · rw [ite_eq_left hcheap]
     apply le_antisymm
     · apply dual_norm_le_of_rational_bound a ℓ zero_le_one
       intro x
       simpa only [one_mul] using eval_le_rawNorm_of_annihilates a ℓ hcheap x
     · exact one_le_dual_norm_of_ne_zero a ℓ hℓ
-  · rw [if_neg hcheap]
+  · rw [ite_eq_right hcheap]
     apply le_antisymm
     · apply dual_norm_le_of_rational_bound a ℓ (by norm_num)
       intro x
@@ -383,7 +388,7 @@ theorem firstCoordinate_dual_norm (a : countingCurve.Ω) :
     normFamily.dual.norm a
       ((1 : (countingCurve.ϕ a).Completion) ⊗ₜ[ℚ] firstCoordinate) = 2 := by
   have he : firstCoordinate ((1, a) : Plane) ≠ 0 := by simp [firstCoordinate]
-  rw [dual_norm_rational, if_neg firstCoordinate_ne_zero, if_neg he]
+  rw [dual_norm_rational, ite_eq_right firstCoordinate_ne_zero, ite_eq_right he]
 
 /-- Its genuine rational logarithmic dual norm is the positive constant log two. -/
 theorem firstCoordinate_dual_logNorm (a : countingCurve.Ω) :

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.MajorantDiscrepancyBound
-import ArakelovGeometry.Analysis.EnvelopeIntegral
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.MajorantDiscrepancyBound
+public import ArakelovGeometry.Analysis.EnvelopeIntegral
 
 /-!
 # Global discrepancy numbers
@@ -13,6 +15,8 @@ Definition4.3.12 uses the actual integral of logarithmic determinant
 discrepancy and the lower-envelope integral of logarithmic majorant
 discrepancy. The latter does not assume measurability of the infimum.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 

@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.LatticeSubspaceBasis
-import Mathlib.Analysis.Normed.Group.Quotient
-import Mathlib.LinearAlgebra.Projection
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.LatticeSubspaceBasis
+public import Mathlib.Analysis.Normed.Group.Quotient
+public import Mathlib.LinearAlgebra.Projection
 
 /-! # The actual projected lattice in a rational real quotient -/
+
+@[expose] public section
 
 noncomputable section
 open Module

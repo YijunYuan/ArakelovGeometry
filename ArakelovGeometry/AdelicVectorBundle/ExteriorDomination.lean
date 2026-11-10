@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TensorDomination
-import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
-import ArakelovGeometry.AdelicVectorBundle.Determinant
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Determinant
+public import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
+public import ArakelovGeometry.AdelicVectorBundle.TensorDomination
 
 /-!
 # Domination of exterior powers and determinants
@@ -14,6 +16,8 @@ Source Proposition 4.1.19(6) follows from the actual mixed tensor norm and
 strong quotient construction. Degree zero and powers above dimension are
 included by the same canonical quotient construction.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.NormFamily
 

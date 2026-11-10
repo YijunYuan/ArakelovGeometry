@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.ScalarExtensionNorm
+module
+
+public import ArakelovGeometry.Analysis.ScalarExtensionNorm
 /-!
 # Injective scalar extension of actual subspace norms
 
@@ -11,6 +13,8 @@ Approximate ultrametric functional extension proves that genuine subspace
 inclusions become isometries for the injective scalar-extension norm. Trivial
 valuations and zero subspaces are retained.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

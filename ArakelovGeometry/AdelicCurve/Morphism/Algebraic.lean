@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integrable
-import ArakelovGeometry.AdelicCurve.Morphism.Basic
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integrable
+public import ArakelovGeometry.AdelicCurve.Morphism.Basic
 
 /-!
 # The morphism associated with an algebraic extension
@@ -14,6 +16,8 @@ Chen–Moriwaki, Example 3.7.2 (1): the field inclusion, projection of places,
 and the existing algebraic fibre-integration operator define a morphism from
 the algebraic extension adelic curve to the original curve.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 

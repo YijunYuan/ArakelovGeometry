@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicDivisor.Principal
-import Mathlib.Analysis.Normed.Group.Quotient
-import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
+module
+
+public import ArakelovGeometry.AdelicDivisor.Principal
+public import Mathlib.Analysis.Normed.Group.Quotient
+public import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
 
 /-!
 # The real adelic divisor class space
@@ -13,6 +15,8 @@ import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
 The class space is the actual Banach quotient by the closed principal
 subspace. Properness is used only to descend the continuous degree form.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicDivisor
 

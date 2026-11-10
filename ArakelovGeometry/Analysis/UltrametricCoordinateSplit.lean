@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.LinearAlgebra.MaximalMinor
-import Mathlib.Analysis.Normed.Group.Ultra
-import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
-import Mathlib.Analysis.Normed.Module.Basic
-import Mathlib.Topology.MetricSpace.Ultra.Pi
+module
+
+public import ArakelovGeometry.LinearAlgebra.MaximalMinor
+public import Mathlib.Analysis.Normed.Group.Ultra
+public import Mathlib.Analysis.Normed.Module.Basic
+public import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
+public import Mathlib.Topology.MetricSpace.Ultra.Pi
 
 /-!
 # Actual ultrametric coordinate splitting
@@ -17,6 +19,8 @@ maximum norm. The canonical residual attains the smallest norm among all
 representatives modulo the original column space. No adapted basis or norm
 identity is supplied as a hypothesis.
 -/
+
+@[expose] public section
 
 noncomputable section
 

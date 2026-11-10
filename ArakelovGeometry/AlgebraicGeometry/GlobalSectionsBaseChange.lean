@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Algebra.Category.ModuleCat.Descent
-import Mathlib.Topology.Sheaves.SheafCondition.EqualizerProducts
-import ArakelovGeometry.AlgebraicGeometry.AffineSectionTensor
-import Mathlib.RingTheory.IsTensorProduct
+module
+
+public import ArakelovGeometry.AlgebraicGeometry.AffineSectionTensor
+public import Mathlib.Algebra.Category.ModuleCat.Descent
+public import Mathlib.RingTheory.IsTensorProduct
+public import Mathlib.Topology.Sheaves.SheafCondition.EqualizerProducts
 
 /-!
 # Finite-cover descent for global sections under scalar extension
@@ -15,6 +17,8 @@ Flat extension of scalars preserves the finite diagram of sections on an
 open cover and its pairwise intersections. This is the descent input for
 global sections of an actual quasi-coherent sheaf under field base change.
 -/
+
+@[expose] public section
 
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits TopologicalSpace Opposite
 open scoped ChangeOfRings TensorProduct

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtension
-import ArakelovGeometry.AdelicVectorBundle.CountableOrthogonalMeasurable
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionFiniteStage
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.CountableOrthogonalMeasurable
+public import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtension
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionFiniteStage
 
 /-!
 # Measurability of actual Hermitian scalar-extension norms
@@ -14,6 +16,8 @@ The defining completed pairing expands into the original completed Hermitian
 pairings. Compatible measurable embeddings retain both real and imaginary
 Gram entries, and their real diagonal recovers the actual extended norm.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -178,25 +182,9 @@ theorem measurable_hermitianScalarExtensionArchInner
       intro i
       simpa only [Module.Basis.equivFun_apply, Module.Basis.baseChange_repr_tmul,
         Algebra.smul_def, mul_one] using hmσ _
-  induction z using TensorProduct.induction_on with
-  | zero =>
-      convert (measurable_const : Measurable (fun _ : (S.algebraicExtension L).Ωinf =>
-        (0 : ℂ))) using 1
-      funext x
-      let : IsRCLikeNormedField x.val.abv.Completion := hL x.val x.property
-      let := IsRCLikeNormedField.rclike x.val.abv.Completion
-      simp only [TensorProduct.tmul_zero, hermitianScalarExtensionArchInner, map_zero,
-        InnerProductSpace.Core.inner_zero_left]
+  induction z using TensorProduct.inductionOn with
   | tmul a e =>
-      induction t using TensorProduct.induction_on with
-      | zero =>
-          convert (measurable_const : Measurable (fun _ : (S.algebraicExtension L).Ωinf =>
-            (0 : ℂ))) using 1
-          funext x
-          let : IsRCLikeNormedField x.val.abv.Completion := hL x.val x.property
-          let := IsRCLikeNormedField.rclike x.val.abv.Completion
-          simp only [TensorProduct.tmul_zero, hermitianScalarExtensionArchInner, map_zero,
-            InnerProductSpace.Core.inner_zero_right]
+      induction t using TensorProduct.inductionOn with
       | tmul c f =>
           convert (((Complex.continuous_conj.measurable).comp (hm a)).mul
             (hm c)).mul (hpair e f) using 1
@@ -337,15 +325,9 @@ theorem hermitianScalarExtensionArchInner_finiteStage
       (hermitianScalarExtensionArchInner ξ hS hF hH xF (1 ⊗ₜ[F] z) (1 ⊗ₜ[F] t)) =
     hermitianScalarExtensionArchInner ξ hS hL hH x
       (1 ⊗ₜ[L] (C (1 ⊗ₜ[F] z))) (1 ⊗ₜ[L] (C (1 ⊗ₜ[F] t)))
-  induction z using TensorProduct.induction_on with
-  | zero =>
-      simp only [TensorProduct.tmul_zero, map_zero, hermitianScalarExtensionArchInner,
-        InnerProductSpace.Core.inner_zero_left]
+  induction z using TensorProduct.inductionOn with
   | tmul a e =>
-      induction t using TensorProduct.induction_on with
-      | zero =>
-          simp only [TensorProduct.tmul_zero, map_zero, hermitianScalarExtensionArchInner,
-            InnerProductSpace.Core.inner_zero_right]
+      induction t using TensorProduct.inductionOn with
       | tmul c f =>
           simp only [C, TensorProduct.AlgebraTensorModule.cancelBaseChange_tmul,
             Algebra.smul_def, mul_one]

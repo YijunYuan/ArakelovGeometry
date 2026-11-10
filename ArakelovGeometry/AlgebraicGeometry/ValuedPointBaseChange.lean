@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AlgebraicGeometry.ValuedPoint
-import ArakelovGeometry.AdelicVectorBundle.GeometricDominationDescent
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeometricDominationDescent
+public import ArakelovGeometry.AlgebraicGeometry.ValuedPoint
 
 /-!
 # Surjectivity of finite base change on intrinsic valued points
@@ -14,6 +16,8 @@ base-field map into their actual residue field. The compatible valued scheme
 lift gives a preimage under finite base change, without additional hypotheses
 on the scheme.
 -/
+
+@[expose] public section
 
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
 

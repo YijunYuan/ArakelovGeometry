@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianOrdinaryScalarExtensionComparison
-import ArakelovGeometry.AdelicVectorBundle.HermitianClosedHNInvariants
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants
+public import ArakelovGeometry.AdelicVectorBundle.HermitianClosedHNInvariants
+public import ArakelovGeometry.AdelicVectorBundle.HermitianOrdinaryScalarExtensionComparison
 
 /-!
 # Actual ordinary absolute invariants of Hermitian bundles on a common-density base
@@ -16,6 +18,8 @@ norm domination bound ordinary invariants above; ordinary monotonicity gives
 the reverse bound. The canonical ordinary absolute definitions then agree
 with the original positive degree and maximal slope in every rank.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

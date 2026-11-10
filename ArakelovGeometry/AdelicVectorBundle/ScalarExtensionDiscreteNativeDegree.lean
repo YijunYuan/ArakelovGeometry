@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionQuotientEquiv
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDegreeDeterminant
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantIsometry
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantIsometry
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDegreeDeterminant
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionQuotientEquiv
 
 /-!
 # Actual native subspace and quotient degrees over a countable discrete base
@@ -14,6 +16,8 @@ Finite-stage determinant measurability, canonical completed norm isometries
 and actual measure-preserving place towers produce the target determinant
 measurability and degree, without target discreteness or common density.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -46,6 +50,21 @@ private theorem discreteNative_measurable_of_towerPullback
   rw [hn]
   exact (hξ y).comp e.symm.measurable
 
+/-- A completed isometry over a place tower descends determinant measurability. -/
+theorem determinant_isMeasurable_of_tower_completed_isometry
+    (F : IntermediateField K L)
+    {X Y : Type*} [AddCommGroup X] [Module L X] [FiniteDimensional L X]
+    [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
+    (η : NormFamily ((S.algebraicExtension F).algebraicExtension L) X)
+    (θ : NormFamily (S.algebraicExtension L) Y) (e : X ≃ₗ[L] Y)
+    (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
+      (z : x.abv.Completion ⊗[L] X), θ.norm (scalarExtensionTowerPlace x)
+        (e.toLinearMap.baseChange x.abv.Completion z) = η.norm x z)
+    (hm : η.determinant.IsMeasurable) : θ.determinant.IsMeasurable := by
+  have ht := η.determinant_isMeasurable_of_completed_isometry (θ.towerPullback F) e he hm
+  rw [towerPullback_determinant] at ht
+  exact discreteNative_measurable_of_towerPullback θ.determinant F ht
+
 variable {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] [IsAlgClosed L]
 
@@ -70,11 +89,7 @@ theorem scalarExtension_restrict_determinant_isMeasurable_of_countable_discrete
   have hm : η.determinant.IsMeasurable :=
     (η₀.isMeasurable_of_discrete.determinant_of_discrete_or_countable
       (Or.inl inferInstance)).determinant_scalarExtension
-  have ht : (θ.towerPullback F.toIntermediateField).determinant.IsMeasurable :=
-    η.determinant_isMeasurable_of_completed_isometry
-      (θ.towerPullback F.toIntermediateField) e he hm
-  rw [towerPullback_determinant] at ht
-  exact discreteNative_measurable_of_towerPullback θ.determinant F.toIntermediateField ht
+  exact determinant_isMeasurable_of_tower_completed_isometry F.toIntermediateField η θ e he hm
 
 /-- The canonical actual quotient isometry produces determinant measurability
 for every native target quotient, without any extended place-space regularity. -/
@@ -93,19 +108,15 @@ theorem scalarExtension_quotient_determinant_isMeasurable_of_countable_discrete
     AdelicStructure.discreteMeasurableSpace_algebraicExtension_of_finiteDimensional
       (S := S) (L := F)
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E
-  let e := finiteStageQuotientEquiv F (B 0)
+  let e := finiteStageQuotientEquiv (L := L) F (B 0)
   let η₀ := (ξ.scalarExtension (L := F)).quotient (B 0)
   let η := η₀.scalarExtension (L := L)
   let θ := (ξ.scalarExtension (L := L)).quotient (((B 0).baseChange L).map c.toLinearMap)
   have hm : η.determinant.IsMeasurable :=
     (η₀.isMeasurable_of_discrete.determinant_of_discrete_or_countable
       (Or.inl inferInstance)).determinant_scalarExtension
-  have ht : (θ.towerPullback F.toIntermediateField).determinant.IsMeasurable :=
-    η.determinant_isMeasurable_of_completed_isometry
-      (θ.towerPullback F.toIntermediateField) e
-      (fun x z => ξ.scalarExtension_quotient_finiteStage_equiv_norm_eq hN F hi (B 0) x z) hm
-  rw [towerPullback_determinant] at ht
-  exact discreteNative_measurable_of_towerPullback θ.determinant F.toIntermediateField ht
+  exact determinant_isMeasurable_of_tower_completed_isometry F.toIntermediateField η θ e
+    (fun x z ↦ ξ.scalarExtension_quotient_finiteStage_equiv_norm_eq hN F hi (B 0) x z) hm
 
 end NormFamily
 end ArakelovGeometry

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Tensor
-import ArakelovGeometry.AdelicVectorBundle.Line
-import Mathlib.LinearAlgebra.PiTensorProduct.Finite
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Line
+public import ArakelovGeometry.AdelicVectorBundle.Tensor
+public import Mathlib.LinearAlgebra.PiTensorProduct.Finite
 
 /-!
 # Tensor norms on lines
@@ -14,6 +16,8 @@ The actual projective, injective and mixed tensor norms coincide on finite
 tensor products of lines. Their value on a rational generator is the product
 of the given generator norms. The empty tensor family is included.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

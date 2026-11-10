@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDualPure
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionFiniteStage
-import ArakelovGeometry.AdelicVectorBundle.DualMap
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DualMap
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDualPure
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionFiniteStage
 
 /-!
 # Actual scalar dual norms and finite stages
@@ -13,6 +15,8 @@ import ArakelovGeometry.AdelicVectorBundle.DualMap
 Canonical completed functional extension and the actual dual cancellation map
 preserve dual norms, supplying rational finite-stage measurability descent.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

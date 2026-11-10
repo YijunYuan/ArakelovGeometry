@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.BundleTensorCountable
-import ArakelovGeometry.AdelicVectorBundle.TensorOperatorBaseChange
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BundleTensorCountable
+public import ArakelovGeometry.AdelicVectorBundle.TensorOperatorBaseChange
 
 /-!
 # Binary injective tensor families
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.TensorOperatorBaseChange
 The existing finite tensor norm is transported by the canonical equivalence
 to Mathlib's ordinary binary tensor product. This is the same tensor norm.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
-import ArakelovGeometry.AdelicVectorBundle.GeometricAbsoluteInvariants
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteLogarithmicMinima
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteLogarithmicMinima
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAbsoluteInvariants
+public import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
 
 /-!
 # Geometric absolute first minima and actual native slopes
@@ -14,6 +16,8 @@ Actual rank-one determinant normalization computes canonical native line
 degrees without intermediate place-space regularity. Every actual closure
 vector then contributes its degree to the positive-rank native mean supremum.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

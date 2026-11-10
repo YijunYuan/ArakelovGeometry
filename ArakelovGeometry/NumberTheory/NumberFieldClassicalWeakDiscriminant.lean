@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalComparisonConstantMonotone
-import Mathlib.NumberTheory.NumberField.Discriminant.Basic
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalComparisonConstantMonotone
+public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 
 /-! # The discriminant correction in the classical h0 comparison -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField

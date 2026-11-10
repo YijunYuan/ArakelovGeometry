@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyUnitBallSpanning
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyUnitBallSpanning
 
 /-!
 # The actual prime localization of a rational local coefficient ring
@@ -12,6 +14,8 @@ The intrinsic ring `{x : K | |x|_ω ≤ 1}` is canonically the localization
 of the actual number-field integer ring at the actual classified finite prime.
 No prime-localization conclusion or absolute-value normalization is assumed.
 -/
+
+@[expose] public section
 
 open scoped NumberField TensorProduct
 

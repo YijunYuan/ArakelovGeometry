@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedPrimeIndexing
-import Mathlib.RingTheory.RamificationInertia.Basic
-import Mathlib.RingTheory.Ideal.Int
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedPrimeIndexing
+public import Mathlib.RingTheory.Ideal.Int
+public import Mathlib.RingTheory.RamificationInertia.Basic
 
 /-!
 # The actual normalized completion degree and arithmetic ramification
@@ -14,6 +16,8 @@ The rationally normalized curve and its finite power comparison are already
 produced. Evaluate that comparison at its actual rational base prime to identify
 the actual completed local degree with canonical ramification times inertia.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField
@@ -84,9 +88,8 @@ theorem normalizedPrimeParameter_liesOver_base (P : HeightOneSpectrum (𝓞 K))
 theorem absNorm_eq_pow_canonical_inertiaDeg (P : HeightOneSpectrum (𝓞 K))
     (p : Nat.Primes) [P.asIdeal.LiesOver (Ideal.span {(p.val : ℤ)})] :
     Ideal.absNorm P.asIdeal = p.val ^ P.asIdeal.inertiaDeg ℤ := by
-  let hpFact : Fact p.val.Prime := ⟨p.property⟩
-  rw [Ideal.absNorm_eq_pow_inertiaDeg' P.asIdeal p.property,
-    Ideal.inertiaDeg'_eq_inertiaDeg]
+  simpa only [Int.natAbs_natCast] using
+    (Ideal.natAbs_pow_inertiaDeg (p.val : ℤ) P.asIdeal).symm
 
 /-- At actual integral primes the canonical residue degree is strictly positive. -/
 theorem canonical_inertiaDeg_pos (P : HeightOneSpectrum (𝓞 K)) :
@@ -102,7 +105,7 @@ theorem canonical_inertiaDeg_eq_quotient_finrank (P : HeightOneSpectrum (𝓞 K)
 
 /-- At actual integral primes the canonical ramification index is strictly positive. -/
 theorem canonical_ramificationIdx_pos (P : HeightOneSpectrum (𝓞 K)) :
-    0 < P.asIdeal.ramificationIdx ℤ := Ideal.ramificationIdx_pos P.asIdeal ℤ
+    0 < P.asIdeal.ramificationIdx ℤ := Ideal.ramificationIdx_pos ℤ P.asIdeal
 
 /-- The signed actual adic exponent of the base prime is minus the canonical ramification index. -/
 theorem valuation_log_base_prime_eq_neg_ramificationIdx (P : HeightOneSpectrum (𝓞 K))

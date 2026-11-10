@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianBasis
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianBasis
 
 /-!
 # Strong domination of subspaces and quotients
@@ -13,6 +15,8 @@ comparison with an actual dominated Hermitian basis family. Completed
 restriction and quotient distances contract, and their Hermitian reference
 families are strongly dominated by the checked bidual isometry.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 

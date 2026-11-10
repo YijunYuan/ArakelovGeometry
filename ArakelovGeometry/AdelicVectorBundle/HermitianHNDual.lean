@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianSemistability
-import ArakelovGeometry.AdelicVectorBundle.HermitianHNUniqueness
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHNUniqueness
+public import ArakelovGeometry.AdelicVectorBundle.HermitianSemistability
 
 /-!
 # Hermitian HN duality
@@ -13,6 +15,8 @@ Restriction of functionals identifies the quotient of two nested annihilators
 with the dual of the corresponding actual subquotient. The completed norm
 comparison uses all quotient lifts and the accepted local dual extension API.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

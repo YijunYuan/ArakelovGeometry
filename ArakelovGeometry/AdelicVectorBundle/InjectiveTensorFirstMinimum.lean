@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TensorMapHeight
-import ArakelovGeometry.AdelicVectorBundle.SlopesDualUpper
-import ArakelovGeometry.AdelicVectorBundle.SlopesLinearMap
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaBasis
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaBasis
+public import ArakelovGeometry.AdelicVectorBundle.SlopesDualUpper
+public import ArakelovGeometry.AdelicVectorBundle.SlopesLinearMap
+public import ArakelovGeometry.AdelicVectorBundle.TensorMapHeight
 
 /-!
 # First minima of actual injective tensor bundles
@@ -15,6 +17,8 @@ Canonical tensor evaluation and the completed injective/operator identity
 make map height minus tensor vector degree. The actual nonzero-map and
 dual slope inequalities give source Proposition 4.3.75, including zero factors.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

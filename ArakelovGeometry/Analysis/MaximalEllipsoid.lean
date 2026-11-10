@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.JohnEllipsoid
-import ArakelovGeometry.Analysis.ContactMatrixCone
-import Mathlib.Topology.Instances.Matrix
+module
+
+public import ArakelovGeometry.Analysis.ContactMatrixCone
+public import ArakelovGeometry.Analysis.JohnEllipsoid
+public import Mathlib.Topology.Instances.Matrix
 
 /-!
 # Maximal positive ellipsoids
@@ -15,6 +17,8 @@ body form a compact set. An interior Euclidean ball forces a determinant
 maximizer to be positive definite. All feasible objects are actual matrices and
 actual images of the Euclidean ball.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped Matrix.Norms.Elementwise MatrixOrder ComplexOrder

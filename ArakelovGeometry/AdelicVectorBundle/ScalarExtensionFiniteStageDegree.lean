@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteSubquotient
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerTransport
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspaceDegree
-import ArakelovGeometry.AdelicVectorBundle.FiniteExtensionDense
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.FiniteExtensionDense
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteSubquotient
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspaceDegree
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerTransport
 
 /-!
 # Actual finite-stage degrees of native algebraic-closure subspaces
@@ -16,6 +18,8 @@ algebraic closure. The actual completed restriction isometry and canonical
 measure-preserving tower transport compare their genuine determinant degrees.
 -/
 
+@[expose] public section
+
 open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
@@ -23,6 +27,36 @@ universe u v wL wE
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+
+omit [IsAlgClosed L] in
+/-- A completed isometry over the tower compares degrees on the direct and iterated curves. -/
+theorem degree_eq_of_tower_completed_isometry [S.IsProper]
+    (F : IntermediateField K L)
+    {X Y : Type*} [AddCommGroup X] [Module L X] [FiniteDimensional L X]
+    [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
+    (W : AdelicVectorBundle ((S.algebraicExtension F).algebraicExtension L) X)
+    (R : AdelicVectorBundle (S.algebraicExtension L) Y) (e : X ≃ₗ[L] Y)
+    (hD : DiscreteMeasurableSpace (S.algebraicExtension L).Ω ∨
+      (S.algebraicExtension L).HasCommonCountableDenseSubfield)
+    (hT : DiscreteMeasurableSpace
+      ((S.algebraicExtension F).algebraicExtension L).Ω ∨
+      ((S.algebraicExtension F).algebraicExtension L).HasCommonCountableDenseSubfield)
+    (hND : ∀ x ∈ (S.algebraicExtension L).Ωinf,
+      IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion)
+    (hNT : ∀ x ∈ ((S.algebraicExtension F).algebraicExtension L).Ωinf,
+      IsRCLikeNormedField (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion)
+    (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
+      (z : x.abv.Completion ⊗[L] X), R.toNormFamily.norm (scalarExtensionTowerPlace x)
+        (e.toLinearMap.baseChange x.abv.Completion z) = W.toNormFamily.norm x z) :
+    let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
+    let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
+    let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
+    R.degree hD hND = W.degree hT hNT := by
+  let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
+  let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
+  let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
+  exact (R.degree_towerPullback F hD hT hND hNT).symm.trans
+    (W.degree_eq_of_completed_isometry (R.towerPullback F) e hT hNT he).symm
 
 /-- Native closure restriction has its actual finite-stage degree through the
 canonical completed subspace equivalence and measure-preserving tower map. -/
@@ -57,14 +91,12 @@ theorem degree_restrict_scalarExtension_finiteStage [S.IsProper]
   let W := B₀.scalarExtension (L := L) hF hFN
   let R := (V.scalarExtension (L := L) hcount hN).restrictOfMeasurableBase
     ((B.baseChange L).map c.toLinearMap) (Or.inr hL)
-  let T := R.towerPullback F.toIntermediateField
   change R.degree (Or.inr hL) hLN = B₀.degree (Or.inr hF) hFN
-  have he : W.degree (Or.inr hT) hTN = T.degree (Or.inr hT) hTN :=
-    W.degree_eq_of_completed_isometry T e (Or.inr hT) hTN (fun x z =>
-      V.toNormFamily.scalarExtension_restrict_finiteStage_norm_eq hN F hi B x z)
-  have ht : T.degree (Or.inr hT) hTN = R.degree (Or.inr hL) hLN :=
-    R.degree_towerPullback F.toIntermediateField (Or.inr hL) (Or.inr hT) hLN hTN
-  exact ht.symm.trans (he.symm.trans (B₀.degree_scalarExtension_of_isAlgClosed hF hFN))
+  have he : R.degree (Or.inr hL) hLN = W.degree (Or.inr hT) hTN :=
+    degree_eq_of_tower_completed_isometry F.toIntermediateField W R e
+      (Or.inr hL) (Or.inr hT) hLN hTN (fun x z ↦
+        V.toNormFamily.scalarExtension_restrict_finiteStage_norm_eq hN F hi B x z)
+  exact he.trans (B₀.degree_scalarExtension_of_isAlgClosed hF hFN)
 
 /-- One actual finite complexifying field preserves the native degrees of every
 member of a prescribed finite family, together with ranks and all inclusions. -/

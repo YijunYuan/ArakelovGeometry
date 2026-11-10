@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Height.Affine
-import ArakelovGeometry.AdelicCurve.Basic
-import ArakelovGeometry.ExternalResults.AbsoluteValueRootBounds
+module
+
+public import ArakelovGeometry.AdelicCurve.Basic
+public import ArakelovGeometry.AdelicCurve.Height.Affine
+public import ArakelovGeometry.ExternalResults.AbsoluteValueRootBounds
 
 /-!
 # Heights of polynomials
@@ -14,6 +16,8 @@ The polynomial height is the height of its coefficient tuple. Monic coefficients
 have affine height at most that of the polynomial. A product estimate retains the
 local archimedean exponent, giving a finite integrated error term.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure
 

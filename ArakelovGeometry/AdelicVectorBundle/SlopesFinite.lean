@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.SlopesDual
-import ArakelovGeometry.AdelicVectorBundle.SlopesQuotient
-import ArakelovGeometry.AdelicVectorBundle.BasisComparison
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BasisComparison
+public import ArakelovGeometry.AdelicVectorBundle.SlopesDual
+public import ArakelovGeometry.AdelicVectorBundle.SlopesQuotient
 
 /-!
 # Finiteness of the source extremal slopes
@@ -15,6 +17,8 @@ coordinates of every subspace. The intrinsic determinant discrepancy supplies
 the Archimedean rank loss, and the proper product formula removes the nonzero
 rational coefficient. No uniform subspace degree bound is assumed.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct
@@ -218,7 +222,7 @@ theorem restrictedCoordinateDualWedge_norm_le (ξ : NormFamily S E)
   calc
     (∏ i, (ξ.restrict U).dual.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] f i)) ≤
         ∏ _ : Fin (Module.finrank K (Module.Dual K U)), Real.exp A :=
-      Finset.prod_le_prod (fun _ _ ↦ (ξ.restrict U).dual.norm_nonneg ω _)
+      Finset.prod_le_prod₀ (fun _ _ ↦ (ξ.restrict U).dual.norm_nonneg ω _)
         (fun i _ ↦ hb _)
     _ = _ := by simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin,
       ← Real.exp_nat_mul, Subspace.dual_finrank_eq]

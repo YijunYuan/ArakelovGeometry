@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Measure
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Measure
 
 /-!
 # Cylinder functions and their probability functional
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Measure
 Constants, positivity and linearity for the real cylinder integrals of
 Chen–Moriwaki, §3.4.2.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.Algebraic
 open MeasureTheory

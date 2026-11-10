@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Basic
-import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Basic
+public import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
 
 /-!
 # Strong and Hermitian adelic subquotients
@@ -14,6 +16,8 @@ source's additional measurability assumptions. They act on the existing
 adelic-bundle constructors and the actual completed restriction and quotient
 norms. Hermitian preservation uses the same completed scalar action.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicVectorBundle
 

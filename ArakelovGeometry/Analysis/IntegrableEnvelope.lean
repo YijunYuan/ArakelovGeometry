@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.MeasureTheory.Integral.Bochner.Basic
-import Mathlib.Data.EReal.Basic
+module
+
+public import Mathlib.Data.EReal.Basic
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
 /-!
 # Integrable envelopes of arbitrary real functions
@@ -13,6 +15,8 @@ Upper and lower integrable envelopes use almost-everywhere inequalities and do
 not impose measurability on the bounded function. These are the envelope
 conditions in Chen–Moriwaki, Definition 4.1.1 and Appendix A.4.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 

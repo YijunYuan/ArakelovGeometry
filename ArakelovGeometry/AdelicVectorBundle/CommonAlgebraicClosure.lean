@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismSubspace
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.EquivMeasure
-import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.EquivMeasure
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismSubspace
+public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 
 /-!
 # Compatible common algebraic-closure realizations
@@ -17,6 +19,8 @@ The same field equivalence is L-linear for this algebra, and the existing
 actual place and scalar-norm transport APIs apply to it. The choices are
 coherent, with no uniqueness or absolute-invariance premise.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricAbsoluteInvariants
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismDeterminantRational
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.EquivMeasure
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.EquivMeasure
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAbsoluteInvariants
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismDeterminantRational
 
 /-!
 # Actual geometric absolute invariants and closure choice
@@ -15,6 +17,8 @@ restriction determinant and the genuine measure-preserving place map transport
 its degree. The resulting bijection of all native subspaces identifies both
 absolute suprema on every algebraic closure, without target-place regularity.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -143,11 +147,7 @@ theorem nativeAlgebraicRestrictionDegreeOfPositiveAtoms_algEquiv
   let t := determinantGenerator (K := L) (E := A)
   have ht : t ≠ 0 := determinantGenerator_ne_zero
   let d := scalarExtensionRestrictionDeterminantEquiv σ A
-  have hd : d t ≠ 0 := by
-    intro h
-    apply ht
-    apply d.injective
-    simpa only [map_zero] using h
+  have hd : d t ≠ 0 := d.map_ne_zero_iff.mpr ht
   rw [ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms_eq_neg_integral
     hξ hpos hS _ (d t) hd,
     ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms_eq_neg_integral

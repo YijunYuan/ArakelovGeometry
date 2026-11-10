@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.RestrictionFunctor
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.RestrictionFunctor
 
 /-!
 # Slopes of actual adelic vector bundles
@@ -13,6 +15,8 @@ nonzero actual restrictions. Following source equation (4.45), minimal slope
 is the infimum of maximal slopes of nonzero actual quotients. No boundedness
 or attainment premise is included in these definitions.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

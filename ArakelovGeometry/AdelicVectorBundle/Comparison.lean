@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Quotient
-import ArakelovGeometry.AdelicVectorBundle.Dual
-import ArakelovGeometry.Analysis.LinearMapBound
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Dual
+public import ArakelovGeometry.AdelicVectorBundle.Quotient
+public import ArakelovGeometry.Analysis.LinearMapBound
 
 /-!
 # Comparison and local distance of norm families
@@ -15,6 +17,8 @@ fibres, as in Chen–Moriwaki, §4.1.1.9–10 (PDF pages 224–225).
 The local distance is zero in dimension zero. No measurability or domination
 assumption is imposed.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

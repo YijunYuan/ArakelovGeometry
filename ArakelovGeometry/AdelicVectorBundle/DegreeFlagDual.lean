@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeFlag
-import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceDual
-import ArakelovGeometry.AdelicVectorBundle.DegreeIsometryDual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceDual
+public import ArakelovGeometry.AdelicVectorBundle.DegreeFlag
+public import ArakelovGeometry.AdelicVectorBundle.DegreeIsometryDual
 
 /-!
 # The determinant-discrepancy bound for actual finite flags
@@ -14,6 +16,8 @@ The induction uses the genuine two-step dual-degree inequality inside each
 restricted bundle and transports both degree and global discrepancy through
 canonical nested restrictions. Empty segments and repeated terms are included.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

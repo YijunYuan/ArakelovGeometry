@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Analysis.Convex.Caratheodory
-import Mathlib.Analysis.Convex.StdSimplex
-import Mathlib.Analysis.Convex.Cone.Dual
-import Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
-import Mathlib.Analysis.Normed.Module.FiniteDimension
+module
+
+public import Mathlib.Analysis.Convex.Caratheodory
+public import Mathlib.Analysis.Convex.Cone.Dual
+public import Mathlib.Analysis.Convex.StdSimplex
+public import Mathlib.Analysis.Normed.Module.FiniteDimension
+public import Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 
 /-!
 # Compact bases of closed positive cones
@@ -16,6 +18,8 @@ The contact-matrix cone in the real/complex ellipsoid theorem has a compact
 trace-one base. Carathéodory's finite-dimensional bound gives compactness of
 its actual convex hull, rather than replacing it by a closure.
 -/
+
+@[expose] public section
 
 open Set
 open scoped Pointwise
@@ -31,7 +35,8 @@ tuples from the original set. No closure is introduced. -/
 theorem convexHull_eq_bounded_simplex_images (s : Set E) :
     convexHull ℝ s = ⋃ n : Fin (Module.finrank ℝ E + 2),
       (fun p : (Fin n.val → ℝ) × (Fin n.val → E) => ∑ i, p.1 i • p.2 i) ''
-        (stdSimplex ℝ (Fin n.val) ×ˢ {z : Fin n.val → E | ∀ i, z i ∈ s}) := by
+        ({w | (∀ i, 0 ≤ w i) ∧ ∑ i, w i = 1} ×ˢ
+          {z : Fin n.val → E | ∀ i, z i ∈ s}) := by
   classical
   apply Set.Subset.antisymm
   · intro x hx
@@ -70,8 +75,14 @@ theorem isCompact_convexHull_of_finiteDimensional {s : Set E} (hs : IsCompact s)
   rw [convexHull_eq_bounded_simplex_images]
   apply isCompact_iUnion
   intro n
-  apply ((isCompact_stdSimplex ℝ (Fin n.val)).prod
-    (isCompact_pi_infinite fun _ : Fin n.val => hs)).image
+  have hsimplex : IsCompact {w : Fin n.val → ℝ | (∀ i, 0 ≤ w i) ∧ ∑ i, w i = 1} := by
+    convert isCompact_range
+      (f := fun t : Convexity.StdSimplex ℝ (Fin n.val) ↦ (t.weights : Fin n.val → ℝ))
+      (continuous_pi fun i ↦ Convexity.StdSimplex.continuous_weights_apply (R := ℝ) i) using 1
+    rw [Convexity.StdSimplex.range_toFun_comp_weights]
+    ext w
+    simp
+  apply (hsimplex.prod (isCompact_pi_infinite fun _ : Fin n.val => hs)).image
   exact continuous_finsetSum _ (fun i _ =>
     ((continuous_apply i).comp continuous_fst).smul ((continuous_apply i).comp continuous_snd))
 

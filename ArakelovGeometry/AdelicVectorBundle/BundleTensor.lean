@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Basic
-import ArakelovGeometry.AdelicVectorBundle.ExteriorDomination
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Basic
+public import ArakelovGeometry.AdelicVectorBundle.ExteriorDomination
 
 /-!
 # Adelic tensor products and determinant lines
@@ -14,6 +16,8 @@ determinant clause (5). Each constructor retains precisely the source's
 measurability assumptions; strong domination is proved by actual tensor
 and quotient constructions. Orthogonal tensors remain a separate construction.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.AlgebraicGeometry.Modules.Tilde
-import Mathlib.Algebra.Category.ModuleCat.ChangeOfRings
-import Mathlib.AlgebraicGeometry.ResidueField
-import Mathlib.CategoryTheory.Adjunction.Unique
+module
+
+public import Mathlib.Algebra.Category.ModuleCat.ChangeOfRings
+public import Mathlib.AlgebraicGeometry.Modules.Tilde
+public import Mathlib.AlgebraicGeometry.ResidueField
+public import Mathlib.CategoryTheory.Adjunction.Unique
 
 /-!
 # Affine pullback and residue-field fibres of actual module sheaves
@@ -15,6 +17,8 @@ Pullback along a morphism of affine schemes corresponds to extension of scalars
 for the associated sheaves. This supplies the affine input to geometric fibre
 base change, directly in `Scheme.Modules`.
 -/
+
+@[expose] public section
 
 open AlgebraicGeometry CategoryTheory
 

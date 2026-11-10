@@ -3,14 +3,18 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Analysis.Convex.Measure
-import Mathlib.Analysis.Convex.Topology
-import Mathlib.MeasureTheory.Integral.Prod
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
-import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
-import Mathlib.Topology.Order.IntermediateValue
+module
+
+public import Mathlib.Analysis.Convex.Measure
+public import Mathlib.Analysis.Convex.Topology
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+public import Mathlib.MeasureTheory.Integral.Prod
+public import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
+public import Mathlib.Topology.Order.IntermediateValue
 
 /-! # Actual slices and section volumes of original compact convex bodies -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.ConvexBodySlices

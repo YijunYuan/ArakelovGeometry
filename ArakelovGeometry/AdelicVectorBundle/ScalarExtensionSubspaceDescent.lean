@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionFiniteStage
-import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionFiniteStage
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
 /-!
 # Finite fields of definition for tensor subspaces
 
@@ -12,6 +14,8 @@ Finite families of actual scalar-extended vectors and subspaces descend to one
 finite intermediate field, without a separability hypothesis. The canonical
 tensor tower identity preserves their dimensions, inclusions and flag endpoints.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

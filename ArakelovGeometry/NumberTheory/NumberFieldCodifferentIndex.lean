@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldTraceDualizingLineCovolume
-import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
+public import ArakelovGeometry.NumberTheory.NumberFieldTraceDualizingLineCovolume
 
 /-! # The actual codifferent quotient by the included integer ring -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory
@@ -19,6 +23,7 @@ open AdelicStructure NumberFieldCodifferentDual NumberFieldTraceDualizingLine
 attribute [local instance 2000] Algebra.toModule Algebra.toSMul
 attribute [local instance 3000] AddCommGroup.toIntModule
 attribute [local instance] normalizedNumberFieldAdelicStructure_isProper
+attribute [local instance] NumberFieldFullLattice.degreeCovolumeDiscrete
 
 variable (K : Type*) [Field K] [NumberField K]
 

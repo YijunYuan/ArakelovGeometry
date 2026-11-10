@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Finite.Tower
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.Tower
 
 /-!
 # Fibre probabilities under descended base change
@@ -12,6 +14,8 @@ Finite field descent preserving the separable degree preserves the probability
 distribution of extending absolute values. Embedding counts give the comparison
 without a choice of local tensor-product factors.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.ParameterSpaceFinExtension
 open MeasureTheory
@@ -130,7 +134,7 @@ theorem map_fibreProbabilityMeasure_baseChangeFiber
     dsimp only [φ]
     have hz : (ϕ S E z.val).restriction A = S.ϕ x :=
       ((fibreEquivAbsoluteValues S E x) z).property
-    rw [dif_pos hz]
+    rw [dite_eq_left hz]
     exact congrArg f ((fibreEquivAbsoluteValues S E x).symm_apply_apply z)
   have h := AbsoluteValue.sum_localFinSepDegree_nsmul_baseChange E hgen hsep
     (T.ϕ y) (S.ϕ x) hxy φ
@@ -146,7 +150,7 @@ theorem map_fibreProbabilityMeasure_baseChangeFiber
     intro v hv
     congr 1
     dsimp only [φ]
-    rw [dif_pos v.property]
+    rw [dite_eq_left v.property]
 
 
 /-- Nonnegative fibre integrals are unchanged under a descended base change. -/
@@ -218,7 +222,7 @@ theorem map_fibreProbabilityMeasure_homFiber :
     dsimp only [φ]
     have hz : (ϕ AS E z.val).restriction K = AS.ϕ ω :=
       ((fibreEquivAbsoluteValues AS E ω) z).property
-    rw [dif_pos hz]
+    rw [dite_eq_left hz]
     exact congrArg f ((fibreEquivAbsoluteValues AS E ω).symm_apply_apply z)
   have h := AbsoluteValue.finSepDegree_nsmul_sum_localFinSepDegree_pullback i (AS.ϕ ω) φ
   simp only [nsmul_eq_mul] at h
@@ -235,7 +239,7 @@ theorem map_fibreProbabilityMeasure_homFiber :
     intro v hv
     congr 1
     dsimp only [φ]
-    rw [dif_pos v.property]
+    rw [dite_eq_left v.property]
 
 /-- Pullback along a field embedding preserves every nonnegative finite fibre integral. -/
 theorem lintegral_homFiber (f : BaseFiber (AS := AS) E ω → ℝ≥0∞) :

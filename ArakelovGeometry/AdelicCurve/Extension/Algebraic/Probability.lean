@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.CylinderContent
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.CylinderContent
 
 /-!
 # Algebraic fibre probability measures
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicCurve.Extension.Algebraic.CylinderContent
 Construction, finite-stage marginals and uniqueness of the fibre probability
 measure in Chen–Moriwaki, Proposition 3.4.6.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.Algebraic
 

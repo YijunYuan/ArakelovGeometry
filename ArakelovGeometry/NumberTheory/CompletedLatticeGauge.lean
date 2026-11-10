@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyCompletedLocalUnitBall
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyCompletedLocalUnitBall
 
 /-!
 # Intrinsic scalar gauges of actual completed lattices
@@ -12,6 +14,8 @@ The scalar-infimum gauge uses nonzero field scalars, as in the source's
 lattice norm. Its coordinate formula includes the zero vector by genuine
 nontriviality of the scalar norm. No density of the value group is assumed.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct NumberField
 

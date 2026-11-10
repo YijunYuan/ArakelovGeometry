@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianHN
-import ArakelovGeometry.AdelicVectorBundle.DegreeFlagHermitian
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeFlagHermitian
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHN
 
 /-!
 # Degrees of the actual Hermitian Harder--Narasimhan factors
@@ -15,6 +17,8 @@ canonical flag quotient degree. The accepted finite Hermitian flag identity
 then sums the actual factors to the original degree, with the empty flag
 retained. No supplied flag or numerical degree identity is used.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

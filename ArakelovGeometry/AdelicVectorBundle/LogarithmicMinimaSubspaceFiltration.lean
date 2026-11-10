@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaRestriction
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaRestriction
 
 /-!
 # The actual ordinary minima filtration through genuine restricted subspaces
@@ -15,6 +17,8 @@ intersection formula holds with the canonical ordinary restricted bundles under
 the explicit measurable-base hypothesis, with a rank-zero extension.
 No finite-value minimum or attainment of a supremum is assumed.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle

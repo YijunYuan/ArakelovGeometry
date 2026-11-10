@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldIntegralTraceDual
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldIntegralTraceDual
 
 /-!
 # Original codifferent-valued lattice dual
@@ -11,6 +13,8 @@ import ArakelovGeometry.NumberTheory.NumberFieldIntegralTraceDual
 The canonical codifferent is a literal submodule of K. Restriction of original
 K-linear functionals gives the actual OK-linear dual into that submodule.
 -/
+
+@[expose] public section
 
 noncomputable section
 

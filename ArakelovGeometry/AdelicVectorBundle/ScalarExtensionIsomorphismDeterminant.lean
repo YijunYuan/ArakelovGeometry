@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismRestriction
-import ArakelovGeometry.AdelicVectorBundle.DeterminantUniversal
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantUniversal
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismRestriction
 
 /-!
 # Actual determinant transport under scalar-field isomorphisms
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.DeterminantUniversal
 The exterior universal property induces semilinear maps. Their application to
 the actual completed native subquotient maps transports the determinant norms.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section
@@ -62,7 +66,8 @@ local instance : RingHomInvPair (τ : R →+* S) (τ.symm : S →+* R) :=
 local instance : RingHomInvPair (τ.symm : S →+* R) (τ : R →+* S) :=
   RingHomInvPair.of_ringEquiv_symm τ
 
-private theorem exteriorPowerSemilinearMap_inverse (e : V ≃ₛₗ[(τ : R →+* S)] W)
+/-- Exterior maps induced by inverse semilinear equivalences are inverse. -/
+theorem exteriorPowerSemilinearMap_inverse (e : V ≃ₛₗ[(τ : R →+* S)] W)
     (n : ℕ) (z : ⋀[R]^n V) :
     exteriorPowerSemilinearMap (τ.symm : S →+* R) e.symm.toLinearMap n
       (exteriorPowerSemilinearMap (τ : R →+* S) e.toLinearMap n z) = z := by
@@ -205,7 +210,7 @@ private theorem completedDeterminantSeminorm_norm_le
   have hp : (∏ i, q (e (v ((finCongr hr).symm i)))) ≤
       ∏ i, p (v i) := by
     rw [(finCongr hr).symm.prod_comp (fun i ↦ q (e (v i)))]
-    exact Finset.prod_le_prod (fun _ _ ↦ apply_nonneg q _) (fun i _ ↦ he (v i))
+    exact Finset.prod_le_prod₀ (fun _ _ ↦ apply_nonneg q _) (fun i _ ↦ he (v i))
   calc
     qd (d z) = ‖a‖ * qd
         ((exteriorBaseChangeEquiv L C F (Module.finrank L F)).symm

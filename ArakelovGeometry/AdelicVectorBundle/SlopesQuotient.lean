@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Slopes
-import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequence
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequence
+public import ArakelovGeometry.AdelicVectorBundle.Slopes
 
 /-!
 # Source minimal slope as the infimum of actual quotient mean slopes
@@ -14,6 +16,8 @@ a nonzero quotient with maximal slope below any real upper bound for the
 ambient mean slope. Degree superadditivity is the load-bearing step; no
 maximal-slope finiteness or Harder--Narasimhan theorem is assumed.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

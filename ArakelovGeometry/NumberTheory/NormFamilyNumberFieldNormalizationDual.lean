@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.EquivalentCompletionDual
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationDomination
+module
+
+public import ArakelovGeometry.Analysis.EquivalentCompletionDual
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationDomination
 
 /-!
 # Actual duality and domination under number-field normalization
@@ -12,6 +14,8 @@ import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationDominatio
 Compare the operator norms on the actual completed duals by transporting their
 evaluation pairing and the genuine bounds defining those operator norms.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

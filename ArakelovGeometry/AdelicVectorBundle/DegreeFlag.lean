@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequence
-import ArakelovGeometry.AdelicVectorBundle.RestrictionFunctor
-import Mathlib.Algebra.BigOperators.Fin
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequence
+public import ArakelovGeometry.AdelicVectorBundle.RestrictionFunctor
+public import Mathlib.Algebra.BigOperators.Fin
 
 /-!
 # The lower degree inequality for finite flags
@@ -14,6 +16,8 @@ Every successive quotient carries the actual restriction followed by the
 actual quotient norm. Monotone flags may have repeated terms, and the empty
 flag segment uses the scalar unit determinant of the zero space.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

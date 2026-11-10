@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.TensorNorm
-import ArakelovGeometry.Analysis.CountableNormEvaluation
-import Mathlib.SetTheory.Cardinal.Subfield
-import Mathlib.LinearAlgebra.PiTensorProduct.Basis
+module
+
+public import ArakelovGeometry.Analysis.CountableNormEvaluation
+public import ArakelovGeometry.Analysis.TensorNorm
+public import Mathlib.LinearAlgebra.PiTensorProduct.Basis
+public import Mathlib.SetTheory.Cardinal.Subfield
 
 /-!
 # Countable exact projective tensor decompositions
@@ -15,6 +17,8 @@ Enlarging a countable rational subfield by finitely many tensor coordinates
 keeps it countable. Rational approximations can then be corrected exactly in
 the tensor basis, with correction cost tending to zero.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

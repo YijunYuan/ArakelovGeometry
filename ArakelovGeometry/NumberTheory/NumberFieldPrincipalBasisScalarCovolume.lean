@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldActualIntegerCovolume
-import ArakelovGeometry.NumberTheory.NumberFieldPrincipalBasisProductCovolume
-import Mathlib.LinearAlgebra.Pi
-import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldActualIntegerCovolume
+public import ArakelovGeometry.NumberTheory.NumberFieldPrincipalBasisProductCovolume
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Mathlib.LinearAlgebra.Pi
 
 /-!
 # Scalar normalization of an original principal basis lattice
@@ -15,6 +17,8 @@ The original integral span is transported by its actual completed basis
 coordinates. Its Euclidean normalization is the product of the scalar
 integer normalization.
 -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory

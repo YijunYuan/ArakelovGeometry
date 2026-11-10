@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionTensor
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspace
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianDeterminantDegree
-import ArakelovGeometry.AdelicVectorBundle.Slopes
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionTensor
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianDeterminantDegree
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspace
+public import ArakelovGeometry.AdelicVectorBundle.Slopes
 
 /-!
 # Genuine restriction and Hermitian scalar extension
@@ -16,6 +18,8 @@ restriction with the restriction to its native base change, isometrically on
 every completed vector. Finite extensions therefore preserve restricted degree
 and mean slope under the original common countable density hypothesis.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

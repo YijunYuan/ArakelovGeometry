@@ -3,13 +3,17 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.LatticePolarSpan
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.LatticePolarSpan
 
 /-! # The sharp lower lattice-count estimate
 
 The closed central section along the annihilator of the polar lattice span gives
 the Gillet–Soulé lower estimate, with the constant `6 ^ finrank ℝ E`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

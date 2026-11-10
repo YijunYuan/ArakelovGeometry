@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldFiniteModuleCardinality
-import ArakelovGeometry.NumberTheory.NumberFieldLocalDeterminantValuation
-import ArakelovGeometry.NumberTheory.NumberFieldFullLatticeIntegerBasis
-import Mathlib.LinearAlgebra.FreeModule.Finite.Quotient
-import Mathlib.LinearAlgebra.TensorProduct.Quotient
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldFiniteModuleCardinality
+public import ArakelovGeometry.NumberTheory.NumberFieldFullLatticeIntegerBasis
+public import ArakelovGeometry.NumberTheory.NumberFieldLocalDeterminantValuation
+public import Mathlib.LinearAlgebra.FreeModule.Finite.Quotient
+public import Mathlib.LinearAlgebra.TensorProduct.Quotient
 
 /-!
 # The global index of the original full number-field lattices
@@ -16,6 +18,8 @@ The quotient is the literal quotient of the original integral lattices. Its
 finite cardinality, its actual local cokernels, and the local-length product
 are derived without assuming a global determinant-index comparison.
 -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField IsDedekindDomain TensorProduct
@@ -45,8 +49,8 @@ theorem integralLatticeQuotient_card_eq_relIndex (L₀ L : Submodule (𝓞 K) E)
     Nat.card (L ⧸ integralLatticeImage L₀ L) =
       L₀.toAddSubgroup.relIndex L.toAddSubgroup := rfl
 
-private abbrev indexLocalRing (p : HeightOneSpectrum (𝓞 K)) :=
-  (normalizedNumberFieldAdelicStructure K).rationalLocalRing
+local notation "indexLocalRing" => fun (p : HeightOneSpectrum (𝓞 K)) ↦
+  AdelicStructure.rationalLocalRing (normalizedNumberFieldAdelicStructure K)
     (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p)
 
 /-- Scalar extension of the original inclusion is the actual local inclusion. -/

@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.SlopesFinite
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.SlopesFinite
 
 /-!
 # The upper dual slope inequality
@@ -12,6 +14,8 @@ The actual dual norm of a restriction is bounded by the quotient norm of the
 ambient dual, even when equality is unavailable. The quotient-mean formula
 and sharp determinant degree-duality defect prove source Corollary 4.3.27.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

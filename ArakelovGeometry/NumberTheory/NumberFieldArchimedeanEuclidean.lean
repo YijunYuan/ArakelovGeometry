@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanVectorDiagonal
-import ArakelovGeometry.AdelicVectorBundle.Hermitian
-import Mathlib.Analysis.InnerProductSpace.PiL2
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Hermitian
+public import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanVectorDiagonal
+public import Mathlib.Analysis.InnerProductSpace.PiL2
 
 /-!
 # The Euclidean norm on the original Archimedean completed product
@@ -13,6 +15,8 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 All coordinates are the actual prescribed completed tensor fibres. The finite
 L2 norm is pulled back to the original product through the coordinate identity.
 -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField

@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldCurve
+module
+
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldCurve
 
 /-!
 # The actual normalized number-field infinite locus and its total mass
@@ -11,6 +13,8 @@ import ArakelovGeometry.NumberTheory.NormalizedNumberFieldCurve
 The actual infinite places biject onto the Archimedean locus of the normalized
 curve. Summing their produced singleton masses gives the number-field degree.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped ENNReal BigOperators

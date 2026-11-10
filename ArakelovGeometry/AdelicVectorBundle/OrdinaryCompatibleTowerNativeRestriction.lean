@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.EquivalencePullback
-import ArakelovGeometry.AdelicVectorBundle.CompatibleTowerNativeRestriction
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariantsDiscrete
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariantsDiscrete
+public import ArakelovGeometry.AdelicVectorBundle.CompatibleTowerNativeRestriction
+public import ArakelovGeometry.AdelicVectorBundle.EquivalencePullback
 
 /-!
 # Ordinary native restrictions in compatible external towers
@@ -16,6 +18,8 @@ direct native restrictions over an algebraically closed final field. The
 genuine tower transport and restricted associator then produce ordinary bundles
 on the literal iterated native subspaces and preserve canonical degrees.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section
@@ -82,7 +86,8 @@ theorem scalarExtensionRestrictionOfOrdinaryBase_determinant_isMeasurable
     exact V.toNormFamily.scalarExtension_restrict_determinant_isMeasurable_of_countable_discrete
       hN B
 
-private def ordinaryNativeTowerBundle (V : AdelicVectorBundle S E)
+/-- Transport a direct native restriction to the iterated scalar-extension space. -/
+def ordinaryNativeTowerBundle (V : AdelicVectorBundle S E)
     (hreg : S.HasCommonCountableDenseSubfield ∨
       (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω))
     (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
@@ -92,7 +97,8 @@ private def ordinaryNativeTowerBundle (V : AdelicVectorBundle S E)
   let R := V.scalarExtensionRestrictionOfOrdinaryBase hreg hN (A.map c.toLinearMap)
   (R.compatibleTowerPullback (L := L)).pullbackEquiv (c.submoduleMap A)
 
-private theorem ordinaryNativeTowerBundle_normFamily (V : AdelicVectorBundle S E)
+/-- The transported bundle has the literal iterated restriction norm family. -/
+theorem ordinaryNativeTowerBundle_normFamily (V : AdelicVectorBundle S E)
     (hreg : S.HasCommonCountableDenseSubfield ∨
       (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω))
     (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)

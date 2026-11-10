@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalization
-import ArakelovGeometry.AdelicVectorBundle.Domination
-import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Domination
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalization
+public import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
 
 /-!
 # Integrable envelopes under actual number-field normalization
@@ -13,6 +15,8 @@ import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
 Actual singleton weights cancel the local norm exponent. Transport integrable
 upper and lower rational-vector envelopes without assuming norm domination.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter NumberField IsDedekindDomain
 open scoped ENNReal TensorProduct NumberField
@@ -36,7 +40,7 @@ theorem numberFieldNormalizationExponent_of_fin
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) :
     numberFieldNormalizationExponent ω = ((normalizedPlaceValue ω).localDegree ℚ : ℝ)⁻¹ := by
   change IsNonarchimedean (normalizedPlaceValue ω) at hω
-  rw [numberFieldNormalizationExponent, if_pos hω]
+  rw [numberFieldNormalizationExponent, ite_eq_left hω]
 
 /-- At every actual infinite class the exponent is one. -/
 theorem numberFieldNormalizationExponent_of_inf
@@ -44,7 +48,7 @@ theorem numberFieldNormalizationExponent_of_inf
     (hω : ω ∉ (normalizedNumberFieldAdelicStructure K).Ωfin) :
     numberFieldNormalizationExponent ω = 1 := by
   change ¬ IsNonarchimedean (normalizedPlaceValue ω) at hω
-  rw [numberFieldNormalizationExponent, if_neg hω]
+  rw [numberFieldNormalizationExponent, ite_eq_right hω]
 
 /-- The true exponent is positive at every nontrivial class. -/
 theorem numberFieldNormalizationExponent_pos

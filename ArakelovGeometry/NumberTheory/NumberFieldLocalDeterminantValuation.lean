@@ -3,12 +3,16 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldLocalDeterminantIndex
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLineIndex
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLineIndex
+public import ArakelovGeometry.NumberTheory.NumberFieldLocalDeterminantIndex
 
 /-!
 # Actual prime orders and normalized determinant logarithms
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -23,8 +27,8 @@ attribute [local instance 2000] Algebra.toModule Algebra.toSMul
 
 variable {K : Type*} [Field K] [NumberField K]
 
-private abbrev valuationCoefficientRing (p : HeightOneSpectrum (𝓞 K)) :=
-  (normalizedNumberFieldAdelicStructure K).rationalLocalRing
+local notation "valuationCoefficientRing" => fun (p : HeightOneSpectrum (𝓞 K)) ↦
+  AdelicStructure.rationalLocalRing (normalizedNumberFieldAdelicStructure K)
     (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p)
 
 /-- The actual prime valuation has precisely the literal local coefficient ring as integers. -/

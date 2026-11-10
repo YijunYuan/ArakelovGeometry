@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
-import Mathlib.MeasureTheory.Order.Lattice
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
+public import Mathlib.MeasureTheory.Order.Lattice
 
 /-!
 # Measurable automorphisms of extension parameter spaces
@@ -13,6 +15,8 @@ Chen–Moriwaki, Proposition 3.6.1, for every algebraic extension, without a
 normality or finiteness hypothesis. We use the source's pullback convention
 `|a|_{Tτ x} = |τ a|_x`, which reverses composition of automorphisms.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.ParameterSpaceExtension
 
@@ -108,7 +112,7 @@ section Finite
 
 variable [FiniteDimensional K L]
 
-/-- The maximum over the finite automorphism orbit, the function `F̃` in the proof of
+/-- The maximum over the finite automorphism orbit, the function `\tilde F` in the proof of
 Chen–Moriwaki, Proposition 3.6.2. It is defined even when the extension is not normal. -/
 noncomputable def orbitMaximum (F : ParameterSpaceExtension AS L → ℝ)
     (x : ParameterSpaceExtension AS L) : ℝ :=

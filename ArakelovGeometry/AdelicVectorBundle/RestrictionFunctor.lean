@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeIsometry
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeIsometry
 
 /-!
 # Canonical isometries for nested restrictions
@@ -12,6 +14,8 @@ Restriction through an intermediate rational subspace has the same actual
 completed norm as direct restriction. Canonical subspace identifications
 therefore preserve actual degrees, including zero and repeated terms of a flag.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

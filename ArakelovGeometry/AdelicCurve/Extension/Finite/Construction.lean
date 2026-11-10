@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Separable.Construction
-import ArakelovGeometry.ExternalResults.AbsoluteValueLocal
-import Mathlib.FieldTheory.SeparableClosure
-import Mathlib.FieldTheory.PurelyInseparable.Basic
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Separable.Construction
+public import ArakelovGeometry.ExternalResults.AbsoluteValueLocal
+public import Mathlib.FieldTheory.PurelyInseparable.Basic
+public import Mathlib.FieldTheory.SeparableClosure
 
 /-!
 # Finite extensions of adelic structures
@@ -16,6 +18,8 @@ absolute values across a purely inseparable extension. This gives Chen–Moriwak
 Definition 3.4.1, the completion comparison in Lemma 3.4.2, and the fibre weights of
 Remark 3.4.3.
 -/
+
+@[expose] public section
 
 open MeasureTheory AbsoluteValue
 open scoped ENNReal

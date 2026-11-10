@@ -3,8 +3,10 @@ Copyright (c) 2026 ArakelovGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArakelovGeometry contributors
 -/
-import ArakelovGeometry.NumberTheory.PrincipalPrimeSupport
-import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
+module
+
+public import ArakelovGeometry.NumberTheory.PrincipalPrimeSupport
+public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
 
 /-!
 # Actual finite primes and scalar unit-ball bounds
@@ -12,6 +14,8 @@ import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
 Arithmetic producers use the actual finite places and actual adic valuations of
 the ring of integers. No completion-degree normalization formula is assumed.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField NNReal
@@ -44,7 +48,7 @@ theorem exists_integral_isolated_finitePlace (p : FinitePlace K) :
       apply hq
       have hmk := congrArg FinitePlace.mk heq
       simpa only [FinitePlace.mk_maximalIdeal] using hmk
-    rw [hnorm q, hvalues q.maximalIdeal, if_neg (by simpa using hprime), map_one]
+    rw [hnorm q, hvalues q.maximalIdeal, ite_eq_right (by simpa using hprime), map_one]
     rfl
 
 end ArakelovGeometry.ActualPrimeIndexing

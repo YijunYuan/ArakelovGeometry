@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNUpper
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNUpper
 
 /-!
 # Actual first general HN slope and maximal slope
@@ -13,6 +15,8 @@ control every actual subspace mean. The maximal-slope supremum then gives
 the source logarithmic comparison. Errorfree positive-degree bounds use
 the actual maximal slope and include the zero-rank convention.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

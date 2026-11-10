@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionQuotientEquiv
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionQuotientEquiv
 
 /-!
 # Genuine native subquotients over an algebraic closure
@@ -13,6 +15,8 @@ native restricted scalar-extension family has produced primal measurability.
 Finite descent of the restricted space and completed quotient transport supply
 this property without any regularity assumption on the target place space.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -88,6 +92,45 @@ private theorem discreteSubquotient_isMeasurable
   rw [hnorm]
   exact (hm (q.symm y)).comp τ.measurable
 
+omit [IsAlgClosed L] [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] in
+private theorem discreteSubquotient_isMeasurable_of_preimage
+    (F : AdelicStructure.FiniteIntermediateField K L)
+    {X Y : Type*} [AddCommGroup X] [Module L X] [FiniteDimensional L X]
+    [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
+    (η : NormFamily ((S.algebraicExtension F).algebraicExtension L) X)
+    (θ : NormFamily (S.algebraicExtension L) Y) (e : X ≃ₗ[L] Y)
+    (T : Submodule L Y)
+    (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
+      (t : x.abv.Completion ⊗[L] X), θ.norm (scalarExtensionTowerPlace x)
+        (e.toLinearMap.baseChange x.abv.Completion t) = η.norm x t)
+    (hm : (η.quotient (T.comap e.toLinearMap)).IsMeasurable) :
+    (θ.quotient T).IsMeasurable := by
+  have hT : (T.comap e.toLinearMap).map e.toLinearMap = T :=
+    Submodule.map_comap_eq_of_surjective e.surjective T
+  rw [← hT]
+  exact discreteSubquotient_isMeasurable F η θ e (T.comap e.toLinearMap) he hm
+
+omit [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] in
+private theorem discreteSubquotient_isMeasurable_of_scalarExtension
+    (F : AdelicStructure.FiniteIntermediateField K L)
+    [Countable (S.algebraicExtension F).Ω]
+    [DiscreteMeasurableSpace (S.algebraicExtension F).Ω]
+    {X Y : Type*} [AddCommGroup X] [Module F X] [FiniteDimensional F X]
+    [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
+    (η : NormFamily (S.algebraicExtension F) X)
+    (θ : NormFamily (S.algebraicExtension L) Y) (e : (L ⊗[F] X) ≃ₗ[L] Y)
+    (hN : ∀ ω ∈ (S.algebraicExtension F).Ωinf,
+      IsRCLikeNormedField ((S.algebraicExtension F).ϕ ω).Completion)
+    (T : Submodule L Y)
+    (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
+      (t : x.abv.Completion ⊗[L] (L ⊗[F] X)), θ.norm (scalarExtensionTowerPlace x)
+        (e.toLinearMap.baseChange x.abv.Completion t) =
+          (η.scalarExtension (L := L)).norm x t) :
+    (θ.quotient T).IsMeasurable := by
+  exact discreteSubquotient_isMeasurable_of_preimage F (η.scalarExtension (L := L)) θ e T
+    he (η.scalarExtension_quotient_isMeasurable_of_countable_discrete hN
+      (T.comap e.toLinearMap))
+
 /-- Every actual quotient of a native restricted scalar family has produced
 primal measurability. The target places need not be discrete or have a common
 dense subfield; neither source measurability nor original ultrametricity is
@@ -105,18 +148,9 @@ theorem scalarExtension_restrict_quotient_isMeasurable_of_countable_discrete
   let : DiscreteMeasurableSpace (S.algebraicExtension F).Ω :=
     AdelicStructure.discreteMeasurableSpace_algebraicExtension_of_finiteDimensional
       (S := S) (L := F)
-  let η := ((ξ.scalarExtension (L := F)).restrict (B 0)).scalarExtension (L := L)
-  let θ := (ξ.scalarExtension (L := L)).restrict A
-  let P := T.comap e.toLinearMap
-  let Q := P.map e.toLinearMap
-  have hQ : Q = T := Submodule.map_comap_eq_of_surjective e.surjective T
-  have hm : (η.quotient P).IsMeasurable :=
-    scalarExtension_quotient_isMeasurable_of_countable_discrete
-      ((ξ.scalarExtension (L := F)).restrict (B 0))
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN) P
-  change (θ.quotient T).IsMeasurable
-  rw [← hQ]
-  exact discreteSubquotient_isMeasurable F η θ e P he hm
+  exact discreteSubquotient_isMeasurable_of_scalarExtension F
+    ((ξ.scalarExtension (L := F)).restrict (B 0)) ((ξ.scalarExtension (L := L)).restrict A)
+    e (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN) T he
 
 end NormFamily
 namespace AdelicVectorBundle

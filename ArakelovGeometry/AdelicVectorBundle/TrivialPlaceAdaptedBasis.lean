@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TrivialFiltrationHN
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.TrivialFiltrationHN
 
 /-!
 # Actual orthogonal bases adapted to trivial-place balls
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicVectorBundle.TrivialFiltrationHN
 The actual finite ball flag produces an adapted basis by successive
 independent-set extension. No adapted basis is supplied as an input.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -276,9 +280,9 @@ theorem minimalSlope_eq_if_neg_log_sSup_range_of_isUltrametric
     V.minimalSlope hS hN = if Module.finrank K E = 0 then (⊤ : EReal) else
       ((-Real.log (sSup (Set.range V.toNormFamily.trivialSeminorm)) : ℝ) : EReal) := by
   by_cases hr : Module.finrank K E = 0
-  · rw [if_pos hr]
+  · rw [ite_eq_left hr]
     exact V.minimalSlope_eq_top_of_finrank_eq_zero hS hN hr
-  · rw [if_neg hr]
+  · rw [ite_eq_right hr]
     exact V.minimalSlope_eq_neg_log_sSup_range_of_isUltrametric hS hN hV (Nat.pos_of_ne_zero hr)
 
 end AdelicVectorBundle

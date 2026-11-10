@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteNativeFiniteStageDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteNativeFiniteStageDegree
 
 /-!
 # Absolute invariants over a countable discrete original base
@@ -13,6 +15,8 @@ The suprema use every actual native algebraic-closure restriction and its
 produced measurable determinant. Target discreteness and common density are
 unnecessary. On the overlap, these are the existing absolute invariants.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct

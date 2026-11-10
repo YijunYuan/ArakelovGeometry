@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.BundleTensorPair
-import ArakelovGeometry.AdelicVectorBundle.DeterminantTensorComparison
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BundleTensorPair
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantTensorComparison
 
 /-!
 # The corrected mixed tensor degree inequality
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.DeterminantTensorComparison
 The canonical determinant tensor isomorphism contracts actual determinant
 norms. Its rational generator inequality integrates to the degree bound.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.CompatibleTowerLogarithmicMinima
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismVectorDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.CompatibleTowerLogarithmicMinima
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismVectorDegree
 
 /-!
 # Actual absolute minima through an arbitrary external algebraic middle field
@@ -14,6 +16,8 @@ iterated closure bundle whose analytic fields were produced from the original
 curve. The legacy absolute-minimum API on the intermediate ordinary bundle is
 identified only when its intermediate regularity is independently supplied.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle

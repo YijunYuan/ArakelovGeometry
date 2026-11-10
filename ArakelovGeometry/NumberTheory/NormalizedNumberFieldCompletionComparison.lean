@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.EquivalentCompletion
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldLocalDegree
+module
+
+public import ArakelovGeometry.Analysis.EquivalentCompletion
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldLocalDegree
 
 /-!
 # The actual finite completed-field normalization map
@@ -13,6 +15,8 @@ The old ideal-norm completion and the actual source-normalized completion are
 canonically isomorphic as algebras over the original number field. Their actual
 completed norms satisfy the inverse-degree power relation, including at zero.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField

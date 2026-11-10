@@ -3,16 +3,20 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.MeasureTheory.Function.JacobianOneDim
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-import Mathlib.MeasureTheory.Integral.DominatedConvergence
-import Mathlib.Analysis.Calculus.Deriv.Inverse
-import Mathlib.Analysis.Calculus.Deriv.Mul
-import Mathlib.Analysis.Calculus.ContDiff.Deriv
-import Mathlib.Analysis.Calculus.ContDiff.Operations
-import Mathlib.Order.Hom.Set
+module
+
+public import Mathlib.Analysis.Calculus.ContDiff.Deriv
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.Analysis.Calculus.Deriv.Inverse
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Mathlib.MeasureTheory.Function.JacobianOneDim
+public import Mathlib.MeasureTheory.Integral.DominatedConvergence
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+public import Mathlib.Order.Hom.Set
 
 /-! # Actual cumulative integrals for positive interval densities -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -457,7 +461,7 @@ theorem matchingFunction_hasDerivAt (hab : a < b)
   change HasDerivAt (inverseCumulative g c d ∘ cumulative f a b)
     (f x * mass g c d /
       (g (inverseCumulative g c d (cumulative f a b x)) * mass f a b)) x
-  convert hd using 1 <;> first | rfl | ring
+  convert hd using 1; ring
 
 theorem matchingFunction_deriv (hab : a < b) (hf : IntervalIntegrable f volume a b)
     (hfn : ∀ x, 0 ≤ f x) (hfp : ∀ x ∈ Ioo a b, 0 < f x)

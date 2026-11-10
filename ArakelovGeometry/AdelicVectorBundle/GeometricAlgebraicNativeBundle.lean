@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicNativeSubquotientMeasurable
-import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicNativeSubquotientMeasurable
+public import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
 
 /-!
 # Genuine algebraic-closure geometric native bundles and their determinant degrees
@@ -15,6 +17,8 @@ bundle and degree objects on literal native relative quotients. The original
 family need only be dominated; ordinary scalar extension supplies strong
 domination. All-finite positive atomic hypotheses allow uncountable fields.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -26,7 +30,8 @@ variable {K L E : Type*} [Field K] [Field L] [Algebra K L]
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 omit [IsAlgClosed L] in
-private theorem algebraicNative_allFinite_archimedean_normalization
+/-- Algebraic extension of an all-finite adelic structure has no archimedean places. -/
+theorem algebraicNative_allFinite_archimedean_normalization
     (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
     ∀ x ∈ (S.algebraicExtension L).Ωinf,
       IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion := by
@@ -38,7 +43,8 @@ private theorem algebraicNative_allFinite_archimedean_normalization
   rw [x.restrict_eq]
   exact hS x.base
 
-private theorem algebraicNative_allFinite_infinity_measure_lt_top
+/-- The archimedean locus of an all-finite adelic structure has finite measure. -/
+theorem algebraicNative_allFinite_infinity_measure_lt_top
     (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) : S.v S.Ωinf < ⊤ := by
   have hinf : S.Ωinf = ∅ := by
     ext ω

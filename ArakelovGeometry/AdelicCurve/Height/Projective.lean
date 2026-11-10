@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Height.Affine
-import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
+module
+
+public import ArakelovGeometry.AdelicCurve.Height.Affine
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 
 /-!
 # Fields of definition and normalized projective coordinates
@@ -16,6 +18,8 @@ coordinates in an algebraic extension it is finite over the base field.
 
 Reference: Chen–Moriwaki, the field `K(x)` in Theorem 3.5.3.
 -/
+
+@[expose] public section
 
 namespace Projectivization
 

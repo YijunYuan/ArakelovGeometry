@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantExactSequence
-import ArakelovGeometry.AdelicVectorBundle.DeterminantWedgeApproximation
-import Mathlib.Algebra.BigOperators.Fin
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantExactSequence
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantWedgeApproximation
+public import Mathlib.Algebra.BigOperators.Fin
 
 /-!
 # Norm bounds for the exact-sequence determinant map
@@ -13,6 +15,8 @@ import Mathlib.Algebra.BigOperators.Fin
 The actual completed wedge formula and approximate quotient lifts give the
 product bound for restricted subspace vectors and quotient vectors.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct Topology
 open Filter
@@ -88,7 +92,7 @@ theorem determinantSequence_norm_wedge_le
           exteriorPower.ιMulti (S.ϕ ω).Completion (Module.finrank K (E ⧸ W)) q))))
     (funext hv)
   exact he.symm.le.trans (h.trans (mul_le_mul_of_nonneg_left
-    (Finset.prod_le_prod (fun j _ ↦ ξ.norm_nonneg ω (v j)) (fun j _ ↦ (hn j).le)) hA))
+    (Finset.prod_le_prod₀ (fun j _ ↦ ξ.norm_nonneg ω (v j)) (fun j _ ↦ (hn j).le)) hA))
 
 /-- A bound on all wedges extends to all determinant vectors by the
 actual determinant-norm approximation, including both degree-zero lines. -/

@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.LatticeNormalizedMeasure
-import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.LatticeNormalizedMeasure
+public import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
 
 /-! # Actual normalized lattice measure under actual linear coordinates -/
+
+@[expose] public section
 
 noncomputable section
 open Module MeasureTheory MeasureTheory.Measure Set
@@ -38,7 +42,8 @@ theorem map_latticeNormalizedMeasure_comap :
       (latticeCovolume_pos_lt_top (ZLattice.comap ℝ L e.toLinearMap) ν₀).2.ne
       (latticeCovolume_pos_lt_top L μ).2.ne).mp hcReal
   rw [latticeNormalizedMeasure_eq (ZLattice.comap ℝ L e.toLinearMap) ν ν₀,
-    latticeNormalizedMeasure, Measure.map_smul, hc, he.map_eq]
+    latticeNormalizedMeasure, Measure.map_smul _ e.continuous.measurable.aemeasurable,
+    hc, he.map_eq]
   rfl
 
 /-- The actual coordinate map is measure preserving for the two derived normalized measures. -/

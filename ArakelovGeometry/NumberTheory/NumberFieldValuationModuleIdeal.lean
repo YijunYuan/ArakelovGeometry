@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldValuationTruncationChain
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLineIndex
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLineIndex
+public import ArakelovGeometry.NumberTheory.NumberFieldValuationTruncationChain
 
 /-!
 # Exact finite-support valuation ideals
@@ -13,6 +15,8 @@ The literal valuation module is the genuine product of actual prime fractional
 ideals with the source negative exponents. Prime orders and localizations are
 proved from the accepted actual fractional-ideal valuation producers.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField WithZero Pointwise

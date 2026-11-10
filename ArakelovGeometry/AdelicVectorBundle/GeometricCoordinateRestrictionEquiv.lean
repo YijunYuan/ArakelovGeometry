@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricCoordinateRestrictionIsometry
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeometricCoordinateRestrictionIsometry
 
 /-!
 # Rational selected-coordinate bases on actual completed subspaces
@@ -12,6 +14,8 @@ The inverse of a nonsingular ground minor constructs a rational basis. Actual
 completed basis coordinates are the selected ambient coordinates; the produced
 minor norm identity therefore gives the original completed restriction norm.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct Matrix
 noncomputable section
@@ -87,8 +91,7 @@ theorem selectedSubspaceBasis_completed_coordinates (b : Module.Basis m K E)
     ((selectedSubspaceBasis b F c I hd).baseChange (S.ϕ ω).Completion).equivFun z =
       ((b.baseChange (S.ϕ ω).Completion).equivFun
         (F.subtype.baseChange (S.ϕ ω).Completion z)) ∘ I := by
-  induction z using TensorProduct.induction_on with
-  | zero => ext j; simp
+  induction z using TensorProduct.inductionOn with
   | tmul a z =>
     ext j
     rw [LinearMap.baseChange_tmul]

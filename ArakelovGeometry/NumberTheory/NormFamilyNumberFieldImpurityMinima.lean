@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeGaugeDomination
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeLambda
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaBasisSupremum
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaBasisSupremum
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeGaugeDomination
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeLambda
 
 /-!
 # Actual impurity control of logarithmic minima
@@ -15,6 +17,8 @@ source coherence. It preserves the literal integral-basis invariant and
 removes impurity. The actual integrated distance bounds vector degrees and
 ordinary minima with the explicit impurity cost.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.NormFamily
-import Mathlib.RingTheory.Flat.Basic
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.NormFamily
+public import Mathlib.RingTheory.Flat.Basic
 
 /-!
 # Restriction of norm families
@@ -17,6 +19,8 @@ Chen–Moriwaki, §4.1.1.2 (PDF page 222, printed page 206).
 Restriction commutes with positive rescaling and preserves ultrametricity.
 No finite-dimensionality or regularity hypothesis is needed for these results.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

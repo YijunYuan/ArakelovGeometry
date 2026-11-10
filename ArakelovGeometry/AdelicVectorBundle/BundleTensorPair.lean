@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TensorPairNorm
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.TensorPairNorm
 
 /-!
 # The actual binary mixed tensor adelic bundle
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicVectorBundle.TensorPairNorm
 The source finite mixed tensor bundle is transported by its canonical binary
 equivalence. Both measurability conditions and strong domination are proved.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

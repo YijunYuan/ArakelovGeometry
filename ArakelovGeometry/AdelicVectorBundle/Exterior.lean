@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ExteriorBaseChange
-import ArakelovGeometry.AdelicVectorBundle.Tensor
-import Mathlib.LinearAlgebra.PiTensorProduct.Finite
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ExteriorBaseChange
+public import ArakelovGeometry.AdelicVectorBundle.Tensor
+public import Mathlib.LinearAlgebra.PiTensorProduct.Finite
 
 /-!
 # Exterior powers of norm families
@@ -13,6 +15,8 @@ import Mathlib.LinearAlgebra.PiTensorProduct.Finite
 The exterior-power family is the quotient of the mixed tensor-power family
 under the canonical tensor-to-exterior map, on the actual completed fibres.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

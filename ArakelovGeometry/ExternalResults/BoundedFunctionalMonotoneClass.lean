@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Topology.ContinuousMap.Weierstrass
-import Mathlib.MeasureTheory.Function.StronglyMeasurable.Basic
-import Mathlib.Topology.Sequences
-import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
+module
+
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
+public import Mathlib.MeasureTheory.Function.StronglyMeasurable.Basic
+public import Mathlib.Topology.ContinuousMap.Weierstrass
+public import Mathlib.Topology.Sequences
 /-!
 # Bounded functional monotone classes
 
@@ -14,6 +16,8 @@ Uniformly bounded pointwise limits, together with a bounded multiplicative
 generating family, determine every bounded measurable real function.
 This is the bounded monotone-class argument used in Chen–Moriwaki, Theorem 3.3.4.
 -/
+
+@[expose] public section
 open Filter Topology
 namespace MeasureTheory
 variable {X : Type*}

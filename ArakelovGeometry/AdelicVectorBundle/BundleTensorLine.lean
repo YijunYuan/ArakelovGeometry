@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Basic
-import ArakelovGeometry.AdelicVectorBundle.TensorLine
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Basic
+public import ArakelovGeometry.AdelicVectorBundle.TensorLine
 
 /-!
 # Tensor products of adelic lines
@@ -15,6 +17,8 @@ measurability condition, so no tensor measurability or domination is assumed.
 The empty family is included. Orthogonal tensor identification remains in the
 separate general Hermitian tensor construction.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

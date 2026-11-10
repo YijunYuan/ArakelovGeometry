@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldPrincipalBasisScalarCovolume
-import ArakelovGeometry.NumberTheory.NumberFieldHermitianBasisCovolume
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldHermitianBasisCovolume
+public import ArakelovGeometry.NumberTheory.NumberFieldPrincipalBasisScalarCovolume
 
 /-!
 # Actual Hermitian lattice covolumes from an integral basis sublattice
@@ -15,6 +17,8 @@ containing the principal span of a rational basis. The denominator is the
 actual additive relative index. Identifying it with a determinant-lattice
 index is a separate finite-place calculation.
 -/
+
+@[expose] public section
 
 noncomputable section
 

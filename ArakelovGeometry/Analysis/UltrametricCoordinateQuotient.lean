@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.UltrametricCoordinateSplit
-import Mathlib.Analysis.Normed.Group.Quotient
+module
+
+public import ArakelovGeometry.Analysis.UltrametricCoordinateSplit
+public import Mathlib.Analysis.Normed.Group.Quotient
 
 /-!
 # Actual coordinate quotient norm from maximal minors
@@ -12,6 +14,8 @@ import Mathlib.Analysis.Normed.Group.Quotient
 The produced residual computes Mathlib's literal quotient seminorm by the
 column space, including empty coordinates. No quotient identity is assumed.
 -/
+
+@[expose] public section
 
 noncomputable section
 

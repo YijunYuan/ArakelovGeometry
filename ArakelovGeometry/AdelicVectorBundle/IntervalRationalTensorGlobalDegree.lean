@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.IntervalRationalTensorDeterminant
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.IntervalRationalTensorDeterminant
 
 /-!
 # A strict global degree inequality for the rational interval tensor
@@ -12,6 +14,8 @@ The actual mixed tensor bundle has degree at least `Real.log 2`, while both
 factor degrees vanish. This gives a global counterexample to the unrestricted
 mixed tensor degree equality printed in Proposition 4.3.19.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 open Module MeasureTheory
@@ -153,7 +157,7 @@ theorem rationalIntervalTensorFamily_determinant_norm_le_one
   apply h.trans
   calc
     _ ≤ ∏ _ : Fin (Module.finrank ℚ E), (1 : ℝ) :=
-      Finset.prod_le_prod (fun i _ => ξ.norm_nonneg _ _)
+      Finset.prod_le_prod₀ (fun i _ => ξ.norm_nonneg _ _)
         (fun i _ => by
           rw [show b i = rationalIntervalTensorBasis (e.symm i) from Basis.reindex_apply _ _ _]
           exact rationalIntervalTensorFamily_norm_basis_le_one ω (e.symm i))

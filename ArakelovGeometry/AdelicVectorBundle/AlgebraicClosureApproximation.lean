@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.AlgebraicClosureDense
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AlgebraicClosureDense
 
 /-!
 # Polynomial approximation over a dense subfield
@@ -12,6 +14,8 @@ Approximation of the lower coefficients of a vanishing monic polynomial
 produces a monic polynomial over the original dense subfield with arbitrarily
 small actual evaluation. No finite-extension or separability premise is used.
 -/
+
+@[expose] public section
 
 noncomputable section
 

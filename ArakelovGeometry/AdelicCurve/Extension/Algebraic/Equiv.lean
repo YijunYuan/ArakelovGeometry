@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Automorphism
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Automorphism
 
 /-!
 # Actual algebraic extension places under base-field isomorphisms
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicCurve.Extension.Automorphism
 Field isomorphisms transport the actual extension evaluations and projective
 sigma algebras. The same-field restriction agrees with the existing action.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 namespace ArakelovGeometry.AdelicStructure.ParameterSpaceExtension

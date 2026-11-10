@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNModified
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNRestriction
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNUpper
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNModified
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNRestriction
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNUpper
 
 /-!
 # Semistability of actual general HN filtrations
@@ -15,6 +17,8 @@ general ordered-slope list. Its one-jump, actual restricted-minimum and
 modified-mean characterizations retain this positive-rank scope. The
 ordinary mean-slope predicate has its separate existing name.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 
@@ -92,10 +96,10 @@ theorem isSemistable_iff_exists_generalHNFiltration_eq_ite
     refine ⟨hr, b, fun j ↦ le_antisymm ?_ ?_⟩
     · by_contra h
       have hj := V.lt_finrank_generalHNFiltration_orderedSlope hS hN j
-      rw [hb, if_neg h, finrank_bot] at hj
+      rw [hb, ite_eq_right h, finrank_bot] at hj
       exact Nat.not_lt_zero j.val hj
     · apply (V.le_generalHNOrderedSlope_iff_lt_filtration_finrank hS hN b j).mpr
-      rw [hb, if_pos le_rfl, finrank_top]
+      rw [hb, ite_eq_left le_rfl, finrank_top]
       exact j.isLt
 
 /-- Source condition (2): semistability is equivalent to bounding the true

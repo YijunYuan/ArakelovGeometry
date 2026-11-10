@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Separable.Measurability
-import ArakelovGeometry.ExternalResults.AbsoluteValueRootBounds
-import ArakelovGeometry.ExternalResults.BoundedFunctionalMonotoneClass
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Separable.Measurability
+public import ArakelovGeometry.ExternalResults.AbsoluteValueRootBounds
+public import ArakelovGeometry.ExternalResults.BoundedFunctionalMonotoneClass
 
 /-!
 # Bounded multiplicative generators of extension places
@@ -13,6 +15,8 @@ import ArakelovGeometry.ExternalResults.BoundedFunctionalMonotoneClass
 Bounded evaluations localized by bounded measurable base functions generate the
 parameter-space sigma algebra, as used in Chen–Moriwaki, Theorem 3.3.4.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter Topology
 namespace ArakelovGeometry.AdelicStructure.ParameterSpaceExtension

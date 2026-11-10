@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.ConvexVolumeInduction
-import Mathlib.MeasureTheory.Constructions.Pi
-import Mathlib.MeasureTheory.Measure.Haar.Unique
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.ConvexVolumeInduction
+public import Mathlib.MeasureTheory.Constructions.Pi
+public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 /-! # Multiplicative convex volume in the original finite real coordinate spaces -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.ConvexVolume

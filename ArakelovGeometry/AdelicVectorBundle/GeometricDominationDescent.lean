@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
-import Mathlib.AlgebraicGeometry.Pullbacks
+module
+
+public import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
+public import Mathlib.AlgebraicGeometry.Pullbacks
 
 /-!
 # Valued overfields for geometric domination descent
@@ -13,6 +15,8 @@ Common valued overfields provide the field-theoretic lift of an analytic
 point through finite base change. The geometric section-space and metric
 interfaces required for Corollary 4.1.18 remain separate prerequisites.
 -/
+
+@[expose] public section
 
 noncomputable section
 

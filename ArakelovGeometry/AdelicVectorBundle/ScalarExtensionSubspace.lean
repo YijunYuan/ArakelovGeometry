@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
-import ArakelovGeometry.Analysis.ScalarExtensionSubspace
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
+public import ArakelovGeometry.Analysis.ScalarExtensionSubspace
 
 /-!
 # Completed scalar extension and actual subspace norms
@@ -14,6 +16,8 @@ linear map. Consequently ordinary scalar extension is contractive on genuine
 subspaces and preserves their norms exactly at non-Archimedean places when the
 original norm family is ultrametric.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section
@@ -36,12 +40,10 @@ theorem completedScalarExtensionEquiv_baseChange (f : F →ₗ[K] E)
       (f.baseChange v.Completion).baseChange w.Completion
         (completedScalarExtensionEquiv F v w h z) := by
   let := AbsoluteValue.normedAlgebraCompletionOfEq v w h
-  induction z using TensorProduct.induction_on with
-  | zero => simp only [map_zero]
+  induction z using TensorProduct.inductionOn with
   | add z t hz ht => simp only [map_add, hz, ht]
   | tmul a y =>
-    induction y using TensorProduct.induction_on with
-    | zero => simp only [TensorProduct.tmul_zero, map_zero]
+    induction y using TensorProduct.inductionOn with
     | add y t hy ht => simp only [TensorProduct.tmul_add, map_add, hy, ht]
     | tmul b y =>
       simp only [LinearMap.baseChange_tmul, completedScalarExtensionEquiv_tmul]

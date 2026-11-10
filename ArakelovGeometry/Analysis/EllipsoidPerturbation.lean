@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.MaximalEllipsoid
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
+module
+
+public import ArakelovGeometry.Analysis.MaximalEllipsoid
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 
 /-!
 # Perturbations in the contact-cone proof
@@ -13,6 +15,8 @@ Strict inward motion at the boundary of a compact subset of the Euclidean ball
 persists uniformly for small positive parameters. Positive trace yields strict
 determinant growth through the actual determinant polynomial.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped Matrix.Norms.Elementwise MatrixOrder ComplexOrder

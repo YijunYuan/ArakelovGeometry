@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaRestriction
-import ArakelovGeometry.AdelicVectorBundle.Slopes
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaRestriction
+public import ArakelovGeometry.AdelicVectorBundle.Slopes
 
 /-!
 # Actual line degree and rational vector degree
@@ -15,6 +17,8 @@ to its ambient vector degree, and proves the ordinary first-minimum bound by
 maximal slope. Properness and the actual restriction/degree regularity
 hypotheses remain explicit. No nonzero vector or line exists in rank zero.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

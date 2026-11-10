@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantMap
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantMap
 
 /-!
 # Canonical duality of determinant lines
@@ -12,6 +14,8 @@ The exterior pairing, rather than a chosen identification of two lines, defines
 the duality map. Its equivalence and scalar-extension formulas include degree
 zero and exterior degrees above the dimension.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

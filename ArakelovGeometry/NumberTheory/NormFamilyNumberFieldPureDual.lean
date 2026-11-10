@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPurity
-import ArakelovGeometry.AdelicVectorBundle.Dual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Dual
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPurity
 
 /-!
 # Purity and norm attainment on actual completed duals
@@ -13,6 +15,8 @@ The discrete completed scalar value group forces operator norms to be
 actual scalar values and makes every nonzero dual norm attained.
 No domination, coherence or primal ultrametricity premise is needed.
 -/
+
+@[expose] public section
 
 open scoped NumberField TensorProduct
 

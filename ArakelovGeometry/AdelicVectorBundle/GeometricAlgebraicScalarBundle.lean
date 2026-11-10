@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicScalarExtensionMeasurable
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicScalarExtensionMeasurable
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDegree
 
 /-!
 # Genuine positive-atomic ordinary algebraic scalar bundles
@@ -14,6 +16,8 @@ Actual primal and completed-dual regularity constructs the canonical adelic
 bundle on ordinary algebraic scalar extension. Its measurable-determinant
 degree is unchanged when the original determinant is measurable.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -28,7 +32,8 @@ variable {K L E : Type*} [Field K] [Field L] [Algebra K L]
 namespace NormFamily
 
 omit [MeasurableSingletonClass S.Ω] in
-private theorem positiveAtomicScalar_infinity_measure_lt_top
+/-- The archimedean locus has finite measure when every place is nonarchimedean. -/
+theorem positiveAtomicScalar_infinity_measure_lt_top
     (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) : S.v S.Ωinf < ⊤ := by
   have hinf : S.Ωinf = ∅ := by
     ext ω

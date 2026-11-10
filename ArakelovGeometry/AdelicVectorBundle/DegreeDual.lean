@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Degree
-import ArakelovGeometry.AdelicVectorBundle.DeterminantDuality
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Degree
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantDuality
 
 /-!
 # Degree duality for Hermitian adelic bundles
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.DeterminantDuality
 The actual canonical determinant-dual isometry and the degree formula for
 dual lines prove Proposition 4.3.8, including the zero-dimensional bundle.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

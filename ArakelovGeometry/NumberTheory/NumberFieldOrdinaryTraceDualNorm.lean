@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanTraceDualNorm
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanTraceDualNorm
 
 /-! # Trace duality for the ordinary Euclidean product metric
 
@@ -12,6 +14,8 @@ squares. The dual norm squared is the unweighted sum of `(w.mult * p_w*)²`.
 Both metrics are defined independently of the trace map on the same actual
 completed vector products. In particular a complex dual fibre has factor two.
 -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField

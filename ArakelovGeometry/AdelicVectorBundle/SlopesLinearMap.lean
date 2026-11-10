@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.SlopesQuotient
-import ArakelovGeometry.AdelicVectorBundle.DegreeMap
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeMap
+public import ArakelovGeometry.AdelicVectorBundle.SlopesQuotient
 
 /-!
 # Slope comparison through actual linear maps
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.DegreeMap
 The comparison uses the canonical restriction and quotient norms on completed
 fibres and the lower-integral map height of the original rational map.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct

@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.CountableDensity
-import ArakelovGeometry.Analysis.CountableTensorFormula
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
-import ArakelovGeometry.ExternalResults.AbsoluteValueTensor
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
+public import ArakelovGeometry.AdelicVectorBundle.CountableDensity
+public import ArakelovGeometry.Analysis.CountableTensorFormula
+public import ArakelovGeometry.ExternalResults.AbsoluteValueTensor
 
 /-!
 # Common countable density in finite field extensions
@@ -15,6 +17,8 @@ Adjoining a fixed finite field basis to the image of the common countable
 base subfield produces one countable subfield dense at every extending place.
 The proof uses the canonical finite coordinate sum on the actual completions.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPureModel
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedRationalGenericFibre
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedRationalGenericFibre
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPureModel
 
 /-! # Integer bases of actual full number-field lattices
 
@@ -13,6 +15,8 @@ rational tensor is the original space with the canonical restricted action.
 The exact integer rank and bases are derived, including rank zero. No freeness
 over the number-field integer ring is assumed.
 -/
+
+@[expose] public section
 
 open NumberField
 open scoped NumberField TensorProduct

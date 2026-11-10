@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.IntervalRationalDegrees
-import ArakelovGeometry.AdelicVectorBundle.BundleTensorPair
-import ArakelovGeometry.Analysis.IntervalTensorDeterminant
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BundleTensorPair
+public import ArakelovGeometry.AdelicVectorBundle.IntervalRationalDegrees
+public import ArakelovGeometry.Analysis.IntervalTensorDeterminant
 
 /-!
 # Six actual rational tensors for the interval degree counterexample
@@ -13,6 +15,8 @@ import ArakelovGeometry.Analysis.IntervalTensorDeterminant
 The displayed rational vectors have the actual tensor-coordinate determinant
 two. Their completed real mixed tensor norms are bounded by one.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 open Module

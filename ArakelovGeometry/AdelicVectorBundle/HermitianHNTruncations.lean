@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianHNUniqueness
-import ArakelovGeometry.AdelicVectorBundle.RestrictionFunctor
-import ArakelovGeometry.AdelicVectorBundle.SlopesChain
-import ArakelovGeometry.AdelicVectorBundle.HermitianSemistability
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHNUniqueness
+public import ArakelovGeometry.AdelicVectorBundle.HermitianSemistability
+public import ArakelovGeometry.AdelicVectorBundle.RestrictionFunctor
+public import ArakelovGeometry.AdelicVectorBundle.SlopesChain
 
 /-!
 # Actual initial and quotient-tail Hermitian HN flags
@@ -15,6 +17,8 @@ The factors of the initial and final portions use the canonical restriction
 and quotient norms on the actual completed fibres. Uniqueness identifies
 these portions with the HN flags of the corresponding actual bundles.
 -/
+
+@[expose] public section
 
 open scoped BigOperators TensorProduct
 

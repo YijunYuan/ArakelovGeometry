@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanWeightedCovolume
-import ArakelovGeometry.AdelicVectorBundle.HermitianBasis
-import Mathlib.NumberTheory.NumberField.Discriminant.Basic
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianBasis
+public import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanWeightedCovolume
+public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 
 /-!
 # Covolume of the actual completed scalar integer lattice
@@ -15,6 +17,8 @@ canonical Euclidean measure is compared by an actual linear isometry to
 Mathlib's Euclidean mixed space, then by the proved volume-preserving map
 to the standard mixed product measure used in the discriminant formula.
 -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory

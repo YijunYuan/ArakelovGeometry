@@ -3,15 +3,19 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldCodifferentDual
-import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDual
-import ArakelovGeometry.NumberTheory.NumberFieldDegreeCovolume
-import ArakelovGeometry.NumberTheory.NumberFieldFullLatticeLineIndex
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLineLattice
-import ArakelovGeometry.AdelicVectorBundle.ScalarLine
-import ArakelovGeometry.AdelicVectorBundle.HermitianLine
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianLine
+public import ArakelovGeometry.AdelicVectorBundle.ScalarLine
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLineLattice
+public import ArakelovGeometry.NumberTheory.NumberFieldCodifferentDual
+public import ArakelovGeometry.NumberTheory.NumberFieldDegreeCovolume
+public import ArakelovGeometry.NumberTheory.NumberFieldFullLatticeLineIndex
+public import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDual
 
 /-! # The actual codifferent line with its prescribed trace metric -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory
@@ -111,7 +115,7 @@ theorem archimedeanFactor_pos (ω : (normalizedNumberFieldAdelicStructure K).Ω)
 theorem archimedeanFactor_infinite (w : InfinitePlace K) :
     archimedeanFactor K (normalizedInfinitePlacePoint w) = (w.mult : ℝ) := by
   classical
-  rw [archimedeanFactor, dif_pos (normalizedInfinitePlacePoint_mem_inf w)]
+  rw [archimedeanFactor, dite_eq_left (normalizedInfinitePlacePoint_mem_inf w)]
   change (((normalizedInfinitePlaceEquiv (K := K)).symm
     (normalizedInfinitePlaceEquiv w)).mult : ℝ) = _
   rw [Equiv.symm_apply_apply]

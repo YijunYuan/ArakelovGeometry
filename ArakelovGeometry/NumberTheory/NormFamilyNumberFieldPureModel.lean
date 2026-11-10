@@ -3,13 +3,17 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPurity
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeReplacement
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldInfiniteMass
-import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
-import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeReplacement
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPurity
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldInfiniteMass
+public import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
 
 /-! # Actual integral models of dominated pure number-field norm families -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain MeasureTheory
 open scoped NumberField TensorProduct

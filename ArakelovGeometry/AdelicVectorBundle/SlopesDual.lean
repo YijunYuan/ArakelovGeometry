@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Slopes
-import ArakelovGeometry.AdelicVectorBundle.Discrepancy
-import ArakelovGeometry.AdelicVectorBundle.DualRestriction
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Discrepancy
+public import ArakelovGeometry.AdelicVectorBundle.DualRestriction
+public import ArakelovGeometry.AdelicVectorBundle.Slopes
 
 /-!
 # The source conditional first dual slope inequality
@@ -15,6 +17,8 @@ degree-duality defect bound each quotient slope from below. Source4.3.25's
 finite-dual-maximal-slope hypothesis remains explicit; source4.3.30 is a
 separate finiteness producer.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

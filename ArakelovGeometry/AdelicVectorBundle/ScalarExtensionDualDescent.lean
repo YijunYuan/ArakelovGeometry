@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDualFiniteStage
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscrete
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscrete
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDualFiniteStage
 
 /-!
 # Finite-stage descent of actual scalar dual norms
@@ -13,6 +15,8 @@ Canonical dual base change commutes with field-tower cancellation. Actual
 completed dual norm transport then descends rational functional evaluations
 to finite coordinate fields over a countable discrete parameter space.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -38,14 +42,12 @@ theorem dualBaseChangeEquiv_tower_one_tmul (y : F ⊗[K] Module.Dual K E) :
       dualBaseChangeEquiv F L (F ⊗[K] E)
         ((1 : L) ⊗ₜ[F] dualBaseChangeEquiv K F E y) := by
   intro d
-  induction y using TensorProduct.induction_on with
-  | zero => simp
+  induction y using TensorProduct.inductionOn with
   | add y z hy hz => simp only [TensorProduct.tmul_add, map_add, hy, hz]
   | tmul a ℓ =>
     apply TensorProduct.AlgebraTensorModule.ext
     intro b t
-    induction t using TensorProduct.induction_on with
-    | zero => simp
+    induction t using TensorProduct.inductionOn with
     | add t s ht hs => simp only [TensorProduct.tmul_add, map_add, ht, hs]
     | tmul c e =>
       simp [d, LinearEquiv.dualMap_apply,

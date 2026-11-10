@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.SlopesFinite
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.SlopesFinite
 
 /-!
 # Positive degree of actual adelic vector bundles
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicVectorBundle.SlopesFinite
 The supremum ranges over every actual rational restriction, including zero.
 The proved common rank-degree bound gives finiteness; attainment is not assumed.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

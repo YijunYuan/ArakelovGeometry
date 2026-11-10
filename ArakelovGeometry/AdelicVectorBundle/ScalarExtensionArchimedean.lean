@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspace
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionFiniteStage
-import ArakelovGeometry.Analysis.ArchimedeanComplexExtension
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionFiniteStage
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspace
+public import ArakelovGeometry.Analysis.ArchimedeanComplexExtension
 
 /-!
 # Actual restricted norms after complexification
@@ -15,6 +17,8 @@ a base field the actual Archimedean completion maps are onto, so projective
 extension preserves every completed pullback. Together with the finite-place
 isometry this gives ordinary restriction identities on all actual fibres.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

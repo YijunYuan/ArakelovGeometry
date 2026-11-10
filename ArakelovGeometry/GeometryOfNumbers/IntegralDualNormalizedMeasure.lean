@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.IntegralDualCovolume
-import ArakelovGeometry.GeometryOfNumbers.LatticeNormalizedMeasure
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.IntegralDualCovolume
+public import ArakelovGeometry.GeometryOfNumbers.LatticeNormalizedMeasure
 
 /-! # Integral-dual normalized measure and primal Euclidean covolume -/
+
+@[expose] public section
 
 noncomputable section
 open MeasureTheory

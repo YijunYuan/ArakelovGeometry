@@ -3,14 +3,16 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Analysis.Seminorm
-import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Analysis.Convex.Combination
-import Mathlib.Data.Fin.VecNotation
-import Mathlib.Tactic.FinCases
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.NormNum
-import Mathlib.Tactic.Ring
+module
+
+public import Mathlib.Algebra.BigOperators.Field
+public import Mathlib.Analysis.Convex.Combination
+public import Mathlib.Analysis.Normed.Module.Seminorm.Basic
+public import Mathlib.Data.Fin.VecNotation
+public import Mathlib.Tactic.FinCases
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.NormNum
+public import Mathlib.Tactic.Ring
 
 /-!
 # Real consecutive-interval norms
@@ -19,6 +21,8 @@ The endpoint-extended half variation defines the actual norms used in the
 projective tensor determinant counterexample. Its identification with the
 signed-interval convex hull is proved before any determinant application.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 
@@ -243,10 +247,10 @@ theorem mem_convexHull_coordinateRoot_of_sum_abs_le_two
     have hleft : (∑ i, ∑ j, a i * b j * (if k = i then 1 else 0)) = a k * t := by
       simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_irrel,
         Finset.sum_const_zero, Finset.sum_ite_eq,
-        Finset.mem_univ, if_true, ← Finset.mul_sum, hbt]
+        Finset.mem_univ, ite_true, ← Finset.mul_sum, hbt]
     have hright : (∑ i, ∑ j, a i * b j * (if k = j then 1 else 0)) = t * b k := by
       simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ,
-        if_true, ← Finset.sum_mul]
+        ite_true, ← Finset.sum_mul]
       rfl
     rw [hleft, hright]
     rw [mul_div_cancel_right₀ _ ht0, mul_div_cancel_left₀ _ ht0]

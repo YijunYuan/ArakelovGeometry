@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.ConvexCentralSection
-import ArakelovGeometry.GeometryOfNumbers.LatticeSubspaceCoordinates
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.ConvexCentralSection
+public import ArakelovGeometry.GeometryOfNumbers.LatticeSubspaceCoordinates
 
 /-! # Actual normalized lattice central sections and quotient projections -/
+
+@[expose] public section
 
 noncomputable section
 

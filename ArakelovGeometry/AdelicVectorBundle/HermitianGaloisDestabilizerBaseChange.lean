@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisMaximalSlope
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisMaximalSlope
 
 /-!
 # The actual largest destabilizer under finite Galois Hermitian extension
@@ -12,6 +14,8 @@ Produced rational descent, actual maximal-slope equality and native restricted
 mean preservation identify the actual extended destabilizer with the base change
 of the actual original destabilizer.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

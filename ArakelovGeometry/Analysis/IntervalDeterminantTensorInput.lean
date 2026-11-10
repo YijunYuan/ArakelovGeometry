@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.IntervalTensorDeterminant
+module
+
+public import ArakelovGeometry.Analysis.IntervalTensorDeterminant
 
 /-!
 # Actual determinant input norms for the interval tensor example
@@ -16,6 +18,8 @@ representation has actual output exterior quotient length at most one half,
 so it fails to preserve these lengths. This is a local real counterexample;
 the global same-constant strong-Minkowski implication remains open.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 open Module
@@ -252,7 +256,8 @@ local instance intervalInputThreeDoubleSpace :
       ‖a‖ * PiTensorProduct.projectiveSeminorm z
     exact (map_smul_eq_mul PiTensorProduct.projectiveSeminorm a z).le⟩
 
-private abbrev IntervalDeterminantInputFactors : Unit ⊕ Unit → Type
+/-- The powered determinant lines forming the two factors of the interval tensor input. -/
+abbrev IntervalDeterminantInputFactors : Unit ⊕ Unit → Type
   | .inl _ => ⨂[ℝ] (_ : Fin 3), ⋀[ℝ]^2 (Fin 2 → ℝ)
   | .inr _ => ⨂[ℝ] (_ : Fin 2), ⋀[ℝ]^3 (Fin 3 → ℝ)
 

@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.DeterminantNorm
-import ArakelovGeometry.Analysis.ArchimedeanDual
-import ArakelovGeometry.Analysis.UltrametricDual
-import Mathlib.LinearAlgebra.TensorProduct.Basis
-import Mathlib.LinearAlgebra.TensorProduct.Tower
-import Mathlib.RingTheory.Flat.Basic
+module
+
+public import ArakelovGeometry.Analysis.ArchimedeanDual
+public import ArakelovGeometry.Analysis.DeterminantNorm
+public import ArakelovGeometry.Analysis.UltrametricDual
+public import Mathlib.LinearAlgebra.TensorProduct.Basis
+public import Mathlib.LinearAlgebra.TensorProduct.Tower
+public import Mathlib.RingTheory.Flat.Basic
 
 /-!
 # Norms on scalar extensions
@@ -17,6 +19,8 @@ Projective and injective norms on the actual scalar extension `L ⊗[k] E`
 for an isometric extension of complete valued fields. The constructions retain
 trivial valuations and the zero-dimensional case.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -41,10 +45,12 @@ theorem scalarExtensionDualEval_zero :
     scalarExtensionDualEval (0 : E →ₗ[k] k) = (0 : L ⊗[k] E →ₗ[L] L) := by
   simp [scalarExtensionDualEval]
 
-private def extensionSum (p : List (L × E)) : L ⊗[k] E :=
+/-- The tensor represented by a finite list of scalar-vector pairs. -/
+def extensionSum (p : List (L × E)) : L ⊗[k] E :=
   (p.map fun q ↦ q.1 ⊗ₜ[k] q.2).sum
 
-private def extensionCost (p : List (L × E)) : ℝ :=
+/-- The sum of products of norms in a finite tensor decomposition. -/
+def extensionCost (p : List (L × E)) : ℝ :=
   (p.map fun q ↦ ‖q.1‖ * ‖q.2‖).sum
 
 private theorem extensionCost_nonneg (p : List (L × E)) : 0 ≤ extensionCost p := by
@@ -54,15 +60,15 @@ private theorem extensionCost_nonneg (p : List (L × E)) : 0 ≤ extensionCost p
   exact mul_nonneg (norm_nonneg _) (norm_nonneg _)
 
 private theorem exists_extensionSum (z : L ⊗[k] E) : ∃ p, extensionSum p = z := by
-  induction z using TensorProduct.induction_on with
-  | zero => exact ⟨[], rfl⟩
+  induction z using TensorProduct.inductionOn with
   | tmul a x => exact ⟨[(a, x)], by simp [extensionSum]⟩
   | add z t hz ht =>
     obtain ⟨p, rfl⟩ := hz
     obtain ⟨q, rfl⟩ := ht
     exact ⟨p ++ q, by simp [extensionSum]⟩
 
-private def extensionCosts (z : L ⊗[k] E) : Set ℝ :=
+/-- All costs of finite decompositions of a tensor in the scalar extension. -/
+def extensionCosts (z : L ⊗[k] E) : Set ℝ :=
   {c | ∃ p : List (L × E), extensionSum p = z ∧ extensionCost p = c}
 
 private theorem extensionCosts_nonempty (z : L ⊗[k] E) : (extensionCosts z).Nonempty := by
@@ -74,7 +80,8 @@ private theorem extensionCosts_bddBelow (z : L ⊗[k] E) : BddBelow (extensionCo
   rintro _ ⟨p, _, rfl⟩
   exact extensionCost_nonneg p
 
-private def extensionProjectiveValue (z : L ⊗[k] E) : ℝ := sInf (extensionCosts z)
+/-- The infimum of finite-decomposition costs of a tensor in the scalar extension. -/
+def extensionProjectiveValue (z : L ⊗[k] E) : ℝ := sInf (extensionCosts z)
 
 private theorem extensionProjectiveValue_nonneg (z : L ⊗[k] E) :
     0 ≤ extensionProjectiveValue z := by
@@ -86,7 +93,8 @@ private theorem extensionProjectiveValue_le (p : List (L × E)) :
     extensionProjectiveValue (extensionSum (k := k) p) ≤ extensionCost p :=
   csInf_le (extensionCosts_bddBelow _) ⟨p, rfl, rfl⟩
 
-private theorem extensionProjectiveValue_zero :
+/-- The zero tensor has zero projective value. -/
+theorem extensionProjectiveValue_zero :
     extensionProjectiveValue (0 : L ⊗[k] E) = 0 := by
   apply le_antisymm _ (extensionProjectiveValue_nonneg _)
   exact extensionProjectiveValue_le (k := k) ([] : List (L × E))
@@ -96,7 +104,8 @@ private theorem exists_extensionCost_lt (z : L ⊗[k] E) {ε : ℝ} (hε : 0 < �
   obtain ⟨_, ⟨p, hp, rfl⟩, hc⟩ := Real.lt_sInf_add_pos (extensionCosts_nonempty z) hε
   exact ⟨p, hp, hc⟩
 
-private theorem extensionProjectiveValue_add_le (z t : L ⊗[k] E) :
+/-- Concatenating decompositions gives the triangle inequality for the projective value. -/
+theorem extensionProjectiveValue_add_le (z t : L ⊗[k] E) :
     extensionProjectiveValue (z + t) ≤ extensionProjectiveValue z +
       extensionProjectiveValue t := by
   apply le_of_forall_pos_le_add
@@ -127,7 +136,8 @@ private theorem extensionCost_mul (p : List (L × E)) (a : L) :
   simp [extensionCost, List.map_map, Function.comp_def, norm_mul, mul_assoc,
     List.sum_map_mul_left]
 
-private theorem extensionProjectiveValue_smul_le (a : L) (z : L ⊗[k] E) :
+/-- Scaling a decomposition bounds the projective value of a scalar multiple. -/
+theorem extensionProjectiveValue_smul_le (a : L) (z : L ⊗[k] E) :
     extensionProjectiveValue (a • z) ≤ ‖a‖ * extensionProjectiveValue z := by
   by_cases ha : a = 0
   · simp only [ha, zero_smul, extensionProjectiveValue_zero, norm_zero, zero_mul, le_refl]

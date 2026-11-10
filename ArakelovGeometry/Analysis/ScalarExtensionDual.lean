@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.ScalarExtensionNorm
-import ArakelovGeometry.AdelicVectorBundle.DualBaseChange
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DualBaseChange
+public import ArakelovGeometry.Analysis.ScalarExtensionNorm
 
 /-!
 # Dual norms under scalar extension
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.DualBaseChange
 The operator norm on the actual algebraic dual commutes with injective
 scalar extension over complete non-Archimedean fields.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -56,8 +60,7 @@ theorem scalarExtensionDualEval_eval (x : E) (z : L ⊗[k] Module.Dual k E) :
   intro dualGroup dualSpace
   let := dualGroup
   let := dualSpace
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | add z t hz ht => simpa only [map_add, LinearMap.add_apply] using congrArg₂ (· + ·) hz ht
   | tmul a f => simp only [scalarExtensionDualEval_tmul,
       dualBaseChangeEquiv_tmul_apply_tmul, mul_one, Module.Dual.eval_apply]

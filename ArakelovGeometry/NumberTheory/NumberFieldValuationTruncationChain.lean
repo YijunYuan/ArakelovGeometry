@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.ValuationModuleChain
-import ArakelovGeometry.NumberTheory.ValuationModuleCriterion
-import Mathlib.RingTheory.PicardGroup
+module
+
+public import ArakelovGeometry.NumberTheory.ValuationModuleChain
+public import ArakelovGeometry.NumberTheory.ValuationModuleCriterion
+public import Mathlib.RingTheory.PicardGroup
 
 /-!
 # Actual normalized finite-place truncation chains
@@ -16,6 +18,8 @@ are actual fractional ideals; finite negative support makes each stage
 nonzero and tensor-invertible. No prime-power factorization or localization
 formula is asserted here.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct Pointwise

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.OperatorNorm
-import ArakelovGeometry.AdelicVectorBundle.CountableMeasurable
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.CountableMeasurable
+public import ArakelovGeometry.AdelicVectorBundle.OperatorNorm
 
 /-!
 # Measurable completed operator norms
@@ -13,6 +15,8 @@ A single dense rational coordinate set computes each actual completed operator
 norm. The same set at every place proves measurability, with the zero map and
 zero-dimensional source included. Nonzero rational maps have positive norm.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.ValuationModule
-import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
-import Mathlib.RingTheory.FractionalIdeal.Basic
+module
+
+public import ArakelovGeometry.NumberTheory.ValuationModule
+public import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
+public import Mathlib.RingTheory.FractionalIdeal.Basic
 
 /-!
 # Common denominators for finitely many positive prime bounds
@@ -16,6 +18,8 @@ is therefore fractional and finitely generated. Negative support is unrestricted
 
 Reference: Chen–Moriwaki, Lemma 4.4.7, PDF page 309.
 -/
+
+@[expose] public section
 
 noncomputable section
 

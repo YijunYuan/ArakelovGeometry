@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.BundleTensorCountable
-import ArakelovGeometry.AdelicVectorBundle.TensorPairNorm
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BundleTensorCountable
+public import ArakelovGeometry.AdelicVectorBundle.TensorPairNorm
 
 /-!
 # The actual binary Hermitian tensor family
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.TensorPairNorm
 The existing finite orthogonal tensor norm is transported by the same
 canonical binary tensor equivalence as the injective and mixed families.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

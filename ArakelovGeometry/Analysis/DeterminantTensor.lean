@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.DeterminantExactSequence
-import Mathlib.LinearAlgebra.TensorProduct.Matrix
-import Mathlib.LinearAlgebra.PiTensorProduct.Basis
-import Mathlib.RingTheory.TensorProduct.Finite
+module
+
+public import ArakelovGeometry.Analysis.DeterminantExactSequence
+public import Mathlib.LinearAlgebra.PiTensorProduct.Basis
+public import Mathlib.LinearAlgebra.TensorProduct.Matrix
+public import Mathlib.RingTheory.TensorProduct.Finite
 
 /-!
 # The algebraic determinant of a tensor product
@@ -15,6 +17,8 @@ Tensor-basis determinants obey the Kronecker determinant identity, including
 empty factors. This supplies basis independence for the canonical tensor
 determinant map on actual exterior powers and powered determinant lines.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

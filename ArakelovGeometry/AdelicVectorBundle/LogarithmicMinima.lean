@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Basic
-import ArakelovGeometry.AdelicVectorBundle.VectorDegree
-import Mathlib.Data.EReal.Operations
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Basic
+public import ArakelovGeometry.AdelicVectorBundle.VectorDegree
+public import Mathlib.Data.EReal.Operations
 
 /-!
 # Ordinary logarithmic minima of actual adelic vector bundles
@@ -17,6 +19,8 @@ The natural-index extension here also permits index zero, whose value is `⊤`,
 and indices beyond the rank, whose value is `⊥`. This gives the source rank-zero
 conventions for the first and last minima without discarding the empty space.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicVectorBundle
 

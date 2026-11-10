@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Finite.Construction
-import ArakelovGeometry.AdelicCurve.Extension.FiniteIntermediateField
-import ArakelovGeometry.ExternalResults.AbsoluteValueCompact
-import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.Construction
+public import ArakelovGeometry.AdelicCurve.Extension.FiniteIntermediateField
+public import ArakelovGeometry.ExternalResults.AbsoluteValueCompact
+public import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
 
 /-!
 # Finite stages and topology of algebraic extensions
@@ -14,6 +16,8 @@ import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
 Finite-stage projections, compact fibres and the projective sigma algebra of
 Chen–Moriwaki, §3.4.2.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.Algebraic
 
@@ -275,7 +279,7 @@ theorem map_finiteFibreProbabilityMeasure_projFiniteFiberOfLE (ω : AS.Ω)
     have hF (x : FiniteBaseFiber L F ω) : φ x.val.abv = g x := by
       have hx : x.val.abv.restriction K = AS.ϕ ω :=
         x.val.restrict_eq.trans (congrArg AS.ϕ x.property)
-      rw [show φ x.val.abv = _ from dif_pos hx]
+      rw [show φ x.val.abv = _ from dite_eq_left hx]
       apply congrArg g
       apply Subtype.ext
       exact ParameterSpaceExtension.ext AS F₀ x.property.symm rfl
@@ -332,8 +336,9 @@ theorem surjective_projFiniteFiberOfLE (ω : AS.Ω)
   have : IsScalarTower K F₀ G₀ :=
     IsScalarTower.of_algebraMap_eq (fun a ↦ (i.commutes a).symm)
   have : FiniteDimensional F₀ G₀ := Module.Finite.of_restrictScalars_finite K F₀ G₀
+  have : Algebra.IsAlgebraic F₀ G₀ := Algebra.IsAlgebraic.of_finite F₀ G₀
   intro x
-  obtain ⟨w, hw⟩ := AbsoluteValue.exists_extension (L := G₀) x.val.abv
+  obtain ⟨w, hw⟩ := AbsoluteValue.exists_extension (K := F₀) (L := G₀) x.val.abv
   have hbase : w.restriction K = AS.ϕ ω := by
     ext a
     have h := congrArg (fun z : AbsoluteValue F₀ ℝ ↦ z (algebraMap K F₀ a)) hw

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
-import Mathlib.Probability.Kernel.Composition.IntegralCompProd
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
+public import Mathlib.Probability.Kernel.Composition.IntegralCompProd
 
 /-!
 # Signed integration on algebraic tower fibres
@@ -13,6 +15,8 @@ Pushforward integration and kernel Fubini identify signed integration against
 the actual fibre and iterated fibre measures, with the required integrability
 hypothesis. These are the analytic steps for Chen–Moriwaki, Theorem 3.4.12.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.Algebraic
 open MeasureTheory ProbabilityTheory

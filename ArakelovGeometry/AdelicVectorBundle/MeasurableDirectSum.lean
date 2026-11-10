@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Measurable
-import ArakelovGeometry.AdelicVectorBundle.DirectSum
-import ArakelovGeometry.Analysis.NormShapeMeasurable
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DirectSum
+public import ArakelovGeometry.AdelicVectorBundle.Measurable
+public import ArakelovGeometry.Analysis.NormShapeMeasurable
 
 /-!
 # Measurability of convex-profile direct sums
@@ -13,6 +15,8 @@ import ArakelovGeometry.Analysis.NormShapeMeasurable
 Source Proposition 4.1.21, for arbitrary measurable profile families in the
 uniform topology. No finite-dimensionality or countability of the field is needed.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

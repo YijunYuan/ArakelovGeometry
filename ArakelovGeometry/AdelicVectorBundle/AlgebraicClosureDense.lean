@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.FiniteExtensionDense
-import Mathlib.Algebra.AlgebraicCard
-import Mathlib.FieldTheory.AlgebraicClosure
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.FiniteExtensionDense
+public import Mathlib.Algebra.AlgebraicCard
+public import Mathlib.FieldTheory.AlgebraicClosure
 
 /-!
 # Countable density in an algebraic closure
@@ -14,6 +16,8 @@ The canonical relative algebraic closure of a common countable dense subfield
 is countable. Polynomial coefficient approximation and actual roots supply
 its density in every extending completion, without a separability assumption.
 -/
+
+@[expose] public section
 
 noncomputable section
 

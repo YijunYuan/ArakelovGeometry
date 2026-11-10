@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.StrongMinkowskiImplication
-import ArakelovGeometry.AdelicVectorBundle.TrivialPlaceAdaptedBasis
-import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
+public import ArakelovGeometry.AdelicVectorBundle.StrongMinkowskiImplication
+public import ArakelovGeometry.AdelicVectorBundle.TrivialPlaceAdaptedBasis
 
 /-!
 # Genuine universal Minkowski level zero at a mass-one trivial place
@@ -15,6 +17,8 @@ strong property without a level assumption. The proved zero-Archimedean-mass
 implication produces the ordinary property. Both actual endpoint identities
 include zero rank. These results concern a nonempty concrete curve.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 noncomputable section

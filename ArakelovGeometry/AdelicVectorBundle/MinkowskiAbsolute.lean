@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Minkowski
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariantsRegularBase
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariantsRegularBase
+public import ArakelovGeometry.AdelicVectorBundle.Minkowski
 
 /-!
 # Absolute Minkowski levels on actual bundles
@@ -13,6 +15,8 @@ The source predicate uses the actual ordinary closure first minimum and the
 canonical full native maximal-slope supremum under original regularity.
 It quantifies over every positive-rank bundle without admissibility.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.AdelicStructure

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaFiltrationFinite
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteLogarithmicMinimaFinite
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteLogarithmicMinimaFinite
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaFiltrationFinite
 
 /-!
 # Actual absolute minima cut bases, ranks and finite jumps
@@ -14,6 +16,8 @@ canonical closure bundle. Its jump set reuses the ordinary jump set of that
 bundle. Original finite minima supply its real interpretation without any
 additional regularity hypothesis on the algebraic-closure curve.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArithmeticPolarVolume
-import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDualGeneric
-import ArakelovGeometry.NumberTheory.NumberFieldProjectiveSections
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldArithmeticPolarVolume
+public import ArakelovGeometry.NumberTheory.NumberFieldProjectiveSections
+public import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDualGeneric
 
 /-! # Actual polar lattice points and original trace-dual effective sections -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField Set

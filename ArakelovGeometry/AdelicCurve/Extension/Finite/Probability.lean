@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Finite.Tower
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.Tower
 
 /-!
 # Finite fibre probabilities and pullbacks
@@ -13,6 +15,8 @@ everywhere statements on such fibres to pointwise statements and gives invarianc
 of fibre integration under global almost everywhere equality. The projection
 pushforward also gives nonnegative integration and integrability of base pullbacks.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped ENNReal

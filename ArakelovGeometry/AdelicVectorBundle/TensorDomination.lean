@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Tensor
-import ArakelovGeometry.AdelicVectorBundle.BasisComparison
-import Mathlib.LinearAlgebra.PiTensorProduct.Finite
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BasisComparison
+public import ArakelovGeometry.AdelicVectorBundle.Tensor
+public import Mathlib.LinearAlgebra.PiTensorProduct.Finite
 
 /-!
 # Domination of actual finite tensor norms
@@ -14,6 +16,8 @@ Completed tensor-basis coordinates are bounded by products of actual dual
 norms. Together with the projective pure-tensor bound, this gives the
 source's comparison with a mixed rational basis norm.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct
@@ -112,7 +116,7 @@ theorem ofBasis_tensor_norm_le_mul_of_dual_bounds [DecidableEq ι] (ω : S.Ω)
   intro j
   exact (norm_tensor_coordinate_le_injective b ξ ω j z).trans
     (mul_le_mul_of_nonneg_right
-      (Finset.prod_le_prod (fun i _ ↦ (ξ i).dual.norm_nonneg ω _) (fun i _ ↦ hb i (j i)))
+      (Finset.prod_le_prod₀ (fun i _ ↦ (ξ i).dual.norm_nonneg ω _) (fun i _ ↦ hb i (j i)))
       ((injectiveTensor ξ).norm_nonneg ω z))
 
 /-- Norms between the actual injective and projective constructions, ultrametric
@@ -155,7 +159,7 @@ theorem isStronglyDominated_tensor_of_bounds
       _ ≤ ∏ i, (ξ i).norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] (b i) (j i)) := by
         simpa only [B, Basis.piTensorProduct_apply] using
           projectiveTensor_norm_rational_tprod_le ξ (fun i ↦ (b i) (j i)) ω
-      _ ≤ ∏ i, Real.exp (A i ω) := Finset.prod_le_prod
+      _ ≤ ∏ i, Real.exp (A i ω) := Finset.prod_le_prod₀
         (fun i _ ↦ (ξ i).norm_nonneg ω _) (fun i _ ↦ by
           simpa only [Module.Basis.baseChange_apply] using ha i (j i))
       _ = Real.exp (a ω) := (Real.exp_sum _ _).symm

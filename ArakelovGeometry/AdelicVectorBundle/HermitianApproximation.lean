@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.CountableHermitianMeasurable
-import ArakelovGeometry.Analysis.MeasurableEllipsoid
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.CountableHermitianMeasurable
+public import ArakelovGeometry.Analysis.MeasurableEllipsoid
 
 /-!
 # Measurable Hermitian approximation
@@ -14,6 +16,8 @@ completed fibre. A countable measurable selection supplies the required norm
 bounds at infinite places. Pasting these candidates with the original norms
 at finite places gives the global Hermitian approximation of Theorem 4.1.26.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 open Matrix
@@ -279,27 +283,27 @@ def complexEllipsoidFamily : NormFamily S E := by
       else ξ.norm ω
     norm_eq_zero_iff := fun ω x => ?_ }
   by_cases hω : ω ∈ S.Ωinf
-  · simp only [dif_pos hω]
+  · simp only [dite_eq_left hω]
     constructor
     · intro hx
       apply (ξ.norm_eq_zero_iff ω x).mp
       exact le_antisymm (by simpa only [hx] using hQ ⟨ω, hω⟩ x) (ξ.norm_nonneg ω x)
     · rintro rfl
       exact map_zero _
-  · simpa only [dif_neg hω] using ξ.norm_eq_zero_iff ω x
+  · simpa only [dite_eq_right hω] using ξ.norm_eq_zero_iff ω x
 
 theorem complexEllipsoidFamily_norm_of_mem (ω : S.Ω) (hω : ω ∈ S.Ωinf)
     (x : (S.ϕ ω).Completion ⊗[K] E) :
     (ξ.complexEllipsoidFamily b σ hσ Q hQ).norm ω x =
       complexEllipsoidSeminorm b ω (σ ⟨ω, hω⟩) (hσ ⟨ω, hω⟩) (Q ⟨ω, hω⟩) x := by
   classical
-  simp only [complexEllipsoidFamily, dif_pos hω]
+  simp only [complexEllipsoidFamily, dite_eq_left hω]
 
 theorem complexEllipsoidFamily_norm_of_not_mem (ω : S.Ω) (hω : ω ∉ S.Ωinf)
     (x : (S.ϕ ω).Completion ⊗[K] E) :
     (ξ.complexEllipsoidFamily b σ hσ Q hQ).norm ω x = ξ.norm ω x := by
   classical
-  simp only [complexEllipsoidFamily, dif_neg hω]
+  simp only [complexEllipsoidFamily, dite_eq_right hω]
 
 /-- The construction fixes every finite completed-fibre norm. -/
 theorem complexEllipsoidFamily_norm_finite (ω : S.Ω) (hω : ω ∈ S.Ωfin)

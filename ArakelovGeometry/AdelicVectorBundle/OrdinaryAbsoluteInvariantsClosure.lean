@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.OrdinaryCompatibleTowerNativeRestriction
-import ArakelovGeometry.AdelicVectorBundle.GeometricAbsoluteInvariantsClosure
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariantsClosure
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariantsClosure
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAbsoluteInvariantsClosure
+public import ArakelovGeometry.AdelicVectorBundle.OrdinaryCompatibleTowerNativeRestriction
 
 /-!
 # Ordinary native determinant degrees and closure choice
@@ -14,6 +16,8 @@ Actual native restriction bundles are produced from regularity of the original
 base. The prescribed rational determinant map and genuine place measure
 transport identify their canonical degrees and all native suprema.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -91,11 +95,7 @@ theorem nativeRestrictionDegreeOfOrdinaryBase_algEquiv (V : AdelicVectorBundle S
   let t := determinantGenerator (K := L) (E := A)
   have ht : t ≠ 0 := determinantGenerator_ne_zero
   let d := scalarExtensionRestrictionDeterminantEquiv σ A
-  have hd : d t ≠ 0 := by
-    intro h
-    apply ht
-    apply d.injective
-    simpa only [map_zero] using h
+  have hd : d t ≠ 0 := d.map_ne_zero_iff.mpr ht
   rw [V.nativeRestrictionDegreeOfOrdinaryBase_eq_neg_integral hreg hN _ (d t) hd,
     V.nativeRestrictionDegreeOfOrdinaryBase_eq_neg_integral hreg hN A t ht]
   exact congrArg (fun a : ℝ => -a)

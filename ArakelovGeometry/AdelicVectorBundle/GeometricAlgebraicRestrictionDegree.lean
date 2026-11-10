@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicRestriction
-import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicNativeDeterminant
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariantsDiscrete
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariantsDiscrete
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicNativeDeterminant
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicRestriction
 
 /-!
 # Canonical geometric native restriction degrees
@@ -15,6 +17,8 @@ on every native subspace. The resulting canonical degrees have a single
 produced rank-multiple upper bound on all native subspaces. The bundle is on
 the subspace itself, and no extension-place regularity is assumed.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -29,7 +33,8 @@ variable {K L E : Type*} [Field K] [Field L] [Algebra K L]
 namespace NormFamily
 
 omit [MeasurableSingletonClass S.Ω] in
-private theorem geometricRestrictionDegree_normalization
+/-- An all-finite adelic structure satisfies archimedean normalization vacuously. -/
+theorem geometricRestrictionDegree_normalization
     (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
     ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion := by
   intro ω hω

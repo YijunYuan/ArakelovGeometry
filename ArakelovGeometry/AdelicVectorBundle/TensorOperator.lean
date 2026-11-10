@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TensorOperatorBaseChange
-import ArakelovGeometry.AdelicVectorBundle.Tensor
-import ArakelovGeometry.AdelicVectorBundle.OperatorNorm
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.OperatorNorm
+public import ArakelovGeometry.AdelicVectorBundle.Tensor
+public import ArakelovGeometry.AdelicVectorBundle.TensorOperatorBaseChange
 
 /-!
 # Completed injective tensor and operator identities
@@ -13,6 +15,8 @@ import ArakelovGeometry.AdelicVectorBundle.OperatorNorm
 All norms below live on the canonical completed scalar extensions. Evaluation
 identifies the relevant bidual norm with the operator norm on the local dual.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

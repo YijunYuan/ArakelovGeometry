@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.FieldTheory.PrimitiveElement
-import Mathlib.FieldTheory.PurelyInseparable.PerfectClosure
-import Mathlib.LinearAlgebra.Basis.Submodule
-import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
+module
+
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
+public import Mathlib.FieldTheory.PrimitiveElement
+public import Mathlib.FieldTheory.PurelyInseparable.PerfectClosure
+public import Mathlib.LinearAlgebra.Basis.Submodule
 
 /-!
 # Finite descent through an algebraic base extension
@@ -16,6 +18,8 @@ ordinary and separable degrees. The proof descends a multiplication table and a 
 element of the separable closure. This supplies the finite-stage base-change argument for
 Chen–Moriwaki, *Adelic curves*, Theorem 3.4.12.
 -/
+
+@[expose] public section
 
 open Module
 open scoped BigOperators

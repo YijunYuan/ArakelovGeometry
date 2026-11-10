@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldTraceDual
-import ArakelovGeometry.NumberTheory.NumberFieldFullLatticeIntegerBasis
-import Mathlib.NumberTheory.NumberField.Discriminant.Different
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldFullLatticeIntegerBasis
+public import ArakelovGeometry.NumberTheory.NumberFieldTraceDual
+public import Mathlib.NumberTheory.NumberField.Discriminant.Different
 
 /-!
 # Integral trace duality on the original full lattice
@@ -14,6 +16,8 @@ The dual submodule consists of original K-linear functionals whose original
 values have integral trace on M. Its restriction is the literal integer dual.
 The usual codifferent criterion is proved, not assumed as a certificate.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -45,11 +49,13 @@ theorem mem_integralTraceDual (M : Submodule (𝓞 K) E) (f : Module.Dual K E) :
     f ∈ integralTraceDual M ↔ ∀ m : M, Algebra.trace ℚ K (f (m : E)) ∈
       LinearMap.range (Algebra.linearMap ℤ ℚ) := Iff.rfl
 
-private def integerRangeEquiv : ℤ ≃ₗ[ℤ] LinearMap.range (Algebra.linearMap ℤ ℚ) :=
+/-- Integers identify with the range of their canonical embedding into the rationals. -/
+def integerRangeEquiv : ℤ ≃ₗ[ℤ] LinearMap.range (Algebra.linearMap ℤ ℚ) :=
   LinearEquiv.ofInjective (Algebra.linearMap ℤ ℚ) Int.cast_injective
 
+/-- Recovering the integer representative preserves its rational value. -/
 @[simp]
-private theorem integerRangeEquiv_symm_cast (q : LinearMap.range (Algebra.linearMap ℤ ℚ)) :
+theorem integerRangeEquiv_symm_cast (q : LinearMap.range (Algebra.linearMap ℤ ℚ)) :
     (integerRangeEquiv.symm q : ℚ) = (q : ℚ) :=
   congrArg Subtype.val (integerRangeEquiv.apply_symm_apply q)
 
@@ -143,8 +149,7 @@ theorem traceRestriction_injective (M : Submodule (𝓞 K) E)
   intro x
   let e := NumberFieldFullLattice.rationalTensorEquiv M hspan
   obtain ⟨z, rfl⟩ := e.surjective x
-  induction z using TensorProduct.induction_on with
-  | zero => simp [e]
+  induction z using TensorProduct.inductionOn with
   | tmul q m =>
       rw [NumberFieldFullLattice.rationalTensorEquiv_tmul]
       change NumberFieldTraceDual.traceMap f.1 (q • (m : E)) =

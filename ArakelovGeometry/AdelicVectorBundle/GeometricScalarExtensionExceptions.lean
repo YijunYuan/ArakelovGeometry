@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricAtomicTail
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDominationPointwise
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAtomicTail
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDominationPointwise
 
 /-!
 # One countable base exceptional set for every actual algebraic extension
@@ -14,6 +16,8 @@ singleton masses give countable actual support, so every extended completed
 norm agrees with its coordinate family off one produced base set. Neither the
 original norm nor the parameter space is assumed ultrametric or countable.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

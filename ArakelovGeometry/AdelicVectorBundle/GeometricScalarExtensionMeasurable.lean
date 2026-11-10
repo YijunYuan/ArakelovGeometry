@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricScalarExtensionExceptions
-import Mathlib.MeasureTheory.MeasurableSpace.Embedding
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeometricScalarExtensionExceptions
+public import Mathlib.MeasureTheory.MeasurableSpace.Embedding
 
 /-!
 # Actual finite scalar measurability on positive atomic bases
@@ -14,6 +16,8 @@ countable base exceptional set lifts to a countable set, where arbitrary norm
 values can replace measurable coordinate values. No whole original or extending
 parameter space is assumed countable or discrete.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

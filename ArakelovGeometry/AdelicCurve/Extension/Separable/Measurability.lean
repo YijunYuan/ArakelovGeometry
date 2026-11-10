@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Separable.FibreIntegral
-import ArakelovGeometry.AdelicCurve.Extension.Separable.Embeddings
-import ArakelovGeometry.ExternalResults.FunctionalMonotoneClass
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Separable.Embeddings
+public import ArakelovGeometry.AdelicCurve.Extension.Separable.FibreIntegral
+public import ArakelovGeometry.ExternalResults.FunctionalMonotoneClass
 
 /-!
 # Measurability of finite separable fibre integration
@@ -13,6 +15,8 @@ import ArakelovGeometry.ExternalResults.FunctionalMonotoneClass
 Evaluation averages and monotone-class arguments establish measurable fibre
 integration (Chen–Moriwaki, Theorem 3.3.4).
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.ParameterSpaceExtension
 

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.ArchimedeanDual
-import ArakelovGeometry.Analysis.UltrametricDual
+module
+
+public import ArakelovGeometry.Analysis.ArchimedeanDual
+public import ArakelovGeometry.Analysis.UltrametricDual
 
 /-!
 # The minimal-extension formula for a restricted dual norm
@@ -14,6 +16,8 @@ operator norms of its extensions. At usual Archimedean places an extension
 attains the infimum. For an ultrametric original norm, arbitrary losses
 greater than one suffice, including over a trivially valued field.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

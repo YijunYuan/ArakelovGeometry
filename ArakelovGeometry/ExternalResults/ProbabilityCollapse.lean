@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.MeasureTheory.Integral.Bochner.Basic
+module
+
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
 /-!
 # Collapsing a probability summand
@@ -12,6 +14,8 @@ The measure-theoretic construction used in Chen–Moriwaki, Example 3.7.2(3).
 On a disjoint union `A ⊕ B`, collapse a probability space `B` to one point.
 The induced `L¹` operator fixes the `A` component and integrates over `B`.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.ProbabilityCollapse
 

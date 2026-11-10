@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaFiltrationRank
-import ArakelovGeometry.AdelicVectorBundle.BundleCountable
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BundleCountable
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaFiltrationRank
 
 /-!
 # Ordinary minima of genuine restricted adelic bundles
@@ -17,6 +19,8 @@ The source indices are positive and at most rank; natural-index zero and
 above-rank cases use the explicit auxiliary conventions. These producers do
 not assert the whole source 4.3.70 intersection-of-sums formula.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle

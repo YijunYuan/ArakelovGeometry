@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Rescaling
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Rescaling
 
 /-!
 # Positive degree under integrable rescaling
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicVectorBundle.Rescaling
 Every bound consumes the exact degree shift on all actual restrictions.
 Finite real positive degrees are produced before subtraction is used.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 

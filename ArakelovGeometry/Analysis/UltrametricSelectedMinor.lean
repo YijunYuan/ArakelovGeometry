@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.UltrametricCoordinateSplit
+module
+
+public import ArakelovGeometry.Analysis.UltrametricCoordinateSplit
 
 /-!
 # Residual minima for a prescribed normalized minor
@@ -12,6 +14,8 @@ The same selected minor can be used across a measurable family of absolute
 values. This module computes the residual minimum from its actual normalized
 coefficient bounds; the minor is not reselected after completion.
 -/
+
+@[expose] public section
 
 noncomputable section
 open scoped Matrix

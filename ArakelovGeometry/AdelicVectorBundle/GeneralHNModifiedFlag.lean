@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNModified
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNUpper
-import ArakelovGeometry.AdelicVectorBundle.DegreeFlagMajorant
-import ArakelovGeometry.AdelicVectorBundle.DegreeFlagDual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeFlagDual
+public import ArakelovGeometry.AdelicVectorBundle.DegreeFlagMajorant
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNModified
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNUpper
 
 /-!
 # Modified degrees in actual exhaustive flags
@@ -16,6 +18,8 @@ flag degree inequalities combine with the general ordered degree bounds.
 Capital discrepancy may be infinite; repeated terms and zero rank are allowed.
 The final term is required to be the entire space.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

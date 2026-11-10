@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Defs
-import Mathlib.Algebra.AlgebraicCard
-import Mathlib.Analysis.Polynomial.MahlerMeasure
-import Mathlib.FieldTheory.RatFunc.Basic
+module
+
+public import ArakelovGeometry.AdelicCurve.Defs
+public import Mathlib.Algebra.AlgebraicCard
+public import Mathlib.Analysis.Polynomial.MahlerMeasure
+public import Mathlib.FieldTheory.RatFunc.Basic
 
 /-!
 # Archimedean places of the rational-function adelic curve
@@ -16,6 +18,8 @@ The archimedean component of Chen–Moriwaki §3.2.5 consists of the parameters
 the induced Lebesgue measure. Evaluation at these points gives absolute values
 on `ℚ(T)` extending the usual rational absolute value.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicCurve.RationalFunction
 

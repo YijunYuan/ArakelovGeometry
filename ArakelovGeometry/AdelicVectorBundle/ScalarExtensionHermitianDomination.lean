@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionDual
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDomination
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionDual
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDomination
 
 /-!
 # Domination of Hermitian scalar extensions
@@ -13,6 +15,8 @@ The actual Hermitian extension contracts original rational vectors and their
 dual vectors. The resulting primal and dual basis bounds yield an integrable
 distance from the extended mixed basis family.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct

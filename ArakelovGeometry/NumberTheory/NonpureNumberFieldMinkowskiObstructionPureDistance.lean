@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstructionImpurity
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPurity
+module
+
+public import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstructionImpurity
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPurity
 
 /-! # Actual separation of the nonpure rational plane from all pure families -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -99,7 +103,8 @@ theorem family_localDist_latticeGaugeFamily_prime (p : Nat.Primes) (a : ℤ) :
     (family p a).localDist ((family p a).latticeGaugeFamily (family_isUltrametric p a))
       (primePoint p) = Real.log (p.val : ℝ) / 2 := by
   rw [← NormFamily.finiteImpurityProfile_eq_localDist_latticeGaugeFamily,
-    finiteImpurityProfile, if_pos (primePoint_mem_fin p), family_completedUnitBallImpurity_prime]
+    finiteImpurityProfile, ite_eq_left (primePoint_mem_fin p),
+    family_completedUnitBallImpurity_prime]
 
 theorem family_lintegral_localDist_latticeGaugeFamily (p : Nat.Primes) (a : ℤ) :
     (∫⁻ ω, ENNReal.ofReal ((family p a).localDist

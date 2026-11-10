@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.ExternalResults.AbsoluteValue
-import Mathlib.Analysis.Normed.Unbundled.SpectralNorm
-import Mathlib.Analysis.MeanInequalitiesPow
+module
+
+public import ArakelovGeometry.ExternalResults.AbsoluteValue
+public import Mathlib.Analysis.MeanInequalitiesPow
+public import Mathlib.Analysis.Normed.Unbundled.SpectralNorm
 
 /-!
 # Extensions of real absolute values
@@ -18,6 +20,8 @@ input to the finite local-degree decomposition in Chen–Moriwaki, §3.3. Comple
 the base and passing to its algebraic closure also gives extension existence for
 an arbitrary base, as used in Proposition 3.4.5.
 -/
+
+@[expose] public section
 
 namespace AbsoluteValue
 

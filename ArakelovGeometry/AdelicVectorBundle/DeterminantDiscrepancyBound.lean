@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantDiscrepancy
-import ArakelovGeometry.AdelicVectorBundle.HermitianApproximation
-import ArakelovGeometry.AdelicVectorBundle.DeterminantPairingLocal
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantDiscrepancy
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantPairingLocal
+public import ArakelovGeometry.AdelicVectorBundle.HermitianApproximation
 
 /-!
 # Local bounds for determinant discrepancy
@@ -14,6 +16,8 @@ Actual inner-product majorants and determinant order/scaling give the
 sharp Archimedean discrepancy bound. Finite places have discrepancy one
 even when the original vector norm is not ultrametric.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

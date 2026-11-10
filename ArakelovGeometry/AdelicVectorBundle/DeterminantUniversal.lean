@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantWedgeApproximation
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantWedgeApproximation
 
 /-!
 # Universal property of actual determinant norms
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicVectorBundle.DeterminantWedgeApproximation
 Scalar-weighted wedge approximation gives maximality among seminorms with
 Hadamard's wedge bound, including the degree-zero determinant line.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

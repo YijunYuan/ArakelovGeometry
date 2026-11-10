@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.VandermondeUltrametric
-import Mathlib.Data.Finset.Sort
+module
+
+public import ArakelovGeometry.Analysis.VandermondeUltrametric
+public import Mathlib.Data.Finset.Sort
 
 /-!
 # The weighted Vandermonde estimate on an actual coordinate support
@@ -13,6 +15,8 @@ Support restriction identifies the first rows of the ambient Vandermonde
 matrix with the checked square block. Real weights are the reciprocals of
 row numbers, rather than absolute values of field scalars.
 -/
+
+@[expose] public section
 
 noncomputable section
 

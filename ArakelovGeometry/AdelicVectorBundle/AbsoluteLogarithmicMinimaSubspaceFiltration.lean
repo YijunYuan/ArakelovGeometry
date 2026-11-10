@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariantsRegularBase
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaFiltrationRank
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariantsRegularBase
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaFiltrationRank
 
 /-!
 # Native scalar restrictions and the actual minima filtration
@@ -15,6 +17,8 @@ bundles realize the source subspace sum/intersection formula on the actual
 ordinary algebraic scalar bundle, including its algebraic-closure specialization.
 No properness, finite minimum, or threshold attainment is assumed.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

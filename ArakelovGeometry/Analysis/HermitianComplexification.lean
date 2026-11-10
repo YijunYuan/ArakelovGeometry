@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.HermitianScalarExtensionTensor
+module
+
+public import ArakelovGeometry.Analysis.HermitianScalarExtensionTensor
 
 /-!
 # The corrected uniqueness criterion for Hermitian complexification
@@ -11,6 +13,8 @@ import ArakelovGeometry.Analysis.HermitianScalarExtensionTensor
 Restriction of a Hermitian norm to the original real space does not determine
 the extended Hermitian form. Conjugation invariance is the missing condition.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -86,18 +90,12 @@ theorem complexificationCore_inner_eq_of_restrict
     c.inner z t = (hermitianScalarExtensionCore b).inner z t := by
   let d := hermitianScalarExtensionCore (L := ℂ) b
   change c.inner z t = d.inner z t
-  induction z using TensorProduct.induction_on with
-  | zero =>
-    simp only [InnerProductSpace.Core.inner_zero_left (c := c.toCore),
-      InnerProductSpace.Core.inner_zero_left (c := d.toCore)]
+  induction z using TensorProduct.inductionOn with
   | add z u hz hu =>
     simp only [InnerProductSpace.Core.inner_add_left (c := c.toCore),
       InnerProductSpace.Core.inner_add_left (c := d.toCore), hz, hu]
   | tmul a x =>
-    induction t using TensorProduct.induction_on with
-    | zero =>
-      simp only [InnerProductSpace.Core.inner_zero_right (c := c.toCore),
-        InnerProductSpace.Core.inner_zero_right (c := d.toCore)]
+    induction t using TensorProduct.inductionOn with
     | add t u ht hu =>
       simp only [InnerProductSpace.Core.inner_add_right (c := c.toCore),
         InnerProductSpace.Core.inner_add_right (c := d.toCore), ht, hu]

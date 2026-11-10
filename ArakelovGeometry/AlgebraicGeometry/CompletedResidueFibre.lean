@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AlgebraicGeometry.ValuedPoint
-import ArakelovGeometry.AlgebraicGeometry.AffineFibreBaseChange
-import Mathlib.Analysis.Normed.Field.WithAbs
+module
+
+public import ArakelovGeometry.AlgebraicGeometry.AffineFibreBaseChange
+public import ArakelovGeometry.AlgebraicGeometry.ValuedPoint
+public import Mathlib.Analysis.Normed.Field.WithAbs
 
 /-!
 # Completed residue fields and actual geometric fibres
@@ -15,6 +17,8 @@ along a scheme morphism produces an isometric embedding of those completions.
 The induced square of completed field points gives base change of actual
 quasi-coherent sheaf fibres on affine schemes.
 -/
+
+@[expose] public section
 
 open AlgebraicGeometry CategoryTheory
 

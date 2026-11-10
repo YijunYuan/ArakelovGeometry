@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.CountableDensity
-import ArakelovGeometry.AdelicVectorBundle.Measurable
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.CountableDensity
+public import ArakelovGeometry.AdelicVectorBundle.Measurable
 
 /-!
 # Measurable norm operations from a common countable subfield
@@ -13,6 +15,8 @@ Actual completed dual and quotient norms have countable rational evaluation
 formulas. Their countable suprema and infima prove measurability under the
 source's single common countable-density hypothesis.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

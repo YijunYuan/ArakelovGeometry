@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Equiv
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerCylinder
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerIntegral
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integrable
+module
+
+public import ArakelovGeometry.AdelicCurve.Equiv
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integrable
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerCylinder
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerIntegral
 /-!
 # Compatibility of algebraic extensions
 
@@ -14,6 +16,8 @@ Finite descent and cylinder marginal identities imply equality of the direct
 and iterated fibre probabilities. This proves Chen–Moriwaki, Theorem 3.4.12,
 with pointwise nonnegative integration and almost everywhere signed integration.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.Algebraic
 open MeasureTheory

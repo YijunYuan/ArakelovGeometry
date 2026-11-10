@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Height.MinimalPolynomial
+module
+
+public import ArakelovGeometry.AdelicCurve.Height.MinimalPolynomial
 
 /-!
 # Northcott finiteness for algebraic elements
@@ -13,6 +15,8 @@ roots in any extension field. The minimal-polynomial height bound then proves
 Chen–Moriwaki, Claim 3.5.6, for every algebraic extension and arbitrary real
 height and degree bounds, including inseparable elements.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure
 

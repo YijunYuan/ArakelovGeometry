@@ -3,11 +3,16 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.MeasureTheory.Group.GeometryOfNumbers
-import Mathlib.Algebra.Module.ZLattice.Covolume
-import Mathlib.Topology.Algebra.InfiniteSum.ENNReal
+module
+
+public import Mathlib.Algebra.Module.ZLattice.Covolume
+public import Mathlib.Analysis.Convex.Measure
+public import Mathlib.MeasureTheory.Group.GeometryOfNumbers
+public import Mathlib.Topology.Algebra.InfiniteSum.ENNReal
 
 /-! # Lattice counts from averaging over an actual fundamental domain -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -87,7 +92,7 @@ theorem finite_subgroup_points_of_bounded
     (hD : Bornology.IsBounded D) : {l : L | (l : E) ∈ D}.Finite := by
   have hf : (D ∩ (L : Set E)).Finite := by
     have hd : IsDiscrete (L : Set E) := DiscreteTopology.isDiscrete
-    exact Metric.finite_isBounded_inter_isClosed hd hD AddSubgroup.isClosed_of_discrete
+    exact Metric.finite_isBounded_inter_isClosed hd hD AddSubgroup.isClosed_of_discreteTopology
   apply hf.of_injOn (f := fun l : L => (l : E)) ?_ Subtype.val_injective.injOn
   intro l hl
   exact ⟨hl, l.property⟩

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricScalarExtensionMeasurable
-import ArakelovGeometry.AdelicVectorBundle.GeometricCoordinateSubquotient
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeometricCoordinateSubquotient
+public import ArakelovGeometry.AdelicVectorBundle.GeometricScalarExtensionMeasurable
 
 /-!
 # Actual native subquotient regularity after finite geometric extension
@@ -14,6 +16,8 @@ base set. Actual restriction, quotient and dual-distance contractions transfer
 coordinate regularity to every native relative quotient, without countability
 of the constant field or parameter spaces.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

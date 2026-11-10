@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.SubspaceSumSlopes
-import ArakelovGeometry.AdelicVectorBundle.HermitianHNLargestSubspace
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHNLargestSubspace
+public import ArakelovGeometry.AdelicVectorBundle.SubspaceSumSlopes
 
 /-!
 # The general Harder--Narasimhan filtration
@@ -14,6 +16,8 @@ The source epsilon-intersection construction therefore gives the largest
 subspace whose actual restricted minimum slope is at least the threshold.
 No Hermitian assumption is used.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Destabilizing
-import ArakelovGeometry.AdelicVectorBundle.QuotientRestriction
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Destabilizing
+public import ArakelovGeometry.AdelicVectorBundle.QuotientRestriction
 
 /-!
 # The actual Hermitian Harder--Narasimhan flag
@@ -13,6 +15,8 @@ The rational subspace sequence is obtained by pulling back the produced
 maximal destabilizing subspace of each actual quotient. Its positive-rank
 steps terminate by strict rank growth, including the empty zero-rank flag.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 
@@ -48,12 +52,12 @@ def hermitianHNStep (U : Submodule K E) : Submodule K E :=
 
 /-- The terminal subspace stays terminal. -/
 @[simp] theorem hermitianHNStep_top : V.hermitianHNStep hS hN hV ⊤ = ⊤ := by
-  rw [hermitianHNStep, dif_pos rfl]
+  rw [hermitianHNStep, dite_eq_left rfl]
 
 /-- Every nonterminal step is a strict increase of actual rational subspaces. -/
 theorem lt_hermitianHNStep (U : Submodule K E) (hU : U ≠ ⊤) :
     U < V.hermitianHNStep hS hN hV U := by
-  rw [hermitianHNStep, dif_neg hU]
+  rw [hermitianHNStep, dite_eq_right hU]
   have hp := (V.quotientOfMeasurableBase U hS).destabilizingSubspace_finrank_pos
     hS hN (hV.quotient U) (finrank_quotient_pos_of_ne_top U hU)
   have hn : (V.quotientOfMeasurableBase U hS).destabilizingSubspace hS hN
@@ -78,7 +82,7 @@ theorem hermitianHNStep_map_mkQ (U : Submodule K E) (hU : U ≠ ⊤) :
     (V.hermitianHNStep hS hN hV U).map U.mkQ =
       (V.quotientOfMeasurableBase U hS).destabilizingSubspace hS hN
         (hV.quotient U) (finrank_quotient_pos_of_ne_top U hU) := by
-  rw [hermitianHNStep, dif_neg hU]
+  rw [hermitianHNStep, dite_eq_right hU]
   exact Submodule.map_comap_eq_of_surjective U.mkQ_surjective _
 
 /-- The actual subquotient selected at each nonterminal step is semistable.
@@ -355,7 +359,7 @@ theorem maximalSlope_quotient_hermitianHNStep_lt (U : Submodule K E) (hU : U ≠
   have hdrop := Q.maximalSlope_quotient_destabilizingSubspace_lt_slope hS hN hQ hr
   rw [Q.slope_destabilizingSubspace_eq_maximalSlope hS hN hQ hr] at hdrop
   have hk : (D.mkQ.comp U.mkQ).ker = V.hermitianHNStep hS hN hV U := by
-    rw [LinearMap.ker_comp, Submodule.ker_mkQ, hermitianHNStep, dif_neg hU]
+    rw [LinearMap.ker_comp, Submodule.ker_mkQ, hermitianHNStep, dite_eq_right hU]
   have he := (V.maximalSlope_quotient_quotient_eq_quotient_ker U D hS hN).trans
     (congrArg (fun W : Submodule K E ↦ (V.quotientOfMeasurableBase W hS).maximalSlope hS hN) hk)
   exact he.symm.trans_lt hdrop

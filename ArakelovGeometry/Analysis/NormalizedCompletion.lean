@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.ExternalResults.Ostrowski
-import ArakelovGeometry.ExternalResults.AbsoluteValue
-import Mathlib.Analysis.RCLike.Basic
+module
+
+public import ArakelovGeometry.ExternalResults.AbsoluteValue
+public import ArakelovGeometry.ExternalResults.Ostrowski
+public import Mathlib.Analysis.RCLike.Basic
 
 /-!
 # Usual normalization on Archimedean completions
@@ -15,6 +17,8 @@ an `RCLike` structure compatible with the existing norm. For a complete field,
 the intrinsic condition `‖2‖ = 2` fixes the exponent in the Archimedean
 classification and therefore gives this usual normalization.
 -/
+
+@[expose] public section
 
 noncomputable section
 

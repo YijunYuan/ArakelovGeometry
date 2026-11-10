@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianHN
-import ArakelovGeometry.AdelicVectorBundle.SemistableFlagDegree
-import ArakelovGeometry.LinearAlgebra.FiniteFiltration
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHN
+public import ArakelovGeometry.AdelicVectorBundle.SemistableFlagDegree
+public import ArakelovGeometry.LinearAlgebra.FiniteFiltration
 
 /-!
 # Uniqueness of the actual Hermitian Harder--Narasimhan filtration
@@ -14,6 +16,8 @@ Actual completed quotient and restriction isometries transport semistable
 factors through quotient tails. The first term is characterized using the
 actual degree bound for subspaces of a semistable flag.
 -/
+
+@[expose] public section
 
 open scoped BigOperators TensorProduct
 
@@ -375,7 +379,7 @@ theorem semistableFlag_step_eq_hermitianHNStep
       congrArg (fun k : Fin (n + 1) ↦ (F k).map D.mkQ) hi
     exact hg.symm.trans he
   have hc := congrArg (fun U : Submodule K (E ⧸ D) ↦ U.comap D.mkQ) hu
-  rw [hermitianHNStep, dif_neg hD]
+  rw [hermitianHNStep, dite_eq_right hD]
   exact (Submodule.comap_map_eq_self
     (show D.mkQ.ker ≤ F i.succ by
       rw [Submodule.ker_mkQ]

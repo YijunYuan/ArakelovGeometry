@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.ScalarExtensionLine
-import ArakelovGeometry.AdelicVectorBundle.DeterminantMap
-import ArakelovGeometry.AdelicVectorBundle.DeterminantUniversal
-import ArakelovGeometry.AdelicVectorBundle.Degree
-import ArakelovGeometry.AdelicVectorBundle.LineDegree
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtension
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Degree
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantMap
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantUniversal
+public import ArakelovGeometry.AdelicVectorBundle.LineDegree
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension
+public import ArakelovGeometry.Analysis.ScalarExtensionLine
 
 /-!
 # Determinants under scalar extension
@@ -20,6 +22,8 @@ determinant line is adelic and preserves degree. The constructions include the
 empty exterior power. The separately defined Hermitian scalar extension is
 outside this module's comparison.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -45,8 +49,7 @@ private theorem seminorm_linearMap_le_of_maximal
   · have hx (x : E) : p (f ((1 : l) ⊗ₜ[k] x)) = 0 :=
       le_antisymm (by simpa only [hzero, zero_mul] using hf x) (apply_nonneg _ _)
     have hz : p (f z) = 0 := by
-      induction z using TensorProduct.induction_on with
-      | zero => simp only [map_zero]
+      induction z using TensorProduct.inductionOn with
       | tmul a x =>
         have he : a ⊗ₜ[k] x = a • ((1 : l) ⊗ₜ[k] x) := by
           simp only [TensorProduct.smul_tmul', smul_eq_mul, mul_one]
@@ -122,7 +125,7 @@ private theorem seminorm_multilinearMap_le_of_linear_bound
     induction s using Finset.induction_on with
     | empty =>
       intro x z
-      simpa only [Finset.notMem_empty, if_false] using hf x
+      simpa only [Finset.notMem_empty, ite_false] using hf x
     | @insert i s hi ih =>
       intro x z
       let m : ι → l ⊗[k] E := fun j => if j ∈ s then z j else (1 : l) ⊗ₜ[k] x j
@@ -141,14 +144,14 @@ private theorem seminorm_multilinearMap_le_of_linear_bound
           funext j
           by_cases hj : j = i
           · subst j
-            simp only [hi, if_false, Function.update_self]
+            simp only [hi, ite_false, Function.update_self]
           · simp only [Function.update_of_ne hj, m]
         have hc : (fun j => if j ∈ s then q (z j) else
             ‖Function.update x i y j‖) = Function.update c i ‖y‖ := by
           funext j
           by_cases hj : j = i
           · subst j
-            simp only [hi, if_false, Function.update_self]
+            simp only [hi, ite_false, Function.update_self]
           · simp only [Function.update_of_ne hj, c]
         rw [hm, hc, Finset.prod_update_of_mem (Finset.mem_univ i),
           Finset.sdiff_singleton_eq_erase] at h
@@ -160,21 +163,21 @@ private theorem seminorm_multilinearMap_le_of_linear_bound
         funext j
         by_cases hj : j = i
         · subst j
-          simp only [Function.update_self, Finset.mem_insert_self, if_true]
+          simp only [Function.update_self, Finset.mem_insert_self, ite_true]
         · simp only [Function.update_of_ne hj, Finset.mem_insert, hj, false_or, m]
       have hc : (fun j => if j ∈ insert i s then q (z j) else ‖x j‖) =
           Function.update c i (q (z i)) := by
         funext j
         by_cases hj : j = i
         · subst j
-          simp only [Function.update_self, Finset.mem_insert_self, if_true]
+          simp only [Function.update_self, Finset.mem_insert_self, ite_true]
         · simp only [Function.update_of_ne hj, Finset.mem_insert, hj, false_or, c]
       change p (f (Function.update m i (z i))) ≤ _ at h
       rw [hm] at h
       rw [hc, Finset.prod_update_of_mem (Finset.mem_univ i),
         Finset.sdiff_singleton_eq_erase]
       simpa only [A, mul_assoc, mul_left_comm, mul_comm] using h
-  simpa only [Finset.mem_univ, if_true] using hs Finset.univ (fun _ => 0) z
+  simpa only [Finset.mem_univ, ite_true] using hs Finset.univ (fun _ => 0) z
 
 omit [CompleteSpace k] [FiniteDimensional k E] in
 /-- A multilinear base product bound extends argument by argument to
@@ -646,7 +649,7 @@ theorem determinant_scalarExtension_norm_completed_one_tmul_le
   refine ((ξ.scalarExtension (L := L)).determinant_norm_ιMulti_le x y).trans ?_
   calc
     _ ≤ ∏ i, ξ.norm x.base (t (e.symm i)) :=
-      Finset.prod_le_prod (fun i _ => apply_nonneg _ _) fun i _ =>
+      Finset.prod_le_prod₀ (fun i _ => apply_nonneg _ _) fun i _ =>
         ξ.scalarExtension_norm_completed_one_tmul_le x (t (e.symm i))
     _ = ∏ i, ξ.norm x.base (t i) := e.symm.prod_comp (fun i => ξ.norm x.base (t i))
 

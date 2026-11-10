@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
-import ArakelovGeometry.AdelicVectorBundle.Degree
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Tower
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Tower
+public import ArakelovGeometry.AdelicVectorBundle.Degree
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
 
 /-!
 # Actual bundle and degree transport through the canonical tower equivalence
@@ -14,6 +16,8 @@ The norm-family tower map is the existing measure-preserving algebraic tower
 identification. Pulling back its actual completed norms transports regularity
 and degree without replacing either adelic curve or its parameter sigma algebra.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

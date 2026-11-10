@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteBundle
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianDeterminantDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteBundle
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianDeterminantDegree
 
 /-!
 # Actual algebraic scalar-extension vector degree
@@ -17,6 +19,8 @@ common-density and countable-discrete bundles, and for the actual Hermitian
 common-density bundle. No extending discrete-or-common-density hypothesis is
 needed; the existing finite-extension degree agrees by the canonical bridge.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

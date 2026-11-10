@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.NormFamilyAlgebraicBasis
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.NormFamilyAlgebraicBasis
 
 /-!
 # Strong domination of arbitrary-choice algebraic coordinate maxima
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicVectorBundle.NormFamilyAlgebraicBasis
 Both actual transition matrices have uniform coefficient envelopes. Their
 completed coordinate estimates control distance from a mixed rational basis.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -36,8 +40,7 @@ theorem chosenExtensionMap_coordinates (ω : S.Ω) (w : AbsoluteValue L ℝ)
         ((f.baseChange (S.ϕ ω).Completion).equivFun z i) := by
   let := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ ω) w hw
   let := AbsoluteValue.isScalarTower_completionOfEq (S.ϕ ω) w hw
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | add z t hz ht => simp only [map_add, Pi.add_apply, hz, ht]
   | tmul a x =>
     rw [chosenExtensionMap_tmul]

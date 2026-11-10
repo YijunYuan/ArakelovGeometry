@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.ExternalResults.AbsoluteValueLocal
-import Mathlib.RingTheory.Ideal.Quotient.Operations
-import Mathlib.RingTheory.TensorProduct.Finite
-import Mathlib.LinearAlgebra.TensorProduct.Free
+module
+
+public import ArakelovGeometry.ExternalResults.AbsoluteValueLocal
+public import Mathlib.LinearAlgebra.TensorProduct.Free
+public import Mathlib.RingTheory.Ideal.Quotient.Operations
+public import Mathlib.RingTheory.TensorProduct.Finite
 
 /-!
 # Tensor decomposition into completed fields
@@ -15,6 +17,8 @@ The canonical homomorphisms to completed extensions have distinct maximal kernel
 The Chinese remainder theorem and the local-degree sum identify their product with
 the tensor product over the ground field.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDual
 
 /-!
 # Norms of completed dual vectors under scalar extension
@@ -12,6 +14,8 @@ The canonical extension of an actual completed base functional preserves its
 operator norm. This bridges the accepted local dual-norm identities to the
 actual completed families, without original vector ultrametricity.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

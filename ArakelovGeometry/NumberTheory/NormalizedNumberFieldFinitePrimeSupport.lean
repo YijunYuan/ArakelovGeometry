@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedCoherence
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedCoherence
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
 /-!
 # Actual normalized integers with prescribed finite-place support
@@ -12,6 +14,8 @@ import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 Products of the accepted actual isolated-prime integers give the literal
 source finite-place support conclusion, including an empty exceptional set.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField
@@ -66,11 +70,11 @@ theorem exists_normalized_integral_prime_support
       · intro hp
         rcases Finset.mem_insert.mp hp with rfl | hps
         · rw [hprod]
-          apply mul_lt_one_of_nonneg_of_lt_one_left
-          · exact ((normalizedNumberFieldAdelicStructure K).ϕ (normalizedPrimeParameter p)).nonneg _
-          · exact haq
-          · exact NumberField.abs_le_one_of_isIntegral (normalizedPrimeParameter_mem_fin p)
-              (NumberField.RingOfIntegers.isIntegral_coe g)
+          refine (mul_le_of_le_one_right
+            (((normalizedNumberFieldAdelicStructure K).ϕ (normalizedPrimeParameter p)).nonneg _)
+            ?_).trans_lt haq
+          exact NumberField.abs_le_one_of_isIntegral (normalizedPrimeParameter_mem_fin p)
+            (NumberField.RingOfIntegers.isIntegral_coe g)
         · by_cases hpq : p = q
           · subst p
             exact False.elim (hq hps)

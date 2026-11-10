@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.AlgebraicGeometry.Modules.Tilde
-import Mathlib.Algebra.Category.ModuleCat.Sheaf.LocallyFree
+module
+
+public import Mathlib.Algebra.Category.ModuleCat.Sheaf.LocallyFree
+public import Mathlib.AlgebraicGeometry.Modules.Tilde
 
 /-!
 # Actual locally free sheaves and affine free-section comparison
@@ -13,6 +15,8 @@ Native local generator data transports along actual sheaf isomorphisms.
 On an affine scheme, free global sections of a quasicoherent sheaf give
 an actual isomorphism to a free sheaf through the usual tilde adjunction.
 -/
+
+@[expose] public section
 
 open CategoryTheory Limits AlgebraicGeometry
 

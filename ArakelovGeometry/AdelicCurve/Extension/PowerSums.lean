@@ -3,13 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.ExternalResults.AbsoluteValue
-import Mathlib.Analysis.MeanInequalitiesPow
-import Mathlib.Analysis.SpecificLimits.Normed
-import Mathlib.Data.Fin.Tuple.Sort
-import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-import Mathlib.LinearAlgebra.Vandermonde
-import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
+module
+
+public import ArakelovGeometry.ExternalResults.AbsoluteValue
+public import Mathlib.Analysis.MeanInequalitiesPow
+public import Mathlib.Analysis.SpecificLimits.Normed
+public import Mathlib.Data.Fin.Tuple.Sort
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+public import Mathlib.LinearAlgebra.Vandermonde
+public import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
 
 /-!
 # Power sums and ordered absolute values
@@ -17,6 +19,8 @@ import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
 Power sums recover the largest absolute value; maximal subset products control
 ordered evaluations. These are the analytic tools for Chen–Moriwaki, Lemma 3.3.5.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 
@@ -162,7 +166,7 @@ theorem prod_le_prod_initial_of_antitone {n k : ℕ} (hk : k ≤ n)
       calc
         _ = ∏ j ∈ Finset.univ.image (J.orderEmbOfFin hJ), s j := by simp
         _ = _ := Finset.prod_image (J.orderEmbOfFin hJ).injective.injOn
-    _ ≤ _ := Finset.prod_le_prod (fun i _ ↦ hs0 _) (fun i _ ↦ hs (hindex i))
+    _ ≤ _ := Finset.prod_le_prod₀ (fun i _ ↦ hs0 _) (fun i _ ↦ hs (hindex i))
 
 /-- An initial product in a decreasing nonnegative tuple is the largest subset product
 of the same size. -/

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianHNDegree
-import ArakelovGeometry.AdelicVectorBundle.SemistableFlagDegree
-import ArakelovGeometry.AdelicVectorBundle.PositiveDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHNDegree
+public import ArakelovGeometry.AdelicVectorBundle.PositiveDegree
+public import ArakelovGeometry.AdelicVectorBundle.SemistableFlagDegree
 
 /-!
 # Positive degree from actual Hermitian Harder--Narasimhan factors
@@ -13,6 +15,8 @@ import ArakelovGeometry.AdelicVectorBundle.PositiveDegree
 Bounds use every actual rational subspace and the produced intersection
 contractions into actual semistable factors. No maximizing subspace is assumed.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

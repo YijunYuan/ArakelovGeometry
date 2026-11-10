@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.BasisMixedScalarExtensionFinite
-import ArakelovGeometry.AdelicVectorBundle.NormFamilyAlgebraicBasisDomination
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BasisMixedScalarExtensionFinite
+public import ArakelovGeometry.AdelicVectorBundle.NormFamilyAlgebraicBasisDomination
 
 /-!
 # Mixed coordinate norms commute with algebraic scalar extension
@@ -13,6 +15,8 @@ At infinite places the projective extension is exactly the coordinate sum.
 Together with the finite-place coordinate maximum, this proves Example 4.1.5
 on every actual extended completed vector, with the empty basis included.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

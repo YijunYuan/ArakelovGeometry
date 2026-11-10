@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Degree
-import ArakelovGeometry.AdelicVectorBundle.DeterminantMap
-import ArakelovGeometry.AdelicVectorBundle.LineMapHeight
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Degree
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantMap
+public import ArakelovGeometry.AdelicVectorBundle.LineMapHeight
 
 /-!
 # Degree comparison through determinant maps
@@ -15,6 +17,8 @@ and the height identity for maps of adelic lines. The comparison retains the
 lower integral and its possible value `⊤`. Rank zero uses the scalar determinant
 and the explicit convention `0 * ⊥ = 0` in `EReal`.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 

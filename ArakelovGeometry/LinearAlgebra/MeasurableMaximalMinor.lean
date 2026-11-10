@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.LinearAlgebra.MaximalMinor
-import Mathlib.MeasureTheory.MeasurableSpace.Constructions
-import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
+module
+
+public import ArakelovGeometry.LinearAlgebra.MaximalMinor
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
+public import Mathlib.MeasureTheory.MeasurableSpace.Constructions
 
 /-!
 # Measurable selection of actual maximal minors
@@ -15,6 +17,8 @@ an actual maximal minor can be selected on a finite measurable partition. The
 normalization coefficients are fixed field elements on every part. The
 parameter space itself need not be discrete or countable.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -67,7 +71,7 @@ theorem exists_measurable_maximal_minor [Finite m] (A : Matrix m n K)
     intro x
     obtain ⟨J, hJ⟩ := exists_maximal_row_minor_normalization A hA (v x)
     refine ⟨(e J).val, ?_⟩
-    simpa only [enum, dif_pos (e J).isLt, e.symm_apply_apply] using hJ
+    simpa only [enum, dite_eq_left (e J).isLt, e.symm_apply_apply] using hJ
   let I (x : X) : n → m := enum (Nat.find (hex x))
   have hI : ∀ x, P (I x) x := fun x ↦ Nat.find_spec (hex x)
   let : MeasurableSpace (n → m) := ⊤

@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantDuality
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantDuality
 
 /-!
 # Local determinant pairing bounds
@@ -13,6 +15,8 @@ norm families. At normalized infinite places it needs only an inner product
 inducing the norm on that completed fibre. Nearly optimal single-wedge
 presentations extend pure-wedge estimates to the actual determinant norms.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

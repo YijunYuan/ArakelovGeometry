@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TensorBaseChange
-import Mathlib.LinearAlgebra.ExteriorPower.Basis
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.TensorBaseChange
+public import Mathlib.LinearAlgebra.ExteriorPower.Basis
 
 /-!
 # Scalar extension of exterior powers
@@ -12,6 +14,8 @@ import Mathlib.LinearAlgebra.ExteriorPower.Basis
 Canonical exterior scalar extension, including degree zero, and compatibility
 with the canonical quotient of the corresponding tensor power.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -129,8 +133,7 @@ theorem exteriorBaseChangeEquiv_tensorToExterior
     (z : L ⊗[K] (⨂[K] (_ : Fin n), E)) :
     exteriorBaseChangeEquiv K L E n ((tensorToExterior K E n).baseChange L z) =
       tensorToExterior L (L ⊗[K] E) n (tensorBaseChangeEquiv K L (fun _ : Fin n ↦ E) z) := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp only [map_zero]
+  induction z using TensorProduct.inductionOn with
   | tmul a z =>
     induction z using PiTensorProduct.induction_on with
     | smul_tprod r x =>

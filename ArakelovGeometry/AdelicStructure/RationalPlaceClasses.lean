@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicStructure.RationalNormalization
-import Mathlib.Analysis.AbsoluteValue.Equivalence
+module
+
+public import ArakelovGeometry.AdelicStructure.RationalNormalization
+public import Mathlib.Analysis.AbsoluteValue.Equivalence
 
 /-!
 # Actual rational parameters and absolute-value classes
@@ -12,6 +14,8 @@ import Mathlib.Analysis.AbsoluteValue.Equivalence
 The canonical rational prime and real values distinguish equivalence
 classes and exhaust all nontrivial rational absolute values.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Analysis.Seminorm
-import Mathlib.Analysis.Normed.Group.Ultra
-import Mathlib.Analysis.Normed.Module.Basic
-import Mathlib.Tactic.Linarith
+module
+
+public import Mathlib.Analysis.Normed.Group.Ultra
+public import Mathlib.Analysis.Normed.Module.Basic
+public import Mathlib.Analysis.Normed.Module.Seminorm.Basic
+public import Mathlib.Tactic.Linarith
 
 /-!
 # A non-Archimedean norm with an expensive residue direction
@@ -16,6 +18,8 @@ has strictly smaller norm. This gives an actual nonultrametric plane norm
 whose completed operator dual is still the coordinate maximum. It is the
 local producer for the standard-number-field correction to Remark 4.1.36.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 namespace ResidueDirectionBump
@@ -111,7 +115,7 @@ theorem slopeFunctional_norm_le (a : F) (ha : ‖a‖ = 1) (z : F × F) :
   simp only [norm_neg, norm_mul, ha, one_mul, Prod.norm_def]
   exact max_le (le_max_right _ _) (le_max_left _ _)
 
-private instance planeUltrametric : IsUltrametricDist (F × F) :=
+instance planeUltrametric : IsUltrametricDist (F × F) :=
   IsUltrametricDist.isUltrametricDist_of_forall_norm_add_le_max_norm fun x y ↦ by
     simp only [Prod.norm_def, Prod.fst_add, Prod.snd_add]
     apply max_le

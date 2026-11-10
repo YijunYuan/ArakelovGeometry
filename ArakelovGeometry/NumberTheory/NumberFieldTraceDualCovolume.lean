@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.IntegralDualCovolume
-import ArakelovGeometry.NumberTheory.NumberFieldOrdinaryTraceDualNorm
-import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanCovolume
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.IntegralDualCovolume
+public import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanCovolume
+public import ArakelovGeometry.NumberTheory.NumberFieldOrdinaryTraceDualNorm
 
 /-! # Reciprocal ordinary covolume of the actual integral trace dual -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory

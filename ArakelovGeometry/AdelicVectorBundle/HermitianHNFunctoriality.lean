@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianHNTruncations
-import ArakelovGeometry.AdelicVectorBundle.StrongMapHeight
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHNTruncations
+public import ArakelovGeometry.AdelicVectorBundle.StrongMapHeight
 
 /-!
 # Functoriality of the actual Hermitian Harder--Narasimhan filtration
@@ -13,6 +15,8 @@ Nonzero maps between Hermitian adelic bundles have finite genuine map height.
 Restriction of the source and quotient of the target decrease that height.
 The actual HN truncation slope bounds then imply the height-shifted image inclusion.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct BigOperators

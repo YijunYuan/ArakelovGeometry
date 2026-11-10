@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtension
-import ArakelovGeometry.AdelicVectorBundle.Comparison
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDomination
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Comparison
+public import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtension
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDomination
 
 /-!
 # Ordinary and Hermitian scalar-extension comparison
@@ -13,6 +15,8 @@ import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDomination
 The two-vector real/imaginary decomposition gives the dimension-independent
 factor `√2` between the projective and Hermitian norms on completed fibres.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 open MeasureTheory

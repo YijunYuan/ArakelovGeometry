@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
-import Mathlib.Data.Set.Finite.Lemmas
-import Mathlib.Data.Real.Basic
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Push
+module
+
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Data.Set.Finite.Lemmas
+public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Push
 
 /-!
 # Largest maximizing subspaces for a supermodular degree
@@ -16,6 +18,8 @@ The finite-dimensional subspace lattice has a largest nonzero subspace
 maximizing a supermodular degree divided by a positive modular rank.
 Source Proposition 4.3.28 requires no boundedness or continuity hypothesis.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
-import ArakelovGeometry.ExternalResults.AlgebraicTowerSupport
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
+public import ArakelovGeometry.ExternalResults.AlgebraicTowerSupport
 
 /-!
 # Algebraic tower integration on finite cylinders
@@ -13,6 +15,8 @@ import ArakelovGeometry.ExternalResults.AlgebraicTowerSupport
 Finite descent reduces the tower identity for finite-cylinder functions to
 finite base change, finite tower integration, and finite embedding naturality.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped ENNReal

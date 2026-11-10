@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanTrace
-import ArakelovGeometry.NumberTheory.NumberFieldIntegralTraceDual
-import ArakelovGeometry.AdelicVectorBundle.DualBaseChange
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DualBaseChange
+public import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanTrace
+public import ArakelovGeometry.NumberTheory.NumberFieldIntegralTraceDual
 
 /-!
 # The actual Archimedean vector trace pairing
@@ -14,6 +16,8 @@ The pairing evaluates the canonical completed duals on the original completed
 vectors and applies the real/complex coefficient trace. Its real dual
 equivalence is algebraic; no metric or covolume claim is made.
 -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField
@@ -169,11 +173,13 @@ theorem mem_integralRealDual_iff (M : Submodule (𝓞 K) E)
   · intro h m
     exact h _ ((mem_diagonalLattice_iff M _).mpr ⟨m, rfl⟩)
 
-private def integerRealRangeEquiv : ℤ ≃ₗ[ℤ] LinearMap.range (Algebra.linearMap ℤ ℝ) :=
+/-- Integers identify with the range of their canonical embedding into the reals. -/
+def integerRealRangeEquiv : ℤ ≃ₗ[ℤ] LinearMap.range (Algebra.linearMap ℤ ℝ) :=
   LinearEquiv.ofInjective (Algebra.linearMap ℤ ℝ) Int.cast_injective
 
+/-- Recovering the integer representative preserves its value in the reals. -/
 @[simp]
-private theorem integerRealRangeEquiv_symm_cast
+theorem integerRealRangeEquiv_symm_cast
     (r : LinearMap.range (Algebra.linearMap ℤ ℝ)) :
     (integerRealRangeEquiv.symm r : ℝ) = (r : ℝ) :=
   congrArg Subtype.val (integerRealRangeEquiv.apply_symm_apply r)

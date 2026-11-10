@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 
 /-!
 # Compatibility of algebraic extensions
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 Canonical identifications of places and projective fibre integration in
 algebraic towers, following Chen–Moriwaki, Theorem 3.4.12.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.Algebraic
 open MeasureTheory
@@ -115,7 +119,6 @@ noncomputable def towerMeasurableEquiv (F : IntermediateField K L) :
         exact (ParameterSpaceExtension.measurable_restrict AS L F).comap_le
       · rw [MeasurableSpace.comap_comp]
         exact (ParameterSpaceExtension.measurable_eval AS L a).comap_le
-  
   }
 
 /-- The canonical identification commutes with the projection to the base. -/
@@ -155,10 +158,8 @@ instance isProbabilityMeasure_fibreMeasure (ω : AS.Ω) :
     IsProbabilityMeasure (fibreMeasure AS L ω) := by
   let : MeasurableSpace (BaseFiber L ω) := fibreMeasurableSpace L ω
   let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L
-  exact @Measure.isProbabilityMeasure_map (BaseFiber L ω) (ParameterSpaceExtension AS L)
-    (fibreMeasurableSpace L ω) (projectiveMeasurableSpace AS L)
-    (fibreProbabilityMeasure AS L ω) _ Subtype.val
-    (measurable_subtype_val_baseFiber AS L ω).aemeasurable
+  change IsProbabilityMeasure (Measure.map Subtype.val (fibreProbabilityMeasure AS L ω))
+  infer_instance
 
 /-- The fibre probabilities on the total space form a measurable family. -/
 theorem measurable_fibreMeasure :
@@ -200,8 +201,7 @@ instance isProbabilityMeasure_towerFibreMeasure (F : IntermediateField K L) (ω 
     IsProbabilityMeasure (towerFibreMeasure AS F ω) := by
   have hp (x : (AS.algebraicExtension F).Ω) :
       IsProbabilityMeasure (Measure.map (towerMeasurableEquiv AS F)
-        (fibreMeasure (AS.algebraicExtension F) L x)) :=
-    Measure.isProbabilityMeasure_map (towerMeasurableEquiv AS F).measurable.aemeasurable
+        (fibreMeasure (AS.algebraicExtension F) L x)) := inferInstance
   constructor
   rw [towerFibreMeasure, Measure.bind_apply MeasurableSet.univ
     (measurable_towerFibreKernel AS F).aemeasurable]

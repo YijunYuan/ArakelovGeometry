@@ -3,13 +3,17 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalTraceDualSlope
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalArithmeticDuality
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalPositiveTwist
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalWeakDiscriminant
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalSectionVanishing
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalArithmeticDuality
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalPositiveTwist
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalSectionVanishing
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalTraceDualSlope
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalWeakDiscriminant
 
 /-! # Actual nonnegative-slope arithmetic section comparison -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField

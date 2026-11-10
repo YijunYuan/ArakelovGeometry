@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
-import ArakelovGeometry.AdelicVectorBundle.DegreeMap
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
+public import ArakelovGeometry.AdelicVectorBundle.DegreeMap
 
 /-!
 # Degree comparison for actual measurable determinants
@@ -13,6 +15,8 @@ A genuine completed contraction compares the degrees of the actual determinant
 lines. The hypotheses concern their actual norm measurability; no discrete or
 common-density condition on the place space is needed.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 noncomputable section

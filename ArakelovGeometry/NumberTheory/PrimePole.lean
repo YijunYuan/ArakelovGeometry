@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.ValuationModuleFinite
-import Mathlib.RingTheory.FractionalIdeal.Inverse
-import Mathlib.RingTheory.DedekindDomain.Ideal.Basic
-import Mathlib.RingTheory.FractionalIdeal.Operations
+module
+
+public import ArakelovGeometry.NumberTheory.ValuationModuleFinite
+public import Mathlib.RingTheory.DedekindDomain.Ideal.Basic
+public import Mathlib.RingTheory.FractionalIdeal.Inverse
+public import Mathlib.RingTheory.FractionalIdeal.Operations
 
 /-!
 # Actual fractions with a pole at one prescribed prime
@@ -15,6 +17,8 @@ The inverse of an actual nonzero prime ideal produces a fraction with a simple
 pole at that prime and no poles elsewhere. These arithmetic producers feed the
 necessity direction of Chen–Moriwaki, Lemma 4.4.7, PDF page309.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -48,7 +52,7 @@ theorem valuation_le_one_of_mem_inv_prime_of_ne (p q : HeightOneSpectrum R) {x :
     apply hpq
     exact HeightOneSpectrum.asIdeal_injective
       ((Ring.DimensionLeOne.prime_le_prime_iff_eq p.ne_bot).mp h)
-  obtain ⟨r, hrp, hrq⟩ := SetLike.not_le_iff_exists.mp hnot
+  obtain ⟨r, hrp, hrq⟩ := IsConcreteLE.not_le_iff_exists.mp hnot
   have hqr : q.valuation K (algebraMap R K r) = 1 := by
     rw [q.valuation_of_algebraMap]
     exact HeightOneSpectrum.intValuation_eq_one_iff.mpr hrq
@@ -85,7 +89,7 @@ theorem exists_single_prime_pole (p : HeightOneSpectrum R) :
         _ ≤ P * 1 := mul_right_mono hle
         _ = P := mul_one P
     exact hP1 (le_antisymm FractionalIdeal.coeIdeal_le_one h1)
-  obtain ⟨x, hx, hxnot⟩ := SetLike.not_le_iff_exists.mp hnot
+  obtain ⟨x, hx, hxnot⟩ := IsConcreteLE.not_le_iff_exists.mp hnot
   have hout (q : HeightOneSpectrum R) (hqp : q ≠ p) : q.valuation K x ≤ 1 :=
     valuation_le_one_of_mem_inv_prime_of_ne p q hx hqp.symm
   refine ⟨x, ?_, valuation_le_exp_one_of_mem_inv_prime p hx, hout⟩

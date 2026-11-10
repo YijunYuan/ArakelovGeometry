@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisHNScalarExtension
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisHNScalarExtension
 
 /-!
 # The actual canonical Hermitian HN factor means under finite Galois extension
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisHNScalarExtension
 The genuine remaining-quotient maxima identify corresponding canonical factor
 means. Their real threshold cuts then identify the actual real HN filtration.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

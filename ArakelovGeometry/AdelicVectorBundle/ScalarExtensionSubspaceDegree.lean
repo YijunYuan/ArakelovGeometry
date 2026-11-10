@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.AlgebraicClosureApproximation
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionArchimedean
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDegreeDeterminant
-import ArakelovGeometry.AdelicVectorBundle.DegreeIsometry
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AlgebraicClosureApproximation
+public import ArakelovGeometry.AdelicVectorBundle.DegreeIsometry
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionArchimedean
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDegreeDeterminant
 
 /-!
 # Degrees of actual scalar-extended subspaces
@@ -19,6 +21,8 @@ norms are ultrametric, every native base-changed subspace has the original
 restricted degree: the canonical tensor equivalence is isometric on every
 completed vector, not merely on rational pure tensors.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteRestriction
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionComplexQuotient
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerTransport
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionComplexQuotient
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteRestriction
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerTransport
 
 /-!
 # Genuine native quotient norms over algebraic closures
@@ -14,7 +16,13 @@ Canonical tensor quotient equivalences and tower cancellation transport all
 completed lift sets. Complexifying finite descent then supplies primal
 measurability for the prescribed native target quotients over countable
 discrete original place spaces, without target discreteness or common density.
+
+Transport is first proved for arbitrary norm families and commuting quotient maps.
+Specializing only after composing these identities keeps the tower proofs independent
+of the concrete scalar-extension norm construction.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -32,20 +40,15 @@ variable {k : Type*} [Field k] {T : AdelicStructure k}
   {X Y : Type*} [AddCommGroup X] [Module k X] [FiniteDimensional k X]
   [AddCommGroup Y] [Module k Y] [FiniteDimensional k Y]
 
-/-- An actual completed isometry induces the canonical quotient-image
-isometry. Every completed lift is used; an optimal lift is unnecessary. -/
-theorem quotientEquiv_norm_eq (ξ : NormFamily T X) (η : NormFamily T Y)
-    (ω : T.Ω) (e : X ≃ₗ[k] Y) (P : Submodule k X)
+/-- A completed isometry descends through any commuting pair of quotient maps. -/
+theorem quotientEquiv_norm_eq_of_comp_eq (ξ : NormFamily T X) (η : NormFamily T Y)
+    (ω : T.Ω) (e : X ≃ₗ[k] Y) (P : Submodule k X) (Q : Submodule k Y)
+    (q : (X ⧸ P) ≃ₗ[k] (Y ⧸ Q))
+    (hc : q.toLinearMap.comp P.mkQ = Q.mkQ.comp e.toLinearMap)
     (he : ∀ t, η.norm ω (e.toLinearMap.baseChange (T.ϕ ω).Completion t) = ξ.norm ω t)
     (z : (T.ϕ ω).Completion ⊗[k] (X ⧸ P)) :
-    let Q := P.map e.toLinearMap
-    let q := Submodule.Quotient.equiv P Q e rfl
     (η.quotient Q).norm ω (q.toLinearMap.baseChange (T.ϕ ω).Completion z) =
       (ξ.quotient P).norm ω z := by
-  intro Q q
-  have hc : q.toLinearMap.comp P.mkQ = Q.mkQ.comp e.toLinearMap := by
-    ext y
-    rfl
   have hcb : (q.toLinearMap.baseChange (T.ϕ ω).Completion).comp
       (P.mkQ.baseChange (T.ϕ ω).Completion) =
       (Q.mkQ.baseChange (T.ϕ ω).Completion).comp
@@ -71,18 +74,33 @@ theorem quotientEquiv_norm_eq (ξ : NormFamily T X) (η : NormFamily T Y)
     rw [← hl]
     exact (ξ.pushforward_norm_le P.mkQ P.mkQ_surjective ω t).trans (he t).symm.le
 
+/-- An actual completed isometry induces the canonical quotient-image
+isometry. Every completed lift is used; an optimal lift is unnecessary. -/
+theorem quotientEquiv_norm_eq (ξ : NormFamily T X) (η : NormFamily T Y)
+    (ω : T.Ω) (e : X ≃ₗ[k] Y) (P : Submodule k X)
+    (he : ∀ t, η.norm ω (e.toLinearMap.baseChange (T.ϕ ω).Completion t) = ξ.norm ω t)
+    (z : (T.ϕ ω).Completion ⊗[k] (X ⧸ P)) :
+    let Q := P.map e.toLinearMap
+    let q := Submodule.Quotient.equiv P Q e rfl
+    (η.quotient Q).norm ω (q.toLinearMap.baseChange (T.ϕ ω).Completion z) =
+      (ξ.quotient P).norm ω z := by
+  intro Q q
+  exact quotientEquiv_norm_eq_of_comp_eq ξ η ω e P Q q (by ext y; rfl) he z
+
 end Isometry
 
 section TensorQuotient
 variable {k : Type*} [Field k] {l : Type*} [Field l] [Algebra k l]
   {X : Type*} [AddCommGroup X] [Module k X]
 
-private theorem discreteTensorQuotient_range_eq (P : Submodule k X) :
+/-- Tensoring a submodule inclusion has the base-changed submodule as its range. -/
+theorem discreteTensorQuotient_range_eq (P : Submodule k X) :
     (TensorProduct.AlgebraTensorModule.lTensor (R := k) l l
       (P.subtype.restrictScalars k)).range = P.baseChange l := by
   congr 1
 
-private def discreteTensorQuotientEquiv (P : Submodule k X) :
+/-- Scalar extension commutes with taking a quotient by a submodule. -/
+def discreteTensorQuotientEquiv (P : Submodule k X) :
     (l ⊗[k] (X ⧸ P)) ≃ₗ[l] ((l ⊗[k] X) ⧸ P.baseChange l) :=
   (TensorProduct.AlgebraTensorModule.tensorQuotientEquiv (R := k) l k l P).trans
     (Submodule.quotEquivOfEq _ _ (discreteTensorQuotient_range_eq P))
@@ -96,22 +114,22 @@ private theorem discreteTensorQuotientEquiv_comp_mkQ (P : Submodule k X) :
 
 variable [Algebra.IsAlgebraic k l] {T : AdelicStructure k} [FiniteDimensional k X]
 
-private theorem discreteTensorQuotientEquiv_norm_eq (ξ : NormFamily T X)
+private theorem tensorQuotient_norm_eq_of_comp_eq (ξ : NormFamily T X)
     (hN : ∀ ω ∈ T.Ωinf, IsRCLikeNormedField (T.ϕ ω).Completion)
     (hi : ∃ a : k, a ^ 2 = -1) (P : Submodule k X)
+    (e : (l ⊗[k] (X ⧸ P)) ≃ₗ[l] ((l ⊗[k] X) ⧸ P.baseChange l))
+    (he : e.toLinearMap.comp (P.mkQ.baseChange l) = (P.baseChange l).mkQ)
     (x : T.ParameterSpaceExtension l) (z : x.abv.Completion ⊗[l] (l ⊗[k] (X ⧸ P))) :
     ((ξ.scalarExtension (L := l)).quotient (P.baseChange l)).norm x
-        ((discreteTensorQuotientEquiv (l := l) P).toLinearMap.baseChange x.abv.Completion z) =
+        (e.toLinearMap.baseChange x.abv.Completion z) =
       ((ξ.quotient P).scalarExtension (L := l)).norm x z := by
-  let e := discreteTensorQuotientEquiv (l := l) P
   let η := ξ.scalarExtension (L := l)
   let ω : (T.algebraicExtension l).Ω := x
   change ((T.algebraicExtension l).ϕ ω).Completion ⊗[l] (l ⊗[k] (X ⧸ P)) at z
   have hc := η.pushforward_comp_norm (P.mkQ.baseChange l)
     (LinearMap.baseChange_surjective l P.mkQ_surjective) e.toLinearMap e.surjective ω
       (e.toLinearMap.baseChange ((T.algebraicExtension l).ϕ ω).Completion z)
-  dsimp only [e] at hc
-  simp only [discreteTensorQuotientEquiv_comp_mkQ] at hc
+  simp only [he] at hc
   have ht := (η.pushforward (P.mkQ.baseChange l)
     (LinearMap.baseChange_surjective l P.mkQ_surjective)).pushforward_norm_of_injective
     e.toLinearMap e.surjective e.injective ω z
@@ -129,32 +147,63 @@ theorem towerPullback_quotient {X : Type*} [AddCommGroup X] [Module L X]
   ext x z
   rfl
 
-private theorem discreteQuotient_cancel_norm_eq (ξ : NormFamily S E)
-    (F : AdelicStructure.FiniteIntermediateField K L)
-    (P : Submodule L (L ⊗[F] (F ⊗[K] E)))
+private theorem quotientEquiv_towerPullback_norm_eq
+    {F : Type*} [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L]
+    {X Y : Type*} [AddCommGroup X] [Module L X] [FiniteDimensional L X]
+    [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
+    (η : NormFamily ((S.algebraicExtension F).algebraicExtension L) X)
+    (θ : NormFamily (S.algebraicExtension L) Y)
     (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
-    (z : x.abv.Completion ⊗[L] ((L ⊗[F] (F ⊗[K] E)) ⧸ P)) :
-    let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E
-    let A := P.map c.toLinearMap
-    let q := Submodule.Quotient.equiv P A c rfl
-    (((ξ.scalarExtension (L := L)).towerPullback F.toIntermediateField).quotient A).norm x
-      (q.toLinearMap.baseChange x.abv.Completion z) =
-      (((ξ.scalarExtension (L := F)).scalarExtension (L := L)).quotient P).norm x z := by
-  intro c A q
-  have h := quotientEquiv_norm_eq (k := L)
-    (T := (S.algebraicExtension F).algebraicExtension L)
-    (X := L ⊗[F] (F ⊗[K] E)) (Y := L ⊗[K] E)
-    ((ξ.scalarExtension (L := F)).scalarExtension (L := L))
-    ((ξ.scalarExtension (L := L)).towerPullback F.toIntermediateField) x c P
-    (fun t => (ξ.scalarExtension_trans x t).symm) z
-  dsimp only at h
-  exact h
+    (e : X ≃ₗ[L] Y) (P : Submodule L X) (A : Submodule L Y)
+    (q : (X ⧸ P) ≃ₗ[L] (Y ⧸ A))
+    (hc : q.toLinearMap.comp P.mkQ = A.mkQ.comp e.toLinearMap)
+    (he : ∀ t, θ.norm (scalarExtensionTowerPlace x)
+      (e.toLinearMap.baseChange x.abv.Completion t) = η.norm x t)
+    (z : x.abv.Completion ⊗[L] (X ⧸ P)) :
+    (θ.quotient A).norm (scalarExtensionTowerPlace x)
+      (q.toLinearMap.baseChange x.abv.Completion z) = (η.quotient P).norm x z := by
+  let θ' : NormFamily ((S.algebraicExtension F).algebraicExtension L) Y :=
+    { norm x := θ.norm (scalarExtensionTowerPlace x)
+      norm_eq_zero_iff x := θ.norm_eq_zero_iff (scalarExtensionTowerPlace x) }
+  exact quotientEquiv_norm_eq_of_comp_eq η θ' x e P A q hc he z
 
-/-- The native quotient norm is the extension of an actual native quotient
-over a complexifying finite field, on every completed vector. -/
+private theorem scalarExtension_quotient_tower_norm_eq
+    {F : Type*} [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L]
+    {X Y : Type*} [AddCommGroup X] [Module F X] [FiniteDimensional F X]
+    [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
+    (η : NormFamily (S.algebraicExtension F) X)
+    (θ : NormFamily (S.algebraicExtension L) Y)
+    (hN : ∀ ω ∈ (S.algebraicExtension F).Ωinf,
+      IsRCLikeNormedField ((S.algebraicExtension F).ϕ ω).Completion)
+    (hi : ∃ a : F, a ^ 2 = -1)
+    (c : (L ⊗[F] X) ≃ₗ[L] Y) (B : Submodule F X) (A : Submodule L Y)
+    (q : ((L ⊗[F] X) ⧸ B.baseChange L) ≃ₗ[L] (Y ⧸ A))
+    (hq : q.toLinearMap.comp (B.baseChange L).mkQ = A.mkQ.comp c.toLinearMap)
+    (d : (L ⊗[F] (X ⧸ B)) ≃ₗ[L] ((L ⊗[F] X) ⧸ B.baseChange L))
+    (hd : d.toLinearMap.comp (B.mkQ.baseChange L) = (B.baseChange L).mkQ)
+    (hc : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
+      (t : x.abv.Completion ⊗[L] (L ⊗[F] X)),
+      θ.norm (scalarExtensionTowerPlace x) (c.toLinearMap.baseChange x.abv.Completion t) =
+        (η.scalarExtension (L := L)).norm x t)
+    (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
+    (z : x.abv.Completion ⊗[L] (L ⊗[F] (X ⧸ B))) :
+    (θ.quotient A).norm (scalarExtensionTowerPlace x)
+      (q.toLinearMap.baseChange x.abv.Completion
+        (d.toLinearMap.baseChange x.abv.Completion z)) =
+      ((η.quotient B).scalarExtension (L := L)).norm x z := by
+  exact (quotientEquiv_towerPullback_norm_eq (η.scalarExtension (L := L)) θ x c
+    (B.baseChange L) A q hq (hc x) (d.toLinearMap.baseChange x.abv.Completion z)).trans
+      (tensorQuotient_norm_eq_of_comp_eq η hN hi B d hd x z)
+
+/-- Quotient norms commute with scalar extension through a complexifying algebraic tower.
+In particular, this identifies the native target quotient with any finite-stage quotient. -/
 theorem scalarExtension_quotient_finiteStage_norm_eq (ξ : NormFamily S E)
     (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (F : AdelicStructure.FiniteIntermediateField K L) (hi : ∃ a : F, a ^ 2 = -1)
+    (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L]
+    (hi : ∃ a : F, a ^ 2 = -1)
     (B : Submodule F (F ⊗[K] E))
     (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
     (z : x.abv.Completion ⊗[L] (L ⊗[F] ((F ⊗[K] E) ⧸ B))) :
@@ -167,13 +216,74 @@ theorem scalarExtension_quotient_finiteStage_norm_eq (ξ : NormFamily S E)
         (d.toLinearMap.baseChange x.abv.Completion z)) =
       (((ξ.scalarExtension (L := F)).quotient B).scalarExtension (L := L)).norm x z := by
   intro c A d q
-  have ht := ξ.discreteQuotient_cancel_norm_eq F (B.baseChange L) x
-    (d.toLinearMap.baseChange x.abv.Completion z)
-  dsimp only at ht
-  rw [towerPullback_quotient] at ht
-  exact ht.trans
-    ((ξ.scalarExtension (L := F)).discreteTensorQuotientEquiv_norm_eq
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN) hi B x z)
+  exact scalarExtension_quotient_tower_norm_eq
+    (K := K) (S := S) (L := L) (F := F)
+    (X := F ⊗[K] E) (Y := L ⊗[K] E)
+    (ξ.scalarExtension (L := F)) (ξ.scalarExtension (L := L))
+    (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN)
+    hi c B A q (by ext y; rfl) d (discreteTensorQuotientEquiv_comp_mkQ B)
+    (fun x t ↦ (ξ.scalarExtension_trans x t).symm) x z
+
+
+private theorem isMeasurable_of_quotient_tower_norm_eq
+    (F : AdelicStructure.FiniteIntermediateField K L)
+    {X Y Z : Type*} [AddCommGroup X] [Module L X]
+    [AddCommGroup Y] [Module L Y] [AddCommGroup Z] [Module L Z]
+    (η : NormFamily ((S.algebraicExtension F).algebraicExtension L) X)
+    (θ : NormFamily (S.algebraicExtension L) Z) (d : X ≃ₗ[L] Y) (q : Y ≃ₗ[L] Z)
+    (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
+      (z : x.abv.Completion ⊗[L] X),
+      θ.norm (scalarExtensionTowerPlace x) (q.toLinearMap.baseChange x.abv.Completion
+        (d.toLinearMap.baseChange x.abv.Completion z)) = η.norm x z)
+    (hm : η.IsMeasurable) : θ.IsMeasurable := by
+  intro y
+  apply (AdelicStructure.Algebraic.towerMeasurableEquiv S
+    F.toIntermediateField).measurable_comp_iff.mp
+  have hnorm : (fun x : ((S.algebraicExtension F).algebraicExtension L).Ω =>
+      θ.norm (scalarExtensionTowerPlace x) ((1 : x.abv.Completion) ⊗ₜ[L] y)) =
+      (fun x : ((S.algebraicExtension F).algebraicExtension L).Ω =>
+        η.norm x ((1 : x.abv.Completion) ⊗ₜ[L] d.symm (q.symm y))) := by
+    funext x
+    have hd : d.toLinearMap.baseChange x.abv.Completion
+        ((1 : x.abv.Completion) ⊗ₜ[L] d.symm (q.symm y)) =
+        (1 : x.abv.Completion) ⊗ₜ[L] q.symm y := by
+      simp only [LinearMap.baseChange_tmul, LinearEquiv.coe_coe, d.apply_symm_apply]
+    have hq : q.toLinearMap.baseChange x.abv.Completion
+        ((1 : x.abv.Completion) ⊗ₜ[L] q.symm y) =
+        (1 : x.abv.Completion) ⊗ₜ[L] y := by
+      simp only [LinearMap.baseChange_tmul, LinearEquiv.coe_coe, q.apply_symm_apply]
+    have hv := congrArg (q.toLinearMap.baseChange x.abv.Completion) hd
+    have hn := congrArg (fun z : x.abv.Completion ⊗[L] Z =>
+      θ.norm (scalarExtensionTowerPlace x) z) (hv.trans hq)
+    exact hn.symm.trans (he x ((1 : x.abv.Completion) ⊗ₜ[L] d.symm (q.symm y)))
+  change Measurable (fun x : ((S.algebraicExtension F).algebraicExtension L).Ω =>
+    θ.norm (scalarExtensionTowerPlace x) ((1 : x.abv.Completion) ⊗ₜ[L] y))
+  rw [hnorm]
+  exact hm (d.symm (q.symm y))
+
+private theorem scalarExtension_quotient_isMeasurable_of_tower
+    (F : AdelicStructure.FiniteIntermediateField K L)
+    {X Y : Type*} [AddCommGroup X] [Module F X] [FiniteDimensional F X]
+    [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
+    (η : NormFamily (S.algebraicExtension F) X)
+    (θ : NormFamily (S.algebraicExtension L) Y)
+    (hN : ∀ ω ∈ (S.algebraicExtension F).Ωinf,
+      IsRCLikeNormedField ((S.algebraicExtension F).ϕ ω).Completion)
+    (hi : ∃ a : F, a ^ 2 = -1)
+    (c : (L ⊗[F] X) ≃ₗ[L] Y) (B : Submodule F X) (A : Submodule L Y)
+    (q : ((L ⊗[F] X) ⧸ B.baseChange L) ≃ₗ[L] (Y ⧸ A))
+    (hq : q.toLinearMap.comp (B.baseChange L).mkQ = A.mkQ.comp c.toLinearMap)
+    (d : (L ⊗[F] (X ⧸ B)) ≃ₗ[L] ((L ⊗[F] X) ⧸ B.baseChange L))
+    (hd : d.toLinearMap.comp (B.mkQ.baseChange L) = (B.baseChange L).mkQ)
+    (hc : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
+      (t : x.abv.Completion ⊗[L] (L ⊗[F] X)),
+      θ.norm (scalarExtensionTowerPlace x) (c.toLinearMap.baseChange x.abv.Completion t) =
+        (η.scalarExtension (L := L)).norm x t)
+    (hm : ((η.quotient B).scalarExtension (L := L)).IsMeasurable) :
+    (θ.quotient A).IsMeasurable := by
+  exact isMeasurable_of_quotient_tower_norm_eq F
+    ((η.quotient B).scalarExtension (L := L)) (θ.quotient A) d q
+    (scalarExtension_quotient_tower_norm_eq η θ hN hi c B A q hq d hd hc) hm
 
 variable [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] [IsAlgClosed L]
 
@@ -197,35 +307,14 @@ theorem scalarExtension_quotient_isMeasurable_of_countable_discrete (ξ : NormFa
   let q := Submodule.Quotient.equiv ((B 0).baseChange L) A c rfl
   let d := discreteTensorQuotientEquiv (l := L) (B 0)
   let η := ((ξ.scalarExtension (L := F)).quotient (B 0)).scalarExtension (L := L)
-  let θ := (ξ.scalarExtension (L := L)).quotient A
   have hm : η.IsMeasurable :=
     ((ξ.scalarExtension (L := F)).quotient (B 0)).scalarExtension_isMeasurable_of_countable_discrete
       (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN)
-  intro y
-  let τ := (AdelicStructure.Algebraic.towerMeasurableEquiv S F.toIntermediateField).symm
-  have hnorm : (fun x : (S.algebraicExtension L).Ω =>
-      θ.norm x ((1 : x.abv.Completion) ⊗ₜ[L] y)) =
-      (fun x : (S.algebraicExtension L).Ω =>
-        η.norm (τ x) ((1 : (τ x).abv.Completion) ⊗ₜ[L] d.symm (q.symm y))) := by
-    funext x
-    have h := ξ.scalarExtension_quotient_finiteStage_norm_eq hN F hi (B 0) (τ x)
-      ((1 : (τ x).abv.Completion) ⊗ₜ[L] d.symm (q.symm y))
-    have hd : d.toLinearMap.baseChange (τ x).abv.Completion
-        ((1 : (τ x).abv.Completion) ⊗ₜ[L] d.symm (q.symm y)) =
-        (1 : (τ x).abv.Completion) ⊗ₜ[L] q.symm y := by
-      simp only [LinearMap.baseChange_tmul, LinearEquiv.coe_coe, d.apply_symm_apply]
-    have hq : q.toLinearMap.baseChange (τ x).abv.Completion
-        ((1 : (τ x).abv.Completion) ⊗ₜ[L] q.symm y) =
-        (1 : (τ x).abv.Completion) ⊗ₜ[L] y := by
-      simp only [LinearMap.baseChange_tmul, LinearEquiv.coe_coe, q.apply_symm_apply]
-    have hv := congrArg (q.toLinearMap.baseChange (τ x).abv.Completion) hd
-    have hn := congrArg (fun z : (τ x).abv.Completion ⊗[L] ((L ⊗[K] E) ⧸ A) =>
-      θ.norm x z) (hv.trans hq)
-    exact hn.symm.trans h
-  change Measurable (fun x : (S.algebraicExtension L).Ω =>
-    θ.norm x ((1 : x.abv.Completion) ⊗ₜ[L] y))
-  rw [hnorm]
-  exact (hm (d.symm (q.symm y))).comp τ.measurable
+  exact scalarExtension_quotient_isMeasurable_of_tower F
+    (ξ.scalarExtension (L := F)) (ξ.scalarExtension (L := L))
+    (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN) hi
+    c (B 0) A q (by ext y; rfl) d (discreteTensorQuotientEquiv_comp_mkQ (B 0))
+    (fun x t ↦ (ξ.scalarExtension_trans x t).symm) hm
 
 end NormFamily
 

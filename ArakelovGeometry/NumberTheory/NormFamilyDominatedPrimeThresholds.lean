@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Domination
-import ArakelovGeometry.Analysis.PositiveAtomicMeasure
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Domination
+public import ArakelovGeometry.Analysis.PositiveAtomicMeasure
 
 /-!
 # Finite weighted prime thresholds for actual norm families
@@ -15,6 +17,8 @@ bound. The norm-density measure then makes every positive weighted threshold
 finite, without assuming countability or coherence. The arithmetic uniformizer
 gap is a separate hypothesis in the rounded-order consumer.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 

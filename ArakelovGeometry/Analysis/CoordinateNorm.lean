@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Analysis.Normed.Group.Ultra
-import Mathlib.Analysis.Normed.Module.Basic
-import Mathlib.LinearAlgebra.Basis.Defs
+module
+
+public import Mathlib.Analysis.Normed.Group.Ultra
+public import Mathlib.Analysis.Normed.Module.Basic
+public import Mathlib.LinearAlgebra.Basis.Defs
 
 /-!
 # Coordinate estimates for linear functionals
@@ -14,6 +16,8 @@ Finite coordinate-sum norms have coordinate-maximum dual norms.  Over an
 ultrametric field the same bound holds for the coordinate-maximum norm.
 The estimates below include an empty basis.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

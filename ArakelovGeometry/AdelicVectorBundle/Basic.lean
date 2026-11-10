@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Line
-import ArakelovGeometry.AdelicVectorBundle.StrongDomination
-import ArakelovGeometry.AdelicVectorBundle.HermitianLine
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianLine
+public import ArakelovGeometry.AdelicVectorBundle.Line
+public import ArakelovGeometry.AdelicVectorBundle.StrongDomination
 
 /-!
 # Adelic vector bundles
@@ -18,6 +20,8 @@ The underlying vector space is a parameter. No measurability of a general
 quotient or bidual is built into the definition. The line constructors prove
 the additional measurability they need from the exact completed dual formulas.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.SlopesLinearMap
-import ArakelovGeometry.AdelicVectorBundle.SlopesFinite
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.SlopesFinite
+public import ArakelovGeometry.AdelicVectorBundle.SlopesLinearMap
 
 /-!
 # The surjective slope inequality, including infinite height
@@ -13,6 +15,8 @@ Actual extremal-slope finiteness supplies the remaining infinite-height case
 of source Proposition 4.3.31(2). The zero surjection is stated separately:
 its target minimum is `⊤`, without adding the height of the zero map.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

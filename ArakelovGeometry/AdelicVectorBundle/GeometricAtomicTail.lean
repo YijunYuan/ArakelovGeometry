@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricAtomicNormComparison
-import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAtomicNormComparison
+public import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
 
 /-!
 # Finite weighted tails of actual geometric norm distance
@@ -13,6 +15,8 @@ Finite subsets of the produced countable actual support exhaust its integral.
 The original measure space need not be countable or sigma-finite. The tail
 identity retains the genuine point masses and actual completed norm distance.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter Set
 open scoped TensorProduct Topology

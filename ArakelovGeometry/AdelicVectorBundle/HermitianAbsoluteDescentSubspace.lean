@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismSubspace
-import Mathlib.RingTheory.Trace.Basic
-import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismSubspace
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
+public import Mathlib.RingTheory.Trace.Basic
 
 /-!
 # Actual finite Galois descent of scalar-extended subspaces
@@ -14,6 +16,8 @@ Trace-dual rational coordinates descend every Galois-stable actual tensor
 subspace. This is algebraic infrastructure for Hermitian flag descent; it does
 not assume or prove that a particular Harder--Narasimhan term is stable.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section
@@ -36,8 +40,7 @@ theorem scalarExtensionSemilinearEquiv_mem_baseChange (U : Submodule K E)
   change U.subtype.baseChange L
       (TensorProduct.map σ.toLinearMap (LinearMap.id : U →ₗ[K] U) y) =
     TensorProduct.map σ.toLinearMap (LinearMap.id : E →ₗ[K] E) (U.subtype.baseChange L y)
-  induction y using TensorProduct.induction_on with
-  | zero => simp only [map_zero]
+  induction y using TensorProduct.inductionOn with
   | tmul a e => simp only [TensorProduct.map_tmul, LinearMap.id_apply,
       LinearMap.baseChange_tmul]
   | add x y hx hy => simp only [map_add, hx, hy]
@@ -52,15 +55,7 @@ theorem one_tmul_coordinate_eq_galois_sum [FiniteDimensional K L] [IsGalois K L]
   have hcoord (a : L) : b.repr a i = Algebra.trace K L (b.traceDual i * a) := by
     simpa only [b.traceDual_traceDual, Algebra.traceForm_apply, mul_comm]
       using b.traceDual.traceDual_repr_apply a i
-  induction x using TensorProduct.induction_on with
-  | zero =>
-    simp only [map_zero, Finsupp.zero_apply, TensorProduct.tmul_zero]
-    symm
-    apply Finset.sum_eq_zero
-    intro σ _
-    change σ (b.traceDual i) •
-      TensorProduct.map σ.toLinearMap (LinearMap.id : E →ₗ[K] E) 0 = 0
-    simp only [map_zero, smul_zero]
+  induction x using TensorProduct.inductionOn with
   | tmul a e =>
     simp only [TensorProduct.equivFinsuppOfBasisLeft_apply_tmul_apply, hcoord,
       scalarExtensionSemilinearEquiv_tmul, TensorProduct.smul_tmul', smul_eq_mul,

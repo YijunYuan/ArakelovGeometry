@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArithmeticProductBall
-import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDualMetric
-import Mathlib.Analysis.LocallyConvex.Polar
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldArithmeticProductBall
+public import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDualMetric
+public import Mathlib.Analysis.LocallyConvex.Polar
 
 /-! # The actual arithmetic product-ball polar set and its prescribed tensor containment -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField

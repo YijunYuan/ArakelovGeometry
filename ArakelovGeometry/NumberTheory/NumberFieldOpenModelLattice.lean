@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldOpenRegularFunctions
-import Mathlib.RingTheory.Flat.Basic
-import Mathlib.RingTheory.RingHom.Finite
-import Mathlib.RingTheory.LocalProperties.Projective
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldOpenRegularFunctions
+public import Mathlib.RingTheory.Flat.Basic
+public import Mathlib.RingTheory.LocalProperties.Projective
+public import Mathlib.RingTheory.RingHom.Finite
 
 /-!
 # Integral descent of actual open models
@@ -14,6 +16,8 @@ import Mathlib.RingTheory.LocalProperties.Projective
 The original section-ring coefficient maps descend finite open models to
 literal integral submodules, with canonical localization reconstruction.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct
@@ -216,9 +220,7 @@ theorem modelGenericImage_full_span (U : TopologicalSpace.Opens (PrimeSpectrum (
   have hmem : ∀ t : K ⊗[regularFunctions U] M,
       e t ∈ Submodule.span K (modelGenericImage U hU E M e : Set E) := by
     intro t
-    induction t using TensorProduct.induction_on with
-    | zero => simpa only [map_zero] using (Submodule.span K
-        (modelGenericImage U hU E M e : Set E)).zero_mem
+    induction t using TensorProduct.inductionOn with
     | tmul a m =>
       have ht : a ⊗ₜ[regularFunctions U] m =
           a • ((1 : K) ⊗ₜ[regularFunctions U] m) := by
@@ -330,11 +332,14 @@ theorem exists_model_integral_descent (U : TopologicalSpace.Opens (PrimeSpectrum
   rw [modelGenericImageEquiv_apply] at h
   exact h.trans (hj b x)
 
-private abbrev S := AdelicStructure.normalizedNumberFieldAdelicStructure K
-private abbrev ω (p : HeightOneSpectrum (𝓞 K)) := ActualPrimeIndexing.normalizedPrimeParameter p
-private abbrev O (p : HeightOneSpectrum (𝓞 K)) :=
-  (S (K := K)).completedLocalRing (ω p) (ActualPrimeIndexing.normalizedPrimeParameter_mem_fin p)
-private abbrev F (p : HeightOneSpectrum (𝓞 K)) := ((S (K := K)).ϕ (ω p)).Completion
+local notation "S" => AdelicStructure.normalizedNumberFieldAdelicStructure K
+local notation "ω" => fun (p : HeightOneSpectrum (𝓞 K)) ↦
+  ActualPrimeIndexing.normalizedPrimeParameter p
+local notation "O" => fun (p : HeightOneSpectrum (𝓞 K)) ↦
+  AdelicStructure.completedLocalRing (S) (ω p)
+    (ActualPrimeIndexing.normalizedPrimeParameter_mem_fin p)
+local notation "F" => fun (p : HeightOneSpectrum (𝓞 K)) ↦
+  AbsoluteValue.Completion (AdelicStructure.ϕ (S) (ω p))
 
 /-- The actual original section map supplies the actual completed coefficient algebra. -/
 abbrev completedCoefficientAlgebra (U : TopologicalSpace.Opens (PrimeSpectrum (𝓞 K)))
@@ -477,8 +482,7 @@ theorem range_completedModelTensorMap
   intro e
   apply le_antisymm
   · rintro z ⟨t, rfl⟩
-    induction t using TensorProduct.induction_on with
-    | zero => simpa only [map_zero] using (completedModelSpan U hU E M p e).zero_mem
+    induction t using TensorProduct.inductionOn with
     | tmul a m =>
       have hm := (completedModelSpan U hU E M p e).smul_mem a
         (Submodule.subset_span (⟨m, rfl⟩ : _ ∈ Set.range _))
@@ -523,9 +527,7 @@ theorem completedModelSpan_eq_integral_of_reconstruction
         (1 : F p) ⊗ₜ[K] modelGenericMap U hU E M e (j t) ∈
           NumberFieldModel.completedLatticeSpan L p := by
       intro t
-      induction t using TensorProduct.induction_on with
-      | zero => simpa only [map_zero, TensorProduct.tmul_zero] using
-          (NumberFieldModel.completedLatticeSpan L p).zero_mem
+      induction t using TensorProduct.inductionOn with
       | tmul b x =>
         rw [hj]
         have hm := (NumberFieldModel.completedLatticeSpan L p).smul_mem

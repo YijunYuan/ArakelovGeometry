@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.LinearAlgebra.Vandermonde
-import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-import Mathlib.NumberTheory.Padics.PadicNumbers
-import Mathlib.Analysis.Normed.Field.Ultra
-import Mathlib.Analysis.Normed.Module.Basic
-import Mathlib.Analysis.Normed.Group.Constructions
+module
+
+public import Mathlib.Analysis.Normed.Field.Ultra
+public import Mathlib.Analysis.Normed.Group.Constructions
+public import Mathlib.Analysis.Normed.Module.Basic
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+public import Mathlib.LinearAlgebra.Vandermonde
+public import Mathlib.NumberTheory.Padics.PadicNumbers
 
 /-!
 # Valued Vandermonde support isometries
@@ -17,6 +19,8 @@ The first rows of the literal Vandermonde matrix preserve the coordinate
 maximum on each support when the residue prime exceeds the ambient rank.
 The finite argument works without completeness.
 -/
+
+@[expose] public section
 
 noncomputable section
 

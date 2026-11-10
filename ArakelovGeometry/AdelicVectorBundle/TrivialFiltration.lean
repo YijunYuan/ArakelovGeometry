@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TrivialPlace
-import ArakelovGeometry.LinearAlgebra.FiniteFiltration
-import Mathlib.Order.ConditionallyCompleteLattice.Finset
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.TrivialPlace
+public import ArakelovGeometry.LinearAlgebra.FiniteFiltration
+public import Mathlib.Order.ConditionallyCompleteLattice.Finset
 
 /-!
 # Literal ball filtrations of actual trivial-place norms
@@ -14,6 +16,8 @@ The input is the actual norm family, with its ultrametric hypothesis.
 Finite image and left local constancy are derived from dimension, not
 assumed as filtration certificates.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.NormFamily
 

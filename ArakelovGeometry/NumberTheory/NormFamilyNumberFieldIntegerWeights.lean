@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarLine
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldLocalDegree
-import ArakelovGeometry.NumberTheory.ValuationModuleCriterion
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedCoherenceCriteria
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarLine
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedCoherenceCriteria
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldLocalDegree
+public import ArakelovGeometry.NumberTheory.ValuationModuleCriterion
 
 /-!
 # Actual integer-weighted scalar norms
@@ -14,6 +16,8 @@ import ArakelovGeometry.NumberTheory.NormFamilyNormalizedCoherenceCriteria
 The arbitrary integer family in Chen–Moriwaki Example 4.4.8 is implemented
 on the actual completed scalar line, using the source-normalized curve.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct
@@ -66,7 +70,8 @@ theorem weightExponent_prime (P : HeightOneSpectrum (𝓞 K)) :
     weightExponent b (normalizedPrimeParameter P) =
       -(b (normalizedPrimeEquivFinite P) : ℝ) * normalizedPrimeLogScale P := by
   classical
-  rw [weightExponent, dif_pos (normalizedPrimeParameter_mem_fin P), normalizedPlaceLogScale_prime]
+  rw [weightExponent, dite_eq_left (normalizedPrimeParameter_mem_fin P),
+    normalizedPlaceLogScale_prime]
   rfl
 
 /-- The exponent at infinity is zero. -/
@@ -74,7 +79,7 @@ theorem weightExponent_infinite (ω : (normalizedNumberFieldAdelicStructure K).�
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωinf) : weightExponent b ω = 0 := by
   classical
   have hn : ω ∉ (normalizedNumberFieldAdelicStructure K).Ωfin := hω
-  rw [weightExponent, dif_neg hn]
+  rw [weightExponent, dite_eq_right hn]
 
 /-- The actual completed scalar formula, with no integrability hypothesis. -/
 theorem norm_tmul_one (ω : (normalizedNumberFieldAdelicStructure K).Ω)

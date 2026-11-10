@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalization
-import ArakelovGeometry.NumberTheory.NormFamilyCompletedLocalUnitBall
-import ArakelovGeometry.NumberTheory.NormFamilyGlobalUnitBall
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyCompletedLocalUnitBall
+public import ArakelovGeometry.NumberTheory.NormFamilyGlobalUnitBall
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalization
 
 /-!
 # Actual local and global finite unit balls under normalization
@@ -13,6 +15,8 @@ import ArakelovGeometry.NumberTheory.NormFamilyGlobalUnitBall
 The actual completed tensor map restricts to the literal unit balls.
 The old zero-mass trivial place still contributes to its global intersection.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct
@@ -77,7 +81,7 @@ def normalizedCompletedLocalRingEquiv
       erw [e.apply_symm_apply a.val]
       exact (newS.mem_completedLocalRing ω hω a.val).mp a.property))
 
-/-- The coefficient-ring restriction is the same a.valctual completed field map. -/
+/-- The coefficient-ring restriction is the same completed field map. -/
 theorem normalizedCompletedLocalRingEquiv_coe
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin)

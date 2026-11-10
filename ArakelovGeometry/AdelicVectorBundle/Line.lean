@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Measurable
-import ArakelovGeometry.AdelicVectorBundle.Rational
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Measurable
+public import ArakelovGeometry.AdelicVectorBundle.Rational
 
 /-!
 # Norm families on lines
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.Rational
 Exact rational scalar and dual formulas give the one-vector criteria for
 measurability and domination in source Propositions 4.1.16 and 4.1.22.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

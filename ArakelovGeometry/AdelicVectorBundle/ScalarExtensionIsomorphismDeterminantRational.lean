@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismDeterminant
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismDeterminant
 
 /-!
 # Rational determinant transport under scalar-field isomorphisms
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

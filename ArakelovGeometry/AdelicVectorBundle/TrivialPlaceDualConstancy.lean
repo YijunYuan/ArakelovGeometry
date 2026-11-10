@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TrivialPlaceBidual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.TrivialPlaceBidual
 
 /-!
 # Actual dual constancy at the mass-one trivial place
@@ -13,6 +15,8 @@ Triple duality makes actual semistability equivalent to dual constancy,
 without ultrametricity of the original norm. The source dual logarithmic
 identity uses ordinary mean, hence degree divided by rank.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -166,9 +170,9 @@ theorem exists_rank_two_dual_formula_counterexample :
         · subst y
           simp
         by_cases hs : x + y = 0
-        · rw [if_pos hs, if_neg hx, if_neg hy]
+        · rw [ite_eq_left hs, ite_eq_right hx, ite_eq_right hy]
           exact add_nonneg (Real.exp_pos _).le (Real.exp_pos _).le
-        rw [if_neg hs, if_neg hx, if_neg hy]
+        rw [ite_eq_right hs, ite_eq_right hx, ite_eq_right hy]
         exact le_add_of_nonneg_right (Real.exp_pos _).le)
       (by
         intro a x
@@ -176,12 +180,12 @@ theorem exists_rank_two_dual_formula_counterexample :
           ‖a‖ * (if x = 0 then 0 else Real.exp 1)
         rw [WithAbs.norm_eq_apply_ofAbs]
         by_cases ha : a.ofAbs = 0
-        · rw [ha, zero_smul, if_pos rfl, map_zero, zero_mul]
+        · rw [ha, zero_smul, ite_eq_left rfl, map_zero, zero_mul]
         rw [AbsoluteValue.trivial_apply ha]
         by_cases hx : x = 0
         · subst x
           simp
-        rw [if_neg (smul_ne_zero ha hx), if_neg hx, one_mul])
+        rw [ite_eq_right (smul_ne_zero ha hx), ite_eq_right hx, one_mul])
   have hp : ∀ x, p x = 0 ↔ x = 0 := by
     intro x
     change (if x = 0 then 0 else Real.exp 1) = 0 ↔ x = 0
@@ -192,7 +196,7 @@ theorem exists_rank_two_dual_formula_counterexample :
     change (NormFamily.ofTrivialNorm p hp).trivialSeminorm x = Real.exp 1
     rw [NormFamily.trivialSeminorm_ofTrivialNorm]
     change (if x = 0 then 0 else Real.exp 1) = Real.exp 1
-    rw [if_neg hx]
+    rw [ite_eq_right hx]
   have hdim : Module.finrank K (Fin 2 → K) = 2 := by
     rw [Module.finrank_fintype_fun_eq_card, Fintype.card_fin]
   have hV := V.isSemistable_of_trivialSeminorm_eq_const

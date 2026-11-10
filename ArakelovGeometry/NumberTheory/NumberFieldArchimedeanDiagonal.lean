@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldFullLatticeIntegerBasis
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldInfiniteMass
-import ArakelovGeometry.Analysis.EquivalentCompletion
-import Mathlib.NumberTheory.NumberField.InfiniteAdeleRing
+module
+
+public import ArakelovGeometry.Analysis.EquivalentCompletion
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldInfiniteMass
+public import ArakelovGeometry.NumberTheory.NumberFieldFullLatticeIntegerBasis
+public import Mathlib.NumberTheory.NumberField.InfiniteAdeleRing
 
 /-! # Actual Archimedean scalar decomposition and diagonal lattices
 
@@ -15,6 +17,8 @@ space. Actual normalized infinite completions map isometrically to their usual
 real or complex factors. A literal full integral submodule of the scalar field
 maps to an actual discrete full integer lattice.
 -/
+
+@[expose] public section
 
 open NumberField
 open scoped NumberField TensorProduct
@@ -214,10 +218,9 @@ def scalarIntegerRationalBasis (M : Submodule (𝓞 K) K) (hfg : M.FG)
     (NumberFieldFullLattice.integerRationalBasis M hfg hspan).linearIndependent
   have hli : LinearIndependent ℚ v := by
     convert! hli_c using 1
-    all_goals first
-    | exact hv
-    | rfl
-    | (apply Module.ext; funext q a; exact Algebra.smul_def q a)
+    apply Module.ext
+    funext q a
+    exact Algebra.smul_def q a
   have hcard : Fintype.card (Fin (Module.finrank ℤ M)) = Module.finrank ℚ K := by
     simpa using NumberFieldFullLattice.finrank_integer M hfg hspan
   letI : Nonempty (Fin (Module.finrank ℤ M)) := Fin.pos_iff_nonempty.mp (by

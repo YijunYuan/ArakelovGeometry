@@ -3,9 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalCountComparison
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalCountComparison
 
 /-! # The exact source constants in classical arithmetic comparison -/
+
+@[expose] public section
 
 noncomputable section
 

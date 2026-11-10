@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaBasis
-import ArakelovGeometry.AdelicVectorBundle.SlopesQuotient
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaBasis
+public import ArakelovGeometry.AdelicVectorBundle.SlopesQuotient
 
 /-!
 # Actual last logarithmic minimum and actual minimal slope
@@ -15,6 +17,8 @@ so every nonzero quotient mean dominates each full-span threshold. Taking the
 actual quotient infimum and threshold supremum proves source Proposition4.3.77,
 without an attainment premise. Original degree regularity remains explicit.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

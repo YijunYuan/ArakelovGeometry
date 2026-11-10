@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaFinite
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaFinite
 
 /-!
 # Actual absolute minima are real and epsilon-approximated
@@ -13,6 +15,8 @@ Its finite upper endpoint is produced from original-base hypotheses, without
 assuming additional regularity of the closure place space. Valid source indices
 are positive and at most original rank; auxiliary endpoints remain unchanged.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

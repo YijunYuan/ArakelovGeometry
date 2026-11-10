@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.LatticeSubspaceQuotient
-import ArakelovGeometry.GeometryOfNumbers.LatticeNormalizedProductMeasure
-import ArakelovGeometry.GeometryOfNumbers.LatticeNormalizedMeasureEquiv
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.LatticeNormalizedMeasureEquiv
+public import ArakelovGeometry.GeometryOfNumbers.LatticeNormalizedProductMeasure
+public import ArakelovGeometry.GeometryOfNumbers.LatticeSubspaceQuotient
 
 /-! # Actual adapted subspace and quotient coordinates for a rational lattice subspace -/
+
+@[expose] public section
 
 noncomputable section
 open Module MeasureTheory

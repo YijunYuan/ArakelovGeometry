@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Exterior
-import ArakelovGeometry.AdelicVectorBundle.Line
-import ArakelovGeometry.Analysis.DeterminantNorm
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Exterior
+public import ArakelovGeometry.AdelicVectorBundle.Line
+public import ArakelovGeometry.Analysis.DeterminantNorm
 
 /-!
 # Determinant norm families
@@ -15,6 +17,8 @@ on the actual completed determinant line. It agrees with the mixed top exterior
 norm at every place. At non-Archimedean places the proof uses nearly optimal
 bases and the injective tensor contraction theorem, including dimension zero.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

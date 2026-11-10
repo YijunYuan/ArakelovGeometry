@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.ConvexBodySlices
-import ArakelovGeometry.Analysis.IntervalDensityInequality
+module
+
+public import ArakelovGeometry.Analysis.IntervalDensityInequality
+public import ArakelovGeometry.GeometryOfNumbers.ConvexBodySlices
 
 /-! # The actual slice step for multiplicative convex volume -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TensorPairNorm
-import ArakelovGeometry.AdelicVectorBundle.DeterminantWedgeApproximation
-import Mathlib.Analysis.SpecificLimits.Basic
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantWedgeApproximation
+public import ArakelovGeometry.AdelicVectorBundle.TensorPairNorm
+public import Mathlib.Analysis.SpecificLimits.Basic
 
 /-!
 # Actual determinant tensor norm comparison
@@ -14,6 +16,8 @@ Scalar-weighted wedge approximation retains the degree-zero determinant line.
 The projective bound is an inequality, as required by the corrected source
 tensor-degree statement.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -46,7 +50,7 @@ theorem projectiveTensorPair_determinant_norm_smul_wedge_le
       (‖a‖ * ∏ i, ξ.norm ω (x i)) ^ Module.finrank K F *
         (‖b‖ * ∏ j, η.norm ω (y j)) ^ Module.finrank K E := by
   simp only [MultilinearMap.map_smul_univ, Finset.prod_const, Finset.card_univ,
-    Fintype.card_fin, TensorProduct.smul_tmul_smul, map_smul,
+    Fintype.card_fin, TensorProduct.smul_tmul_smul, LinearEquiv.map_smul,
     norm_smul, norm_mul, norm_pow]
   calc
     _ ≤ (‖a‖ ^ Module.finrank K F * ‖b‖ ^ Module.finrank K E) *

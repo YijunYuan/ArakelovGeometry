@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanVectorDiagonal
-import Mathlib.RingTheory.Trace.Basic
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldArchimedeanVectorDiagonal
+public import Mathlib.RingTheory.Trace.Basic
 /-! # Trace on actual normalized Archimedean coefficient fields
 
 The canonical real scalar action and ordinary completed norms are retained.
@@ -12,6 +14,8 @@ The literal product trace sums the real coefficients and twice the complex
 real parts. Grouping the separable embedding trace proves its value on original
 diagonal scalars. Exact local operator factors equal the actual place masses.
 -/
+
+@[expose] public section
 
 open NumberField
 open scoped TensorProduct

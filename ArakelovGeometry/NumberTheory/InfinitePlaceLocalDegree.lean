@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.ExternalResults.AbsoluteValueLocal
-import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
-import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
+module
+
+public import ArakelovGeometry.ExternalResults.AbsoluteValueLocal
+public import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
 
 /-!
 # Actual local degrees at infinite number-field places
@@ -13,6 +15,8 @@ import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
 The intrinsic degree of the actual completed scalar map is the number
 of complex embeddings inducing the given place, hence its multiplicity.
 -/
+
+@[expose] public section
 
 noncomputable section
 

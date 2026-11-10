@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianHNPositiveDegree
-import Mathlib.Order.Interval.Finset.Nat
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHNPositiveDegree
+public import Mathlib.Order.Interval.Finset.Nat
 
 /-!
 # Degree sums over actual ordered Hermitian HN slopes
@@ -13,6 +15,8 @@ Actual rank intervals identify the multiplicity of each produced factor in
 the ordered slope list. Fibrewise finite summation then yields ordinary and
 positive degree formulas, including the empty ordered list in rank zero.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

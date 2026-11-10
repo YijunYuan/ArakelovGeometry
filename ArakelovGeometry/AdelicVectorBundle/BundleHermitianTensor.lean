@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianTensor
-import ArakelovGeometry.AdelicVectorBundle.BundleTensorLine
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BundleTensorLine
+public import ArakelovGeometry.AdelicVectorBundle.HermitianTensor
 
 /-!
 # Orthogonal tensor products of adelic vector bundles
@@ -14,6 +16,8 @@ under its norm and dual measurability hypotheses. For line factors the norm
 agrees with the already measurable mixed tensor norm, so no new measurability
 assumptions are needed.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

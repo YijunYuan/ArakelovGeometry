@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeSupermodular
-import ArakelovGeometry.AdelicVectorBundle.Slopes
-import ArakelovGeometry.Analysis.SupermodularSlope
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeSupermodular
+public import ArakelovGeometry.AdelicVectorBundle.Slopes
+public import ArakelovGeometry.Analysis.SupermodularSlope
 
 /-!
 # Largest destabilizing subspaces of actual Hermitian bundles
@@ -16,6 +18,8 @@ extended-real maximal slope. Semistability includes the nonzero qualification
 of source Definition 4.3.29, and the produced subspace is itself semistable
 with its actual restriction norms.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.LinearMapBound
-import Mathlib.Analysis.Normed.Module.PiTensorProduct.ProjectiveSeminorm
-import Mathlib.LinearAlgebra.PiTensorProduct.Dual
+module
+
+public import ArakelovGeometry.Analysis.LinearMapBound
+public import Mathlib.Analysis.Normed.Module.PiTensorProduct.ProjectiveSeminorm
+public import Mathlib.LinearAlgebra.PiTensorProduct.Dual
 
 /-!
 # Norms on finite tensor products
@@ -14,6 +16,8 @@ Projective separation and the injective norm defined by products of dual
 functionals, for finite-dimensional spaces over arbitrary complete normed
 fields. The tensor products are Mathlib's canonical `PiTensorProduct`.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -75,7 +79,7 @@ theorem norm_tensorDualEval_tprod_le (φ : ∀ i, E i →ₗ[L] L) (x : ∀ i, E
     ‖tensorDualEval φ (⨂ₜ[L] i, x i)‖ ≤
       (∏ i, linearMapOperatorSeminorm (φ i)) * ∏ i, ‖x i‖ := by
   rw [tensorDualEval_tprod, norm_prod, ← Finset.prod_mul_distrib]
-  exact Finset.prod_le_prod (fun _ _ ↦ norm_nonneg _)
+  exact Finset.prod_le_prod₀ (fun _ _ ↦ norm_nonneg _)
     (fun i _ ↦ norm_linearMap_apply_le (φ i) (x i))
 
 /-- Every product of dual evaluations is bounded by the projective seminorm.

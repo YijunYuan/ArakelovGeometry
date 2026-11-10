@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceDual
-import ArakelovGeometry.AdelicVectorBundle.DegreeMap
-import ArakelovGeometry.AdelicVectorBundle.RestrictionFunctor
-import Mathlib.LinearAlgebra.Isomorphisms
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceDual
+public import ArakelovGeometry.AdelicVectorBundle.DegreeMap
+public import ArakelovGeometry.AdelicVectorBundle.RestrictionFunctor
+public import Mathlib.LinearAlgebra.Isomorphisms
 
 /-!
 # Supermodularity of actual Hermitian degrees
@@ -16,6 +18,8 @@ quotient norms. Determinant contraction compares its degrees, and Hermitian
 exact-sequence additivity gives supermodularity on the rational subspace lattice.
 All statements include zero-dimensional intersections and quotients.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct

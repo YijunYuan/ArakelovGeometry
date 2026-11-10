@@ -3,9 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Domination
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Domination
 
 /-! # Rational scalar formulas for norm families -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

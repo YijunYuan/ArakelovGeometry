@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.CompletedLatticeGauge
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedPrimeIndexing
+module
+
+public import ArakelovGeometry.NumberTheory.CompletedLatticeGauge
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedPrimeIndexing
 
 /-!
 # Intrinsic gauges of actual completed norm unit balls
@@ -14,6 +16,8 @@ uses the literal unit ball and the previously defined scalar-infimum gauge.
 At actual normalized finite places the contracting scalar is produced from
 an actual valuation-one uniformizer, rather than assumed from the comparison.
 -/
+
+@[expose] public section
 
 open scoped NumberField TensorProduct WithZero
 

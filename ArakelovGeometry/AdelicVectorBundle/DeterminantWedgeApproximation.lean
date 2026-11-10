@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantMap
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantMap
 
 /-!
 # Determinant wedge approximation including degree zero
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicVectorBundle.DeterminantMap
 A scalar coefficient on the wedge retains the actual degree-zero determinant
 line. In positive degree the coefficient can be one.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianClosedMaximalSlope
-import ArakelovGeometry.AdelicVectorBundle.HermitianSemistability
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNSemistability
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNSemistability
+public import ArakelovGeometry.AdelicVectorBundle.HermitianClosedMaximalSlope
+public import ArakelovGeometry.AdelicVectorBundle.HermitianSemistability
 
 /-!
 # Source and mean semistability under actual closed Hermitian extension
@@ -14,6 +16,8 @@ The source's positive-rank constant ordered-slope condition agrees with genuine
 Hermitian mean semistability. Produced closed maximal and mean slope equalities
 preserve and reflect both actual predicates, including their rank-zero failure.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

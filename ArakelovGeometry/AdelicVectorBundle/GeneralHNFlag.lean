@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNRestriction
-import ArakelovGeometry.LinearAlgebra.FiniteFiltration
-import ArakelovGeometry.AdelicVectorBundle.DegreeFlag
-import ArakelovGeometry.AdelicVectorBundle.SemistableFlagDegree
-import ArakelovGeometry.LinearAlgebra.FiniteFlagRanks
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeFlag
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNRestriction
+public import ArakelovGeometry.AdelicVectorBundle.SemistableFlagDegree
+public import ArakelovGeometry.LinearAlgebra.FiniteFiltration
+public import ArakelovGeometry.LinearAlgebra.FiniteFlagRanks
 
 /-!
 # The actual finite flag of a general minimal-slope filtration
@@ -16,6 +18,8 @@ The actual filtration supplies the complete strict flag and its real jumps.
 Actual ordered rank cuts identify the jump on each rank block, with the
 actual canonical quotient rank as its multiplicity.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

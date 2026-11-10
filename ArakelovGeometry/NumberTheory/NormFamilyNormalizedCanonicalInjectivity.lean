@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedCoherenceCriteria
-import Mathlib.RingTheory.Localization.BaseChange
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedCoherenceCriteria
+public import Mathlib.RingTheory.Localization.BaseChange
 
 /-!
 # Unconditional canonical inclusions of the actual global unit ball
@@ -13,6 +15,8 @@ Localization preserves the literal global-to-local inclusion. The canonical
 local and generic tensor maps are therefore injective without coherence or
 domination. Their surjectivity remains the independent coherence condition.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct

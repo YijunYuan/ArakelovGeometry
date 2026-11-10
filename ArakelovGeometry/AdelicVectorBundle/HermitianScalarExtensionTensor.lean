@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtension
-import ArakelovGeometry.Analysis.HermitianScalarExtensionTensor
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtension
+public import ArakelovGeometry.Analysis.HermitianScalarExtensionTensor
 
 /-!
 # The orthogonal tensor description of Hermitian scalar extension
@@ -12,6 +14,8 @@ import ArakelovGeometry.Analysis.HermitianScalarExtensionTensor
 At each infinite extending place the actual completed-fibre norm is the
 Hilbert tensor norm with the given absolute value on the completed field.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

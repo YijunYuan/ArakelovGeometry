@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Defs
-import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
-import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
+module
+
+public import ArakelovGeometry.AdelicCurve.Defs
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
+public import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
 
 /-!
 # Parameter spaces of extending absolute values
@@ -13,6 +15,8 @@ import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
 The extension parameter space, its evaluation sigma algebra, restriction maps and
 fibres, shared by finite and arbitrary algebraic scalar extensions (§3.3–§3.4).
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure
 

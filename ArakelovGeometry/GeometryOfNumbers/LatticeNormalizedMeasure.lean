@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.LatticeCount
-import Mathlib.Algebra.Module.ZLattice.Covolume
-import Mathlib.MeasureTheory.Measure.Haar.Unique
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.LatticeCount
+public import Mathlib.Algebra.Module.ZLattice.Covolume
+public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 /-! # The actual lattice-normalized Haar measure and lattice counting -/
+
+@[expose] public section
 
 noncomputable section
 open Module MeasureTheory MeasureTheory.Measure Bornology

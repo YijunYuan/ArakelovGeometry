@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldProjectiveSections
-import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
+public import ArakelovGeometry.NumberTheory.NumberFieldProjectiveSections
 
 /-! # Actual classical section vanishing under negative maximal slope -/
+
+@[expose] public section
 
 noncomputable section
 open MeasureTheory Set

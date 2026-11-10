@@ -3,10 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.ConvexBodyPolar
-import Mathlib.Analysis.Normed.Operator.Prod
+module
+
+public import Mathlib.LinearAlgebra.Dual.Lemmas
+public import ArakelovGeometry.GeometryOfNumbers.ConvexBodyPolar
+public import Mathlib.Analysis.Normed.Operator.Prod
 
 /-! # Actual continuous-dual polars of sections and projections -/
+
+@[expose] public section
 
 noncomputable section
 open Set Topology

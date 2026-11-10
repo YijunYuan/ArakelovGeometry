@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricNativeDeterminantMeasurable
-import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
+public import ArakelovGeometry.AdelicVectorBundle.GeometricNativeDeterminantMeasurable
+public import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
 
 /-!
 # Genuine finite geometric native bundles and their determinant degrees
@@ -16,6 +18,8 @@ family need only be dominated; finite scalar extension supplies strong
 domination. All-finite positive atomic hypotheses allow uncountable fields.
 -/
 
+@[expose] public section
+
 open MeasureTheory
 open scoped TensorProduct
 noncomputable section
@@ -25,7 +29,8 @@ variable {K L E : Type*} [Field K] [Field L] [Algebra K L]
   [FiniteDimensional K L] {S : AdelicStructure K}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
-private theorem allFinite_archimedean_normalization
+/-- An algebraic extension of an all-finite adelic structure has no archimedean places. -/
+theorem allFinite_archimedean_normalization
     (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
     ∀ x ∈ (S.algebraicExtension L).Ωinf,
       IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion := by
@@ -37,7 +42,8 @@ private theorem allFinite_archimedean_normalization
   rw [x.restrict_eq]
   exact hS x.base
 
-private theorem allFinite_infinity_measure_lt_top
+/-- The archimedean locus of an all-finite adelic structure has finite measure. -/
+theorem allFinite_infinity_measure_lt_top
     (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) : S.v S.Ωinf < ⊤ := by
   have hinf : S.Ωinf = ∅ := by
     ext ω

@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.JohnContact
-import Mathlib.Analysis.InnerProductSpace.Dual
-import Mathlib.Analysis.LocallyConvex.Polar
-import Mathlib.Analysis.Normed.Module.HahnBanach
+module
+
+public import ArakelovGeometry.Analysis.JohnContact
+public import Mathlib.Analysis.InnerProductSpace.Dual
+public import Mathlib.Analysis.LocallyConvex.Polar
+public import Mathlib.Analysis.Normed.Module.HahnBanach
 
 /-!
 # Actual Hermitian polars of norm balls
@@ -16,6 +18,8 @@ actual norm ball under a continuous linear equivalence, Hahn–Banach and the
 Riesz representation theorem prove the bipolar identity. Thus no bidual-ball
 equality is supplied as a separate hypothesis in the ellipsoid construction.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped Matrix.Norms.Elementwise MatrixOrder ComplexOrder

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Hermitian
-import Mathlib.Algebra.Exact.Basic
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Hermitian
+public import Mathlib.Algebra.Exact.Basic
 
 /-!
 # Exact sequences of norm families
@@ -13,6 +15,8 @@ The algebraic sequence is short exact and the two end norms are exactly
 the actual completed restriction and quotient norms of the middle family.
 This is the convention preceding source Proposition 4.3.13.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.NormFamily
 

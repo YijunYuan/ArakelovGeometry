@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDegree
-import ArakelovGeometry.AdelicVectorBundle.DeterminantHermitianBasis
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianComparison
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionFiniteStage
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantHermitianBasis
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDegree
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionFiniteStage
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianComparison
 
 /-!
 # Determinants of actual Hermitian scalar extensions
@@ -20,6 +22,8 @@ Monotonicity and scalar contraction normalize the same generator for the
 ordinary extended determinant. Homogeneity on the completed determinant
 line then proves the actual Hermitian determinant isometry in every rank.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -345,7 +349,6 @@ theorem hermitianScalarExtension_determinant_norm_eq_scalarExtension
     have hH : qH w = 1 := by
       have h := hermitianScalarExtension_determinant_norm_orthonormalBasis ξ hS hL hξ x hx b
       convert h using 1
-      congr 1
     have hbU : ξ.determinant.norm x.base (U (fun i => b i)) = 1 := by
       convert hb using 1
     have hO_le : qO w ≤ 1 :=
@@ -353,7 +356,7 @@ theorem hermitianScalarExtension_determinant_norm_eq_scalarExtension
     have hO : qO w = 1 := le_antisymm hO_le (hH.symm.trans_le (hm w))
     have hw : w ≠ 0 := by
       intro he
-      rw [he, map_zero] at hH
+      rw [he, show qH 0 = 0 from η.determinant.norm_zero x] at hH
       norm_num at hH
     have hr : Module.finrank x.abv.Completion
         (x.abv.Completion ⊗[L]

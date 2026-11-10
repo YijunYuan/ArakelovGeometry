@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
 
 /-!
 # Domination of direct sums
@@ -12,6 +14,8 @@ Proposition 4.1.19(4) permits arbitrary convex profiles equal to the maximum
 outside a measurable set of finite measure. No measurability of the profiles
 is imposed. The Archimedean correction in the dual bound is retained.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct
@@ -112,8 +116,7 @@ theorem dualBaseChange_one_prod_apply (ℓ : Module.Dual K (E × F)) (ω : S.Ω)
         dualBaseChangeEquiv K (S.ϕ ω).Completion F
           ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] ℓ.comp (LinearMap.inr K E F))
           ((LinearMap.snd K E F).baseChange (S.ϕ ω).Completion z) := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | tmul a p =>
       have hp : ℓ p = ℓ (p.1, 0) + ℓ (0, p.2) := by
         rw [← map_add]

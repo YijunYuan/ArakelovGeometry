@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Analysis.Complex.Basic
-import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
-import Mathlib.MeasureTheory.MeasurableSpace.Constructions
-import Mathlib.MeasureTheory.Constructions.BorelSpace.Metrizable
+module
+
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Metrizable
+public import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
+public import Mathlib.MeasureTheory.MeasurableSpace.Constructions
 
 /-!
 # Measurable orientations of complex field embeddings
@@ -15,6 +17,8 @@ Absolute-value evaluations determine measurable real parts and products of
 imaginary parts. A common conjugation choice then gives measurable values on
 a countable field, without assuming that its raw orientation sign is measurable.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -116,11 +120,11 @@ theorem exists_measurable_common_sign (g : ℕ → α → ℝ)
       rcases hp with hnonzero | hall
       · by_cases hneg : g (n ω) ω < 0
         · dsimp only [s]
-          rw [if_pos hneg, abs_of_neg hneg]
+          rw [ite_eq_left hneg, abs_of_neg hneg]
           field_simp
         · have hpos : 0 < g (n ω) ω := lt_of_le_of_ne (le_of_not_gt hneg) (Ne.symm hnonzero)
           dsimp only [s]
-          rw [if_neg hneg, abs_of_pos hpos]
+          rw [ite_eq_right hneg, abs_of_pos hpos]
           field_simp
       · simp only [hall, mul_zero, abs_zero, div_zero]
     simp_rw [he]

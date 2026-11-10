@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisScalarExtensionDegree
-import ArakelovGeometry.AdelicVectorBundle.Destabilizing
-import ArakelovGeometry.AdelicVectorBundle.HermitianAbsoluteDescentSubspace
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Destabilizing
+public import ArakelovGeometry.AdelicVectorBundle.HermitianAbsoluteDescentSubspace
+public import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisScalarExtensionDegree
 
 /-!
 # Coefficient invariance of the actual Hermitian destabilizing subspace
@@ -13,6 +15,8 @@ import ArakelovGeometry.AdelicVectorBundle.HermitianAbsoluteDescentSubspace
 Actual restricted slope transport and the produced largest-maximizer property
 fix the largest destabilizing subspace over finite or closed algebraic extensions.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

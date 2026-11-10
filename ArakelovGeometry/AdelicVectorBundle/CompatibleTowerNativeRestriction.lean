@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.CompatibleTowerDeterminantDegree
-import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicRestrictionDegree
-import ArakelovGeometry.AdelicVectorBundle.Slopes
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.CompatibleTowerDeterminantDegree
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicRestrictionDegree
+public import ArakelovGeometry.AdelicVectorBundle.Slopes
 
 /-!
 # Actual native restrictions through external algebraic towers
@@ -14,6 +16,8 @@ The associator restricts to each literal native subspace. Direct native
 bundles produce ordinary iterated native bundles, determinant measurability
 and canonical degrees, with no regularity premise on the intermediate curve.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -25,7 +29,8 @@ variable {M : Type*} [Field M] {T : AdelicStructure M}
   {X Y : Type*} [AddCommGroup X] [Module M X] [FiniteDimensional M X]
   [AddCommGroup Y] [Module M Y] [FiniteDimensional M Y]
 
-private def nativeEquivalencePullback (V : AdelicVectorBundle T Y) (e : X ≃ₗ[M] Y) :
+/-- Pull back an adelic bundle along a linear equivalence. -/
+def nativeEquivalencePullback (V : AdelicVectorBundle T Y) (e : X ≃ₗ[M] Y) :
     AdelicVectorBundle T X := by
   apply V.pullback e.toLinearMap e.injective
   apply NormFamily.IsMeasurable.of_completed_isometry V.toNormFamily.dual
@@ -79,7 +84,8 @@ theorem scalarExtension_compatibleTower_restrict_pullback (ξ : NormFamily S E)
 
 variable [IsAlgClosed M] [MeasurableSingletonClass S.Ω]
 
-private def nativeRestrictionTowerBundle (ξ : NormFamily S E) (hξ : ξ.IsDominated)
+/-- Transport the direct native restriction to its iterated tensor-product subspace. -/
+def nativeRestrictionTowerBundle (ξ : NormFamily S E) (hξ : ξ.IsDominated)
     (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin)
     (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
     AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M) A :=
@@ -87,7 +93,8 @@ private def nativeRestrictionTowerBundle (ξ : NormFamily S E) (hξ : ξ.IsDomin
   let R := ξ.nativeAlgebraicRestrictionOfPositiveAtoms hξ hpos hS (A.map c.toLinearMap)
   nativeEquivalencePullback (R.compatibleTowerPullback (L := L)) (c.submoduleMap A)
 
-private theorem nativeRestrictionTowerBundle_normFamily (ξ : NormFamily S E)
+/-- Tower transport recovers the literal iterated restriction norm family. -/
+theorem nativeRestrictionTowerBundle_normFamily (ξ : NormFamily S E)
     (hξ : ξ.IsDominated) (hpos : ∀ ω : S.Ω, 0 < S.v {ω})
     (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
     (nativeRestrictionTowerBundle ξ hξ hpos hS A).toNormFamily =
@@ -141,7 +148,8 @@ theorem IsDominated.compatibleTower_restrict_determinant_isMeasurable_of_positiv
 variable [S.IsProper]
 
 omit [MeasurableSingletonClass S.Ω] [S.IsProper] in
-private theorem nativeRestrictionTower_normalization (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+/-- An adelic structure with only finite places has no archimedean normalization conditions. -/
+theorem nativeRestrictionTower_normalization (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
     ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion :=
   fun ω hω => False.elim (hω (hS ω))
 

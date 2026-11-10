@@ -3,11 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.ParameterSpace
-import ArakelovGeometry.ExternalResults.AbsoluteValueLocal
-import Mathlib.MeasureTheory.Integral.Bochner.Set
-import Mathlib.MeasureTheory.Measure.Dirac
-import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.ParameterSpace
+public import ArakelovGeometry.ExternalResults.AbsoluteValueLocal
+public import Mathlib.MeasureTheory.Integral.Bochner.Set
+public import Mathlib.MeasureTheory.Measure.Dirac.Basic
+public import Mathlib.MeasureTheory.Measure.Dirac.Def
+public import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
 
 /-!
 # Integration over finite separable fibres
@@ -15,6 +18,8 @@ import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
 Local-degree probabilities and their fibre integrals, including linearity and
 restriction compatibility (Chen–Moriwaki, §3.3.1).
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.ParameterSpaceExtension
 
@@ -135,7 +140,7 @@ theorem fibreIntegral_smul (c : ℝ) (f : ParameterSpaceExtension AS L → ℝ) 
 
 set_option linter.unusedSectionVars false in
 /-- Chen--Moriwaki, Proposition 3.3.1: fibre integration is linear over functions pulled back
-from the base: `I_{K'/K}(φ̄ f) = φ I_{K'/K}(f)` for `φ̄ = φ ∘ π_{K'/K}`. -/
+from the base: `I_{K'/K}((φ ∘ π_{K'/K}) * f) = φ * I_{K'/K}(f)`. -/
 theorem fibreIntegral_comp_proj_mul (φ : AS.Ω → ℝ) (f : ParameterSpaceExtension AS L → ℝ) :
     fibreIntegral AS L (fun x ↦ φ (proj x) * f x) = fun ω ↦ φ ω * fibreIntegral AS L f ω := by
   funext ω

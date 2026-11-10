@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.NormShapeMeasurable
+module
+
+public import ArakelovGeometry.Analysis.NormShapeMeasurable
 
 /-!
 # The polar profile of an absolute normalized plane norm
@@ -12,6 +14,8 @@ The canonical dual on the existing `NormShape` representation. Its closed
 interval supremum is the continuous extension of Definition 1.1.48, used in
 Proposition 4.1.35. Profile values outside the source interval remain irrelevant.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.NormShape
 

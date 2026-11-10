@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalNonnegativeSlopeCount
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalRestrictionModel
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalNonnegativeSlopeCount
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalRestrictionModel
 
 /-! # Classical arithmetic h0 and positive degree: Chen–Moriwaki 4.3.24 -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField

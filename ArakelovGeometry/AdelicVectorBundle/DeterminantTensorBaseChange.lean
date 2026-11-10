@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantTensorMap
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantTensorMap
 
 /-!
 # Completed scalar extension of the tensor determinant map
@@ -12,6 +14,8 @@ Canonical scalar extension, finite tensor-power transport and exterior
 transport put the rational determinant tensor map on its actual completed
 domain and codomain. No tensor norm comparison is part of this construction.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

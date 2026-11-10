@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TensorHermitian
-import ArakelovGeometry.AdelicVectorBundle.TensorDual
-import ArakelovGeometry.AdelicVectorBundle.DegreeTensor
-import ArakelovGeometry.AdelicVectorBundle.DeterminantDuality
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeTensor
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantDuality
+public import ArakelovGeometry.AdelicVectorBundle.TensorDual
+public import ArakelovGeometry.AdelicVectorBundle.TensorHermitian
 
 /-!
 # Determinants of the actual binary Hermitian tensor norm
@@ -14,6 +16,8 @@ import ArakelovGeometry.AdelicVectorBundle.DeterminantDuality
 The canonical completed tensor and dual maps connect the actual orthogonal
 norm to the determinant-line norm product.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -247,7 +251,7 @@ theorem orthogonalTensorPair_dual_determinant_norm_tuple_le
   calc
     _ ≤ ∏ i : Fin (Module.finrank K (Module.Dual K (E ⊗[K] F))),
         ξ.dual.norm ω (f (e.symm (d i)).1) * η.dual.norm ω (g (e.symm (d i)).2) := by
-      apply Finset.prod_le_prod
+      apply Finset.prod_le_prod₀
       · intro i hi
         exact (ξ.orthogonalTensorPair η hN hξ hη).dual.norm_nonneg ω _
       · intro i hi

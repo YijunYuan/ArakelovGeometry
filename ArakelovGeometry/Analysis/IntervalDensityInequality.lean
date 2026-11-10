@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.IntervalDensityTransport
-import Mathlib.Analysis.MeanInequalities
+module
+
+public import ArakelovGeometry.Analysis.IntervalDensityTransport
+public import Mathlib.Analysis.MeanInequalities
 
 /-! # The mass inequality for actual interpolated interval transport
 
@@ -12,6 +14,8 @@ The pointwise weighted arithmetic--geometric mean inequality and the actual
 mass-matching Jacobian imply the one-dimensional induction step used for
 multiplicative convex volume. Endpoint continuity is not needed.
 -/
+
+@[expose] public section
 
 noncomputable section
 

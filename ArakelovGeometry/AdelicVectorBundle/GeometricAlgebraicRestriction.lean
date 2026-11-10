@@ -3,13 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicScalarBundle
-import ArakelovGeometry.AdelicVectorBundle.GeometricFinitePositiveAtoms
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteRestriction
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerTransport
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerDeterminantDegree
-import ArakelovGeometry.AdelicVectorBundle.AlgebraicClosureApproximation
-import ArakelovGeometry.AdelicVectorBundle.DegreeIsometryDual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AlgebraicClosureApproximation
+public import ArakelovGeometry.AdelicVectorBundle.DegreeIsometryDual
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAlgebraicScalarBundle
+public import ArakelovGeometry.AdelicVectorBundle.GeometricFinitePositiveAtoms
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteRestriction
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerDeterminantDegree
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerTransport
 
 /-!
 # Actual geometric native restriction bundles
@@ -19,6 +21,8 @@ restriction over an algebraic closure. The resulting strongly adelic bundle
 lives on the subspace itself and agrees with the existing common-density and
 countable-discrete constructions wherever those are defined.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -53,7 +57,6 @@ theorem IsDominated.scalarExtension_restrict_dual_isMeasurable_of_positive_atoms
   let η₀ := (ξ.scalarExtension (L := F)).restrict (B 0)
   let η := η₀.scalarExtension (L := L)
   let θ := (ξ.scalarExtension (L := L)).restrict A
-  let θt := θ.towerPullback F.toIntermediateField
   let : MeasurableSingletonClass (S.algebraicExtension F).Ω :=
     AdelicStructure.measurableSingletonClass_algebraicExtension_of_finiteDimensional
       (S := S) (L := F)
@@ -67,25 +70,7 @@ theorem IsDominated.scalarExtension_restrict_dual_isMeasurable_of_positive_atoms
       (S.v_Ωinf_lt_top_of_isRCLike hN)).isDominated.restrict (B 0)
   have hm : η.dual.IsMeasurable :=
     hd₀.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlgebraic η₀ hFpos hFS
-  have ht : θt.dual.IsMeasurable := by
-    intro ℓ
-    have hn (x : ((S.algebraicExtension F).algebraicExtension L).Ω) :
-        θt.dual.norm x ((1 : (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion)
-          ⊗ₜ[L] ℓ) =
-        η.dual.norm x ((1 : (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion)
-          ⊗ₜ[L] e.dualMap ℓ) := by
-      symm
-      simpa only [LinearMap.baseChange_tmul, LinearEquiv.coe_coe] using
-        η.dualEquiv_norm_eq_of_completed_isometry θt x e (he x)
-          ((1 : (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion) ⊗ₜ[L] ℓ)
-    change Measurable (fun x : ((S.algebraicExtension F).algebraicExtension L).Ω =>
-      θt.dual.norm x
-        ((1 : (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion) ⊗ₜ[L] ℓ))
-    rw [funext hn]
-    exact hm (e.dualMap ℓ)
-  change (θ.towerPullback F.toIntermediateField).dual.IsMeasurable at ht
-  rw [towerPullback_dual] at ht
-  exact (θ.dual.isMeasurable_towerPullback_iff F.toIntermediateField).mp ht
+  exact IsMeasurable.dual_of_tower_completed_isometry F η θ e he hm
 
 /-- The genuine native restriction on the actual subspace, with its produced
 regularities and the existing canonical adelic-bundle structure. -/

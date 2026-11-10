@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicStructure.RationalNormalization
-import ArakelovGeometry.AdelicVectorBundle.BasisBundle
-import ArakelovGeometry.AdelicVectorBundle.HeightDegree
-import ArakelovGeometry.Analysis.IntervalPolytope
-import Mathlib.Topology.Instances.Real.Lemmas
+module
+
+public import ArakelovGeometry.AdelicStructure.RationalNormalization
+public import ArakelovGeometry.AdelicVectorBundle.BasisBundle
+public import ArakelovGeometry.AdelicVectorBundle.HeightDegree
+public import ArakelovGeometry.Analysis.IntervalPolytope
+public import Mathlib.Topology.Instances.Real.Lemmas
 
 /-!
 # Actual interval factors on the rational adelic curve
@@ -16,6 +18,8 @@ The given real scalar completion is identified isometrically with the real
 field. Real interval norms are transported on every actual completed vector;
 finite fibers retain their original completed coordinate maximum norms.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -26,23 +30,27 @@ noncomputable section
 
 open AdelicStructure
 
-private def rationalRealCast : WithAbs Rat.AbsoluteValue.real →+* ℝ :=
+/-- The rational embedding into the reals, with the standard absolute value on its source. -/
+def rationalRealCast : WithAbs Rat.AbsoluteValue.real →+* ℝ :=
   (Rat.castHom ℝ).comp (WithAbs.equiv Rat.AbsoluteValue.real).toRingHom
 
-private theorem rationalRealCast_isometry : Isometry rationalRealCast := by
+/-- The rational embedding preserves the standard absolute value. -/
+theorem rationalRealCast_isometry : Isometry rationalRealCast := by
   apply Isometry.of_dist_eq
   intro x y
   rw [dist_eq_norm, dist_eq_norm, ← map_sub]
   change ‖((x - y).ofAbs : ℝ)‖ = Rat.AbsoluteValue.real (x - y).ofAbs
   rw [Rat.AbsoluteValue.real_eq_abs, Rat.cast_abs, Real.norm_eq_abs]
 
-private def rationalRealExtension : Rat.AbsoluteValue.real.Completion →+* ℝ :=
-  rationalRealCast_isometry.extensionHom
+/-- The extension of the rational embedding to its completion. -/
+def rationalRealExtension : Rat.AbsoluteValue.real.Completion →+* ℝ :=
+  UniformSpace.Completion.extensionHom rationalRealCast rationalRealCast_isometry.continuous
 
 private theorem rationalRealExtension_isometry : Isometry rationalRealExtension :=
   rationalRealCast_isometry.completion_extension
 
-private theorem rationalRealExtension_surjective : Function.Surjective rationalRealExtension := by
+/-- Every real number is in the image of the completed rational embedding. -/
+theorem rationalRealExtension_surjective : Function.Surjective rationalRealExtension := by
   rw [← RingHom.fieldRange_eq_top_iff]
   exact Real.subfield_eq_of_closed rationalRealExtension_isometry.isClosedEmbedding.isClosed_range
 
@@ -61,7 +69,8 @@ theorem rationalRealCompletionEquiv_norm (a : Rat.AbsoluteValue.real.Completion)
 /-- The actual scalar identification has the original rational embedding. -/
 theorem rationalRealCompletionEquiv_ratCast (a : ℚ) :
     rationalRealCompletionEquiv (algebraMap ℚ Rat.AbsoluteValue.real.Completion a) = (a : ℝ) :=
-  rationalRealCast_isometry.extensionHom_coe (WithAbs.toAbs Rat.AbsoluteValue.real a)
+  UniformSpace.Completion.extensionHom_coe rationalRealCast rationalRealCast_isometry.continuous
+    (WithAbs.toAbs Rat.AbsoluteValue.real a)
 
 /-- Real coordinates of the actual completed standard rational vector space. -/
 def rationalRealCompletedCoordinates (n : ℕ)

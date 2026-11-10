@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricCoordinateDual
-import ArakelovGeometry.AdelicVectorBundle.QuotientRestriction
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeometricCoordinateDual
+public import ArakelovGeometry.AdelicVectorBundle.QuotientRestriction
 
 /-!
 # Measurable actual coordinate subquotients
@@ -13,6 +15,8 @@ The canonical completed first-isomorphism isometry identifies a native
 restriction followed by quotient with a restriction of an ambient quotient.
 This consumes actual quotient measurability without counting the field or base.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.NormFamily

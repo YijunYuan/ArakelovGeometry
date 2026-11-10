@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeGauge
-import ArakelovGeometry.AdelicVectorBundle.DeterminantPairingLocal
-import ArakelovGeometry.Analysis.DeterminantExactSequence
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantPairingLocal
+public import ArakelovGeometry.Analysis.DeterminantExactSequence
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeGauge
 
 /-! # Actual finite determinant norms of full-lattice gauges -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section
@@ -57,11 +61,11 @@ theorem determinant_norm_completedBasis_eq_one_of_coordinateSup
       hm, Matrix.det_one]
   have hw : ξ.determinant.norm ω w ≤ 1 := by
     refine (ξ.determinant_norm_ιMulti_le ω b).trans ?_
-    exact (Finset.prod_le_prod (fun i _ ↦ ξ.norm_nonneg ω (b i))
+    exact (Finset.prod_le_prod₀ (fun i _ ↦ ξ.norm_nonneg ω (b i))
       (fun i _ ↦ hb i)).trans_eq (by simp)
   have hz : ξ.dual.determinant.norm ω z ≤ 1 := by
     refine (ξ.dual.determinant_norm_ιMulti_le ω f).trans ?_
-    exact (Finset.prod_le_prod (fun i _ ↦ ξ.dual.norm_nonneg ω (f i))
+    exact (Finset.prod_le_prod₀ (fun i _ ↦ ξ.dual.norm_nonneg ω (f i))
       (fun i _ ↦ hf (e i))).trans_eq (by simp)
   have h := ξ.norm_completedDeterminantPairing_le_finite ω hω z w
   rw [hp, norm_one] at h

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.EnvelopeIntegral
-import ArakelovGeometry.AdelicVectorBundle.VectorDegree
-import Mathlib.Analysis.SpecialFunctions.Log.ENNRealLogExp
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.VectorDegree
+public import ArakelovGeometry.Analysis.EnvelopeIntegral
+public import Mathlib.Analysis.SpecialFunctions.Log.ENNRealLogExp
 
 /-!
 # Extended vector degrees for completed seminorm families
@@ -23,6 +25,8 @@ It is not an identification with the ordinary extended Lebesgue integral on
 arbitrary measures: even the source upper integral of the real constant `-1`
 is zero on an infinite-mass singleton, where its ordinary integral is `⊥`.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Basic
-import ArakelovGeometry.AdelicVectorBundle.HermitianBasis
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Basic
+public import ArakelovGeometry.AdelicVectorBundle.HermitianBasis
 
 /-!
 # Adelic bundles from completed basis norms
@@ -13,6 +15,8 @@ The mixed and Hermitian basis constructions supply both source measurability
 clauses and domination for actual adelic vector bundles. Their underlying
 norm families are definitionally the previously constructed completed norms.
 -/
+
+@[expose] public section
 
 noncomputable section
 

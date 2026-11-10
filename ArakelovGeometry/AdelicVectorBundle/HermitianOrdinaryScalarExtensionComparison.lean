@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianComparison
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianDeterminantDegree
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSlopes
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianComparison
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianDeterminantDegree
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSlopes
 
 /-!
 # Actual ordinary and Hermitian extension invariant comparison
@@ -14,6 +16,8 @@ The accepted same-completed-fibre Hermitian norm inequality dominates every
 genuine ordinary native restricted degree and mean. Actual subspace suprema
 then compare canonical positive degree and maximal slope in every rank.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

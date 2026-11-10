@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Domination
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Domination
 
 /-!
 # Measurable norm families
@@ -13,6 +15,8 @@ completed fibres (Chen–Moriwaki, §4.1.3, PDF page 239). It is distinct
 from domination; together the two conditions give integrable logarithmic
 norms, as needed for adelic degrees.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

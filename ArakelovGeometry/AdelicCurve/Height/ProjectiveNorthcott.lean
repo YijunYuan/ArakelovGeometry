@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Height.Projective
-import ArakelovGeometry.AdelicCurve.Height.Northcott
+module
+
+public import ArakelovGeometry.AdelicCurve.Height.Northcott
+public import ArakelovGeometry.AdelicCurve.Height.Projective
 
 /-!
 # Northcott finiteness in projective space
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicCurve.Height.Northcott
 Finite sets of possible normalized coordinates give finitely many projective
 points. This is the final finite-set argument in Chen–Moriwaki, Theorem 3.5.3.
 -/
+
+@[expose] public section
 
 namespace Projectivization
 

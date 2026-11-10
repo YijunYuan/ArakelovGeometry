@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstructionArithmetic
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldLocalDegree
+module
+
+public import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstructionArithmetic
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldLocalDegree
 
 /-! # Actual finite-place arithmetic for the nonpure rational plane -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct
@@ -38,6 +42,7 @@ theorem rational_normalizedPrimeValue_eq_finitePlace (p : Nat.Primes) (x : ℚ) 
 theorem rational_primeValue_integer_le_one (p : Nat.Primes) (n : ℤ) :
     S.ϕ (primePoint p) (n : ℚ) ≤ 1 :=
   (primePoint_mem_fin p).apply_intCast_le_one
+    (map_zero_le _ 1) (map_one _) (S.ϕ (primePoint p)).map_neg
 
 theorem rational_primeValue_integer_lt_one_iff (p : Nat.Primes) (n : ℤ) :
     S.ϕ (primePoint p) (n : ℚ) < 1 ↔ (p.val : ℤ) ∣ n := by
@@ -116,7 +121,9 @@ theorem family_norm_prime_integer_good (p : Nat.Primes) (a x y : ℤ)
 theorem rational_finite_primitive_max_eq_one (ω : S.Ω) (hω : ω ∈ S.Ωfin)
     (x y : ℤ) (hxy : IsCoprime x y) :
     max (S.ϕ ω (x : ℚ)) (S.ϕ ω (y : ℚ)) = 1 := by
-  apply le_antisymm (max_le hω.apply_intCast_le_one hω.apply_intCast_le_one)
+  have hZ (n : ℤ) : S.ϕ ω (n : ℚ) ≤ 1 :=
+    hω.apply_intCast_le_one (map_zero_le _ 1) (map_one _) (S.ϕ ω).map_neg
+  apply le_antisymm (max_le (hZ x) (hZ y))
   obtain ⟨b, c, hb⟩ := hxy
   have hbq : (b : ℚ) * (x : ℚ) + (c : ℚ) * (y : ℚ) = 1 := by exact_mod_cast hb
   calc
@@ -125,13 +132,15 @@ theorem rational_finite_primitive_max_eq_one (ω : S.Ω) (hω : ω ∈ S.Ωfin)
     _ ≤ max (S.ϕ ω (x : ℚ)) (S.ϕ ω (y : ℚ)) := by
       simp only [map_mul]
       exact max_le_max
-        (mul_le_of_le_one_left (apply_nonneg _ _) hω.apply_intCast_le_one)
-        (mul_le_of_le_one_left (apply_nonneg _ _) hω.apply_intCast_le_one)
+        (mul_le_of_le_one_left (apply_nonneg _ _) (hZ _))
+        (mul_le_of_le_one_left (apply_nonneg _ _) (hZ _))
 
 theorem family_norm_off_prime_integer_primitive (p : Nat.Primes) (a : ℤ)
     (ω : S.Ω) (hω : ω ∈ S.Ωfin) (hne : ω ≠ primePoint p)
     (x y : ℤ) (hxy : IsCoprime x y) :
     (family p a).norm ω (1 ⊗ₜ[ℚ] (![x, y] : Plane)) = 1 := by
+  have hZ (n : ℤ) : S.ϕ ω (n : ℚ) ≤ 1 :=
+    hω.apply_intCast_le_one (map_zero_le _ 1) (map_one _) (S.ϕ ω).map_neg
   rw [family_norm_off_prime p a ω hne,
     ofBasisHermitian_norm_of_finite standardBasis ω hω, ofBasis_norm_rational]
   simp only [standardBasis, Pi.basisFun_equivFun, LinearEquiv.refl_apply]
@@ -141,10 +150,10 @@ theorem family_norm_off_prime_integer_primitive (p : Nat.Primes) (a : ℤ)
     fin_cases i
     · simpa only [Fin.zero_eta, Matrix.cons_val_zero, Real.norm_eq_abs,
         abs_of_nonneg (apply_nonneg _ _)] using
-        (hω.apply_intCast_le_one : S.ϕ ω (x : ℚ) ≤ 1)
+        (hZ x)
     · simpa only [Fin.mk_one, Matrix.cons_val_one, Matrix.cons_val_fin_one, Real.norm_eq_abs,
         abs_of_nonneg (apply_nonneg _ _)] using
-        (hω.apply_intCast_le_one : S.ϕ ω (y : ℚ) ≤ 1)
+        (hZ y)
   · rw [← rational_finite_primitive_max_eq_one ω hω x y hxy]
     apply max_le
     · simpa only [Matrix.cons_val_zero, Real.norm_eq_abs, abs_of_nonneg (apply_nonneg _ _)]
@@ -189,17 +198,17 @@ theorem family_norm_integer_primitive_profile (p : Nat.Primes) (a : ℤ)
       else if ω = primePoint p ∧ ¬ (p.val : ℤ) ∣ y - a * x
         then Real.sqrt (p.val : ℝ) else 1 := by
   by_cases hi : ω ∈ S.Ωinf
-  · rw [if_pos hi, family_norm_infinite_integer p a ω hi]
-  · rw [if_neg hi]
+  · rw [ite_eq_left hi, family_norm_infinite_integer p a ω hi]
+  · rw [ite_eq_right hi]
     have hf : ω ∈ S.Ωfin := not_not.mp hi
     by_cases he : ω = primePoint p
     · subst ω
       by_cases hc : (p.val : ℤ) ∣ y - a * x
       · rw [family_norm_prime_integer_good p a x y hxy hc]
-        simp only [hc, not_true_eq_false, and_false, if_false]
+        simp only [hc, not_true_eq_false, and_false, ite_false]
       · rw [family_norm_prime_integer_bad p a x y hc]
-        simp only [hc, not_false_eq_true, and_self, if_true]
+        simp only [hc, not_false_eq_true, and_self, ite_true]
     · rw [family_norm_off_prime_integer_primitive p a ω hf he x y hxy]
-      simp only [he, false_and, if_false]
+      simp only [he, false_and, ite_false]
 
 end ArakelovGeometry.NonpureNumberFieldMinkowskiObstruction

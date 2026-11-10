@@ -3,10 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Algebra.Module.ZLattice.Basic
-import Mathlib.LinearAlgebra.Dimension.Constructions
+module
+
+public import Mathlib.Algebra.Module.ZLattice.Basic
+public import Mathlib.LinearAlgebra.Dimension.Constructions
+public import Mathlib.LinearAlgebra.FreeModule.PID
 
 /-! # Integral bases adapted to an actual lattice intersection -/
+
+@[expose] public section
 
 noncomputable section
 open Module

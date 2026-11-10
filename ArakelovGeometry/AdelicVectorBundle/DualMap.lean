@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Dual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Dual
 
 /-!
 # Duals of restrictions and quotients
@@ -12,6 +14,8 @@ The completed dual scalar-extension equivalence is natural in a rational
 linear map. It identifies duals of quotient norms with restrictions of the
 dual norm, and bounds the dual of a restricted norm by any extended functional.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -28,8 +32,7 @@ theorem dualBaseChangeEquiv_dualMap (L : Type*) [Field L] [Algebra K L]
     (f : F →ₗ[K] E) (z : L ⊗[K] Module.Dual K E) :
     dualBaseChangeEquiv K L F (f.dualMap.baseChange L z) =
       (dualBaseChangeEquiv K L E z).comp (f.baseChange L) := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | add z t hz ht => simp [hz, ht, LinearMap.add_comp]
   | tmul a ℓ =>
     apply TensorProduct.AlgebraTensorModule.ext

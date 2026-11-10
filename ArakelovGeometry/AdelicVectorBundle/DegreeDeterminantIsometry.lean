@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantFunctor
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantFunctor
 
 /-!
 # Actual measurable determinants under completed isometries
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
 A rational linear equivalence preserving all completed norms transports actual
 determinant measurability and determinant degree without place-space regularity.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

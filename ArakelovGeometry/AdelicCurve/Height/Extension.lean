@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Height.Affine
-import ArakelovGeometry.AdelicCurve.Height.Polynomial
-import ArakelovGeometry.AdelicCurve.Basic
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
+module
+
+public import ArakelovGeometry.AdelicCurve.Basic
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
+public import ArakelovGeometry.AdelicCurve.Height.Affine
+public import ArakelovGeometry.AdelicCurve.Height.Polynomial
 
 /-!
 # Heights under algebraic extension
@@ -18,6 +20,8 @@ extensions. These results use the existing extension theory of Sections 3.3–3.
 
 Reference: Chen–Moriwaki, Definition 3.5.1 and Lemma 3.5.4.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure
 

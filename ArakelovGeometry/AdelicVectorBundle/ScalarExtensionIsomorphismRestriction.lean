@@ -3,13 +3,17 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismSubspace
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionQuotientEquiv
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionNativeSubquotientFiniteStage
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismSubspace
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionNativeSubquotientFiniteStage
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionQuotientEquiv
 
 /-!
 # Completed semilinear transport of actual restrictions and quotients
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section
@@ -42,8 +46,7 @@ def completedScalarExtensionSemilinearEquiv (σ : L ≃ₐ[K] M)
   intro a z
   change completedScalarExtensionAlgEquiv (E := E) σ x (a • z) =
     algEquivCompletedFields S σ x a • completedScalarExtensionAlgEquiv (E := E) σ x z
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | tmul b z =>
     simp only [TensorProduct.smul_tmul', smul_eq_mul,
       completedScalarExtensionAlgEquiv_rational, map_mul]
@@ -207,7 +210,7 @@ theorem completedScalarExtensionRestrictionEquiv_map_kernel (σ : L ≃ₐ[K] M)
 
 /-- The canonical coefficient ring equivalence, with its base-completion
 algebra instances confined to the construction. -/
-private abbrev completedScalarExtensionCoefficientRingEquiv (σ : L ≃ₐ[K] M)
+abbrev completedScalarExtensionCoefficientRingEquiv (σ : L ≃ₐ[K] M)
     (x : AdelicStructure.ParameterSpaceExtension S M) :
     (pullbackAlgEquiv S σ x).abv.Completion ≃+* x.abv.Completion := by
   let := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base)

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.BasisNorm
-import ArakelovGeometry.AdelicVectorBundle.VectorDegree
-import ArakelovGeometry.AdelicCurve.Height.Basic
+module
+
+public import ArakelovGeometry.AdelicCurve.Height.Basic
+public import ArakelovGeometry.AdelicVectorBundle.BasisNorm
+public import ArakelovGeometry.AdelicVectorBundle.VectorDegree
 
 /-!
 # Coordinate heights as negative vector degrees
@@ -14,6 +16,8 @@ Source Remark 4.3.2 uses the actual coordinate-maximum norm, rather than the
 mixed maximum/sum norm. Domination follows from their quantitative comparison.
 The logarithmic height is the existing Chapter 3 height on rational tuples.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct

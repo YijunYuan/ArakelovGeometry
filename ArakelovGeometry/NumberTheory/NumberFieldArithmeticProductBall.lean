@@ -3,12 +3,16 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldHermitianBasisCovolume
-import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldHermitianBasisCovolume
+public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 
 /-!
 # The actual arithmetic product ball and its ordinary Euclidean measure
 -/
+
+@[expose] public section
 
 noncomputable section
 

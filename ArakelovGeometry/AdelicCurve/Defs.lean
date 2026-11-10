@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.ExternalResults.AbsoluteValue
-import Mathlib.MeasureTheory.Integral.Bochner.Basic
+module
+
+public import ArakelovGeometry.ExternalResults.AbsoluteValue
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
 /-!
 # Adelic structures and adelic curves
@@ -21,6 +23,8 @@ archimedean exponent `κ` provided by the Ostrowski-type normalization.
 Properness is defined on `AdelicStructure`; `AdelicCurve.IsProper` is an abbreviation
 for the same property of the underlying structure.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 
@@ -76,7 +80,7 @@ theorem κ_mem_Icc {K : Type*} [Field K] (AS : AdelicStructure K) (ω : AS.Ω) :
     AS.κ ω ∈ Set.Icc 0 1 := by
   by_cases hω : ω ∈ AS.Ωinf
   · unfold κ
-    rw [dif_pos hω]
+    rw [dite_eq_left hω]
     exact Set.mem_Icc_of_Ioc
       (exists_rpow_eq_of_not_isNonarchimedean (AS.ϕ ω) hω.out).choose_spec.1
   · simp [κ, hω]
@@ -90,7 +94,7 @@ theorem κ_eq_zero_iff {K : Type*} [Field K] (AS : AdelicStructure K) (ω : AS.�
       exact h
     by_contra hc
     unfold κ at h
-    rw [dif_pos hc] at h
+    rw [dite_eq_left hc] at h
     have := (exists_rpow_eq_of_not_isNonarchimedean (AS.ϕ ω) hc.out).choose_spec.1.out.1
     linarith
   · have : ω ∉ AS.Ωinf := fun hc ↦ hc h
@@ -102,7 +106,7 @@ theorem κ_def {K : Type*} [Field K] (AS : AdelicStructure K) {ω : AS.Ω} (hω 
     ∀ q : ℚ, AS.ϕ ω q = Rat.AbsoluteValue.real q ^ AS.κ ω := by
   have := (exists_rpow_eq_of_not_isNonarchimedean (AS.ϕ ω) hω.out).choose_spec.2
   unfold κ
-  rwa [dif_pos hω]
+  rwa [dite_eq_left hω]
 
 end AdelicStructure
 

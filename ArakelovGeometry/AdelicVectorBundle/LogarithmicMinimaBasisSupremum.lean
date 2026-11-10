@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteLogarithmicMinima
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteLogarithmicMinima
 
 /-!
 # Actual basis formula for the last logarithmic minimum
@@ -14,6 +16,8 @@ the last logarithmic minimum as an extended-real supremum. No attainment,
 properness, or finite upper bound is assumed. The absolute version uses
 the prescribed actual ordinary algebraic-closure bundle.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

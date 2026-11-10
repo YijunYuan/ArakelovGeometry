@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.CountableTensorMeasurable
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.CountableTensorMeasurable
 
 /-!
 # Countable injective tensor and exterior-power formulas
@@ -12,6 +14,8 @@ Completed product evaluations extend from dense rational dual tuples.
 The resulting countable supremum gives injective and mixed tensor
 measurability and, by quotient, exterior-power measurability.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -76,9 +80,7 @@ theorem continuous_completed_tensorDualEval [Finite ι] (ω : S.Ω)
       (fun i _ => (heval i (x i)).comp (continuous_apply i)))
   | add x y hx hy =>
     simp only [map_add]
-    convert hx.add hy using 1
-    funext φ
-    rfl
+    exact hx.add hy
 
 variable {κ : ι → Type wκ} [∀ i, Fintype (κ i)]
 

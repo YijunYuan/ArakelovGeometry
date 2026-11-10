@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantSequenceNorm
-import ArakelovGeometry.AdelicVectorBundle.TensorPair
-import ArakelovGeometry.AdelicVectorBundle.LineMapHeight
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantSequenceNorm
+public import ArakelovGeometry.AdelicVectorBundle.LineMapHeight
+public import ArakelovGeometry.AdelicVectorBundle.TensorPair
 
 /-!
 # Operator contraction of the canonical exact-sequence determinant map
@@ -14,6 +16,8 @@ The domain carries the existing binary injective tensor norm on its two
 actual determinant lines. Its rational generator product formula identifies
 this norm with the source tensor-line norm in every rank.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TrivialFiltration
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.TrivialFiltration
 
 /-!
 # Actual trivial norms from real subspace filtrations
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicVectorBundle.TrivialFiltration
 The inverse uses the existing canonical subspace jump. Norm laws follow
 from genuine submodule membership cuts, without an input finite flag.
 -/
+
+@[expose] public section
 
 namespace Submodule
 
@@ -74,25 +78,28 @@ variable {K : Type u} [Field K] {E : Type w} [AddCommGroup E] [Module K E]
   (hleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t)
 
 open Classical in
-private def filtrationNormValue (x : E) : ℝ :=
+/-- The norm value associated to the jump of the line spanned by a vector. -/
+def filtrationNormValue (x : E) : ℝ :=
   if x = 0 then 0 else Real.exp (-Submodule.filtrationJump F (K ∙ x))
 
 open Classical in
-private theorem filtrationNormValue_nonneg (x : E) : 0 ≤ filtrationNormValue F x := by
-  by_cases hx : x = 0 <;> simp only [filtrationNormValue, hx, if_true, if_false]
+/-- The jump formula gives a nonnegative norm value. -/
+theorem filtrationNormValue_nonneg (x : E) : 0 ≤ filtrationNormValue F x := by
+  by_cases hx : x = 0 <;> simp only [filtrationNormValue, hx, ite_true, ite_false]
   · exact le_rfl
   · exact (Real.exp_pos _).le
 
 include hF hbot htop hleft in
 open Classical in
-private theorem filtrationNormValue_add_le_max (x y : E) :
+/-- Filtration levels are submodules, so their associated norm is ultrametric. -/
+theorem filtrationNormValue_add_le_max (x y : E) :
     filtrationNormValue F (x + y) ≤ max (filtrationNormValue F x) (filtrationNormValue F y) := by
   by_cases hx : x = 0
   · simp [hx, filtrationNormValue]
   by_cases hy : y = 0
   · simp [hy, filtrationNormValue]
   by_cases hs : x + y = 0
-  · rw [filtrationNormValue, if_pos hs]
+  · rw [filtrationNormValue, ite_eq_left hs]
     exact le_max_of_le_left (filtrationNormValue_nonneg F x)
   let a := Submodule.filtrationJump F (K ∙ x)
   let b := Submodule.filtrationJump F (K ∙ y)
@@ -100,8 +107,8 @@ private theorem filtrationNormValue_add_le_max (x y : E) :
     hF hbot htop hleft x hx a).mpr le_rfl
   have hym : y ∈ F b := (Submodule.mem_filtration_iff_le_jump_span
     hF hbot htop hleft y hy b).mpr le_rfl
-  rw [filtrationNormValue, if_neg hs, filtrationNormValue, if_neg hx,
-    filtrationNormValue, if_neg hy]
+  rw [filtrationNormValue, ite_eq_right hs, filtrationNormValue, ite_eq_right hx,
+    filtrationNormValue, ite_eq_right hy]
   rcases le_total a b with hab | hba
   · have hsm := (F a).add_mem hxm (hF hab hym)
     have hle := (Submodule.mem_filtration_iff_le_jump_span
@@ -114,7 +121,8 @@ private theorem filtrationNormValue_add_le_max (x y : E) :
 
 include hF hbot htop hleft in
 open Classical in
-private theorem filtrationNormValue_smul (a : K) (x : E) :
+/-- The jump formula is homogeneous for the trivial absolute value. -/
+theorem filtrationNormValue_smul (a : K) (x : E) :
     filtrationNormValue F (a • x) =
       (AbsoluteValue.trivial : AbsoluteValue K ℝ) a * filtrationNormValue F x := by
   by_cases ha : a = 0
@@ -127,7 +135,7 @@ private theorem filtrationNormValue_smul (a : K) (x : E) :
     Submodule.filtrationJump_eq_of_cut (fun t ↦ by
       rw [Submodule.span_singleton_le_iff_mem, (F t).smul_mem_iff ha]
       exact Submodule.mem_filtration_iff_le_jump_span hF hbot htop hleft x hx t)
-  simp only [filtrationNormValue, if_neg hn, if_neg hx, hj,
+  simp only [filtrationNormValue, ite_eq_right hn, ite_eq_right hx, hj,
     AbsoluteValue.trivial_apply ha, one_mul]
 
 open Classical in
@@ -189,7 +197,7 @@ theorem trivialFiltration_ofTrivialFiltration (t : ℝ) :
     trivialFiltrationSeminorm_apply]
   by_cases hx : x = 0
   · simp [hx, (Real.exp_pos (-t)).le]
-  · rw [if_neg hx, Real.exp_le_exp, neg_le_neg_iff]
+  · rw [ite_eq_right hx, Real.exp_le_exp, neg_le_neg_iff]
     exact (Submodule.mem_filtration_iff_le_jump_span hF hbot htop hleft x hx t).symm
 
 open Classical in
@@ -208,7 +216,7 @@ theorem ofTrivialFiltration_trivialFiltration [FiniteDimensional K E]
     change trivialFiltrationSeminorm _ _ _ _ _ x = ξ.trivialSeminorm x
     rw [trivialFiltrationSeminorm_apply]
     by_cases hx : x = 0
-    · rw [if_pos hx, hx]
+    · rw [ite_eq_left hx, hx]
       exact (map_zero ξ.trivialSeminorm).symm
     · have hj : Submodule.filtrationJump (ξ.trivialFiltration hξ) (K ∙ x) =
           -Real.log (ξ.trivialSeminorm x) :=
@@ -218,7 +226,7 @@ theorem ofTrivialFiltration_trivialFiltration [FiniteDimensional K E]
       have hxpos : 0 < ξ.trivialSeminorm x := by
         rw [trivialSeminorm_apply]
         exact ξ.norm_rational_pos PUnit.unit hx
-      rw [if_neg hx, hj, neg_neg, Real.exp_log hxpos]
+      rw [ite_eq_right hx, hj, neg_neg, Real.exp_log hxpos]
   ext ω z
   calc
     _ = p (trivialCompletedTensorEquiv K E z) := rfl

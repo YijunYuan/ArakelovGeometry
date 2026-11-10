@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionMeasurable
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDominationDescent
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
-import ArakelovGeometry.Analysis.NormalizedCompletion
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDominationDescent
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionMeasurable
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
+public import ArakelovGeometry.Analysis.NormalizedCompletion
 
 /-!
 # Finite-stage descent of scalar-extension measurability
@@ -16,6 +18,8 @@ Every extended rational vector lies in an actual finite coordinate subfield.
 The canonical tensor and place maps identify its norm with the finite-stage
 norm when the intermediate Archimedean completions have their usual norm.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

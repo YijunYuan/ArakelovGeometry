@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.MajorantDiscrepancy
-import ArakelovGeometry.AdelicVectorBundle.Hermitian
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Hermitian
+public import ArakelovGeometry.AdelicVectorBundle.MajorantDiscrepancy
 
 /-!
 # Elementary norms on actual completed subquotients
@@ -14,6 +16,8 @@ pullback and surjective pushforward. Only that fibre is constrained.
 The quotient norm remains the existing completed-kernel quotient norm,
 and the proofs include zero sources, zero targets, and zero subspaces.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

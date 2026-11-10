@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeIsometry
-import ArakelovGeometry.AdelicVectorBundle.Discrepancy
-import ArakelovGeometry.AdelicVectorBundle.DualMap
-import ArakelovGeometry.AdelicVectorBundle.RestrictionFunctor
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeIsometry
+public import ArakelovGeometry.AdelicVectorBundle.Discrepancy
+public import ArakelovGeometry.AdelicVectorBundle.DualMap
+public import ArakelovGeometry.AdelicVectorBundle.RestrictionFunctor
 
 /-!
 # Dual degree and discrepancy preserved by completed isometries
@@ -15,6 +17,8 @@ The transpose of a rational completed-fibre isometry preserves the actual
 completed dual norms. This identifies dual degrees and hence the actual
 global determinant discrepancy, also in rank zero and at trivial valuations.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

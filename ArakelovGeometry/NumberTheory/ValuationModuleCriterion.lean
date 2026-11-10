@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.PrimePole
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedPrimeIndexing
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedPrimeIndexing
+public import ArakelovGeometry.NumberTheory.PrimePole
 
 /-!
 # Finite generation of actual integer prime-bound modules
@@ -12,6 +14,8 @@ import ArakelovGeometry.NumberTheory.NormFamilyNormalizedPrimeIndexing
 The accepted countability-free integer-sequence criterion is transported by
 the produced bijection with all actual source-normalized finite places.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField

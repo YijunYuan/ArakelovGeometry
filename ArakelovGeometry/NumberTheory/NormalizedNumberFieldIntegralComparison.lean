@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationDomination
-import Mathlib.MeasureTheory.Integral.Lebesgue.Countable
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationDomination
+public import Mathlib.MeasureTheory.Integral.Lebesgue.Countable
 
 /-!
 # Exact integrals under actual number-field normalization
@@ -12,6 +14,8 @@ import Mathlib.MeasureTheory.Integral.Lebesgue.Countable
 Completion-degree masses cancel the actual positive norm powers. Extended
 nonnegative integrals and integrable real logarithmic norms are preserved.
 -/
+
+@[expose] public section
 
 open MeasureTheory NumberField
 open scoped ENNReal

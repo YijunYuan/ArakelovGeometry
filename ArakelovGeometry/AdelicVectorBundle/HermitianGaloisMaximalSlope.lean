@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisDestabilizing
-import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionRestriction
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisDestabilizing
+public import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionRestriction
 
 /-!
 # Actual maximal slope under finite Galois Hermitian extension
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionRestriction
 The produced rational descent of the actual largest destabilizer and the
 genuine restriction/base-change norm isometry preserve the maximal slope.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

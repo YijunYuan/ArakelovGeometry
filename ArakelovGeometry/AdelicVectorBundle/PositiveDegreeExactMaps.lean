@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.PositiveDegreeExactSequence
-import ArakelovGeometry.AdelicVectorBundle.PositiveDegreeIsometry
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.PositiveDegreeExactSequence
+public import ArakelovGeometry.AdelicVectorBundle.PositiveDegreeIsometry
 
 /-!
 # Positive degree in general norm-exact sequences
@@ -15,6 +17,8 @@ transports both positive degrees to the canonical kernel restriction/quotient,
 where the proved all-subspace bounds apply. No numerical conclusion is a field
 of the exactness predicate; zero ends and infinite capital discrepancy remain.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicVectorBundle
 

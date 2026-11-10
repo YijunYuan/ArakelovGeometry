@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Basic
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldCurve
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Basic
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldCurve
 
 /-!
 # Every standard number-field norm family is measurable
@@ -13,6 +15,8 @@ Chen–Moriwaki, Remark 4.1.25, on the actual standard normalized curve.
 This requires no norm comparison or finite-place ultrametricity. Applying
 it also to actual dual norms constructs bundles from dominated families.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

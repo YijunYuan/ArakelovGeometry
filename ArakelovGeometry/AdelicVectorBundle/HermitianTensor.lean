@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.HermitianTensor
-import ArakelovGeometry.Analysis.InjectiveTensorPure
-import ArakelovGeometry.AdelicVectorBundle.Hermitian
-import ArakelovGeometry.AdelicVectorBundle.TensorDomination
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Hermitian
+public import ArakelovGeometry.AdelicVectorBundle.TensorDomination
+public import ArakelovGeometry.Analysis.HermitianTensor
+public import ArakelovGeometry.Analysis.InjectiveTensorPure
 
 /-!
 # Orthogonal tensor products of Hermitian norm families
@@ -15,6 +17,8 @@ The finite-place norm is injective. At infinite places the actual completed
 tensor product carries the product inner product of the prescribed factor
 norms. Its injective/projective comparisons supply strong domination.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -99,14 +103,14 @@ theorem orthogonalTensor_norm_of_finite (ω : S.Ω) (hω : ω ∈ S.Ωfin)
     (z : (S.ϕ ω).Completion ⊗[K] (⨂[K] i, E i)) :
     (orthogonalTensor ξ hS hξ).norm ω z = (injectiveTensor ξ).norm ω z := by
   have hn : ω ∉ S.Ωinf := fun h => h hω
-  simp only [orthogonalTensor, dif_neg hn]
+  simp only [orthogonalTensor, dite_eq_right hn]
 
 /-- At an infinite place the actual orthogonal tensor norm is the transported
 product inner-product norm. -/
 theorem orthogonalTensor_norm_of_infinite (ω : S.Ω) (hω : ω ∈ S.Ωinf)
     (z : (S.ϕ ω).Completion ⊗[K] (⨂[K] i, E i)) :
     (orthogonalTensor ξ hS hξ).norm ω z = orthogonalTensorArchSeminorm ξ hS hξ ω hω z := by
-  simp only [orthogonalTensor, dif_pos hω]
+  simp only [orthogonalTensor, dite_eq_left hω]
 
 /-- The orthogonal tensor family is ultrametric at all finite places. -/
 theorem orthogonalTensor_isUltrametric : (orthogonalTensor ξ hS hξ).IsUltrametric := by

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.CompatibleTowerLogarithmicMinima
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.CompatibleTowerLogarithmicMinima
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
 
 /-!
 # Actual determinant degrees through compatible external towers
@@ -14,6 +16,8 @@ measurability. Actual determinant norms and logarithmic integrals commute with
 its pullback, producing canonical determinant degree transport without target
 place regularity.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

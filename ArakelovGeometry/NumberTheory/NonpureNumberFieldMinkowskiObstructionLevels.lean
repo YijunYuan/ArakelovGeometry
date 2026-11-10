@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstructionImpurity
-import ArakelovGeometry.AdelicVectorBundle.Minkowski
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Minkowski
+public import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstructionImpurity
 
 /-! # No unrestricted finite Minkowski level on the actual rational curve -/
+
+@[expose] public section
 
 open NumberField
 open scoped NumberField

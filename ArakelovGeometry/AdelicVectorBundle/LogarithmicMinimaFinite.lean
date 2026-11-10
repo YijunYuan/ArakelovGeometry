@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaFiltrationRank
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteFirstMinimumSlope
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteFirstMinimumSlope
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaFiltrationRank
 
 /-!
 # Lower endpoints and approximation of actual ordinary logarithmic minima
@@ -13,6 +15,8 @@ A finite actual rational basis supplies a real lower bound for every valid
 minimum without properness or slope assumptions. Strict thresholds below the
 extended minimum supply independent high-degree tuples, without attainment.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle

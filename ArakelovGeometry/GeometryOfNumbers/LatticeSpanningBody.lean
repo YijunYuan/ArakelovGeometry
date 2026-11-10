@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.LatticePrimitiveVector
-import Mathlib.Analysis.Normed.Affine.AddTorsorBases
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.LatticePrimitiveVector
+public import Mathlib.Analysis.Normed.Affine.AddTorsorBases
 
 /-! # Actual spanning lattice bodies and the geometric induction hypotheses -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -27,10 +31,9 @@ theorem zero_mem_interior_of_span [FiniteDimensional ℝ E] {C : Set E}
     (hC : Convex ℝ C) (hsC : ∀ x ∈ C, -x ∈ C) (h0 : (0 : E) ∈ C)
     (hspan : Submodule.span ℝ C = ⊤) : (0 : E) ∈ interior C := by
   have ha : affineSpan ℝ C = ⊤ := by
-    apply AffineSubspace.coe_injective
     have he := affineSpan_insert_zero (k := ℝ) C
     rw [insert_eq_of_mem h0, hspan] at he
-    exact he
+    exact he.trans (by ext; simp)
   obtain ⟨x, hx⟩ := hC.interior_nonempty_iff_affineSpan_eq_top.mpr ha
   have hm := hC.combo_interior_self_mem_interior hx (hsC x (interior_subset hx))
     (a := (1 / 2 : ℝ)) (b := (1 / 2 : ℝ)) (by norm_num) (by norm_num) (by norm_num)

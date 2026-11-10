@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Defs
-import Mathlib.Algebra.Order.GroupWithZero.Finset
-import Mathlib.LinearAlgebra.Projectivization.Basic
-import Mathlib.MeasureTheory.Order.Lattice
+module
+
+public import ArakelovGeometry.AdelicCurve.Defs
+public import Mathlib.Algebra.Order.GroupWithZero.Finset
+public import Mathlib.LinearAlgebra.Projectivization.Basic
+public import Mathlib.MeasureTheory.Order.Lattice
 
 /-!
 # Heights of tuples and projective points
@@ -18,6 +20,8 @@ invariant under nonzero scaling and hence defines a height on projective space.
 Reference: Chen–Moriwaki, Definition 3.5.1. Applying these constructions to the
 algebraic extension to an algebraic closure gives the height in that definition.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure
 

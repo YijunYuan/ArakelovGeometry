@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianInfiniteGaloisDescentSubspace
-import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisDestabilizing
-import ArakelovGeometry.AdelicVectorBundle.HermitianClosedScalarExtensionDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianClosedScalarExtensionDegree
+public import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisDestabilizing
+public import ArakelovGeometry.AdelicVectorBundle.HermitianInfiniteGaloisDescentSubspace
 
 /-!
 # Actual closed Hermitian largest-destabilizer descent and maximal slope
@@ -14,6 +16,8 @@ Proved closed coefficient stability and genuine infinite perfect-field descent
 produce the actual rational ancestor. Native restricted means then preserve the
 actual maximal slope in every rank.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldImpurity
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeGauge
-import ArakelovGeometry.AdelicVectorBundle.Domination
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Domination
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldImpurity
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeGauge
 
 /-!
 # Actual global impurity and completed-fibre distance
@@ -14,6 +16,8 @@ The literal source impurity equals the extended integral of the canonical
 distance to the actual lattice-gauge norm family. Its finiteness therefore
 supplies the existing domination-transfer theorem with an integrable envelope.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped ENNReal
@@ -36,9 +40,9 @@ theorem finiteImpurityProfile_eq_localDist_latticeGaugeFamily :
   classical
   funext ω
   by_cases hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin
-  · rw [finiteImpurityProfile, if_pos hω,
+  · rw [finiteImpurityProfile, ite_eq_left hω,
       ξ.latticeGaugeFamily_localDist_finite hξ ω hω]
-  · rw [finiteImpurityProfile, if_neg hω,
+  · rw [finiteImpurityProfile, ite_eq_right hω,
       ξ.latticeGaugeFamily_localDist_not_finite hξ ω hω]
 
 /-- The source's extended impurity is the literal global distance integral. -/

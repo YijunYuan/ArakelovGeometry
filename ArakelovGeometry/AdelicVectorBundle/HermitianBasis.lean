@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.BasisComparison
-import ArakelovGeometry.AdelicVectorBundle.Hermitian
-import Mathlib.Analysis.InnerProductSpace.PiL2
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BasisComparison
+public import ArakelovGeometry.AdelicVectorBundle.Hermitian
+public import Mathlib.Analysis.InnerProductSpace.PiL2
 
 /-!
 # Dominated Hermitian basis families
@@ -15,6 +17,8 @@ finite places and the Euclidean coordinate norm at infinite places. These
 norms are transported through the actual completed basis. Hermitianity uses
 the explicit usual Archimedean normalization of the completed fields.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -61,14 +65,14 @@ theorem ofBasisHermitian_norm_of_finite (ω : S.Ω) (hω : ω ∈ S.Ωfin)
     (x : (S.ϕ ω).Completion ⊗[K] E) :
     (ofBasisHermitian S E b).norm ω x = (ofBasis S E b).norm ω x := by
   have hn : ω ∉ S.Ωinf := fun h => h hω
-  simp only [ofBasisHermitian, if_neg hn]
+  simp only [ofBasisHermitian, ite_eq_right hn]
 
 /-- At an infinite place the Hermitian basis family is the Euclidean norm. -/
 theorem ofBasisHermitian_norm_of_infinite (ω : S.Ω) (hω : ω ∈ S.Ωinf)
     (x : (S.ϕ ω).Completion ⊗[K] E) :
     (ofBasisHermitian S E b).norm ω x =
       Real.sqrt (∑ i, ‖(b.baseChange (S.ϕ ω).Completion).equivFun x i‖ ^ 2) := by
-  simp only [ofBasisHermitian, if_pos hω, ofBasisEuclidean_norm]
+  simp only [ofBasisHermitian, ite_eq_left hω, ofBasisEuclidean_norm]
 
 /-- The Euclidean coordinate formula for rational vectors uses only their
 rational coordinates and the original absolute-value family. -/
@@ -85,8 +89,8 @@ theorem ofBasisHermitian_norm_rational (ω : S.Ω) (x : E) :
       else ‖fun i => (S.ϕ ω) (b.equivFun x i)‖ := by
   classical
   by_cases hω : ω ∈ S.Ωinf
-  · simp only [ofBasisHermitian, if_pos hω, ofBasisEuclidean_norm_rational]
-  · simp only [ofBasisHermitian, if_neg hω, ofBasis_norm_rational]
+  · simp only [ofBasisHermitian, ite_eq_left hω, ofBasisEuclidean_norm_rational]
+  · simp only [ofBasisHermitian, ite_eq_right hω, ofBasis_norm_rational]
 
 /-- The Hermitian basis family has measurable rational evaluations. -/
 theorem ofBasisHermitian_isMeasurable : (ofBasisHermitian S E b).IsMeasurable := by
@@ -96,7 +100,7 @@ theorem ofBasisHermitian_isMeasurable : (ofBasisHermitian S E b).IsMeasurable :=
   apply Measurable.ite S.measurableSet_Ωinf
   · exact (Finset.measurable_sum _ fun i _ =>
       (S.measurable_absValue (b.equivFun x i)).pow_const 2).sqrt
-  · exact (measurable_pi_lambda _ fun i => S.measurable_absValue (b.equivFun x i)).norm
+  · exact (Measurable.of_eval fun i => S.measurable_absValue (b.equivFun x i)).norm
 
 /-- The finite-place branch is ultrametric in every dimension. -/
 theorem ofBasisHermitian_isUltrametric : (ofBasisHermitian S E b).IsUltrametric := by

@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.NormShape
-import Mathlib.Topology.ContinuousMap.Compact
-import Mathlib.Topology.ContinuousMap.SecondCountableSpace
-import Mathlib.MeasureTheory.Constructions.BorelSpace.Metric
+module
+
+public import ArakelovGeometry.Analysis.NormShape
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Metric
+public import Mathlib.Topology.ContinuousMap.Compact
+public import Mathlib.Topology.ContinuousMap.SecondCountableSpace
 
 /-!
 # Measurable families of convex norm profiles
@@ -15,6 +17,8 @@ The source measures profiles in the uniform topology on continuous functions
 on `[0,1]`. We use the canonical restriction of a `NormShape` to this compact
 interval, so its irrelevant values outside the interval are not measured.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.NormShape
 

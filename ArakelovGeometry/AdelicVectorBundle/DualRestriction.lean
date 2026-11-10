@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DualMap
-import ArakelovGeometry.Analysis.DualRestrictionInfimum
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DualMap
+public import ArakelovGeometry.Analysis.DualRestrictionInfimum
 
 /-!
 # Quotient norms on duals of completed restrictions
@@ -13,6 +15,8 @@ The actual completed pullback fibre identifies isometrically with the range
 of its completed inclusion. The minimal-extension formula for functionals
 then identifies its dual norm with the quotient of the original dual norm.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

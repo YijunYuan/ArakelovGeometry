@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicStructure.TrivialPlace
-import ArakelovGeometry.AdelicVectorBundle.Basic
-import ArakelovGeometry.AdelicVectorBundle.DeterminantHermitianBasis
-import ArakelovGeometry.AdelicVectorBundle.Rescaling
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNSemistability
+module
+
+public import ArakelovGeometry.AdelicStructure.TrivialPlace
+public import ArakelovGeometry.AdelicVectorBundle.Basic
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantHermitianBasis
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNSemistability
+public import ArakelovGeometry.AdelicVectorBundle.Rescaling
 
 /-!
 # Arbitrary actual norms at the single trivial place
@@ -16,6 +18,8 @@ Norms are transported to the genuine completed tensor fibre. Every norm
 family at the mass-one point is measurable, dual-measurable and dominated,
 without imposing ultrametricity.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -336,7 +340,8 @@ theorem degree_eq_zero_of_trivialSeminorm_eq_one
   rw [he] at hw
   have hn : _root_.exteriorPower.ιMulti K (Module.finrank K E) b ≠ 0 := by
     intro hz
-    rw [hz, TensorProduct.tmul_zero, map_zero] at hw
+    rw [hz, TensorProduct.tmul_zero,
+      show qd 0 = 0 from V.toNormFamily.determinant.norm_zero PUnit.unit] at hw
     exact zero_ne_one hw
   rw [V.degree_eq_neg_integral hS hN ⟨_, hn⟩, integral_singleTrivialPlace]
   change -Real.log (qd ((1 : C) ⊗ₜ[K] _root_.exteriorPower.ιMulti K _ b)) = 0

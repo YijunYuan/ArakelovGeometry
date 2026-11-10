@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.AlgebraicGeometry.ResidueField
-import ArakelovGeometry.ExternalResults.AbsoluteValue
+module
+
+public import ArakelovGeometry.ExternalResults.AbsoluteValue
+public import Mathlib.AlgebraicGeometry.ResidueField
 
 /-!
 # Intrinsic valued points of schemes
@@ -13,6 +15,8 @@ A valued point consists of a scheme point and an absolute value on its actual
 residue field. Scheme morphisms act by restriction along residue-field maps.
 Field-valued representatives normalize to these intrinsic points.
 -/
+
+@[expose] public section
 
 open AlgebraicGeometry CategoryTheory
 

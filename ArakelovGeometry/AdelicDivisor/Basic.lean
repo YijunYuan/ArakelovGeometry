@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Defs
+module
+
+public import ArakelovGeometry.AdelicCurve.Defs
 
 /-!
 # Adelic divisors and their degree
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicCurve.Defs
 The divisor space in Chen–Moriwaki, Section 4.2, is exactly the real `L¹`
 space of the adelic measure, with its existing Banach structure.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 

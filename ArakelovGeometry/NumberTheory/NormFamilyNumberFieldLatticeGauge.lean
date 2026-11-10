@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyCompletedLocalLattice
-import ArakelovGeometry.NumberTheory.CompletedUnitBallGaugeComparison
-import ArakelovGeometry.AdelicVectorBundle.BasisNorm
-import ArakelovGeometry.AdelicVectorBundle.Comparison
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BasisNorm
+public import ArakelovGeometry.AdelicVectorBundle.Comparison
+public import ArakelovGeometry.NumberTheory.CompletedUnitBallGaugeComparison
+public import ArakelovGeometry.NumberTheory.NormFamilyCompletedLocalLattice
 
 /-!
 # The actual number-field lattice-gauge norm family
@@ -17,6 +19,8 @@ unit-ball basis supplies separating norms without a gauge-norm certificate.
 The canonical local distance is the actual local impurity. No global
 coherence, domination or impurity summability is asserted here.
 -/
+
+@[expose] public section
 
 open scoped NumberField TensorProduct
 
@@ -91,7 +95,7 @@ theorem latticeGaugeFamily_norm_finite
     (z : ((normalizedNumberFieldAdelicStructure K).ϕ ω).Completion ⊗[K] E) :
     (ξ.latticeGaugeFamily hξ).norm ω z = completedUnitBallGauge ξ ω z := by
   dsimp only [latticeGaugeFamily]
-  rw [dif_pos hω]
+  rw [dite_eq_left hω]
   exact (ξ.completedUnitBallGauge_eq_basisNorm ω hω _ hξ z).symm
 
 theorem latticeGaugeFamily_norm_not_finite
@@ -99,7 +103,7 @@ theorem latticeGaugeFamily_norm_not_finite
     (hω : ω ∉ (normalizedNumberFieldAdelicStructure K).Ωfin) :
     (ξ.latticeGaugeFamily hξ).norm ω = ξ.norm ω := by
   change (if hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin then _ else _) = _
-  rw [dif_neg hω]
+  rw [dite_eq_right hω]
 
 theorem latticeGaugeFamily_isUltrametric : (ξ.latticeGaugeFamily hξ).IsUltrametric := by
   intro ω hω x y
@@ -111,7 +115,7 @@ theorem latticeGaugeFamily_isUltrametric : (ξ.latticeGaugeFamily hξ).IsUltrame
     intro z
     rw [ofBasisMixed_norm_of_finite b ω hω]
     dsimp only [latticeGaugeFamily]
-    rw [dif_pos hω]
+    rw [dite_eq_left hω]
   simp only [hn]
   exact ofBasisMixed_isUltrametric b ω hω x y
 

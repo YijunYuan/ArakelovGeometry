@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeFlag
-import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceDual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceDual
+public import ArakelovGeometry.AdelicVectorBundle.DegreeFlag
 
 /-!
 # Degree additivity for actual Hermitian finite flags
@@ -13,6 +15,8 @@ Every step uses Hermitianity of the actual restricted bundle, the genuine
 two-step degree identity, and the canonical nested restriction isometry.
 Empty flag segments and repeated subspaces are included.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

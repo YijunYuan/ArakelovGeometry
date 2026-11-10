@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.LatticeSpanningPolarCount
-import Mathlib.Analysis.Normed.Module.DoubleDual
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.LatticeSpanningPolarCount
+public import Mathlib.Analysis.Normed.Module.DoubleDual
 
 /-! # The actual lattice span of a polar body -/
+
+@[expose] public section
 
 noncomputable section
 

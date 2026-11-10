@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricAbsoluteInvariants
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantContraction
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminantContraction
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAbsoluteInvariants
 
 /-!
 # Actual geometric ordinary-to-absolute comparisons
@@ -14,6 +16,8 @@ restricted degree with its actual native closure-image degree. Taking the
 actual subspace suprema gives the geometric inequalities of source4.3.67,
 without countability of the original place set or target regularity.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

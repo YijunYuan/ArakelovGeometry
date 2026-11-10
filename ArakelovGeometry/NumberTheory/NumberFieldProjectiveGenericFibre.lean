@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldInvertibleGenericFibre
-import ArakelovGeometry.NumberTheory.NumberFieldDegreeCovolume
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldDegreeCovolume
+public import ArakelovGeometry.NumberTheory.NumberFieldInvertibleGenericFibre
 
 /-!
 # Original finite projective modules in their literal generic images
@@ -13,6 +15,8 @@ The existing canonical generic inclusion and generic image are reused in every
 rank. Their original completed tensors and diagonal images are identified with
 the actual full-lattice objects in the same generic vector space.
 -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField IsDedekindDomain TensorProduct
@@ -24,6 +28,7 @@ open AdelicStructure ActualPrimeIndexing NumberFieldInvertibleGeneric
   NumberFieldArchimedeanVectorDiagonal
 attribute [local instance 2000] integralVectorModule
 attribute [local instance] normalizedNumberFieldAdelicStructure_isProper
+attribute [local instance] NumberFieldFullLattice.degreeCovolumeDiscrete
 
 variable {K : Type*} [Field K] [NumberField K]
   (M : Type*) [AddCommGroup M] [Module (𝓞 K) M]
@@ -55,26 +60,27 @@ omit [NumberField K] in
 theorem genericFiniteDimensional [Module.Finite (𝓞 K) M] :
     FiniteDimensional K (K ⊗[𝓞 K] M) := Module.Finite.base_change (𝓞 K) K M
 
-private abbrev F (p : HeightOneSpectrum (𝓞 K)) :=
-  ((normalizedNumberFieldAdelicStructure K).ϕ (normalizedPrimeParameter p)).Completion
-private abbrev O (p : HeightOneSpectrum (𝓞 K)) :=
-  (normalizedNumberFieldAdelicStructure K).completedLocalRing (normalizedPrimeParameter p)
-    (normalizedPrimeParameter_mem_fin p)
+local notation "Kᵥ" => (fun p : HeightOneSpectrum (𝓞 K) ↦
+  AbsoluteValue.Completion
+    (AdelicStructure.ϕ (normalizedNumberFieldAdelicStructure K) (normalizedPrimeParameter p)))
+local notation "𝓞ᵥ" => (fun p : HeightOneSpectrum (𝓞 K) ↦
+  AdelicStructure.completedLocalRing (normalizedNumberFieldAdelicStructure K)
+    (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p))
 
 /-- The original completed map is scalar extension of the actual original generic inclusion. -/
 def completedTensorMap (p : HeightOneSpectrum (𝓞 K)) :
-    O p ⊗[𝓞 K] M →ₗ[O p] F p ⊗[K] (K ⊗[𝓞 K] M) :=
-  @LinearMap.liftBaseChange (𝓞 K) M (F p ⊗[K] (K ⊗[𝓞 K] M)) (O p) _ _ _ _ _ _
+    𝓞ᵥ p ⊗[𝓞 K] M →ₗ[𝓞ᵥ p] Kᵥ p ⊗[K] (K ⊗[𝓞 K] M) :=
+  @LinearMap.liftBaseChange (𝓞 K) M (Kᵥ p ⊗[K] (K ⊗[𝓞 K] M)) (𝓞ᵥ p) _ _ _ _ _ _
     (integralVectorModule (K := K)) _
     (NumberFieldModel.completedVector_integralScalarTower p)
     ((NumberFieldModel.completedVectorMap p).comp (genericInclusion (K := K) M))
 
 /-- The completed map sends the original pure tensor to the prescribed completed vector. -/
 @[simp]
-theorem completedTensorMap_tmul (p : HeightOneSpectrum (𝓞 K)) (a : O p) (m : M) :
+theorem completedTensorMap_tmul (p : HeightOneSpectrum (𝓞 K)) (a : 𝓞ᵥ p) (m : M) :
     completedTensorMap (K := K) M p (a ⊗ₜ[𝓞 K] m) =
-      (a : F p) ⊗ₜ[K] (genericInclusion (K := K) M m) := by
-  change (a : F p) • ((1 : F p) ⊗ₜ[K] (genericInclusion (K := K) M m)) = _
+      (a : Kᵥ p) ⊗ₜ[K] (genericInclusion (K := K) M m) := by
+  change (a : Kᵥ p) • ((1 : Kᵥ p) ⊗ₜ[K] (genericInclusion (K := K) M m)) = _
   rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one]
 
 /-- The original map commutes with the canonical base change of the original image isomorphism. -/
@@ -82,7 +88,7 @@ theorem completedTensorMap_eq_latticeMap [Module.Projective (𝓞 K) M]
     (p : HeightOneSpectrum (𝓞 K)) :
     completedTensorMap (K := K) M p =
       (NumberFieldModel.completedLatticeTensorMap (genericImage (K := K) M) p).comp
-        (LinearEquiv.baseChange (𝓞 K) (O p) M (genericImage (K := K) M)
+        (LinearEquiv.baseChange (𝓞 K) (𝓞ᵥ p) M (genericImage (K := K) M)
           (genericImageEquiv (K := K) M)).toLinearMap := by
   apply AlgebraTensorModule.ext
   intro a m
@@ -96,7 +102,7 @@ theorem completedTensorMap_range [Module.Projective (𝓞 K) M]
     (completedTensorMap (K := K) M p).range =
       NumberFieldModel.completedLatticeSpan (genericImage (K := K) M) p := by
   rw [completedTensorMap_eq_latticeMap, LinearMap.range_comp_of_range_eq_top _
-    (LinearEquiv.baseChange (𝓞 K) (O p) M (genericImage (K := K) M)
+    (LinearEquiv.baseChange (𝓞 K) (𝓞ᵥ p) M (genericImage (K := K) M)
       (genericImageEquiv (K := K) M)).range]
   exact NumberFieldModel.range_completedLatticeTensorMap _ _
 
@@ -110,7 +116,7 @@ theorem completedTensorMap_injective [Module.Finite (𝓞 K) M] [Module.Projecti
     (genericImage_fullSpan (K := K) M) p
   rw [NumberFieldFullLattice.completedTensorMap_eq_canonical] at hi
   exact hi.comp
-    (LinearEquiv.baseChange (𝓞 K) (O p) M (genericImage (K := K) M)
+    (LinearEquiv.baseChange (𝓞 K) (𝓞ᵥ p) M (genericImage (K := K) M)
       (genericImageEquiv (K := K) M)).injective
 
 /-- The canonical full-lattice finite norm is exactly the gauge of the original
@@ -118,11 +124,11 @@ module's completed tensor image in the same actual completed generic fibre. -/
 theorem fullLatticeGaugeFamily_norm_originalCompletedImage
     [Module.Finite (𝓞 K) M] [Module.Projective (𝓞 K) M]
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (p : HeightOneSpectrum (𝓞 K)) (z : F p ⊗[K] (K ⊗[𝓞 K] M)) :
+    (p : HeightOneSpectrum (𝓞 K)) (z : Kᵥ p ⊗[K] (K ⊗[𝓞 K] M)) :
     (NumberFieldFullLattice.fullLatticeGaugeFamily (genericImage (K := K) M)
       (genericImage_fg (K := K) M) (genericImage_fullSpan (K := K) M) η).norm
         (normalizedPrimeParameter p) z =
-      scalarLatticeGauge (F := F p) ((completedTensorMap (K := K) M p).range : Set _) z := by
+      scalarLatticeGauge (F := Kᵥ p) ((completedTensorMap (K := K) M p).range : Set _) z := by
   rw [NumberFieldFullLattice.fullLatticeGaugeFamily_norm_prime, completedTensorMap_range]
 
 /-- The prescribed original infinite norms are retained on the same actual generic fibre. -/

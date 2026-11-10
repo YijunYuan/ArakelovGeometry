@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormalizedExtensionMeasure
-import ArakelovGeometry.AdelicCurve.Examples.NumberFields
+module
+
+public import ArakelovGeometry.AdelicCurve.Examples.NumberFields
+public import ArakelovGeometry.NumberTheory.NormalizedExtensionMeasure
 
 /-!
 # The actual completion-degree weighted normalized number-field curve
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicCurve.Examples.NumberFields
 Transport the degree-scaled rational extension measure along the produced
 measurable bijection. Properness is proved before any ramification formula.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped ENNReal

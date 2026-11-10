@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TensorPairNorm
-import ArakelovGeometry.AdelicVectorBundle.Determinant
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Determinant
+public import ArakelovGeometry.AdelicVectorBundle.TensorPairNorm
 
 /-!
 # Actual completed tensor dual functionals
@@ -13,6 +15,8 @@ Mathlib's canonical dual tensor map commutes with the existing completed
 dual and binary tensor identifications. Injective evaluation gives its
 actual operator bound.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -40,22 +44,18 @@ theorem dualDistrib_baseChange_apply
       ((TensorProduct.AlgebraTensorModule.distribBaseChange K L E F).symm
         (x ⊗ₜ[L] y)) =
       dualBaseChangeEquiv K L E α x * dualBaseChangeEquiv K L F β y := by
-  induction α using TensorProduct.induction_on with
-  | zero => simp
+  induction α using TensorProduct.inductionOn with
   | add α₁ α₂ h₁ h₂ => simp only [TensorProduct.add_tmul, map_add,
       LinearMap.add_apply, h₁, h₂, add_mul]
   | tmul a f =>
-    induction β using TensorProduct.induction_on with
-    | zero => simp
+    induction β using TensorProduct.inductionOn with
     | add β₁ β₂ h₁ h₂ => simp only [TensorProduct.tmul_add, map_add,
         LinearMap.add_apply, h₁, h₂, mul_add]
     | tmul b g =>
-      induction x using TensorProduct.induction_on with
-      | zero => simp
+      induction x using TensorProduct.inductionOn with
       | add x₁ x₂ h₁ h₂ => simp only [TensorProduct.add_tmul, map_add, h₁, h₂, add_mul]
       | tmul c e =>
-        induction y using TensorProduct.induction_on with
-        | zero => simp
+        induction y using TensorProduct.inductionOn with
         | add y₁ y₂ h₁ h₂ => simp only [TensorProduct.tmul_add, map_add, h₁, h₂, mul_add]
         | tmul d v =>
           simp only [TensorProduct.AlgebraTensorModule.distribBaseChange_symm_tmul,

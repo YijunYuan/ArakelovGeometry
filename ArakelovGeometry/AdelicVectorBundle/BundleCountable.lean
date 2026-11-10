@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.BundleSubquotient
-import ArakelovGeometry.AdelicVectorBundle.CountableMeasurable
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BundleSubquotient
+public import ArakelovGeometry.AdelicVectorBundle.CountableMeasurable
 
 /-!
 # Automatic adelic subquotients and duals
@@ -14,6 +16,8 @@ of the existing bundle constructors: a discrete parameter sigma-algebra, or
 one countable subfield dense in every completion. No assertion about the
 parameter space of an algebraic scalar extension is used.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

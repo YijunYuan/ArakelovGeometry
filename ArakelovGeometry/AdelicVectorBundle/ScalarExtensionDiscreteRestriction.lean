@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteSubquotient
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteSubquotient
 
 /-!
 # Native restrictions over the algebraic closure of a countable discrete base
@@ -14,6 +16,8 @@ norms. Actual completed tensor isometries and dual pairing transport identify
 these with the native target restriction dual norms under the measurable tower
 place equivalence. No discreteness or common density is assumed on the target.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -67,6 +71,38 @@ private theorem discreteRestriction_dual_norm_eq
     rw [dualBaseChangeEquiv_dualMap, LinearMap.comp_apply, hm] at h
     exact h
 
+/-- Measurability of dual norms descends through the measurable tower equivalence. -/
+theorem IsMeasurable.dual_of_tower_completed_isometry
+    (F : AdelicStructure.FiniteIntermediateField K L)
+    {X Y : Type*} [AddCommGroup X] [Module L X] [FiniteDimensional L X]
+    [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
+    (η : NormFamily ((S.algebraicExtension F).algebraicExtension L) X)
+    (θ : NormFamily (S.algebraicExtension L) Y) (e : X ≃ₗ[L] Y)
+    (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
+      (z : x.abv.Completion ⊗[L] X), θ.norm (scalarExtensionTowerPlace x)
+        (e.toLinearMap.baseChange x.abv.Completion z) = η.norm x z)
+    (hm : η.dual.IsMeasurable) : θ.dual.IsMeasurable := by
+  intro ℓ
+  let τ := (AdelicStructure.Algebraic.towerMeasurableEquiv S F.toIntermediateField).symm
+  have hnorm : (fun x : (S.algebraicExtension L).Ω =>
+      θ.dual.norm x ((1 : x.abv.Completion) ⊗ₜ[L] ℓ)) =
+      (fun x : (S.algebraicExtension L).Ω =>
+        η.dual.norm (τ x) ((1 : (τ x).abv.Completion) ⊗ₜ[L] e.dualMap ℓ)) := by
+    funext x
+    have h := discreteRestriction_dual_norm_eq F η θ e (τ x) (he (τ x))
+      ((1 : x.abv.Completion) ⊗ₜ[L] ℓ)
+    change η.dual.norm (τ x)
+      (e.toLinearMap.dualMap.baseChange (τ x).abv.Completion
+        ((1 : (τ x).abv.Completion) ⊗ₜ[L] ℓ)) =
+      θ.dual.norm x ((1 : x.abv.Completion) ⊗ₜ[L] ℓ) at h
+    rw [LinearMap.baseChange_tmul] at h
+    exact h.symm
+  change Measurable (fun x : (S.algebraicExtension L).Ω =>
+    θ.dual.norm x ((1 : x.abv.Completion) ⊗ₜ[L] ℓ))
+  rw [hnorm]
+  exact (hm (e.dualMap ℓ)).comp τ.measurable
+
+
 variable {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] [IsAlgClosed L]
 
@@ -90,25 +126,7 @@ theorem scalarExtension_restrict_dual_isMeasurable_of_countable_discrete
   have hm : η.dual.IsMeasurable :=
     NormFamily.scalarExtension_dual_isMeasurable_of_countable_discrete
       ((ξ.scalarExtension (L := F)).restrict (B 0))
-  intro ℓ
-  let τ := (AdelicStructure.Algebraic.towerMeasurableEquiv S F.toIntermediateField).symm
-  have hnorm : (fun x : (S.algebraicExtension L).Ω =>
-      θ.dual.norm x ((1 : x.abv.Completion) ⊗ₜ[L] ℓ)) =
-      (fun x : (S.algebraicExtension L).Ω =>
-        η.dual.norm (τ x) ((1 : (τ x).abv.Completion) ⊗ₜ[L] e.dualMap ℓ)) := by
-    funext x
-    have h := discreteRestriction_dual_norm_eq F η θ e (τ x) (he (τ x))
-      ((1 : x.abv.Completion) ⊗ₜ[L] ℓ)
-    change η.dual.norm (τ x)
-      (e.toLinearMap.dualMap.baseChange (τ x).abv.Completion
-        ((1 : (τ x).abv.Completion) ⊗ₜ[L] ℓ)) =
-      θ.dual.norm x ((1 : x.abv.Completion) ⊗ₜ[L] ℓ) at h
-    rw [LinearMap.baseChange_tmul] at h
-    exact h.symm
-  change Measurable (fun x : (S.algebraicExtension L).Ω =>
-    θ.dual.norm x ((1 : x.abv.Completion) ⊗ₜ[L] ℓ))
-  rw [hnorm]
-  exact (hm (e.dualMap ℓ)).comp τ.measurable
+  exact IsMeasurable.dual_of_tower_completed_isometry F η θ e he hm
 
 end NormFamily
 

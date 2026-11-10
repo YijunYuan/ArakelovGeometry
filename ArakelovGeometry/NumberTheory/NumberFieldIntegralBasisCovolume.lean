@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldHermitianLatticeCovolume
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeModel
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeModel
+public import ArakelovGeometry.NumberTheory.NumberFieldHermitianLatticeCovolume
 
 /-!
 # Integral rational bases inside full number-field lattices
@@ -14,6 +16,8 @@ produces a rational basis contained in the original full lattice. This
 discharges the basis-containment hypothesis of the actual index/covolume
 formula for every finitely generated full integral lattice.
 -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField

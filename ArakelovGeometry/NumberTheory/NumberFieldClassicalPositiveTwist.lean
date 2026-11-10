@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArithmeticSectionCount
-import ArakelovGeometry.AdelicVectorBundle.SlopesRescaling
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldInfiniteMass
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.SlopesRescaling
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldInfiniteMass
+public import ArakelovGeometry.NumberTheory.NumberFieldArithmeticSectionCount
 
 /-! # Actual arithmetic twists of prescribed degree -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory

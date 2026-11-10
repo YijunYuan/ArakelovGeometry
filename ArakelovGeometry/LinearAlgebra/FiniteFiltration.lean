@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.LinearAlgebra.FiniteDimensional.Basic
-import Mathlib.Data.Finset.Sort
-import Mathlib.Order.Preorder.Chain
-import Mathlib.Topology.Order.Basic
-import Mathlib.Algebra.Order.Archimedean.Real.Basic
+module
+
+public import Mathlib.Algebra.Order.Archimedean.Real.Basic
+public import Mathlib.Data.Finset.Sort
+public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
+public import Mathlib.Order.Preorder.Chain
+public import Mathlib.Topology.Order.Basic
 
 /-!
 # Finite flags of real subspace filtrations
@@ -17,6 +19,8 @@ If it attains zero and the whole space and is locally constant on the left,
 its nonzero levels have included real upper endpoints. These endpoints recover
 the strict finite flag and the literal right-limit union at every jump.
 -/
+
+@[expose] public section
 
 open Module
 
@@ -55,7 +59,7 @@ theorem exists_strictMono_flag_of_antitone {F : ℝ → Submodule K E}
       StrictMono U ∧ U 0 = ⊥ ∧ U (Fin.last n) = ⊤ ∧ Set.range U = Set.range F := by
   classical
   let S := Set.range F
-  let : LinearOrder S := hF.isChain_range.linearOrder
+  let : LinearOrder S := hF.isChain_range.lt_of_le.linearOrder
   let : Fintype S := (finite_range_of_antitone hF).fintype
   let : Nonempty S := ⟨⟨F 0, 0, rfl⟩⟩
   let n := Fintype.card S - 1
@@ -231,7 +235,7 @@ omit [FiniteDimensional K E] in
 theorem strictMono_flag_length_eq_of_range_eq {n m : ℕ}
     {U : Fin (n + 1) → Submodule K E} {V : Fin (m + 1) → Submodule K E}
     (hU : StrictMono U) (hV : StrictMono V) (h : Set.range U = Set.range V) : n = m := by
-  let e := ((Equiv.ofInjective U hU.injective).trans (Equiv.setCongr h)).trans
+  let e := ((Equiv.ofInjective U hU.injective).trans (Set.equivOfEq h)).trans
     (Equiv.ofInjective V hV.injective).symm
   have hc := Fintype.card_congr e
   simpa only [Fintype.card_fin, Nat.add_right_cancel_iff] using hc
@@ -243,7 +247,7 @@ theorem strictMono_flag_eq_of_range_eq {n : ℕ}
     (hU : StrictMono U) (hV : StrictMono V) (h : Set.range U = Set.range V) : U = V := by
   classical
   let S := Set.range U
-  let : LinearOrder S := hU.monotone.isChain_range.linearOrder
+  let : LinearOrder S := hU.monotone.isChain_range.lt_of_le.linearOrder
   let u : Fin (n + 1) → S := fun i => ⟨U i, i, rfl⟩
   let v : Fin (n + 1) → S := fun i => ⟨V i, by dsimp [S]; rw [h]; exact ⟨i, rfl⟩⟩
   have hu : StrictMono u := by intro i j hij; exact hU hij

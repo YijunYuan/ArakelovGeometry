@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Minkowski
-import ArakelovGeometry.AdelicVectorBundle.BundleTensorPair
-import ArakelovGeometry.AdelicVectorBundle.TensorDualNorm
-import ArakelovGeometry.AdelicVectorBundle.BidualQuotient
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BidualQuotient
+public import ArakelovGeometry.AdelicVectorBundle.BundleTensorPair
+public import ArakelovGeometry.AdelicVectorBundle.Minkowski
+public import ArakelovGeometry.AdelicVectorBundle.TensorDualNorm
 
 /-!
 # The mixed tensor lower slope bound from an ordinary Minkowski level
@@ -16,6 +18,8 @@ predicate to the two actual dual bundles. Bidual minimal-slope invariance
 and the sharp dual slope defect remove the dual factors. No ultrametricity
 premise is imposed on either original bundle.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section
@@ -72,7 +76,7 @@ theorem maximalSlope_dual_mixedTensorPair_eq_injective_dual
     hS hN
   intro ω x
   simp only [dualOfMeasurableBase_toNormFamily, mixedTensorPair_toNormFamily,
-    injectiveTensorPair_toNormFamily]
+    injectiveTensorPair_toNormFamily, TensorProduct.toLinearMap_dualDistribEquiv]
   exact V.toNormFamily.mixedTensorPair_dual_norm_eq_injective W.toNormFamily ω x
 
 /-- Source Corollary 4.3.76(2), on arbitrary positive-rank actual factors.

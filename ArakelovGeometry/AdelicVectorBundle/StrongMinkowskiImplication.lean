@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaStrongMinkowski
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNFirstSlope
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNFirstSlope
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaStrongMinkowski
 
 /-!
 # Actual ordinary-level consequences of the strong Minkowski property
@@ -15,6 +17,8 @@ property therefore produces ordinary level `C + a∞ / 2`. Hermitian bundles
 and curves of zero Archimedean mass retain the same level. The unrestricted
 positive-level same-constant assertion remains a separate source obligation.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry

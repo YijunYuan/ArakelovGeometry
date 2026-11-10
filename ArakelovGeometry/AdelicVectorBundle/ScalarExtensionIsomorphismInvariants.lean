@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismDegree
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismDegree
 
 /-!
 # Actual scalar-extended invariants under algebraic-closure isomorphisms
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants
 The actual native determinant degree transport is consumed on all subspaces.
 The resulting suprema retain their original rank-zero conventions.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

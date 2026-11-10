@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeLambda
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationHermitian
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaFinite
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaFinite
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeLambda
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationHermitian
 
 /-!
 # Finite endpoints for the actual integral-basis invariant
@@ -15,6 +17,8 @@ completions give finite ordinary minima. The integral-basis lower comparison
 then bounds the actual lattice invariant above; coherence supplies the lower
 endpoint. No endpoint or small-vector separation certificate is assumed.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AlgebraicGeometry.AffineModuleBaseChange
+module
+
+public import ArakelovGeometry.AlgebraicGeometry.AffineModuleBaseChange
 
 /-!
 # Residue fibres of affine quasi-coherent sheaves under pullback
@@ -12,6 +14,8 @@ Affine pullback preserves quasi-coherence. Combined with the actual sheaf-fibre
 square, this identifies fibres of pullback sheaves with extension of scalars
 along the canonical residue-field embedding.
 -/
+
+@[expose] public section
 
 open AlgebraicGeometry CategoryTheory
 

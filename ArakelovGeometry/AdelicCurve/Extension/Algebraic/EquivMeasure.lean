@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Equiv
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Equiv
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
 
 /-!
 # Actual algebraic extension measure under base-field isomorphisms
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
 The prescribed finite embedded marginals determine the transported projective
 fibre probability. Disintegration then transports the actual total measure.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.Algebraic
 open MeasureTheory

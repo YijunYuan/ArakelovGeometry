@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AlgebraicGeometry.CompletedResidueFibre
-import Mathlib.Algebra.Category.ModuleCat.Sheaf.PullbackFree
+module
+
+public import ArakelovGeometry.AlgebraicGeometry.CompletedResidueFibre
+public import Mathlib.Algebra.Category.ModuleCat.Sheaf.PullbackFree
 
 /-!
 # Local frames and completed line fibres
@@ -13,6 +15,8 @@ An actual local trivialization of a sheaf of modules gives a basis of its
 completed geometric fibre. The fibre is obtained by pullback to the completed
 residue field, rather than postulated as a separate vector space.
 -/
+
+@[expose] public section
 
 open AlgebraicGeometry CategoryTheory
 

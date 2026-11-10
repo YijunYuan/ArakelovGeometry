@@ -3,8 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionNativeSubquotientFiniteStage
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspaceDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionFiniteStageDegree
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionNativeSubquotientFiniteStage
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspaceDegree
 
 /-!
 # Actual mixed subquotients with produced common density
@@ -14,6 +17,8 @@ canonical bundle operations retain the literal native completed restriction
 and quotient norms. Actual all-completed finite-stage transport then preserves
 their ordinary determinant degrees, without original ultrametricity.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section
@@ -40,35 +45,101 @@ theorem scalarExtension_nativeSubquotient_regular_of_common_density
   exact ⟨R.isMeasurable, R.dual_isMeasurable, R.isDominated,
     R.isMeasurable.determinant_of_discrete_or_countable (Or.inr hL)⟩
 
-/-- Genuine native mixed degrees at a complexifying finite stage. All source,
-target and tower density contexts are produced from original common density. -/
-theorem degree_nativeSubquotient_scalarExtension_finiteStage [S.IsProper]
+private theorem degree_eq_of_scalarExtension_tower_isometry [S.IsProper]
+    (F : IntermediateField K L)
+    {X Y : Type*} [AddCommGroup X] [Module F X] [FiniteDimensional F X]
+    [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
+    (e : (L ⊗[F] X) ≃ₗ[L] Y)
+    (W₀ : AdelicVectorBundle (S.algebraicExtension F) X)
+    (R : AdelicVectorBundle (S.algebraicExtension L) Y)
+    (hF : (S.algebraicExtension F).HasCommonCountableDenseSubfield)
+    (hL : (S.algebraicExtension L).HasCommonCountableDenseSubfield)
+    (hFN : ∀ x ∈ (S.algebraicExtension F).Ωinf,
+      IsRCLikeNormedField ((S.algebraicExtension F).ϕ x).Completion)
+    (hLN : ∀ x ∈ (S.algebraicExtension L).Ωinf,
+      IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion)
+    (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
+      (z : x.abv.Completion ⊗[L] (L ⊗[F] X)), R.toNormFamily.norm (scalarExtensionTowerPlace x)
+        (e.toLinearMap.baseChange x.abv.Completion z) =
+          (W₀.toNormFamily.scalarExtension (L := L)).norm x z) :
+    let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
+    let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
+    R.degree (Or.inr hL) hLN = W₀.degree (Or.inr hF) hFN := by
+  let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
+  let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
+  let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
+  exact (degree_eq_of_tower_completed_isometry F
+    (W₀.scalarExtension (L := L) hF hFN) R e (Or.inr hL)
+    (Or.inr (hF.algebraicExtension_of_isAlgClosed (L := L))) hLN
+    (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hFN) he).trans
+      (W₀.degree_scalarExtension_of_isAlgClosed hF hFN)
+
+universe wF
+
+/-- Equality of the degree of a native quotient `B / T` and that of a finite-stage
+subquotient `Q / P`, with the induced density and normalization contexts. -/
+abbrev CommonSubspaceQuotientDegreeEq [S.IsProper]
     (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
     (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (F : AdelicStructure.FiniteIntermediateField K L) (hi : ∃ a : F, a ^ 2 = -1)
-    (P Q : Submodule F (F ⊗[K] E)) (hPQ : P ≤ Q) :
+    (F : Type wF) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] [FiniteDimensional K F]
+    (P Q : Submodule F (F ⊗[K] E))
+    (B : Submodule L (L ⊗[K] E)) (T : Submodule L B) : Prop :=
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
     let hL := hcount.algebraicExtension_of_isAlgClosed (L := L)
     let hF := hcount.algebraicExtension_of_finiteDimensional (L := F)
-    let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E
-    let A := (P.baseChange L).map c.toLinearMap
-    let B := (Q.baseChange L).map c.toLinearMap
     (((V.scalarExtension (L := L) hcount hN).restrictOfMeasurableBase
-      B (Or.inr hL)).quotientOfMeasurableBase (A.comap B.subtype) (Or.inr hL)).degree
+      B (Or.inr hL)).quotientOfMeasurableBase T (Or.inr hL)).degree
         (Or.inr hL) (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) =
       (((V.scalarExtension (L := F) hcount hN).restrictOfMeasurableBase
         Q (Or.inr hF)).quotientOfMeasurableBase (P.comap Q.subtype) (Or.inr hF)).degree
-          (Or.inr hF) (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN) := by
+          (Or.inr hF) (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN)
+
+
+/-- Equality between the native degree of a scalar-extended subquotient and its
+finite-stage degree, with density and normalization induced from the original curve. -/
+abbrev CommonNativeSubquotientDegreeEq [S.IsProper]
+    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (F : Type wF) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] [FiniteDimensional K F]
+    (P Q : Submodule F (F ⊗[K] E)) : Prop :=
+  let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E
+  let A := (P.baseChange L).map c.toLinearMap
+  let B := (Q.baseChange L).map c.toLinearMap
+  V.CommonSubspaceQuotientDegreeEq (L := L) hcount hN F P Q B (A.comap B.subtype)
+
+private theorem common_nativeSubquotient_canonical_degree [S.IsProper]
+    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (F : Type wF) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] [FiniteDimensional K F]
+    (hd : ∀ {X : Type (max wF wE)} {Y : Type (max wL wE)}
+      [AddCommGroup X] [Module F X] [FiniteDimensional F X]
+      [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
+      (W₀ : AdelicVectorBundle (S.algebraicExtension F) X)
+      (R : AdelicVectorBundle (S.algebraicExtension L) Y) (e : (L ⊗[F] X) ≃ₗ[L] Y)
+      (_he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
+        (z : x.abv.Completion ⊗[L] (L ⊗[F] X)), R.toNormFamily.norm (scalarExtensionTowerPlace x)
+          (e.toLinearMap.baseChange x.abv.Completion z) =
+            (W₀.toNormFamily.scalarExtension (L := L)).norm x z),
+      let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
+      let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
+      R.degree (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))
+        (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) =
+      W₀.degree (Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := F)))
+        (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN))
+    (hi : ∃ a : F, a ^ 2 = -1)
+    (P Q : Submodule F (F ⊗[K] E)) (hPQ : P ≤ Q) :
+    V.CommonNativeSubquotientDegreeEq (L := L) hcount hN F P Q := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
   let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
   let hL := hcount.algebraicExtension_of_isAlgClosed (L := L)
   let hF := hcount.algebraicExtension_of_finiteDimensional (L := F)
-  let hT := hF.algebraicExtension_of_isAlgClosed (L := L)
   let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
   let hFN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN
-  let hTN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hFN
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E
   let A := (P.baseChange L).map c.toLinearMap
   let B := (Q.baseChange L).map c.toLinearMap
@@ -78,17 +149,64 @@ theorem degree_nativeSubquotient_scalarExtension_finiteStage [S.IsProper]
   let R : AdelicVectorBundle (S.algebraicExtension L) (B ⧸ A.comap B.subtype) :=
     ((V.scalarExtension (L := L) hcount hN).restrictOfMeasurableBase
       B (Or.inr hL)).quotientOfMeasurableBase (A.comap B.subtype) (Or.inr hL)
-  let W := W₀.scalarExtension (L := L) hF hFN
-  let T := R.towerPullback F.toIntermediateField
   change R.degree (Or.inr hL) hLN = W₀.degree (Or.inr hF) hFN
-  have he : W.degree (Or.inr hT) hTN = T.degree (Or.inr hT) hTN :=
-    W.degree_eq_of_completed_isometry T (finiteStageSubquotientEquiv F P Q hPQ)
-      (Or.inr hT) hTN (by
-        intro x z
-        exact V.toNormFamily.scalarExtension_subquotient_finiteStage_norm_eq hN F hi P Q hPQ x z)
-  have ht : T.degree (Or.inr hT) hTN = R.degree (Or.inr hL) hLN :=
-    R.degree_towerPullback F.toIntermediateField (Or.inr hL) (Or.inr hT) hLN hTN
-  exact ht.symm.trans (he.symm.trans (W₀.degree_scalarExtension_of_isAlgClosed hF hFN))
+  obtain ⟨e, he, _⟩ := V.toNormFamily.hasScalarExtensionSubquotientIsometry_of_images
+    (L := L) hN F hi P Q hPQ A B rfl rfl
+  apply hd (X := Q ⧸ P.comap Q.subtype) (Y := B ⧸ A.comap B.subtype) W₀ R e
+  intro x z
+  simpa only [W₀, R, quotientOfMeasurableBase_toNormFamily,
+    restrictOfMeasurableBase_toNormFamily, scalarExtension_toNormFamily] using he x z
+
+
+/-- Genuine native mixed degrees at a complexifying finite stage. All source,
+target and tower density contexts are produced from original common density. -/
+theorem degree_nativeSubquotient_scalarExtension_finiteStage [S.IsProper]
+    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (F : AdelicStructure.FiniteIntermediateField K L) (hi : ∃ a : F, a ^ 2 = -1)
+    (P Q : Submodule F (F ⊗[K] E)) (hPQ : P ≤ Q) :
+    V.CommonNativeSubquotientDegreeEq (L := L) hcount hN F P Q := by
+  refine common_nativeSubquotient_canonical_degree V hcount hN F ?_ hi P Q hPQ
+  intro X Y _ _ _ _ _ _ W₀ R e he
+  exact degree_eq_of_scalarExtension_tower_isometry (X := X) (Y := Y)
+    F.toIntermediateField e W₀ R
+    (hcount.algebraicExtension_of_finiteDimensional (L := F))
+    (hcount.algebraicExtension_of_isAlgClosed (L := L))
+    (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN)
+    (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) he
+
+/-- Exact endpoint images transport the canonical finite-stage degree identity
+to the prescribed native quotient. -/
+theorem commonSubspaceQuotientDegreeEq_of_images [S.IsProper]
+    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (F : Type wF) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] [FiniteDimensional K F]
+    (P Q : Submodule F (F ⊗[K] E))
+    (B : Submodule L (L ⊗[K] E)) (T : Submodule L B)
+    (hP : (P.baseChange L).map
+      (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E).toLinearMap =
+        T.map B.subtype)
+    (hQ : (Q.baseChange L).map
+      (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E).toLinearMap = B)
+    (hd : V.CommonNativeSubquotientDegreeEq (L := L) hcount hN F P Q) :
+    V.CommonSubspaceQuotientDegreeEq (L := L) hcount hN F P Q B T := by
+  let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
+  let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
+  let hL := hcount.algebraicExtension_of_isAlgClosed (L := L)
+  have hT : (T.map B.subtype).comap B.subtype = T := by
+    rw [Submodule.comap_map_eq, Submodule.ker_subtype, sup_bot_eq]
+  let d (P' Q' : Submodule L (L ⊗[K] E)) : ℝ :=
+    (((V.scalarExtension (L := L) hcount hN).restrictOfMeasurableBase
+      Q' (Or.inr hL)).quotientOfMeasurableBase (P'.comap Q'.subtype) (Or.inr hL)).degree
+        (Or.inr hL) (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN)
+  dsimp only [CommonNativeSubquotientDegreeEq, CommonSubspaceQuotientDegreeEq] at hd ⊢
+  have he := congrArg₂ d hP hQ
+  have ht := congrArg (fun C : Submodule L B =>
+    (((V.scalarExtension (L := L) hcount hN).restrictOfMeasurableBase
+      B (Or.inr hL)).quotientOfMeasurableBase C (Or.inr hL)).degree (Or.inr hL)
+        (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN)) hT
+  exact ht.symm.trans (he.symm.trans hd)
 
 /-- An arbitrary actual native B/T has a produced complexifying finite stage,
 with literal endpoint images, genuine quotient rank and actual ordinary degree. -/
@@ -96,8 +214,6 @@ theorem exists_complexFiniteStage_nativeSubquotient_degree_of_common_density [S.
     (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
     (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
     (B : Submodule L (L ⊗[K] E)) (T : Submodule L B) :
-    let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    let hL := hcount.algebraicExtension_of_isAlgClosed (L := L)
     ∃ F : AdelicStructure.FiniteIntermediateField K L, (∃ a : F, a ^ 2 = -1) ∧
       ∃ P Q : Submodule F (F ⊗[K] E), P ≤ Q ∧
         (P.baseChange L).map
@@ -106,17 +222,7 @@ theorem exists_complexFiniteStage_nativeSubquotient_degree_of_common_density [S.
         (Q.baseChange L).map
           (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E).toLinearMap = B ∧
         Module.finrank L (B ⧸ T) = Module.finrank F (Q ⧸ P.comap Q.subtype) ∧
-        (let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
-         let hF := hcount.algebraicExtension_of_finiteDimensional (L := F)
-         (((V.scalarExtension (L := L) hcount hN).restrictOfMeasurableBase
-           B (Or.inr hL)).quotientOfMeasurableBase T (Or.inr hL)).degree (Or.inr hL)
-             (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) =
-           (((V.scalarExtension (L := F) hcount hN).restrictOfMeasurableBase
-             Q (Or.inr hF)).quotientOfMeasurableBase (P.comap Q.subtype) (Or.inr hF)).degree
-               (Or.inr hF)
-               (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN)) := by
-  let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-  let hL := hcount.algebraicExtension_of_isAlgClosed (L := L)
+        V.CommonSubspaceQuotientDegreeEq (L := L) hcount hN F P Q B T := by
   let A := T.map B.subtype
   have hAB : A ≤ B := B.map_subtype_le T
   have hT : A.comap B.subtype = T := by
@@ -127,18 +233,7 @@ theorem exists_complexFiniteStage_nativeSubquotient_degree_of_common_density [S.
   refine ⟨F, hi, P, Q, hPQ, hP, hQ, ?_, ?_⟩
   · exact Eq.mp (congrArg (fun C : Submodule L B =>
       Module.finrank L (B ⧸ C) = Module.finrank F (Q ⧸ P.comap Q.subtype)) hT) hr
-  · let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
-    let d (P' Q' : Submodule L (L ⊗[K] E)) : ℝ :=
-      (((V.scalarExtension (L := L) hcount hN).restrictOfMeasurableBase
-        Q' (Or.inr hL)).quotientOfMeasurableBase (P'.comap Q'.subtype) (Or.inr hL)).degree
-          (Or.inr hL) (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN)
-    have hd := V.degree_nativeSubquotient_scalarExtension_finiteStage hcount hN F hi P Q hPQ
-    dsimp only at hd
-    have he := congrArg₂ d hP hQ
-    have ht := congrArg (fun C : Submodule L B =>
-      (((V.scalarExtension (L := L) hcount hN).restrictOfMeasurableBase
-        B (Or.inr hL)).quotientOfMeasurableBase C (Or.inr hL)).degree (Or.inr hL)
-          (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN)) hT
-    exact ht.symm.trans (he.symm.trans hd)
+  · exact commonSubspaceQuotientDegreeEq_of_images V hcount hN F P Q B T hP hQ
+      (V.degree_nativeSubquotient_scalarExtension_finiteStage hcount hN F hi P Q hPQ)
 
 end ArakelovGeometry.AdelicVectorBundle

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.MeasurableComplexEmbedding
-import ArakelovGeometry.AdelicVectorBundle.CountableDensity
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.CountableDensity
+public import ArakelovGeometry.Analysis.MeasurableComplexEmbedding
 
 /-!
 # Compatible measurable Archimedean embeddings
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.CountableDensity
 The usual completed-field normalization is explicit. A single countable
 subfield dense at infinite places suffices; no density at finite places is used.
 -/
+
+@[expose] public section
 
 noncomputable section
 

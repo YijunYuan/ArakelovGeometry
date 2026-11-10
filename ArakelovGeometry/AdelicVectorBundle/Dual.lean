@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DualBaseChange
-import ArakelovGeometry.AdelicVectorBundle.Quotient
-import ArakelovGeometry.Analysis.LinearMapBound
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DualBaseChange
+public import ArakelovGeometry.AdelicVectorBundle.Quotient
+public import ArakelovGeometry.Analysis.LinearMapBound
 
 /-!
 # Dual norm families
@@ -14,6 +16,8 @@ The dual norm is the operator norm on the actual completed scalar extension
 of the algebraic dual, transported through its canonical base-change equivalence.
 This construction includes trivially valued places and the zero-dimensional case.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

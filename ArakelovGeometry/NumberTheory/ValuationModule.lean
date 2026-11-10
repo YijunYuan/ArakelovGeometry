@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.RingTheory.DedekindDomain.AdicValuation
-import Mathlib.RingTheory.DedekindDomain.Factorization
-import Mathlib.RingTheory.Noetherian.Basic
+module
+
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation
+public import Mathlib.RingTheory.DedekindDomain.Factorization
+public import Mathlib.RingTheory.Noetherian.Basic
 
 /-!
 # Modules defined by integer prime-valuation constraints
@@ -18,6 +20,8 @@ many negative constraints force the actual module to be zero.
 Reference: Chen–Moriwaki, Lemma 4.4.7, PDF pages 308–309. These arithmetic
 results use prime orders independently of finite-place normalization.
 -/
+
+@[expose] public section
 
 noncomputable section
 

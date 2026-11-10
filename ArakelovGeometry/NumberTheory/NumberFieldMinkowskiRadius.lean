@@ -3,9 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldActualIntegerCovolume
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldActualIntegerCovolume
 
 /-! # The actual scalar normalization and radius in the arithmetic Minkowski estimate -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField

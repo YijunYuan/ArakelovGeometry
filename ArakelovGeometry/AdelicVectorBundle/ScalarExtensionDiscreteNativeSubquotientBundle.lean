@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionNativeSubquotientFiniteStage
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteSubspaceQuotient
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerTransport
-import ArakelovGeometry.AdelicVectorBundle.DegreeIsometryDual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeIsometryDual
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteSubspaceQuotient
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionNativeSubquotientFiniteStage
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerTransport
 
 /-!
 # Actual dual isometries and strong native mixed subquotients
@@ -16,6 +18,8 @@ dual measurability and domination. Its actual finite-stage isometry preserves
 every completed dual norm, and ordinary scalar strong domination makes every
 such actual native mixed bundle strongly adelic.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section
@@ -28,7 +32,8 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 namespace NormFamily
 
 private theorem nativeSubquotient_dual_norm_eq
-    (F : AdelicStructure.FiniteIntermediateField K L)
+    (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L]
     {X Y : Type*} [AddCommGroup X] [Module L X] [FiniteDimensional L X]
     [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
     (η : NormFamily ((S.algebraicExtension F).algebraicExtension L) X)
@@ -39,23 +44,24 @@ private theorem nativeSubquotient_dual_norm_eq
     (z : x.abv.Completion ⊗[L] Module.Dual L Y) :
     η.dual.norm x (e.dualMap.toLinearMap.baseChange x.abv.Completion z) =
       θ.dual.norm (scalarExtensionTowerPlace x) z := by
-  have h := η.dualEquiv_norm_eq_of_completed_isometry
-    (θ.towerPullback F.toIntermediateField) x e he z
-  rw [towerPullback_dual] at h
-  exact h
+  let θ' : NormFamily ((S.algebraicExtension F).algebraicExtension L) Y :=
+    { norm x := θ.norm (scalarExtensionTowerPlace x)
+      norm_eq_zero_iff x := θ.norm_eq_zero_iff (scalarExtensionTowerPlace x) }
+  exact η.dualEquiv_norm_eq_of_completed_isometry θ' x e he z
 
 /-- The actual finite-stage subquotient equivalence preserves every completed
 dual norm through its genuine transpose, with no original ultrametricity or
 regularity hypothesis on the norm family. -/
 theorem scalarExtension_subquotient_finiteStage_dual_norm_eq (ξ : NormFamily S E)
     (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (F : AdelicStructure.FiniteIntermediateField K L) (hi : ∃ a : F, a ^ 2 = -1)
+    (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] (hi : ∃ a : F, a ^ 2 = -1)
     (P Q : Submodule F (F ⊗[K] E)) (hPQ : P ≤ Q)
     (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L) :
     let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E
     let A := (P.baseChange L).map c.toLinearMap
     let B := (Q.baseChange L).map c.toLinearMap
-    let e := finiteStageSubquotientEquiv F P Q hPQ
+    let e := finiteStageSubquotientEquiv (L := L) F P Q hPQ
     ∀ z : x.abv.Completion ⊗[L] Module.Dual L (B ⧸ A.comap B.subtype),
       ((((ξ.scalarExtension (L := F)).restrict Q).quotient
         (P.comap Q.subtype)).scalarExtension (L := L)).dual.norm x

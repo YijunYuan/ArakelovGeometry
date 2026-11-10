@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantSequenceOperator
-import ArakelovGeometry.AdelicVectorBundle.DeterminantDualNorm
-import ArakelovGeometry.AdelicVectorBundle.DeterminantFunctor
-import ArakelovGeometry.AdelicVectorBundle.DualRestriction
-import ArakelovGeometry.AdelicVectorBundle.MajorantDiscrepancyBound
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantDualNorm
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantFunctor
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantSequenceOperator
+public import ArakelovGeometry.AdelicVectorBundle.DualRestriction
+public import ArakelovGeometry.AdelicVectorBundle.MajorantDiscrepancyBound
 
 /-!
 # Duality of exact-sequence determinant maps
@@ -17,6 +19,8 @@ the two end spaces contributes a permutation sign of norm one.
 Canonical annihilator isometries transport determinant contraction to the
 actual dual end spaces.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

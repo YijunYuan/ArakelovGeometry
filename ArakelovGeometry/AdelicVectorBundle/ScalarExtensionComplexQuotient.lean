@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionArchimedean
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionQuotient
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDualFiniteStage
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionArchimedean
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDualFiniteStage
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionQuotient
 
 /-!
 # Actual ordinary quotient norms over a complexified base
@@ -14,6 +16,8 @@ Bijective actual Archimedean completed scalar maps extend rational dual norm
 identities to the entire dual fibre. Genuine dual restrictions and biduality
 then identify the ordinary extension of every actual quotient at all places.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

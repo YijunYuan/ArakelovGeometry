@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Analysis.Normed.Module.FiniteDimension
+module
+
+public import Mathlib.Analysis.Normed.Module.FiniteDimension
 
 /-!
 # Finite-dimensional normed spaces over complete normed fields
@@ -11,6 +13,8 @@ import Mathlib.Analysis.Normed.Module.FiniteDimension
 The closedness result needed for quotient norm families includes trivially
 normed fields. No ultrametric condition on the vector-space norm is imposed.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

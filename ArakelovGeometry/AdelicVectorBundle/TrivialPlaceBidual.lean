@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.BidualQuotient
-import ArakelovGeometry.AdelicVectorBundle.TrivialFiltrationHN
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BidualQuotient
+public import ArakelovGeometry.AdelicVectorBundle.TrivialFiltrationHN
 
 /-!
 # Actual minimal slopes and bidual norms at a trivial place
@@ -13,6 +15,8 @@ The original norm need not be ultrametric. Actual quotient compatibility
 preserves its true minimum, while the actual bidual is ultrametric.
 Completed functional bounds use the genuine trivial completion on every vector.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

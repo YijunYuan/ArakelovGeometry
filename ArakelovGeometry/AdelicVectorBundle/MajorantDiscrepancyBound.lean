@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.MajorantDiscrepancy
-import ArakelovGeometry.AdelicVectorBundle.StrongDomination
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.MajorantDiscrepancy
+public import ArakelovGeometry.AdelicVectorBundle.StrongDomination
 
 /-!
 # Local majorant discrepancy bounds and domination
@@ -13,6 +15,8 @@ The actual majorant infimum is bounded using actual John cores at infinity
 and scaled completed bidual norms at finite places. Strong domination then
 provides integrable envelopes for its logarithm, as in Proposition4.3.11.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -86,7 +90,7 @@ theorem determinantDiscrepancy_le_majorantDiscrepancy (ξ : NormFamily S E)
   by_cases hr : Module.finrank K E = 0
   · rw [ξ.determinantDiscrepancy_eq_one_of_finrank_eq_zero hr,
       ξ.majorantDiscrepancy_eq_one_of_finrank_eq_zero hN hr]
-  · rw [majorantDiscrepancy, if_neg hr]
+  · rw [majorantDiscrepancy, ite_eq_right hr]
     apply le_csInf (ξ.majorantRatios_nonempty hN ω)
     rintro a ⟨η, he, hl, rfl⟩
     exact ξ.determinantDiscrepancy_le_ratio_of_elementaryMajorant η hN ω he hl

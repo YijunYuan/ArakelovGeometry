@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
-import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
-import Mathlib.FieldTheory.SeparableClosure
+module
+
+public import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
+public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
+public import Mathlib.FieldTheory.SeparableClosure
 
 /-!
 # Finiteness of extending absolute values
@@ -14,6 +16,8 @@ Every absolute value on a finite field extension is realized by an embedding int
 algebraic closure of the completed base. The finite set of algebra embeddings therefore
 parametrizes all extending absolute values, as required in Chen–Moriwaki, §3.3.
 -/
+
+@[expose] public section
 
 namespace AbsoluteValue
 

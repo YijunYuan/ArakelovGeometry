@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Separable.Measurability
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Separable.Measurability
 
 /-!
 # The induced measure for a finite separable extension
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicCurve.Extension.Separable.Measurability
 The induced measure, nonnegative and signed disintegration, and projection
 pushforward (Chen–Moriwaki, Definition 3.3.6 and Theorem 3.3.7(1–3)).
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.ParameterSpaceExtension
 

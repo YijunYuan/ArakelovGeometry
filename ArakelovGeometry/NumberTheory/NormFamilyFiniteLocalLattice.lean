@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldLocalCoefficientRingLocalization
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldCurve
+module
+
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldCurve
+public import ArakelovGeometry.NumberTheory.NumberFieldLocalCoefficientRingLocalization
 
 /-!
 # Actual local unit-ball finite generation
@@ -15,6 +17,8 @@ actual coefficient ring. The proved prime localization makes that ring
 Noetherian. No global domination, coherence or coordinate-bound certificate
 is assumed.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct NumberField
 

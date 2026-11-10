@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
+module
+
+public import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
 
 /-!
 # Actual Dirichlet-unit balancing
@@ -12,6 +14,8 @@ The actual logarithmic unit lattice supplies a uniform covering bound in
 the weighted logarithmic coordinates. No balancing assertion or bounded
 fundamental domain is supplied as an extra hypothesis.
 -/
+
+@[expose] public section
 
 open NumberField NumberField.InfinitePlace NumberField.Units
 open NumberField.Units.dirichletUnitTheorem

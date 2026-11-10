@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Destabilizing
-import ArakelovGeometry.AdelicVectorBundle.SlopesDualUpper
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Destabilizing
+public import ArakelovGeometry.AdelicVectorBundle.SlopesDualUpper
 
 /-!
 # Hermitian semistability, quotients, and duality
@@ -14,6 +16,8 @@ subspace and quotient semistability criteria. The actual quotient-mean
 infimum then gives the minimal-slope criterion. All source equivalences
 retain positive rank; the degree-deficit identity includes zero ranks.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicVectorBundle
 

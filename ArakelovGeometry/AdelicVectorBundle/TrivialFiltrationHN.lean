@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TrivialFiltrationInverse
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNFlagUniqueness
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNFlagUniqueness
+public import ArakelovGeometry.AdelicVectorBundle.TrivialFiltrationInverse
 
 /-!
 # The actual HN filtration of a trivial-place ultrametric norm
@@ -13,6 +15,8 @@ The strict flag is produced from the literal balls. Its factors carry the
 canonical restriction followed by quotient norms. Completed tensor naturality
 controls every quotient lift before actual general HN uniqueness is used.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -35,8 +39,7 @@ theorem trivialCompletedTensorEquiv_baseChange (π : E →ₗ[K] G)
     trivialCompletedTensorEquiv K G
       (π.baseChange (AbsoluteValue.trivial : AbsoluteValue K ℝ).Completion z) =
       π (trivialCompletedTensorEquiv K E z) := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | tmul a x => simp only [LinearMap.baseChange_tmul, trivialCompletedTensorEquiv_tmul,
       map_smul]
   | add x y hx hy => simp only [map_add, hx, hy]

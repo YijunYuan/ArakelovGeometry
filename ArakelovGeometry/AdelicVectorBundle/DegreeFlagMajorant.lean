@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeFlag
-import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceMajorant
-import ArakelovGeometry.AdelicVectorBundle.MajorantDiscrepancyIsometry
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequenceMajorant
+public import ArakelovGeometry.AdelicVectorBundle.DegreeFlag
+public import ArakelovGeometry.AdelicVectorBundle.MajorantDiscrepancyIsometry
 
 /-!
 # The capital-discrepancy degree bound for actual finite flags
@@ -15,6 +17,8 @@ Canonical nested restrictions preserve degree and the actual majorant
 infimum. Extended-real inequalities include infinite global discrepancies,
 empty segments, and repeated terms of the flag.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

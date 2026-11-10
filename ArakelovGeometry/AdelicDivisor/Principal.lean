@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicDivisor.Basic
-import Mathlib.LinearAlgebra.TensorProduct.Tower
-import Mathlib.RingTheory.TensorProduct.Basic
+module
+
+public import ArakelovGeometry.AdelicDivisor.Basic
+public import Mathlib.LinearAlgebra.TensorProduct.Tower
+public import Mathlib.RingTheory.TensorProduct.Basic
 
 /-!
 # Principal adelic divisors
@@ -14,6 +16,8 @@ The logarithmic map on field units is extended real-linearly using the
 canonical scalar-first tensor product. The source's reversed tensor order
 is connected explicitly by `TensorProduct.comm`.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped TensorProduct
@@ -113,8 +117,7 @@ theorem degree_principal_eq_zero (a : Kˣ) : degree S (principal S a) = 0 := by
 @[simp]
 theorem degree_principalTensorMap (z : ℝ ⊗[ℤ] Additive Kˣ) :
     degree S (principalTensorMap S z) = 0 := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | tmul t a => simp
   | add x y hx hy => simp only [map_add, hx, hy, add_zero]
 

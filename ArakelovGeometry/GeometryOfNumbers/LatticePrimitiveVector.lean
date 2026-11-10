@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.GeometryOfNumbers.LatticeSubspaceBasis
-import Mathlib.Analysis.Convex.Basic
+module
+
+public import ArakelovGeometry.GeometryOfNumbers.LatticeSubspaceBasis
+public import Mathlib.Analysis.Convex.Basic
 
 /-! # Primitive vectors in actual symmetric convex lattice bodies -/
+
+@[expose] public section
 
 noncomputable section
 

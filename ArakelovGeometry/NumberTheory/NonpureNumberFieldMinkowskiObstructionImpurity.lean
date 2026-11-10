@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstructionMinimaSlopes
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldImpurityDistance
+module
+
+public import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstructionMinimaSlopes
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldImpurityDistance
 
 /-! # Intrinsic completed impurity of the nonpure rational plane -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open MeasureTheory
@@ -227,15 +231,16 @@ theorem family_finiteImpurityProfile (p : Nat.Primes) (a : ℤ) :
   funext ω
   by_cases he : ω = primePoint p
   · subst ω
-    rw [finiteImpurityProfile, if_pos (primePoint_mem_fin p),
+    rw [finiteImpurityProfile, ite_eq_left (primePoint_mem_fin p),
       family_completedUnitBallImpurity_prime]
     exact (Set.indicator_of_mem (Set.mem_singleton (primePoint p))
       (fun _ : S.Ω => Real.log (p.val : ℝ) / 2)).symm
   · have hne : ω ∉ ({primePoint p} : Set S.Ω) := by simpa only [Set.mem_singleton_iff] using he
     rw [Set.indicator_of_notMem hne]
     by_cases hω : ω ∈ S.Ωfin
-    · rw [finiteImpurityProfile, if_pos hω, family_completedUnitBallImpurity_off_prime p a ω hω he]
-    · rw [finiteImpurityProfile, if_neg hω]
+    · rw [finiteImpurityProfile, ite_eq_left hω,
+        family_completedUnitBallImpurity_off_prime p a ω hω he]
+    · rw [finiteImpurityProfile, ite_eq_right hω]
 
 theorem family_globalImpurity (p : Nat.Primes) (a : ℤ) :
     (family p a).globalImpurity = ENNReal.ofReal (Real.log (p.val : ℝ) / 2) := by

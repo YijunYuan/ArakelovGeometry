@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteQuotient
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscreteQuotient
 
 /-!
 # Canonical scalar-extension quotient equivalences
@@ -14,6 +16,8 @@ quotient. Its completed norm identity consumes the genuine finite-stage
 quotient norm theorem, without additional norm or measurability hypotheses.
 -/
 
+@[expose] public section
+
 open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry
@@ -23,7 +27,8 @@ section TensorQuotient
 variable {K : Type*} [Field K] {L : Type*} [Field L] [Algebra K L]
   {E : Type*} [AddCommGroup E] [Module K E]
 
-private theorem tensorQuotient_range_eq (B : Submodule K E) :
+/-- Tensoring the subtype map has the base-changed submodule as its range. -/
+theorem tensorQuotient_range_eq (B : Submodule K E) :
     (TensorProduct.AlgebraTensorModule.lTensor (R := K) L L
       (B.subtype.restrictScalars K)).range = B.baseChange L := by
   congr 1
@@ -32,8 +37,7 @@ private theorem tensorQuotient_range_eq (B : Submodule K E) :
 actual base-changed subspace. -/
 def tensorQuotientBaseChangeEquiv (B : Submodule K E) :
     (L ⊗[K] (E ⧸ B)) ≃ₗ[L] ((L ⊗[K] E) ⧸ B.baseChange L) :=
-  (TensorProduct.AlgebraTensorModule.tensorQuotientEquiv (R := K) L K L B).trans
-    (Submodule.quotEquivOfEq _ _ (tensorQuotient_range_eq B))
+  NormFamily.discreteTensorQuotientEquiv (l := L) B
 
 /-- The canonical equivalence commutes with the actual quotient maps on every
 rational tensor. -/
@@ -49,9 +53,10 @@ end TensorQuotient
 variable {K : Type u} [Field K] {L : Type w} [Field L] [Algebra K L]
   {E : Type wE} [AddCommGroup E] [Module K E]
 
-/-- The canonical equivalence from an extended finite-stage quotient to the
-native quotient by its literal image under tower cancellation. -/
-def finiteStageQuotientEquiv (F : AdelicStructure.FiniteIntermediateField K L)
+/-- The canonical equivalence from an extended quotient to the quotient by its
+image under tower cancellation. This applies to any tower of fields. -/
+def finiteStageQuotientEquiv (F : Type*) [Field F] [Algebra K F] [Algebra F L]
+    [IsScalarTower K F L]
     (B : Submodule F (F ⊗[K] E)) :
     (L ⊗[F] ((F ⊗[K] E) ⧸ B)) ≃ₗ[L]
       ((L ⊗[K] E) ⧸ ((B.baseChange L).map
@@ -60,10 +65,11 @@ def finiteStageQuotientEquiv (F : AdelicStructure.FiniteIntermediateField K L)
     (Submodule.Quotient.equiv _ _
       (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E) rfl)
 
-/-- The finite-stage quotient equivalence intertwines the quotient maps with
-actual tower cancellation, on all rational tensors. -/
+/-- The quotient equivalence intertwines the quotient maps with tower cancellation
+on every rational tensor. -/
 theorem finiteStageQuotientEquiv_comp_mkQ
-    (F : AdelicStructure.FiniteIntermediateField K L) (B : Submodule F (F ⊗[K] E)) :
+    (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    (B : Submodule F (F ⊗[K] E)) :
     let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E
     let A := (B.baseChange L).map c.toLinearMap
     (finiteStageQuotientEquiv F B).toLinearMap.comp (B.mkQ.baseChange L) =
@@ -77,12 +83,12 @@ namespace NormFamily
 variable {S : AdelicStructure.{u, v} K} [Algebra.IsAlgebraic K L]
   [FiniteDimensional K E]
 
-/-- The produced canonical finite-stage quotient equivalence is an isometry
-on every completed vector. The square-root and normalization hypotheses are
-explicit; no measurability or original finite-place ultrametricity is assumed. -/
+/-- The canonical quotient equivalence is an isometry on every completed vector
+for an algebraic tower whose intermediate field contains a square root of `-1`. -/
 theorem scalarExtension_quotient_finiteStage_equiv_norm_eq (ξ : NormFamily S E)
     (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (F : AdelicStructure.FiniteIntermediateField K L) (hi : ∃ a : F, a ^ 2 = -1)
+    (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
+    [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] (hi : ∃ a : F, a ^ 2 = -1)
     (B : Submodule F (F ⊗[K] E))
     (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
     (z : x.abv.Completion ⊗[L] (L ⊗[F] ((F ⊗[K] E) ⧸ B))) :

@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldCodifferentTensorDual
-import ArakelovGeometry.NumberTheory.NumberFieldProjectiveGenericFibre
-import ArakelovGeometry.NumberTheory.NumberFieldTraceDualCovolume
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldCodifferentTensorDual
+public import ArakelovGeometry.NumberTheory.NumberFieldProjectiveGenericFibre
+public import ArakelovGeometry.NumberTheory.NumberFieldTraceDualCovolume
 
 /-! # The original projective codifferent tensor in its literal trace-dual image -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory

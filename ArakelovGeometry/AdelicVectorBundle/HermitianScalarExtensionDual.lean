@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtension
-import ArakelovGeometry.Analysis.HermitianScalarExtensionDual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtension
+public import ArakelovGeometry.Analysis.HermitianScalarExtensionDual
 
 /-!
 # Duality for Hermitian scalar extension of norm families
@@ -12,6 +14,8 @@ import ArakelovGeometry.Analysis.HermitianScalarExtensionDual
 The canonical completed pairing identifies Hermitian extension of the dual
 with the dual of the actual Hermitian extension, at every place.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

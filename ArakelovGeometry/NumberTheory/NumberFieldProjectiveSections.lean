@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldProjectiveGenericFibre
-import ArakelovGeometry.NumberTheory.NumberFieldArithmeticProductBall
-import Mathlib.Topology.DiscreteSubset
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldArithmeticProductBall
+public import ArakelovGeometry.NumberTheory.NumberFieldProjectiveGenericFibre
+public import Mathlib.Topology.DiscreteSubset
 
 /-! # Effective sections of the original finite projective arithmetic module -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField
@@ -125,7 +129,7 @@ def effectiveSectionsEquiv
         η).toNormFamily.effectiveSections :=
   (Equiv.Set.imageOfInjOn (genericInclusion (K := K) M) (effectiveSections M η)
     (genericInclusion_injective (K := K) M).injOn).trans
-      (Equiv.setCongr (genericInclusion_image_effectiveSections_eq M η))
+      (Set.equivOfEq (genericInclusion_image_effectiveSections_eq M η))
 
 omit [Module.Finite (𝓞 K) M] [Module.Projective (𝓞 K) M] in
 /-- Zero is an actual original effective section. -/
@@ -164,8 +168,8 @@ theorem finite_effectiveSections
         Set (CompletedVectorProduct K (K ⊗[𝓞 K] M))) :=
       DiscreteTopology.isDiscrete
     apply Metric.finite_isBounded_inter_isClosed hd hc.isBounded
-    exact AddSubgroup.isClosed_of_discrete
-      (H := (originalDiagonalMap (K := K) M).range.toAddSubgroup)
+    exact AddSubgroup.isClosed_of_discreteTopology
+      (U := (originalDiagonalMap (K := K) M).range.toAddSubgroup)
   apply hf.of_injOn (f := originalDiagonalMap (K := K) M) ?_
     (originalDiagonalMap_injective (K := K) M).injOn
   intro m hm

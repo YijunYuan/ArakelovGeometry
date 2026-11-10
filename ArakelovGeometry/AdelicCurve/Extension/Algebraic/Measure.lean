@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Probability
-import Mathlib.MeasureTheory.Measure.GiryMonad
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Probability
+public import Mathlib.MeasureTheory.Measure.GiryMonad
 
 /-!
 # Fibre integration and the algebraic extension measure
@@ -12,6 +14,8 @@ import Mathlib.MeasureTheory.Measure.GiryMonad
 Measurability of the fibre integration operators and construction of the
 projective-limit measure in Chen–Moriwaki, Proposition 3.4.8.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.Algebraic
 
@@ -138,8 +142,7 @@ theorem measurable_map_fibreProbabilityMeasure :
       Subtype.val (fibreProbabilityMeasure AS L ω)
   let (ω : AS.Ω) : @IsProbabilityMeasure (BaseFiber L ω) (fibreMeasurableSpace L ω)
       (fibreProbabilityMeasure AS L ω) := fibreProbabilityMeasure_isProbability AS L ω
-  let (ω : AS.Ω) : IsProbabilityMeasure (μ ω) :=
-    Measure.isProbabilityMeasure_map (measurable_subtype_val_baseFiber AS L ω).aemeasurable
+  let (ω : AS.Ω) : IsProbabilityMeasure (μ ω) := inferInstance
   let m (F : FiniteIntermediateField K L) :=
     MeasurableSpace.comap (projFinite AS F) inferInstance
   have hmono {F G : FiniteIntermediateField K L} (hFG : F.1 ≤ G.1) : m F ≤ m G := by
@@ -204,7 +207,7 @@ theorem measurable_fibreLIntegral {f : ParameterSpaceExtension AS L → ℝ≥0�
     Measurable (fibreLIntegral AS L f) := by
   have hm := (Measure.measurable_lintegral hf).comp
     (measurable_map_fibreProbabilityMeasure AS L)
-  convert hm using 1 <;> try rfl
+  convert hm using 1
   funext ω
   let : MeasurableSpace (BaseFiber L ω) := fibreMeasurableSpace L ω
   let : MeasurableSpace (ParameterSpaceExtension AS L) := projectiveMeasurableSpace AS L

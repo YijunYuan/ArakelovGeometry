@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaFinite
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaFinite
 
 /-!
 # Actual bases of minima cuts and their finite jump set
@@ -12,6 +14,8 @@ Every completed cut admits a true high-degree rational basis at each strictly
 relaxed threshold. The actual valid real minima form a finite set controlling
 all jumps, with original properness, normalization and regularity hypotheses.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle

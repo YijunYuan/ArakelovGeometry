@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianHNMeasure
-import Mathlib.MeasureTheory.Integral.IntegralEqImproper
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHNMeasure
+public import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 
 /-!
 # The distributional derivative of the actual Hermitian HN rank function
@@ -13,6 +15,8 @@ Compactly supported continuously differentiable test functions identify the
 actual signed jump measure as the weak derivative of the actual rank function.
 Integrability is proved before invoking the fundamental theorem of calculus.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 open MeasureTheory

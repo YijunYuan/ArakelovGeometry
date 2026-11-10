@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Defs
+module
+
+public import ArakelovGeometry.AdelicCurve.Defs
 
 /-!
 # Equivalences of adelic structures
@@ -14,6 +16,8 @@ as used in the scalar-extension tower identities of Chen–Moriwaki, §3.4.
 The `AdelicStructure` scope provides `S ≃ T` for equivalences of adelic structures
 on the same field. Ordinary equivalences of types retain their usual meaning.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

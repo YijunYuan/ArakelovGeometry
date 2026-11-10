@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDomination
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDomination
 
 /-!
 # Finite-place scalar extension of mixed basis norms
@@ -11,6 +13,8 @@ import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDomination
 The ordinary injective extension of the mixed coordinate family equals the
 coordinate maximum on every extended completed vector, including rank zero.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.PositiveDegree
-import ArakelovGeometry.AdelicVectorBundle.ExactSequence
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ExactSequence
+public import ArakelovGeometry.AdelicVectorBundle.PositiveDegree
 
 /-!
 # Positive degree under actual completed isometries
@@ -13,6 +15,8 @@ Each rational subspace transports by the existing linear equivalence.
 Its actual completed restriction norm, hence its actual degree, is preserved.
 The positive-degree supremum is over every subspace; attainment is not used.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicVectorBundle
 

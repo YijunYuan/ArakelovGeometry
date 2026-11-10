@@ -3,14 +3,18 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.FiniteDimensional
-import Mathlib.Analysis.Normed.Group.Hom
+module
+
+public import ArakelovGeometry.Analysis.FiniteDimensional
+public import Mathlib.Analysis.Normed.Group.Hom
 
 /-!
 # Bounds for linear maps over complete normed fields
 
 The operator bounds used for dual norms include trivially normed fields.
 -/
+
+@[expose] public section
 
 namespace NormedAddGroupHom
 

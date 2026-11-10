@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.MinkowskiCountingNorm
-import ArakelovGeometry.AdelicVectorBundle.DominationDistanceCountingCounterexample
-import ArakelovGeometry.AdelicVectorBundle.Basic
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Basic
+public import ArakelovGeometry.AdelicVectorBundle.DominationDistanceCountingCounterexample
+public import ArakelovGeometry.AdelicVectorBundle.MinkowskiCountingNorm
 
 /-!
 # Actual finite cheap-place bundles on the rational counting curve
@@ -13,6 +15,8 @@ import ArakelovGeometry.AdelicVectorBundle.Basic
 Finite-distance domination and discrete measurability produce the analytic
 fields of each actual truncated bundle. The cost is arbitrary in `(0, 1]`.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -55,9 +59,9 @@ theorem truncatedFamily_isUltrametric (s : Finset ℚ) (c : ℝ)
   rw [truncatedFamily_norm s c hc hc1 a (x + y),
     truncatedFamily_norm s c hc hc1 a x, truncatedFamily_norm s c hc hc1 a y]
   by_cases hs : a ∈ s
-  · simp only [if_pos hs]
+  · simp only [ite_eq_left hs]
     exact normFamily_isUltrametric c hc hc1 a ha x y
-  · simp only [if_neg hs]
+  · simp only [ite_eq_right hs]
     by_cases hx : x = 0
     · rw [hx, zero_add]
       have hz : CountingDistanceCounterexample.basisFamily.norm a 0 = 0 :=
@@ -68,7 +72,7 @@ theorem truncatedFamily_isUltrametric (s : Finset ℚ) (c : ℝ)
       rw [CountingDistanceCounterexample.basisFamily_norm_completed]
       split_ifs <;> norm_num
     have hn : CountingDistanceCounterexample.basisFamily.norm a x = 1 := by
-      rw [CountingDistanceCounterexample.basisFamily_norm_completed, if_neg hx]
+      rw [CountingDistanceCounterexample.basisFamily_norm_completed, ite_eq_right hx]
     rw [hn]
     exact hsum.trans (le_max_left _ _)
 
@@ -96,7 +100,7 @@ theorem basisFamily_localDist_truncatedFamily_le (s : Finset ℚ) (c : ℝ)
   intro z
   rw [CountingDistanceCounterexample.basisFamily_norm_completed, truncatedFamily_norm]
   by_cases ha : a ∈ s
-  · simp only [if_pos ha, distanceEnvelope]
+  · simp only [ite_eq_left ha, distanceEnvelope]
     rw [normFamily_norm c hc hc1 a z]
     have he : trivialCompletedTensorEquiv ℚ Plane z = 0 ↔ z = 0 :=
       LinearEquiv.map_eq_zero_iff _
@@ -104,7 +108,7 @@ theorem basisFamily_localDist_truncatedFamily_le (s : Finset ℚ) (c : ℝ)
     split_ifs <;>
       simp only [Real.log_zero, Real.log_one, sub_self, zero_sub, abs_zero, abs_of_nonneg hd]
     all_goals first | exact hd | exact le_rfl
-  · simp only [if_neg ha, distanceEnvelope]
+  · simp only [ite_eq_right ha, distanceEnvelope]
     rw [CountingDistanceCounterexample.basisFamily_norm_completed a z]
     simp
 
@@ -116,19 +120,19 @@ theorem basisFamily_localDist_truncatedFamily_eq (s : Finset ℚ) (c : ℝ)
   classical
   apply le_antisymm (basisFamily_localDist_truncatedFamily_le s c hc hc1 a)
   by_cases ha : a ∈ s
-  · rw [distanceEnvelope, if_pos ha]
+  · rw [distanceEnvelope, ite_eq_left ha]
     have hz : ((1, a) : Plane) ≠ 0 := by simp
     have hb := CountingDistanceCounterexample.basisFamily.log_norm_sub_le_localDist
       (truncatedFamily s c hc hc1) a
       ((1 : (countingCurve.ϕ a).Completion) ⊗ₜ[ℚ] ((1, a) : Plane))
     rw [CountingDistanceCounterexample.basisFamily_norm_rational a ((1, a) : Plane),
-      if_neg hz, truncatedFamily_norm s c hc hc1 a _, if_pos ha,
+      ite_eq_right hz, truncatedFamily_norm s c hc hc1 a _, ite_eq_left ha,
       normFamily_norm_rational c hc hc1 a ((1, a) : Plane), rawNorm,
-      if_neg hz, if_pos (by simp : ((1, a) : Plane).2 = a * ((1, a) : Plane).1),
+      ite_eq_right hz, ite_eq_left (by simp : ((1, a) : Plane).2 = a * ((1, a) : Plane).1),
       Real.log_one, zero_sub,
       abs_of_nonneg (neg_nonneg.mpr (Real.log_nonpos hc.le hc1))] at hb
     exact hb
-  · rw [distanceEnvelope, if_neg ha]
+  · rw [distanceEnvelope, ite_eq_right ha]
     exact CountingDistanceCounterexample.basisFamily.localDist_nonneg _ a
 
 /-- Finite distance from the actual dominated flat family produces primal and dual domination. -/
@@ -173,9 +177,9 @@ theorem truncatedFamily_norm_rational (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (h
       if x = 0 then 0 else if a ∈ s ∧ x.2 = a * x.1 then c else 1 := by
   rw [truncatedFamily_norm s c hc hc1 a _]
   by_cases ha : a ∈ s
-  · rw [if_pos ha, normFamily_norm_rational c hc hc1 a x]
+  · rw [ite_eq_left ha, normFamily_norm_rational c hc hc1 a x]
     simp [rawNorm, ha]
-  · rw [if_neg ha, CountingDistanceCounterexample.basisFamily_norm_rational a x]
+  · rw [ite_eq_right ha, CountingDistanceCounterexample.basisFamily_norm_rational a x]
     simp [ha]
 
 /-- Each genuine nonzero rational log profile records one possible selected cheap line. -/
@@ -184,7 +188,7 @@ theorem truncatedFamily_logNorm (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (hc1 : c
     (truncatedFamily s c hc hc1).logNorm x a =
       if a ∈ s ∧ x.2 = a * x.1 then Real.log c else 0 := by
   change Real.log _ = _
-  rw [truncatedFamily_norm_rational s c hc hc1 a x, if_neg hx]
+  rw [truncatedFamily_norm_rational s c hc hc1 a x, ite_eq_right hx]
   split_ifs <;> simp
 
 end

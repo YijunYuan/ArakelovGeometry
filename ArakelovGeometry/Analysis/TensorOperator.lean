@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.TensorNorm
-import ArakelovGeometry.Analysis.ScalarExtensionDual
-import Mathlib.LinearAlgebra.Contraction
+module
+
+public import ArakelovGeometry.Analysis.ScalarExtensionDual
+public import ArakelovGeometry.Analysis.TensorNorm
+public import Mathlib.LinearAlgebra.Contraction
 
 /-!
 # Injective tensors and operator norms
@@ -14,6 +16,8 @@ The binary finite tensor product is identified with the ordinary tensor product.
 Its evaluation operator acts from the dual of the first factor to the bidual of
 the second. The injective norm is the actual operator norm of this map.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

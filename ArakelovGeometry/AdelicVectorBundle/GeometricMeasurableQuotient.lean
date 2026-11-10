@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.UltrametricSelectedMinor
-import ArakelovGeometry.AdelicVectorBundle.GeometricCoordinateQuotient
-import ArakelovGeometry.LinearAlgebra.MeasurableMaximalMinor
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeometricCoordinateQuotient
+public import ArakelovGeometry.Analysis.UltrametricSelectedMinor
+public import ArakelovGeometry.LinearAlgebra.MeasurableMaximalMinor
 
 /-!
 # Measurable actual coordinate quotients without field countability
@@ -13,6 +15,8 @@ import ArakelovGeometry.LinearAlgebra.MeasurableMaximalMinor
 A finite measurable ground-field minor selection is retained on each actual
 completed fibre. Its residual computes the canonical quotient norm.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct Matrix
 noncomputable section
@@ -168,7 +172,7 @@ theorem ofBasis_quotient_isMeasurable_of_all_finite (b : Module.Basis m K E)
   have hm : Measurable (fun ω ↦ ‖fun i ↦ (S.ϕ ω)
       ((b.equivFun x - (A * (A.submatrix (I ω) id)⁻¹) *ᵥ
         (b.equivFun x ∘ I ω)) i)‖) :=
-    (measurable_pi_lambda _ fun i ↦ hres (b.equivFun x) i).norm
+    (Measurable.of_eval fun i ↦ hres (b.equivFun x) i).norm
   convert hm using 1
   funext ω
   obtain ⟨_, hd, _, hid, hB⟩ := hnorm ω

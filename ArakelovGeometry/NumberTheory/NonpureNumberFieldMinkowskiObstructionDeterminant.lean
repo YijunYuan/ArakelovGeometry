@@ -3,12 +3,16 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstruction
-import ArakelovGeometry.AdelicVectorBundle.DeterminantHermitianBasis
-import ArakelovGeometry.Analysis.DeterminantExactSequence
-import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantHermitianBasis
+public import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
+public import ArakelovGeometry.Analysis.DeterminantExactSequence
+public import ArakelovGeometry.NumberTheory.NonpureNumberFieldMinkowskiObstruction
 
 /-! # Actual local determinants of the nonpure rational plane -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section
@@ -79,7 +83,7 @@ theorem determinant_norm_completedBasis_eq_prod
     refine (ξ.dual.determinant_norm_ιMulti_le ω f).trans ?_
     calc
       _ ≤ ∏ i, (ξ.norm ω (b (e i)))⁻¹ :=
-        Finset.prod_le_prod (fun i _ => ξ.dual.norm_nonneg ω (f i)) (fun i _ => hb (e i))
+        Finset.prod_le_prod₀ (fun i _ => ξ.dual.norm_nonneg ω (f i)) (fun i _ => hb (e i))
       _ = _ := by
         rw [Fintype.prod_equiv e
           (fun i => (ξ.norm ω (b (e i)))⁻¹)

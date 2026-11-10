@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeneralHN
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHN
 
 /-!
 # Functoriality of the actual general Harder--Narasimhan filtration
@@ -14,6 +16,8 @@ surjective slope inequality and actual greatest-subspace characterization
 give functoriality. Infinite height uses the negative-infinite endpoint;
 the zero map is treated without shifting by its height.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

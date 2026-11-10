@@ -3,14 +3,16 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicStructure.RationalNormalization
-import ArakelovGeometry.AdelicVectorBundle.BasisBundle
-import ArakelovGeometry.AdelicVectorBundle.HeightDegree
-import ArakelovGeometry.AdelicVectorBundle.DeterminantUniversal
-import ArakelovGeometry.AdelicVectorBundle.Degree
-import ArakelovGeometry.AdelicVectorBundle.DualMap
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNOrdered
-import ArakelovGeometry.Analysis.DeterminantExactSequence
+module
+
+public import ArakelovGeometry.AdelicStructure.RationalNormalization
+public import ArakelovGeometry.AdelicVectorBundle.BasisBundle
+public import ArakelovGeometry.AdelicVectorBundle.Degree
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantUniversal
+public import ArakelovGeometry.AdelicVectorBundle.DualMap
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNOrdered
+public import ArakelovGeometry.AdelicVectorBundle.HeightDegree
+public import ArakelovGeometry.Analysis.DeterminantExactSequence
 
 /-!
 # The square norm over the source-normalized rational curve
@@ -19,6 +21,8 @@ The bundle uses the existing completed coordinate-maximum norm on `ℚ²`.
 Both measurability clauses, domination and strong adelicity are produced
 on the actual prime-counting and single-real curve.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -35,7 +39,8 @@ abbrev RationalPlane := Fin 2 → ℚ
 /-- Its actual standard coordinate basis. -/
 def squareBasis : Module.Basis (Fin 2) ℚ RationalPlane := Pi.basisFun ℚ (Fin 2)
 
-private theorem squareFiniteInfiniteMeasure :
+/-- The archimedean locus of the rational adelic curve has finite measure. -/
+theorem squareFiniteInfiniteMeasure :
     rationalAdelicStructure.v rationalAdelicStructure.Ωinf < ⊤ := by
   rw [rationalAdelicStructure_v_Ωinf]
   exact ENNReal.one_lt_top
@@ -873,11 +878,11 @@ theorem squareNorm_generalHNFiltration (t : ℝ) :
       rationalAdelicStructure.HasCommonCountableDenseSubfield :=
     Or.inl rationalAdelicStructure_discrete
   by_cases ht : t ≤ 0
-  · rw [if_pos ht]
+  · rw [ite_eq_left ht]
     apply squareNorm.generalHNFiltration_eq_top_of_le_minimalSlope
     rw [squareNorm_minimalSlope]
     exact EReal.coe_le_coe ht
-  · rw [if_neg ht]
+  · rw [ite_eq_right ht]
     by_contra hz
     have hp : 0 < Module.finrank ℚ (squareNorm.generalHNFiltration
         hS rationalAdelicStructure_isRCLike t) :=
@@ -901,7 +906,7 @@ theorem squareNorm_generalHNOrderedSlope (j : Fin (Module.finrank ℚ RationalPl
       lt_of_not_ge h
     have hj := squareNorm.lt_finrank_generalHNFiltration_orderedSlope
       hS rationalAdelicStructure_isRCLike j
-    rw [squareNorm_generalHNFiltration, if_neg (not_le.mpr hp), finrank_bot] at hj
+    rw [squareNorm_generalHNFiltration, ite_eq_right (not_le.mpr hp), finrank_bot] at hj
     exact Nat.not_lt_zero _ hj
   · have h := squareNorm.minimalSlope_le_generalHNOrderedSlope
       hS rationalAdelicStructure_isRCLike j

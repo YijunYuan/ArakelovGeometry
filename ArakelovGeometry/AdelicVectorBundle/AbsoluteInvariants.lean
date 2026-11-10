@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSlopes
-import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSlopes
+public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 
 /-!
 # Absolute invariants of actual scalar-extended adelic bundles
@@ -14,6 +16,8 @@ maximal slope. Common countable density in its completed fields is produced,
 so the suprema range over all actual native subspaces and their usual degrees.
 Finiteness and the zero-rank conventions follow from the actual slope bounds.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle

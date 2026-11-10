@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianDegree
-import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionMeasurable
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianDomination
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionMeasurable
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianDegree
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionHermitianDomination
 
 /-!
 # Degree of the actual Hermitian extended determinant line
@@ -17,6 +19,8 @@ Under original common countable density, primal and dual measurability and
 domination construct the actual Hermitian extended vector bundle. For finite
 extensions the proved target common density gives equality of vector degrees.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldOpenModelLattice
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedLatticeModel
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationHermitian
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedLatticeModel
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationHermitian
+public import ArakelovGeometry.NumberTheory.NumberFieldOpenModelLattice
 
 /-!
 # Actual open model norms imply coherence and domination
@@ -15,6 +17,8 @@ model gauge on its literal completed tensor images then produces a common
 completed frame outside actual finite exceptional primes, hence the source
 coherence and domination conclusions.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct
@@ -76,9 +80,9 @@ theorem not_mem_openModelBadPrimes
     p ∉ openModelBadPrimes U f ↔ primePoint p ∈ U ∧ f ∉ p.asIdeal := by
   simp only [openModelBadPrimes, Set.mem_union, Set.mem_ofPred_eq, not_or, not_not]
 
-private abbrev N := normalizedNumberFieldAdelicStructure K
-private abbrev Fp (p : HeightOneSpectrum (𝓞 K)) :=
-  ((N (K := K)).ϕ (normalizedPrimeParameter p)).Completion
+local notation "N" => normalizedNumberFieldAdelicStructure K
+local notation "Fp" => fun (p : HeightOneSpectrum (𝓞 K)) ↦
+  AbsoluteValue.Completion (AdelicStructure.ϕ (N) (normalizedPrimeParameter p))
 
 /-- The literal intrinsic scalar-infimum gauge of the actual completed model tensor range. -/
 def completedModelGauge (U : TopologicalSpace.Opens (PrimeSpectrum (𝓞 K)))
@@ -129,7 +133,7 @@ theorem exists_basisGauge_eq_off_openModelBadPrimes
     (E M : Type*) [AddCommGroup E] [Module K E]
     [AddCommGroup M] [Module (regularFunctions U) M]
     [Module.Finite (regularFunctions U) M] [Module.Projective (regularFunctions U) M]
-    {ι : Type*} [Fintype ι] (b : Module.Basis ι K E) (ξ : NormFamily (N (K := K)) E) :
+    {ι : Type*} [Fintype ι] (b : Module.Basis ι K E) (ξ : NormFamily (N) E) :
     letI := coefficientFieldAlgebra U hU
     letI := coefficientModule U hU E
     letI := coefficientGenericScalarTower U hU E
@@ -139,7 +143,7 @@ theorem exists_basisGauge_eq_off_openModelBadPrimes
       ∃ f : 𝓞 K, f ≠ 0 ∧ (openModelBadPrimes U f).Finite ∧
         ∀ p ∉ openModelBadPrimes U f, ∀ z,
           ξ.norm (normalizedPrimeParameter p) z =
-            (NormFamily.ofBasis (N (K := K)) E b).norm (normalizedPrimeParameter p) z := by
+            (NormFamily.ofBasis (N) E b).norm (normalizedPrimeParameter p) z := by
   let := coefficientFieldAlgebra U hU
   let := coefficientModule U hU E
   let := coefficientGenericScalarTower U hU E
@@ -166,7 +170,7 @@ variable (U : TopologicalSpace.Opens (PrimeSpectrum (𝓞 K)))
 /-- The original actual open-model gauge implies genuine finite-exception coherence
 and domination, via a produced integral lattice and completed frame. -/
 theorem coherent_and_dominated_of_open_model [Module.Projective (regularFunctions U) M]
-    (ξ : NormFamily (N (K := K)) E) :
+    (ξ : NormFamily (N) E) :
     letI := coefficientFieldAlgebra U hU
     letI := coefficientModule U hU E
     letI := coefficientGenericScalarTower U hU E
@@ -187,7 +191,7 @@ theorem coherent_and_dominated_of_open_model [Module.Projective (regularFunction
 /-- Actual normalized Archimedean completions upgrade the original finite-ultrametric
 model conclusion to strong domination without an extra normalization hypothesis. -/
 theorem coherent_and_stronglyDominated_of_open_model [Module.Projective (regularFunctions U) M]
-    (ξ : NormFamily (N (K := K)) E) (hξ : ξ.IsUltrametric) :
+    (ξ : NormFamily (N) E) (hξ : ξ.IsUltrametric) :
     letI := coefficientFieldAlgebra U hU
     letI := coefficientModule U hU E
     letI := coefficientGenericScalarTower U hU E
@@ -208,7 +212,7 @@ coherence and domination conclusions; projectivity is produced from actual local
 theorem coherent_and_dominated_of_locallyFree_open_model
     (hfree : ∀ (I : Ideal (regularFunctions U)) (_hI : I.IsMaximal),
       Module.Free (Localization.AtPrime I) (LocalizedModule I.primeCompl M))
-    (ξ : NormFamily (N (K := K)) E) :
+    (ξ : NormFamily (N) E) :
     letI := coefficientFieldAlgebra U hU
     letI := coefficientModule U hU E
     letI := coefficientGenericScalarTower U hU E
@@ -227,7 +231,7 @@ coherence, domination, and strong domination of the original finite-ultrametric 
 theorem coherent_and_stronglyDominated_of_locallyFree_open_model
     (hfree : ∀ (I : Ideal (regularFunctions U)) (_hI : I.IsMaximal),
       Module.Free (Localization.AtPrime I) (LocalizedModule I.primeCompl M))
-    (ξ : NormFamily (N (K := K)) E) (hξ : ξ.IsUltrametric) :
+    (ξ : NormFamily (N) E) (hξ : ξ.IsUltrametric) :
     letI := coefficientFieldAlgebra U hU
     letI := coefficientModule U hU E
     letI := coefficientGenericScalarTower U hU E

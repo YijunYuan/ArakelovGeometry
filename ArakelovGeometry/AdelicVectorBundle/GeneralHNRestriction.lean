@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNOrdered
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNFunctoriality
-import ArakelovGeometry.AdelicVectorBundle.RestrictionFunctor
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNFunctoriality
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNOrdered
+public import ArakelovGeometry.AdelicVectorBundle.RestrictionFunctor
 
 /-!
 # Actual slopes and intrinsic filtrations of general filtration terms
@@ -14,6 +16,8 @@ An ordered jump is the actual minimum slope of its filtration term.
 Canonical completed restriction norms identify the intrinsic filtration
 of that term with the ambient filtration above its level.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

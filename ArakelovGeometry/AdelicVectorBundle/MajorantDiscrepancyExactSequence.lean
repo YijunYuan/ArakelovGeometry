@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ElementaryRestrictionQuotient
-import ArakelovGeometry.AdelicVectorBundle.DeterminantSequenceDual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantSequenceDual
+public import ArakelovGeometry.AdelicVectorBundle.ElementaryRestrictionQuotient
 
 /-!
 # Majorant discrepancy of an actual exact sequence
@@ -15,6 +17,8 @@ compatible determinant basis vectors and taking the actual majorant infimum
 proves the capital-discrepancy operator bound for arbitrary original norms.
 All statements include rank zero and zero-dimensional end spaces.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -96,7 +100,7 @@ theorem le_majorantDiscrepancy_of_forall_majorant (ξ : NormFamily S E)
   · rw [ξ.majorantDiscrepancy_eq_one_of_finrank_eq_zero hN hr]
     obtain ⟨η, he, hl⟩ := ξ.exists_elementaryMajorant hN ω
     simpa only [ξ.determinantRatio_eq_one_of_finrank_eq_zero η ω hr] using ha η he hl
-  · rw [majorantDiscrepancy, if_neg hr]
+  · rw [majorantDiscrepancy, ite_eq_right hr]
     apply le_csInf (ξ.majorantRatios_nonempty hN ω)
     rintro b ⟨η, he, hl, rfl⟩
     exact ha η he hl
@@ -166,7 +170,8 @@ theorem majorantDiscrepancy_restrict_mul_quotient_div_le_majorantRatio
     rw [h, TensorProduct.tmul_zero, D.norm_zero] at hn
     linarith [mul_pos hpW hpQ]
   have hf : determinantSequenceEquiv W (w ⊗ₜ[K] q) ≠ 0 :=
-    fun h => ht ((determinantSequenceEquiv W).injective (h.trans (map_zero _).symm))
+    fun h ↦ ht ((determinantSequenceEquiv W).injective
+      (h.trans (determinantSequenceEquiv W).map_zero.symm))
   have hpE : 0 < pE := ξ.determinant.norm_rational_pos ω hf
   have ha0 : 0 < a := ξ.determinantSequence_operatorNorm_pos_of_equiv W ω
   have hcE : (1 : (S.ϕ ω).Completion) ⊗ₜ[K]

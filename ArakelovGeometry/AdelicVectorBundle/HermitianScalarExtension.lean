@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.HermitianScalarExtension
-import ArakelovGeometry.AdelicVectorBundle.HermitianTensor
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianTensor
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDual
+public import ArakelovGeometry.Analysis.HermitianScalarExtension
 
 /-!
 # Hermitian scalar extension of norm families
@@ -14,6 +16,8 @@ The finite-place norm is the injective scalar extension. At infinite places,
 the actual completed fibre carries the exact sesquilinear extension of the
 original positive definite inner product.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -90,9 +94,9 @@ def hermitianScalarExtension : NormFamily (S.algebraicExtension L) (L ⊗[K] E) 
           hermitianScalarExtensionArchSeminorm ξ hS hL hξ x hx
           else ξ.injectiveScalarExtensionSeminorm x) z = 0 ↔ z = 0
         by_cases hx : x ∈ (S.algebraicExtension L).Ωinf
-        · rw [dif_pos hx]
+        · rw [dite_eq_left hx]
           exact hermitianScalarExtensionArchSeminorm_eq_zero_iff ξ hS hL hξ x hx z
-        · rw [dif_neg hx]
+        · rw [dite_eq_right hx]
           exact ξ.injectiveScalarExtensionSeminorm_eq_zero_iff x z }
 
 /-- The actual Hermitian scalar-extension norm is injective at finite places. -/
@@ -105,7 +109,7 @@ theorem hermitianScalarExtension_norm_of_finite (x : S.ParameterSpaceExtension L
   change (if hx : x ∈ (S.algebraicExtension L).Ωinf then
     hermitianScalarExtensionArchSeminorm ξ hS hL hξ x hx
     else ξ.injectiveScalarExtensionSeminorm x) z = ξ.injectiveScalarExtensionSeminorm x z
-  simp only [dif_neg (show x ∉ (S.algebraicExtension L).Ωinf
+  simp only [dite_eq_right (show x ∉ (S.algebraicExtension L).Ωinf
     from fun hi => hi hx)]
 
 /-- The actual Hermitian scalar-extension norm is the transported pairing
@@ -119,7 +123,7 @@ theorem hermitianScalarExtension_norm_of_infinite (x : S.ParameterSpaceExtension
   change (if hx : x ∈ (S.algebraicExtension L).Ωinf then
     hermitianScalarExtensionArchSeminorm ξ hS hL hξ x hx
     else ξ.injectiveScalarExtensionSeminorm x) z = _
-  simp only [dif_pos hx]
+  simp only [dite_eq_left hx]
 
 /-- The Hermitian extension is ultrametric at all finite extending places. -/
 theorem hermitianScalarExtension_isUltrametric :

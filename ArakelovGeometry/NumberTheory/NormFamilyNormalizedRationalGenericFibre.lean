@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedCoherenceCriteria
-import Mathlib.Algebra.Algebra.RestrictScalars
-import Mathlib.RingTheory.Localization.BaseChange
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedCoherenceCriteria
+public import Mathlib.Algebra.Algebra.RestrictScalars
+public import Mathlib.RingTheory.Localization.BaseChange
 
 /-!
 # The actual coherent rational generic fibre
@@ -15,6 +17,8 @@ Its genuine localization pushout cancels the base change from the integers
 to the rationals. Under finite-exception coherence the resulting canonical
 rational generic map is an equivalence in every rank.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct
@@ -55,7 +59,7 @@ theorem integerRingRationalTensorEquiv_tmul (q : ℚ) (a : 𝓞 K) :
   let := integerRing_rationalIsPushout (K := K)
   exact Algebra.IsPushout.equiv_tmul ℤ ℚ (𝓞 K) K q a
 
-private abbrev N := normalizedNumberFieldAdelicStructure K
+local notation "N" => normalizedNumberFieldAdelicStructure K
 
 attribute [local instance] RestrictScalars.moduleOrig
 
@@ -67,25 +71,25 @@ local instance : IsScalarTower ℤ ℚ (RestrictScalars ℚ K E) :=
     (RestrictScalars.module ℚ K E)
 
 /-- The literal global inclusion, with the canonical rational restricted target. -/
-def normalizedGlobalRationalInclusion (ξ : NormFamily (N (K := K)) E)
+def normalizedGlobalRationalInclusion (ξ : NormFamily (N) E)
     (hξ : ξ.IsUltrametric) :
     ξ.globalUnitBallModule hξ →ₗ[ℤ] RestrictScalars ℚ K E :=
   (ξ.globalUnitBallModule hξ).subtype.restrictScalars ℤ
 
 @[simp]
-theorem normalizedGlobalRationalInclusion_coe (ξ : NormFamily (N (K := K)) E)
+theorem normalizedGlobalRationalInclusion_coe (ξ : NormFamily (N) E)
     (hξ : ξ.IsUltrametric) (x : ξ.globalUnitBallModule hξ) :
     RestrictScalars.addEquiv ℚ K E (ξ.normalizedGlobalRationalInclusion hξ x) =
       (x : E) := rfl
 
 /-- The original canonical rational tensor map, without a coherence input. -/
-def normalizedGlobalRationalGenericFibreMap (ξ : NormFamily (N (K := K)) E)
+def normalizedGlobalRationalGenericFibreMap (ξ : NormFamily (N) E)
     (hξ : ξ.IsUltrametric) :
     ℚ ⊗[ℤ] (ξ.globalUnitBallModule hξ) →ₗ[ℚ] RestrictScalars ℚ K E :=
   (ξ.normalizedGlobalRationalInclusion hξ).liftBaseChange ℚ
 
 @[simp]
-theorem normalizedGlobalRationalGenericFibreMap_tmul (ξ : NormFamily (N (K := K)) E)
+theorem normalizedGlobalRationalGenericFibreMap_tmul (ξ : NormFamily (N) E)
     (hξ : ξ.IsUltrametric) (q : ℚ) (x : ξ.globalUnitBallModule hξ) :
     RestrictScalars.addEquiv ℚ K E
       (ξ.normalizedGlobalRationalGenericFibreMap hξ (q ⊗ₜ[ℤ] x)) =
@@ -95,7 +99,7 @@ theorem normalizedGlobalRationalGenericFibreMap_tmul (ξ : NormFamily (N (K := K
 
 /-- Genuine coherence identifies the actual rational scalar extension with `E`. -/
 def HasFiniteNormExceptions.normalizedGlobalRationalGenericFibreEquiv
-    {ξ : NormFamily (N (K := K)) E} (hfinite : ξ.HasFiniteNormExceptions)
+    {ξ : NormFamily (N) E} (hfinite : ξ.HasFiniteNormExceptions)
     (hξ : ξ.IsUltrametric) :
     ℚ ⊗[ℤ] (ξ.globalUnitBallModule hξ) ≃ₗ[ℚ] RestrictScalars ℚ K E := by
   letI := integerRing_rationalIsPushout (K := K)
@@ -106,7 +110,7 @@ def HasFiniteNormExceptions.normalizedGlobalRationalGenericFibreEquiv
 
 @[simp]
 theorem HasFiniteNormExceptions.normalizedGlobalRationalGenericFibreEquiv_tmul
-    {ξ : NormFamily (N (K := K)) E} (hfinite : ξ.HasFiniteNormExceptions)
+    {ξ : NormFamily (N) E} (hfinite : ξ.HasFiniteNormExceptions)
     (hξ : ξ.IsUltrametric) (q : ℚ) (x : ξ.globalUnitBallModule hξ) :
     RestrictScalars.addEquiv ℚ K E
       (hfinite.normalizedGlobalRationalGenericFibreEquiv hξ (q ⊗ₜ[ℤ] x)) =
@@ -120,7 +124,7 @@ theorem HasFiniteNormExceptions.normalizedGlobalRationalGenericFibreEquiv_tmul
 
 /-- The genuine coherent equivalence is the original canonical rational map. -/
 theorem HasFiniteNormExceptions.normalizedGlobalRationalGenericFibreEquiv_coe
-    {ξ : NormFamily (N (K := K)) E} (hfinite : ξ.HasFiniteNormExceptions)
+    {ξ : NormFamily (N) E} (hfinite : ξ.HasFiniteNormExceptions)
     (hξ : ξ.IsUltrametric) :
     (hfinite.normalizedGlobalRationalGenericFibreEquiv hξ).toLinearMap =
       ξ.normalizedGlobalRationalGenericFibreMap hξ := by
@@ -132,14 +136,14 @@ theorem HasFiniteNormExceptions.normalizedGlobalRationalGenericFibreEquiv_coe
 
 /-- Under genuine coherence the original rational generic map is bijective. -/
 theorem HasFiniteNormExceptions.normalizedGlobalRationalGenericFibreMap_bijective
-    {ξ : NormFamily (N (K := K)) E} (hfinite : ξ.HasFiniteNormExceptions)
+    {ξ : NormFamily (N) E} (hfinite : ξ.HasFiniteNormExceptions)
     (hξ : ξ.IsUltrametric) :
     Function.Bijective (ξ.normalizedGlobalRationalGenericFibreMap hξ) := by
   rw [← hfinite.normalizedGlobalRationalGenericFibreEquiv_coe hξ]
   exact (hfinite.normalizedGlobalRationalGenericFibreEquiv hξ).bijective
 
 /-- The original canonical map in the source's right-tensor convention. -/
-def normalizedGlobalRightRationalGenericFibreMap (ξ : NormFamily (N (K := K)) E)
+def normalizedGlobalRightRationalGenericFibreMap (ξ : NormFamily (N) E)
     (hξ : ξ.IsUltrametric) :
     (ξ.globalUnitBallModule hξ) ⊗[ℤ] ℚ →ₗ[ℤ] RestrictScalars ℚ K E :=
   ((ξ.normalizedGlobalRationalGenericFibreMap hξ).restrictScalars ℤ).comp
@@ -147,7 +151,7 @@ def normalizedGlobalRightRationalGenericFibreMap (ξ : NormFamily (N (K := K)) E
 
 @[simp]
 theorem normalizedGlobalRightRationalGenericFibreMap_tmul
-    (ξ : NormFamily (N (K := K)) E) (hξ : ξ.IsUltrametric)
+    (ξ : NormFamily (N) E) (hξ : ξ.IsUltrametric)
     (x : ξ.globalUnitBallModule hξ) (q : ℚ) :
     RestrictScalars.addEquiv ℚ K E
       (ξ.normalizedGlobalRightRationalGenericFibreMap hξ (x ⊗ₜ[ℤ] q)) =
@@ -156,7 +160,7 @@ theorem normalizedGlobalRightRationalGenericFibreMap_tmul
 
 /-- The source's right-tensor generic fibre, through canonical commutation. -/
 def HasFiniteNormExceptions.normalizedGlobalRightRationalGenericFibreEquiv
-    {ξ : NormFamily (N (K := K)) E} (hfinite : ξ.HasFiniteNormExceptions)
+    {ξ : NormFamily (N) E} (hfinite : ξ.HasFiniteNormExceptions)
     (hξ : ξ.IsUltrametric) :
     (ξ.globalUnitBallModule hξ) ⊗[ℤ] ℚ ≃ₗ[ℤ] RestrictScalars ℚ K E :=
   (TensorProduct.comm ℤ (ξ.globalUnitBallModule hξ) ℚ).trans
@@ -164,7 +168,7 @@ def HasFiniteNormExceptions.normalizedGlobalRightRationalGenericFibreEquiv
 
 @[simp]
 theorem HasFiniteNormExceptions.normalizedGlobalRightRationalGenericFibreEquiv_tmul
-    {ξ : NormFamily (N (K := K)) E} (hfinite : ξ.HasFiniteNormExceptions)
+    {ξ : NormFamily (N) E} (hfinite : ξ.HasFiniteNormExceptions)
     (hξ : ξ.IsUltrametric) (x : ξ.globalUnitBallModule hξ) (q : ℚ) :
     RestrictScalars.addEquiv ℚ K E
       (hfinite.normalizedGlobalRightRationalGenericFibreEquiv hξ (x ⊗ₜ[ℤ] q)) =
@@ -173,7 +177,7 @@ theorem HasFiniteNormExceptions.normalizedGlobalRightRationalGenericFibreEquiv_t
 
 /-- The coherent right-tensor equivalence is the original canonical map. -/
 theorem HasFiniteNormExceptions.normalizedGlobalRightRationalGenericFibreEquiv_coe
-    {ξ : NormFamily (N (K := K)) E} (hfinite : ξ.HasFiniteNormExceptions)
+    {ξ : NormFamily (N) E} (hfinite : ξ.HasFiniteNormExceptions)
     (hξ : ξ.IsUltrametric) :
     (hfinite.normalizedGlobalRightRationalGenericFibreEquiv hξ).toLinearMap =
       ξ.normalizedGlobalRightRationalGenericFibreMap hξ := by
@@ -185,7 +189,7 @@ theorem HasFiniteNormExceptions.normalizedGlobalRightRationalGenericFibreEquiv_c
 
 /-- The literal source-order canonical rational tensor map is bijective. -/
 theorem HasFiniteNormExceptions.normalizedGlobalRightRationalGenericFibreMap_bijective
-    {ξ : NormFamily (N (K := K)) E} (hfinite : ξ.HasFiniteNormExceptions)
+    {ξ : NormFamily (N) E} (hfinite : ξ.HasFiniteNormExceptions)
     (hξ : ξ.IsUltrametric) :
     Function.Bijective (ξ.normalizedGlobalRightRationalGenericFibreMap hξ) := by
   rw [← hfinite.normalizedGlobalRightRationalGenericFibreEquiv_coe hξ]

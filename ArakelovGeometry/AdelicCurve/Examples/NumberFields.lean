@@ -3,12 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Basic
-import ArakelovGeometry.ExternalResults.Place
-import ArakelovGeometry.ExternalResults.AbsoluteValue
-import ArakelovGeometry.ExternalResults.Measure
-import ArakelovGeometry.ExternalResults.Ostrowski
-import Mathlib.NumberTheory.NumberField.ProductFormula
+module
+
+public import ArakelovGeometry.AdelicCurve.Basic
+public import ArakelovGeometry.ExternalResults.AbsoluteValue
+public import ArakelovGeometry.ExternalResults.Measure
+public import ArakelovGeometry.ExternalResults.Ostrowski
+public import ArakelovGeometry.ExternalResults.Place
+public import Mathlib.NumberTheory.NumberField.ProductFormula
 
 /-!
 # The number-field adelic curve (`thm:numberfield_integrable`)
@@ -25,6 +27,8 @@ The integrability obligation `integrable_log` reduces, via the Dirac-sum criteri
 `MeasureTheory.integrable_sum_dirac_iff`, to summability of
 `ω ↦ (placeWeight ω).toReal * ‖log (placeRep ω x)‖`, which has finite support by
 `finite_out_ne_one` (transported along `ω.out ≈ placeRep ω`). -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure
 
@@ -125,7 +129,7 @@ theorem placeWeight_ne_top (ω : AbsoluteValue.Place K) : placeWeight ω ≠ ∞
 
 /-- The trivial place has weight zero. -/
 theorem placeWeight_trivialPlace : placeWeight (trivialPlace K) = 0 := by
-  rw [placeWeight, if_pos rfl]
+  rw [placeWeight, ite_eq_left rfl]
 
 /-- Every representative choice is equivalent to the canonical one. -/
 theorem placeRep_equiv (ω : AbsoluteValue.Place K) : ω.out ≈ placeRep ω := by

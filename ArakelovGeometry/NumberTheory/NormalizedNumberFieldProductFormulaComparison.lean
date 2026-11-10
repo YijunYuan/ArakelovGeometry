@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldCurve
-import ArakelovGeometry.NumberTheory.NormFamilyActualPrimeIndexing
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyActualPrimeIndexing
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldCurve
 
 /-!
 # Comparing the actual normalized and ideal-norm product formulas
@@ -12,6 +14,8 @@ import ArakelovGeometry.NumberTheory.NormFamilyActualPrimeIndexing
 The actual normalized curve is already proper. Finite support and its actual
 singleton masses convert that product formula to a weighted place sum.
 -/
+
+@[expose] public section
 
 open MeasureTheory NumberField
 open scoped ENNReal

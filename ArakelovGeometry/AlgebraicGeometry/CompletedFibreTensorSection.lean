@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AlgebraicGeometry.CompletedSectionBaseChange
-import ArakelovGeometry.AlgebraicGeometry.AffineSectionTensor
+module
+
+public import ArakelovGeometry.AlgebraicGeometry.AffineSectionTensor
+public import ArakelovGeometry.AlgebraicGeometry.CompletedSectionBaseChange
 
 /-!
 # Actual section values under completed line-fibre tensor base change
@@ -12,6 +14,8 @@ import ArakelovGeometry.AlgebraicGeometry.AffineSectionTensor
 The canonical geometric fibre isomorphism sends the value of a pulled-back
 section to the literal tensor of its original value with coefficient one.
 -/
+
+@[expose] public section
 
 open AlgebraicGeometry CategoryTheory
 open scoped ChangeOfRings

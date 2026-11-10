@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Rational
-import Mathlib.RingTheory.Valuation.ValuationRing
-import Mathlib.RingTheory.Localization.BaseChange
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Rational
+public import Mathlib.RingTheory.Localization.BaseChange
+public import Mathlib.RingTheory.Valuation.ValuationRing
 
 /-!
 # Rational unit balls of actual completed-fibre norm families
@@ -15,6 +17,8 @@ the actual completed tensor fibre is at most one. At a genuinely nontrivial
 nonarchimedean number-field place, powers of a nonzero algebraic integer move
 every rational vector into this ball, proving Claim 4.4.3(b)'s spanning step.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct NumberField
 

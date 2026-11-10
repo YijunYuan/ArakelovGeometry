@@ -3,14 +3,18 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianHNPolygon
-import Mathlib.Order.Interval.Set.Union
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHNPolygon
+public import Mathlib.Order.Interval.Set.Union
 
 /-!
 # Convex geometry of the Hermitian Harder–Narasimhan polygon
 
 The convex hull of actual subspace degree points lies in the polygon hypograph.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 namespace ArakelovGeometry.AdelicVectorBundle

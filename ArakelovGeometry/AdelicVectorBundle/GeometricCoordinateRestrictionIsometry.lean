@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricMeasurableQuotient
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeometricMeasurableQuotient
 
 /-!
 # Selected-minor isometries on actual completed coordinate subspaces
@@ -12,6 +14,8 @@ A ground-field maximizing minor gives an exact norm formula on every vector
 of the actual completed restricted subspace. Its finite measurable selection
 will supply determinant and operator regularity without scalar countability.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct Matrix
 noncomputable section

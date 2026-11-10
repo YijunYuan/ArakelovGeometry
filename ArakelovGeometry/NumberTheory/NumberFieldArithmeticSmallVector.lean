@@ -3,14 +3,18 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArithmeticMinkowski
-import ArakelovGeometry.NumberTheory.NumberFieldArithmeticProductBall
-import ArakelovGeometry.NumberTheory.NumberFieldMinkowskiRadius
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeLambda
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeGlobalBall
-import ArakelovGeometry.AdelicVectorBundle.Slopes
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Slopes
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeGlobalBall
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeLambda
+public import ArakelovGeometry.NumberTheory.NumberFieldArithmeticMinkowski
+public import ArakelovGeometry.NumberTheory.NumberFieldArithmeticProductBall
+public import ArakelovGeometry.NumberTheory.NumberFieldMinkowskiRadius
 
 /-! # Actual nonzero integral vectors with the arithmetic Minkowski degree bound -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -29,7 +33,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 
 attribute [local instance] normalizedNumberFieldAdelicStructure_isProper
 
-private instance smallVectorDiscreteMeasurable :
+local instance smallVectorDiscreteMeasurable :
     DiscreteMeasurableSpace (normalizedNumberFieldAdelicStructure K).Ω :=
   inferInstanceAs
     (DiscreteMeasurableSpace {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})

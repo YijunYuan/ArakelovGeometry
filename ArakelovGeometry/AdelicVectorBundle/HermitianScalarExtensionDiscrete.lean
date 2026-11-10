@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionMeasurable
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscrete
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionMeasurable
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscrete
 
 /-!
 # Hermitian scalar extension over a countable discrete base
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDiscrete
 Actual finite-stage descent proves the corrected discrete alternative of
 Chen–Moriwaki Proposition 4.1.24(1.c), without a common dense subfield.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

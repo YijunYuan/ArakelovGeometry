@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismDeterminant
-import ArakelovGeometry.NumberTheory.AdelicVectorBundleNumberFieldNormalization
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldIntegralComparison
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationHermitian
-import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeDeterminant
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismDeterminant
+public import ArakelovGeometry.NumberTheory.AdelicVectorBundleNumberFieldNormalization
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationHermitian
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldIntegralComparison
 
 /-!
 # Determinant norms and degrees under actual number-field normalization
@@ -16,6 +18,8 @@ The actual projective determinant quotient is characterized by scalar-weighted
 wedge costs. Transporting those costs by the actual positive normalization
 power preserves the determinant norm and its weighted logarithmic integral.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -150,7 +154,8 @@ variable {K : Type*} [Field K] [NumberField K]
   {E : Type*} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 variable (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
 
-private abbrev normalizedCompletedFieldRingEquiv :
+/-- The completed-field isomorphism induced by equivalent place normalizations. -/
+abbrev normalizedCompletedFieldRingEquiv :
     (placeRep ω.val).Completion ≃+* (normalizedPlaceValue ω).Completion :=
   (AbsoluteValue.completionAlgEquivOfIsEquiv
     (placeRep ω.val) (normalizedPlaceValue ω)
@@ -267,8 +272,7 @@ theorem normalizedCompletedDeterminantEquiv_eq_tensor
     | smul r x hx ih =>
       intro a
       simpa only [TensorProduct.tmul_smul, TensorProduct.smul_tmul] using ih (r • a)
-  induction z using TensorProduct.induction_on with
-  | zero => simp only [map_zero]
+  induction z using TensorProduct.inductionOn with
   | add z w hz hw => simp only [map_add, hz, hw]
   | tmul a x =>
     apply H x _ a

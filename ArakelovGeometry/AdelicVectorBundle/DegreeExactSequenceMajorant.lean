@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequence
-import ArakelovGeometry.AdelicVectorBundle.DiscrepancyExactSequence
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeExactSequence
+public import ArakelovGeometry.AdelicVectorBundle.DiscrepancyExactSequence
 
 /-!
 # The exact-sequence degree bound by global majorant discrepancy
@@ -13,6 +15,8 @@ The actual determinant operator bound gives a pointwise logarithmic
 inequality. Translation and superadditivity of lower integrals then prove
 the degree comparison, including infinite global discrepancies.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -58,7 +62,8 @@ theorem determinantSequence_log_majorantDiscrepancy_le (ξ : NormFamily S E)
   have he : determinantSequenceEquiv W (z ⊗ₜ[K] q) ≠ 0 := by
     intro h
     apply ht
-    exact (determinantSequenceEquiv W).injective (h.trans (map_zero _).symm)
+    exact (determinantSequenceEquiv W).injective
+      (h.trans (determinantSequenceEquiv W).map_zero.symm)
   have hpE := ξ.determinant.norm_rational_pos ω he
   have hΔW := (ξ.restrict W).majorantDiscrepancy_pos hN ω
   have hΔQ := (ξ.quotient W).majorantDiscrepancy_pos hN ω

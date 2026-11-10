@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AlgebraicGeometry.CompletedFibreTensorSection
-import ArakelovGeometry.Analysis.GeometricModelLineNorm
+module
+
+public import ArakelovGeometry.AlgebraicGeometry.CompletedFibreTensorSection
+public import ArakelovGeometry.Analysis.GeometricModelLineNorm
 
 /-!
 # Pullback norms on actual completed line fibres
@@ -13,6 +15,8 @@ The canonical geometric tensor isomorphism transports the existing projective
 scalar-extension norm. Local frames produce the required finite dimension;
 neither a fibre comparison nor a global supremum comparison is assumed.
 -/
+
+@[expose] public section
 
 open AlgebraicGeometry CategoryTheory
 

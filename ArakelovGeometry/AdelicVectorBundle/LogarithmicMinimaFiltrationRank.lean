@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaBasis
-import Mathlib.Order.Interval.Finset.Nat
-import Mathlib.Order.WellFounded
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaBasis
+public import Mathlib.Order.Interval.Finset.Nat
+public import Mathlib.Order.WellFounded
 
 /-!
 # Rank of the actual completed logarithmic minima filtration
@@ -16,6 +18,8 @@ including unbounded and empty cuts, without assuming threshold attainment.
 The source indices are `1 ≤ i ≤ finrank K E`; the statements at natural index
 zero or above rank are auxiliary extensions. Counts use only source indices.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle

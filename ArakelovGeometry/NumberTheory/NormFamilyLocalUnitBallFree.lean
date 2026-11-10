@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyFiniteLocalLattice
-import Mathlib.RingTheory.PrincipalIdealDomain
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyFiniteLocalLattice
+public import Mathlib.RingTheory.PrincipalIdealDomain
 
 /-!
 # Actual local unit-ball freeness and full rank
@@ -15,6 +17,8 @@ makes the actual rational unit ball free. Its produced finite basis extends
 through the actual generic-fibre isomorphism to a rational basis of the
 original vector space, proving full rank without global coherence.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct NumberField
 

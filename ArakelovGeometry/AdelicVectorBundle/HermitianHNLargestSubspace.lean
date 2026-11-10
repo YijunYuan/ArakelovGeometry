@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianHNFunctoriality
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHNFunctoriality
 
 /-!
 # The actual HN threshold as the largest subspace of prescribed minimal slope
@@ -14,6 +16,8 @@ functoriality for the true restricted inclusion then gives the largest-subspace
 and nonzero-subspace sum characterizations of source Corollary 4.3.43.
 The zero subspace has minimal slope top and the empty sum is zero.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

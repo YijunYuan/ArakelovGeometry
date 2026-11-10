@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldArithmeticSmallVector
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPureModel
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaRestriction
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaRestriction
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPureModel
+public import ArakelovGeometry.NumberTheory.NumberFieldArithmeticSmallVector
 
 /-! # The actual first minimum of a pure Hermitian number-field bundle -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -22,7 +26,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 
 attribute [local instance] normalizedNumberFieldAdelicStructure_isProper
 
-private instance firstMinimumDiscreteMeasurable :
+local instance firstMinimumDiscreteMeasurable :
     DiscreteMeasurableSpace (normalizedNumberFieldAdelicStructure K).Ω :=
   inferInstanceAs
     (DiscreteMeasurableSpace {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})

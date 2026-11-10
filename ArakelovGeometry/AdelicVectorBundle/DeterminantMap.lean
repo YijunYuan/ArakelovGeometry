@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantComparison
-import ArakelovGeometry.AdelicVectorBundle.OperatorNorm
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantComparison
+public import ArakelovGeometry.AdelicVectorBundle.OperatorNorm
 
 /-!
 # Maps on actual determinant lines
@@ -13,6 +15,8 @@ Equal-dimensional linear maps act on the existing top exterior powers.
 The only index transport is equality of their dimensions. Scalar extension
 commutes with these maps on the actual completed determinant fibres.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -141,7 +145,7 @@ theorem determinantMap_norm_le_of_pos_rank (ξ : NormFamily S E) (η : NormFamil
       C ^ Module.finrank K E * ∏ i, ξ.norm ω (x i) := by
     calc
       _ ≤ ∏ i, C * ξ.norm ω (x i) :=
-        Finset.prod_le_prod (fun _ _ ↦ η.norm_nonneg ω _) (fun i _ ↦ hf (x i))
+        Finset.prod_le_prod₀ (fun _ _ ↦ η.norm_nonneg ω _) (fun i _ ↦ hf (x i))
       _ = _ := by rw [Finset.prod_mul_distrib]; simp
   have hε' : C ^ Module.finrank K E * (ε / (C ^ Module.finrank K E + 1)) ≤ ε := by
     calc

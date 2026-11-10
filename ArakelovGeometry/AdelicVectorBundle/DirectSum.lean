@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Quotient
-import ArakelovGeometry.Analysis.NormShape
-import Mathlib.LinearAlgebra.TensorProduct.Prod
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Quotient
+public import ArakelovGeometry.Analysis.NormShape
+public import Mathlib.LinearAlgebra.TensorProduct.Prod
 
 /-!
 # Direct sums of norm families
@@ -19,6 +21,8 @@ The inclusions are isometries and the projections are contractive. The max
 shape preserves ultrametricity. Hermitian orthogonal sums additionally require
 the Archimedean Euclidean shape and are not asserted here.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -86,8 +90,7 @@ theorem directSum_norm_inl (ψ : S.Ω → NormShape) (ω : S.Ω)
       ((LinearMap.inl K E F).baseChange (S.ϕ ω).Completion x) = ξ.norm ω x := by
   have h : TensorProduct.prodRight K (S.ϕ ω).Completion (S.ϕ ω).Completion E F
       ((LinearMap.inl K E F).baseChange (S.ϕ ω).Completion x) = (x, 0) := by
-    induction x using TensorProduct.induction_on with
-    | zero => simp only [map_zero]; rfl
+    induction x using TensorProduct.inductionOn with
     | tmul a x => simp
     | add x y hx hy => simp [hx, hy]
   rw [directSum_norm, h]
@@ -101,8 +104,7 @@ theorem directSum_norm_inr (ψ : S.Ω → NormShape) (ω : S.Ω)
       ((LinearMap.inr K E F).baseChange (S.ϕ ω).Completion y) = η.norm ω y := by
   have h : TensorProduct.prodRight K (S.ϕ ω).Completion (S.ϕ ω).Completion E F
       ((LinearMap.inr K E F).baseChange (S.ϕ ω).Completion y) = (0, y) := by
-    induction y using TensorProduct.induction_on with
-    | zero => simp only [map_zero]; rfl
+    induction y using TensorProduct.inductionOn with
     | tmul a y => simp
     | add x y hx hy => simp [hx, hy]
   rw [directSum_norm, h]
@@ -129,8 +131,7 @@ theorem directSum_norm_fst_le (ψ : S.Ω → NormShape) (ω : S.Ω)
       (ξ.directSum η ψ).norm ω z := by
   have h : (LinearMap.fst K E F).baseChange (S.ϕ ω).Completion z =
       (TensorProduct.prodRight K (S.ϕ ω).Completion (S.ϕ ω).Completion E F z).1 := by
-    induction z using TensorProduct.induction_on with
-    | zero => simp
+    induction z using TensorProduct.inductionOn with
     | tmul a z => rfl
     | add z t hz ht => simp [hz, ht]
   rw [h, directSum_norm]
@@ -144,8 +145,7 @@ theorem directSum_norm_snd_le (ψ : S.Ω → NormShape) (ω : S.Ω)
       (ξ.directSum η ψ).norm ω z := by
   have h : (LinearMap.snd K E F).baseChange (S.ϕ ω).Completion z =
       (TensorProduct.prodRight K (S.ϕ ω).Completion (S.ϕ ω).Completion E F z).2 := by
-    induction z using TensorProduct.induction_on with
-    | zero => simp
+    induction z using TensorProduct.inductionOn with
     | tmul a z => rfl
     | add z t hz ht => simp [hz, ht]
   rw [h, directSum_norm]

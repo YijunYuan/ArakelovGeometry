@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Basic
-import ArakelovGeometry.ExternalResults.Measure
-import Mathlib.FieldTheory.RatFunc.Valuation
-import Mathlib.RingTheory.DedekindDomain.AdicValuation
-import Mathlib.RingTheory.DedekindDomain.Factorization
+module
+
+public import ArakelovGeometry.AdelicCurve.Basic
+public import ArakelovGeometry.ExternalResults.Measure
+public import Mathlib.FieldTheory.RatFunc.Valuation
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation
+public import Mathlib.RingTheory.DedekindDomain.Factorization
 
 /-!
 # The function-field adelic curve (Chen–Moriwaki §3.2.1)
@@ -32,6 +34,8 @@ Since `Ω` is uncountable whenever `k` is, integrability against the point-mass 
 established through the finite-support criteria of `ArakelovGeometry.ExternalResults.Measure`
 rather than through countable sums of Dirac measures.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure
 
@@ -58,7 +62,7 @@ theorem coe_expBase : (expBase : ℝ) = Real.exp 1 :=
 /-- `WithZeroMulInt.toNNReal expBase` intertwines `WithZero.log` and the real logarithm. -/
 theorem real_log_toNNReal_expBase {x : ℤᵐ⁰} (hx : x ≠ 0) :
     Real.log (toNNReal (ne_zero_of_lt one_lt_expBase) x : ℝ) = WithZero.log x := by
-  rw [toNNReal_neg_apply _ hx, NNReal.coe_zpow, Real.log_zpow, toAdd_unzero_eq_log,
+  rw [toNNReal_neg_apply _ hx, NNReal.coe_zpow, Real.log_zpow,
     coe_expBase, Real.log_exp, mul_one]
 
 end ExpBase

@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.DeterminantNorm
-import ArakelovGeometry.Analysis.ArchimedeanDual
-import Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho
-import Mathlib.Analysis.InnerProductSpace.Dual
-import Mathlib.Analysis.Normed.Group.Ultra
+module
+
+public import ArakelovGeometry.Analysis.ArchimedeanDual
+public import ArakelovGeometry.Analysis.DeterminantNorm
+public import Mathlib.Analysis.InnerProductSpace.Dual
+public import Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho
+public import Mathlib.Analysis.Normed.Group.Ultra
 
 /-!
 # Bounds for determinant pairings
@@ -16,6 +18,8 @@ These estimates control the actual exterior-dual evaluation under the
 projective determinant quotient. The non-Archimedean estimate allows arbitrary
 vector norms; the Archimedean estimate uses the given inner product.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 
@@ -33,10 +37,10 @@ theorem norm_orthonormalBasis_det_le (b : OrthonormalBasis (Fin n) L E)
   have hd : Module.finrank L E = Fintype.card (Fin n) :=
     Module.finrank_eq_card_basis b.toBasis
   let c := InnerProductSpace.gramSchmidtOrthonormalBasis hd x
-  rw [b.toBasis.det.eq_smul_basis_det c.toBasis, AlternatingMap.smul_apply,
+  rw [b.toBasis.det.eq_smul_basis_det c.toBasis, smul_apply,
     norm_smul, OrthonormalBasis.coe_toBasis, b.det_to_matrix_orthonormalBasis c, one_mul]
   rw [InnerProductSpace.gramSchmidtOrthonormalBasis_det, norm_prod]
-  apply Finset.prod_le_prod (fun i _ ↦ norm_nonneg _)
+  apply Finset.prod_le_prod₀ (fun i _ ↦ norm_nonneg _)
   intro i _
   simpa only [c.orthonormal.1 i, one_mul] using
     norm_inner_le_norm (c i) (x i)
@@ -84,7 +88,7 @@ theorem norm_det_pairing_le_of_innerProduct (f : Fin n → E →ₗ[L] L)
       (Matrix.of fun i j ↦ f j (b i)).det * b.toBasis.det x := by
     have h := congrArg (fun g ↦ g x) (F.eq_smul_basis_det b.toBasis)
     simpa only [F, LinearMap.compAlternatingMap_apply,
-      _root_.exteriorPower.pairingDual_ιMulti_ιMulti, AlternatingMap.smul_apply,
+      _root_.exteriorPower.pairingDual_ιMulti_ιMulti, smul_apply,
       OrthonormalBasis.coe_toBasis, smul_eq_mul] using h
   rw [hf, norm_mul]
   exact (mul_le_mul (norm_det_dual_orthonormalBasis_le b f)
@@ -109,7 +113,7 @@ theorem norm_det_le_prod_of_entry_le (M : Matrix ι ι L) (a b : ι → ℝ)
   rw [norm_units_zsmul, norm_prod]
   calc
     ∏ i, ‖M (σ i) i‖ ≤ ∏ i, a (σ i) * b i :=
-      Finset.prod_le_prod (fun i _ ↦ norm_nonneg _) (fun i _ ↦ hM (σ i) i)
+      Finset.prod_le_prod₀ (fun i _ ↦ norm_nonneg _) (fun i _ ↦ hM (σ i) i)
     _ = (∏ i, a i) * ∏ i, b i := by
       rw [Finset.prod_mul_distrib, Equiv.prod_comp σ]
 

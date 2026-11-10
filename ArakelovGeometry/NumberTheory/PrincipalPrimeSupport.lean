@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
+module
 
-import Mathlib.NumberTheory.NumberField.ClassNumber
-import Mathlib.RingTheory.DedekindDomain.AdicValuation
+
+public import Mathlib.NumberTheory.NumberField.ClassNumber
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation
 
 /-!
 # An algebraic integer supported on prescribed finite primes
@@ -14,6 +16,8 @@ The finite ideal class group makes the class-number power of an actual product
 of nonzero prime ideals principal. Its generator realizes Claim 4.4.3(a) of
 Chen–Moriwaki, PDF page 306, in the actual ring of integers of a number field.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -37,7 +41,7 @@ theorem emultiplicity_asIdeal_asIdeal (p q : HeightOneSpectrum R) :
   by_cases hqp : q = p
   · subst q
     simpa using emultiplicity_pow_self_of_prime p.prime 1
-  · rw [if_neg hqp, emultiplicity_eq_zero]
+  · rw [ite_eq_right hqp, emultiplicity_eq_zero]
     intro hdvd
     apply hqp
     apply HeightOneSpectrum.asIdeal_injective
@@ -123,7 +127,7 @@ theorem exists_numberField_positive_order_support (s : Finset (HeightOneSpectrum
       exact_mod_cast NumberField.classNumber_pos K
     · simp [hp]
   · intro p hp
-    rw [hord p, if_neg hp]
+    rw [hord p, ite_eq_right hp]
 
 open Classical in
 /-- The same actual integer has the exact multiplicative adic values determined by its orders. -/

@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Defs
+module
+
+public import ArakelovGeometry.AdelicCurve.Defs
 
 /-!
 # Basic measure-theoretic properties of adelic structures
@@ -17,6 +19,8 @@ The key bridge identity is `κ ω = max 0 (log (ϕ ω 2)) / log 2`, which reduce
 statement about `κ` to the measurability / integrability hypotheses of the adelic
 structure applied at `x = 2`.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 namespace AdelicStructure
@@ -38,7 +42,7 @@ exponent `s` lies in `Ioc 0 1`). -/
 private theorem κ_pos_of_Ωinf {K : Type*} [Field K] (AS : AdelicStructure K) {ω : AS.Ω}
     (hω : ω ∈ AS.Ωinf) : 0 < AS.κ ω := by
   unfold κ
-  rw [dif_pos hω]
+  rw [dite_eq_left hω]
   exact (exists_rpow_eq_of_not_isNonarchimedean (AS.ϕ ω) hω.out).choose_spec.1.out.1
 
 /-- For a non-archimedean place `ω` (i.e. `ω ∉ Ωinf`), `ϕ ω 2 ≤ 1` (the ultrametric bound on

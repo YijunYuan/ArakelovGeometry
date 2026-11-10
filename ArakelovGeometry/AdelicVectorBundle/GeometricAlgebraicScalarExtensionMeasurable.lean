@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricScalarExtensionMeasurable
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDualDescent
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeometricScalarExtensionMeasurable
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionDualDescent
 
 /-!
 # Actual algebraic scalar measurability on all-finite positive atomic bases
@@ -15,6 +17,8 @@ regularity then descends along the measurable restricted-place map. The original
 family need only be dominated: neither original measurability, ultrametricity,
 countability nor discreteness of the original field or place space is assumed.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

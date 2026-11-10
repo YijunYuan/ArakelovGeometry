@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.CompatibleTowerNativeRestriction
-import ArakelovGeometry.AdelicVectorBundle.GeometricAbsoluteInvariantsClosure
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.CompatibleTowerNativeRestriction
+public import ArakelovGeometry.AdelicVectorBundle.GeometricAbsoluteInvariantsClosure
 
 /-!
 # Actual geometric absolute invariants in arbitrary external towers
@@ -13,6 +15,8 @@ All literal native subspaces and their ranks are reindexed through the
 canonical associator. The original absolute invariants are evaluated on
 the actual nested closure curve, without intermediate regularity assumptions.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

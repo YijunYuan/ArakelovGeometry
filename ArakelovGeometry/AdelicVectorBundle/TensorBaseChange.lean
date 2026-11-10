@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.LinearAlgebra.PiTensorProduct.Basis
-import Mathlib.LinearAlgebra.Basis.VectorSpace
-import Mathlib.LinearAlgebra.TensorProduct.Basis
-import Mathlib.RingTheory.TensorProduct.Basic
+module
+
+public import Mathlib.LinearAlgebra.Basis.VectorSpace
+public import Mathlib.LinearAlgebra.PiTensorProduct.Basis
+public import Mathlib.LinearAlgebra.TensorProduct.Basis
+public import Mathlib.RingTheory.TensorProduct.Basic
 
 /-!
 # Scalar extension of finite tensor products
@@ -14,6 +16,8 @@ import Mathlib.RingTheory.TensorProduct.Basic
 The canonical scalar-extension equivalence for finite tensor products of
 vector spaces, including the empty tensor product.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

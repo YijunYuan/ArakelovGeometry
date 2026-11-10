@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Rescaling
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Rescaling
 
 /-!
 # Extremal slopes under actual exponential rescaling
@@ -14,6 +16,8 @@ same shift for the minimal slope. Finite translation preserves both infinite
 zero-space conventions, and the numerical slopes depend only on the exponent's
 almost-everywhere class.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 

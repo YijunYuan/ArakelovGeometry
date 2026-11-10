@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinima
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerTransport
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinima
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTowerTransport
 
 /-!
 # Rational vector degrees and logarithmic minima through the actual tower
@@ -16,6 +18,8 @@ properness or regularity hypothesis on intermediate place spaces is needed.
 This is the place-transport part of absolute-minimum invariance; tensor
 associator and closure-field identification are separate obligations.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 noncomputable section

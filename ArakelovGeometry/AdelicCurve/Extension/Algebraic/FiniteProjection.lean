@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Measure
-import ArakelovGeometry.AdelicCurve.Extension.Finite.BaseChange
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Measure
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.BaseChange
 
 /-!
 # Finite projections along embeddings
@@ -13,6 +15,8 @@ The projective fibre probabilities have the expected marginals along arbitrary
 embeddings of finite extensions, by factoring through their finite image.
 This extends the finite-stage projections of Chen–Moriwaki, §3.4.2.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.Algebraic
 open MeasureTheory

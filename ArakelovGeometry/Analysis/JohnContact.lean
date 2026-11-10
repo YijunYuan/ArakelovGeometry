@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.EllipsoidPerturbation
+module
+
+public import ArakelovGeometry.Analysis.EllipsoidPerturbation
 
 /-!
 # Contact decomposition of a maximal ellipsoid
@@ -13,6 +15,8 @@ identity ellipsoid forces the identity into the finite cone of unit contact
 matrices. The separating matrix is perturbed by a small scalar identity and
 then produces a strictly larger feasible positive ellipsoid, a contradiction.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped Matrix.Norms.Elementwise MatrixOrder ComplexOrder

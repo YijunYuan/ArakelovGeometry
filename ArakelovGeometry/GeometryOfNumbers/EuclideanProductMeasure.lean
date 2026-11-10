@@ -3,9 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+module
+
+public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 
 /-! # Actual ordinary Euclidean product measure under scalar block regrouping -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.EuclideanProductMeasure

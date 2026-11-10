@@ -3,11 +3,15 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalHNSections
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPureModel
-import ArakelovGeometry.AdelicVectorBundle.EquivalencePullback
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.EquivalencePullback
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPureModel
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalHNSections
 
 /-! # The literal original arithmetic model of a pure restricted Hermitian bundle -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField

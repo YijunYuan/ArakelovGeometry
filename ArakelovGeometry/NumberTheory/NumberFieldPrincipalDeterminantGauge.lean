@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldLocalDeterminantComparison
-import ArakelovGeometry.NumberTheory.NumberFieldHermitianBasisCovolume
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldHermitianBasisCovolume
+public import ArakelovGeometry.NumberTheory.NumberFieldLocalDeterminantComparison
 
 /-! # The fixed rational basis wedge in actual finite lattice determinant gauges -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField IsDedekindDomain
@@ -23,8 +27,8 @@ attribute [local instance 2000] Algebra.toModule Algebra.toSMul
 variable {K E : Type*} [Field K] [NumberField K]
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
-private abbrev principalCoefficientRing (p : HeightOneSpectrum (𝓞 K)) :=
-  (normalizedNumberFieldAdelicStructure K).rationalLocalRing
+local notation "principalCoefficientRing" => fun (p : HeightOneSpectrum (𝓞 K)) ↦
+  AdelicStructure.rationalLocalRing (normalizedNumberFieldAdelicStructure K)
     (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p)
 
 omit [FiniteDimensional K E] in

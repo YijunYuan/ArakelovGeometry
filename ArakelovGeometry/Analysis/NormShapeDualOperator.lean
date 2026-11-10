@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.NormShapeDual
-import ArakelovGeometry.Analysis.ArchimedeanDual
-import Mathlib.Analysis.Normed.Operator.NNNorm
-import Mathlib.Topology.Order.Compact
-import Mathlib.Analysis.RCLike.Lemmas
+module
+
+public import ArakelovGeometry.Analysis.ArchimedeanDual
+public import ArakelovGeometry.Analysis.NormShapeDual
+public import Mathlib.Analysis.Normed.Operator.NNNorm
+public import Mathlib.Analysis.RCLike.Lemmas
+public import Mathlib.Topology.Order.Compact
 
 /-!
 # The actual Archimedean operator dual of a profile sum
@@ -15,6 +17,8 @@ import Mathlib.Analysis.RCLike.Lemmas
 Finite-dimensional unit-ball attainment and scalar phase alignment produce
 the exact polar-profile formula, including zero-dimensional factors.
 -/
+
+@[expose] public section
 
 noncomputable section
 

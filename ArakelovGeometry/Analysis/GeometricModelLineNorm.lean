@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.ScalarExtensionLine
-import Mathlib.Algebra.Category.ModuleCat.ChangeOfRings
+module
+
+public import ArakelovGeometry.Analysis.ScalarExtensionLine
+public import Mathlib.Algebra.Category.ModuleCat.ChangeOfRings
 
 /-!
 # Scalar extension of explicit separated fibre seminorms
@@ -13,6 +15,8 @@ The existing scalar-extension norm is applied to a given separated seminorm,
 preserving the original additive and scalar structures. On a line, the
 scalar-extension unit preserves that norm exactly.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

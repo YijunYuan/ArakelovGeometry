@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeGauge
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeGauge
 
 /-!
 # Literal global balls of arbitrary full number-field lattices
@@ -13,6 +15,8 @@ recover the originally prescribed lattice from every finite completed gauge.
 The canonical integral action is used throughout. No regularity is required
 of the prescribed infinite norms. Associated Spec sheaves are a separate cone.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct
@@ -26,14 +30,14 @@ attribute [local instance 2000] Algebra.toModule Algebra.toSMul
 variable {K : Type*} [Field K] [NumberField K]
   {E : Type*} [AddCommGroup E] [Module K E]
 
-private abbrev N := normalizedNumberFieldAdelicStructure K
-private abbrev R (p : HeightOneSpectrum (𝓞 K)) :=
-  (N (K := K)).rationalLocalRing (normalizedPrimeParameter p)
+local notation "N" => normalizedNumberFieldAdelicStructure K
+local notation "R" => fun (p : HeightOneSpectrum (𝓞 K)) ↦
+  AdelicStructure.rationalLocalRing (N) (normalizedPrimeParameter p)
     (normalizedPrimeParameter_mem_fin p)
-private abbrev F (p : HeightOneSpectrum (𝓞 K)) :=
-  ((N (K := K)).ϕ (normalizedPrimeParameter p)).Completion
-private abbrev O (p : HeightOneSpectrum (𝓞 K)) :=
-  (N (K := K)).completedLocalRing (normalizedPrimeParameter p)
+local notation "F" => fun (p : HeightOneSpectrum (𝓞 K)) ↦
+  AbsoluteValue.Completion (AdelicStructure.ϕ (N) (normalizedPrimeParameter p))
+local notation "O" => fun (p : HeightOneSpectrum (𝓞 K)) ↦
+  AdelicStructure.completedLocalRing (N) (normalizedPrimeParameter p)
     (normalizedPrimeParameter_mem_fin p)
 
 /-- Actual rational coordinates of a vector in the produced local lattice. -/
@@ -137,7 +141,7 @@ theorem mem_iff_mem_all_rationalLocalSpans (L : Submodule (𝓞 K) E)
 /-- The constructed finite rational ball is the actual rational local lattice. -/
 theorem fullLatticeGaugeFamily_mem_rationalUnitBall_prime
     (L : Submodule (𝓞 K) E) (hfg : L.FG)
-    (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (N (K := K)) E)
+    (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (N) E)
     (p : HeightOneSpectrum (𝓞 K)) (x : E) :
     x ∈ (fullLatticeGaugeFamily L hfg hspan η).rationalUnitBall
       (normalizedPrimeParameter p) ↔ x ∈ rationalLocalSpan L p := by
@@ -149,7 +153,7 @@ theorem fullLatticeGaugeFamily_mem_rationalUnitBall_prime
 
 /-- The literal global finite unit ball is exactly the originally prescribed lattice. -/
 theorem fullLatticeGaugeFamily_globalUnitBall_eq (L : Submodule (𝓞 K) E) (hfg : L.FG)
-    (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (N (K := K)) E) :
+    (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (N) E) :
     (fullLatticeGaugeFamily L hfg hspan η).globalUnitBall = (L : Set E) := by
   ext x
   change x ∈ (fullLatticeGaugeFamily L hfg hspan η).globalUnitBall ↔ x ∈ L
@@ -165,7 +169,7 @@ theorem fullLatticeGaugeFamily_globalUnitBall_eq (L : Submodule (𝓞 K) E) (hfg
 /-- The equality is literal also for the canonical integral submodule, with any ultra proof. -/
 theorem fullLatticeGaugeFamily_globalUnitBallModule_eq
     (L : Submodule (𝓞 K) E) (hfg : L.FG)
-    (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (N (K := K)) E)
+    (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (N) E)
     (hξ : (fullLatticeGaugeFamily L hfg hspan η).IsUltrametric) :
     (fullLatticeGaugeFamily L hfg hspan η).globalUnitBallModule hξ = L := by
   apply SetLike.coe_injective
@@ -174,8 +178,8 @@ theorem fullLatticeGaugeFamily_globalUnitBallModule_eq
 /-- The actual constructed model simultaneously retains infinite norms and realizes the lattice. -/
 theorem fullLatticeGaugeFamily_model [FiniteDimensional K E]
     (L : Submodule (𝓞 K) E) (hfg : L.FG)
-    (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (N (K := K)) E) :
-    (∀ ω, ω ∉ (N (K := K)).Ωfin →
+    (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (N) E) :
+    (∀ ω, ω ∉ (N).Ωfin →
       (fullLatticeGaugeFamily L hfg hspan η).norm ω = η.norm ω) ∧
     (fullLatticeGaugeFamily L hfg hspan η).IsUltrametric ∧
     (fullLatticeGaugeFamily L hfg hspan η).HasFiniteNormExceptions ∧

@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeBidual
-import ArakelovGeometry.AdelicVectorBundle.SlopesQuotient
-import ArakelovGeometry.AdelicVectorBundle.DualRestriction
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeBidual
+public import ArakelovGeometry.AdelicVectorBundle.DualRestriction
+public import ArakelovGeometry.AdelicVectorBundle.SlopesQuotient
 
 /-!
 # Actual quotient norms commute with canonical bidualization
@@ -15,6 +17,8 @@ annihilator identification and triple duality. The actual bidual quotient is
 ultrametric at finite places and reflexive at normalized infinite places.
 Degree invariance then preserves every quotient mean and the true minimum.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

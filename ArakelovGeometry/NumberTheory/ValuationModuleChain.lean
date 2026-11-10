@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.PrimePole
-import Mathlib.Logic.Denumerable
-import Mathlib.Data.Rat.Encodable
-import Mathlib.LinearAlgebra.Countable
-import Mathlib.NumberTheory.NumberField.Basic
+module
+
+public import ArakelovGeometry.NumberTheory.PrimePole
+public import Mathlib.Data.Rat.Encodable
+public import Mathlib.LinearAlgebra.Countable
+public import Mathlib.Basic.Denumerable
+public import Mathlib.NumberTheory.NumberField.Basic
 
 /-!
 # Finite positive truncations of actual prime-valuation modules
@@ -19,6 +21,8 @@ ascending sequence with the full valuation module as its union.
 
 Reference: Chen–Moriwaki, Lemma 4.4.7, PDF page 309.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedGlobalFiniteGeneration
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedGlobalFiniteGeneration
 
 /-!
 # Actual local reconstruction from source coherence
@@ -12,6 +14,8 @@ The genuine finite-exception hypothesis produces integral denominators outside
 each actual finite prime. The literal global unit-ball module then localizes
 to the literal rational local unit-ball module of the actual normalized curve.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct BigOperators
@@ -25,20 +29,20 @@ open AdelicStructure ActualPrimeIndexing
 variable {K : Type*} [Field K] [NumberField K]
   {E : Type*} [AddCommGroup E] [Module K E]
 
-private abbrev S := normalizedNumberFieldAdelicStructure K
+local notation "S" => normalizedNumberFieldAdelicStructure K
 
 /-- The actual normalized prime value is equivalent to the actual finite value. -/
 theorem normalizedPrimeValue_isEquiv (p : HeightOneSpectrum (𝓞 K)) :
-    ((S (K := K)).ϕ (normalizedPrimeParameter p)).IsEquiv (FinitePlace.mk p).val :=
+    ((S).ϕ (normalizedPrimeParameter p)).IsEquiv (FinitePlace.mk p).val :=
   Quotient.eq'.mp (normalizedPlaceValue_class (normalizedPrimeParameter p))
 
 /-- The accepted isolated integer contracts at the actual normalized prime and
 has value one at every other actual normalized prime. -/
 theorem exists_normalized_integral_isolated_prime (q : HeightOneSpectrum (𝓞 K)) :
     ∃ f : 𝓞 K, f ≠ 0 ∧
-      (S (K := K)).ϕ (normalizedPrimeParameter q) (algebraMap (𝓞 K) K f) < 1 ∧
+      (S).ϕ (normalizedPrimeParameter q) (algebraMap (𝓞 K) K f) < 1 ∧
       ∀ p : HeightOneSpectrum (𝓞 K), p ≠ q →
-        (S (K := K)).ϕ (normalizedPrimeParameter p) (algebraMap (𝓞 K) K f) = 1 := by
+        (S).ϕ (normalizedPrimeParameter p) (algebraMap (𝓞 K) K f) = 1 := by
   obtain ⟨f, hf, hq, hother⟩ := exists_integral_isolated_finitePlace K (FinitePlace.mk q)
   refine ⟨f, hf, (normalizedPrimeValue_isEquiv q).lt_one_iff.mpr hq, ?_⟩
   intro p hp
@@ -48,7 +52,7 @@ theorem exists_normalized_integral_isolated_prime (q : HeightOneSpectrum (𝓞 K
 /-- A power of an actual isolated integer absorbs a vector at a chosen prime
 while keeping its denominator outside a different actual prime. -/
 theorem exists_integral_smul_mem_rationalUnitBall_primeCompl
-    (ξ : NormFamily (S (K := K)) E) (p q : HeightOneSpectrum (𝓞 K)) (hqp : q ≠ p)
+    (ξ : NormFamily (S) E) (p q : HeightOneSpectrum (𝓞 K)) (hqp : q ≠ p)
     (x : E) :
     ∃ a : 𝓞 K, a ∈ p.asIdeal.primeCompl ∧
       algebraMap (𝓞 K) K a • x ∈ ξ.rationalUnitBall (normalizedPrimeParameter q) := by
@@ -67,7 +71,7 @@ theorem exists_integral_smul_mem_rationalUnitBall_primeCompl
 /-- Products of the produced prime-complement denominators absorb a vector
 at every prime of a finite set avoiding the prescribed prime. -/
 theorem exists_integral_smul_mem_rationalUnitBall_on_finset_primeCompl
-    (ξ : NormFamily (S (K := K)) E) (p : HeightOneSpectrum (𝓞 K))
+    (ξ : NormFamily (S) E) (p : HeightOneSpectrum (𝓞 K))
     (s : Finset (HeightOneSpectrum (𝓞 K))) (hs : ∀ q ∈ s, q ≠ p) (x : E) :
     ∃ a : 𝓞 K, a ∈ p.asIdeal.primeCompl ∧ ∀ q ∈ s,
       algebraMap (𝓞 K) K a • x ∈ ξ.rationalUnitBall (normalizedPrimeParameter q) := by
@@ -89,7 +93,7 @@ theorem exists_integral_smul_mem_rationalUnitBall_on_finset_primeCompl
 /-- Source coherence gives a genuine denominator outside the actual prime
 carrying every actual local unit-ball vector into the literal global ball. -/
 theorem HasFiniteNormExceptions.exists_primeCompl_smul_mem_globalUnitBall
-    {ξ : NormFamily (S (K := K)) E} (hfinite : ξ.HasFiniteNormExceptions)
+    {ξ : NormFamily (S) E} (hfinite : ξ.HasFiniteNormExceptions)
     (p : HeightOneSpectrum (𝓞 K)) {x : E}
     (hx : x ∈ ξ.rationalUnitBall (normalizedPrimeParameter p)) :
     ∃ a : 𝓞 K, a ∈ p.asIdeal.primeCompl ∧
@@ -126,7 +130,7 @@ theorem HasFiniteNormExceptions.exists_primeCompl_smul_mem_globalUnitBall
 /-- The canonical inclusion of the literal global unit-ball module into the
 literal local unit-ball module, using their actual integral scalar actions. -/
 def globalToRationalUnitBall
-    (ξ : NormFamily (S (K := K)) E) (hξ : ξ.IsUltrametric)
+    (ξ : NormFamily (S) E) (hξ : ξ.IsUltrametric)
     (p : HeightOneSpectrum (𝓞 K)) :
     ξ.globalUnitBallModule hξ →ₗ[𝓞 K]
       ξ.rationalUnitBallModule (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p) hξ
@@ -137,13 +141,13 @@ def globalToRationalUnitBall
 
 @[simp]
 theorem globalToRationalUnitBall_coe
-    (ξ : NormFamily (S (K := K)) E) (hξ : ξ.IsUltrametric)
+    (ξ : NormFamily (S) E) (hξ : ξ.IsUltrametric)
     (p : HeightOneSpectrum (𝓞 K)) (x : ξ.globalUnitBallModule hξ) :
     (ξ.globalToRationalUnitBall hξ p x : E) = x := rfl
 
 /-- The actual local inclusion is injective without a coherence hypothesis. -/
 theorem globalToRationalUnitBall_injective
-    (ξ : NormFamily (S (K := K)) E) (hξ : ξ.IsUltrametric)
+    (ξ : NormFamily (S) E) (hξ : ξ.IsUltrametric)
     (p : HeightOneSpectrum (𝓞 K)) :
     Function.Injective (ξ.globalToRationalUnitBall hξ p) := by
   intro x y h
@@ -153,7 +157,7 @@ theorem globalToRationalUnitBall_injective
 /-- Source coherence and the produced actual prime-complement denominators
 identify the literal local ball as localization of the literal global ball. -/
 theorem HasFiniteNormExceptions.isLocalizedModule_globalToRationalUnitBall
-    {ξ : NormFamily (S (K := K)) E} (hfinite : ξ.HasFiniteNormExceptions)
+    {ξ : NormFamily (S) E} (hfinite : ξ.HasFiniteNormExceptions)
     (hξ : ξ.IsUltrametric) (p : HeightOneSpectrum (𝓞 K)) :
     IsLocalizedModule p.asIdeal.primeCompl (ξ.globalToRationalUnitBall hξ p) := by
   let : IsLocalizedModule p.asIdeal.primeCompl (LinearMap.id :
@@ -179,53 +183,53 @@ theorem HasFiniteNormExceptions.isLocalizedModule_globalToRationalUnitBall
 /-- The actual coefficient-ring base change of the coherent global module
 recovers the actual rational local unit-ball module. -/
 def HasFiniteNormExceptions.normalizedGlobalLocalEquiv
-    {ξ : NormFamily (S (K := K)) E} (hfinite : ξ.HasFiniteNormExceptions)
+    {ξ : NormFamily (S) E} (hfinite : ξ.HasFiniteNormExceptions)
     (hξ : ξ.IsUltrametric) (p : HeightOneSpectrum (𝓞 K)) :
-    ((S (K := K)).rationalLocalRing (normalizedPrimeParameter p)
+    ((S).rationalLocalRing (normalizedPrimeParameter p)
       (normalizedPrimeParameter_mem_fin p)) ⊗[𝓞 K] (ξ.globalUnitBallModule hξ) ≃ₗ[
-      (S (K := K)).rationalLocalRing (normalizedPrimeParameter p)
+      (S).rationalLocalRing (normalizedPrimeParameter p)
         (normalizedPrimeParameter_mem_fin p)]
       ξ.rationalUnitBallModule (normalizedPrimeParameter p)
         (normalizedPrimeParameter_mem_fin p) hξ := by
-  letI : IsLocalization p.asIdeal.primeCompl ((S (K := K)).rationalLocalRing
+  letI : IsLocalization p.asIdeal.primeCompl ((S).rationalLocalRing
       (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p)) := by
     simpa only [FinitePlace.maximalIdeal_mk] using
-      (S (K := K)).isLocalization_rationalLocalRing_of_finitePlace
+      (S).isLocalization_rationalLocalRing_of_finitePlace
         (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p) (FinitePlace.mk p)
         (normalizedPrimeValue_isEquiv p)
   letI := hfinite.isLocalizedModule_globalToRationalUnitBall hξ p
   exact (IsLocalizedModule.isBaseChange p.asIdeal.primeCompl
-    ((S (K := K)).rationalLocalRing (normalizedPrimeParameter p)
+    ((S).rationalLocalRing (normalizedPrimeParameter p)
       (normalizedPrimeParameter_mem_fin p)) (ξ.globalToRationalUnitBall hξ p)).equiv
 
 @[simp]
 theorem HasFiniteNormExceptions.normalizedGlobalLocalEquiv_tmul
-    {ξ : NormFamily (S (K := K)) E} (hfinite : ξ.HasFiniteNormExceptions)
+    {ξ : NormFamily (S) E} (hfinite : ξ.HasFiniteNormExceptions)
     (hξ : ξ.IsUltrametric) (p : HeightOneSpectrum (𝓞 K))
-    (r : (S (K := K)).rationalLocalRing (normalizedPrimeParameter p)
+    (r : (S).rationalLocalRing (normalizedPrimeParameter p)
       (normalizedPrimeParameter_mem_fin p)) (x : ξ.globalUnitBallModule hξ) :
     hfinite.normalizedGlobalLocalEquiv hξ p (r ⊗ₜ[𝓞 K] x) =
       r • ξ.globalToRationalUnitBall hξ p x := by
-  let : IsLocalization p.asIdeal.primeCompl ((S (K := K)).rationalLocalRing
+  let : IsLocalization p.asIdeal.primeCompl ((S).rationalLocalRing
       (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p)) := by
     simpa only [FinitePlace.maximalIdeal_mk] using
-      (S (K := K)).isLocalization_rationalLocalRing_of_finitePlace
+      (S).isLocalization_rationalLocalRing_of_finitePlace
         (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p) (FinitePlace.mk p)
         (normalizedPrimeValue_isEquiv p)
   let := hfinite.isLocalizedModule_globalToRationalUnitBall hξ p
   exact IsBaseChange.equiv_tmul (IsLocalizedModule.isBaseChange p.asIdeal.primeCompl
-    ((S (K := K)).rationalLocalRing (normalizedPrimeParameter p)
+    ((S).rationalLocalRing (normalizedPrimeParameter p)
       (normalizedPrimeParameter_mem_fin p)) (ξ.globalToRationalUnitBall hξ p)) r x
 
-private theorem normalizedValue_isNontrivial (ω : (S (K := K)).Ω) :
-    ((S (K := K)).ϕ ω).IsNontrivial :=
+private theorem normalizedValue_isNontrivial (ω : (S).Ω) :
+    ((S).ϕ ω).IsNontrivial :=
   NormalizedNumberFieldPlaces.parameter_isNontrivial
     (NormalizedNumberFieldPlaces.parameterMeasurableEquivNontrivialPlace.symm ω)
 
 /-- Actual global integral absorption identifies the original vector space
 as localization of the coherent literal global module at nonzero integers. -/
 theorem HasFiniteNormExceptions.isLocalizedModule_normalizedGlobalGenericFibre
-    {ξ : NormFamily (S (K := K)) E} (hfinite : ξ.HasFiniteNormExceptions)
+    {ξ : NormFamily (S) E} (hfinite : ξ.HasFiniteNormExceptions)
     (hξ : ξ.IsUltrametric) :
     IsLocalizedModule (nonZeroDivisors (𝓞 K)) (ξ.globalUnitBallModule hξ).subtype := by
   let : IsLocalizedModule (nonZeroDivisors (𝓞 K)) (LinearMap.id : E →ₗ[𝓞 K] E) :=
@@ -242,7 +246,7 @@ theorem HasFiniteNormExceptions.isLocalizedModule_normalizedGlobalGenericFibre
 
 /-- The canonical actual generic fibre of the coherent literal global module. -/
 def HasFiniteNormExceptions.normalizedGlobalGenericFibreEquiv
-    {ξ : NormFamily (S (K := K)) E} (hfinite : ξ.HasFiniteNormExceptions)
+    {ξ : NormFamily (S) E} (hfinite : ξ.HasFiniteNormExceptions)
     (hξ : ξ.IsUltrametric) : K ⊗[𝓞 K] (ξ.globalUnitBallModule hξ) ≃ₗ[K] E := by
   letI := hfinite.isLocalizedModule_normalizedGlobalGenericFibre hξ
   exact (IsLocalizedModule.isBaseChange (nonZeroDivisors (𝓞 K))
@@ -250,7 +254,7 @@ def HasFiniteNormExceptions.normalizedGlobalGenericFibreEquiv
 
 @[simp]
 theorem HasFiniteNormExceptions.normalizedGlobalGenericFibreEquiv_tmul
-    {ξ : NormFamily (S (K := K)) E} (hfinite : ξ.HasFiniteNormExceptions)
+    {ξ : NormFamily (S) E} (hfinite : ξ.HasFiniteNormExceptions)
     (hξ : ξ.IsUltrametric) (a : K) (x : ξ.globalUnitBallModule hξ) :
     hfinite.normalizedGlobalGenericFibreEquiv hξ (a ⊗ₜ[𝓞 K] x) = a • (x : E) := by
   let := hfinite.isLocalizedModule_normalizedGlobalGenericFibre hξ
@@ -260,19 +264,19 @@ theorem HasFiniteNormExceptions.normalizedGlobalGenericFibreEquiv_tmul
 /-- Actual integral global absorption implies the genuine finite-exception
 condition by the proved finite support of nonzero normalized scalar values. -/
 theorem hasFiniteNormExceptions_of_integral_global_absorption
-    (ξ : NormFamily (S (K := K)) E)
+    (ξ : NormFamily (S) E)
     (habs : ∀ x : E, ∃ a : 𝓞 K, a ≠ 0 ∧
       algebraMap (𝓞 K) K a • x ∈ ξ.globalUnitBall) : ξ.HasFiniteNormExceptions := by
   intro x
   obtain ⟨a, ha, hax⟩ := habs x
   have haK : algebraMap (𝓞 K) K a ≠ 0 :=
     (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 K) K)).mpr ha
-  have hs : {ω : (S (K := K)).Ω |
-      (S (K := K)).ϕ ω (algebraMap (𝓞 K) K a) ≠ 1}.Finite :=
+  have hs : {ω : (S).Ω |
+      (S).ϕ ω (algebraMap (𝓞 K) K a) ≠ 1}.Finite :=
     normalizedPlaceValue_hasFiniteMulSupport haK
   apply hs.subset
   intro ω hω
-  change (S (K := K)).ϕ ω (algebraMap (𝓞 K) K a) ≠ 1
+  change (S).ϕ ω (algebraMap (𝓞 K) K a) ≠ 1
   intro hone
   have hbound := hax ω hω.1
   change ξ.norm ω (1 ⊗ₜ[K] (algebraMap (𝓞 K) K a • x)) ≤ 1 at hbound
@@ -282,7 +286,7 @@ theorem hasFiniteNormExceptions_of_integral_global_absorption
 /-- Source coherence is equivalent to actual global generic-fibre localization;
 the reverse implication uses genuine scalar-support finiteness. -/
 theorem hasFiniteNormExceptions_iff_isLocalizedModule_normalizedGlobalGenericFibre
-    (ξ : NormFamily (S (K := K)) E) (hξ : ξ.IsUltrametric) :
+    (ξ : NormFamily (S) E) (hξ : ξ.IsUltrametric) :
     ξ.HasFiniteNormExceptions ↔
       IsLocalizedModule (nonZeroDivisors (𝓞 K)) (ξ.globalUnitBallModule hξ).subtype := by
   refine ⟨fun h => h.isLocalizedModule_normalizedGlobalGenericFibre hξ, ?_⟩
@@ -297,7 +301,7 @@ theorem hasFiniteNormExceptions_iff_isLocalizedModule_normalizedGlobalGenericFib
 /-- Domination gives actual finite generation, while the independent genuine
 coherence hypothesis gives actual global spanning. -/
 theorem IsDominated.fg_and_span_normalizedGlobalUnitBallModule [FiniteDimensional K E]
-    {ξ : NormFamily (S (K := K)) E} (hdom : ξ.IsDominated)
+    {ξ : NormFamily (S) E} (hdom : ξ.IsDominated)
     (hξ : ξ.IsUltrametric) (hfinite : ξ.HasFiniteNormExceptions) :
     (ξ.globalUnitBallModule hξ).FG ∧ Submodule.span K ξ.globalUnitBall = ⊤ :=
   ⟨hdom.fg_normalizedGlobalUnitBallModule hξ,

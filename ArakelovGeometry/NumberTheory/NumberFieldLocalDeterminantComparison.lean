@@ -3,12 +3,16 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldLocalDeterminantGauge
-import ArakelovGeometry.NumberTheory.NumberFieldLocalDeterminantValuation
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldLocalDeterminantGauge
+public import ArakelovGeometry.NumberTheory.NumberFieldLocalDeterminantValuation
 
 /-!
 # Actual local determinant gauges and localized quotient lengths
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -24,8 +28,8 @@ attribute [local instance 2000] Algebra.toModule Algebra.toSMul
 variable {K E : Type*} [Field K] [NumberField K]
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
-private abbrev comparisonCoefficientRing (p : HeightOneSpectrum (𝓞 K)) :=
-  (normalizedNumberFieldAdelicStructure K).rationalLocalRing
+local notation "comparisonCoefficientRing" => fun (p : HeightOneSpectrum (𝓞 K)) ↦
+  AdelicStructure.rationalLocalRing (normalizedNumberFieldAdelicStructure K)
     (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p)
 
 omit [FiniteDimensional K E] in
@@ -59,7 +63,7 @@ theorem localRankBasis_repr_coe (L : Submodule (𝓞 K) E) (hfg : L.FG)
   rw [hsum]
   simp only [map_sum, map_smul, Finsupp.finsetSum_apply, Finsupp.smul_apply,
     Module.Basis.repr_self_apply, smul_eq_mul, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 omit [FiniteDimensional K E] in
 /-- The literal local inclusion matrix maps to the rational generic coordinate matrix. -/

@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Rescaling
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldIntegerWeights
-import Mathlib.Analysis.SpecificLimits.Basic
-import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Rescaling
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldIntegerWeights
+public import Mathlib.Analysis.SpecificLimits.Basic
+public import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
 
 /-!
 # A dominated actual number-field line with zero global integral ball
@@ -14,6 +16,8 @@ import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
 A positive integrable perturbation at every finite place preserves adelicity
 and excludes every nonzero rational scalar from the literal global ball.
 -/
+
+@[expose] public section
 
 open MeasureTheory NumberField IsDedekindDomain
 open scoped TensorProduct ENNReal
@@ -47,13 +51,13 @@ theorem exponent_nonneg (ω : (normalizedNumberFieldAdelicStructure K).Ω) :
 
 theorem exponent_pos_of_finite (ω : (normalizedNumberFieldAdelicStructure K).Ω)
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) : 0 < exponent ω := by
-  rw [exponent, if_pos hω]
+  rw [exponent, ite_eq_left hω]
   positivity
 
 theorem exponent_eq_zero_of_infinite (ω : (normalizedNumberFieldAdelicStructure K).Ω)
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωinf) : exponent ω = 0 := by
   have hn : ω ∉ (normalizedNumberFieldAdelicStructure K).Ωfin := hω
-  rw [exponent, if_neg hn]
+  rw [exponent, ite_eq_right hn]
 
 theorem exponent_integrable :
     Integrable (exponent (K := K)) (normalizedNumberFieldAdelicStructure K).v := by

@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldImpurityDistance
-import ArakelovGeometry.NumberTheory.NumberFieldPrincipalCompletedFrame
-import ArakelovGeometry.NumberTheory.NormFamilyNormalizedLatticeModel
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationHermitian
-import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.StrongSubquotient
+public import ArakelovGeometry.NumberTheory.NormFamilyNormalizedLatticeModel
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldImpurityDistance
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationHermitian
+public import ArakelovGeometry.NumberTheory.NumberFieldPrincipalCompletedFrame
 
 /-!
 # Domination, the literal global ball, and actual impurity
@@ -17,6 +19,8 @@ global integral module. Its finite generation supplies a common completed
 frame outside finitely many actual primes and proves domination of the
 actual lattice-gauge family. This gives source Proposition 4.4.9.
 -/
+
+@[expose] public section
 
 open MeasureTheory NumberField IsDedekindDomain
 open scoped ENNReal TensorProduct NumberField

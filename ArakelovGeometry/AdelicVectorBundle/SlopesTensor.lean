@@ -3,11 +3,13 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DegreeTensorHermitian
-import ArakelovGeometry.AdelicVectorBundle.SlopesFinite
-import ArakelovGeometry.AdelicVectorBundle.SlopesLinearMapFinite
-import ArakelovGeometry.AdelicVectorBundle.DegreeSupermodular
-import ArakelovGeometry.AdelicVectorBundle.TensorPairMap
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DegreeSupermodular
+public import ArakelovGeometry.AdelicVectorBundle.DegreeTensorHermitian
+public import ArakelovGeometry.AdelicVectorBundle.SlopesFinite
+public import ArakelovGeometry.AdelicVectorBundle.SlopesLinearMapFinite
+public import ArakelovGeometry.AdelicVectorBundle.TensorPairMap
 
 /-!
 # Slopes of actual binary tensor bundles
@@ -16,6 +18,8 @@ The mixed tensor mean inequality is the corrected source Proposition 4.3.34.
 The orthogonal Hermitian tensor has equality. Mean slope comparisons require
 both factors to have positive rank; a zero tensor has mean slope zero.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

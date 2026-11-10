@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.IntervalRationalTensorGlobalDegree
-import ArakelovGeometry.Analysis.DeterminantPairing
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.IntervalRationalTensorGlobalDegree
+public import ArakelovGeometry.Analysis.DeterminantPairing
 
 /-! # The actual three-by-two interval tensor witness -/
+
+@[expose] public section
 
 open scoped TensorProduct
 open Module MeasureTheory
@@ -185,13 +189,16 @@ theorem rationalIntervalReverseSixTensor_mixed_norm_infinite_le_one (i : Fin 6) 
     rationalIntervalReverseSixTensorRight_norm_infinite, one_mul] at h
   exact h
 
-private abbrev RationalIntervalReverseTensor := (Fin 3 → ℚ) ⊗[ℚ] (Fin 2 → ℚ)
+/-- The rational tensor product of interval three-space with the interval plane. -/
+abbrev RationalIntervalReverseTensor := (Fin 3 → ℚ) ⊗[ℚ] (Fin 2 → ℚ)
 
-private def rationalIntervalReverseTensorRankEquiv :
+/-- Identify the six reversed tensor coordinates with the rank of their space. -/
+def rationalIntervalReverseTensorRankEquiv :
     Fin 6 ≃ Fin (Module.finrank ℚ RationalIntervalReverseTensor) :=
   finCongr (by rw [← finrank_mul_eq_tensor]; simp)
 
-private def rationalIntervalReverseTensorRankBasis :
+/-- The reversed tensor basis indexed by the rank of the rational tensor space. -/
+def rationalIntervalReverseTensorRankBasis :
     Basis (Fin (Module.finrank ℚ RationalIntervalReverseTensor)) ℚ RationalIntervalReverseTensor :=
   rationalIntervalReverseTensorBasis.reindex rationalIntervalReverseTensorRankEquiv
 
@@ -256,7 +263,7 @@ theorem rationalIntervalReverseTensorFamily_determinant_norm_infinite_le_half :
   have hprod : (∏ i, ξ.norm (.inr ()) ((1 : C) ⊗ₜ[ℚ] x i)) ≤ 1 := by
     calc
       _ ≤ ∏ _ : Fin (Module.finrank ℚ RationalIntervalReverseTensor), (1 : ℝ) :=
-        Finset.prod_le_prod (fun i _ => ξ.norm_nonneg _ _)
+        Finset.prod_le_prod₀ (fun i _ => ξ.norm_nonneg _ _)
           (fun i _ => rationalIntervalReverseSixTensor_mixed_norm_infinite_le_one
             (rationalIntervalReverseTensorRankEquiv.symm i))
       _ = 1 := by simp
@@ -340,7 +347,7 @@ theorem rationalIntervalReverseTensorFamily_coordinate_norm_le_prime (q : Nat.Pr
       ((1 : C) ⊗ₜ[ℚ] (b j).dualBasis (reverseTensorBasisIndex i j))) ≤ 1 := by
     calc
       _ ≤ ∏ _ : Unit ⊕ Unit, (1 : ℝ) :=
-        Finset.prod_le_prod (fun j _ => (ξ j).dual.norm_nonneg _ _)
+        Finset.prod_le_prod₀ (fun j _ => (ξ j).dual.norm_nonneg _ _)
           (fun j _ => hd j _)
       _ = 1 := by simp
   have hm : (NormFamily.injectiveTensor ξ).norm (.inl q) t =

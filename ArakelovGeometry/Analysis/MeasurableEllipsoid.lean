@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.RationalEllipsoid
-import ArakelovGeometry.Analysis.ComplexPolarization
+module
+
+public import ArakelovGeometry.Analysis.ComplexPolarization
+public import ArakelovGeometry.Analysis.RationalEllipsoid
 
 /-!
 # Rational ellipsoids in compatible complex coordinates
@@ -13,6 +15,8 @@ A single countable family of complex rational matrix factors works for both
 real and complex completed fields. At real places the associated norm is the
 restriction of a Euclidean quadratic form to the actual real vector space.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped Matrix.Norms.Elementwise

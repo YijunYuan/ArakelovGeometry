@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinima
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinima
 
 /-!
 # Independent vectors in ordinary logarithmic threshold spans
@@ -13,6 +15,8 @@ nonzero rational vectors of at least that degree. The source range is
 `1 ≤ i ≤ finrank K E`; the index-zero empty family is an auxiliary extension.
 Attainment at a threshold is distinguished from the supremum defining a minimum.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle

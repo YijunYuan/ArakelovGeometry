@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantDiscrepancyBound
-import ArakelovGeometry.AdelicVectorBundle.DeterminantBidual
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantBidual
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantDiscrepancyBound
 
 /-!
 # Actual local majorant discrepancy
@@ -14,6 +16,8 @@ norm and are ultrametric at a finite place, or induced by an inner product
 at a normalized infinite place. Single-fibre replacement includes every
 separated fibre seminorm in this range.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct
@@ -121,7 +125,7 @@ theorem one_le_majorantDiscrepancy (ξ : NormFamily S E)
     1 ≤ ξ.majorantDiscrepancy hN ω := by
   by_cases hr : Module.finrank K E = 0
   · rw [ξ.majorantDiscrepancy_eq_one_of_finrank_eq_zero hN hr]
-  · rw [majorantDiscrepancy, if_neg hr]
+  · rw [majorantDiscrepancy, ite_eq_right hr]
     apply le_csInf (ξ.majorantRatios_nonempty hN ω)
     rintro a ⟨η, _, hl, rfl⟩
     exact ξ.one_le_majorantRatio η ω hl
@@ -136,7 +140,7 @@ theorem majorantDiscrepancy_le_ratio (ξ η : NormFamily S E)
   by_cases hr : Module.finrank K E = 0
   · rw [ξ.majorantDiscrepancy_eq_one_of_finrank_eq_zero hN hr]
     exact ξ.one_le_majorantRatio η ω hl
-  · rw [majorantDiscrepancy, if_neg hr]
+  · rw [majorantDiscrepancy, ite_eq_right hr]
     exact csInf_le (ξ.majorantRatios_bddBelow hN ω) ⟨η, he, hl, rfl⟩
 
 theorem majorantDiscrepancy_eq_one_of_elementary (ξ : NormFamily S E)
@@ -160,11 +164,7 @@ theorem determinantRatio_eq_of_nonzero (ξ η : NormFamily S E) (ω : S.Ω)
     ArakelovGeometry.determinantGenerator (K := K) (E := E)
   have hn : ξ.determinant.norm ω w₀ ≠ 0 :=
     (ξ.determinant.norm_rational_pos ω ArakelovGeometry.determinantGenerator_ne_zero).ne'
-  have hw₀ : w₀ ≠ 0 := by
-    intro he
-    apply hn
-    rw [he]
-    exact map_zero _
+  have hw₀ : w₀ ≠ 0 := (ξ.determinant.norm_eq_zero_iff ω w₀).not.mp hn
   obtain ⟨a, ha⟩ := exists_smul_eq_of_finrank_eq_one
     (show Module.finrank (S.ϕ ω).Completion
         ((S.ϕ ω).Completion ⊗[K] (⋀[K]^(Module.finrank K E) E)) = 1 by

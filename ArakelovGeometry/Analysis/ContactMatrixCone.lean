@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.CompactPositiveCone
-import Mathlib.Analysis.Matrix.Order
-import Mathlib.Analysis.Matrix.Normed
-import Mathlib.LinearAlgebra.BilinearForm.Properties
+module
+
+public import ArakelovGeometry.Analysis.CompactPositiveCone
+public import Mathlib.Analysis.Matrix.Normed
+public import Mathlib.Analysis.Matrix.Order
+public import Mathlib.LinearAlgebra.BilinearForm.Properties
 
 /-!
 # Compact cones of contact matrices
@@ -16,6 +18,8 @@ its real dual. Rank-one matrices from a compact set of unit vectors then form a
 compact trace-one base, so their finite conical hull is closed and admits a
 Hermitian separating matrix when it does not contain the identity.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped Matrix.Norms.Elementwise MatrixOrder ComplexOrder

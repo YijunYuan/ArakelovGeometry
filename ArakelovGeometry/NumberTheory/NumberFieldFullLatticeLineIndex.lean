@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLineIndex
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeGlobalBall
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPurity
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeGlobalBall
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLineIndex
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPurity
 
 /-!
 # Actual completed gauges and the original integral-line index
@@ -14,6 +16,8 @@ The literal completed full-lattice gauges are pure. In dimension one their
 finite logarithmic sum reads the cyclic quotient of the original integral
 lattice, with positive finite cardinality proved independently of the logarithm.
 -/
+
+@[expose] public section
 
 open NumberField IsDedekindDomain
 open scoped NumberField TensorProduct nonZeroDivisors

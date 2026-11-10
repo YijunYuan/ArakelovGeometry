@@ -3,16 +3,20 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalTraceDualMetric
-import ArakelovGeometry.NumberTheory.NumberFieldTraceDualizingLineCovolume
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPureDuality
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPureModel
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalTraceDualPurity
-import ArakelovGeometry.AdelicVectorBundle.SlopesDualUpper
-import ArakelovGeometry.AdelicVectorBundle.SlopesRescaling
-import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.LineVectorDegree
+public import ArakelovGeometry.AdelicVectorBundle.SlopesDualUpper
+public import ArakelovGeometry.AdelicVectorBundle.SlopesRescaling
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPureDuality
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPureModel
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalTraceDualMetric
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalTraceDualPurity
+public import ArakelovGeometry.NumberTheory.NumberFieldTraceDualizingLineCovolume
 
 /-! # Extremal slopes of the original prescribed arithmetic trace dual -/
+
+@[expose] public section
 
 noncomputable section
 open MeasureTheory
@@ -94,8 +98,7 @@ theorem baseChange_functional_eq_tmul (F : Type*) [Field F] [Algebra K F]
     (f : Module.Dual K E) (x : F ⊗[K] E) :
     LinearMap.baseChange F f x =
       (dualBaseChangeEquiv K F E ((1 : F) ⊗ₜ[K] f) x) ⊗ₜ[K] (1 : K) := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
+  induction x using TensorProduct.inductionOn with
   | add x y hx hy => simp [hx, hy, TensorProduct.add_tmul]
   | tmul a x =>
     simp only [LinearMap.baseChange_tmul, dualBaseChangeEquiv_tmul_apply_tmul, one_mul]
@@ -106,19 +109,20 @@ section NumberField
 
 open AdelicStructure
 variable [NumberField K]
-private abbrev curve := normalizedNumberFieldAdelicStructure K
+attribute [local instance] NumberFieldFullLattice.degreeCovolumeDiscrete
+local notation "curve" => normalizedNumberFieldAdelicStructure K
 
 /-- At a pure finite place, the scalar-line scaled dual ball is the literal
 ball of maps into that scalar line's completed unit ball. -/
 theorem scalarLine_mul_dual_norm_le_one_iff
-    (ξ : NormFamily (curve (K := K)) E) (L : NormFamily (curve (K := K)) K)
+    (ξ : NormFamily (curve) E) (L : NormFamily (curve) K)
     (hξ : ξ.IsPureAtFinitePlaces) (hL : L.IsPureAtFinitePlaces)
-    (ω : (curve (K := K)).Ω) (hω : ω ∈ (curve (K := K)).Ωfin)
+    (ω : (curve).Ω) (hω : ω ∈ (curve).Ωfin)
     (f : Module.Dual K E) :
-    L.norm ω ((1 : ((curve (K := K)).ϕ ω).Completion) ⊗ₜ[K] (1 : K)) *
-        ξ.dual.norm ω ((1 : ((curve (K := K)).ϕ ω).Completion) ⊗ₜ[K] f) ≤ 1 ↔
+    L.norm ω ((1 : ((curve).ϕ ω).Completion) ⊗ₜ[K] (1 : K)) *
+        ξ.dual.norm ω ((1 : ((curve).ϕ ω).Completion) ⊗ₜ[K] f) ≤ 1 ↔
       ∀ x, ξ.norm ω x ≤ 1 → L.norm ω (LinearMap.baseChange _ f x) ≤ 1 := by
-  let F := ((curve (K := K)).ϕ ω).Completion
+  let F := ((curve).ϕ ω).Completion
   have hone : ((1 : F) ⊗ₜ[K] (1 : K)) ≠ 0 := by
     intro h
     have hh := congrArg (TensorProduct.AlgebraTensorModule.rid K F F) h

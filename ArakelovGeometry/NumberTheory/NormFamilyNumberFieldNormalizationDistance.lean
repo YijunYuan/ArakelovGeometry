@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationDual
-import ArakelovGeometry.NumberTheory.NormalizedNumberFieldIntegralComparison
-import ArakelovGeometry.AdelicVectorBundle.Comparison
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Comparison
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldNormalizationDual
+public import ArakelovGeometry.NumberTheory.NormalizedNumberFieldIntegralComparison
 
 /-!
 # Local distance under actual number-field normalization
@@ -14,6 +16,8 @@ The actual completed tensor transport scales every local logarithmic distance
 by the positive normalization exponent. The degree-weighted atomic measure
 then preserves integrability and the global distance integral.
 -/
+
+@[expose] public section
 
 open MeasureTheory NumberField
 open scoped TensorProduct

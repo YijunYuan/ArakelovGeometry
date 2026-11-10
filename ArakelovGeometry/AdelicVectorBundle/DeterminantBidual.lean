@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantComparison
-import ArakelovGeometry.AdelicVectorBundle.DualMap
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantComparison
+public import ArakelovGeometry.AdelicVectorBundle.DualMap
 
 /-!
 # Completed determinant norms and bidualization
@@ -15,6 +17,8 @@ injective tensor norms therefore agree, and the proved injective determinant
 quotient gives determinant equality. At normalized infinite places, the
 original completed norms already agree with their biduals.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

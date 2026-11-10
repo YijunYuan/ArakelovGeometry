@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.SlopesLinearMapFinite
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.SlopesLinearMapFinite
 
 /-!
 # Minimal slope in an actual extension
@@ -14,6 +16,8 @@ cokernel with the same actual quotient norm. This argument proves the bound
 for all linear maps, hence in particular for the source's injective maps.
 Extended-real heights and zero quotients are retained throughout.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

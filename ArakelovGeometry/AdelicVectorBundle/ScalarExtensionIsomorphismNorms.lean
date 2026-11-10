@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphism
-import ArakelovGeometry.Analysis.ScalarExtensionFieldIsomorphism
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphism
+public import ArakelovGeometry.Analysis.ScalarExtensionFieldIsomorphism
 
 /-!
 # Completed scalar-extension norms under field isomorphisms
@@ -12,6 +14,8 @@ import ArakelovGeometry.Analysis.ScalarExtensionFieldIsomorphism
 Canonical completed tensor transport preserves every projective, injective,
 and ordinary scalar-extension norm at the corresponding actual places.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 namespace ArakelovGeometry
@@ -21,7 +25,8 @@ variable {K L M E : Type*} [Field K] [Field L] [Field M]
   [Algebra K L] [Algebra K M] [AddCommGroup E] [Module K E]
   {S : AdelicStructure K}
 
-private def completedScalarExtensionEquivOverBase (v : AbsoluteValue K ℝ)
+/-- The canonical completed tensor equivalence, linear over the original completed field. -/
+def completedScalarExtensionEquivOverBase (v : AbsoluteValue K ℝ)
     (w : AbsoluteValue L ℝ) (h : w.restriction K = v) :
     let := AbsoluteValue.normedAlgebraCompletionOfEq v w h
     w.Completion ⊗[L] (L ⊗[K] E) ≃ₗ[v.Completion]
@@ -176,9 +181,9 @@ theorem scalarExtension_norm_algEquiv (σ : L ≃ₐ[K] M)
     (if x.base ∈ S.Ωfin then ξ.injectiveScalarExtensionSeminorm (pullbackAlgEquiv S σ x) else
       ξ.projectiveScalarExtensionSeminorm (pullbackAlgEquiv S σ x)) z
   by_cases h : x.base ∈ S.Ωfin
-  · rw [if_pos h, if_pos h]
+  · rw [ite_eq_left h, ite_eq_left h]
     exact ξ.injectiveScalarExtensionSeminorm_algEquiv σ x z
-  · rw [if_neg h, if_neg h]
+  · rw [ite_eq_right h, ite_eq_right h]
     exact ξ.projectiveScalarExtensionSeminorm_algEquiv σ x z
 
 end NormFamily

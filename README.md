@@ -1,8 +1,8 @@
 # Arakelov Geometry over Adelic Curves
 
 [![CI](https://github.com/YijunYuan/ArakelovGeometry/actions/workflows/lean_action_ci.yml/badge.svg)](https://github.com/YijunYuan/ArakelovGeometry/actions/workflows/lean_action_ci.yml)
-[![Lean](https://img.shields.io/badge/Lean-4.33.0-5C2D91)](https://lean-lang.org/)
-[![mathlib](https://img.shields.io/badge/mathlib-v4.33.0-5C2D91)](https://github.com/leanprover-community/mathlib4)
+[![Lean](https://img.shields.io/badge/Lean-4.35.0-5C2D91)](https://lean-lang.org/)
+[![mathlib](https://img.shields.io/badge/mathlib-v4.35.0-5C2D91)](https://github.com/leanprover-community/mathlib4)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 
 A Lean 4 formalization of Huayi Chen and Atsushi Moriwaki,
@@ -205,9 +205,8 @@ formalizations of Chapters 1 and 2**.
 
 ## Building and verification
 
-The project is pinned to Lean **4.33.0** and mathlib **v4.33.0** by the existing
-`lean-toolchain` and `lake-manifest.json`. The publication leaves `lakefile.toml`,
-the toolchain file and the dependency manifest unchanged.
+The project is pinned to Lean **4.35.0** and mathlib **v4.35.0** by
+`lean-toolchain`, `lakefile.toml` and `lake-manifest.json`.
 
 ```bash
 lake exe cache get

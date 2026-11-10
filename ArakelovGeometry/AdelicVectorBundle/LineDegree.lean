@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.BundleTensorLine
-import ArakelovGeometry.AdelicVectorBundle.VectorDegree
-import ArakelovGeometry.AdelicVectorBundle.ScalarLine
-import ArakelovGeometry.AdelicVectorBundle.BundleHermitianTensor
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.BundleHermitianTensor
+public import ArakelovGeometry.AdelicVectorBundle.BundleTensorLine
+public import ArakelovGeometry.AdelicVectorBundle.ScalarLine
+public import ArakelovGeometry.AdelicVectorBundle.VectorDegree
 
 /-!
 # Degrees of adelic lines
@@ -16,6 +18,8 @@ The product formula proves independence of this choice. Duality and finite
 tensor additivity use the exact completed norm formulas, including the empty
 tensor family. This implements the line-degree cone of Section 4.3.1.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

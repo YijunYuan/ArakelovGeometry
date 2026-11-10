@@ -3,12 +3,16 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.DVRDeterminantIndex
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeModel
+module
+
+public import ArakelovGeometry.NumberTheory.DVRDeterminantIndex
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeModel
 
 /-!
 # The determinant index of an actual localized number-field lattice inclusion
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -24,8 +28,8 @@ attribute [local instance 2000] Algebra.toModule Algebra.toSMul
 variable {K : Type*} [Field K] [NumberField K]
   {E : Type*} [AddCommGroup E] [Module K E]
 
-private abbrev localRing (p : HeightOneSpectrum (𝓞 K)) :=
-  (normalizedNumberFieldAdelicStructure K).rationalLocalRing
+local notation "localRing" => fun (p : HeightOneSpectrum (𝓞 K)) ↦
+  AdelicStructure.rationalLocalRing (normalizedNumberFieldAdelicStructure K)
     (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p)
 
 /-- The literal rational coefficient ring at an actual finite prime is a DVR. -/

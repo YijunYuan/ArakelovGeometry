@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TensorPairNorm
-import ArakelovGeometry.AdelicVectorBundle.TensorHermitian
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.TensorHermitian
+public import ArakelovGeometry.AdelicVectorBundle.TensorPairNorm
 
 /-!
 # Contraction of actual completed tensor maps
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.TensorHermitian
 The projective bound uses every finite pure-tensor decomposition. The injective
 bound restricts each dual functional and compares its actual operator norm.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -37,7 +41,7 @@ theorem projectiveSeminorm_map_le_of_norm_le (hf : ∀ i x, ‖f i x‖ ≤ ‖x
   · simpa only [one_mul] using h
   · rw [PiTensorProduct.map_tprod, one_mul]
     exact (PiTensorProduct.projectiveSeminorm_tprod_le _).trans
-      (Finset.prod_le_prod (fun _ _ ↦ norm_nonneg _) (fun i _ ↦ hf i (x i)))
+      (Finset.prod_le_prod₀ (fun _ _ ↦ norm_nonneg _) (fun i _ ↦ hf i (x i)))
 
 /-- Pulling back a tuple of dual functionals commutes with its tensor evaluation. -/
 theorem tensorDualEval_comp_map (φ : ∀ i, Y i →ₗ[L] L) :
@@ -62,7 +66,7 @@ theorem injectiveSeminorm_map_le_of_norm_le (hf : ∀ i x, ‖f i x‖ ≤ ‖x�
   intro φ
   have hd : ∏ i, linearMapOperatorSeminorm ((φ i).comp (f i)) ≤
       ∏ i, linearMapOperatorSeminorm (φ i) := by
-    apply Finset.prod_le_prod (fun _ _ ↦ apply_nonneg _ _)
+    apply Finset.prod_le_prod₀ (fun _ _ ↦ apply_nonneg _ _)
     intro i _
     apply linearMapOperatorSeminorm_le _ (apply_nonneg _ _)
     intro x
@@ -144,8 +148,7 @@ theorem tensorBaseChangeEquiv_map (f : ∀ i, X i →ₗ[K] Y i)
     tensorBaseChangeEquiv K L Y ((PiTensorProduct.map f).baseChange L z) =
       PiTensorProduct.map (fun i ↦ (f i).baseChange L) (tensorBaseChangeEquiv K L X z) := by
   let : Fintype ι := Fintype.ofFinite ι
-  induction z using TensorProduct.induction_on with
-  | zero => simp only [map_zero]
+  induction z using TensorProduct.inductionOn with
   | add x y hx hy => simp only [map_add, hx, hy]
   | tmul a x =>
     induction x using PiTensorProduct.induction_on with

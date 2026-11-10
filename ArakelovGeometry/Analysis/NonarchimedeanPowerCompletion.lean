@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
+module
 
-import ArakelovGeometry.ExternalResults.AbsoluteValue
-import Mathlib.Analysis.SpecialFunctions.Pow.Continuity
+
+public import ArakelovGeometry.ExternalResults.AbsoluteValue
+public import Mathlib.Analysis.SpecialFunctions.Pow.Continuity
 
 /-!
 # Positive powers of genuine non-Archimedean completions
@@ -14,6 +16,8 @@ Positive powers change the absolute value while preserving the completed
 topological field. This supplies the local normalization bridge needed for
 the source-normalized number-field data.
 -/
+
+@[expose] public section
 
 noncomputable section
 open Topology

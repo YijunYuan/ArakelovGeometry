@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Separable.Measure
-import ArakelovGeometry.AdelicCurve.Extension.RootBounds
-import Mathlib.RingTheory.Norm.Defs
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.RootBounds
+public import ArakelovGeometry.AdelicCurve.Extension.Separable.Measure
+public import Mathlib.RingTheory.Norm.Defs
 
 /-!
 # The finite separable scalar extension
@@ -13,6 +15,8 @@ import Mathlib.RingTheory.Norm.Defs
 Logarithmic integrability, the norm-integral formula and preservation of properness
 construct the scalar extension (Chen–Moriwaki, Theorem 3.3.7(4–5)).
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.ParameterSpaceExtension
 

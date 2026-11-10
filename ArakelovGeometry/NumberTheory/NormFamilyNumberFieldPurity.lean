@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldImpurity
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeGauge
-import ArakelovGeometry.AdelicVectorBundle.Restriction
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Restriction
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldImpurity
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldLatticeGauge
 
 /-!
 # Finite-place purity on actual completed fibres
@@ -15,6 +17,8 @@ On the normalized number-field curve this is equivalent to equality with
 the intrinsic unit-ball gauge, and therefore to vanishing global impurity.
 Injective pullbacks preserve the original completed norm values.
 -/
+
+@[expose] public section
 
 open scoped NumberField TensorProduct
 

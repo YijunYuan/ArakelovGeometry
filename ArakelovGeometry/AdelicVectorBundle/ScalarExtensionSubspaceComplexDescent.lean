@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspaceDescent
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionArchimedean
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionArchimedean
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionSubspaceDescent
 
 /-!
 # Complexifying finite fields of definition for actual subspaces
@@ -15,6 +17,8 @@ transports each descended subspace to its span over the enlarged field, and
 its final tensor-tower image is unchanged on every vector. Dimensions,
 inclusions and the endpoints of actual exhaustive flags are preserved.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section
@@ -44,8 +48,7 @@ private theorem complexDescent_tensor_inclusion
       ((1 : L) ⊗ₜ[G] TensorProduct.map (IntermediateField.inclusion hFG).toLinearMap
         (LinearMap.id : E →ₗ[K] E) z) =
     TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E ((1 : L) ⊗ₜ[F] z) := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp only [map_zero, TensorProduct.tmul_zero]
+  induction z using TensorProduct.inductionOn with
   | tmul a e =>
     simp only [TensorProduct.map_tmul, LinearMap.id_apply,
       TensorProduct.AlgebraTensorModule.cancelBaseChange_tmul, Algebra.smul_def, mul_one]

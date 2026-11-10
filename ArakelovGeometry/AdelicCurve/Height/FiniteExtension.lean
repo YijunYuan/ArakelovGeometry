@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Height.Northcott
+module
+
+public import ArakelovGeometry.AdelicCurve.Height.Northcott
 
 /-!
 # The Northcott property under finite extension
@@ -12,6 +14,8 @@ The degree of every element in a finite extension is uniformly bounded by the
 extension degree. Claim 3.5.6 therefore implies Chen–Moriwaki, Corollary 3.5.7.
 Both existing constructions of the extension adelic structure are covered.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure
 

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Discrepancy
-import ArakelovGeometry.AdelicVectorBundle.MajorantDiscrepancyExactSequence
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Discrepancy
+public import ArakelovGeometry.AdelicVectorBundle.MajorantDiscrepancyExactSequence
 
 /-!
 # Global majorant discrepancy in an exact sequence
@@ -13,6 +15,8 @@ The local elementary-majorant infimum bounds the genuine global lower
 integrals of the restricted and quotient bundles. No measurability of the
 local infimum or finiteness of the global discrepancy is assumed.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 

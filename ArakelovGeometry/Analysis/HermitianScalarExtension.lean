@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.ComplexPolarization
-import ArakelovGeometry.Analysis.ScalarExtensionNorm
-import Mathlib.Analysis.InnerProductSpace.PiL2
+module
+
+public import ArakelovGeometry.Analysis.ComplexPolarization
+public import ArakelovGeometry.Analysis.ScalarExtensionNorm
+public import Mathlib.Analysis.InnerProductSpace.PiL2
 
 /-!
 # Hermitian scalar extension
@@ -14,6 +16,8 @@ The actual tensor scalar extension carries the positive definite sesquilinear
 extension of the original inner product. Its defining pairing identity fixes
 the extension independently of an orthonormal basis.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -132,12 +136,10 @@ theorem hermitianScalarExtensionCore_inner_eq {κ : Type*} [Fintype κ]
       (hermitianScalarExtensionCoordinates b t) =
     inner L (hermitianScalarExtensionCoordinates c z)
       (hermitianScalarExtensionCoordinates c t)
-  induction z using TensorProduct.induction_on with
-  | zero => simp only [map_zero, inner_zero_left]
+  induction z using TensorProduct.inductionOn with
   | add z u hz hu => simp only [map_add, inner_add_left, hz, hu]
   | tmul a x =>
-    induction t using TensorProduct.induction_on with
-    | zero => simp only [map_zero, inner_zero_right]
+    induction t using TensorProduct.inductionOn with
     | add t u ht hu => simp only [map_add, inner_add_right, ht, hu]
     | tmul d y =>
       exact (hermitianScalarExtensionCore_tmul b a d x y).trans

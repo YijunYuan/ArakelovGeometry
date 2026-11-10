@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPureDual
-import ArakelovGeometry.NumberTheory.NormFamilyCompletedLocalLattice
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyCompletedLocalLattice
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPureDual
 
 /-!
 # Integral duality on actual pure completed unit balls
@@ -13,6 +15,8 @@ Exact pure rescaling identifies the literal operator-norm ball with the
 integral polar of the original completed unit ball. The integral dual map
 uses the canonical completed generic fibre of that same literal ball.
 -/
+
+@[expose] public section
 
 open scoped NumberField TensorProduct
 noncomputable section
@@ -51,7 +55,7 @@ theorem IsPureAtFinitePlaces.dual_norm_le_one_iff_unitBall
   constructor
   · intro hz x hx
     exact (ξ.norm_dual_apply_le ω z x).trans
-      (mul_le_one₀ hz (ξ.norm_nonneg ω x) hx)
+      ((mul_le_mul hz hx (ξ.norm_nonneg ω x) zero_le_one).trans_eq (mul_one 1))
   · intro h
     apply ξ.dual_norm_le ω z zero_le_one
     intro x
@@ -73,17 +77,14 @@ theorem IsPureAtFinitePlaces.dual_norm_le_one_iff_unitBall
 
 namespace CompletedPureDuality
 
-private abbrev curve := normalizedNumberFieldAdelicStructure K
+variable (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
+  (ω : (normalizedNumberFieldAdelicStructure K).Ω)
+  (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) (hUltra : ξ.IsUltrametric)
 
-variable (ξ : NormFamily (curve (K := K)) E) (ω : (curve (K := K)).Ω)
-  (hω : ω ∈ (curve (K := K)).Ωfin) (hUltra : ξ.IsUltrametric)
-
-private abbrev fibre (ω : (curve (K := K)).Ω) := ((curve (K := K)).ϕ ω).Completion
-private abbrev coeff (ω : (curve (K := K)).Ω)
-    (hω : ω ∈ (curve (K := K)).Ωfin) := (curve (K := K)).completedLocalRing ω hω
-
-local notation "F" => fibre ω
-local notation "O" => coeff ω hω
+local notation "F" =>
+  AbsoluteValue.Completion (AdelicStructure.ϕ (normalizedNumberFieldAdelicStructure K) ω)
+local notation "O" =>
+  AdelicStructure.completedLocalRing (normalizedNumberFieldAdelicStructure K) ω hω
 local notation "U" => ξ.completedUnitBallModule ω hω hUltra
 local notation "D" => ξ.dual.completedUnitBallModule ω hω ξ.dual_isUltrametric
 
@@ -91,9 +92,10 @@ local notation "D" => ξ.dual.completedUnitBallModule ω hω ξ.dual_isUltrametr
 def integralDualRestriction : D →ₗ[O] Module.Dual O U where
   toFun z :=
     { toFun x := ⟨dualBaseChangeEquiv K F E (z : F ⊗[K] Module.Dual K E)
-        (x : F ⊗[K] E), ((curve (K := K)).mem_completedLocalRing ω hω _).mpr
+        (x : F ⊗[K] E), ((normalizedNumberFieldAdelicStructure K).mem_completedLocalRing ω hω _).mpr
           ((ξ.norm_dual_apply_le ω _ _).trans
-            (mul_le_one₀ z.property (ξ.norm_nonneg ω _) x.property))⟩
+            ((mul_le_mul z.property x.property (ξ.norm_nonneg ω _) zero_le_one).trans_eq
+              (mul_one 1)))⟩
       map_add' x y := Subtype.ext (by
         change dualBaseChangeEquiv K F E (z : F ⊗[K] Module.Dual K E)
           ((x : F ⊗[K] E) + (y : F ⊗[K] E)) = _
@@ -157,13 +159,14 @@ theorem integralDualRestriction_injective (hPure : ξ.IsPureAtFinitePlaces) :
         rw [← map_smul, hr]
 
 /-- Extend an actual integral functional through the canonical completed generic fibre. -/
-def integralDualExtension (hnt : ((curve (K := K)).ϕ ω).IsNontrivial)
+def integralDualExtension (hnt : ((normalizedNumberFieldAdelicStructure K).ϕ ω).IsNontrivial)
     (g : Module.Dual O U) : Module.Dual F (F ⊗[K] E) :=
   (((Algebra.linearMap O F).comp g).liftBaseChange F).comp
     (ξ.completedUnitBallGenericFibreEquiv ω hω hnt hUltra).symm.toLinearMap
 
 @[simp]
-theorem integralDualExtension_apply (hnt : ((curve (K := K)).ϕ ω).IsNontrivial)
+theorem integralDualExtension_apply
+    (hnt : ((normalizedNumberFieldAdelicStructure K).ϕ ω).IsNontrivial)
     (g : Module.Dual O U) (x : U) :
     integralDualExtension ξ ω hω hUltra hnt g (x : F ⊗[K] E) = (g x : F) := by
   let e := ξ.completedUnitBallGenericFibreEquiv ω hω hnt hUltra
@@ -178,7 +181,8 @@ theorem integralDualExtension_apply (hnt : ((curve (K := K)).ϕ ω).IsNontrivial
   rfl
 
 /-- Pure polar equality puts every extended integral functional in the actual dual ball. -/
-theorem integralDualExtension_norm_le_one (hnt : ((curve (K := K)).ϕ ω).IsNontrivial)
+theorem integralDualExtension_norm_le_one
+    (hnt : ((normalizedNumberFieldAdelicStructure K).ϕ ω).IsNontrivial)
     (hPure : ξ.IsPureAtFinitePlaces) (g : Module.Dual O U) :
     ξ.dual.norm ω ((dualBaseChangeEquiv K F E).symm
       (integralDualExtension ξ ω hω hUltra hnt g)) ≤ 1 := by
@@ -187,11 +191,13 @@ theorem integralDualExtension_norm_le_one (hnt : ((curve (K := K)).ϕ ω).IsNont
   rw [LinearEquiv.apply_symm_apply]
   have he := integralDualExtension_apply ξ ω hω hUltra hnt g (⟨x, hx⟩ : U)
   rw [he]
-  exact ((curve (K := K)).mem_completedLocalRing ω hω _).mp (g ⟨x, hx⟩).property
+  exact ((normalizedNumberFieldAdelicStructure K).mem_completedLocalRing ω hω _).mp
+    (g ⟨x, hx⟩).property
 
 /-- Every integral functional extends to a member of the actual completed dual ball. -/
 theorem integralDualRestriction_surjective
-    (hnt : ((curve (K := K)).ϕ ω).IsNontrivial) (hPure : ξ.IsPureAtFinitePlaces) :
+    (hnt : ((normalizedNumberFieldAdelicStructure K).ϕ ω).IsNontrivial)
+    (hPure : ξ.IsPureAtFinitePlaces) :
     Function.Surjective (integralDualRestriction ξ ω hω hUltra) := by
   intro g
   let z := (dualBaseChangeEquiv K F E).symm
@@ -208,7 +214,7 @@ theorem integralDualRestriction_surjective
 
 /-- The extension and restriction retain every original completed dual vector. -/
 theorem integralDualExtension_restrict
-    (hnt : ((curve (K := K)).ϕ ω).IsNontrivial) (z : D) :
+    (hnt : ((normalizedNumberFieldAdelicStructure K).ϕ ω).IsNontrivial) (z : D) :
     integralDualExtension ξ ω hω hUltra hnt
       (integralDualRestriction ξ ω hω hUltra z) =
       dualBaseChangeEquiv K F E (z : F ⊗[K] Module.Dual K E) := by

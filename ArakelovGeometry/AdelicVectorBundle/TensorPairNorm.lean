@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TensorPair
-import ArakelovGeometry.AdelicVectorBundle.DeterminantTensorBaseChange
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantTensorBaseChange
+public import ArakelovGeometry.AdelicVectorBundle.TensorPair
 
 /-!
 # Actual binary projective and mixed tensor norm families
@@ -13,6 +15,8 @@ These are the existing finite tensor norms on the ordinary binary tensor
 product, using the same canonical binary equivalence as the accepted
 injective pair family. Completed tensor base change remains canonical.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -190,7 +194,7 @@ theorem projectiveTensorPair_determinant_norm_wedge_le
   calc
     _ ≤ ∏ i : Fin (Module.finrank K (E ⊗[K] F)),
         ξ.norm ω (x (e.symm i).1) * η.norm ω (y (e.symm i).2) := by
-      apply Finset.prod_le_prod
+      apply Finset.prod_le_prod₀
       · intro i hi
         exact (ξ.projectiveTensorPair η).norm_nonneg ω _
       · intro i hi

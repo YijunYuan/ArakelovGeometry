@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionRestriction
-import ArakelovGeometry.AdelicVectorBundle.AlgebraicClosureApproximation
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AlgebraicClosureApproximation
+public import ArakelovGeometry.AdelicVectorBundle.HermitianScalarExtensionRestriction
 
 /-!
 # Actual canonical Hermitian degrees over an algebraic closure
@@ -14,6 +16,8 @@ extension. Produced common countable density supplies the closed target's usual
 vector degree. The genuine completed restriction isometry then identifies the
 native restricted degrees and real means, including rank zero.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section

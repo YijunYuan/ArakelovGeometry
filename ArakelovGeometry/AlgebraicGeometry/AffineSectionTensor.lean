@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AlgebraicGeometry.AffineModuleBaseChange
+module
+
+public import ArakelovGeometry.AlgebraicGeometry.AffineModuleBaseChange
 
 /-!
 # The canonical section map under affine tensor base change
@@ -12,6 +14,8 @@ The affine sheaf base-change isomorphism is the one determined by the
 pullback and scalar-extension adjunctions. Its compatibility with their
 units identifies actual pulled-back sections with the tensors `1 ⊗ s`.
 -/
+
+@[expose] public section
 
 open AlgebraicGeometry CategoryTheory
 open scoped ChangeOfRings

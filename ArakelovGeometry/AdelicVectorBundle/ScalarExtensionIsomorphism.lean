@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Equiv
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIdentity
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Equiv
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIdentity
 
 /-!
 # Completed fields under algebraic extension isomorphisms
@@ -13,22 +15,27 @@ The actual completed field isomorphism fixes the original completed base
 field and preserves its norm. Its coefficient formula is the field map.
 -/
 
+@[expose] public section
+
 open UniformSpace
 noncomputable section
 namespace AbsoluteValue
 variable {L M : Type*} [Field L] [Field M]
 
-private def pullbackWithAbsRingEquiv (w : AbsoluteValue M ℝ) (σ : L ≃+* M) :
+/-- A field isomorphism identifies the copies carrying the pulled-back absolute value. -/
+def pullbackWithAbsRingEquiv (w : AbsoluteValue M ℝ) (σ : L ≃+* M) :
     WithAbs (w.pullback σ.toRingHom) ≃+* WithAbs w :=
   ((WithAbs.equiv (w.pullback σ.toRingHom)).trans σ).trans (WithAbs.equiv w).symm
 
-private theorem isometry_pullbackWithAbsRingEquiv
+/-- A field isomorphism preserves the pulled-back absolute value. -/
+theorem isometry_pullbackWithAbsRingEquiv
     (w : AbsoluteValue M ℝ) (σ : L ≃+* M) :
     Isometry (pullbackWithAbsRingEquiv w σ).toRingHom :=
   AddMonoidHomClass.isometry_of_norm (pullbackWithAbsRingEquiv w σ).toRingHom
     (fun _ ↦ rfl)
 
-private theorem isometry_pullbackWithAbsRingEquiv_symm
+/-- The inverse field isomorphism also preserves the pulled-back absolute value. -/
+theorem isometry_pullbackWithAbsRingEquiv_symm
     (w : AbsoluteValue M ℝ) (σ : L ≃+* M) :
     Isometry (pullbackWithAbsRingEquiv w σ).symm.toRingHom := by
   apply AddMonoidHomClass.isometry_of_norm
@@ -39,35 +46,15 @@ private theorem isometry_pullbackWithAbsRingEquiv_symm
 /-- Pullback of the absolute value makes a field isomorphism extend to the
 actual completions, with the inverse obtained by completing its inverse. -/
 def completionRingEquivOfPullback (w : AbsoluteValue M ℝ) (σ : L ≃+* M) :
-    (w.pullback σ.toRingHom).Completion ≃+* w.Completion := by
-  let e := pullbackWithAbsRingEquiv w σ
-  let h := isometry_pullbackWithAbsRingEquiv w σ
-  let hi := isometry_pullbackWithAbsRingEquiv_symm w σ
-  exact {
-    toFun := h.mapRingHom
-    invFun := hi.mapRingHom
-    left_inv := fun a ↦ by
-      refine Completion.induction_on a ?_ ?_
-      · exact isClosed_eq (hi.isometry_mapRingHom.continuous.comp
-          h.isometry_mapRingHom.continuous) continuous_id
-      · intro b
-        rw [h.mapRingHom_coe, hi.mapRingHom_coe]
-        exact congrArg (fun z : WithAbs (w.pullback σ.toRingHom) ↦
-          (z : (w.pullback σ.toRingHom).Completion)) (e.symm_apply_apply b)
-    right_inv := fun a ↦ by
-      refine Completion.induction_on a ?_ ?_
-      · exact isClosed_eq (h.isometry_mapRingHom.continuous.comp
-          hi.isometry_mapRingHom.continuous) continuous_id
-      · intro b
-        rw [hi.mapRingHom_coe, h.mapRingHom_coe]
-        exact congrArg (fun z : WithAbs w ↦ (z : w.Completion)) (e.apply_symm_apply b)
-    map_mul' := h.mapRingHom.map_mul
-    map_add' := h.mapRingHom.map_add }
+    (w.pullback σ.toRingHom).Completion ≃+* w.Completion :=
+  Completion.mapRingEquiv (pullbackWithAbsRingEquiv w σ)
+    (isometry_pullbackWithAbsRingEquiv w σ).continuous
+    (isometry_pullbackWithAbsRingEquiv_symm w σ).continuous
 
 /-- Completing a pulled-back field isomorphism preserves every actual distance. -/
 theorem isometry_completionRingEquivOfPullback (w : AbsoluteValue M ℝ) (σ : L ≃+* M) :
     Isometry (completionRingEquivOfPullback w σ) :=
-  (isometry_pullbackWithAbsRingEquiv w σ).isometry_mapRingHom
+  Completion.isometry_mapRingHom (isometry_pullbackWithAbsRingEquiv w σ)
 
 /-- The completed map sends the original coefficient to its field-isomorphism image. -/
 theorem completionRingEquivOfPullback_algebraMap
@@ -75,7 +62,7 @@ theorem completionRingEquivOfPullback_algebraMap
     completionRingEquivOfPullback w σ
       (algebraMap L (w.pullback σ.toRingHom).Completion a) =
       algebraMap M w.Completion (σ a) :=
-  (isometry_pullbackWithAbsRingEquiv w σ).mapRingHom_coe
+  Completion.mapRingHom_coe (isometry_pullbackWithAbsRingEquiv w σ).continuous
     (WithAbs.toAbs (w.pullback σ.toRingHom) a)
 
 /-- The inverse completed map has the inverse original-coefficient formula. -/

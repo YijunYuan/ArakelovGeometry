@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.DeterminantDuality
-import Mathlib.Analysis.InnerProductSpace.PiL2
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantDuality
+public import Mathlib.Analysis.InnerProductSpace.PiL2
 
 /-!
 # Hermitian determinant volumes of completed bases
@@ -14,6 +16,8 @@ volume of a completed basis whose vectors and coordinate duals have norm at
 most one. Orthonormal bases satisfy these bounds at infinite places. Empty
 bases use the same pairing and product formulas.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -59,13 +63,13 @@ theorem IsHermitian.determinant_norm_completedBasis_eq_one (hξ : ξ.IsHermitian
     refine (ξ.determinant_norm_ιMulti_le ω b).trans ?_
     calc
       _ ≤ ∏ _ : Fin (Module.finrank K E), (1 : ℝ) :=
-        Finset.prod_le_prod (fun i _ => ξ.norm_nonneg ω (b i)) (fun i _ => hb i)
+        Finset.prod_le_prod₀ (fun i _ => ξ.norm_nonneg ω (b i)) (fun i _ => hb i)
       _ = 1 := by simp
   have hz : ξ.dual.determinant.norm ω z ≤ 1 := by
     refine (ξ.dual.determinant_norm_ιMulti_le ω f).trans ?_
     calc
       _ ≤ ∏ _ : Fin (Module.finrank K (Module.Dual K E)), (1 : ℝ) :=
-        Finset.prod_le_prod (fun i _ => ξ.dual.norm_nonneg ω (f i))
+        Finset.prod_le_prod₀ (fun i _ => ξ.dual.norm_nonneg ω (f i))
           (fun i _ => hf (e i))
       _ = 1 := by simp
   have h := hξ.norm_completedDeterminantPairing_le ξ ω z w

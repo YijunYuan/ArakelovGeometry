@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.LinearMapBound
+module
+
+public import ArakelovGeometry.Analysis.LinearMapBound
 
 /-!
 # Norm evaluations on dense ranges
@@ -12,6 +14,8 @@ Operator norms can be computed from any dense range, using continuity of the
 norm inequality rather than continuity of a quotient at zero. This retains
 zero-dimensional spaces and trivially normed complete fields.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

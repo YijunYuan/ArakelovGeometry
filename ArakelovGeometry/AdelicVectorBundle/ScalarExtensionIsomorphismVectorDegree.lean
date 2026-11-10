@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.CommonAlgebraicClosure
-import ArakelovGeometry.AdelicVectorBundle.AbsoluteLogarithmicMinima
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.AbsoluteLogarithmicMinima
+public import ArakelovGeometry.AdelicVectorBundle.CommonAlgebraicClosure
 
 /-!
 # Rational section degrees and minima under coefficient-field isomorphisms
@@ -15,6 +17,8 @@ needs no analytic hypothesis. Genuine original-produced ordinary scalar bundles
 then supply all analytic fields required for their actual vector degrees and
 logarithmic minima, without regularity assumptions on an extension place space.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

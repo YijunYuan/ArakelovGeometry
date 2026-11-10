@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Analysis.Convex.Function
-import Mathlib.Analysis.Seminorm
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Linarith
+module
+
+public import Mathlib.Analysis.Convex.Function
+public import Mathlib.Analysis.Normed.Module.Seminorm.Basic
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Linarith
 
 /-!
 # Convex shapes for norms on binary direct sums
@@ -16,6 +18,8 @@ and `1`, defines the positively homogeneous function
 `(a + b) * ψ (a / (a + b))` on the nonnegative quadrant. This is the
 shape used for direct sums in Chen–Moriwaki, §4.1.1.3.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 

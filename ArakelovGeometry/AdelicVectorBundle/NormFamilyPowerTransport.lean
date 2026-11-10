@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.EquivalentCompletion
-import ArakelovGeometry.AdelicVectorBundle.NormFamily
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.NormFamily
+public import ArakelovGeometry.Analysis.EquivalentCompletion
 
 /-!
 # Positive-power norms on actual completed scalar extensions
@@ -13,6 +15,8 @@ Use the canonical K-algebra equivalence of equivalent completed fields on the
 left tensor factor. Ultrametricity permits every positive power, and the actual
 completed scalar norm identity proves homogeneity over the new completed field.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -39,8 +43,7 @@ theorem completionScalarExtensionEquiv_smul (a : v.Completion)
     (z : v.Completion ⊗[K] E) :
     completionScalarExtensionEquiv v w h E (a • z) =
       completionAlgEquivOfIsEquiv v w h a • completionScalarExtensionEquiv v w h E z := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | tmul c x =>
     simp only [TensorProduct.smul_tmul', completionScalarExtensionEquiv_tmul,
       smul_eq_mul, map_mul]

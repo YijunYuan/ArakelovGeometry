@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.NormFamily
-import Mathlib.LinearAlgebra.Dual.BaseChange
-import Mathlib.LinearAlgebra.Dual.Lemmas
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.NormFamily
+public import Mathlib.LinearAlgebra.Dual.BaseChange
+public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 /-!
 # Duals of completed scalar extensions
@@ -15,6 +17,8 @@ algebraic dual with the algebraic dual of the completed fibre. Its evaluation
 formula fixes the tensor orientation used by norm families. No local norm or
 nontriviality assumption on the absolute value is needed.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -67,8 +71,7 @@ theorem dualBaseChangeEquiv_eval (z : L ⊗[K] E) :
     dualBaseChangeEquiv K L (Module.Dual K E)
         ((Module.Dual.eval K E).baseChange L z) =
       (dualBaseChangeEquiv K L E).dualMap (Module.Dual.eval L (L ⊗[K] E) z) := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
+  induction z using TensorProduct.inductionOn with
   | add z w hz hw => simp [hz, hw]
   | tmul a x =>
     apply TensorProduct.AlgebraTensorModule.ext

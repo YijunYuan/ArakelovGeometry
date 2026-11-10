@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaSlopes
-import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaSubspaceFiltration
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNOrdered
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNOrdered
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaSlopes
+public import ArakelovGeometry.AdelicVectorBundle.LogarithmicMinimaSubspaceFiltration
 
 /-!
 # Actual logarithmic minima and actual general ordered slopes
@@ -16,6 +18,8 @@ restricted minimal-slope bound defining the actual general HN filtration.
 Actual filtration inclusion and rank cuts give source Proposition4.3.78,
 without finite-value or attainment premises on the logarithmic minima.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle

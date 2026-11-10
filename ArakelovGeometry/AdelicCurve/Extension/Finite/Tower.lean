@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Finite.Construction
-import ArakelovGeometry.AdelicCurve.Equiv
+module
+
+public import ArakelovGeometry.AdelicCurve.Equiv
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.Construction
 
 /-!
 # Compatibility of finite extensions
@@ -13,6 +15,8 @@ Canonical measurable identifications and multiplicativity of local separable deg
 give transitivity of finite extension of adelic structures, including inseparable towers.
 This is Chen–Moriwaki, Proposition 3.4.4.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped ArakelovGeometry.AdelicStructure

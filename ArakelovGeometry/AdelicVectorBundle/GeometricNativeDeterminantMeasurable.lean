@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeometricCoordinateDeterminant
-import ArakelovGeometry.AdelicVectorBundle.GeometricNativeSubquotientMeasurable
-import ArakelovGeometry.AdelicVectorBundle.DeterminantComparison
-import ArakelovGeometry.AdelicVectorBundle.ExteriorDomination
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.DeterminantComparison
+public import ArakelovGeometry.AdelicVectorBundle.ExteriorDomination
+public import ArakelovGeometry.AdelicVectorBundle.GeometricCoordinateDeterminant
+public import ArakelovGeometry.AdelicVectorBundle.GeometricNativeSubquotientMeasurable
 
 /-!
 # Actual native determinant regularity after finite geometric extension
@@ -15,6 +17,8 @@ Determinant distance vanishes wherever the original families agree. The
 produced countable exceptional set transfers actual coordinate determinant
 measurability to native subspaces of original dominated scalar extensions.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped TensorProduct

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyLocalUnitBallFree
-import ArakelovGeometry.NumberTheory.NormFamilyCompletedLocalUnitBall
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyCompletedLocalUnitBall
+public import ArakelovGeometry.NumberTheory.NormFamilyLocalUnitBallFree
 
 /-!
 # Actual completed local unit-ball reconstruction
@@ -14,6 +16,8 @@ and the produced rational unit-ball closure make every completed-ball
 coordinate integral; no completed coefficient-integrality or density
 certificate is assumed.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct NumberField
 

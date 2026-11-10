@@ -3,17 +3,22 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.NumberTheory.NumberField.Basic
-import Mathlib.RingTheory.Ideal.Norm.AbsNorm
-import Mathlib.RingTheory.Length
-import Mathlib.RingTheory.Localization.AtPrime.Basic
-import Mathlib.RingTheory.Localization.Module
-import Mathlib.RingTheory.Flat.Localization
-import Mathlib.RingTheory.TensorProduct.Quotient
-import Mathlib.LinearAlgebra.Quotient.Card
-import Mathlib.Algebra.BigOperators.Finprod
+module
+
+public import Mathlib.Algebra.BigOperators.Finprod
+public import Mathlib.Algebra.CharZero.Infinite
+public import Mathlib.LinearAlgebra.Quotient.Card
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.Flat.Localization
+public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
+public import Mathlib.RingTheory.Length
+public import Mathlib.RingTheory.Localization.AtPrime.Basic
+public import Mathlib.RingTheory.Localization.Module
+public import Mathlib.RingTheory.TensorProduct.Quotient
 
 /-! # Cardinality of a finite number-field integer module from local lengths -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField IsDedekindDomain
@@ -36,16 +41,16 @@ theorem length_tensor_residue (p q : HeightOneSpectrum (𝓞 K))
   rw [← (Algebra.TensorProduct.quotIdealMapEquivTensorQuot S q.asIdeal).toLinearEquiv.length_eq]
   by_cases h : p = q
   · subst q
-    rw [if_pos rfl, IsLocalization.AtPrime.map_eq_maximalIdeal p.asIdeal S]
+    rw [ite_eq_left rfl, IsLocalization.AtPrime.map_eq_maximalIdeal p.asIdeal S]
     have : IsSimpleModule S (S ⧸ IsLocalRing.maximalIdeal S) :=
       isSimpleModule_iff_isCoatom.mpr (Ideal.isMaximal_def.mp inferInstance)
     exact Module.length_eq_one S (S ⧸ IsLocalRing.maximalIdeal S)
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     have hle : ¬ q.asIdeal ≤ p.asIdeal := by
       intro hle
       apply h
       exact HeightOneSpectrum.ext (q.isMaximal.eq_of_le p.isPrime.ne_top hle).symm
-    obtain ⟨a, haq, hap⟩ := SetLike.not_le_iff_exists.mp hle
+    obtain ⟨a, haq, hap⟩ := IsConcreteLE.not_le_iff_exists.mp hle
     have htop : q.asIdeal.map (algebraMap (𝓞 K) S) = ⊤ :=
       Ideal.eq_top_of_isUnit_mem _ (Ideal.mem_map_of_mem _ haq)
         (IsLocalization.map_units S (⟨a, hap⟩ : p.asIdeal.primeCompl))

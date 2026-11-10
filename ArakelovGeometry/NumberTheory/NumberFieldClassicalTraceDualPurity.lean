@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDualGeneric
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPureDual
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldPureDual
+public import ArakelovGeometry.NumberTheory.NumberFieldProjectiveTraceDualGeneric
 
 /-! # Actual finite-place purity of the original prescribed trace-dual metric -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField
@@ -40,8 +44,10 @@ theorem prescribedTraceDualFamily_norm_tensorUnit
       (dualizingLine K).norm ω
         ((1 : ((normalizedNumberFieldAdelicStructure K).ϕ ω).Completion) ⊗ₜ[K] (1 : K)) *
           η.dual.norm ω z := by
-  rw [prescribedTraceDualFamily, tensorUnitBaseChange_symm,
-    NormFamily.orthogonalTensorPair_norm_tmul_completed, mul_comm]
+  rw [prescribedTraceDualFamily, tensorUnitBaseChange_symm]
+  exact (NormFamily.orthogonalTensorPair_norm_tmul_completed η.dual (dualizingLine K).toNormFamily
+    normalizedNumberFieldArchimedeanCompletions hη.dual (dualizingLine_isHermitian K) ω z _).trans
+      (mul_comm _ _)
 
 /-- The actual original prescribed trace metric is the dual norm times the
 actual trace-line unit norm, for every place and every completed vector. -/

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Basic
-import ArakelovGeometry.AdelicVectorBundle.DirectSumDualArchimedean
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Basic
+public import ArakelovGeometry.AdelicVectorBundle.DirectSumDualArchimedean
 
 /-!
 # Adelic profile direct sums
@@ -13,6 +15,8 @@ Chen–Moriwaki Proposition 4.1.35, including the strongly adelic clause.
 The norm family is the existing actual completed direct sum. Both primal and
 actual dual measurability are proved; no measurability certificate is assumed.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicVectorBundle
 

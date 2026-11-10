@@ -3,22 +3,24 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
-import Mathlib.Analysis.Normed.Field.WithAbs
-import Mathlib.Analysis.Normed.Field.Ultra
-import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
-import Mathlib.Analysis.Normed.Module.Completion
-import Mathlib.Analysis.Normed.Field.Instances
-import Mathlib.Analysis.Normed.Algebra.GelfandMazur
-import Mathlib.Topology.Algebra.UniformRing
-import Mathlib.Topology.Instances.Rat
-import Mathlib.FieldTheory.Finite.Basic
-import Mathlib.NumberTheory.Ostrowski
-import ArakelovGeometry.ExternalResults.Place
-import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
-import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
-import Mathlib.LinearAlgebra.Countable
+module
+
+public import ArakelovGeometry.ExternalResults.Place
+public import Mathlib.Analysis.Normed.Algebra.GelfandMazur
+public import Mathlib.Analysis.Normed.Field.Instances
+public import Mathlib.Analysis.Normed.Field.Ultra
+public import Mathlib.Analysis.Normed.Field.WithAbs
+public import Mathlib.Analysis.Normed.Module.Completion
+public import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
+public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+public import Mathlib.FieldTheory.Finite.Basic
+public import Mathlib.LinearAlgebra.Countable
+public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
+public import Mathlib.NumberTheory.Ostrowski
+public import Mathlib.Topology.Algebra.UniformRing
+public import Mathlib.Topology.Instances.Rat
 
 /-!
 # Ostrowski-type classification of absolute values
@@ -39,16 +41,18 @@ absolute value a power of the standard one. We follow the strategy of Neukirch's
    to an isometric `σ₀ : ℝ →+* K`, making `K` a normed `ℝ`-algebra.
 3. Every element of `K` is quadratic over `ℝ`, so `K ≃ ℝ` or `K ≃ ℂ`: this is the
    Gelfand–Mazur theorem, `NormedAlgebra.Real.nonempty_algEquiv_or` in Mathlib (whose proof
-   is the same minimum-of-`‖ξ² - (z+z̄)ξ + zz̄‖` argument as in Neukirch).
+   uses the same minimum-of-`‖ξ² - (z + conj z) * ξ + z * conj z‖` argument as Neukirch).
 4. In the complex case the norm identity `‖σ a‖ = ‖a‖` follows since a continuous
    multiplicative function on `ℂ` fixing `|·|` on `ℝ` is trivial on the unit circle. -/
+
+@[expose] public section
 
 /-- An absolute value is nonarchimedean exactly when natural integers have value at most one. -/
 theorem AbsoluteValue.isNonarchimedean_iff_natCast_le_one {K : Type*} [Field K]
     (v : AbsoluteValue K ℝ) : IsNonarchimedean v ↔ ∀ n : ℕ, v (n : K) ≤ 1 := by
   constructor
   · intro hv n
-    exact hv.apply_natCast_le_one
+    exact hv.apply_natCast_le_one (map_zero_le v 1) (map_one v)
   · intro h
     let := v.toNormedField
     have : IsUltrametricDist K :=
@@ -521,16 +525,17 @@ theorem abs_le_one_of_isIntegral {K : Type*} [Field K] {abs : AbsoluteValue K �
     exact eq_neg_of_add_eq_zero_right h
   -- pick the dominating term of the sum
   obtain ⟨j, hj_mem, hj_le⟩ :=
-    hna.finset_image_add (map_zero abs) abs.nonneg
-      (fun i ↦ (p.coeff i : K) * x ^ i) (Finset.range n)
-  have hj_lt : j < n := Finset.mem_range.mp (hj_mem ⟨0, Finset.mem_range.mpr hn0⟩)
+    hna.finset_image_add_of_nonempty (fun i ↦ (p.coeff i : K) * x ^ i)
+      (show (Finset.range n).Nonempty from ⟨0, Finset.mem_range.mpr hn0⟩)
+  have hj_lt : j < n := Finset.mem_range.mp hj_mem
   have key : abs x ^ n ≤ abs x ^ j :=
     calc abs x ^ n = abs (x ^ n) := (map_pow abs x n).symm
       _ = abs (∑ i ∈ Finset.range n, (p.coeff i : K) * x ^ i) := by rw [hxn, abs.map_neg]
       _ ≤ abs ((p.coeff j : K) * x ^ j) := hj_le
       _ = abs ((p.coeff j : K)) * abs x ^ j := by rw [map_mul, map_pow]
       _ ≤ 1 * abs x ^ j := by
-          have := hna.apply_intCast_le_one (n := p.coeff j)
+          have := hna.apply_intCast_le_one (map_zero_le abs 1) (map_one abs) abs.map_neg
+            (n := p.coeff j)
           gcongr
       _ = abs x ^ j := one_mul _
   exact absurd key (not_le.mpr (pow_lt_pow_right₀ hgt hj_lt))
@@ -756,7 +761,8 @@ theorem finitePlace_isNonarchimedean {K : Type*} [Field K] [NumberField K]
 theorem infinitePlace_not_isNonarchimedean {K : Type*} [Field K] [NumberField K]
     (w : InfinitePlace K) : ¬IsNonarchimedean (w.val : K → ℝ) := by
   intro h
-  have h2 : (w.val : K → ℝ) ((2 : ℕ) : K) ≤ 1 := h.apply_natCast_le_one
+  have h2 : (w.val : K → ℝ) ((2 : ℕ) : K) ≤ 1 :=
+    h.apply_natCast_le_one (map_zero_le w.val 1) (map_one w.val)
   have key : (w.val : K → ℝ) ((2 : ℕ) : K) = 2 := by
     rw [← InfinitePlace.coe_apply, ← InfinitePlace.norm_embedding_eq, map_natCast]
     simp
@@ -876,30 +882,30 @@ instance instCountablePlace {K : Type*} [Field K] [NumberField K] :
   by_cases hp : p = trivialPlace K <;> by_cases hq : q = trivialPlace K
   · rw [hp, hq]
   · exfalso
-    rw [dif_pos hp] at hpq
+    rw [dite_eq_left hp] at hpq
     by_cases hqna : IsNonarchimedeanPlace q
-    · rw [dif_neg hq, dif_pos hqna] at hpq; simp at hpq
-    · rw [dif_neg hq, dif_neg hqna] at hpq; simp at hpq
+    · rw [dite_eq_right hq, dite_eq_left hqna] at hpq; simp at hpq
+    · rw [dite_eq_right hq, dite_eq_right hqna] at hpq; simp at hpq
   · exfalso
-    rw [dif_pos hq] at hpq
+    rw [dite_eq_left hq] at hpq
     by_cases hpna : IsNonarchimedeanPlace p
-    · rw [dif_neg hp, dif_pos hpna] at hpq; simp at hpq
-    · rw [dif_neg hp, dif_neg hpna] at hpq; simp at hpq
-  · rw [dif_neg hp, dif_neg hq] at hpq
+    · rw [dite_eq_right hp, dite_eq_left hpna] at hpq; simp at hpq
+    · rw [dite_eq_right hp, dite_eq_right hpna] at hpq; simp at hpq
+  · rw [dite_eq_right hp, dite_eq_right hq] at hpq
     by_cases hpna : IsNonarchimedeanPlace p <;> by_cases hqna : IsNonarchimedeanPlace q
     · -- both non-archimedean: equal chosen finite places force `p.out ≈ q.out`
-      rw [dif_pos hpna, dif_pos hqna] at hpq
+      rw [dite_eq_left hpna, dite_eq_left hqna] at hpq
       rw [Option.some_inj, Sum.inr.injEq] at hpq
       have hps := ((isNonarchimedeanPlace_iff p hp).mp hpna).choose_spec
       have hqs := ((isNonarchimedeanPlace_iff q hq).mp hqna).choose_spec
       rw [hpq] at hps
       exact Quotient.out_equiv_out.mp (hps.trans hqs.symm)
     · exfalso
-      rw [dif_pos hpna, dif_neg hqna] at hpq; simp at hpq
+      rw [dite_eq_left hpna, dite_eq_right hqna] at hpq; simp at hpq
     · exfalso
-      rw [dif_neg hpna, dif_pos hqna] at hpq; simp at hpq
+      rw [dite_eq_right hpna, dite_eq_left hqna] at hpq; simp at hpq
     · -- both archimedean: equal chosen infinite places force `p.out ≈ q.out`
-      rw [dif_neg hpna, dif_neg hqna] at hpq
+      rw [dite_eq_right hpna, dite_eq_right hqna] at hpq
       rw [Option.some_inj, Sum.inl.injEq] at hpq
       have hps := ((isArchimedeanPlace_iff p).mp hpna).choose_spec
       have hqs := ((isArchimedeanPlace_iff q).mp hqna).choose_spec
@@ -923,6 +929,7 @@ private theorem exists_heightOne_over_prime {K : Type*} [Field K] [NumberField K
   obtain ⟨Q, _hQge, hQprime, hQcomap⟩ :=
     Ideal.exists_ideal_over_prime_of_isIntegral (R := ℤ) (S := 𝓞 K)
       (Ideal.span {(p : ℤ)}) (⊥ : Ideal (𝓞 K)) hbot
+  rw [Ideal.under_def] at hQcomap
   -- `Q` is nonzero: it contracts to the nonzero ideal `(p)`.
   have hQne : Q ≠ ⊥ := by
     intro h

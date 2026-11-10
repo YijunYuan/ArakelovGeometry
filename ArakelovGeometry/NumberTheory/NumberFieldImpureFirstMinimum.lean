@@ -3,13 +3,17 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeReplacement
-import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldImpurityMinima
-import ArakelovGeometry.NumberTheory.NumberFieldFullLatticeLineIndex
-import ArakelovGeometry.NumberTheory.NumberFieldMinimumSlopeComparison
-import ArakelovGeometry.NumberTheory.NumberFieldPureFirstMinimum
+module
+
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldFullLatticeReplacement
+public import ArakelovGeometry.NumberTheory.NormFamilyNumberFieldImpurityMinima
+public import ArakelovGeometry.NumberTheory.NumberFieldFullLatticeLineIndex
+public import ArakelovGeometry.NumberTheory.NumberFieldMinimumSlopeComparison
+public import ArakelovGeometry.NumberTheory.NumberFieldPureFirstMinimum
 
 /-! # The actual number-field first minimum with its finite impurity cost -/
+
+@[expose] public section
 
 noncomputable section
 open MeasureTheory
@@ -25,7 +29,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 
 attribute [local instance] normalizedNumberFieldAdelicStructure_isProper
 
-private instance impureFirstMinimumDiscreteMeasurable :
+local instance impureFirstMinimumDiscreteMeasurable :
     DiscreteMeasurableSpace (normalizedNumberFieldAdelicStructure K).Ω :=
   inferInstanceAs
     (DiscreteMeasurableSpace {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})

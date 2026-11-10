@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.LinearMapBound
-import Mathlib.Analysis.Normed.Group.Quotient
-import Mathlib.Analysis.Normed.Group.Ultra
+module
+
+public import ArakelovGeometry.Analysis.LinearMapBound
+public import Mathlib.Analysis.Normed.Group.Quotient
+public import Mathlib.Analysis.Normed.Group.Ultra
 
 /-!
 # Approximate extension of ultrametric functionals
@@ -14,6 +16,8 @@ The finite-dimensional extension argument uses near-minimal representatives in
 a quotient norm. It applies to every complete normed field, including the
 trivially valued case, without a spherical-completeness hypothesis.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry
 
@@ -64,7 +68,7 @@ theorem exists_ultrametric_extension_larger [IsUltrametricDist V]
     ∃ (U : Submodule L V) (hWU : W < U) (g : U →ₗ[L] L),
       g.comp (Submodule.inclusion hWU.le) = f ∧
         linearMapOperatorSeminorm g ≤ A * linearMapOperatorSeminorm f := by
-  obtain ⟨v, hv⟩ := SetLike.exists_not_mem_of_ne_top W hW
+  obtain ⟨v, hv⟩ := SetLike.exists_notMem_of_ne_top W hW
   obtain ⟨u, hu, hunorm⟩ := exists_quotient_representative_norm_lt W hv hA
   have huW : u ∉ W := by
     intro huW

@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNDegree
-import ArakelovGeometry.AdelicVectorBundle.HermitianHNOrderedDegree
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNDegree
+public import ArakelovGeometry.AdelicVectorBundle.HermitianHNOrderedDegree
 
 /-!
 # Modified degrees of actual general HN filtrations
@@ -13,6 +15,8 @@ The modified degree is the actual ordered sum; its normalized slope is
 used in positive rank. General filtration functoriality compares these
 actual sums, and Hermitian bundles recover their ordinary degrees.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

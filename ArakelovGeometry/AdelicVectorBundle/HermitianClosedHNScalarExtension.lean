@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.HermitianClosedDestabilizerBaseChange
-import ArakelovGeometry.AdelicVectorBundle.HermitianClosedSemistability
-import ArakelovGeometry.AdelicVectorBundle.HermitianClosedScalarExtensionQuotient
-import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisHNScalarExtension
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.HermitianClosedDestabilizerBaseChange
+public import ArakelovGeometry.AdelicVectorBundle.HermitianClosedScalarExtensionQuotient
+public import ArakelovGeometry.AdelicVectorBundle.HermitianClosedSemistability
+public import ArakelovGeometry.AdelicVectorBundle.HermitianGaloisHNScalarExtension
 
 /-!
 # The actual Hermitian HN flag over a closed algebraic extension
@@ -15,6 +17,8 @@ The actual first destabilizer of every genuine quotient transports through the
 canonical completed quotient isometry. This preserves the canonical recursive
 HN terms, first terminal length and native finite flag in every ambient rank.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 noncomputable section
@@ -91,7 +95,7 @@ theorem hermitianHNStep_baseChange_hermitianScalarExtension_of_isAlgClosed
       rw [Submodule.ker_mkQ]
       exact Submodule.baseChange_mono L (V.le_hermitianHNStep (Or.inr hcount) hN hH U)
     change T.baseChange L = W.hermitianHNStep hLS hLN hLH (U.baseChange L)
-    conv_rhs => rw [hermitianHNStep, dif_neg hUL]
+    conv_rhs => rw [hermitianHNStep, dite_eq_right hUL]
     exact (Submodule.comap_map_eq_self hk).symm.trans
       (congrArg (fun D : Submodule L ((L ⊗[K] E) ⧸ U.baseChange L) ↦
         D.comap (U.baseChange L).mkQ) hT)

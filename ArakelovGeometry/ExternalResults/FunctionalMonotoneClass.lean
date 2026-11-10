@@ -3,10 +3,12 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import Mathlib.Topology.ContinuousMap.Weierstrass
-import Mathlib.MeasureTheory.Function.StronglyMeasurable.Basic
-import Mathlib.Topology.Sequences
-import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
+module
+
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
+public import Mathlib.MeasureTheory.Function.StronglyMeasurable.Basic
+public import Mathlib.Topology.ContinuousMap.Weierstrass
+public import Mathlib.Topology.Sequences
 
 /-!
 # Functional monotone classes under pointwise sequential limits
@@ -16,6 +18,8 @@ is closed under pointwise sequential limits contains all functions measurable fo
 generated sigma algebra. The proof constructs the minimal such vector space, proves
 that it is an algebra, and obtains indicators by polynomial approximation and limits.
 -/
+
+@[expose] public section
 
 open Filter Topology
 namespace MeasureTheory

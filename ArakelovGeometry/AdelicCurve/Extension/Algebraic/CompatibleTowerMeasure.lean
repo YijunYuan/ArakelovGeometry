@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Tower
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Tower
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
 
 /-!
 # Actual places and measures in compatible external algebraic towers
@@ -12,6 +14,8 @@ import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
 The middle field is an external field with compatible algebra maps, rather than
 an intermediate-field subtype. No measurability or measure identity is assumed.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.Algebraic
 open MeasureTheory
@@ -106,7 +110,7 @@ def compatibleTowerMeasurableEquiv :
     (x : ParameterSpaceExtension (S.algebraicExtension L) M) :
     (compatibleTowerMeasurableEquiv (L := L) (M := M) S x).base = x.base.base := rfl
 
-omit [Algebra.IsAlgebraic K L] in
+omit [Algebra.IsAlgebraic K L] [Algebra.IsAlgebraic K M] in
 /-- A finite subextension lies in a finite stage above an external middle field. -/
 theorem exists_finite_compatible_upper_stage
     (H : IntermediateField K M) [FiniteDimensional K H] :
@@ -261,9 +265,7 @@ instance isProbabilityMeasure_compatibleTowerFibreMeasure (ω : S.Ω) :
     IsProbabilityMeasure (compatibleTowerFibreMeasure (L := L) (M := M) S ω) := by
   have hp (x : (S.algebraicExtension L).Ω) :
       IsProbabilityMeasure (Measure.map (compatibleTowerMeasurableEquiv (L := L) (M := M) S)
-        (fibreMeasure (S.algebraicExtension L) M x)) :=
-    Measure.isProbabilityMeasure_map
-      (compatibleTowerMeasurableEquiv (L := L) (M := M) S).measurable.aemeasurable
+        (fibreMeasure (S.algebraicExtension L) M x)) := inferInstance
   constructor
   rw [compatibleTowerFibreMeasure, Measure.bind_apply MeasurableSet.univ
     (measurable_compatibleTowerFibreKernel (L := L) (M := M) S).aemeasurable]

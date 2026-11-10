@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.Restriction
-import ArakelovGeometry.Analysis.FiniteDimensional
-import Mathlib.Analysis.Normed.Group.Quotient
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Restriction
+public import ArakelovGeometry.Analysis.FiniteDimensional
+public import Mathlib.Analysis.Normed.Group.Quotient
 
 /-!
 # Quotients of norm families
@@ -14,6 +16,8 @@ Scalar extension of a surjective linear map and the canonical completed-fibre
 quotient identification. Quotient norms use Mathlib's norm on the quotient by
 the completed kernel, transported to the actual target fibre.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 

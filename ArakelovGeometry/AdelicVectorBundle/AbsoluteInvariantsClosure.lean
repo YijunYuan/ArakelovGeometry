@@ -3,7 +3,9 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismInvariants
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionIsomorphismInvariants
 
 /-!
 # Actual absolute invariants computed on any algebraic closure
@@ -12,6 +14,8 @@ An algebraic-closure isomorphism is produced from the field hypotheses. The
 proved actual invariant transport then compares the existing absolute objects
 with ordinary extensions over the prescribed closure.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle

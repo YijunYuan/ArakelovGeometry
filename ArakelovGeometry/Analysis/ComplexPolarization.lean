@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.MeasurableComplexEmbedding
-import Mathlib.Analysis.InnerProductSpace.Basic
+module
+
+public import ArakelovGeometry.Analysis.MeasurableComplexEmbedding
+public import Mathlib.Analysis.InnerProductSpace.Basic
 
 /-!
 # Polarization under an isometric complex field embedding
@@ -12,6 +14,8 @@ import Mathlib.Analysis.InnerProductSpace.Basic
 These identities preserve the existing inner product and use Mathlib's
 conjugate-first convention. Either orientation of a complex embedding is allowed.
 -/
+
+@[expose] public section
 
 noncomputable section
 

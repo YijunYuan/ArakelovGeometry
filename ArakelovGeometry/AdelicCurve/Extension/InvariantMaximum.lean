@@ -3,8 +3,10 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Automorphism
-import ArakelovGeometry.AdelicCurve.Extension.FibreMaximum
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Automorphism
+public import ArakelovGeometry.AdelicCurve.Extension.FibreMaximum
 
 /-!
 # Invariant measurable fibre maxima
@@ -14,6 +16,8 @@ an entire finite fibre is unchanged by automorphism pullback or by taking
 automorphism-orbit maxima first. Its pullback is the least measurable majorant
 constant on fibres. No normality or separability assumption is needed.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.ParameterSpaceExtension
 

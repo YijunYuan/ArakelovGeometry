@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Basic
-import Mathlib.MeasureTheory.OuterMeasure.OfAddContent
-import Mathlib.MeasureTheory.SetAlgebra
+module
+
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Basic
+public import Mathlib.MeasureTheory.OuterMeasure.OfAddContent
+public import Mathlib.MeasureTheory.SetAlgebra
 
 /-!
 # Cylinder functions and content
@@ -13,6 +15,8 @@ import Mathlib.MeasureTheory.SetAlgebra
 Finite-stage cylinder functions and their integral, the cylinder set algebra,
 and the content used to construct the fibre probability in Proposition 3.4.6.
 -/
+
+@[expose] public section
 
 namespace ArakelovGeometry.AdelicStructure.Algebraic
 

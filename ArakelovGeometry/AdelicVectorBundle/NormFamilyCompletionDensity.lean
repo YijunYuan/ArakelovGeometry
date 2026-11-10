@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.NormFamilyCompletion
-import Mathlib.Data.Set.FiniteExhaustion
-import Mathlib.MeasureTheory.Integral.DominatedConvergence
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.NormFamilyCompletion
+public import Mathlib.Data.Set.FiniteExhaustion
+public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 /-!
 # Approximation by finite modifications of norm families
@@ -16,6 +18,8 @@ No measurability of the original families is required: integrable majorants
 control the upper-integral distance. The number-field lattice identification
 is supplied separately.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 
@@ -49,9 +53,9 @@ theorem localDist_piecewise_left (ξ η : NormFamily S E) (T : Set S.Ω) (ω : S
     (ξ.piecewise η T).localDist ξ ω = Tᶜ.indicator (η.localDist ξ) ω := by
   classical
   by_cases h : ω ∈ T
-  · simpa only [NormFamily.localDist, piecewise_norm, if_pos h, Set.indicator_of_notMem
+  · simpa only [NormFamily.localDist, piecewise_norm, ite_eq_left h, Set.indicator_of_notMem
       (show ω ∉ Tᶜ by simpa using h)] using ξ.localDist_self ω
-  · simp only [NormFamily.localDist, piecewise_norm, if_neg h,
+  · simp only [NormFamily.localDist, piecewise_norm, ite_eq_right h,
       Set.indicator_of_mem (show ω ∈ Tᶜ from h)]
 
 /-- Strong domination is stable under arbitrary splicing of two strongly dominated families. -/
@@ -64,8 +68,8 @@ theorem IsStronglyDominated.piecewise {ξ η : NormFamily S E}
   intro ω
   classical
   by_cases h : ω ∈ T
-  · simp only [NormFamily.localDist, piecewise_norm, if_pos h, le_refl]
-  · simpa only [NormFamily.localDist, piecewise_norm, if_neg h] using
+  · simp only [NormFamily.localDist, piecewise_norm, ite_eq_left h, le_refl]
+  · simpa only [NormFamily.localDist, piecewise_norm, ite_eq_right h] using
       (show η.localDist η ω ≤ η.localDist ξ ω by
         rw [η.localDist_self]; exact η.localDist_nonneg ξ ω)
 
@@ -131,7 +135,7 @@ theorem exists_finite_modification_sequence (ξ η : StronglyDominatedNormFamily
   refine ⟨fun n ↦ ξ.piecewise η (T n), ?_, ?_⟩
   · intro n
     refine ⟨T n, T.finite n, fun ω hω ↦ ?_⟩
-    exact if_neg hω
+    exact ite_eq_right hω
   · apply tendsto_piecewise ξ η T (fun n ↦ (T.finite n).measurableSet)
     intro ω
     have hω : ω ∈ ⋃ n, T n := by rw [T.iUnion_eq]; trivial

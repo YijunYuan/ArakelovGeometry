@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.Analysis.NormFamilyMetricEnvelope
-import Mathlib.MeasureTheory.Integral.DominatedConvergence
-import Mathlib.MeasureTheory.Constructions.Polish.Basic
+module
+
+public import ArakelovGeometry.Analysis.NormFamilyMetricEnvelope
+public import Mathlib.MeasureTheory.Constructions.Polish.Basic
+public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 /-!
 # Summable majorants for norm-family metric completeness
@@ -14,6 +16,8 @@ Nonnegative measurable majorants with summable integrals are pointwise
 summable almost everywhere. Their sum and every tail are integrable, and
 the integrals of the tails tend to zero.
 -/
+
+@[expose] public section
 
 open MeasureTheory Filter
 open scoped ENNReal NNReal

@@ -3,10 +3,14 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalDualCountComparison
-import ArakelovGeometry.NumberTheory.NumberFieldClassicalTraceDualMetric
+module
+
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalDualCountComparison
+public import ArakelovGeometry.NumberTheory.NumberFieldClassicalTraceDualMetric
 
 /-! # Actual arithmetic covolume and classical duality -/
+
+@[expose] public section
 
 noncomputable section
 open NumberField MeasureTheory

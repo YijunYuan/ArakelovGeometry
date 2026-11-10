@@ -3,9 +3,11 @@ Copyright (c) 2026 Yijun Yuan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yijun Yuan
 -/
-import ArakelovGeometry.AdelicVectorBundle.TrivialPlaceBidual
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNFunctoriality
-import ArakelovGeometry.AdelicVectorBundle.GeneralHNFlagUniqueness
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNFlagUniqueness
+public import ArakelovGeometry.AdelicVectorBundle.GeneralHNFunctoriality
+public import ArakelovGeometry.AdelicVectorBundle.TrivialPlaceBidual
 
 /-!
 # Actual bidual balls as approximate spans at a trivial place
@@ -14,6 +16,8 @@ Algebraic separation and the genuine completed operator-dual norm identify
 bidual balls with intersections of spans of slightly larger original balls.
 The original norm is allowed to be non-ultrametric.
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -303,7 +307,7 @@ theorem exists_common_generalHNFlag_bidualOfMeasurableBase :
   simp only [Nat.card_fin] at hcU hcF
   have hmn : m = n := by omega
   subst m
-  have hUF : U = F := (hU.range_inj hF).mp hRange
+  have hUF : U = F := (hU.range_inj_of_wellFoundedLT hF).mp hRange
   cases hUF
   exact ⟨n, U, hU, hz, ht, fun i ↦ ⟨hsemi i, hFsemi i⟩, hb, hFb⟩
 
