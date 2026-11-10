@@ -6,11 +6,11 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Extension.ParameterSpace
-public import ArakelovGeometry.ExternalResults.AbsoluteValueLocal
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
-public import Mathlib.MeasureTheory.Measure.Dirac.Basic
-public import Mathlib.MeasureTheory.Measure.Dirac.Def
-public import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
+public import ArakelovGeometry.Analysis.AbsoluteValue.Basic
+import ArakelovGeometry.Analysis.AbsoluteValue.FiniteExtension
+import ArakelovGeometry.Analysis.AbsoluteValue.LocalDegree
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
 
 /-!
 # Integration over finite separable fibres

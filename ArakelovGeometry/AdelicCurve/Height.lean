@@ -14,6 +14,7 @@ public import ArakelovGeometry.AdelicCurve.Height.Northcott
 public import ArakelovGeometry.AdelicCurve.Height.Polynomial
 public import ArakelovGeometry.AdelicCurve.Height.Projective
 public import ArakelovGeometry.AdelicCurve.Height.ProjectiveNorthcott
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Height functions and Northcott finiteness

@@ -5,8 +5,12 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Tower
-public import ArakelovGeometry.AdelicVectorBundle.ScalarExtensionTower
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerPlace
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.Tower
+import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
+import ArakelovGeometry.FieldTheory.IntermediateField.FiniteDescent
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Actual places and measures in compatible external algebraic towers

@@ -6,9 +6,11 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Equiv
-public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integrable
-public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerCylinder
-public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerIntegral
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
+import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integrable
+import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerCylinder
+import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerIntegral
+import Mathlib.CategoryTheory.Category.Init
 /-!
 # Compatibility of algebraic extensions
 

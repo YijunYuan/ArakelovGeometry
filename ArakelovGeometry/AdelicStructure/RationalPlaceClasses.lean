@@ -6,7 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicStructure.RationalNormalization
-public import Mathlib.Analysis.AbsoluteValue.Equivalence
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
 
 /-!
 # Actual rational parameters and absolute-value classes

@@ -5,7 +5,8 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Extension.Finite.Tower
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.Construction
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Finite fibre probabilities and pullbacks

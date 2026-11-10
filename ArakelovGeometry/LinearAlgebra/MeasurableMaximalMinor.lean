@@ -5,9 +5,11 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.LinearAlgebra.MaximalMinor
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
-public import Mathlib.MeasureTheory.MeasurableSpace.Constructions
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
+import ArakelovGeometry.LinearAlgebra.MaximalMinor
+import Mathlib.Data.Nat.Totient
+import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
 
 /-!
 # Measurable selection of actual maximal minors

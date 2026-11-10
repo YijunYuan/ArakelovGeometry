@@ -6,9 +6,14 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Defs
-public import Mathlib.Algebra.AlgebraicCard
-public import Mathlib.Analysis.Polynomial.MahlerMeasure
+public import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
+public import Mathlib.Analysis.SpecialFunctions.Complex.CircleMap
 public import Mathlib.FieldTheory.RatFunc.Basic
+public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
+import Mathlib.Algebra.AlgebraicCard
+import Mathlib.Analysis.Polynomial.MahlerMeasure
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # Archimedean places of the rational-function adelic curve

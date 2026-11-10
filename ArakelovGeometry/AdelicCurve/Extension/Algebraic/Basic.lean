@@ -7,8 +7,12 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Finite.Construction
 public import ArakelovGeometry.AdelicCurve.Extension.FiniteIntermediateField
-public import ArakelovGeometry.ExternalResults.AbsoluteValueCompact
-public import ArakelovGeometry.ExternalResults.AbsoluteValueExtension
+import ArakelovGeometry.Analysis.AbsoluteValue.CompactExtension
+import ArakelovGeometry.Analysis.AbsoluteValue.Extension
+import ArakelovGeometry.Analysis.AbsoluteValue.FiniteExtension
+import ArakelovGeometry.Analysis.AbsoluteValue.LocalDegree
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 /-!
 # Finite stages and topology of algebraic extensions

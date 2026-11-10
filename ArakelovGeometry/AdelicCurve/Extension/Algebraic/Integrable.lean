@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integral
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Almost everywhere algebraic fibre integration

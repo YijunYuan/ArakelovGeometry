@@ -6,6 +6,8 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Finite.Tower
+import ArakelovGeometry.Analysis.AbsoluteValue.LocalDegree
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Fibre probabilities under descended base change

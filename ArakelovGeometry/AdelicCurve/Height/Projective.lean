@@ -6,7 +6,10 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Height.Affine
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.Combinatorics.Matroid.Init
+import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 
 /-!
 # Fields of definition and normalized projective coordinates

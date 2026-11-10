@@ -5,8 +5,12 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.ExternalResults.AbsoluteValue
+public import ArakelovGeometry.Analysis.AbsoluteValue.Basic -- shake: keep
+public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.NumberTheory.Ostrowski
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # Adelic structures and adelic curves

@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Morphism.Basic
 public import ArakelovGeometry.AdelicCurve.Restriction
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # The subfield-restriction morphism

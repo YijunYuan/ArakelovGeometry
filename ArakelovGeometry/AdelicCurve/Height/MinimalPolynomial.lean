@@ -5,7 +5,10 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Height.Extension
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
+public import ArakelovGeometry.AdelicCurve.Height.Polynomial
+import ArakelovGeometry.AdelicCurve.Height.Extension
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Heights of minimal polynomials

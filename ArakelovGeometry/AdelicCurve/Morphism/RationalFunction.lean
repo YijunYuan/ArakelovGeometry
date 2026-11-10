@@ -7,7 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Examples.RationalFunction.Construction
 public import ArakelovGeometry.AdelicCurve.Morphism.Basic
-public import ArakelovGeometry.ExternalResults.ProbabilityCollapse
+public import ArakelovGeometry.MeasureTheory.Integral.ProbabilityCollapse
 
 /-!
 # The rational-function morphism of adelic curves

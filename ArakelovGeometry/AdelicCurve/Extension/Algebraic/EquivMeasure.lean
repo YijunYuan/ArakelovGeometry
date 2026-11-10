@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Equiv
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Actual algebraic extension measure under base-field isomorphisms

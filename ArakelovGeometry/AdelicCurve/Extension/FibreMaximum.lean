@@ -6,8 +6,9 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Basic
-public import ArakelovGeometry.AdelicCurve.Extension.Finite.Probability
-public import Mathlib.Order.ConditionallyCompleteLattice.Finset
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.Tower
+import ArakelovGeometry.AdelicCurve.Extension.Finite.Probability
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Measurable maxima over finite extension fibres

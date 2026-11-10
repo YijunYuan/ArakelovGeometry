@@ -5,8 +5,8 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
-public import Mathlib.MeasureTheory.Order.Lattice
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Basic
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Measurable automorphisms of extension parameter spaces

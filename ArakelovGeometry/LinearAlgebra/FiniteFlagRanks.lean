@@ -6,9 +6,9 @@ Authors: Yijun Yuan
 module
 
 public import Mathlib.Basic.Real.Basic
-public import Mathlib.Data.Fin.Tuple.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
-public import Mathlib.Order.Interval.Finset.Nat
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+import Mathlib.LinearAlgebra.Dimension.Finite
+import Mathlib.Tactic.ContinuousFunctionalCalculus
 
 /-!
 # Rank blocks of complete finite flags

@@ -5,9 +5,12 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Basic
 public import ArakelovGeometry.AdelicCurve.Height.Affine
-public import ArakelovGeometry.ExternalResults.AbsoluteValueRootBounds
+import ArakelovGeometry.AdelicCurve.Basic
+import ArakelovGeometry.Analysis.AbsoluteValue.RootBounds
+import Mathlib.Algebra.Order.Ring.IsNonarchimedean
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # Heights of polynomials

@@ -5,7 +5,9 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Basic
+public import ArakelovGeometry.AdelicCurve.Defs
+import Mathlib.CategoryTheory.Limits.Shapes.BinaryProducts.BinaryProducts
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # Amalgamation of adelic structures

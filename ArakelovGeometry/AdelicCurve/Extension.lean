@@ -36,6 +36,7 @@ public import ArakelovGeometry.AdelicCurve.Extension.Separable.Embeddings
 public import ArakelovGeometry.AdelicCurve.Extension.Separable.FibreIntegral
 public import ArakelovGeometry.AdelicCurve.Extension.Separable.Measurability
 public import ArakelovGeometry.AdelicCurve.Extension.Separable.Measure
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Scalar extensions of adelic structures

@@ -6,8 +6,8 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicDivisor.Basic
-public import Mathlib.LinearAlgebra.TensorProduct.Tower
-public import Mathlib.RingTheory.TensorProduct.Basic
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # Principal adelic divisors

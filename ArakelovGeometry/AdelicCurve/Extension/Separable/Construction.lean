@@ -5,9 +5,12 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Extension.RootBounds
 public import ArakelovGeometry.AdelicCurve.Extension.Separable.Measure
-public import Mathlib.RingTheory.Norm.Defs
+import ArakelovGeometry.AdelicCurve.Extension.RootBounds
+import ArakelovGeometry.Analysis.AbsoluteValue.FiniteExtension
+import ArakelovGeometry.Analysis.AbsoluteValue.LocalDegree
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.RingTheory.Norm.Basic
 
 /-!
 # The finite separable scalar extension

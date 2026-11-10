@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Morphism.Basic
 public import ArakelovGeometry.AdelicDivisor.Principal
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # Divisors under morphisms of adelic curves

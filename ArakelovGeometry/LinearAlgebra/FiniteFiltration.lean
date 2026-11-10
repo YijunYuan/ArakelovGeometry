@@ -6,12 +6,9 @@ Authors: Yijun Yuan
 module
 
 public import Mathlib.Algebra.Order.Archimedean.Real.Basic
-public import Mathlib.Data.Finset.Sort
-public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
-public import Mathlib.Order.OrderIsoNat
-public import Mathlib.Order.Preorder.Chain
-public import Mathlib.RingTheory.Artinian.Module
-public import Mathlib.Topology.Order.Basic
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+import Mathlib.RingTheory.Artinian.Module
+import Mathlib.Tactic.Continuity.Init
 
 /-!
 # Finite flags of real subspace filtrations

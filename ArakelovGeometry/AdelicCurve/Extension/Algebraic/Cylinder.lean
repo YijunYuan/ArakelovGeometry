@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Measure
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Cylinder functions and their probability functional

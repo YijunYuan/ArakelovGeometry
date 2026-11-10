@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.CylinderContent
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Algebraic fibre probability measures

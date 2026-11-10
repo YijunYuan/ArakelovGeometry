@@ -5,11 +5,13 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Basic
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
-public import ArakelovGeometry.AdelicCurve.Height.Affine
 public import ArakelovGeometry.AdelicCurve.Height.Polynomial
+import ArakelovGeometry.AdelicCurve.Basic
+import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integral
+import ArakelovGeometry.Analysis.AbsoluteValue.RootBounds
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Heights under algebraic extension

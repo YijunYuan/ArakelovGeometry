@@ -5,7 +5,9 @@ Authors: Yijun Yuan
 -/
 module
 
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 
 /-!
 # Finite intermediate fields
@@ -43,7 +45,7 @@ variable {K : Type u} [Field K] {L : Type w} [Field L] [Algebra K L]
 
 /-- The trivial finite subextension `K/K`, as an element of `E_{L/K}`. -/
 def bot : FiniteIntermediateField K L :=
-  ⟨⊥, inferInstance⟩
+  ⟨⊥, by infer_instance⟩
 
 /-- The compositum of two finite subextensions, giving the filtered upper bound in `E_{L/K}`. -/
 def sup (F G : FiniteIntermediateField K L) : FiniteIntermediateField K L :=

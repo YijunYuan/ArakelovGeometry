@@ -5,20 +5,31 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicVectorBundle.HermitianLine
-public import ArakelovGeometry.AdelicVectorBundle.Line
-public import ArakelovGeometry.AdelicVectorBundle.StrongDomination
+public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
+public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Strong
+public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Basic
+import ArakelovGeometry.AdelicVectorBundle.Dual.Map
+import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Line
+import ArakelovGeometry.AdelicVectorBundle.NormFamily.Line
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # Adelic vector bundles
 
-Chen–Moriwaki, Definition 4.1.28: on a finite-dimensional rational vector
-space, an adelic vector bundle is an actual completed norm family such that
-the family and its dual are measurable and the family is dominated.
+Chen–Moriwaki, Definition 4.1.28, requires a norm family on a finite-dimensional
+vector space over the base field, measurability of that family and its completed
+dual, and domination.
 
-The underlying vector space is a parameter. No measurability of a general
-quotient or bidual is built into the definition. The line constructors prove
-the additional measurability they need from the exact completed dual formulas.
+`NormFamily.IsAdelic` records the three properties of a specified norm family.
+`AdelicVectorBundle` bundles the family with this certificate, while
+`NormFamily.toAdelicVectorBundle` packages a family whose certificate is available.
+The norm family remains a parameter of the certificate, allowing distinct metrics
+on the same vector space.
+
+Pullback, quotient and dual constructors take the additional measurability
+hypotheses their operations require. The rank-one constructors obtain dual
+measurability from the exact completed-dual formulas.
 -/
 
 @[expose] public section
@@ -52,16 +63,92 @@ theorem IsMeasurable.pushforward_of_dual_of_finrank_one {ξ : NormFamily S E}
 
 end NormFamily
 
-/-- An adelic vector bundle on the finite-dimensional rational space `E`.
-Both measurability clauses in source Definition 4.1.28 are retained. -/
-structure AdelicVectorBundle (S : AdelicStructure.{u, v} K) (E : Type w)
-    [AddCommGroup E] [Module K E] [FiniteDimensional K E] extends NormFamily S E where
+/-- Adelicity is a property of a specified norm family: the family and its completed dual
+are measurable, and the family is dominated. Keeping the norm family as an explicit parameter
+allows different adelic norms on the same rational vector space. -/
+class NormFamily.IsAdelic (ξ : NormFamily S E) : Prop where
   /-- Measurability on fixed rational vectors. -/
-  isMeasurable : toNormFamily.IsMeasurable
+  isMeasurable : ξ.IsMeasurable
   /-- Measurability of the actual completed dual family. -/
-  dual_isMeasurable : toNormFamily.dual.IsMeasurable
+  dual_isMeasurable : ξ.dual.IsMeasurable
   /-- Upper domination of the family and its actual dual. -/
-  isDominated : toNormFamily.IsDominated
+  isDominated : ξ.IsDominated
+
+namespace NormFamily
+
+/-- An injective pullback is adelic once its completed dual is measurable. -/
+theorem IsAdelic.pullback {ξ : NormFamily S E} (hξ : ξ.IsAdelic) (f : F →ₗ[K] E)
+    (hf : Function.Injective f) (hm : (ξ.pullback f hf).dual.IsMeasurable) :
+    (ξ.pullback f hf).IsAdelic where
+  isMeasurable := hξ.isMeasurable.pullback f hf
+  dual_isMeasurable := hm
+  isDominated := hξ.isDominated.pullback f hf
+
+/-- Restriction preserves adelicity under the restricted-dual measurability hypothesis. -/
+theorem IsAdelic.restrict {ξ : NormFamily S E} (hξ : ξ.IsAdelic) (F : Submodule K E)
+    (hm : (ξ.restrict F).dual.IsMeasurable) : (ξ.restrict F).IsAdelic :=
+  hξ.pullback F.subtype F.subtype_injective hm
+
+/-- A surjective quotient is adelic once the quotient norm family is measurable. -/
+theorem IsAdelic.pushforward {ξ : NormFamily S E} (hξ : ξ.IsAdelic) (π : E →ₗ[K] F)
+    (hπ : Function.Surjective π) (hm : (ξ.pushforward π hπ).IsMeasurable) :
+    (ξ.pushforward π hπ).IsAdelic where
+  isMeasurable := hm
+  dual_isMeasurable := by
+    rw [ξ.pushforward_dual π hπ]
+    exact hξ.dual_isMeasurable.pullback π.dualMap
+      (LinearMap.dualMap_injective_of_surjective hπ)
+  isDominated := hξ.isDominated.pushforward π hπ
+
+/-- Quotient by a subspace preserves adelicity under quotient measurability. -/
+theorem IsAdelic.quotient {ξ : NormFamily S E} (hξ : ξ.IsAdelic) (F : Submodule K E)
+    (hm : (ξ.quotient F).IsMeasurable) : (ξ.quotient F).IsAdelic :=
+  hξ.pushforward F.mkQ F.mkQ_surjective hm
+
+/-- Duality preserves adelicity under the completed-bidual measurability hypothesis. -/
+theorem IsAdelic.dual {ξ : NormFamily S E} (hξ : ξ.IsAdelic)
+    (hm : ξ.dual.dual.IsMeasurable) : ξ.dual.IsAdelic where
+  isMeasurable := hξ.dual_isMeasurable
+  dual_isMeasurable := hm
+  isDominated := hξ.isDominated.dual
+
+/-- A measurable dominated norm family on a line is adelic. -/
+theorem isAdelic_of_finrank_one (ξ : NormFamily S E) (hr : Module.finrank K E = 1)
+    (hm : ξ.IsMeasurable) (hd : ξ.IsDominated) : ξ.IsAdelic where
+  isMeasurable := hm
+  dual_isMeasurable := hm.dual_of_finrank_one hr
+  isDominated := hd
+
+/-- The unique norm family on a zero-dimensional vector space is adelic. -/
+instance (priority := 100) isAdelic_of_subsingleton [Subsingleton E] (ξ : NormFamily S E) :
+    ξ.IsAdelic where
+  isMeasurable := ξ.isMeasurable_of_subsingleton
+  dual_isMeasurable := ξ.dual.isMeasurable_of_subsingleton
+  isDominated := ξ.isDominated_of_subsingleton
+
+end NormFamily
+
+/-- An adelic vector bundle on the finite-dimensional base-field vector space `E`.
+The three conditions of Definition 4.1.28 are recorded by `NormFamily.IsAdelic`. -/
+structure AdelicVectorBundle (S : AdelicStructure.{u, v} K) (E : Type w)
+    [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+    extends NormFamily S E, NormFamily.IsAdelic toNormFamily
+
+attribute [instance] AdelicVectorBundle.toIsAdelic
+
+/-- Bundle an adelic norm family without changing any of its fibre norms. -/
+def NormFamily.toAdelicVectorBundle (ξ : NormFamily S E) [ξ.IsAdelic] :
+    AdelicVectorBundle S E where
+  toNormFamily := ξ
+  toIsAdelic := inferInstance
+
+@[simp]
+theorem NormFamily.toAdelicVectorBundle_toNormFamily (ξ : NormFamily S E) [ξ.IsAdelic] :
+    ξ.toAdelicVectorBundle.toNormFamily = ξ := rfl
+
+@[simp]
+theorem AdelicVectorBundle.toNormFamily_toAdelicVectorBundle (V : AdelicVectorBundle S E) :
+    V.toNormFamily.toAdelicVectorBundle = V := rfl
 
 namespace AdelicVectorBundle
 
@@ -110,11 +197,9 @@ theorem IsLine.isHermitian {V : AdelicVectorBundle S E} (hV : V.IsLine)
 
 /-- Source Proposition 4.1.29: a measurable dominated line family is adelic. -/
 def ofLine (ξ : NormFamily S E) (hr : Module.finrank K E = 1)
-    (hm : ξ.IsMeasurable) (hd : ξ.IsDominated) : AdelicVectorBundle S E where
-  toNormFamily := ξ
-  isMeasurable := hm
-  dual_isMeasurable := hm.dual_of_finrank_one hr
-  isDominated := hd
+    (hm : ξ.IsMeasurable) (hd : ξ.IsDominated) : AdelicVectorBundle S E := by
+  letI := ξ.isAdelic_of_finrank_one hr hm hd
+  exact ξ.toAdelicVectorBundle
 
 @[simp]
 theorem ofLine_toNormFamily (ξ : NormFamily S E) (hr : Module.finrank K E = 1)
@@ -169,36 +254,28 @@ theorem quotientLine_isLine (V : AdelicVectorBundle S E) (π : E →ₗ[K] F)
 /-- An injective pullback is adelic when its dual norm family is measurable. -/
 noncomputable def pullback (V : AdelicVectorBundle S E) (f : F →ₗ[K] E)
     (hf : Function.Injective f) (hm : (V.toNormFamily.pullback f hf).dual.IsMeasurable) :
-    AdelicVectorBundle S F where
-  toNormFamily := V.toNormFamily.pullback f hf
-  isMeasurable := V.isMeasurable.pullback f hf
-  dual_isMeasurable := hm
-  isDominated := V.isDominated.pullback f hf
+    AdelicVectorBundle S F := by
+  letI := V.toIsAdelic.pullback f hf hm
+  exact (V.toNormFamily.pullback f hf).toAdelicVectorBundle
 
 /-- Source Proposition 4.1.32(1), ordinary adelicity with its stated measurability condition. -/
 noncomputable def restrict (V : AdelicVectorBundle S E) (F : Submodule K E)
-    (hm : (V.toNormFamily.restrict F).dual.IsMeasurable) : AdelicVectorBundle S F :=
-  V.pullback F.subtype F.subtype_injective hm
+    (hm : (V.toNormFamily.restrict F).dual.IsMeasurable) : AdelicVectorBundle S F := by
+  letI := V.toIsAdelic.restrict F hm
+  exact (V.toNormFamily.restrict F).toAdelicVectorBundle
 
 /-- Source Proposition 4.1.32(2), ordinary adelicity with its stated measurability condition. -/
 noncomputable def pushforward (V : AdelicVectorBundle S E) (π : E →ₗ[K] F)
     (hπ : Function.Surjective π) (hm : (V.toNormFamily.pushforward π hπ).IsMeasurable) :
-    AdelicVectorBundle S F where
-  toNormFamily := V.toNormFamily.pushforward π hπ
-  isMeasurable := hm
-  dual_isMeasurable := by
-    rw [V.toNormFamily.pushforward_dual π hπ]
-    exact V.dual_isMeasurable.pullback π.dualMap
-      (LinearMap.dualMap_injective_of_surjective hπ)
-  isDominated := V.isDominated.pushforward π hπ
+    AdelicVectorBundle S F := by
+  letI := V.toIsAdelic.pushforward π hπ hm
+  exact (V.toNormFamily.pushforward π hπ).toAdelicVectorBundle
 
 /-- Source Proposition 4.1.32(3): duality retains the required bidual measurability hypothesis. -/
 noncomputable def dual (V : AdelicVectorBundle S E)
-    (hm : V.toNormFamily.dual.dual.IsMeasurable) : AdelicVectorBundle S (Module.Dual K E) where
-  toNormFamily := V.toNormFamily.dual
-  isMeasurable := V.dual_isMeasurable
-  dual_isMeasurable := hm
-  isDominated := V.isDominated.dual
+    (hm : V.toNormFamily.dual.dual.IsMeasurable) : AdelicVectorBundle S (Module.Dual K E) := by
+  letI := V.toIsAdelic.dual hm
+  exact V.toNormFamily.dual.toAdelicVectorBundle
 
 /-- The dual bundle from the source's measurability assumption is strongly adelic. -/
 theorem dual_isStronglyAdelic (V : AdelicVectorBundle S E)
@@ -206,11 +283,8 @@ theorem dual_isStronglyAdelic (V : AdelicVectorBundle S E)
   V.isDominated.strong_dual
 
 /-- The zero-dimensional norm family is adelic. -/
-def ofSubsingleton [Subsingleton E] (ξ : NormFamily S E) : AdelicVectorBundle S E where
-  toNormFamily := ξ
-  isMeasurable := ξ.isMeasurable_of_subsingleton
-  dual_isMeasurable := ξ.dual.isMeasurable_of_subsingleton
-  isDominated := ξ.isDominated_of_subsingleton
+def ofSubsingleton [Subsingleton E] (ξ : NormFamily S E) : AdelicVectorBundle S E :=
+  ξ.toAdelicVectorBundle
 
 /-- The rank-zero construction is strongly adelic. -/
 theorem ofSubsingleton_isStronglyAdelic [Subsingleton E] (ξ : NormFamily S E) :

@@ -5,7 +5,9 @@ Authors: Yijun Yuan
 -/
 module
 
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 public import ArakelovGeometry.AdelicCurve.Extension.Automorphism
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Actual algebraic extension places under base-field isomorphisms

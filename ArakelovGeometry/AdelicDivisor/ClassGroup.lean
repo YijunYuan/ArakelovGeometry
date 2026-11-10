@@ -6,8 +6,8 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicDivisor.Principal
-public import Mathlib.Analysis.Normed.Group.Quotient
-public import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # The real adelic divisor class space

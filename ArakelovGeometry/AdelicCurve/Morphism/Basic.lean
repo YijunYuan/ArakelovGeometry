@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Defs
 public import Mathlib.CategoryTheory.Category.Basic
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # Morphisms of adelic structures and the category of adelic curves

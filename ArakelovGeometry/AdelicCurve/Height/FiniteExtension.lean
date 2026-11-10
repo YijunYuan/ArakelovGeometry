@@ -5,7 +5,11 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Height.Northcott
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
+public import ArakelovGeometry.AdelicCurve.Height.Affine
+import ArakelovGeometry.AdelicCurve.Height.Extension
+import ArakelovGeometry.AdelicCurve.Height.Northcott
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # The Northcott property under finite extension

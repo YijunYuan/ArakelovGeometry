@@ -6,8 +6,10 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Defs
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
-public import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
+public import Mathlib.FieldTheory.PurelyInseparable.Basic
+public import Mathlib.LinearAlgebra.FreeModule.PID
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Parameter spaces of extending absolute values

@@ -5,10 +5,11 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Extension.Separable.Construction
-public import ArakelovGeometry.ExternalResults.AbsoluteValueLocal
-public import Mathlib.FieldTheory.PurelyInseparable.Basic
-public import Mathlib.FieldTheory.SeparableClosure
+public import ArakelovGeometry.AdelicCurve.Extension.Separable.Measure
+import ArakelovGeometry.AdelicCurve.Extension.Separable.Construction
+import ArakelovGeometry.Analysis.AbsoluteValue.FiniteExtension
+import ArakelovGeometry.Analysis.AbsoluteValue.LocalDegree
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Finite extensions of adelic structures

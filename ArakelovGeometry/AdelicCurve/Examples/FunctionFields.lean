@@ -5,11 +5,10 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Basic
-public import ArakelovGeometry.ExternalResults.Measure
+public import ArakelovGeometry.AdelicCurve.Defs
 public import Mathlib.FieldTheory.RatFunc.Valuation
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation
-public import Mathlib.RingTheory.DedekindDomain.Factorization
+import ArakelovGeometry.MeasureTheory.Integral.FiniteSupport
+import Mathlib.RingTheory.DedekindDomain.Factorization
 
 /-!
 # The function-field adelic curve (Chen–Moriwaki §3.2.1)
@@ -31,8 +30,9 @@ take `Ω := Option (IsDedekindDomain.HeightOneSpectrum (Polynomial k))` with the
 `∑_x n_x ord_x (f) = 0`, proved by multiplicativity and induction on prime factorizations.
 
 Since `Ω` is uncountable whenever `k` is, integrability against the point-mass measure is
-established through the finite-support criteria of `ArakelovGeometry.ExternalResults.Measure`
-rather than through countable sums of Dirac measures.
+established through the finite-support criteria of
+`ArakelovGeometry.MeasureTheory.Integral.FiniteSupport` rather than through countable sums of
+Dirac measures.
 -/
 
 @[expose] public section

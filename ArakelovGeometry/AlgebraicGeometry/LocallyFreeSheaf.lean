@@ -5,7 +5,6 @@ Authors: Yijun Yuan
 -/
 module
 
-public import Mathlib.Algebra.Category.ModuleCat.Sheaf.LocallyFree
 public import Mathlib.AlgebraicGeometry.Modules.Tilde
 
 /-!

@@ -6,7 +6,8 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Probability
-public import Mathlib.MeasureTheory.Measure.GiryMonad
+import ArakelovGeometry.AdelicCurve.Extension.Separable.Measurability
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Fibre integration and the algebraic extension measure

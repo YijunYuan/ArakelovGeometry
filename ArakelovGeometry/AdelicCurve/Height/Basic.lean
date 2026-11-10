@@ -6,9 +6,9 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Defs
-public import Mathlib.Algebra.Order.GroupWithZero.Finset
 public import Mathlib.LinearAlgebra.Projectivization.Basic
-public import Mathlib.MeasureTheory.Order.Lattice
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # Heights of tuples and projective points

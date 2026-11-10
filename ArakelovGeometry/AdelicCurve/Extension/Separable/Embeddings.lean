@@ -6,11 +6,12 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Extension.ParameterSpace
-public import ArakelovGeometry.AdelicCurve.Extension.PowerSums
-public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
-public import Mathlib.FieldTheory.Minpoly.IsConjRoot
-public import Mathlib.FieldTheory.Normal.Basic
-public import Mathlib.RingTheory.Trace.Basic
+public import Mathlib.RingTheory.Trace.Defs
+import ArakelovGeometry.AdelicCurve.Extension.PowerSums
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.Data.Fin.Tuple.Sort
+import Mathlib.FieldTheory.Minpoly.IsConjRoot
+import Mathlib.RingTheory.Trace.Basic
 
 /-!
 # Measurable averages over embeddings

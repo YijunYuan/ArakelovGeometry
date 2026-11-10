@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Basic
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Algebraic fibres as inverse limits

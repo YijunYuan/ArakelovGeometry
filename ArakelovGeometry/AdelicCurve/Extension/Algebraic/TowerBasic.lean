@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Compatibility of algebraic extensions

@@ -5,8 +5,10 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Height.Northcott
+public import ArakelovGeometry.AdelicCurve.Height.Extension
 public import ArakelovGeometry.AdelicCurve.Height.Projective
+import ArakelovGeometry.AdelicCurve.Height.Northcott
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Northcott finiteness in projective space

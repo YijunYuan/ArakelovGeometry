@@ -5,13 +5,14 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.ExternalResults.AbsoluteValue
-public import Mathlib.Analysis.MeanInequalitiesPow
-public import Mathlib.Analysis.SpecificLimits.Normed
-public import Mathlib.Data.Fin.Tuple.Sort
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-public import Mathlib.LinearAlgebra.Vandermonde
-public import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.Combinatorics.Matroid.Init
+import Mathlib.Data.Fintype.Order
+import Mathlib.LinearAlgebra.Vandermonde
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.Tactic.Positivity.Finset
 
 /-!
 # Power sums and ordered absolute values

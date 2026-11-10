@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Automorphism
 public import ArakelovGeometry.AdelicCurve.Extension.FibreMaximum
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Invariant measurable fibre maxima

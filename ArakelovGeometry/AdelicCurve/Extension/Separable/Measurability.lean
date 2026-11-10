@@ -5,9 +5,14 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Extension.Separable.Embeddings
 public import ArakelovGeometry.AdelicCurve.Extension.Separable.FibreIntegral
-public import ArakelovGeometry.ExternalResults.FunctionalMonotoneClass
+import ArakelovGeometry.AdelicCurve.Extension.Separable.Embeddings
+import ArakelovGeometry.Analysis.AbsoluteValue.Extension
+import ArakelovGeometry.Analysis.AbsoluteValue.FiniteExtension
+import ArakelovGeometry.Analysis.AbsoluteValue.LocalDegree
+import ArakelovGeometry.MeasureTheory.Function.MonotoneClass
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 /-!
 # Measurability of finite separable fibre integration

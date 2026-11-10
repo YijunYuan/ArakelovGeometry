@@ -5,8 +5,11 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Basic
-public import Mathlib.MeasureTheory.Measure.Restrict
+public import ArakelovGeometry.AdelicCurve.Defs
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.FieldTheory.PurelyInseparable.Basic
+import Mathlib.LinearAlgebra.FreeModule.PID
+import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
 
 /-!
 # Restriction of adelic structures

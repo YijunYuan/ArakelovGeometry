@@ -5,7 +5,12 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integral
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Measure
+import ArakelovGeometry.AdelicCurve.Basic
+import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integral
+import ArakelovGeometry.Analysis.AbsoluteValue.NormalizedCompletion
+import ArakelovGeometry.Analysis.AbsoluteValue.RootBounds
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # The algebraic extension adelic structure
@@ -88,6 +93,41 @@ theorem isProper_algebraicExtension [AS.IsProper] :
 end ArakelovGeometry.AdelicStructure.Algebraic
 
 namespace ArakelovGeometry.AdelicStructure
+
+variable {K L : Type*} [Field K] [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
+  {S : AdelicStructure K}
+
+/-- An extending place has the same archimedean type as its base place. -/
+theorem mem_Ωfin_algebraicExtension_iff (x : ParameterSpaceExtension S L) :
+    x ∈ (S.algebraicExtension L).Ωfin ↔ x.base ∈ S.Ωfin := by
+  change IsNonarchimedean x.abv ↔ IsNonarchimedean (S.ϕ x.base)
+  rw [← x.restrict_eq]
+  exact AbsoluteValue.isNonarchimedean_restriction_iff x.abv |>.symm
+
+/-- Algebraic extension preserves the absence of archimedean places. -/
+theorem forall_mem_Ωfin_algebraicExtension (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    ∀ x : (S.algebraicExtension L).Ω, x ∈ (S.algebraicExtension L).Ωfin :=
+  fun x ↦ (mem_Ωfin_algebraicExtension_iff x).mpr (hS x.base)
+
+/-- Usual archimedean normalization propagates to every completed extension field. -/
+theorem isRCLikeNormedField_algebraicExtension
+    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    ∀ x ∈ (S.algebraicExtension L).Ωinf,
+      IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion := by
+  intro x hx
+  have hb : x.base ∈ S.Ωinf :=
+    fun h ↦ hx ((mem_Ωfin_algebraicExtension_iff x).mpr h)
+  have : IsRCLikeNormedField (x.abv.under K).Completion := by
+    rw [x.restrict_eq]
+    exact hS x.base hb
+  exact isRCLikeNormedField_of_normedAlgebra (x.abv.under K).Completion x.abv.Completion
+
+/-- Algebraic extensions of a structure with only finite places are automatically normalized. -/
+theorem isRCLikeNormedField_algebraicExtension_of_forall_mem_Ωfin
+    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    ∀ x ∈ (S.algebraicExtension L).Ωinf,
+      IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion :=
+  isRCLikeNormedField_algebraicExtension (isRCLikeNormedField_of_forall_mem_Ωfin hS)
 
 open Lean PrettyPrinter.Delaborator SubExpr in
 /-- Display the implicit base field in tensor notation when the scope is open. -/

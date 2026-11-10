@@ -6,7 +6,9 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
-public import Mathlib.Probability.Kernel.Composition.IntegralCompProd
+import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integral
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.Probability.Kernel.Composition.IntegralCompProd
 
 /-!
 # Signed integration on algebraic tower fibres

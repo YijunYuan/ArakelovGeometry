@@ -6,8 +6,10 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Basic
-public import Mathlib.MeasureTheory.OuterMeasure.OfAddContent
+public import Mathlib.MeasureTheory.Measure.AddContent
 public import Mathlib.MeasureTheory.SetAlgebra
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.MeasureTheory.OuterMeasure.OfAddContent
 
 /-!
 # Cylinder functions and content

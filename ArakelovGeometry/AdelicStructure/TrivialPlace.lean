@@ -6,8 +6,12 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Examples.Trivial
-public import ArakelovGeometry.ExternalResults.Place
-public import Mathlib.LinearAlgebra.TensorProduct.Basic
+public import Mathlib.Analysis.Normed.Field.Instances
+public import Mathlib.Analysis.Normed.Module.Completion
+import ArakelovGeometry.Analysis.AbsoluteValue.Basic
+import ArakelovGeometry.Analysis.AbsoluteValue.Place
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # The mass-one trivial place and its actual completed fibre

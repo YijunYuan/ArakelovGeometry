@@ -5,7 +5,9 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Extension.Separable.Measurability
+public import ArakelovGeometry.AdelicCurve.Extension.Separable.FibreIntegral
+import ArakelovGeometry.AdelicCurve.Extension.Separable.Measurability
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # The induced measure for a finite separable extension

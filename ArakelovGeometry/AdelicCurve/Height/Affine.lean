@@ -6,6 +6,8 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Height.Basic
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # Affine heights and the Northcott property

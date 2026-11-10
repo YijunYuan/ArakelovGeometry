@@ -5,13 +5,13 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Examples.FunctionFields
-public import Mathlib.NumberTheory.MahlerMeasure
-public import Mathlib.NumberTheory.Ostrowski
-public import Mathlib.RingTheory.Localization.Integral
-public import Mathlib.RingTheory.Polynomial.Content
-public import Mathlib.RingTheory.Polynomial.GaussNorm
-public import Mathlib.RingTheory.Valuation.ExtendToLocalization
+public import ArakelovGeometry.AdelicCurve.Defs
+public import Mathlib.Analysis.Polynomial.MahlerMeasure
+public import Mathlib.FieldTheory.RatFunc.Basic
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation
+import ArakelovGeometry.AdelicCurve.Examples.FunctionFields
+import ArakelovGeometry.MeasureTheory.Integral.FiniteSupport
+import Mathlib.NumberTheory.MahlerMeasure
 
 /-!
 # Finite places of the rational-function adelic curve over the rationals

@@ -11,9 +11,9 @@ built on mathlib.
 
 ## Current scope
 
-Status updated: **2026-11-10**.
+Status updated: **2026-11-11**.
 
-This snapshot contains **740 Lean source files, including the library entry point**.
+This snapshot contains **741 Lean source files, including the library entry point**.
 The main development covers adelic curves in Chapter 3 and a substantial part of
 adelic vector bundles, degrees, slopes and number-field models in Chapter 4.
 Selected prerequisites from Chapters 1 and 2 are also implemented.
@@ -93,13 +93,13 @@ quotient, dual, tensor and determinant maps. The following results are present:
   density/completion over number fields in **4.1.36**, and a counterexample to its weaker printed
   formulation, are proved.
 
-Useful entry points include [NormFamily.lean](ArakelovGeometry/AdelicVectorBundle/NormFamily.lean),
-[BasisMixedScalarExtension.lean](ArakelovGeometry/AdelicVectorBundle/BasisMixedScalarExtension.lean),
-[Domination.lean](ArakelovGeometry/AdelicVectorBundle/Domination.lean),
-[CountableMeasurable.lean](ArakelovGeometry/AdelicVectorBundle/CountableMeasurable.lean),
-[HermitianScalarExtensionDiscrete.lean](ArakelovGeometry/AdelicVectorBundle/HermitianScalarExtensionDiscrete.lean),
-[DirectSumBundle.lean](ArakelovGeometry/AdelicVectorBundle/DirectSumBundle.lean) and
-[NormFamilyCompletion.lean](ArakelovGeometry/AdelicVectorBundle/NormFamilyCompletion.lean).
+Useful entry points include [NormFamily/Basic.lean](ArakelovGeometry/AdelicVectorBundle/NormFamily/Basic.lean),
+[ScalarExtension/Basis/Basic.lean](ArakelovGeometry/AdelicVectorBundle/ScalarExtension/Basis/Basic.lean),
+[NormFamily/Domination/Basic.lean](ArakelovGeometry/AdelicVectorBundle/NormFamily/Domination/Basic.lean),
+[Measurability/Countable.lean](ArakelovGeometry/AdelicVectorBundle/Measurability/Countable.lean),
+[ScalarExtension/Hermitian/Discrete.lean](ArakelovGeometry/AdelicVectorBundle/ScalarExtension/Hermitian/Discrete.lean),
+[Construction/DirectSum.lean](ArakelovGeometry/AdelicVectorBundle/Construction/DirectSum.lean) and
+[NormFamily/Completion/Basic.lean](ArakelovGeometry/AdelicVectorBundle/NormFamily/Completion/Basic.lean).
 
 **Still open:** the full geometric section-supremum-norm application **4.1.18**,
 and actual Lean counterexamples to the unrestricted *uncountable* discrete-base
@@ -131,14 +131,14 @@ morphism machinery. For proper curves, degree descends to divisor classes.
 | **Classical minima and transference** | Pure number-field first-minimum estimates, impurity-dependent extensions, lattice/polar counting and trace-dual ingredients. The valued Vandermonde support isometry and its real-weighted support bound are also proved. | Full all-index transference and the global factorial-family/absolute-bound consumers remain open. |
 | **Strong-to-ordinary implication** | The general implication with the additional Archimedean correction, and the established Hermitian or zero-Archimedean-mass cases. | The unrestricted positive-C implication at the **same C** remains open and is not assumed. |
 
-Selected entry points are [Degree.lean](ArakelovGeometry/AdelicVectorBundle/Degree.lean),
-[PositiveDegreeRiemannRoch.lean](ArakelovGeometry/AdelicVectorBundle/PositiveDegreeRiemannRoch.lean),
-[Slopes.lean](ArakelovGeometry/AdelicVectorBundle/Slopes.lean),
-[HermitianHN.lean](ArakelovGeometry/AdelicVectorBundle/HermitianHN.lean),
-[GeneralHN.lean](ArakelovGeometry/AdelicVectorBundle/GeneralHN.lean),
-[LogarithmicMinima.lean](ArakelovGeometry/AdelicVectorBundle/LogarithmicMinima.lean),
-[Minkowski.lean](ArakelovGeometry/AdelicVectorBundle/Minkowski.lean) and
-[VandermondeUltrametricSupport.lean](ArakelovGeometry/Analysis/VandermondeUltrametricSupport.lean).
+Selected entry points are [Degree/Basic.lean](ArakelovGeometry/AdelicVectorBundle/Degree/Basic.lean),
+[Degree/Positive/RiemannRoch.lean](ArakelovGeometry/AdelicVectorBundle/Degree/Positive/RiemannRoch.lean),
+[Slope/Basic.lean](ArakelovGeometry/AdelicVectorBundle/Slope/Basic.lean),
+[HarderNarasimhan/Hermitian/Basic.lean](ArakelovGeometry/AdelicVectorBundle/HarderNarasimhan/Hermitian/Basic.lean),
+[HarderNarasimhan/General/Basic.lean](ArakelovGeometry/AdelicVectorBundle/HarderNarasimhan/General/Basic.lean),
+[Minima/Basic.lean](ArakelovGeometry/AdelicVectorBundle/Minima/Basic.lean),
+[Minkowski/Basic.lean](ArakelovGeometry/AdelicVectorBundle/Minkowski/Basic.lean) and
+[Ultrametric/VandermondeSupport.lean](ArakelovGeometry/Analysis/Ultrametric/VandermondeSupport.lean).
 The arithmetic implementations are in [NumberTheory/](ArakelovGeometry/NumberTheory/),
 with local counting and polar-body arguments in [GeometryOfNumbers/](ArakelovGeometry/GeometryOfNumbers/).
 
@@ -166,7 +166,7 @@ formalizations of Chapters 1 and 2**.
 | --- | --- | --- |
 | **1: local normed linear algebra** | Finite-dimensional coordinate bounds and near-orthogonal bases; operator duals, restrictions and separated quotients; projective/injective tensor norms and their maps; exterior/determinant norms and pairings; local exact-sequence comparisons; ordinary and Hermitian scalar extension; real/complex norm comparison and polarization; direct-sum profiles and polar duality; John ellipsoid and measurable-ellipsoid ingredients. | [Analysis/](ArakelovGeometry/Analysis/) and the local parts of [AdelicVectorBundle/](ArakelovGeometry/AdelicVectorBundle/). Statements retain their complete-field, ultrametric or usual-Archimedean hypotheses. A few broader local source clauses and assembled estimates still need reconciliation. |
 | **2: analytic points and geometric fibres** | Intrinsic valued points of schemes, their topology, scalar-extension maps and surjectivity; completed residue fields; actual fibres of module sheaves and line bundles; affine tensor base change, completed section values and compatible pullback constructions. | [AlgebraicGeometry/](ArakelovGeometry/AlgebraicGeometry/). Full analytic compactness, geometric section supremum norms and the source 2.1.19 application remain unfinished. |
-| **2: global-section prerequisites** | Flat tensor descent over finite covers, the canonical tensor comparison on section sheaves, and the relative affine section equivalence with its pure-tensor formula. | [GlobalSectionsBaseChange.lean](ArakelovGeometry/AlgebraicGeometry/GlobalSectionsBaseChange.lean). Transport to arbitrary scheme fibre products/affine opens and the final global base-change equivalence remain open. |
+| **2: global-section prerequisites** | Flat tensor descent over finite covers, the canonical tensor comparison on section sheaves, and the relative affine section equivalence with its pure-tensor formula. | [BaseChange/GlobalSections.lean](ArakelovGeometry/AlgebraicGeometry/BaseChange/GlobalSections.lean). Transport to arbitrary scheme fibre products/affine opens and the final global base-change equivalence remain open. |
 
 ## TODO
 
@@ -220,30 +220,60 @@ file hashes rather than trusting cached hash files:
 LEAN_NUM_THREADS=2 lake build --wfail --rehash
 ```
 
-[ArakelovGeometry.lean](ArakelovGeometry.lean) imports the complete shipped source
-closure, including the newly integrated scalar-extension, geometric prerequisite
-and Vandermonde modules. Thus the default build covers all 740 source files.
-Unfinished geometric drafts are not part of this published snapshot; their last
-committed implementations are included with the boundaries described above.
+[ArakelovGeometry.lean](ArakelovGeometry.lean) publicly imports every shipped Lean
+module, so the default build checks all 741 source files. Its imports are kept
+when the dependency graph is minimized. Unfinished geometric drafts remain
+outside this snapshot; the implemented results retain the boundaries described
+above.
 
 ## Repository layout
 
-- [AdelicCurve/](ArakelovGeometry/AdelicCurve/) — Chapter 3 definitions, examples,
-  extensions, heights and morphisms.
-- [AdelicStructure/](ArakelovGeometry/AdelicStructure/) — normalized arithmetic
-  structures and their supporting constructions.
-- [AdelicVectorBundle/](ArakelovGeometry/AdelicVectorBundle/) — norm families,
-  bundles, degree, slopes, HN theory and minima.
-- [AdelicDivisor/](ArakelovGeometry/AdelicDivisor/) — the L1 divisor and class spaces.
-- [Analysis/](ArakelovGeometry/Analysis/) and [LinearAlgebra/](ArakelovGeometry/LinearAlgebra/)
-  — local analytic and finite-dimensional prerequisites.
-- [AlgebraicGeometry/](ArakelovGeometry/AlgebraicGeometry/) — geometric points,
-  fibres and section base-change prerequisites.
-- [NumberTheory/](ArakelovGeometry/NumberTheory/) and
-  [GeometryOfNumbers/](ArakelovGeometry/GeometryOfNumbers/) — lattices, local
-  arithmetic, codifferents, counting and convex geometry.
-- [ExternalResults/](ArakelovGeometry/ExternalResults/) — supporting results
-  proved on top of mathlib.
+The modules are grouped by mathematical objects and constructions. Basic normed
+linear algebra, measure theory and field theory sit below the adelic developments;
+number-field models and arithmetic applications are grouped in `NumberTheory`.
+
+| Directory | Content |
+| --- | --- |
+| [AdelicCurve/](ArakelovGeometry/AdelicCurve/) | Adelic structures, examples, extensions, heights and morphisms. |
+| [AdelicStructure/](ArakelovGeometry/AdelicStructure/) | Rational normalization and comparison of rational place classes. |
+| [AdelicVectorBundle/](ArakelovGeometry/AdelicVectorBundle/) | Norm families and bundles, their operations, degrees, slopes, filtrations and minima; see the groups below. |
+| [AdelicDivisor/](ArakelovGeometry/AdelicDivisor/) | Integrable divisors and their class spaces. |
+| [Analysis/](ArakelovGeometry/Analysis/) and [LinearAlgebra/](ArakelovGeometry/LinearAlgebra/) | Absolute values and completions, local norm comparisons, tensor and exterior constructions, and finite-dimensional algebra. |
+| [MeasureTheory/](ArakelovGeometry/MeasureTheory/) and [FieldTheory/](ArakelovGeometry/FieldTheory/) | Measure and integration lemmas, monotone-class arguments, and algebraic-tower prerequisites. |
+| [AlgebraicGeometry/](ArakelovGeometry/AlgebraicGeometry/) | Valued points, completed fibres, base change and locally free sheaves. |
+| [NumberTheory/NumberField/](ArakelovGeometry/NumberTheory/NumberField/) | Normalized adelic curves, local arithmetic, lattice models, covolumes, trace duality, minima and arithmetic Riemann–Roch. |
+| [GeometryOfNumbers/](ArakelovGeometry/GeometryOfNumbers/) | Convex bodies, lattice geometry, polar duality, normalized measures and counting. |
+
+The main bundle hierarchy is:
+
+```text
+AdelicVectorBundle/
+  Basic.lean                    adelic bundles and the IsAdelic certificate
+  NormFamily/                   fibre norms, domination, Hermitian properties, completion
+  Construction/                 bundle constructors and tensor constructions
+  Measurability/                evaluation criteria and measurable operations
+  Subquotient/                   restrictions, quotients and isometries
+  Dual/, DirectSum/, Tensor/    operations on norm families
+  Exterior/, Determinant/       exterior and determinant norms
+  ScalarExtension/              ordinary and Hermitian extensions, descent and towers
+  Degree/                       degrees, discrepancy, flags and positive degree
+  Slope/                        slope bounds and semistability
+  HarderNarasimhan/              general and Hermitian filtrations and descent
+  Minima/, Minkowski/            logarithmic minima and Minkowski properties
+  AbsoluteInvariants/           algebraic-extension invariants
+  Examples/                     constructions and counterexamples
+```
+
+`NormFamily` keeps the choice of norms explicit, so comparison theorems can use
+several metrics on the same completed vector space. `NormFamily.IsAdelic` records
+primal measurability, dual measurability and domination. `AdelicVectorBundle`
+bundles these proofs with the norm family. Restriction, quotient and dual
+constructors retain their precise additional measurability hypotheses.
+
+Supporting results are placed with their mathematical subject and use mathlib's
+existing constructions wherever applicable. Specialized files import the modules
+they use; [ArakelovGeometry.lean](ArakelovGeometry.lean) publicly imports every
+project source for complete library exports and build coverage.
 
 ## References
 

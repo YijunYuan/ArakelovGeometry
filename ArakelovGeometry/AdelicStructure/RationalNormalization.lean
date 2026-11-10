@@ -6,8 +6,9 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Examples.RationalFunction.Construction
-public import ArakelovGeometry.Analysis.NormalizedCompletion
-public import Mathlib.Data.Nat.Factorization.Induction
+public import Mathlib.Analysis.Normed.Field.Instances
+import ArakelovGeometry.Analysis.AbsoluteValue.NormalizedCompletion
+import ArakelovGeometry.MeasureTheory.Integral.FiniteSupport
 
 /-!
 # The standard normalized rational adelic structure

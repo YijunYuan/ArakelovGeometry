@@ -6,13 +6,17 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicStructure.RationalNormalization
-public import ArakelovGeometry.AdelicVectorBundle.BasisBundle
-public import ArakelovGeometry.AdelicVectorBundle.Degree
-public import ArakelovGeometry.AdelicVectorBundle.DeterminantUniversal
-public import ArakelovGeometry.AdelicVectorBundle.DualMap
-public import ArakelovGeometry.AdelicVectorBundle.GeneralHNOrdered
-public import ArakelovGeometry.AdelicVectorBundle.HeightDegree
-public import ArakelovGeometry.Analysis.DeterminantExactSequence
+public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Ordered
+public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
+public import ArakelovGeometry.Analysis.Determinant.ExactSequence
+import ArakelovGeometry.AdelicCurve.Basic
+import ArakelovGeometry.AdelicVectorBundle.Degree.Height
+import ArakelovGeometry.AdelicVectorBundle.Dual.Map
+import ArakelovGeometry.AdelicVectorBundle.NormFamily.BasisComparison
+import ArakelovGeometry.AdelicVectorBundle.NormFamily.Line
+import ArakelovGeometry.AdelicVectorBundle.Slope.Quotient
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.SimpleRing.Principal
 
 /-!
 # The square norm over the source-normalized rational curve
@@ -52,8 +56,8 @@ def squareNorm : AdelicVectorBundle rationalAdelicStructure RationalPlane where
   dual_isMeasurable :=
     (NormFamily.ofBasis rationalAdelicStructure RationalPlane
       squareBasis).dual.isMeasurable_of_discrete
-  isDominated := NormFamily.ofBasis_isDominated_of_measure_lt_top squareBasis
-    squareFiniteInfiniteMeasure
+  isDominated := by
+    exact NormFamily.ofBasis_isDominated_of_measure_lt_top squareBasis squareFiniteInfiniteMeasure
 
 @[simp]
 theorem squareNorm_toNormFamily : squareNorm.toNormFamily =

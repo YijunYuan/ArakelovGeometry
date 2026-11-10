@@ -5,8 +5,12 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Basic
-public import ArakelovGeometry.ExternalResults.AbsoluteValueRootBounds
+public import ArakelovGeometry.AdelicCurve.Defs
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
+import ArakelovGeometry.AdelicCurve.Basic
+import ArakelovGeometry.Analysis.AbsoluteValue.RootBounds
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # Logarithmic root bounds over an adelic structure

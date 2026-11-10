@@ -5,9 +5,11 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
-public import ArakelovGeometry.ExternalResults.AlgebraicTowerSupport
+public import ArakelovGeometry.AdelicCurve.Extension.Finite.Tower
+import ArakelovGeometry.AdelicCurve.Extension.Algebraic.FiniteProjection
+import ArakelovGeometry.FieldTheory.IntermediateField.FiniteDescent
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Algebraic tower integration on finite cylinders

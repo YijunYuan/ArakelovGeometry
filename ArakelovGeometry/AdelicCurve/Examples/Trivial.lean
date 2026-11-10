@@ -5,7 +5,9 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Basic
+public import ArakelovGeometry.AdelicCurve.Defs
+import Mathlib.CategoryTheory.Category.Init
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # The trivial adelic structure

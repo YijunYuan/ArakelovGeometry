@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Measure
 public import ArakelovGeometry.AdelicCurve.Extension.Finite.BaseChange
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Finite projections along embeddings

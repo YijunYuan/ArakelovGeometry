@@ -5,7 +5,10 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Height.MinimalPolynomial
+public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
+public import ArakelovGeometry.AdelicCurve.Height.Affine
+import ArakelovGeometry.AdelicCurve.Height.MinimalPolynomial
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Northcott finiteness for algebraic elements

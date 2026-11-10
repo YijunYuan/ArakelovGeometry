@@ -7,6 +7,8 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Equiv
 public import ArakelovGeometry.AdelicCurve.Extension.Finite.Construction
+import ArakelovGeometry.AdelicCurve.Extension.Separable.Measurability
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Compatibility of finite extensions

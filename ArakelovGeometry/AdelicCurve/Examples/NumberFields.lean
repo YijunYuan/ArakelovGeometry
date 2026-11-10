@@ -5,12 +5,9 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Basic
-public import ArakelovGeometry.ExternalResults.AbsoluteValue
-public import ArakelovGeometry.ExternalResults.Measure
-public import ArakelovGeometry.ExternalResults.Ostrowski
-public import ArakelovGeometry.ExternalResults.Place
-public import Mathlib.NumberTheory.NumberField.ProductFormula
+public import ArakelovGeometry.AdelicCurve.Defs
+public import ArakelovGeometry.Analysis.AbsoluteValue.Ostrowski
+import Mathlib.NumberTheory.NumberField.ProductFormula
 
 /-!
 # The number-field adelic curve (`thm:numberfield_integrable`)

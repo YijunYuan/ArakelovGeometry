@@ -5,9 +5,11 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicCurve.Extension.Separable.Measurability
-public import ArakelovGeometry.ExternalResults.AbsoluteValueRootBounds
-public import ArakelovGeometry.ExternalResults.BoundedFunctionalMonotoneClass
+public import ArakelovGeometry.AdelicCurve.Extension.Separable.FibreIntegral
+import ArakelovGeometry.AdelicCurve.Extension.Separable.Measurability
+import ArakelovGeometry.Analysis.AbsoluteValue.RootBounds
+import ArakelovGeometry.MeasureTheory.Function.BoundedMonotoneClass
+import Mathlib.CategoryTheory.Category.Init
 
 /-!
 # Bounded multiplicative generators of extension places

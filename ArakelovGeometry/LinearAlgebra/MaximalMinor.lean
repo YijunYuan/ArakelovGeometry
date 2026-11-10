@@ -5,12 +5,9 @@ Authors: Yijun Yuan
 -/
 module
 
-public import Mathlib.Algebra.Order.AbsoluteValue.Basic
 public import Mathlib.Basic.Real.Basic
-public import Mathlib.Data.Finset.Max
-public import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
 public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-public import Mathlib.LinearAlgebra.Matrix.Rank
+import Mathlib.LinearAlgebra.Matrix.Rank
 
 /-!
 # Maximal row minors
