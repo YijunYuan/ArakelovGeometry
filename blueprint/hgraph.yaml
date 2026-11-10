@@ -1,5 +1,0 @@
-# Index project sources only. The project root also contains .lake dependencies.
-blueprint: blueprint/src/content.tex
-lean:
-  - ArakelovGeometry
-  - ArakelovGeometry.lean
