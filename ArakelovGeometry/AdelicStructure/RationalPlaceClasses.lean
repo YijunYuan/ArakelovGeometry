@@ -87,8 +87,8 @@ namespace AbsoluteValue
 /-- A genuinely nontrivial fixed rational restriction forces equivalent values equal. -/
 theorem eq_of_isEquiv_of_nontrivial_rat_restriction {K : Type*} [Field K]
     [Algebra ℚ K] {v w : AbsoluteValue K ℝ} (h : v.IsEquiv w)
-    (hr : v.restriction ℚ = w.restriction ℚ)
-    (hnt : (v.restriction ℚ).IsNontrivial) : v = w := by
+    (hr : v.under ℚ = w.under ℚ)
+    (hnt : (v.under ℚ).IsNontrivial) : v = w := by
   obtain ⟨c, hc, hpow⟩ := isEquiv_iff_exists_rpow_eq.mp h
   obtain ⟨q, hq⟩ := hnt.exists_abv_gt_one
   have hqr : v (algebraMap ℚ K q) = w (algebraMap ℚ K q) :=

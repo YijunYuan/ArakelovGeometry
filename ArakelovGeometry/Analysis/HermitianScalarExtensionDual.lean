@@ -156,7 +156,7 @@ theorem hermitianScalarExtension_dual_transport {A κ : Type*}
     | add t u ht hu => simp [map_add, ht, hu]
     | tmul a x =>
       rw [hermitianScalarExtensionCoordinates_tmul, LinearMap.baseChange_tmul,
-        dualBaseChangeEquiv_tmul_one]
+        dualBaseChangeEquiv_tmul_apply_tmul, mul_one]
       congr 2
       exact hermitianDualCoordinates_apply b (e x) i
   rw [hermitianScalarExtensionSeminorm_eq c c']

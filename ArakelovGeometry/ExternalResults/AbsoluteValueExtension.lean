@@ -50,7 +50,7 @@ to an algebraic field extension coincide. -/
 theorem eq_of_restriction_eq_of_complete {K L : Type*} [Field K] [Field L]
     [Algebra K L] [Algebra.IsAlgebraic K L] (v : AbsoluteValue K ℝ)
     [CompleteSpace (WithAbs v)] (hv : v.IsNontrivial) (u w : AbsoluteValue L ℝ)
-    (hu : u.restriction K = v) (hw : w.restriction K = v) : u = w := by
+    (hu : u.under K = v) (hw : w.under K = v) : u = w := by
   let : NontriviallyNormedField (WithAbs v) :=
     { (inferInstance : NormedField (WithAbs v)) with
       non_trivial := by
@@ -61,15 +61,15 @@ theorem eq_of_restriction_eq_of_complete {K L : Type*} [Field K] [Field L]
   let : FiniteDimensional K E :=
     IntermediateField.adjoin.finiteDimensional (Algebra.IsAlgebraic.isAlgebraic x).isIntegral
   have hu' (a : WithAbs v) :
-      u.restriction E (algebraMap (WithAbs v) E a) = ‖a‖ :=
+      u.under E (algebraMap (WithAbs v) E a) = ‖a‖ :=
     congrArg (fun z : AbsoluteValue K ℝ ↦ z a.ofAbs) hu
   have hw' (a : WithAbs v) :
-      w.restriction E (algebraMap (WithAbs v) E a) = ‖a‖ :=
+      w.under E (algebraMap (WithAbs v) E a) = ‖a‖ :=
     congrArg (fun z : AbsoluteValue K ℝ ↦ z a.ofAbs) hw
   let x' : E := ⟨x, IntermediateField.subset_adjoin K {x} (Set.mem_singleton x)⟩
   exact le_antisymm
-    (extension_le_of_finite (u.restriction E) (w.restriction E) hu' hw' x')
-    (extension_le_of_finite (w.restriction E) (u.restriction E) hw' hu' x')
+    (extension_le_of_finite (u.under E) (w.under E) hu' hw' x')
+    (extension_le_of_finite (w.under E) (u.under E) hw' hu' x')
 
 /-- A complete nontrivial nonarchimedean absolute value has a unique extension to
 an algebraic field extension. -/
@@ -77,7 +77,7 @@ theorem existsUnique_extension_of_complete_of_isNonarchimedean {K L : Type*}
     [Field K] [Field L]
     [Algebra K L] [Algebra.IsAlgebraic K L] (v : AbsoluteValue K ℝ)
     [CompleteSpace (WithAbs v)] (hv : v.IsNontrivial) (hna : IsNonarchimedean v) :
-    ∃! w : AbsoluteValue L ℝ, w.restriction K = v := by
+    ∃! w : AbsoluteValue L ℝ, w.under K = v := by
   let : NontriviallyNormedField (WithAbs v) :=
     { (inferInstance : NormedField (WithAbs v)) with
       non_trivial := by
@@ -106,7 +106,7 @@ field extension. -/
 theorem existsUnique_extension_of_complete {K L : Type*} [Field K] [Field L]
     [Algebra K L] [Algebra.IsAlgebraic K L] (v : AbsoluteValue K ℝ)
     [CompleteSpace (WithAbs v)] :
-    ∃! w : AbsoluteValue L ℝ, w.restriction K = v := by
+    ∃! w : AbsoluteValue L ℝ, w.under K = v := by
   classical
   by_cases hv : v.IsNontrivial
   · by_cases hna : IsNonarchimedean v
@@ -149,7 +149,7 @@ theorem existsUnique_extension_of_complete {K L : Type*} [Field K] [Field L]
           rw [map_add]
           exact (Real.rpow_le_rpow (norm_nonneg _) (norm_add_le _ _) hs.1.le).trans
             (Real.rpow_add_le_add_rpow (norm_nonneg _) (norm_nonneg _) hs.1.le hs.2) }
-      have hw : w.restriction K = v := by
+      have hw : w.under K = v := by
         ext a
         change ‖i (algebraMap K L a)‖ ^ s = v a
         rw [i.commutes]
@@ -161,8 +161,8 @@ theorem existsUnique_extension_of_complete {K L : Type*} [Field K] [Field L]
     · rw [hv']
       ext a
       by_cases ha : a = 0
-      · simp [ha, restriction, pullback]
-      · simp [restriction, pullback, trivial_apply, ha]
+      · simp [ha, under, comp]
+      · simp [under, comp, trivial_apply, ha]
     · intro w hw
       have hw' : ¬w.IsNontrivial :=
         not_isNontrivial_of_isAlgebraic w K (by simpa only [hw] using hv)
@@ -172,7 +172,7 @@ theorem existsUnique_extension_of_complete {K L : Type*} [Field K] [Field L]
 This is the absolute-value extension used in Chen–Moriwaki, Proposition 3.4.5. -/
 theorem exists_extension {K L : Type*} [Field K] [Field L]
     [Algebra K L] [Algebra.IsAlgebraic K L] (v : AbsoluteValue K ℝ) :
-    ∃ w : AbsoluteValue L ℝ, w.restriction K = v := by
+    ∃ w : AbsoluteValue L ℝ, w.under K = v := by
   let F := v.Completion
   let u : AbsoluteValue F ℝ := NormedField.toAbsoluteValue F
   let e : WithAbs u ≃ᵢ F := {
@@ -182,7 +182,7 @@ theorem exists_extension {K L : Type*} [Field K] [Field L]
   have : CompleteSpace (WithAbs u) := e.completeSpace
   obtain ⟨w, hw, -⟩ := existsUnique_extension_of_complete (L := AlgebraicClosure F) u
   let i : L →ₐ[K] AlgebraicClosure F := IsAlgClosed.lift
-  refine ⟨w.pullback i.toRingHom, ?_⟩
+  refine ⟨w.comp i.toRingHom.injective, ?_⟩
   ext a
   change w (i (algebraMap K L a)) = v a
   rw [i.commutes]

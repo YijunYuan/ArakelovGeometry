@@ -138,7 +138,7 @@ theorem scalarLine_mul_dual_norm_le_one_iff
     rw [ht, L.norm_smul, mul_comm]
   have hd := hξ.dual_norm_le_one_iff_unitBall ω hω (b • ((1 : F) ⊗ₜ[K] f))
   rw [ξ.dual.norm_smul, ← hbn] at hd
-  simp only [dualBaseChangeEquiv_smul, LinearMap.smul_apply, norm_smul, ← hbn] at hd
+  simp only [map_smul, LinearMap.smul_apply, norm_smul, ← hbn] at hd
   constructor
   · intro h x hx
     rw [he x]

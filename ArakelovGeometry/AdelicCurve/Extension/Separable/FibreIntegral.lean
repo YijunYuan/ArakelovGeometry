@@ -41,7 +41,7 @@ noncomputable def fibreWeight (ω : AS.Ω) (x : ExtensionFiber AS L ω) : ℝ≥
 theorem tsum_fibreWeight (ω : AS.Ω) :
     ∑' x : ExtensionFiber AS L ω, fibreWeight AS L ω x = 1 := by
   classical
-  let E := {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω}
+  let E := {w : AbsoluteValue L ℝ // w.under K = AS.ϕ ω}
   let e : ExtensionFiber AS L ω ≃ E := {
     toFun x := ⟨x.val.ϕ, x.val.restrict_eq.trans (congrArg AS.ϕ x.property)⟩
     invFun w := ⟨⟨ω, w.val, w.property⟩, rfl⟩
@@ -85,9 +85,9 @@ omit _s in
 /-- The fibres of the projection of a finite extension are finite sets (§3.3, p. 178: a base
 absolute value has at most `[L : K]` extensions to `L`). -/
 theorem finite_extensionFiber (ω : AS.Ω) : Finite (ExtensionFiber AS L ω) := by
-  have : Finite {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω} :=
+  have : Finite {w : AbsoluteValue L ℝ // w.under K = AS.ϕ ω} :=
     Set.finite_coe_iff.mpr (AbsoluteValue.finite_extensions (L := L) (AS.ϕ ω))
-  let f : ExtensionFiber AS L ω → {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω} :=
+  let f : ExtensionFiber AS L ω → {w : AbsoluteValue L ℝ // w.under K = AS.ϕ ω} :=
     fun x ↦ ⟨x.val.abv, x.val.restrict_eq.trans (congrArg AS.ϕ x.property)⟩
   apply Finite.of_injective f
   intro x y h
@@ -169,8 +169,8 @@ theorem fibreIntegral_comp_restrict (F : IntermediateField K L)
     fibreIntegral AS L (fun x ↦ f (restrict AS L x F)) = fibreIntegral AS F f := by
   classical
   funext ω
-  let E := {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω}
-  let D := {w : AbsoluteValue F ℝ // w.restriction K = AS.ϕ ω}
+  let E := {w : AbsoluteValue L ℝ // w.under K = AS.ϕ ω}
+  let D := {w : AbsoluteValue F ℝ // w.under K = AS.ϕ ω}
   let : Fintype E := (AbsoluteValue.finite_extensions (L := L) (AS.ϕ ω)).fintype
   let : Fintype D := (AbsoluteValue.finite_extensions (L := F) (AS.ϕ ω)).fintype
   let eL : ExtensionFiber AS L ω ≃ E := {
@@ -194,9 +194,9 @@ theorem fibreIntegral_comp_restrict (F : IntermediateField K L)
   simp only [nsmul_eq_mul] at hs
   have hl :
       ∑ x : ExtensionFiber AS L ω, (x.val.ϕ.localDegree K : ℝ) * f (restrict AS L x.val F) =
-        ∑ w : E, (w.val.localDegree K : ℝ) * φ ⟨w.val.restriction F, w.property⟩ := by
+        ∑ w : E, (w.val.localDegree K : ℝ) * φ ⟨w.val.under F, w.property⟩ := by
     rw [← eL.sum_comp (fun w ↦ (w.val.localDegree K : ℝ) *
-      φ ⟨w.val.restriction F, w.property⟩)]
+      φ ⟨w.val.under F, w.property⟩)]
     apply Finset.sum_congr rfl
     intro x _
     apply congrArg ((x.val.ϕ.localDegree K : ℝ) * ·)

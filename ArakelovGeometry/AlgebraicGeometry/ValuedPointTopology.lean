@@ -80,14 +80,14 @@ theorem continuous_eval (U : X.Opens) (s : Γ(X, U)) :
 
 /-- Finite-valued-base-change projection is continuous on the actual analytic fibres. -/
 theorem continuous_baseChangeMap {k L : Type u} [Field k] [Field L] [Algebra k L]
-    (v : AbsoluteValue k ℝ) (vL : AbsoluteValue L ℝ) (hL : vL.restriction k = v)
+    (v : AbsoluteValue k ℝ) (vL : AbsoluteValue L ℝ) (hL : vL.under k = v)
     (f : X ⟶ Spec (CommRingCat.of k)) :
     Continuous (baseChangeMap v vL hL f) :=
   ((continuous_map _).comp continuous_subtype_val).subtype_mk _
 
 theorem continuous_surjective_baseChangeMap {k L : Type u} [Field k] [Field L]
     [Algebra k L] [FiniteDimensional k L] (v : AbsoluteValue k ℝ)
-    [CompleteSpace (WithAbs v)] (vL : AbsoluteValue L ℝ) (hL : vL.restriction k = v)
+    [CompleteSpace (WithAbs v)] (vL : AbsoluteValue L ℝ) (hL : vL.under k = v)
     (f : X ⟶ Spec (CommRingCat.of k)) :
     Continuous (baseChangeMap v vL hL f) ∧
       Function.Surjective (baseChangeMap v vL hL f) :=

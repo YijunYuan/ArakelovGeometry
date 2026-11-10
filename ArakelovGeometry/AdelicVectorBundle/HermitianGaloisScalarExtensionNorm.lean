@@ -54,6 +54,51 @@ variable {K L E : Type*} [Field K] [Field L] [Algebra K L]
   [Algebra.IsAlgebraic K L] [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {S : AdelicStructure K}
 
+private theorem hermitianScalarExtension_norm_algEquiv_of_infinite (ξ : NormFamily S E)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hH : ξ.IsHermitian hN) (σ : L ≃ₐ[K] L) (x : S.ParameterSpaceExtension L)
+    (hxinf : x ∈ (S.algebraicExtension L).Ωinf) :
+    let := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base)
+      (pullbackAlgEquiv S σ x).abv (pullbackAlgEquiv S σ x).restrict_eq
+    let := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
+    ∀ z : (pullbackAlgEquiv S σ x).abv.Completion ⊗[L] (L ⊗[K] E),
+      (ξ.hermitianScalarExtension hN
+        (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) hH).norm x
+          (completedScalarExtensionAlgEquiv (E := E) σ x z) =
+        (ξ.hermitianScalarExtension hN
+          (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) hH).norm
+            (pullbackAlgEquiv S σ x) z := by
+  intro aL aM z
+  let := aL
+  let := aM
+  let hNL := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+  have hyinf : pullbackAlgEquiv S σ x ∈ (S.algebraicExtension L).Ωinf :=
+    fun hy => hxinf ((pullbackAlgEquiv_mem_Ωfin_iff S σ x).mp hy)
+  let := hN x.base ((scalarExtension_mem_Ωinf_iff x).mp hxinf)
+  let := IsRCLikeNormedField.rclike (S.ϕ x.base).Completion
+  let : IsRCLikeNormedField (pullbackAlgEquiv S σ x).abv.Completion := hNL _ hyinf
+  let := IsRCLikeNormedField.rclike (pullbackAlgEquiv S σ x).abv.Completion
+  let : IsRCLikeNormedField x.abv.Completion := hNL x hxinf
+  let := IsRCLikeNormedField.rclike x.abv.Completion
+  let := ξ.fibreNormedAddCommGroup x.base
+  let := ξ.fibreNormedSpace x.base
+  let := hH.fibreInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hxinf)
+  let b : OrthonormalBasis (Fin (Module.finrank K E)) (S.ϕ x.base).Completion
+      ((S.ϕ x.base).Completion ⊗[K] E) :=
+    (stdOrthonormalBasis (S.ϕ x.base).Completion
+      ((S.ϕ x.base).Completion ⊗[K] E)).reindex (finCongr Module.finrank_baseChange)
+  rw [hermitianScalarExtension_norm_coordinates ξ hN hNL hH x hxinf b,
+    hermitianScalarExtension_norm_coordinates ξ hN hNL hH _ hyinf b]
+  rw [completedScalarExtensionAlgEquiv_flatten]
+  have hn := hermitianTensor_norm_algEquiv b (algEquivCompletedFields S σ x)
+    ((isometry_algEquivCompletedFields S σ x).norm_map_of_map_zero
+      (map_zero (algEquivCompletedFields S σ x)))
+    (completedScalarExtensionEquiv E (S.ϕ x.base)
+      (pullbackAlgEquiv S σ x).abv (pullbackAlgEquiv S σ x).restrict_eq z)
+  -- Normalize the common base before comparing the Euclidean norms.
+  dsimp only [pullbackAlgEquiv] at hn ⊢
+  exact hn
+
 /-- The actual Hermitian extension is isometric under every coefficient automorphism,
 with target Archimedean normalization produced from the original normalization. -/
 theorem hermitianScalarExtension_norm_algEquiv (ξ : NormFamily S E)
@@ -79,37 +124,7 @@ theorem hermitianScalarExtension_norm_algEquiv (ξ : NormFamily S E)
     rw [hermitianScalarExtension_norm_of_finite ξ hN hNL hH x hx,
       hermitianScalarExtension_norm_of_finite ξ hN hNL hH _ hy]
     exact ξ.injectiveScalarExtensionSeminorm_algEquiv σ x z
-  · have hxinf : x ∈ (S.algebraicExtension L).Ωinf := hx
-    have hyinf : pullbackAlgEquiv S σ x ∈ (S.algebraicExtension L).Ωinf :=
-      fun hy => hx ((pullbackAlgEquiv_mem_Ωfin_iff S σ x).mp hy)
-    let := hN x.base ((scalarExtension_mem_Ωinf_iff x).mp hxinf)
-    let := IsRCLikeNormedField.rclike (S.ϕ x.base).Completion
-    let : IsRCLikeNormedField (pullbackAlgEquiv S σ x).abv.Completion := hNL _ hyinf
-    let := IsRCLikeNormedField.rclike (pullbackAlgEquiv S σ x).abv.Completion
-    let : IsRCLikeNormedField x.abv.Completion := hNL x hxinf
-    let := IsRCLikeNormedField.rclike x.abv.Completion
-    let := ξ.fibreNormedAddCommGroup x.base
-    let := ξ.fibreNormedSpace x.base
-    let := hH.fibreInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hxinf)
-    let b : OrthonormalBasis (Fin (Module.finrank K E)) (S.ϕ x.base).Completion
-        ((S.ϕ x.base).Completion ⊗[K] E) :=
-      (stdOrthonormalBasis (S.ϕ x.base).Completion
-        ((S.ϕ x.base).Completion ⊗[K] E)).reindex (finCongr Module.finrank_baseChange)
-    rw [hermitianScalarExtension_norm_coordinates ξ hN hNL hH x hxinf b,
-      hermitianScalarExtension_norm_coordinates ξ hN hNL hH _ hyinf b]
-    have hflat : completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq
-        (completedScalarExtensionAlgEquiv (E := E) σ x z) =
-        TensorProduct.congr (algEquivCompletedFields S σ x).toLinearEquiv
-          (LinearEquiv.refl (S.ϕ x.base).Completion ((S.ϕ x.base).Completion ⊗[K] E))
-          (completedScalarExtensionEquiv E (S.ϕ x.base)
-            (pullbackAlgEquiv S σ x).abv (pullbackAlgEquiv S σ x).restrict_eq z) := by
-      change (completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq)
-        ((completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq).symm _) = _
-      exact LinearEquiv.apply_symm_apply _ _
-    rw [hflat]
-    exact hermitianTensor_norm_algEquiv b (algEquivCompletedFields S σ x)
-      ((isometry_algEquivCompletedFields S σ x).norm_map_of_map_zero
-        (map_zero (algEquivCompletedFields S σ x))) _
+  · exact hermitianScalarExtension_norm_algEquiv_of_infinite ξ hN hH σ x hx z
 
 /-- Coefficient transport preserves the genuine restriction of the Hermitian
 scalar-extension norm, without an invariant-subspace hypothesis. -/

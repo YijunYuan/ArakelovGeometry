@@ -35,7 +35,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- The canonical injection of a completed base fibre into a chosen extended
 completed fibre, with the latter in its actual tensor-product coordinates. -/
 def chosenExtensionMap (ω : S.Ω) (w : AbsoluteValue L ℝ)
-    (hw : w.restriction K = S.ϕ ω) :
+    (hw : w.under K = S.ϕ ω) :
     letI := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ ω) w hw
     (S.ϕ ω).Completion ⊗[K] E →ₗ[(S.ϕ ω).Completion]
       w.Completion ⊗[L] (L ⊗[K] E) := by
@@ -47,7 +47,7 @@ def chosenExtensionMap (ω : S.Ω) (w : AbsoluteValue L ℝ)
 
 /-- The completed-fibre map used for restriction is injective. -/
 theorem chosenExtensionMap_injective (ω : S.Ω) (w : AbsoluteValue L ℝ)
-    (hw : w.restriction K = S.ϕ ω) :
+    (hw : w.under K = S.ϕ ω) :
     Function.Injective (chosenExtensionMap (E := E) ω w hw) := by
   let := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ ω) w hw
   let : FaithfulSMul (S.ϕ ω).Completion w.Completion :=
@@ -60,7 +60,7 @@ theorem chosenExtensionMap_injective (ω : S.Ω) (w : AbsoluteValue L ℝ)
 /-- A base completed scalar and rational vector map to their literal
 extended scalar tensor. -/
 theorem chosenExtensionMap_tmul (ω : S.Ω) (w : AbsoluteValue L ℝ)
-    (hw : w.restriction K = S.ϕ ω) (a : (S.ϕ ω).Completion) (x : E) :
+    (hw : w.under K = S.ϕ ω) (a : (S.ϕ ω).Completion) (x : E) :
     letI := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ ω) w hw
     chosenExtensionMap ω w hw (a ⊗ₜ[K] x) =
       algebraMap (S.ϕ ω).Completion w.Completion a ⊗ₜ[L] ((1 : L) ⊗ₜ[K] x) := by
@@ -73,7 +73,7 @@ theorem chosenExtensionMap_tmul (ω : S.Ω) (w : AbsoluteValue L ℝ)
 original completed fibre. No measurability of the place choices is assumed. -/
 def ofChosenAlgebraicBasis {ι : Type*} [Fintype ι]
     (b : Module.Basis ι L (L ⊗[K] E))
-    (w : S.Ω → AbsoluteValue L ℝ) (hw : ∀ ω, (w ω).restriction K = S.ϕ ω) :
+    (w : S.Ω → AbsoluteValue L ℝ) (hw : ∀ ω, (w ω).under K = S.ϕ ω) :
     NormFamily S E where
   norm ω := by
     letI := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ ω) (w ω) (hw ω)
@@ -91,7 +91,7 @@ def ofChosenAlgebraicBasis {ι : Type*} [Fintype ι]
 /-- The restricted family is the literal completed coordinate maximum. -/
 theorem ofChosenAlgebraicBasis_norm {ι : Type*} [Fintype ι]
     (b : Module.Basis ι L (L ⊗[K] E))
-    (w : S.Ω → AbsoluteValue L ℝ) (hw : ∀ ω, (w ω).restriction K = S.ϕ ω)
+    (w : S.Ω → AbsoluteValue L ℝ) (hw : ∀ ω, (w ω).under K = S.ϕ ω)
     (ω : S.Ω) (z : (S.ϕ ω).Completion ⊗[K] E) :
     (ofChosenAlgebraicBasis b w hw).norm ω z =
       ‖(b.baseChange (w ω).Completion).equivFun

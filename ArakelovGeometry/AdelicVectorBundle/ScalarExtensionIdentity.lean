@@ -29,15 +29,15 @@ variable {K : Type*} [Field K]
 
 /-- The explicitly specified completed-field embedding is isometric. -/
 theorem isometry_normedAlgebraCompletionOfEq {L : Type*} [Field L] [Algebra K L]
-    (v : AbsoluteValue K ℝ) (w : AbsoluteValue L ℝ) (h : w.restriction K = v) :
+    (v : AbsoluteValue K ℝ) (w : AbsoluteValue L ℝ) (h : w.under K = v) :
     Isometry (normedAlgebraCompletionOfEq v w h).toAlgebra.algebraMap := by
   subst v
-  exact isometry_algebraMap_completion w K
+  exact algebraMap_isometry (w.under K).Completion w.Completion
 
 /-- The completed embedding attached to the identity field extension is
 the identity on the completed field. -/
 theorem algebraMap_normedAlgebraCompletionOfEq_self (v : AbsoluteValue K ℝ)
-    (h : v.restriction K = v) (a : v.Completion) :
+    (h : v.under K = v) (a : v.Completion) :
     (normedAlgebraCompletionOfEq v v h).toAlgebra.algebraMap a = a := by
   let := normedAlgebraCompletionOfEq v v h
   let : Algebra v.Completion v.Completion :=
@@ -54,7 +54,7 @@ theorem algebraMap_normedAlgebraCompletionOfEq_self (v : AbsoluteValue K ℝ)
 /-- The canonical normed-algebra structure for the completed identity
 extension agrees with the standard self-algebra structure. -/
 theorem normedAlgebraCompletionOfEq_self (v : AbsoluteValue K ℝ)
-    (h : v.restriction K = v) :
+    (h : v.under K = v) :
     normedAlgebraCompletionOfEq v v h = NormedAlgebra.id v.Completion := by
   have hinj : Function.Injective
       (fun a : NormedAlgebra v.Completion v.Completion ↦ a.toAlgebra) := by
@@ -97,7 +97,7 @@ variable {E : Type w} [AddCommGroup E] [Module K E]
 /-- Under the identity extension, the completed scalar-extension
 equivalence is the rational inclusion after the canonical tensor left unit. -/
 theorem completedScalarExtensionEquiv_self (v : AbsoluteValue K ℝ)
-    (h : v.restriction K = v) (z : v.Completion ⊗[K] (K ⊗[K] E)) :
+    (h : v.under K = v) (z : v.Completion ⊗[K] (K ⊗[K] E)) :
     let mV : Module v.Completion (v.Completion ⊗[K] E) := inferInstance
     let a := AbsoluteValue.normedAlgebraCompletionOfEq v v h
     let : NormedAlgebra v.Completion v.Completion := a
@@ -120,8 +120,7 @@ theorem completedScalarExtensionEquiv_self (v : AbsoluteValue K ℝ)
       (v.Completion ⊗[K] E) :=
     ⟨fun r b x ↦ Quotient.sound' (AddConGen.Rel.of _ _ (TensorProduct.Eqv.of_smul r b x))⟩
   have hscalar (r : v.Completion) : r • (1 : v.Completion) = r := by
-    change a.toAlgebra.algebraMap r * 1 = r
-    rw [mul_one]
+    rw [Algebra.smul_def, mul_one]
     exact AbsoluteValue.algebraMap_normedAlgebraCompletionOfEq_self v h r
   induction z using TensorProduct.inductionOn with
   | add z t hz ht => simp only [map_add, TensorProduct.tmul_add, hz, ht]

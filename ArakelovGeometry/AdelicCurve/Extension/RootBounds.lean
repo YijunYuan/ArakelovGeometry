@@ -78,7 +78,7 @@ theorem logarithmicRootBound_nonneg (p : Polynomial K) (hp : p.Monic) (ω : AS.�
 /-- The source root estimate, including the archimedean exponent of the base place. -/
 theorem log_apply_le_rootBound (p : Polynomial K) (hp : p.Monic) {L : Type*} [Field L] [Algebra K L]
     (a : L) (ha : Polynomial.aeval a p = 0) (ha0 : a ≠ 0)
-    (ω : AS.Ω) (w : AbsoluteValue L ℝ) (hw : w.restriction K = AS.ϕ ω) :
+    (ω : AS.Ω) (w : AbsoluteValue L ℝ) (hw : w.under K = AS.ϕ ω) :
     Real.log (w a) ≤ Real.log (p.natDegree : ℝ) * AS.κ ω + coefficientLogBound AS p ω := by
   have hm : 0 < p.natDegree := Polynomial.natDegree_pos_of_monic_of_aeval_eq_zero hp ha
   have hgnonneg : 0 ≤ coefficientLogBound AS p ω := by

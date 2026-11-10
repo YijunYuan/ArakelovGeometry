@@ -395,7 +395,9 @@ noncomputable def functionFieldAdelicStructure (k : Type*) [Field k] :
     AdelicStructure (RatFunc k) where
   Ω := Option (HeightOneSpectrum (Polynomial k))
   A := ⊤
-  v := @Measure.ofSingletons _ ⊤ (pointWeight k)
+  v := by
+    letI : MeasurableSpace (Option (HeightOneSpectrum (Polynomial k))) := ⊤
+    exact Measure.sum (fun a ↦ pointWeight k a • Measure.dirac a)
   ϕ := pointAbv k
   measurable_log := fun _ _ ↦ measurable_from_top
   integrable_log := by
@@ -404,20 +406,21 @@ noncomputable def functionFieldAdelicStructure (k : Type*) [Field k] :
     refine integrable_of_support_subset_finset
       (s := (finite_support_log hf).toFinset) ?_ fun x _ ↦ ?_
     · rw [Set.Finite.coe_toFinset]
-    · rw [Measure.ofSingletons_singleton]
+    · rw [Measure.sum_smul_dirac_singleton]
       exact pointWeight_ne_top x
 
 /-- The product formula `∑_x n_x ord_x (f) = 0` of Chen–Moriwaki §3.2.1, integrated against
 the point measure of the function-field adelic structure. -/
 theorem functionField_product_formula {k : Type*} [Field k] {f : RatFunc k} (hf : f ≠ 0) :
     letI : MeasurableSpace (Option (HeightOneSpectrum (Polynomial k))) := ⊤
-    ∫ ω, Real.log (pointAbv k ω f) ∂(Measure.ofSingletons (pointWeight k)) = 0 := by
+    ∫ ω, Real.log (pointAbv k ω f)
+      ∂(Measure.sum (fun a ↦ pointWeight k a • Measure.dirac a)) = 0 := by
   let : MeasurableSpace (Option (HeightOneSpectrum (Polynomial k))) := ⊤
   rw [integral_eq_sum_of_support_subset_finset (s := (finite_support_log hf).toFinset)
     (by rw [Set.Finite.coe_toFinset]) fun x _ ↦ by
-      rw [Measure.ofSingletons_singleton]; exact pointWeight_ne_top x]
+      rw [Measure.sum_smul_dirac_singleton]; exact pointWeight_ne_top x]
   rw [Finset.sum_congr rfl fun x _ ↦ by
-    rw [Measure.ofSingletons_singleton, smul_eq_mul]]
+    rw [Measure.sum_smul_dirac_singleton, smul_eq_mul]]
   rw [← finsum_eq_sum_of_support_subset _ (by
     rw [Set.Finite.coe_toFinset]
     exact support_weighted_log_subset f)]

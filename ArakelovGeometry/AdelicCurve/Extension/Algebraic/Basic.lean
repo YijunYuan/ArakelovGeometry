@@ -48,7 +48,7 @@ theorem surjective_restrict (F : IntermediateField K L) :
       ParameterSpaceExtension.restrict AS L x F := by
   intro x
   obtain ⟨w, hw⟩ := AbsoluteValue.exists_extension (L := L) x.abv
-  have hbase : w.restriction K = AS.ϕ x.base := by
+  have hbase : w.under K = AS.ϕ x.base := by
     ext a
     calc
       w (algebraMap K L a) = w (algebraMap F L (algebraMap K F a)) := by
@@ -122,7 +122,7 @@ instance instCompactSpaceBaseFiber (ω : AS.Ω) :
   apply (isEmbedding_fibreEval AS L ω).isCompact_iff.mpr
   rw [Set.image_univ]
   have hr : Set.range (fun x : BaseFiber L ω ↦ (x.val.abv : L → ℝ)) =
-      Set.range (fun w : {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω} ↦
+      Set.range (fun w : {w : AbsoluteValue L ℝ // w.under K = AS.ϕ ω} ↦
         (w.val : L → ℝ)) := by
     ext f
     constructor
@@ -172,10 +172,10 @@ theorem surjective_projFiniteFiber (F : FiniteIntermediateField K L) (ω : AS.Ω
   intro x
   let v := ParameterSpaceFinExtension.extendAbsoluteValue x.val.abv
   obtain ⟨w, hw⟩ := AbsoluteValue.exists_extension (L := L) v
-  have hE : (w.restriction F.1).restriction (separableClosure K F.1) = x.val.abv := by
+  have hE : (w.under F.1).under (separableClosure K F.1) = x.val.abv := by
     rw [hw]
     exact ParameterSpaceFinExtension.restriction_extendAbsoluteValue _
-  have hbase : w.restriction K = AS.ϕ ω := by
+  have hbase : w.under K = AS.ϕ ω := by
     ext a
     have h := congrArg (fun z : AbsoluteValue (separableClosure K F.1) ℝ ↦
       z (algebraMap K (separableClosure K F.1) a)) hE
@@ -202,7 +202,7 @@ variable {L} in
 def projFiniteOfLE {F G : FiniteIntermediateField K L} (hFG : F.1 ≤ G.1)
     (x : ParameterSpaceFinExtension AS G) : ParameterSpaceFinExtension AS F where
   base := x.base
-  abv := x.abv.pullback (finiteSeparableInclusion hFG).toRingHom
+  abv := x.abv.comp (finiteSeparableInclusion hFG).toRingHom.injective
   restrict_eq := by
     ext a
     change x.abv (finiteSeparableInclusion hFG (algebraMap K (separableClosure K F.1) a)) =
@@ -247,8 +247,8 @@ theorem map_finiteFibreProbabilityMeasure_projFiniteFiberOfLE (ω : AS.Ω)
   let G₀ := separableClosure K G.1
   let i : F₀ →ₐ[K] G₀ := finiteSeparableInclusion hFG
   let q := projFiniteFiberOfLE (AS := AS) hFG ω
-  let EF := {w : AbsoluteValue F₀ ℝ // w.restriction K = AS.ϕ ω}
-  let EG := {w : AbsoluteValue G₀ ℝ // w.restriction K = AS.ϕ ω}
+  let EF := {w : AbsoluteValue F₀ ℝ // w.under K = AS.ϕ ω}
+  let EG := {w : AbsoluteValue G₀ ℝ // w.under K = AS.ϕ ω}
   let : Fintype EF := (AbsoluteValue.finite_extensions (L := F₀) (AS.ϕ ω)).fintype
   let : Fintype EG := (AbsoluteValue.finite_extensions (L := G₀) (AS.ϕ ω)).fintype
   let eF : FiniteBaseFiber L F ω ≃ EF := {
@@ -275,22 +275,22 @@ theorem map_finiteFibreProbabilityMeasure_projFiniteFiberOfLE (ω : AS.Ω)
       (∫ x, g (q x) ∂ParameterSpaceFinExtension.fibreProbabilityMeasure AS G ω) =
         ∫ x, g x ∂ParameterSpaceFinExtension.fibreProbabilityMeasure AS F ω := by
     let φ (a : AbsoluteValue F₀ ℝ) : ℝ :=
-      if h : a.restriction K = AS.ϕ ω then g ⟨⟨ω, a, h⟩, rfl⟩ else 0
+      if h : a.under K = AS.ϕ ω then g ⟨⟨ω, a, h⟩, rfl⟩ else 0
     have hF (x : FiniteBaseFiber L F ω) : φ x.val.abv = g x := by
-      have hx : x.val.abv.restriction K = AS.ϕ ω :=
+      have hx : x.val.abv.under K = AS.ϕ ω :=
         x.val.restrict_eq.trans (congrArg AS.ϕ x.property)
       rw [show φ x.val.abv = _ from dite_eq_left hx]
       apply congrArg g
       apply Subtype.ext
       exact ParameterSpaceExtension.ext AS F₀ x.property.symm rfl
     have hG (x : FiniteBaseFiber L G ω) :
-        φ (x.val.abv.pullback i.toRingHom) = g (q x) := hF (q x)
+        φ (x.val.abv.comp i.toRingHom.injective) = g (q x) := hF (q x)
     have hw := AbsoluteValue.finrank_nsmul_sum_localDegree_pullback i (AS.ϕ ω) φ
-    rw [← eG.sum_comp (fun w ↦ w.val.localDegree K • φ (w.val.pullback i.toRingHom)),
+    rw [← eG.sum_comp (fun w ↦ w.val.localDegree K • φ (w.val.comp i.toRingHom.injective)),
       ← eF.sum_comp (fun w ↦ w.val.localDegree K • φ w.val)] at hw
     change Module.finrank K F₀ •
         (∑ x : FiniteBaseFiber L G ω, x.val.abv.localDegree K •
-          φ (x.val.abv.pullback i.toRingHom)) =
+          φ (x.val.abv.comp i.toRingHom.injective)) =
       Module.finrank K G₀ •
         ∑ x : FiniteBaseFiber L F ω, x.val.abv.localDegree K • φ x.val.abv at hw
     simp only [nsmul_eq_mul] at hw
@@ -339,7 +339,7 @@ theorem surjective_projFiniteFiberOfLE (ω : AS.Ω)
   have : Algebra.IsAlgebraic F₀ G₀ := Algebra.IsAlgebraic.of_finite F₀ G₀
   intro x
   obtain ⟨w, hw⟩ := AbsoluteValue.exists_extension (K := F₀) (L := G₀) x.val.abv
-  have hbase : w.restriction K = AS.ϕ ω := by
+  have hbase : w.under K = AS.ϕ ω := by
     ext a
     have h := congrArg (fun z : AbsoluteValue F₀ ℝ ↦ z (algebraMap K F₀ a)) hw
     change w (i (algebraMap K F₀ a)) = x.val.abv (algebraMap K F₀ a) at h
@@ -403,7 +403,7 @@ theorem measurable_eval_projective (a : L) :
   funext x
   exact (congrArg (fun w : AbsoluteValue F ℝ ↦ w b)
     (ParameterSpaceFinExtension.extendAbsoluteValue_restriction (K := K) F
-      ((ParameterSpaceExtension.ϕ x).restriction F))).symm
+      ((ParameterSpaceExtension.ϕ x).under F))).symm
 
 /-- The projective σ-algebra of §3.4.2 agrees with the concrete σ-algebra generated by the base
 projection and all evaluations. This is Proposition 3.4.13. -/

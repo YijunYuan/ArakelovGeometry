@@ -76,7 +76,7 @@ theorem scalarExtension_dual_norm_finiteStage
             ((1 : L) ⊗ₜ[F] y))) =
       (ξ.scalarExtension (L := F)).dual.norm
         (AdelicStructure.ParameterSpaceExtension.restrict S L x F)
-        ((1 : (x.abv.restriction F).Completion) ⊗ₜ[F] dualBaseChangeEquiv K F E y) := by
+        ((1 : (x.abv.under F).Completion) ⊗ₜ[F] dualBaseChangeEquiv K F E y) := by
   let xT : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L :=
     (AdelicStructure.Algebraic.towerMeasurableEquiv S F.1).symm x
   have he := (ξ.scalarExtension (L := F)).scalarExtension_dual_norm_rational_one_tmul
@@ -122,7 +122,7 @@ theorem scalarExtension_dual_isMeasurable_of_countable_discrete
       (fun x : (S.algebraicExtension L).Ω =>
         (ξ.scalarExtension (L := F)).dual.norm
           (AdelicStructure.ParameterSpaceExtension.restrict S L x F)
-          ((1 : (x.abv.restriction F).Completion) ⊗ₜ[F] dualBaseChangeEquiv K F E y)) := by
+          ((1 : (x.abv.under F).Completion) ⊗ₜ[F] dualBaseChangeEquiv K F E y)) := by
     funext x
     rw [← hℓ]
     exact ξ.scalarExtension_dual_norm_finiteStage F x y

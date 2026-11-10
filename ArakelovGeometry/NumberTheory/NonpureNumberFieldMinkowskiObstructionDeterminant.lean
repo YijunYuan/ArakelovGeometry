@@ -309,15 +309,15 @@ theorem rational_localDegree_one (v : AbsoluteValue ℚ ℝ) [A : Algebra ℚ �
     [FiniteDimensional ℚ ℚ] : v.localDegree ℚ = 1 := by
   have hA : A = Algebra.id ℚ := Subsingleton.elim _ _
   subst A
-  let : Unique {w : AbsoluteValue ℚ ℝ // w.restriction ℚ = v} :=
+  let : Unique {w : AbsoluteValue ℚ ℝ // w.under ℚ = v} :=
     { default := ⟨v, by ext q; rfl⟩
       uniq := fun w => by
         apply Subtype.ext
         ext q
         exact congrArg (fun u : AbsoluteValue ℚ ℝ => u q) w.property }
-  have hd : (default : {w : AbsoluteValue ℚ ℝ // w.restriction ℚ = v}).val = v := by
+  have hd : (default : {w : AbsoluteValue ℚ ℝ // w.under ℚ = v}).val = v := by
     exact congrArg Subtype.val (Subsingleton.elim _
-      (⟨v, by ext q; rfl⟩ : {w : AbsoluteValue ℚ ℝ // w.restriction ℚ = v}))
+      (⟨v, by ext q; rfl⟩ : {w : AbsoluteValue ℚ ℝ // w.under ℚ = v}))
   have h := AbsoluteValue.sum_localDegree (K := ℚ) (L := ℚ) v
   simpa only [Fintype.sum_unique, hd, Module.finrank_self] using h
 

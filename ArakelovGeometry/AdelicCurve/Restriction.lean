@@ -32,7 +32,7 @@ def fRestriction {K : Type*} [Field K] (AS : AdelicStructure K) (F : Subfield K)
   Ω := AS.Ω
   A := AS.A
   v := AS.v
-  ϕ ω := (AS.ϕ ω).restriction F
+  ϕ ω := (AS.ϕ ω).under F
   measurable_log x hx := AS.measurable_log (x : K) (by exact_mod_cast hx)
   integrable_log x hx := AS.integrable_log (x : K) (by exact_mod_cast hx)
 

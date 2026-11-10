@@ -128,13 +128,13 @@ variable {L} in
 /-- Restricting the inseparable extension recovers the given absolute value. -/
 theorem restriction_extendAbsoluteValue
     (v : AbsoluteValue (separableClosure K L) ℝ) :
-    (extendAbsoluteValue v).restriction (separableClosure K L) = v := by
+    (extendAbsoluteValue v).under (separableClosure K L) = v := by
   ext b
   exact extendAbsoluteValue_coe v b
 
 /-- An absolute value on a finite extension is recovered uniquely from its separable part. -/
 theorem extendAbsoluteValue_restriction (w : AbsoluteValue L ℝ) :
-    extendAbsoluteValue (w.restriction (separableClosure K L)) = w := by
+    extendAbsoluteValue (w.under (separableClosure K L)) = w := by
   ext a
   rw [extendAbsoluteValue_apply]
   change w (a ^ Field.finInsepDegree K L) ^ (Field.finInsepDegree K L : ℝ)⁻¹ = w a
@@ -277,13 +277,13 @@ theorem isProper_finiteExtension [AS.IsProper] :
 `L`, the completion of the separable closure `K^sc` of `K` in `L` at `w` identifies, inside
 the completion `L_w`, with the separable closure of the completion `K_v` (`v = w|_K`). -/
 theorem fieldRange_completion_separableClosure (w : AbsoluteValue L ℝ) :
-    (algebraMap (w.restriction (separableClosure K L)).Completion w.Completion).fieldRange =
-      (separableClosure (w.restriction K).Completion w.Completion).toSubfield := by
+    (algebraMap (w.under (separableClosure K L)).Completion w.Completion).fieldRange =
+      (separableClosure (w.under K).Completion w.Completion).toSubfield := by
   let E := separableClosure K L
-  let B := (w.restriction K).Completion
-  let D := (w.restriction E).Completion
-  let : Algebra B D := algebraCompletion (w.restriction E) K
-  have : Algebra.IsSeparable B D := isSeparable_completion (w.restriction E)
+  let B := (w.under K).Completion
+  let D := (w.under E).Completion
+  let : Algebra B D := (normedAlgebraCompletion (w.under E) K).toAlgebra
+  have : Algebra.IsSeparable B D := isSeparable_completion (w.under E)
   have : IsScalarTower B D w.Completion := isScalarTower_completion_restriction w E
   let p := ringExpChar w.Completion
   let : ExpChar E p := (algebraMap E w.Completion).expChar
@@ -294,11 +294,11 @@ theorem fieldRange_completion_separableClosure (w : AbsoluteValue L ℝ) :
       (WithAbs.toAbs w y : w.Completion) ∈ Subalgebra.perfectClosure D w.Completion p := by
     obtain ⟨n, e, he⟩ := IsPurelyInseparable.pow_mem E p y
     apply Subalgebra.mem_perfectClosure_iff.mpr
-    refine ⟨n, (WithAbs.toAbs (w.restriction E) e : D), ?_⟩
-    change algebraMap (w.restriction E).Completion w.Completion
-      (WithAbs.toAbs (w.restriction E) e : (w.restriction E).Completion) =
+    refine ⟨n, (WithAbs.toAbs (w.under E) e : D), ?_⟩
+    change algebraMap (w.under E).Completion w.Completion
+      (WithAbs.toAbs (w.under E) e : (w.under E).Completion) =
         (WithAbs.toAbs w y : w.Completion) ^ p ^ n
-    rw [algebraMap_completion_def, UniformSpace.Completion.mapRingHom_coe]
+    rw [AbsoluteValue.Completion.algebraMap_eq, UniformSpace.Completion.mapRingHom_coe]
     change (WithAbs.toAbs w (algebraMap E L e) : w.Completion) = _
     rw [he]
     change UniformSpace.Completion.coeRingHom _ = _
@@ -333,16 +333,16 @@ weights of the finite extension `L/K` are the ratios of separable degrees
 theorem fibreWeight_eq_finSepDegree (ω : AS.Ω)
     (x : ExtensionFiber AS (separableClosure K L) ω) :
     ParameterSpaceExtension.fibreWeight AS (separableClosure K L) ω x =
-      (Field.finSepDegree ((ϕ AS L x.1).restriction K).Completion
+      (Field.finSepDegree ((ϕ AS L x.1).under K).Completion
           (ϕ AS L x.1).Completion : ℝ≥0∞) /
         (Field.finSepDegree K L : ℝ≥0∞) := by
   let w := ϕ AS L x.1
-  have hd : (w.restriction (separableClosure K L)).localDegree K =
-      Field.finSepDegree (w.restriction K).Completion w.Completion := by
+  have hd : (w.under (separableClosure K L)).localDegree K =
+      Field.finSepDegree (w.under K).Completion w.Completion := by
     let E := separableClosure K L
-    let B := (w.restriction K).Completion
-    let D := (w.restriction E).Completion
-    let : Algebra B D := algebraCompletion (w.restriction E) K
+    let B := (w.under K).Completion
+    let D := (w.under E).Completion
+    let : Algebra B D := (normedAlgebraCompletion (w.under E) K).toAlgebra
     have : IsScalarTower B D w.Completion := isScalarTower_completion_restriction w E
     let f := IsScalarTower.toAlgHom B D w.Completion
     have hf : f.range = (separableClosure B w.Completion).toSubalgebra := by

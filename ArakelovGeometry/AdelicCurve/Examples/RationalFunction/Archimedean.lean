@@ -78,7 +78,7 @@ noncomputable def archimedeanEval (t : ArchimedeanPlace) : RatFunc ℚ →+* ℂ
 
 /-- The absolute value obtained by evaluating at a transcendental unit-circle point. -/
 noncomputable def archimedeanAbv (t : ArchimedeanPlace) : AbsoluteValue (RatFunc ℚ) ℝ :=
-  (NormedField.toAbsoluteValue ℂ).pullback (archimedeanEval t)
+  (NormedField.toAbsoluteValue ℂ).comp (archimedeanEval t).injective
 
 theorem archimedeanAbv_apply (t : ArchimedeanPlace) (f : RatFunc ℚ) :
     archimedeanAbv t f = ‖Polynomial.aeval (circlePoint t) f.num /

@@ -54,7 +54,7 @@ theorem exists_complex_embedding_of_not_isNonarchimedean {K : Type*} [Field K]
 /-- Restriction to any subfield preserves and reflects the nonarchimedean property. -/
 theorem isNonarchimedean_restriction_iff {K L : Type*} [Field K] [Field L]
     [Algebra K L] (w : AbsoluteValue L ℝ) :
-    IsNonarchimedean (w.restriction K) ↔ IsNonarchimedean w := by
+    IsNonarchimedean (w.under K) ↔ IsNonarchimedean w := by
   constructor
   · intro hv
     by_contra hw
@@ -64,7 +64,7 @@ theorem isNonarchimedean_restriction_iff {K L : Type*} [Field K] [Field L]
       exact Real.one_lt_rpow (by norm_num) hs.1
     have hv2 := hv (1 : K) 1
     have hle : w (2 : L) ≤ 1 := by
-      simpa [restriction, pullback, one_add_one_eq_two, map_ofNat] using hv2
+      simpa [under, comp, one_add_one_eq_two, map_ofNat] using hv2
     exact (not_lt_of_ge hle) hw2
   · intro hw a b
     change w (algebraMap K L (a + b)) ≤
@@ -171,8 +171,8 @@ theorem apply_root_le_degree_mul {K L : Type*} [Field K] [Field L] [Algebra K L]
 /-- An extending archimedean absolute value has the same exponent and admits
 its norm normalization. -/
 theorem exists_normalized_extension {K L : Type*} [Field K] [Field L] [Algebra K L]
-    (w : AbsoluteValue L ℝ) (hw : ¬ IsNonarchimedean (w.restriction K))
-    {κ : ℝ} (hκ : 0 < κ) (hκ2 : (w.restriction K) 2 = (2 : ℝ) ^ κ) :
+    (w : AbsoluteValue L ℝ) (hw : ¬ IsNonarchimedean (w.under K))
+    {κ : ℝ} (hκ : 0 < κ) (hκ2 : (w.under K) 2 = (2 : ℝ) ^ κ) :
     ∃ (σ : L →+* ℂ) (u : AbsoluteValue L ℝ),
       (∀ a, w a = ‖σ a‖ ^ κ) ∧ ∀ a, u a = w a ^ κ⁻¹ := by
   obtain ⟨σ, s, hs, hσ⟩ := exists_complex_embedding_of_not_isNonarchimedean w
@@ -180,12 +180,12 @@ theorem exists_normalized_extension {K L : Type*} [Field K] [Field L] [Algebra K
   have htwo : (2 : ℝ) ^ s = 2 ^ κ := by
     calc
       (2 : ℝ) ^ s = w (2 : L) := by simpa only [map_ofNat, Complex.norm_ofNat] using (hσ 2).symm
-      _ = (w.restriction K) 2 := by
-        simp only [restriction, pullback, coe_mk, MulHom.coe_mk, map_ofNat]
+      _ = (w.under K) 2 := by
+        simp [under_def, map_ofNat]
       _ = _ := hκ2
   have hsk : s = κ := (Real.rpow_right_inj (by norm_num) (by norm_num)).mp htwo
   subst s
-  refine ⟨σ, (NormedField.toAbsoluteValue ℂ).pullback σ, hσ, ?_⟩
+  refine ⟨σ, (NormedField.toAbsoluteValue ℂ).comp σ.injective, hσ, ?_⟩
   intro a
   rw [hσ, Real.rpow_rpow_inv (norm_nonneg _) hκ.ne']
   rfl

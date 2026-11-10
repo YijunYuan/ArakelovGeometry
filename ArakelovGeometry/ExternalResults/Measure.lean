@@ -11,14 +11,9 @@ public import Mathlib.MeasureTheory.Measure.Dirac.Def
 public import Mathlib.MeasureTheory.Measure.MeasureSpaceDef
 
 /-!
-# Measures prescribed on singletons
+# Integration of functions with finite support
 
-On a countable measurable space with measurable singletons, a measure is determined by its
-values on singletons.  This file constructs the measure `MeasureTheory.Measure.ofSingletons f`
-with prescribed values `f x` on each singleton `{x}` and proves its characteristic property
-and uniqueness.
-
-It also provides finite-support integration criteria valid over an *arbitrary* index space:
+The integration criteria in this file apply to an arbitrary measurable space:
 a function supported in a finite set whose points have finite measure is integrable
 (`MeasureTheory.integrable_of_support_subset_finset`), and its Bochner integral is the
 weighted sum of its values (`MeasureTheory.integral_eq_sum_of_support_subset_finset`).
@@ -32,41 +27,6 @@ namespace MeasureTheory
 
 open scoped ENNReal
 
-namespace Measure
-
-variable {X : Type*} [MeasurableSpace X]
-
-/-- The measure on a measurable space with prescribed values `f x` on each singleton `{x}`,
-built as the sum of scaled Dirac measures `∑ x, f x • δ x`.
-
-On a countable space with measurable singletons this is the unique measure with
-`ofSingletons f {x} = f x` (see `ofSingletons_singleton` and `eq_ofSingletons`). -/
-noncomputable def ofSingletons (f : X → ℝ≥0∞) : Measure X :=
-  Measure.sum (fun a ↦ f a • Measure.dirac a)
-
-variable [MeasurableSingletonClass X]
-
-/-- `ofSingletons f` takes the prescribed value `f x` on the singleton `{x}`. -/
-@[simp]
-theorem ofSingletons_singleton (f : X → ℝ≥0∞) (x : X) : ofSingletons f {x} = f x :=
-  Measure.sum_smul_dirac_singleton
-
-variable [Countable X]
-
-/-- On a countable space with measurable singletons, any measure agreeing with `f` on singletons
-equals `ofSingletons f`. -/
-theorem eq_ofSingletons {f : X → ℝ≥0∞} {μ : Measure X} (hμ : ∀ x, μ {x} = f x) :
-    μ = ofSingletons f :=
-  Measure.ext_of_singleton fun x ↦ by rw [hμ, ofSingletons_singleton]
-
-/-- On a countable measurable space in which singletons are measurable, a measure is determined by
-its values on singletons: for every `f : X → ℝ≥0∞` there is a unique measure `μ` with
-`μ {x} = f x` for all `x`. -/
-theorem existsUnique_singleton (f : X → ℝ≥0∞) : ∃! μ : Measure X, ∀ x, μ {x} = f x :=
-  ⟨ofSingletons f, ofSingletons_singleton f, fun _ hν ↦ eq_ofSingletons hν⟩
-
-end Measure
-
 section FiniteSupport
 
 variable {X E : Type*} [MeasurableSpace X] [MeasurableSingletonClass X] [NormedAddCommGroup E]
@@ -78,18 +38,10 @@ theorem eq_sum_indicator_of_support_subset (hsupp : Function.support g ⊆ s) :
     g = fun x ↦ ∑ x₀ ∈ s, ({x₀} : Set X).indicator (fun _ ↦ g x₀) x := by
   classical
   funext x
-  have key : ∀ x₀, ({x₀} : Set X).indicator (fun _ ↦ g x₀) x = if x₀ = x then g x₀ else 0 := by
-    intro x₀
-    by_cases h : x₀ = x
-    · subst h
-      rw [ite_eq_left rfl, Set.indicator_of_mem (Set.mem_singleton x₀)]
-    · rw [ite_eq_right h, Set.indicator_of_notMem (by simpa using Ne.symm h)]
-  simp_rw [key]
-  rw [Finset.sum_ite_eq' s x (fun x₀ ↦ g x₀)]
-  by_cases hx : x ∈ s
-  · rw [ite_eq_left hx]
-  · rw [ite_eq_right hx]
-    exact Function.notMem_support.mp fun h ↦ hx (hsupp h)
+  simp only [Set.indicator_apply, Set.mem_singleton_iff, Finset.sum_ite_eq]
+  split_ifs with hx
+  · rfl
+  · exact Function.notMem_support.mp fun h ↦ hx (hsupp h)
 
 /-- A function supported in a finite set whose points have finite measure is integrable.
 In contrast to `MeasureTheory.integrable_sum_dirac`, the ambient space need not be

@@ -37,7 +37,7 @@ theorem normalizedPrimeParameter_exists_base_prime (P : HeightOneSpectrum (𝓞 
         Sum.inl p := by
   have hna := normalizedPrimeParameter_mem_fin P
   have hrestriction : IsNonarchimedean
-      ((normalizedPlaceValue (normalizedPrimeParameter P)).restriction ℚ) := by
+      ((normalizedPlaceValue (normalizedPrimeParameter P)).under ℚ) := by
     intro a b
     change normalizedPlaceValue (normalizedPrimeParameter P) (algebraMap ℚ K (a + b)) ≤
       max (normalizedPlaceValue (normalizedPrimeParameter P) (algebraMap ℚ K a))

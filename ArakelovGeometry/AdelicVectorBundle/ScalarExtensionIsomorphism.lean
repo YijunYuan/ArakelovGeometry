@@ -24,8 +24,8 @@ variable {L M : Type*} [Field L] [Field M]
 
 /-- A field isomorphism identifies the copies carrying the pulled-back absolute value. -/
 def pullbackWithAbsRingEquiv (w : AbsoluteValue M ℝ) (σ : L ≃+* M) :
-    WithAbs (w.pullback σ.toRingHom) ≃+* WithAbs w :=
-  ((WithAbs.equiv (w.pullback σ.toRingHom)).trans σ).trans (WithAbs.equiv w).symm
+    WithAbs (w.comp σ.toRingHom.injective) ≃+* WithAbs w :=
+  ((WithAbs.equiv (w.comp σ.toRingHom.injective)).trans σ).trans (WithAbs.equiv w).symm
 
 /-- A field isomorphism preserves the pulled-back absolute value. -/
 theorem isometry_pullbackWithAbsRingEquiv
@@ -46,7 +46,7 @@ theorem isometry_pullbackWithAbsRingEquiv_symm
 /-- Pullback of the absolute value makes a field isomorphism extend to the
 actual completions, with the inverse obtained by completing its inverse. -/
 def completionRingEquivOfPullback (w : AbsoluteValue M ℝ) (σ : L ≃+* M) :
-    (w.pullback σ.toRingHom).Completion ≃+* w.Completion :=
+    (w.comp σ.toRingHom.injective).Completion ≃+* w.Completion :=
   Completion.mapRingEquiv (pullbackWithAbsRingEquiv w σ)
     (isometry_pullbackWithAbsRingEquiv w σ).continuous
     (isometry_pullbackWithAbsRingEquiv_symm w σ).continuous
@@ -60,16 +60,16 @@ theorem isometry_completionRingEquivOfPullback (w : AbsoluteValue M ℝ) (σ : L
 theorem completionRingEquivOfPullback_algebraMap
     (w : AbsoluteValue M ℝ) (σ : L ≃+* M) (a : L) :
     completionRingEquivOfPullback w σ
-      (algebraMap L (w.pullback σ.toRingHom).Completion a) =
+      (algebraMap L (w.comp σ.toRingHom.injective).Completion a) =
       algebraMap M w.Completion (σ a) :=
   Completion.mapRingHom_coe (isometry_pullbackWithAbsRingEquiv w σ).continuous
-    (WithAbs.toAbs (w.pullback σ.toRingHom) a)
+    (WithAbs.toAbs (w.comp σ.toRingHom.injective) a)
 
 /-- The inverse completed map has the inverse original-coefficient formula. -/
 theorem completionRingEquivOfPullback_symm_algebraMap
     (w : AbsoluteValue M ℝ) (σ : L ≃+* M) (a : M) :
     (completionRingEquivOfPullback w σ).symm (algebraMap M w.Completion a) =
-      algebraMap L (w.pullback σ.toRingHom).Completion (σ.symm a) := by
+      algebraMap L (w.comp σ.toRingHom.injective).Completion (σ.symm a) := by
   apply (completionRingEquivOfPullback w σ).injective
   rw [RingEquiv.apply_symm_apply, completionRingEquivOfPullback_algebraMap,
     σ.apply_symm_apply]

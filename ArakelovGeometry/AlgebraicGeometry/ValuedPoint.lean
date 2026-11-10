@@ -39,18 +39,18 @@ variable {X Y Z : Scheme.{u}}
 /-- Restriction along the canonical map of residue fields. -/
 def map (f : X ⟶ Y) (x : ValuedPoint X) : ValuedPoint Y where
   point := f x.point
-  value := x.value.pullback (f.residueFieldMap x.point).hom
+  value := x.value.comp (f.residueFieldMap x.point).hom.injective
 
 @[simp]
 theorem map_id (x : ValuedPoint X) : x.map (𝟙 X) = x := by
   cases x
-  simp [map, AbsoluteValue.pullback]
+  simp [map, AbsoluteValue.comp]
   rfl
 
 @[simp]
 theorem map_comp (f : X ⟶ Y) (g : Y ⟶ Z) (x : ValuedPoint X) :
     x.map (f ≫ g) = (x.map f).map g := by
-  simp [map, Scheme.residueFieldMap_comp, AbsoluteValue.pullback]
+  simp [map, Scheme.residueFieldMap_comp, AbsoluteValue.comp]
   rfl
 
 /-- A residue-field embedding into a valued field induces an intrinsic
@@ -59,7 +59,7 @@ def ofResidueHom {H : Type u} [Field H]
     (x : Σ x : X, X.residueField x ⟶ CommRingCat.of H)
     (v : AbsoluteValue H ℝ) : ValuedPoint X where
   point := x.1
-  value := v.pullback x.2.hom
+  value := v.comp x.2.hom.injective
 
 /-- Normalize a valued field point to its actual residue field. -/
 def ofField {H : Type u} [Field H] (a : Spec (CommRingCat.of H) ⟶ X)
@@ -70,7 +70,7 @@ def ofField {H : Type u} [Field H] (a : Spec (CommRingCat.of H) ⟶ X)
 theorem ofField_residueHom {H : Type u} [Field H] (x : X)
     (a : X.residueField x ⟶ CommRingCat.of H) (v : AbsoluteValue H ℝ) :
     ofField (Spec.map a ≫ X.fromSpecResidueField x) v =
-      ⟨x, v.pullback a.hom⟩ := by
+      ⟨x, v.comp a.hom.injective⟩ := by
   change ofResidueHom
     ((Scheme.SpecToEquivOfField H X) ((Scheme.SpecToEquivOfField H X).symm ⟨x, a⟩)) v = _
   rw [Equiv.apply_symm_apply]
@@ -88,7 +88,7 @@ theorem map_ofField {H : Type u} [Field H]
     (a : Spec (CommRingCat.of H) ⟶ X) (v : AbsoluteValue H ℝ) (f : X ⟶ Y) :
     (ofField a v).map f = ofField (a ≫ f) v := by
   simp [map, ofField, ofResidueHom, Scheme.SpecToEquivOfField,
-    Scheme.descResidueField_stalkClosedPointTo_comp, AbsoluteValue.pullback]
+    Scheme.descResidueField_stalkClosedPointTo_comp, AbsoluteValue.comp]
   rfl
 
 /-- Normalization is unchanged by replacing a field-valued representative
@@ -96,7 +96,7 @@ by an extension of its valued field. -/
 theorem ofField_precomp {H M : Type u} [Field H] [Field M]
     (a : Spec (CommRingCat.of H) ⟶ X) (i : H →+* M)
     (w : AbsoluteValue M ℝ) :
-    ofField (Spec.map (CommRingCat.ofHom i) ≫ a) w = ofField a (w.pullback i) := by
+    ofField (Spec.map (CommRingCat.ofHom i) ≫ a) w = ofField a (w.comp i.injective) := by
   let p := Scheme.SpecToEquivOfField H X a
   have ha : Spec.map p.2 ≫ X.fromSpecResidueField p.1 = a :=
     (Scheme.SpecToEquivOfField H X).symm_apply_apply a

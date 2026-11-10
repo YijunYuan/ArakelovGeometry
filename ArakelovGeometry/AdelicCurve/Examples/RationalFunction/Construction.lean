@@ -45,7 +45,7 @@ noncomputable def rationalFiniteAdelicStructure : AdelicStructure ℚ where
   Ω := finiteAdelicStructure.Ω
   A := finiteAdelicStructure.A
   v := finiteAdelicStructure.v
-  ϕ ω := (finiteAdelicStructure.ϕ ω).pullback (algebraMap ℚ (RatFunc ℚ))
+  ϕ ω := (finiteAdelicStructure.ϕ ω).comp (algebraMap ℚ (RatFunc ℚ)).injective
   measurable_log a ha := finiteAdelicStructure.measurable_log
     (algebraMap ℚ (RatFunc ℚ) a) ((map_ne_zero _).mpr ha)
   integrable_log a ha := finiteAdelicStructure.integrable_log

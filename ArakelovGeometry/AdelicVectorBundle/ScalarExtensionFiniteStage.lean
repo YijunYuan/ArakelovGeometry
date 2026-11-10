@@ -109,7 +109,7 @@ theorem scalarExtension_norm_finiteStage
           ((1 : L) ⊗ₜ[F] z))) =
       (ξ.scalarExtension (L := F)).norm
         (AdelicStructure.ParameterSpaceExtension.restrict S L x F)
-        ((1 : (x.abv.restriction F).Completion) ⊗ₜ[F] z) := by
+        ((1 : (x.abv.under F).Completion) ⊗ₜ[F] z) := by
   let xT := (AdelicStructure.Algebraic.towerMeasurableEquiv S F.1).symm x
   let := AbsoluteValue.normedAlgebraCompletionOfEq
     ((S.algebraicExtension F).ϕ xT.base) xT.abv xT.restrict_eq
@@ -151,7 +151,7 @@ theorem IsMeasurable.scalarExtension_of_finiteStage_normalization
       (fun x : (S.algebraicExtension L).Ω =>
         (ξ.scalarExtension (L := F)).norm
           (AdelicStructure.ParameterSpaceExtension.restrict S L x F)
-          ((1 : (x.abv.restriction F).Completion) ⊗ₜ[F] y)) := by
+          ((1 : (x.abv.under F).Completion) ⊗ₜ[F] y)) := by
     funext x
     rw [← hy]
     exact ξ.scalarExtension_norm_finiteStage F (hN F) x y

@@ -28,7 +28,7 @@ variable {K L : Type*} [Field K] [Field L] [Algebra K L]
 bound simultaneously at every extension of every base place, including zero. -/
 theorem exists_algebraic_absValue_exp_bound (a : L) :
     ∃ A : S.Ω → ℝ, Integrable A S.v ∧ (∀ ω, 0 ≤ A ω) ∧
-      ∀ (ω : S.Ω) (w : AbsoluteValue L ℝ), w.restriction K = S.ϕ ω →
+      ∀ (ω : S.Ω) (w : AbsoluteValue L ℝ), w.under K = S.ϕ ω →
         w a ≤ Real.exp (A ω) := by
   let p := minpoly K a
   have hp : p.Monic := minpoly.monic (Algebra.IsAlgebraic.isAlgebraic a).isIntegral
@@ -46,7 +46,7 @@ theorem exists_algebraic_absValue_exp_bound (a : L) :
 bound at all extending places. The index type may be empty. -/
 theorem exists_algebraic_coefficients_exp_bound {ι : Type*} [Finite ι] (a : ι → L) :
     ∃ A : S.Ω → ℝ, Integrable A S.v ∧ (∀ ω, 0 ≤ A ω) ∧
-      ∀ (ω : S.Ω) (w : AbsoluteValue L ℝ), w.restriction K = S.ϕ ω →
+      ∀ (ω : S.Ω) (w : AbsoluteValue L ℝ), w.under K = S.ϕ ω →
         ∀ i, w (a i) ≤ Real.exp (A ω) := by
   classical
   let := Fintype.ofFinite ι
@@ -61,7 +61,7 @@ theorem exists_algebraic_coefficients_exp_bound {ι : Type*} [Finite ι] (a : ι
 bound, uniformly in all extending places. -/
 theorem exists_algebraic_abs_log_bound (a : L) :
     ∃ A : S.Ω → ℝ, Integrable A S.v ∧ (∀ ω, 0 ≤ A ω) ∧
-      ∀ (ω : S.Ω) (w : AbsoluteValue L ℝ), w.restriction K = S.ϕ ω →
+      ∀ (ω : S.Ω) (w : AbsoluteValue L ℝ), w.under K = S.ϕ ω →
         |Real.log (w a)| ≤ A ω := by
   obtain ⟨A, hA, hA0, ha⟩ := S.exists_algebraic_absValue_exp_bound a
   obtain ⟨B, hB, hB0, hb⟩ := S.exists_algebraic_absValue_exp_bound a⁻¹

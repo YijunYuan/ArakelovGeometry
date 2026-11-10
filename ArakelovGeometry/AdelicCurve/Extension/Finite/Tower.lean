@@ -29,7 +29,7 @@ variable (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
 /-- Restriction of a parameter along an arbitrary tower of field embeddings. -/
 def restrictScalars (x : ParameterSpaceExtension AS L) : ParameterSpaceExtension AS F where
   base := x.base
-  abv := x.abv.restriction F
+  abv := x.abv.under F
   restrict_eq := by
     ext a
     change x.abv (algebraMap F L (algebraMap K F a)) = AS.ϕ x.base a
@@ -210,33 +210,34 @@ theorem localFinSepDegree_mul {K L : Type*} [Field K] [Field L]
     [instKL : Algebra K L] [FiniteDimensional K L] (w : AbsoluteValue L ℝ)
     (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
     [FiniteDimensional F L] :
-    Field.finSepDegree ((w.restriction F).restriction K).Completion
-        (w.restriction F).Completion *
-      Field.finSepDegree (w.restriction F).Completion w.Completion =
-        Field.finSepDegree (w.restriction K).Completion w.Completion := by
+    Field.finSepDegree ((w.under F).under K).Completion
+        (w.under F).Completion *
+      Field.finSepDegree (w.under F).Completion w.Completion =
+        Field.finSepDegree (w.under K).Completion w.Completion := by
   have heq : instKL = Algebra.compHom L (algebraMap K F) :=
     Algebra.algebra_ext _ _ (fun a ↦ IsScalarTower.algebraMap_apply K F L a)
   subst instKL
   let : Algebra K L := Algebra.compHom L (algebraMap K F)
-  let B := (w.restriction K).Completion
-  let D := (w.restriction F).Completion
-  let : Algebra B D := algebraCompletion (w.restriction F) K
+  let B := (w.under K).Completion
+  let D := (w.under F).Completion
+  let : Algebra B D := (normedAlgebraCompletion (w.under F) K).toAlgebra
   have : IsScalarTower B D w.Completion := by
     apply IsScalarTower.of_algebraMap_eq
     intro x
     refine UniformSpace.Completion.induction_on x ?_ ?_
-    · exact isClosed_eq (isometry_algebraMap_completion w K).continuous
-        ((isometry_algebraMap_completion w F).continuous.comp
-          (isometry_algebraMap_completion (w.restriction F) K).continuous)
+    · exact isClosed_eq (algebraMap_isometry (w.under K).Completion w.Completion).continuous
+        ((algebraMap_isometry (w.under F).Completion w.Completion).continuous.comp
+          (algebraMap_isometry ((w.under F).under K).Completion (w.under F).Completion).continuous)
     · intro a
-      change (algebraMap (w.restriction K).Completion w.Completion)
-            (a : (w.restriction K).Completion) =
-          (algebraMap (w.restriction F).Completion w.Completion)
-            ((algebraMap ((w.restriction F).restriction K).Completion
-              (w.restriction F).Completion)
-              ((show WithAbs ((w.restriction F).restriction K) from a) :
-                ((w.restriction F).restriction K).Completion))
-      rw [algebraMap_completion_def, algebraMap_completion_def, algebraMap_completion_def]
+      change (algebraMap (w.under K).Completion w.Completion)
+            (a : (w.under K).Completion) =
+          (algebraMap (w.under F).Completion w.Completion)
+            ((algebraMap ((w.under F).under K).Completion
+              (w.under F).Completion)
+              ((show WithAbs ((w.under F).under K) from a) :
+                ((w.under F).under K).Completion))
+      rw [AbsoluteValue.Completion.algebraMap_eq, AbsoluteValue.Completion.algebraMap_eq,
+        AbsoluteValue.Completion.algebraMap_eq]
       erw [UniformSpace.Completion.mapRingHom_coe, UniformSpace.Completion.mapRingHom_coe,
         UniformSpace.Completion.mapRingHom_coe]
       rfl
@@ -286,7 +287,7 @@ theorem tower_fibreWeight (F : Type*) [Field F] [Algebra K F]
       ParameterSpaceExtension.fibreWeight AS (separableClosure K L) ω
         (towerFiberEquiv AS L F ω ⟨x, y⟩) := by
   let w := ϕ (AS.finiteExtension F) L y.val
-  have hw : w.restriction F = ϕ AS F x.val := by
+  have hw : w.under F = ϕ AS F x.val := by
     exact (measurableEquivFull (AS.finiteExtension F) L y.val).restrict_eq.trans
       (congrArg (ϕ AS F) y.property)
   rw [fibreWeight_eq_finSepDegree AS F ω x,
@@ -294,7 +295,7 @@ theorem tower_fibreWeight (F : Type*) [Field F] [Algebra K F]
     fibreWeight_eq_finSepDegree AS L ω]
   change (_ / (Field.finSepDegree K F : ℝ≥0∞)) *
       (_ / (Field.finSepDegree F L : ℝ≥0∞)) =
-    (Field.finSepDegree ((ϕ AS L (towerMeasurableEquiv AS L F y.val)).restriction K).Completion
+    (Field.finSepDegree ((ϕ AS L (towerMeasurableEquiv AS L F y.val)).under K).Completion
       (ϕ AS L (towerMeasurableEquiv AS L F y.val)).Completion : ℝ≥0∞) /
         (Field.finSepDegree K L : ℝ≥0∞)
   rw [towerMeasurableEquiv_ϕ, ← hw]

@@ -32,7 +32,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- Rational basis coordinates commute with the actual injection into a
 chosen extended completed fibre. -/
 theorem chosenExtensionMap_coordinates (ω : S.Ω) (w : AbsoluteValue L ℝ)
-    (hw : w.restriction K = S.ϕ ω)
+    (hw : w.under K = S.ϕ ω)
     (z : (S.ϕ ω).Completion ⊗[K] E) (i : ι) :
     letI := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ ω) w hw
     ((f.baseChange L).baseChange w.Completion).equivFun (chosenExtensionMap ω w hw z) i =
@@ -54,7 +54,7 @@ variable [Algebra.IsAlgebraic K L] [Fintype ι]
 /-- The original rational coordinate maximum is preserved under the chosen
 completion injection, on every completed vector. -/
 theorem ofBasis_norm_chosenExtensionMap (ω : S.Ω) (w : AbsoluteValue L ℝ)
-    (hw : w.restriction K = S.ϕ ω) (z : (S.ϕ ω).Completion ⊗[K] E) :
+    (hw : w.under K = S.ϕ ω) (z : (S.ϕ ω).Completion ⊗[K] E) :
     (ofBasis (S.algebraicExtension L) (L ⊗[K] E) (f.baseChange L)).norm
       ⟨ω, w, hw⟩ (chosenExtensionMap ω w hw z) = (ofBasis S E f).norm ω z := by
   let := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ ω) w hw
@@ -72,7 +72,7 @@ theorem ofBasis_norm_chosenExtensionMap (ω : S.Ω) (w : AbsoluteValue L ℝ)
 
 /-- The mixed rational reference norm is preserved by the actual injection. -/
 theorem ofBasisMixed_norm_chosenExtensionMap (ω : S.Ω) (w : AbsoluteValue L ℝ)
-    (hw : w.restriction K = S.ϕ ω) (z : (S.ϕ ω).Completion ⊗[K] E) :
+    (hw : w.under K = S.ϕ ω) (z : (S.ϕ ω).Completion ⊗[K] E) :
     (ofBasisMixed (S.algebraicExtension L) (L ⊗[K] E) (f.baseChange L)).norm
       ⟨ω, w, hw⟩ (chosenExtensionMap ω w hw z) = (ofBasisMixed S E f).norm ω z := by
   classical
@@ -133,7 +133,7 @@ variable [FiniteDimensional K E]
 local-distance envelope for every arbitrary choice of extending places. -/
 theorem ofChosenAlgebraicBasis_localDist_hasIntegrableBounds
     {κ : Type*} [Fintype κ] (b : Module.Basis κ L (L ⊗[K] E))
-    (w : S.Ω → AbsoluteValue L ℝ) (hw : ∀ ω, (w ω).restriction K = S.ϕ ω)
+    (w : S.Ω → AbsoluteValue L ℝ) (hw : ∀ ω, (w ω).under K = S.ϕ ω)
     (hfin : S.v S.Ωinf < ⊤) :
     HasIntegrableBounds ((ofChosenAlgebraicBasis b w hw).localDist (ofBasisMixed S E f)) S.v := by
   classical
@@ -203,7 +203,7 @@ theorem ofChosenAlgebraicBasis_localDist_hasIntegrableBounds
 algebraic basis and arbitrary extending-place choices are strongly dominated. -/
 theorem ofChosenAlgebraicBasis_isStronglyDominated
     {κ : Type*} [Fintype κ] (b : Module.Basis κ L (L ⊗[K] E))
-    (w : S.Ω → AbsoluteValue L ℝ) (hw : ∀ ω, (w ω).restriction K = S.ϕ ω)
+    (w : S.Ω → AbsoluteValue L ℝ) (hw : ∀ ω, (w ω).under K = S.ϕ ω)
     (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
     (ofChosenAlgebraicBasis b w hw).IsStronglyDominated := by
   let f := Module.finBasis K E

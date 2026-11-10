@@ -30,7 +30,7 @@ variable {K L E : Type*} [Field K] [Field L] [Algebra K L]
 /-- The canonical completed-fibre scalar-extension maps preserve the actual
 pairing of the extended algebraic dual with the extended vector space. -/
 theorem completedScalarExtensionEquiv_dual_apply
-    (v : AbsoluteValue K ℝ) (w : AbsoluteValue L ℝ) (h : w.restriction K = v)
+    (v : AbsoluteValue K ℝ) (w : AbsoluteValue L ℝ) (h : w.under K = v)
     (z : w.Completion ⊗[L] (L ⊗[K] Module.Dual K E))
     (x : w.Completion ⊗[L] (L ⊗[K] E)) :
     let := AbsoluteValue.normedAlgebraCompletionOfEq v w h
@@ -124,73 +124,15 @@ private theorem dual_norm_eq_of_pairing {k X : Type*} [Field k]
     obtain ⟨x, rfl⟩ := he y
     exact ⟨x, by dsimp only; rw [hf, hn]⟩
 
-variable {S : AdelicStructure K} (ξ : NormFamily S E) [Algebra.IsAlgebraic K L]
+variable {S : AdelicStructure K} (ξ : NormFamily S E)
 
-/-- The dual of the actual projective extension is computed in the canonical
-completed scalar-extension coordinates. -/
-theorem projectiveScalarExtension_dual_norm_apply
-    (x : AdelicStructure.ParameterSpaceExtension S L)
-    (z : x.abv.Completion ⊗[L] (L ⊗[K] Module.Dual K E)) :
-    let v := S.ϕ x.base
-    let w := x.abv
-    let h : w.restriction K = v := x.restrict_eq
-    let := AbsoluteValue.normedAlgebraCompletionOfEq v w h
-    let finV : FiniteDimensional v.Completion (v.Completion ⊗[K] E) := inferInstance
-    let nV : NormedAddCommGroup (v.Completion ⊗[K] E) := ξ.fibreNormedAddCommGroup x.base
-    let nsV : NormedSpace v.Completion (v.Completion ⊗[K] E) := ξ.fibreNormedSpace x.base
-    let : Module v.Completion (v.Completion ⊗[K] E) := nsV.toModule
-    let : @FiniteDimensional v.Completion (v.Completion ⊗[K] E)
-      (inferInstance : NormedField v.Completion).toField.toDivisionRing
-      nV.toAddCommGroup nsV.toModule := finV
-    let Z := completedScalarExtensionEquiv (Module.Dual K E) v w h z
-    let f := dualBaseChangeEquiv v.Completion w.Completion (v.Completion ⊗[K] E)
-      ((dualBaseChangeEquiv K v.Completion E).toLinearMap.baseChange w.Completion Z)
-    let finG : FiniteDimensional w.Completion
-      (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) := inferInstance
-    let extGroup : NormedAddCommGroup
-        (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) :=
-      scalarExtensionProjectiveNormedAddCommGroup
-        (k := v.Completion) (L := w.Completion) (E := v.Completion ⊗[K] E)
-    let extSpace : NormedSpace w.Completion
-        (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) :=
-      scalarExtensionProjectiveNormedSpace
-        (k := v.Completion) (L := w.Completion) (E := v.Completion ⊗[K] E)
-    let : Module w.Completion (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) :=
-      extSpace.toModule
-    let : @FiniteDimensional w.Completion
-      (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E))
-      (inferInstance : NormedField w.Completion).toField.toDivisionRing
-      extGroup.toAddCommGroup extSpace.toModule := finG
-    (ξ.projectiveScalarExtension (L := L)).dual.norm x
-        ((dualBaseChangeEquiv K L E).toLinearMap.baseChange w.Completion z) =
-      linearMapOperatorSeminorm f := by
-  intro v w h aVW finV nV nsV modV finV' Z f finG extGroup extSpace modG finG'
-  let := aVW
-  let := nV
-  let := nsV
-  let := modV
-  let := finV'
-  let := extGroup
-  let := extSpace
-  let := modG
-  let := finG'
-  have hg := (ξ.projectiveScalarExtension (L := L)).dual_norm_eq_of_pairing x
-    (G := w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E))
-    (completedScalarExtensionEquiv E v w h)
-    (completedScalarExtensionEquiv E v w h).surjective
-    (fun y ↦ ξ.projectiveScalarExtension_norm_apply x y)
-    ((dualBaseChangeEquiv K L E).toLinearMap.baseChange w.Completion z) f
-    (fun y ↦ (completedScalarExtensionEquiv_dual_apply v w h z y).symm)
-  exact hg.trans (linearMapOperatorSeminorm_eq_sSup f).symm
-
-omit [Algebra.IsAlgebraic K L] in
 private theorem projective_dual_completed
     (hr : Module.finrank K E = 1)
     (x : AdelicStructure.ParameterSpaceExtension S L)
     (z : x.abv.Completion ⊗[L] (L ⊗[K] Module.Dual K E)) :
     let v := S.ϕ x.base
     let w := x.abv
-    let h : w.restriction K = v := x.restrict_eq
+    let h : w.under K = v := x.restrict_eq
     let := AbsoluteValue.normedAlgebraCompletionOfEq v w h
     let finV : FiniteDimensional v.Completion (v.Completion ⊗[K] E) := inferInstance
     let nV : NormedAddCommGroup (v.Completion ⊗[K] E) := ξ.fibreNormedAddCommGroup x.base
@@ -248,71 +190,13 @@ private theorem projective_dual_completed
   exact projective_dual_transport (dualBaseChangeEquiv K v.Completion E)
     (fun _ ↦ rfl) hr' Z
 
-/-- The dual of the actual injective extension is computed in the canonical
-completed scalar-extension coordinates. -/
-theorem injectiveScalarExtension_dual_norm_apply
-    (x : AdelicStructure.ParameterSpaceExtension S L)
-    (z : x.abv.Completion ⊗[L] (L ⊗[K] Module.Dual K E)) :
-    let v := S.ϕ x.base
-    let w := x.abv
-    let h : w.restriction K = v := x.restrict_eq
-    let := AbsoluteValue.normedAlgebraCompletionOfEq v w h
-    let finV : FiniteDimensional v.Completion (v.Completion ⊗[K] E) := inferInstance
-    let nV : NormedAddCommGroup (v.Completion ⊗[K] E) := ξ.fibreNormedAddCommGroup x.base
-    let nsV : NormedSpace v.Completion (v.Completion ⊗[K] E) := ξ.fibreNormedSpace x.base
-    let : Module v.Completion (v.Completion ⊗[K] E) := nsV.toModule
-    let : @FiniteDimensional v.Completion (v.Completion ⊗[K] E)
-      (inferInstance : NormedField v.Completion).toField.toDivisionRing
-      nV.toAddCommGroup nsV.toModule := finV
-    let Z := completedScalarExtensionEquiv (Module.Dual K E) v w h z
-    let f := dualBaseChangeEquiv v.Completion w.Completion (v.Completion ⊗[K] E)
-      ((dualBaseChangeEquiv K v.Completion E).toLinearMap.baseChange w.Completion Z)
-    let finG : FiniteDimensional w.Completion
-      (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) := inferInstance
-    let extGroup : NormedAddCommGroup
-        (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) :=
-      scalarExtensionInjectiveNormedAddCommGroup
-        (k := v.Completion) (L := w.Completion) (E := v.Completion ⊗[K] E)
-    let extSpace : NormedSpace w.Completion
-        (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) :=
-      scalarExtensionInjectiveNormedSpace
-        (k := v.Completion) (L := w.Completion) (E := v.Completion ⊗[K] E)
-    let : Module w.Completion (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) :=
-      extSpace.toModule
-    let : @FiniteDimensional w.Completion
-      (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E))
-      (inferInstance : NormedField w.Completion).toField.toDivisionRing
-      extGroup.toAddCommGroup extSpace.toModule := finG
-    (ξ.injectiveScalarExtension (L := L)).dual.norm x
-        ((dualBaseChangeEquiv K L E).toLinearMap.baseChange w.Completion z) =
-      linearMapOperatorSeminorm f := by
-  intro v w h aVW finV nV nsV modV finV' Z f finG extGroup extSpace modG finG'
-  let := aVW
-  let := nV
-  let := nsV
-  let := modV
-  let := finV'
-  let := extGroup
-  let := extSpace
-  let := modG
-  let := finG'
-  have hg := (ξ.injectiveScalarExtension (L := L)).dual_norm_eq_of_pairing x
-    (G := w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E))
-    (completedScalarExtensionEquiv E v w h)
-    (completedScalarExtensionEquiv E v w h).surjective
-    (fun y ↦ ξ.injectiveScalarExtension_norm_apply x y)
-    ((dualBaseChangeEquiv K L E).toLinearMap.baseChange w.Completion z) f
-    (fun y ↦ (completedScalarExtensionEquiv_dual_apply v w h z y).symm)
-  exact hg.trans (linearMapOperatorSeminorm_eq_sSup f).symm
-
-omit [Algebra.IsAlgebraic K L] in
 private theorem injective_dual_completed
     (x : AdelicStructure.ParameterSpaceExtension S L)
     (hx : IsNonarchimedean x.abv)
     (z : x.abv.Completion ⊗[L] (L ⊗[K] Module.Dual K E)) :
     let v := S.ϕ x.base
     let w := x.abv
-    let h : w.restriction K = v := x.restrict_eq
+    let h : w.under K = v := x.restrict_eq
     let := AbsoluteValue.normedAlgebraCompletionOfEq v w h
     let finV : FiniteDimensional v.Completion (v.Completion ⊗[K] E) := inferInstance
     let nV : NormedAddCommGroup (v.Completion ⊗[K] E) := ξ.fibreNormedAddCommGroup x.base
@@ -368,6 +252,122 @@ private theorem injective_dual_completed
   let := AbsoluteValue.isUltrametricDist_completion w hx
   exact injective_dual_transport (dualBaseChangeEquiv K v.Completion E)
     (fun _ ↦ rfl) Z
+
+variable [Algebra.IsAlgebraic K L]
+
+/-- The dual of the actual projective extension is computed in the canonical
+completed scalar-extension coordinates. -/
+theorem projectiveScalarExtension_dual_norm_apply
+    (x : AdelicStructure.ParameterSpaceExtension S L)
+    (z : x.abv.Completion ⊗[L] (L ⊗[K] Module.Dual K E)) :
+    let v := S.ϕ x.base
+    let w := x.abv
+    let h : w.under K = v := x.restrict_eq
+    let := AbsoluteValue.normedAlgebraCompletionOfEq v w h
+    let finV : FiniteDimensional v.Completion (v.Completion ⊗[K] E) := inferInstance
+    let nV : NormedAddCommGroup (v.Completion ⊗[K] E) := ξ.fibreNormedAddCommGroup x.base
+    let nsV : NormedSpace v.Completion (v.Completion ⊗[K] E) := ξ.fibreNormedSpace x.base
+    let : Module v.Completion (v.Completion ⊗[K] E) := nsV.toModule
+    let : @FiniteDimensional v.Completion (v.Completion ⊗[K] E)
+      (inferInstance : NormedField v.Completion).toField.toDivisionRing
+      nV.toAddCommGroup nsV.toModule := finV
+    let Z := completedScalarExtensionEquiv (Module.Dual K E) v w h z
+    let f := dualBaseChangeEquiv v.Completion w.Completion (v.Completion ⊗[K] E)
+      ((dualBaseChangeEquiv K v.Completion E).toLinearMap.baseChange w.Completion Z)
+    let finG : FiniteDimensional w.Completion
+      (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) := inferInstance
+    let extGroup : NormedAddCommGroup
+        (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) :=
+      scalarExtensionProjectiveNormedAddCommGroup
+        (k := v.Completion) (L := w.Completion) (E := v.Completion ⊗[K] E)
+    let extSpace : NormedSpace w.Completion
+        (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) :=
+      scalarExtensionProjectiveNormedSpace
+        (k := v.Completion) (L := w.Completion) (E := v.Completion ⊗[K] E)
+    let : Module w.Completion (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) :=
+      extSpace.toModule
+    let : @FiniteDimensional w.Completion
+      (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E))
+      (inferInstance : NormedField w.Completion).toField.toDivisionRing
+      extGroup.toAddCommGroup extSpace.toModule := finG
+    (ξ.projectiveScalarExtension (L := L)).dual.norm x
+        ((dualBaseChangeEquiv K L E).toLinearMap.baseChange w.Completion z) =
+      linearMapOperatorSeminorm f := by
+  intro v w h aVW finV nV nsV modV finV' Z f finG extGroup extSpace modG finG'
+  let := aVW
+  let := nV
+  let := nsV
+  let := modV
+  let := finV'
+  let := extGroup
+  let := extSpace
+  let := modG
+  let := finG'
+  have hg := (ξ.projectiveScalarExtension (L := L)).dual_norm_eq_of_pairing x
+    (G := w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E))
+    (completedScalarExtensionEquiv E v w h)
+    (completedScalarExtensionEquiv E v w h).surjective
+    (fun y ↦ ξ.projectiveScalarExtension_norm_apply x y)
+    ((dualBaseChangeEquiv K L E).toLinearMap.baseChange w.Completion z) f
+    (fun y ↦ (completedScalarExtensionEquiv_dual_apply v w h z y).symm)
+  exact hg.trans (linearMapOperatorSeminorm_eq_sSup f).symm
+
+/-- The dual of the actual injective extension is computed in the canonical
+completed scalar-extension coordinates. -/
+theorem injectiveScalarExtension_dual_norm_apply
+    (x : AdelicStructure.ParameterSpaceExtension S L)
+    (z : x.abv.Completion ⊗[L] (L ⊗[K] Module.Dual K E)) :
+    let v := S.ϕ x.base
+    let w := x.abv
+    let h : w.under K = v := x.restrict_eq
+    let := AbsoluteValue.normedAlgebraCompletionOfEq v w h
+    let finV : FiniteDimensional v.Completion (v.Completion ⊗[K] E) := inferInstance
+    let nV : NormedAddCommGroup (v.Completion ⊗[K] E) := ξ.fibreNormedAddCommGroup x.base
+    let nsV : NormedSpace v.Completion (v.Completion ⊗[K] E) := ξ.fibreNormedSpace x.base
+    let : Module v.Completion (v.Completion ⊗[K] E) := nsV.toModule
+    let : @FiniteDimensional v.Completion (v.Completion ⊗[K] E)
+      (inferInstance : NormedField v.Completion).toField.toDivisionRing
+      nV.toAddCommGroup nsV.toModule := finV
+    let Z := completedScalarExtensionEquiv (Module.Dual K E) v w h z
+    let f := dualBaseChangeEquiv v.Completion w.Completion (v.Completion ⊗[K] E)
+      ((dualBaseChangeEquiv K v.Completion E).toLinearMap.baseChange w.Completion Z)
+    let finG : FiniteDimensional w.Completion
+      (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) := inferInstance
+    let extGroup : NormedAddCommGroup
+        (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) :=
+      scalarExtensionInjectiveNormedAddCommGroup
+        (k := v.Completion) (L := w.Completion) (E := v.Completion ⊗[K] E)
+    let extSpace : NormedSpace w.Completion
+        (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) :=
+      scalarExtensionInjectiveNormedSpace
+        (k := v.Completion) (L := w.Completion) (E := v.Completion ⊗[K] E)
+    let : Module w.Completion (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E)) :=
+      extSpace.toModule
+    let : @FiniteDimensional w.Completion
+      (w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E))
+      (inferInstance : NormedField w.Completion).toField.toDivisionRing
+      extGroup.toAddCommGroup extSpace.toModule := finG
+    (ξ.injectiveScalarExtension (L := L)).dual.norm x
+        ((dualBaseChangeEquiv K L E).toLinearMap.baseChange w.Completion z) =
+      linearMapOperatorSeminorm f := by
+  intro v w h aVW finV nV nsV modV finV' Z f finG extGroup extSpace modG finG'
+  let := aVW
+  let := nV
+  let := nsV
+  let := modV
+  let := finV'
+  let := extGroup
+  let := extSpace
+  let := modG
+  let := finG'
+  have hg := (ξ.injectiveScalarExtension (L := L)).dual_norm_eq_of_pairing x
+    (G := w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E))
+    (completedScalarExtensionEquiv E v w h)
+    (completedScalarExtensionEquiv E v w h).surjective
+    (fun y ↦ ξ.injectiveScalarExtension_norm_apply x y)
+    ((dualBaseChangeEquiv K L E).toLinearMap.baseChange w.Completion z) f
+    (fun y ↦ (completedScalarExtensionEquiv_dual_apply v w h z y).symm)
+  exact hg.trans (linearMapOperatorSeminorm_eq_sSup f).symm
 
 /-- Projective scalar extension commutes with the actual completed dual
 family in dimension one. -/

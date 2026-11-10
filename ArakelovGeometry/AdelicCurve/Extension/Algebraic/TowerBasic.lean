@@ -80,7 +80,7 @@ noncomputable def towerMeasurableEquiv (F : IntermediateField K L) :
       base := x.base.base
       abv := x.abv
       restrict_eq := by
-        change (x.abv.restriction F).restriction K = _
+        change (x.abv.under F).under K = _
         rw [x.restrict_eq]
         exact x.base.restrict_eq }
     invFun y := {

@@ -33,12 +33,12 @@ variable [FiniteDimensional K L] [_s : Algebra.IsSeparable K L]
 /-- The local-degree weighted evaluation integral is the normalized average over
 embeddings into an algebraic closure, for any extension of the base absolute value. -/
 theorem fibreIntegral_eval_eq_sum_embeddings (ω : AS.Ω)
-    (u : AbsoluteValue (AlgebraicClosure K) ℝ) (hu : u.restriction K = AS.ϕ ω)
+    (u : AbsoluteValue (AlgebraicClosure K) ℝ) (hu : u.under K = AS.ϕ ω)
     (b : L) :
     fibreIntegral AS L (fun x ↦ x.ϕ b) ω =
       (Module.finrank K L : ℝ)⁻¹ * ∑ σ : L →ₐ[K] AlgebraicClosure K, u (σ b) := by
   classical
-  let E := {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω}
+  let E := {w : AbsoluteValue L ℝ // w.under K = AS.ϕ ω}
   let e : ExtensionFiber AS L ω ≃ E := {
     toFun x := ⟨x.val.ϕ, x.val.restrict_eq.trans (congrArg AS.ϕ x.property)⟩
     invFun w := ⟨⟨ω, w.val, w.property⟩, rfl⟩
@@ -64,7 +64,6 @@ theorem fibreIntegral_eval_eq_sum_embeddings (ω : AS.Ω)
       congr 1
       convert AbsoluteValue.sum_localDegree_nsmul_eq_sum_embeddings (AS.ϕ ω) u hu
         (fun w : AbsoluteValue L ℝ ↦ w b) using 1 <;> simp [nsmul_eq_mul, E]
-      rfl
 
 /-- Evaluation functions have measurable fibre integrals. -/
 theorem measurable_fibreIntegral_eval (b : L) :

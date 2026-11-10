@@ -5,17 +5,15 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicVectorBundle.NormFamily
 public import Mathlib.LinearAlgebra.Dual.BaseChange
 public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 /-!
-# Duals of completed scalar extensions
+# Duality under scalar extension
 
-The canonical scalar-extension equivalence identifies the completed fibre of the
-algebraic dual with the algebraic dual of the completed fibre. Its evaluation
-formula fixes the tensor orientation used by norm families. No local norm or
-nontriviality assumption on the absolute value is needed.
+The dual of a finite-dimensional vector space commutes with scalar extension.
+We specialize `IsBaseChange.toDualBaseChange` to the tensor product and establish
+its pure-tensor formula and compatibility with evaluation into the bidual.
 -/
 
 @[expose] public section
@@ -29,17 +27,10 @@ universe u v w w'
 variable (K : Type u) [Field K] (L : Type v) [Field L] [Algebra K L]
   (E : Type w) [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
-/-- The canonical equivalence between the scalar extension of the dual and the
-dual of the scalar extension, using Mathlib's base-change equivalence. -/
-noncomputable def dualBaseChangeEquiv :
+/-- The tensor-product specialization of `IsBaseChange.toDualBaseChange`. -/
+noncomputable abbrev dualBaseChangeEquiv :
     (L ⊗[K] Module.Dual K E) ≃ₗ[L] Module.Dual L (L ⊗[K] E) :=
   (TensorProduct.isBaseChange K E L).toDualBaseChange
-
-@[simp]
-theorem dualBaseChangeEquiv_tmul_one (a : L) (ℓ : Module.Dual K E) (x : E) :
-    dualBaseChangeEquiv K L E (a ⊗ₜ[K] ℓ) (1 ⊗ₜ[K] x) =
-      a * algebraMap K L (ℓ x) :=
-  (TensorProduct.isBaseChange K E L).toDualBaseChange_tmul a ℓ x
 
 /-- The pairing defining the canonical equivalence on both pure tensors. -/
 @[simp]
@@ -48,8 +39,10 @@ theorem dualBaseChangeEquiv_tmul_apply_tmul (a b : L) (ℓ : Module.Dual K E) (x
       a * b * algebraMap K L (ℓ x) := by
   have h : b ⊗ₜ[K] x = b • ((1 : L) ⊗ₜ[K] x) := by
     simp [TensorProduct.smul_tmul']
-  rw [h, map_smul, dualBaseChangeEquiv_tmul_one]
-  simp [mul_assoc, mul_left_comm]
+  rw [h, map_smul]
+  simpa only [dualBaseChangeEquiv, TensorProduct.mk_apply, smul_eq_mul,
+    mul_assoc, mul_left_comm] using
+    congrArg (b * ·) ((TensorProduct.isBaseChange K E L).toDualBaseChange_tmul a ℓ x)
 
 /-- The pure-tensor formula agrees with Mathlib's base change of a functional. -/
 theorem dualBaseChangeEquiv_tmul (a : L) (ℓ : Module.Dual K E) :
@@ -57,12 +50,6 @@ theorem dualBaseChangeEquiv_tmul (a : L) (ℓ : Module.Dual K E) :
   apply TensorProduct.AlgebraTensorModule.ext
   intro b x
   simp [Algebra.smul_def, mul_assoc, mul_comm]
-
-/-- Multiplication on the completed-field factor becomes scalar multiplication
-of the resulting functional. -/
-theorem dualBaseChangeEquiv_smul (a : L) (z : L ⊗[K] Module.Dual K E) :
-    dualBaseChangeEquiv K L E (a • z) = a • dualBaseChangeEquiv K L E z :=
-  map_smul _ _ _
 
 /-- The canonical equivalence intertwines scalar extension of evaluation with
 evaluation on the extended space. The dual map supplies the contravariant
@@ -77,25 +64,5 @@ theorem dualBaseChangeEquiv_eval (z : L ⊗[K] E) :
     apply TensorProduct.AlgebraTensorModule.ext
     intro b ℓ
     simp [mul_comm]
-
-/-- Equivalently, transporting the scalar extension of evaluation all the way
-to the bidual of the extended space gives its usual evaluation map. -/
-theorem dualBaseChangeEquiv_eval_symm (z : L ⊗[K] E) :
-    (dualBaseChangeEquiv K L E).dualMap.symm
-        (dualBaseChangeEquiv K L (Module.Dual K E)
-          ((Module.Dual.eval K E).baseChange L z)) =
-      Module.Dual.eval L (L ⊗[K] E) z := by
-  rw [dualBaseChangeEquiv_eval]
-  exact (dualBaseChangeEquiv K L E).dualMap.symm_apply_apply _
-
-/-- The rank-zero case does not need an inhabitant of a basis index type. -/
-theorem dualBaseChangeEquiv_eq_zero_of_subsingleton [Subsingleton E]
-    (z : L ⊗[K] Module.Dual K E) : dualBaseChangeEquiv K L E z = 0 :=
-  Subsingleton.elim _ _
-
-theorem dualBaseChangeEquiv_eq_zero_of_finrank_eq_zero (h : Module.finrank K E = 0)
-    (z : L ⊗[K] Module.Dual K E) : dualBaseChangeEquiv K L E z = 0 := by
-  let : Subsingleton E := (Module.finrank_eq_zero_iff_of_free K E).mp h
-  exact dualBaseChangeEquiv_eq_zero_of_subsingleton K L E z
 
 end ArakelovGeometry

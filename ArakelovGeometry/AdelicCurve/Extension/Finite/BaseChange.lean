@@ -25,7 +25,7 @@ variable (L : Type*) [Field L] [Algebra K L] [FiniteDimensional K L]
 
 /-- A finite fibre is the finite set of all extending absolute values. -/
 noncomputable def fibreEquivAbsoluteValues (ω : AS.Ω) :
-    BaseFiber (AS := AS) L ω ≃ {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω} where
+    BaseFiber (AS := AS) L ω ≃ {w : AbsoluteValue L ℝ // w.under K = AS.ϕ ω} where
   toFun x := ⟨ϕ AS L x.val,
     (measurableEquivFull AS L x.val).restrict_eq.trans (congrArg AS.ϕ x.property)⟩
   invFun w := ⟨(measurableEquivFull AS L).symm ⟨ω, w.val, w.property⟩, rfl⟩
@@ -41,11 +41,11 @@ noncomputable def fibreEquivAbsoluteValues (ω : AS.Ω) :
 
 theorem lintegral_fibreProbabilityMeasure_eq_sum_localFinSepDegree
     (ω : AS.Ω) (f : BaseFiber (AS := AS) L ω → ℝ≥0∞)
-    [Fintype {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω}] :
+    [Fintype {w : AbsoluteValue L ℝ // w.under K = AS.ϕ ω}] :
     ∫⁻ x, f x ∂fibreProbabilityMeasure AS L ω =
       (Field.finSepDegree K L : ℝ≥0∞)⁻¹ *
-        ∑ w : {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω},
-          (Field.finSepDegree (w.val.restriction K).Completion w.val.Completion : ℝ≥0∞) *
+        ∑ w : {w : AbsoluteValue L ℝ // w.under K = AS.ϕ ω},
+          (Field.finSepDegree (w.val.under K).Completion w.val.Completion : ℝ≥0∞) *
             f ((fibreEquivAbsoluteValues AS L ω).symm w) := by
   classical
   let : Fintype (BaseFiber (AS := AS) L ω) :=
@@ -72,13 +72,13 @@ variable {A B N : Type*} [Field A] [Field B] [Field N]
 variable [Algebra A B] [Algebra A N] [Algebra B N] [IsScalarTower A B N]
 variable [FiniteDimensional B N] (S : AdelicStructure A) (T : AdelicStructure B)
 variable (E : IntermediateField A N) [FiniteDimensional A E]
-variable (x : S.Ω) (y : T.Ω) (hxy : (T.ϕ y).restriction A = S.ϕ x)
+variable (x : S.Ω) (y : T.Ω) (hxy : (T.ϕ y).under A = S.ϕ x)
 
 /-- Restrict a finite extension place along a change of its base field. -/
 noncomputable def baseChangeFiber :
     BaseFiber (AS := T) N y → BaseFiber (AS := S) E x :=
   fun w ↦ (fibreEquivAbsoluteValues S E x).symm
-    ⟨((fibreEquivAbsoluteValues T N y) w).val.restriction E, by
+    ⟨((fibreEquivAbsoluteValues T N y) w).val.under E, by
       ext a
       change ((fibreEquivAbsoluteValues T N y) w).val (algebraMap A N a) = S.ϕ x a
       rw [IsScalarTower.algebraMap_apply A B N]
@@ -89,7 +89,7 @@ noncomputable def baseChangeFiber :
 @[simp]
 theorem baseChangeFiber_ϕ (w : BaseFiber (AS := T) N y) :
     ϕ S E (baseChangeFiber S T E x y hxy w).val =
-      (ϕ T N w.val).restriction E := by
+      (ϕ T N w.val).under E := by
   exact congrArg Subtype.val
     ((fibreEquivAbsoluteValues S E x).apply_symm_apply _)
 
@@ -102,7 +102,7 @@ variable {A B N : Type*} [Field A] [Field B] [Field N]
 variable [Algebra A B] [Algebra A N] [Algebra B N] [IsScalarTower A B N]
 variable [FiniteDimensional B N] (S : AdelicStructure A) (T : AdelicStructure B)
 variable (E : IntermediateField A N) [FiniteDimensional A E]
-variable (x : S.Ω) (y : T.Ω) (hxy : (T.ϕ y).restriction A = S.ϕ x)
+variable (x : S.Ω) (y : T.Ω) (hxy : (T.ϕ y).under A = S.ϕ x)
 
 /-- Restriction preserves finite fibre probabilities under descended base change. -/
 theorem map_fibreProbabilityMeasure_baseChangeFiber
@@ -117,9 +117,9 @@ theorem map_fibreProbabilityMeasure_baseChangeFiber
     ParameterSpaceExtension.finite_extensionFiber S (separableClosure A E) x
   let : Fintype (BaseFiber (AS := T) N y) := Fintype.ofFinite _
   let : Fintype (BaseFiber (AS := S) E x) := Fintype.ofFinite _
-  let : Fintype {w : AbsoluteValue N ℝ // w.restriction B = T.ϕ y} :=
+  let : Fintype {w : AbsoluteValue N ℝ // w.under B = T.ϕ y} :=
     Fintype.ofEquiv (BaseFiber (AS := T) N y) (fibreEquivAbsoluteValues T N y)
-  let : Fintype {v : AbsoluteValue E ℝ // v.restriction A = S.ϕ x} :=
+  let : Fintype {v : AbsoluteValue E ℝ // v.under A = S.ϕ x} :=
     Fintype.ofEquiv (BaseFiber (AS := S) E x) (fibreEquivAbsoluteValues S E x)
   apply Measure.ext_of_lintegral
   intro f hf
@@ -128,11 +128,11 @@ theorem map_fibreProbabilityMeasure_baseChangeFiber
     lintegral_fibreProbabilityMeasure_eq_sum_localFinSepDegree, ← hsep]
   congr 1
   let φ (v : AbsoluteValue E ℝ) : ℝ≥0∞ :=
-    if hv : v.restriction A = S.ϕ x then
+    if hv : v.under A = S.ϕ x then
       f ((fibreEquivAbsoluteValues S E x).symm ⟨v, hv⟩) else 0
   have hφ (z : BaseFiber (AS := S) E x) : φ (ϕ S E z.val) = f z := by
     dsimp only [φ]
-    have hz : (ϕ S E z.val).restriction A = S.ϕ x :=
+    have hz : (ϕ S E z.val).under A = S.ϕ x :=
       ((fibreEquivAbsoluteValues S E x) z).property
     rw [dite_eq_left hz]
     exact congrArg f ((fibreEquivAbsoluteValues S E x).symm_apply_apply z)
@@ -180,7 +180,7 @@ variable (AS : AdelicStructure K) (i : E →ₐ[K] N) (ω : AS.Ω)
 /-- Pull back a finite place along a field embedding over the base. -/
 noncomputable def homFiber : BaseFiber (AS := AS) N ω → BaseFiber (AS := AS) E ω :=
   fun w ↦ (fibreEquivAbsoluteValues AS E ω).symm
-    ⟨((fibreEquivAbsoluteValues AS N ω) w).val.pullback i.toRingHom, by
+    ⟨((fibreEquivAbsoluteValues AS N ω) w).val.comp i.toRingHom.injective, by
       ext a
       change ((fibreEquivAbsoluteValues AS N ω) w).val (i (algebraMap K E a)) = AS.ϕ ω a
       rw [i.commutes]
@@ -189,7 +189,7 @@ noncomputable def homFiber : BaseFiber (AS := AS) N ω → BaseFiber (AS := AS) 
 
 @[simp]
 theorem homFiber_ϕ (w : BaseFiber (AS := AS) N ω) :
-    ϕ AS E (homFiber AS i ω w).val = (ϕ AS N w.val).pullback i.toRingHom :=
+    ϕ AS E (homFiber AS i ω w).val = (ϕ AS N w.val).comp i.toRingHom.injective :=
   congrArg Subtype.val ((fibreEquivAbsoluteValues AS E ω).apply_symm_apply _)
 
 /-- Finite fibre probabilities are natural under every base-field embedding. -/
@@ -203,9 +203,9 @@ theorem map_fibreProbabilityMeasure_homFiber :
     ParameterSpaceExtension.finite_extensionFiber AS (separableClosure K E) ω
   let : Fintype (BaseFiber (AS := AS) N ω) := Fintype.ofFinite _
   let : Fintype (BaseFiber (AS := AS) E ω) := Fintype.ofFinite _
-  let : Fintype {w : AbsoluteValue N ℝ // w.restriction K = AS.ϕ ω} :=
+  let : Fintype {w : AbsoluteValue N ℝ // w.under K = AS.ϕ ω} :=
     Fintype.ofEquiv (BaseFiber (AS := AS) N ω) (fibreEquivAbsoluteValues AS N ω)
-  let : Fintype {v : AbsoluteValue E ℝ // v.restriction K = AS.ϕ ω} :=
+  let : Fintype {v : AbsoluteValue E ℝ // v.under K = AS.ϕ ω} :=
     Fintype.ofEquiv (BaseFiber (AS := AS) E ω) (fibreEquivAbsoluteValues AS E ω)
   apply Measure.ext_of_lintegral
   intro f hf
@@ -216,11 +216,11 @@ theorem map_fibreProbabilityMeasure_homFiber :
   apply (ENNReal.div_eq_div_iff (by exact_mod_cast (NeZero.ne (Field.finSepDegree K E)))
     (by simp) (by exact_mod_cast (NeZero.ne (Field.finSepDegree K N))) (by simp)).mpr
   let φ (v : AbsoluteValue E ℝ) : ℝ≥0∞ :=
-    if hv : v.restriction K = AS.ϕ ω then
+    if hv : v.under K = AS.ϕ ω then
       f ((fibreEquivAbsoluteValues AS E ω).symm ⟨v, hv⟩) else 0
   have hφ (z : BaseFiber (AS := AS) E ω) : φ (ϕ AS E z.val) = f z := by
     dsimp only [φ]
-    have hz : (ϕ AS E z.val).restriction K = AS.ϕ ω :=
+    have hz : (ϕ AS E z.val).under K = AS.ϕ ω :=
       ((fibreEquivAbsoluteValues AS E ω) z).property
     rw [dite_eq_left hz]
     exact congrArg f ((fibreEquivAbsoluteValues AS E ω).symm_apply_apply z)

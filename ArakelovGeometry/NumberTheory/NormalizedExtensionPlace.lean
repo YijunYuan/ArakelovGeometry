@@ -29,7 +29,7 @@ variable {K : Type*} [Field K] [NumberField K]
 
 /-- Nontrivial values on a genuine number field have nontrivial rational restrictions. -/
 theorem isNontrivial_restriction_rat (v : AbsoluteValue K ℝ) (hv : v.IsNontrivial) :
-    (v.restriction ℚ).IsNontrivial := by
+    (v.under ℚ).IsNontrivial := by
   by_contra h
   exact (AbsoluteValue.not_isNontrivial_of_finite v ℚ h) hv
 
@@ -38,20 +38,20 @@ theorem parameter_isNontrivial (x : ParameterSpaceExtension rationalAdelicStruct
     x.abv.IsNontrivial := by
   obtain ⟨q, hq0, hq⟩ := rationalAdelicStructure_phi_isNontrivial x.base
   refine ⟨algebraMap ℚ K q, (map_ne_zero_iff _ (algebraMap ℚ K).injective).mpr hq0, ?_⟩
-  change (x.abv.restriction ℚ) q ≠ 1
+  change (x.abv.under ℚ) q ≠ 1
   rwa [x.restrict_eq]
 
 /-- Actual normalized parameters are equal when their absolute values are equivalent. -/
 theorem parameter_eq_of_isEquiv {x y : ParameterSpaceExtension rationalAdelicStructure K}
     (h : x.abv.IsEquiv y.abv) : x = y := by
-  have hr : (x.abv.restriction ℚ).IsEquiv (y.abv.restriction ℚ) :=
+  have hr : (x.abv.under ℚ).IsEquiv (y.abv.under ℚ) :=
     fun a b => h (algebraMap ℚ K a) (algebraMap ℚ K b)
   have hb : x.base = y.base := by
     rw [x.restrict_eq, y.restrict_eq] at hr
     exact rationalAdelicStructure_phi_isEquiv_iff.mp hr
-  have he : x.abv.restriction ℚ = y.abv.restriction ℚ := by
+  have he : x.abv.under ℚ = y.abv.under ℚ := by
     rw [x.restrict_eq, y.restrict_eq, hb]
-  have hn : (x.abv.restriction ℚ).IsNontrivial := by
+  have hn : (x.abv.under ℚ).IsNontrivial := by
     rw [x.restrict_eq]
     exact rationalAdelicStructure_phi_isNontrivial x.base
   exact ParameterSpaceExtension.ext rationalAdelicStructure K hb
@@ -61,7 +61,7 @@ theorem parameter_eq_of_isEquiv {x y : ParameterSpaceExtension rationalAdelicStr
 theorem exists_parameter_isEquiv (v : AbsoluteValue K ℝ) (hv : v.IsNontrivial) :
     ∃ x : ParameterSpaceExtension rationalAdelicStructure K, v.IsEquiv x.abv := by
   by_cases hna : IsNonarchimedean v
-  · have hqn : IsNonarchimedean (v.restriction ℚ) := by
+  · have hqn : IsNonarchimedean (v.under ℚ) := by
       intro a b
       change v (algebraMap ℚ K (a + b)) ≤
         max (v (algebraMap ℚ K a)) (v (algebraMap ℚ K b))

@@ -370,7 +370,7 @@ theorem hermitianScalarExtension_norm_finiteStage
           ((1 : L) ⊗ₜ[F] z))) =
       (hermitianScalarExtension ξ hS hF hH).norm
         (AdelicStructure.ParameterSpaceExtension.restrict S L x F)
-        ((1 : (x.abv.restriction F).Completion) ⊗ₜ[F] z) := by
+        ((1 : (x.abv.under F).Completion) ⊗ₜ[F] z) := by
   let y := AdelicStructure.ParameterSpaceExtension.restrict S L x F
   let Z : x.abv.Completion ⊗[L] (L ⊗[K] E) :=
     (1 : x.abv.Completion) ⊗ₜ[L]
@@ -437,7 +437,7 @@ theorem IsMeasurable.hermitianScalarExtension_of_common_countable_dense_subfield
       (fun x : (S.algebraicExtension L).Ω =>
         (hermitianScalarExtension ξ hS hF hH).norm
           (AdelicStructure.ParameterSpaceExtension.restrict S L x F)
-          ((1 : (x.abv.restriction F).Completion) ⊗ₜ[F] y)) := by
+          ((1 : (x.abv.under F).Completion) ⊗ₜ[F] y)) := by
     funext x
     rw [← hy]
     exact hermitianScalarExtension_norm_finiteStage ξ hS hL hH F hF x y

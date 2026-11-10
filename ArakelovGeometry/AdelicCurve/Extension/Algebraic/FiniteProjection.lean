@@ -30,7 +30,7 @@ noncomputable def projFiniteAlong :
     ParameterSpaceExtension AS L → ParameterSpaceFinExtension AS E :=
   fun x ↦ (ParameterSpaceFinExtension.measurableEquivFull AS E).symm {
     base := x.base
-    abv := x.abv.pullback i.toRingHom
+    abv := x.abv.comp i.toRingHom.injective
     restrict_eq := by
       ext a
       change x.abv (i (algebraMap K E a)) = AS.ϕ x.base a
@@ -46,9 +46,9 @@ theorem projFiniteAlong_base (x : ParameterSpaceExtension AS L) :
 @[simp]
 theorem projFiniteAlong_ϕ (x : ParameterSpaceExtension AS L) :
     ParameterSpaceFinExtension.ϕ AS E (projFiniteAlong AS i x) =
-      x.abv.pullback i.toRingHom := by
+      x.abv.comp i.toRingHom.injective := by
   exact ParameterSpaceFinExtension.extendAbsoluteValue_restriction E
-    (x.abv.pullback i.toRingHom)
+    (x.abv.comp i.toRingHom.injective)
 
 /-- Finite projections along embeddings are measurable for the projective sigma algebra. -/
 theorem measurable_projFiniteAlong [Algebra.IsAlgebraic K L] :
@@ -88,12 +88,12 @@ theorem projFiniteFiberAlong_eq_homFiber (ω : AS.Ω) :
   rw [projFiniteAlong_ϕ, ParameterSpaceFinExtension.homFiber_ϕ]
   have hval : ParameterSpaceFinExtension.ϕ AS i.fieldRange
       (projFinite AS ⟨i.fieldRange, i.equivFieldRange.toLinearEquiv.finiteDimensional⟩ x.val) =
-      x.val.abv.restriction i.fieldRange :=
+      x.val.abv.under i.fieldRange :=
     ParameterSpaceFinExtension.extendAbsoluteValue_restriction i.fieldRange
-      (x.val.abv.restriction i.fieldRange)
+      (x.val.abv.under i.fieldRange)
   change _ = (ParameterSpaceFinExtension.ϕ AS i.fieldRange
-    (projFinite AS ⟨i.fieldRange, inferInstance⟩ x.val)).pullback
-      i.equivFieldRange.toAlgHom.toRingHom
+    (projFinite AS ⟨i.fieldRange, inferInstance⟩ x.val)).comp
+      i.equivFieldRange.toAlgHom.toRingHom.injective
   rw [hval]
   rfl
 

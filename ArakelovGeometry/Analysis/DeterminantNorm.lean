@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.Analysis.TensorNorm
+public import Mathlib.Analysis.Normed.Group.Ultra
 public import Mathlib.LinearAlgebra.Determinant
 public import Mathlib.LinearAlgebra.ExteriorPower.Basis
 public import Mathlib.LinearAlgebra.PiTensorProduct.Finite
@@ -63,17 +64,6 @@ theorem norm_tensorDualEval_le_injective {ι : Type*} [Fintype ι]
     lt_of_le_of_ne (Finset.prod_nonneg fun _ _ ↦ apply_nonneg _ _) (Ne.symm hD)
   apply (div_le_iff₀ hp).mp
   simpa only [tensorDualRatioSeminorm_apply] using tensorDualRatioSeminorm_le_injective φ z
-
-private theorem norm_sum_le_of_ultrametric {κ W : Type*} [SeminormedAddCommGroup W]
-    (hW : ∀ x y : W, ‖x + y‖ ≤ max ‖x‖ ‖y‖) (s : Finset κ) (x : κ → W)
-    {C : ℝ} (hC : 0 ≤ C) (hx : ∀ i ∈ s, ‖x i‖ ≤ C) : ‖∑ i ∈ s, x i‖ ≤ C := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa only [Finset.sum_empty, norm_zero] using hC
-  | @insert i s hi hs =>
-    rw [Finset.sum_insert hi]
-    exact (hW _ _).trans (max_le (hx i (Finset.mem_insert_self _ _))
-      (hs (fun j hj ↦ hx j (Finset.mem_insert_of_mem hj))))
 
 variable {ι E : Type*} [Fintype ι] [DecidableEq ι]
   [NormedAddCommGroup E] [NormedSpace L E] [FiniteDimensional L E]
@@ -326,7 +316,9 @@ theorem norm_linearMap_le_injective_of_ultrametric {W : Type*}
       ‖f z‖ = ‖∑ p, (B.repr z) p • f (B p)‖ := by
         simpa only [map_sum, map_smul] using congrArg norm (congrArg f (B.sum_repr z)).symm
       _ ≤ injectiveTensorSeminorm z * α⁻¹ ^ Fintype.card ι := by
-        apply norm_sum_le_of_ultrametric hW _ _ hC
+        have : IsUltrametricDist W :=
+          IsUltrametricDist.isUltrametricDist_iff_isNonarchimedean_norm.mpr hW
+        apply IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg hC
         intro p _
         have hp := norm_tensorDualEval_le_injective (fun i : ι ↦ e.coord (p i)) z
         rw [tensorDualEval_coord] at hp

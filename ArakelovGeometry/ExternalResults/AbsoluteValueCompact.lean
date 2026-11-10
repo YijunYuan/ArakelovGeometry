@@ -22,12 +22,12 @@ variable {K L : Type*} [Field K] [Field L] [Algebra K L]
 
 /-- The equations and inequalities defining extending absolute values form a closed locus. -/
 theorem isClosed_range_extensions (v : AbsoluteValue K ℝ) :
-    IsClosed (Set.range (fun w : {w : AbsoluteValue L ℝ // w.restriction K = v} ↦
+    IsClosed (Set.range (fun w : {w : AbsoluteValue L ℝ // w.under K = v} ↦
       (w.val : L → ℝ))) := by
   let S : Set (L → ℝ) := {f | f 0 = 0 ∧ f 1 = 1 ∧
     (∀ a, 0 ≤ f a) ∧ (∀ a b, f (a * b) = f a * f b) ∧
     (∀ a b, f (a + b) ≤ f a + f b) ∧ ∀ a : K, f (algebraMap K L a) = v a}
-  have hS : Set.range (fun w : {w : AbsoluteValue L ℝ // w.restriction K = v} ↦
+  have hS : Set.range (fun w : {w : AbsoluteValue L ℝ // w.under K = v} ↦
       (w.val : L → ℝ)) = S := by
     ext f
     constructor
@@ -50,7 +50,7 @@ theorem isClosed_range_extensions (v : AbsoluteValue K ℝ) :
           · rintro rfl
             exact h0
         add_le' := hadd }
-      have hw : w.restriction K = v := by
+      have hw : w.under K = v := by
         ext a
         exact hrestrict a
       exact ⟨⟨w, hw⟩, rfl⟩
@@ -76,7 +76,7 @@ theorem isClosed_range_extensions (v : AbsoluteValue K ℝ) :
 /-- An algebraic element has only finitely many values among the extensions of an absolute value. -/
 theorem finite_range_extensions_apply [Algebra.IsAlgebraic K L]
     (v : AbsoluteValue K ℝ) (a : L) :
-    (Set.range (fun w : {w : AbsoluteValue L ℝ // w.restriction K = v} ↦ w.val a)).Finite := by
+    (Set.range (fun w : {w : AbsoluteValue L ℝ // w.under K = v} ↦ w.val a)).Finite := by
   let E := IntermediateField.adjoin K ({a} : Set L)
   let b : E := ⟨a, IntermediateField.subset_adjoin K ({a} : Set L) (Set.mem_singleton a)⟩
   have : FiniteDimensional K E :=
@@ -85,13 +85,13 @@ theorem finite_range_extensions_apply [Algebra.IsAlgebraic K L]
   have hfin := finite_extensions (L := E) v
   refine (hfin.image fun u ↦ u b).subset ?_
   rintro _ ⟨w, rfl⟩
-  refine ⟨w.val.restriction E, ?_, rfl⟩
+  refine ⟨w.val.under E, ?_, rfl⟩
   exact w.property
 
 /-- Extending absolute values form a compact set for pointwise convergence on an algebraic field. -/
 theorem isCompact_range_extensions [Algebra.IsAlgebraic K L]
     (v : AbsoluteValue K ℝ) :
-    IsCompact (Set.range (fun w : {w : AbsoluteValue L ℝ // w.restriction K = v} ↦
+    IsCompact (Set.range (fun w : {w : AbsoluteValue L ℝ // w.under K = v} ↦
       (w.val : L → ℝ))) := by
   have hcomp := isCompact_pi_infinite fun a : L ↦ (finite_range_extensions_apply v a).isCompact
   apply hcomp.of_isClosed_subset (isClosed_range_extensions v)

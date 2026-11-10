@@ -71,7 +71,7 @@ theorem hermitianScalarExtension_isMeasurable_of_countable_discrete
       (fun x : (S.algebraicExtension L).Ω =>
         (hermitianScalarExtension ξ hS hF hH).norm
           (AdelicStructure.ParameterSpaceExtension.restrict S L x F)
-          ((1 : (x.abv.restriction F).Completion) ⊗ₜ[F] y)) := by
+          ((1 : (x.abv.under F).Completion) ⊗ₜ[F] y)) := by
     funext x
     rw [← hy]
     exact hermitianScalarExtension_norm_finiteStage ξ hS hL hH F hF x y

@@ -27,7 +27,7 @@ variable {K L M E : Type*} [Field K] [Field L] [Field M]
 
 /-- The canonical completed tensor equivalence, linear over the original completed field. -/
 def completedScalarExtensionEquivOverBase (v : AbsoluteValue K ℝ)
-    (w : AbsoluteValue L ℝ) (h : w.restriction K = v) :
+    (w : AbsoluteValue L ℝ) (h : w.under K = v) :
     let := AbsoluteValue.normedAlgebraCompletionOfEq v w h
     w.Completion ⊗[L] (L ⊗[K] E) ≃ₗ[v.Completion]
       w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E) := by
@@ -61,7 +61,8 @@ def completedScalarExtensionAlgEquiv (σ : L ≃ₐ[K] M)
     ≪≫ₗ (completedScalarExtensionEquivOverBase (E := E)
       (S.ϕ x.base) x.abv x.restrict_eq).symm
 
-private theorem completedScalarExtensionAlgEquiv_flatten (σ : L ≃ₐ[K] M)
+/-- Completed coefficient transport agrees with tensoring the completed-field equivalence. -/
+theorem completedScalarExtensionAlgEquiv_flatten (σ : L ≃ₐ[K] M)
     (x : AdelicStructure.ParameterSpaceExtension S M) :
     let := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base)
       (pullbackAlgEquiv S σ x).abv (pullbackAlgEquiv S σ x).restrict_eq

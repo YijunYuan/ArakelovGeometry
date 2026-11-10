@@ -36,7 +36,7 @@ theorem fibreIntegral_log_eq_log_norm (b : L) (hb : b ≠ 0) (ω : AS.Ω) :
     fibreIntegral AS L (fun x ↦ Real.log (ϕ x b)) ω =
       Real.log (AS.ϕ ω (Algebra.norm K b)) / (Module.finrank K L : ℝ) := by
   classical
-  let E := {w : AbsoluteValue L ℝ // w.restriction K = AS.ϕ ω}
+  let E := {w : AbsoluteValue L ℝ // w.under K = AS.ϕ ω}
   let e : ExtensionFiber AS L ω ≃ E := {
     toFun x := ⟨x.val.ϕ, x.val.restrict_eq.trans (congrArg AS.ϕ x.property)⟩
     invFun w := ⟨⟨ω, w.val, w.property⟩, rfl⟩

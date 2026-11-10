@@ -119,7 +119,7 @@ theorem scalarExtension_isMeasurable_of_countable_discrete
       (fun x : (S.algebraicExtension L).Ω =>
         (ξ.scalarExtension (L := F)).norm
           (AdelicStructure.ParameterSpaceExtension.restrict S L x F)
-          ((1 : (x.abv.restriction F).Completion) ⊗ₜ[F] y)) := by
+          ((1 : (x.abv.under F).Completion) ⊗ₜ[F] y)) := by
     funext x
     rw [← hy]
     exact ξ.scalarExtension_norm_finiteStage F

@@ -372,7 +372,7 @@ variable {K L : Type*} [Field K] [Field L] [Algebra K L]
 /-- Wedge transport through the canonical completed scalar-extension map,
 with no basis identification and including degree zero. -/
 theorem completedScalarExtensionEquiv_scalarExtensionExteriorMap
-    (v : AbsoluteValue K ℝ) (w : AbsoluteValue L ℝ) (h : w.restriction K = v)
+    (v : AbsoluteValue K ℝ) (w : AbsoluteValue L ℝ) (h : w.under K = v)
     (n : ℕ) (z : Fin n → w.Completion ⊗[L] (L ⊗[K] E)) :
     letI := AbsoluteValue.normedAlgebraCompletionOfEq v w h
     completedScalarExtensionEquiv (⋀[K]^n E) v w h
@@ -461,7 +461,7 @@ variable {K L : Type*} [Field K] [Field L] [Algebra K L]
 /-- Canonically embedding an original completed wedge and then extending
 the determinant equals the wedge of the embedded completed vectors. -/
 theorem determinantScalarExtensionEquiv_baseChange_completed_ιMulti
-    (v : AbsoluteValue K ℝ) (w : AbsoluteValue L ℝ) (h : w.restriction K = v)
+    (v : AbsoluteValue K ℝ) (w : AbsoluteValue L ℝ) (h : w.under K = v)
     (t : Fin (Module.finrank K E) → v.Completion ⊗[K] E) :
     letI := AbsoluteValue.normedAlgebraCompletionOfEq v w h
     ((determinantScalarExtensionEquiv K L E).toLinearMap.baseChange w.Completion)

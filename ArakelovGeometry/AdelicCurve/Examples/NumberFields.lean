@@ -223,15 +223,15 @@ noncomputable def numberFieldAdelicStructure (K : Type*) [Field K] [NumberField 
     AdelicStructure K where
   Ω := AbsoluteValue.Place K
   A := ⊤
-  v := @Measure.ofSingletons _ ⊤ placeWeight
+  v := by
+    letI : MeasurableSpace (AbsoluteValue.Place K) := ⊤
+    exact Measure.sum (fun a ↦ placeWeight a • Measure.dirac a)
   ϕ := placeRep
   measurable_log := fun x _ ↦ measurable_from_top
   integrable_log := by
     intro x hx
     let : MeasurableSpace (AbsoluteValue.Place K) := ⊤
     -- The Dirac-sum integrability criterion, with weights `placeWeight` and `x = id`.
-    -- The ambient measure `ofSingletons placeWeight` is *definitionally*
-    -- `Measure.sum (fun a ↦ placeWeight a • dirac a)`.
     have hiff := integrable_sum_dirac_iff (ι := AbsoluteValue.Place K)
       (X := AbsoluteValue.Place K) (E := ℝ) (x := id)
       (c := placeWeight)

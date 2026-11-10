@@ -43,9 +43,9 @@ theorem projFiniteFiber_algEquivFiber (σ : L ≃ₐ[K] M)
       (projFiniteAlong S (σ.toAlgHom.comp F.1.val) x.val)
   have hval : ParameterSpaceFinExtension.ϕ S F
       (projFinite S F (ParameterSpaceExtension.pullbackAlgEquiv S σ x.val)) =
-      (ParameterSpaceExtension.pullbackAlgEquiv S σ x.val).abv.restriction F :=
+      (ParameterSpaceExtension.pullbackAlgEquiv S σ x.val).abv.under F :=
     ParameterSpaceFinExtension.extendAbsoluteValue_restriction F
-      ((ParameterSpaceExtension.pullbackAlgEquiv S σ x.val).abv.restriction F)
+      ((ParameterSpaceExtension.pullbackAlgEquiv S σ x.val).abv.under F)
   rw [hval, projFiniteAlong_ϕ]
   rfl
 

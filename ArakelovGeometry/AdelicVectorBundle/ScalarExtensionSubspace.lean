@@ -32,7 +32,7 @@ variable {K : Type u} [Field K] {L : Type w} [Field L] [Algebra K L]
 /-- The canonical completed tensor identification commutes with every
 base-changed linear map. -/
 theorem completedScalarExtensionEquiv_baseChange (f : F →ₗ[K] E)
-    (v : AbsoluteValue K ℝ) (w : AbsoluteValue L ℝ) (h : w.restriction K = v)
+    (v : AbsoluteValue K ℝ) (w : AbsoluteValue L ℝ) (h : w.under K = v)
     (z : w.Completion ⊗[L] (L ⊗[K] F)) :
     letI := AbsoluteValue.normedAlgebraCompletionOfEq v w h
     completedScalarExtensionEquiv E v w h

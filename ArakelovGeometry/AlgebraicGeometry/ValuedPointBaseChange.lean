@@ -39,12 +39,12 @@ def baseHom (f : X ⟶ Spec (CommRingCat.of k)) (x : X) :
 /-- Restrict the residue-field value to the base field. -/
 def baseValue (f : X ⟶ Spec (CommRingCat.of k)) (x : ValuedPoint X) :
     AbsoluteValue k ℝ :=
-  x.value.pullback (baseHom f x.point)
+  x.value.comp (baseHom f x.point).injective
 
 theorem baseValue_ofField {H : Type u} [Field H]
     (f : X ⟶ Spec (CommRingCat.of k)) (a : Spec (CommRingCat.of H) ⟶ X)
     (w : AbsoluteValue H ℝ) :
-    (ofField a w).baseValue f = w.pullback (Spec.preimage (a ≫ f)).hom := by
+    (ofField a w).baseValue f = w.comp (Spec.preimage (a ≫ f)).hom.injective := by
   let p := Scheme.SpecToEquivOfField H X a
   have ha : Spec.map p.2 ≫ X.fromSpecResidueField p.1 = a :=
     (Scheme.SpecToEquivOfField H X).symm_apply_apply a
@@ -67,14 +67,16 @@ abbrev Over (f : X ⟶ Spec (CommRingCat.of k)) (v : AbsoluteValue k ℝ) :=
 theorem baseValue_comp_SpecMap {L : Type u} [Field L]
     (g : X ⟶ Spec (CommRingCat.of L)) (i : k →+* L) (x : ValuedPoint X) :
     x.baseValue (g ≫ Spec.map (CommRingCat.ofHom i)) =
-      (x.baseValue g).pullback i := by
-  unfold baseValue baseHom
-  rw [← Category.assoc, Spec.preimage_comp, Spec.preimage_map]
+      (x.baseValue g).comp i.injective := by
+  ext a
+  change x.value (baseHom (g ≫ Spec.map (CommRingCat.ofHom i)) x.point a) =
+    x.value (baseHom g x.point (i a))
+  rw [baseHom, ← Category.assoc, Spec.preimage_comp, Spec.preimage_map]
   rfl
 
 /-- Projection on intrinsic valued points over the two specified base values. -/
 def baseChangeMap {L : Type u} [Field L] [Algebra k L]
-    (v : AbsoluteValue k ℝ) (vL : AbsoluteValue L ℝ) (hL : vL.restriction k = v)
+    (v : AbsoluteValue k ℝ) (vL : AbsoluteValue L ℝ) (hL : vL.under k = v)
     (f : X ⟶ Spec (CommRingCat.of k))
     (y : Over (pullback.snd f (Spec.map (CommRingCat.ofHom (algebraMap k L)))) vL) :
     Over f v :=
@@ -86,7 +88,7 @@ def baseChangeMap {L : Type u} [Field L] [Algebra k L]
 intrinsic valued point over the specified finite valued extension. -/
 theorem exists_baseChange_lift {L : Type u} [Field L] [Algebra k L]
     [FiniteDimensional k L] (v : AbsoluteValue k ℝ) [CompleteSpace (WithAbs v)]
-    (vL : AbsoluteValue L ℝ) (hL : vL.restriction k = v)
+    (vL : AbsoluteValue L ℝ) (hL : vL.under k = v)
     (f : X ⟶ Spec (CommRingCat.of k)) (x : Over f v) :
     ∃ y : Over (pullback.snd f (Spec.map (CommRingCat.ofHom (algebraMap k L)))) vL,
       y.1.map (pullback.fst f (Spec.map (CommRingCat.ofHom (algebraMap k L)))) = x.1 := by
@@ -96,7 +98,7 @@ theorem exists_baseChange_lift {L : Type u} [Field L] [Algebra k L]
   have hx : X.fromSpecResidueField x.1.point ≫ f =
       Spec.map (CommRingCat.ofHom (algebraMap k H)) := by
     exact (Spec.map_preimage _).symm
-  have hv : x.1.value.restriction k = v := x.2
+  have hv : x.1.value.under k = v := x.2
   obtain ⟨i, w, hwH, hwL, a, ha, hb⟩ :=
     exists_valued_scheme_baseChange_lift v vL x.1.value hL hv X f
       (X.fromSpecResidueField x.1.point) hx
@@ -104,14 +106,14 @@ theorem exists_baseChange_lift {L : Type u} [Field L] [Algebra k L]
   · rw [baseValue_ofField, hb, Spec.preimage_map]
     exact hwL
   · rw [map_ofField, ha, ofField_precomp]
-    change ofField (X.fromSpecResidueField x.1.point) (w.restriction H) = x.1
+    change ofField (X.fromSpecResidueField x.1.point) (w.under H) = x.1
     rw [hwH, ofField_fromSpecResidueField]
 
 /-- The actual projection on intrinsic valued points is surjective for a
 finite extension of the complete valued ground field. -/
 theorem baseChangeMap_surjective {L : Type u} [Field L] [Algebra k L]
     [FiniteDimensional k L] (v : AbsoluteValue k ℝ) [CompleteSpace (WithAbs v)]
-    (vL : AbsoluteValue L ℝ) (hL : vL.restriction k = v)
+    (vL : AbsoluteValue L ℝ) (hL : vL.under k = v)
     (f : X ⟶ Spec (CommRingCat.of k)) :
     Function.Surjective (baseChangeMap v vL hL f) := by
   intro x
@@ -128,7 +130,7 @@ def regularSup (f : X ⟶ Spec (CommRingCat.of k)) (v : AbsoluteValue k ℝ)
 valued field base change, including unbounded functions and empty schemes. -/
 theorem regularSup_baseChange {L : Type u} [Field L] [Algebra k L]
     [FiniteDimensional k L] (v : AbsoluteValue k ℝ) [CompleteSpace (WithAbs v)]
-    (vL : AbsoluteValue L ℝ) (hL : vL.restriction k = v)
+    (vL : AbsoluteValue L ℝ) (hL : vL.under k = v)
     (f : X ⟶ Spec (CommRingCat.of k)) (s : Γ(X, ⊤)) :
     regularSup (pullback.snd f (Spec.map (CommRingCat.ofHom (algebraMap k L)))) vL
         ((pullback.fst f (Spec.map (CommRingCat.ofHom (algebraMap k L)))).appTop s) =

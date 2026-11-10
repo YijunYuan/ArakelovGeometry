@@ -64,12 +64,12 @@ theorem functionField_singleton_pos (x : (functionFieldAdelicStructure k).Ω) :
   let : MeasurableSpace (Option (IsDedekindDomain.HeightOneSpectrum (Polynomial k))) := ⊤
   cases x with
   | none =>
-    change 0 < (Measure.ofSingletons (pointWeight k)) {none}
-    rw [Measure.ofSingletons_singleton, pointWeight_none]
+    change 0 < (Measure.sum (fun a ↦ pointWeight k a • Measure.dirac a)) {none}
+    rw [Measure.sum_smul_dirac_singleton, pointWeight_none]
     exact zero_lt_one
   | some v =>
-    change 0 < (Measure.ofSingletons (pointWeight k)) {some v}
-    rw [Measure.ofSingletons_singleton, pointWeight_some]
+    change 0 < (Measure.sum (fun a ↦ pointWeight k a • Measure.dirac a)) {some v}
+    rw [Measure.sum_smul_dirac_singleton, pointWeight_some]
     exact_mod_cast pointDegree_pos v
 
 /-- Every actual geometric absolute value is non-Archimedean. -/

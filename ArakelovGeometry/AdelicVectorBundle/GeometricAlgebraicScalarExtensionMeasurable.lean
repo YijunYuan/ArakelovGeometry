@@ -71,7 +71,7 @@ theorem IsDominated.scalarExtension_isMeasurable_of_positive_atoms_of_isAlgebrai
       (fun x : (S.algebraicExtension L).Ω =>
         (ξ.scalarExtension (L := F)).norm
           (AdelicStructure.ParameterSpaceExtension.restrict S L x F)
-          ((1 : (x.abv.restriction F).Completion) ⊗ₜ[F] y)) := by
+          ((1 : (x.abv.under F).Completion) ⊗ₜ[F] y)) := by
     funext x
     rw [← hy]
     exact ξ.scalarExtension_norm_finiteStage F (allFinite_stage_normalization hS F) x y
@@ -102,7 +102,7 @@ theorem IsDominated.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlg
       (fun x : (S.algebraicExtension L).Ω =>
         (ξ.scalarExtension (L := F)).dual.norm
           (AdelicStructure.ParameterSpaceExtension.restrict S L x F)
-          ((1 : (x.abv.restriction F).Completion) ⊗ₜ[F] dualBaseChangeEquiv K F E y)) := by
+          ((1 : (x.abv.under F).Completion) ⊗ₜ[F] dualBaseChangeEquiv K F E y)) := by
     funext x
     rw [← hℓ]
     exact ξ.scalarExtension_dual_norm_finiteStage F x y

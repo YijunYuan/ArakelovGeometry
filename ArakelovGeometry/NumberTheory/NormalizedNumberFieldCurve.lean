@@ -42,7 +42,7 @@ theorem normalizedPlaceValue_class
 /-- The source rational restriction is a produced equality, not an assumed normalization. -/
 theorem normalizedPlaceValue_restriction_rat
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K}) :
-    (normalizedPlaceValue ω).restriction ℚ =
+    (normalizedPlaceValue ω).under ℚ =
       rationalAdelicStructure.ϕ (parameterMeasurableEquivNontrivialPlace.symm ω).base :=
   (parameterMeasurableEquivNontrivialPlace.symm ω).restrict_eq
 

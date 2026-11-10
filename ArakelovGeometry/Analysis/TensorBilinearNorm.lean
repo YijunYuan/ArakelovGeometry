@@ -24,17 +24,6 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-private theorem norm_sum_le_of_ultrametric_tensor_factors {κ W : Type*} [SeminormedAddCommGroup W]
-    (hW : ∀ x y : W, ‖x + y‖ ≤ max ‖x‖ ‖y‖) (s : Finset κ) (x : κ → W)
-    {C : ℝ} (hC : 0 ≤ C) (hx : ∀ i ∈ s, ‖x i‖ ≤ C) : ‖∑ i ∈ s, x i‖ ≤ C := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa only [Finset.sum_empty, norm_zero] using hC
-  | @insert i s hi hs =>
-    rw [Finset.sum_insert hi]
-    exact (hW _ _).trans (max_le (hx i (Finset.mem_insert_self _ _))
-      (hs (fun j hj ↦ hx j (Finset.mem_insert_of_mem hj))))
-
 /-- A pure-tensor product bound contracts the injective norm for an arbitrary
 finite family of factors and an ultrametric target. -/
 theorem norm_linearMap_le_injective_of_ultrametric_factors
@@ -58,7 +47,9 @@ theorem norm_linearMap_le_injective_of_ultrametric_factors
       ‖f z‖ = ‖∑ p, (B.repr z) p • f (B p)‖ := by
         simpa only [map_sum, map_smul] using congrArg norm (congrArg f (B.sum_repr z)).symm
       _ ≤ injectiveTensorSeminorm z * α⁻¹ ^ Fintype.card ι := by
-        apply norm_sum_le_of_ultrametric_tensor_factors hW _ _ hC
+        have : IsUltrametricDist W :=
+          IsUltrametricDist.isUltrametricDist_iff_isNonarchimedean_norm.mpr hW
+        apply IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg hC
         intro p _
         have hp := norm_tensorDualEval_le_injective (fun i : ι ↦ (e i).coord (p i)) z
         rw [tensorDualEval_coord] at hp

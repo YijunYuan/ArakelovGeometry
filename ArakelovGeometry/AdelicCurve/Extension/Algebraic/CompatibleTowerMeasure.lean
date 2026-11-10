@@ -32,7 +32,7 @@ def compatibleTowerPlaceInverse (y : ParameterSpaceExtension S M) :
     ParameterSpaceExtension (S.algebraicExtension L) M where
   base := {
     base := y.base
-    abv := y.abv.pullback (algebraMap L M)
+    abv := y.abv.comp (algebraMap L M).injective
     restrict_eq := by
       ext a
       change y.abv (algebraMap L M (algebraMap K L a)) = S.ϕ y.base a
@@ -176,7 +176,7 @@ theorem fibreLIntegral_compatibleTower_projFinite
         ParameterSpaceFinExtension.fibreLIntegral (S.finiteExtension A) E h
           (projFiniteAlong S A.val y) := by
     let x := projFiniteAlong S A.val y
-    have hxy : ((S.algebraicExtension L).ϕ y).restriction A =
+    have hxy : ((S.algebraicExtension L).ϕ y).under A =
         (S.finiteExtension A).ϕ x :=
       (projFiniteAlong_ϕ S A.val y).symm
     let p := ParameterSpaceFinExtension.baseChangeFiber
@@ -203,16 +203,17 @@ theorem fibreLIntegral_compatibleTower_projFinite
       rw [projFiniteAlong_ϕ]
       change _ = (ParameterSpaceFinExtension.ϕ S E
         (ParameterSpaceFinExtension.towerMeasurableEquiv S E A
-          (p (projFiniteFiberAlong (S.algebraicExtension L) N.val y z)).val)).pullback j.toRingHom
+          (p (projFiniteFiberAlong (S.algebraicExtension L) N.val y z)).val)).comp
+            j.toRingHom.injective
       rw [ParameterSpaceFinExtension.towerMeasurableEquiv_ϕ]
       dsimp only [p]
       erw [ParameterSpaceFinExtension.baseChangeFiber_ϕ]
       change _ = ((ParameterSpaceFinExtension.ϕ (S.algebraicExtension L) N
-        (projFiniteAlong (S.algebraicExtension L) N.val z.val)).restriction E).pullback j.toRingHom
+        (projFiniteAlong (S.algebraicExtension L) N.val z.val)).under E).comp j.toRingHom.injective
       rw [projFiniteAlong_ϕ]
       have hleft : ParameterSpaceFinExtension.ϕ S H
           (projFinite S H (compatibleTowerMeasurableEquiv (L := L) (M := M) S z.val)) =
-          (compatibleTowerMeasurableEquiv (L := L) (M := M) S z.val).abv.restriction H :=
+          (compatibleTowerMeasurableEquiv (L := L) (M := M) S z.val).abv.under H :=
         ParameterSpaceFinExtension.extendAbsoluteValue_restriction H _
       change ParameterSpaceFinExtension.ϕ S H
         (projFinite S H (compatibleTowerMeasurableEquiv (L := L) (M := M) S z.val)) = _

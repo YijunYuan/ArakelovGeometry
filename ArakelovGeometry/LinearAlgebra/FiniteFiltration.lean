@@ -8,7 +8,9 @@ module
 public import Mathlib.Algebra.Order.Archimedean.Real.Basic
 public import Mathlib.Data.Finset.Sort
 public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
+public import Mathlib.Order.OrderIsoNat
 public import Mathlib.Order.Preorder.Chain
+public import Mathlib.RingTheory.Artinian.Module
 public import Mathlib.Topology.Order.Basic
 
 /-!
@@ -29,29 +31,6 @@ namespace Submodule
 variable {K E : Type*} [DivisionRing K] [AddCommGroup E] [Module K E]
   [FiniteDimensional K E]
 
-/-- Dimension is injective on a chain of subspaces. -/
-theorem finrank_injOn_of_isChain {S : Set (Submodule K E)}
-    (hS : IsChain (· ≤ ·) S) : Set.InjOn (fun U : Submodule K E => finrank K U) S := by
-  intro U hU V hV hdim
-  rcases hS.total hU hV with h | h
-  · exact eq_of_le_of_finrank_eq h hdim
-  · exact (eq_of_le_of_finrank_eq h hdim.symm).symm
-
-/-- Every chain of subspaces of a finite-dimensional space is finite. -/
-theorem finite_of_isChain {S : Set (Submodule K E)}
-    (hS : IsChain (· ≤ ·) S) : S.Finite := by
-  apply Set.Finite.of_finite_image (f := fun U : Submodule K E => finrank K U) _
-    (finrank_injOn_of_isChain hS)
-  exact (Set.finite_Iic (finrank K E)).subset (by
-    rintro _ ⟨U, _, rfl⟩
-    exact U.finrank_le)
-
-/-- A decreasing subspace filtration has finite image, without any continuity
-or boundedness hypothesis on its real index. -/
-theorem finite_range_of_antitone {F : ℝ → Submodule K E} (hF : Antitone F) :
-    (Set.range F).Finite :=
-  finite_of_isChain hF.isChain_range
-
 /-- Enumerate all distinct filtration levels by a strict complete flag. -/
 theorem exists_strictMono_flag_of_antitone {F : ℝ → Submodule K E}
     (hF : Antitone F) (hbot : ∃ t, F t = ⊥) (htop : ∃ t, F t = ⊤) :
@@ -60,7 +39,7 @@ theorem exists_strictMono_flag_of_antitone {F : ℝ → Submodule K E}
   classical
   let S := Set.range F
   let : LinearOrder S := hF.isChain_range.lt_of_le.linearOrder
-  let : Fintype S := (finite_range_of_antitone hF).fintype
+  let : Fintype S := hF.isChain_range.lt_of_le.finite_of_wellFoundedLT_of_wellFoundedGT.fintype
   let : Nonempty S := ⟨⟨F 0, 0, rfl⟩⟩
   let n := Fintype.card S - 1
   have hcard : Fintype.card S = n + 1 := by

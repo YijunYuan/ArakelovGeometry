@@ -88,7 +88,7 @@ theorem fibreLIntegral_tower_projFinite (AS : AdelicStructure K) (F : Intermedia
         ParameterSpaceFinExtension.fibreLIntegral (AS.finiteExtension A) E h
           (projFiniteAlong AS A.val y) := by
     let x := projFiniteAlong AS A.val y
-    have hxy : ((AS.algebraicExtension F).ϕ y).restriction A =
+    have hxy : ((AS.algebraicExtension F).ϕ y).under A =
         (AS.finiteExtension A).ϕ x :=
       (projFiniteAlong_ϕ AS A.val y).symm
     let p := ParameterSpaceFinExtension.baseChangeFiber
@@ -115,16 +115,17 @@ theorem fibreLIntegral_tower_projFinite (AS : AdelicStructure K) (F : Intermedia
       rw [projFiniteAlong_ϕ]
       change _ = (ParameterSpaceFinExtension.ϕ AS E
         (ParameterSpaceFinExtension.towerMeasurableEquiv AS E A
-          (p (projFiniteFiberAlong (AS.algebraicExtension F) N.val y z)).val)).pullback j.toRingHom
+          (p (projFiniteFiberAlong (AS.algebraicExtension F) N.val y z)).val)).comp
+            j.toRingHom.injective
       rw [ParameterSpaceFinExtension.towerMeasurableEquiv_ϕ]
       dsimp only [p]
       erw [ParameterSpaceFinExtension.baseChangeFiber_ϕ]
       change _ = ((ParameterSpaceFinExtension.ϕ (AS.algebraicExtension F) N
-        (projFiniteAlong (AS.algebraicExtension F) N.val z.val)).restriction E).pullback j.toRingHom
+        (projFiniteAlong (AS.algebraicExtension F) N.val z.val)).under E).comp j.toRingHom.injective
       rw [projFiniteAlong_ϕ]
       have hleft : ParameterSpaceFinExtension.ϕ AS H
           (projFinite AS H (towerMeasurableEquiv AS F z.val)) =
-          (towerMeasurableEquiv AS F z.val).abv.restriction H :=
+          (towerMeasurableEquiv AS F z.val).abv.under H :=
         ParameterSpaceFinExtension.extendAbsoluteValue_restriction H _
       change ParameterSpaceFinExtension.ϕ AS H
         (projFinite AS H (towerMeasurableEquiv AS F z.val)) = _

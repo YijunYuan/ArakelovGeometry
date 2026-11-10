@@ -35,11 +35,11 @@ theorem measurableSet_extensionFiber (ω : AS.Ω) (s : Set (ExtensionFiber AS L 
 /-- Every finite fibre weight is strictly positive. -/
 theorem fibreWeight_pos (ω : AS.Ω) (x : ExtensionFiber AS L ω) :
     0 < fibreWeight AS L ω x := by
-  have : FiniteDimensional (x.val.ϕ.restriction K).Completion x.val.ϕ.Completion :=
+  have : FiniteDimensional (x.val.ϕ.under K).Completion x.val.ϕ.Completion :=
     AbsoluteValue.finiteDimensional_completion x.val.ϕ K
   apply ENNReal.div_pos
   · exact_mod_cast (Module.finrank_pos
-      (R := (x.val.ϕ.restriction K).Completion) (M := x.val.ϕ.Completion)).ne'
+      (R := (x.val.ϕ.under K).Completion) (M := x.val.ϕ.Completion)).ne'
   · simp
 
 /-- The mass of a point of the fibre is its local-degree weight. -/

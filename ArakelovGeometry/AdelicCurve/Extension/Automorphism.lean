@@ -30,7 +30,7 @@ Chen–Moriwaki, §3.6: the value at `a` after pullback is the original value at
 def aut (τ : L ≃ₐ[K] L) (x : ParameterSpaceExtension AS L) :
     ParameterSpaceExtension AS L where
   base := x.base
-  abv := x.abv.pullback τ.toRingHom
+  abv := x.abv.comp τ.toRingHom.injective
   restrict_eq := by
     ext a
     change x.abv (τ (algebraMap K L a)) = AS.ϕ x.base a

@@ -82,8 +82,9 @@ variable [FiniteDimensional K E]
 
 /-- The actual ball filtration has finite image by the finite-dimensional
 subspace chain theorem. -/
-theorem finite_range_trivialFiltration : (Set.range (ξ.trivialFiltration hξ)).Finite :=
-  Submodule.finite_range_of_antitone (ξ.antitone_trivialFiltration hξ)
+theorem finite_range_trivialFiltration : (Set.range (ξ.trivialFiltration hξ)).Finite := by
+  have h := (ξ.antitone_trivialFiltration hξ).isChain_range.lt_of_le
+  exact h.finite_of_wellFoundedLT_of_wellFoundedGT
 
 include hξ
 

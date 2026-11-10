@@ -29,13 +29,13 @@ variable {K : Type u} [Field K] {L : Type v} [Field L] [Algebra K L]
 an actual monic polynomial of the same degree with arbitrarily small evaluation. -/
 theorem exists_monic_aeval_abv_lt (K₀ : Subfield K) (w : AbsoluteValue L ℝ)
     (hK₀ : DenseRange (fun c : K₀ =>
-      algebraMap K (w.restriction K).Completion (c : K)))
+      algebraMap K (w.under K).Completion (c : K)))
     (f : Polynomial K) (hf : f.Monic) (a : L) (ha : (Polynomial.aeval a) f = 0)
     (δ : ℝ) (hδ : 0 < δ) :
     ∃ g : Polynomial K₀, g.Monic ∧ g.natDegree = f.natDegree ∧
       w ((Polynomial.aeval a) g) < δ := by
   classical
-  let B := (w.restriction K).Completion
+  let B := (w.under K).Completion
   let C := w.Completion
   let α : C := algebraMap L C a
   let d := Fintype.linearCombination B (fun i : Fin f.natDegree => α ^ (i : ℕ))
@@ -96,7 +96,7 @@ relative algebraic closure of the original dense subfield. -/
 theorem exists_nearby_mem_algebraicClosure
     (K₀ : Subfield K) (w : AbsoluteValue L ℝ)
     (hK₀ : DenseRange (fun c : K₀ =>
-      algebraMap K (w.restriction K).Completion (c : K)))
+      algebraMap K (w.under K).Completion (c : K)))
     (a : L) (ε : ℝ) (hε : 0 < ε) :
     ∃ b ∈ algebraicClosure K₀ L, w (a - b) < ε := by
   let f := minpoly K a
@@ -118,7 +118,7 @@ completion, with no separability or countability premise on this local assertion
 theorem denseRange_algebraicClosure_subfield
     (K₀ : Subfield K) (w : AbsoluteValue L ℝ)
     (hK₀ : DenseRange (fun c : K₀ =>
-      algebraMap K (w.restriction K).Completion (c : K))) :
+      algebraMap K (w.under K).Completion (c : K))) :
     DenseRange (fun b : (algebraicClosure K₀ L).toSubfield =>
       algebraMap L w.Completion (b : L)) := by
   have hd : DenseRange (fun b : (algebraicClosure K₀ L).toSubfield =>
@@ -145,7 +145,7 @@ theorem AdelicStructure.HasCommonCountableDenseSubfield.algebraicExtension_of_is
   intro x
   change S.ParameterSpaceExtension L at x
   have hb : DenseRange (fun c : K₀ =>
-      algebraMap K (x.abv.restriction K).Completion (c : K)) := by
+      algebraMap K (x.abv.under K).Completion (c : K)) := by
     rw [x.restrict_eq]
     exact hd x.base
   exact denseRange_algebraicClosure_subfield K₀ x.abv hb

@@ -24,7 +24,7 @@ namespace NumberField
 
 /-- The usual complex norm has the canonical rational restriction. -/
 theorem complexNormAbsoluteValue_restriction_rat :
-    (NormedField.toAbsoluteValue ℂ).restriction ℚ = Rat.AbsoluteValue.real := by
+    (NormedField.toAbsoluteValue ℂ).under ℚ = Rat.AbsoluteValue.real := by
   ext q
   change ‖(q : ℂ)‖ = Rat.AbsoluteValue.real q
   rw [Complex.norm_ratCast, Rat.AbsoluteValue.real_eq_abs, Rat.cast_abs]
@@ -35,7 +35,7 @@ variable {K : Type*} [Field K] [NumberField K]
 
 /-- Every usual infinite-place modulus restricts to the usual rational one. -/
 theorem restriction_rat (w : InfinitePlace K) :
-    w.val.restriction ℚ = Rat.AbsoluteValue.real := by
+    w.val.under ℚ = Rat.AbsoluteValue.real := by
   ext q
   change w (q : K) = Rat.AbsoluteValue.real q
   rw [InfinitePlace.map_ratCast, Rat.AbsoluteValue.real_eq_abs,
@@ -46,10 +46,10 @@ theorem restriction_rat (w : InfinitePlace K) :
 theorem localDegree_rat (w : InfinitePlace K) : w.val.localDegree ℚ = w.mult := by
   classical
   let u := NormedField.toAbsoluteValue ℂ
-  have hu : u.restriction ℚ = w.val.restriction ℚ :=
+  have hu : u.under ℚ = w.val.under ℚ :=
     complexNormAbsoluteValue_restriction_rat.trans w.restriction_rat.symm
   have hcard := AbsoluteValue.card_embeddings_eq_localDegree_of_isAlgClosed w.val u hu
-  let e : {σ : K →ₐ[ℚ] ℂ // u.pullback σ.toRingHom = w.val} ≃
+  let e : {σ : K →ₐ[ℚ] ℂ // u.comp σ.toRingHom.injective = w.val} ≃
       {σ : K →+* ℂ // InfinitePlace.mk σ = w} :=
     (RingHom.equivRatAlgHom K ℂ).symm.subtypeEquiv (fun σ => by
       change (place σ.toRingHom = w.val) ↔ (InfinitePlace.mk σ.toRingHom = w)
@@ -57,7 +57,7 @@ theorem localDegree_rat (w : InfinitePlace K) : w.val.localDegree ℚ = w.mult :
       · exact fun h => Subtype.ext h
       · exact fun h => congrArg Subtype.val h)
   calc
-    w.val.localDegree ℚ = Nat.card {σ : K →ₐ[ℚ] ℂ // u.pullback σ.toRingHom = w.val} :=
+    w.val.localDegree ℚ = Nat.card {σ : K →ₐ[ℚ] ℂ // u.comp σ.toRingHom.injective = w.val} :=
       hcard.symm
     _ = Nat.card {σ : K →+* ℂ // InfinitePlace.mk σ = w} := Nat.card_congr e
     _ = w.mult := by

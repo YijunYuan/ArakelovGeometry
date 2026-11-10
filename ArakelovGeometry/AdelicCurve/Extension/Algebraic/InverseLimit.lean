@@ -64,9 +64,9 @@ theorem injective_fibreToInverseLimit : Function.Injective (fibreToInverseLimit 
   have h := congrArg (fun z : FiniteBaseFiber L F ω ↦
     ParameterSpaceFinExtension.ϕ AS F z.val b) hF
   change ParameterSpaceFinExtension.extendAbsoluteValue
-    ((x.val.abv.restriction F).restriction (separableClosure K F)) b =
+    ((x.val.abv.under F).under (separableClosure K F)) b =
       ParameterSpaceFinExtension.extendAbsoluteValue
-        ((y.val.abv.restriction F).restriction (separableClosure K F)) b at h
+        ((y.val.abv.under F).under (separableClosure K F)) b at h
   rw [ParameterSpaceFinExtension.extendAbsoluteValue_restriction,
     ParameterSpaceFinExtension.extendAbsoluteValue_restriction] at h
   exact h

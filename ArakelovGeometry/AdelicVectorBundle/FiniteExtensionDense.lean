@@ -67,31 +67,31 @@ a dense rational set in each actual extending completion. -/
 theorem denseRange_finiteExtension_basisSubfieldMap (b : Module.Basis ι K L)
     (K₀ : Subfield K) [Fintype ι] (w : AbsoluteValue L ℝ)
     (hK₀ : DenseRange (fun a : K₀ =>
-      algebraMap K (w.restriction K).Completion (a : K))) :
+      algebraMap K (w.under K).Completion (a : K))) :
     DenseRange (fun c : ι → K₀ => algebraMap L w.Completion (basisSubfieldMap b K₀ c)) := by
-  let d := Fintype.linearCombination (w.restriction K).Completion
+  let d := Fintype.linearCombination (w.under K).Completion
     (fun i => algebraMap L w.Completion (b i))
   have hs : Function.Surjective d :=
     (span_range_eq_top_iff_surjective_fintypeLinearCombination
-      (w.restriction K).Completion _).mp
+      (w.under K).Completion _).mp
       (w.span_coe_basis_eq_top K b)
   have hc : Continuous d := (linearMapToNormedAddGroupHom d).continuous
   have hd : DenseRange (fun c : ι → K₀ =>
-      fun i => algebraMap K (w.restriction K).Completion (c i : K)) :=
+      fun i => algebraMap K (w.under K).Completion (c i : K)) :=
     DenseRange.piMap (fun _ => hK₀)
   have h := hs.denseRange.comp hd hc
   have he : (fun c : ι → K₀ =>
-      d (fun i => algebraMap K (w.restriction K).Completion (c i : K))) =
+      d (fun i => algebraMap K (w.under K).Completion (c i : K))) =
       fun c => algebraMap L w.Completion (basisSubfieldMap b K₀ c) := by
     funext c
     simp only [d, Fintype.linearCombination_apply, basisSubfieldMap, map_sum]
     apply Finset.sum_congr rfl
     intro i _
     rw [Algebra.smul_def, Algebra.smul_def]
-    rw [map_mul, ← IsScalarTower.algebraMap_apply K (w.restriction K).Completion w.Completion,
+    rw [map_mul, ← IsScalarTower.algebraMap_apply K (w.under K).Completion w.Completion,
       ← IsScalarTower.algebraMap_apply K L w.Completion]
   change DenseRange (fun c : ι → K₀ =>
-    d (fun i => algebraMap K (w.restriction K).Completion (c i : K))) at h
+    d (fun i => algebraMap K (w.under K).Completion (c i : K))) at h
   rw [he] at h
   exact h
 
@@ -100,7 +100,7 @@ the original base subfield is dense. -/
 theorem denseRange_finiteExtensionDenseSubfield (b : Module.Basis ι K L)
     (K₀ : Subfield K) [Finite ι] (w : AbsoluteValue L ℝ)
     (hK₀ : DenseRange (fun a : K₀ =>
-      algebraMap K (w.restriction K).Completion (a : K))) :
+      algebraMap K (w.under K).Completion (a : K))) :
     DenseRange (fun a : finiteExtensionDenseSubfield b K₀ =>
       algebraMap L w.Completion (a : L)) := by
   let := Fintype.ofFinite ι
@@ -118,7 +118,7 @@ theorem AdelicStructure.isDenseSubfieldAt_finiteExtensionDenseSubfield
     (x : S.ParameterSpaceExtension L) (hK₀ : S.IsDenseSubfieldAt K₀ x.base) :
     (S.algebraicExtension L).IsDenseSubfieldAt (finiteExtensionDenseSubfield b K₀) x := by
   have hd : DenseRange (fun a : K₀ =>
-      algebraMap K (x.abv.restriction K).Completion (a : K)) := by
+      algebraMap K (x.abv.under K).Completion (a : K)) := by
     rw [x.restrict_eq]
     exact hK₀
   exact denseRange_finiteExtensionDenseSubfield b K₀ x.abv hd

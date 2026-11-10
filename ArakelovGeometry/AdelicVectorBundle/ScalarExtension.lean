@@ -26,37 +26,27 @@ namespace AbsoluteValue
 
 variable {K L : Type*} [Field K] [Field L] [Algebra K L]
 
-/-- The canonical isometric algebra of completed fields with an explicitly
-specified base absolute value. -/
-noncomputable abbrev normedAlgebraCompletionOfEq (v : AbsoluteValue K ℝ)
-    (w : AbsoluteValue L ℝ) (h : w.restriction K = v) :
-    NormedAlgebra v.Completion w.Completion :=
-  { algebraCompletionOfEq v w h with
-    norm_smul_le := by
-      subst v
-      exact fun a b ↦ norm_smul_le a b }
-
 /-- Compatibility with the original base field after specifying the
 restriction of the extending absolute value. -/
 theorem isScalarTower_completionOfEq (v : AbsoluteValue K ℝ)
-    (w : AbsoluteValue L ℝ) (h : w.restriction K = v) :
+    (w : AbsoluteValue L ℝ) (h : w.under K = v) :
     letI := normedAlgebraCompletionOfEq v w h
     IsScalarTower K v.Completion w.Completion := by
   subst v
-  exact isScalarTower_base_completion w
+  infer_instance
 
 
 /-- The completed-field embedding extends the original field embedding. -/
 theorem algebraMap_normedAlgebraCompletionOfEq_coe (v : AbsoluteValue K ℝ)
-    (w : AbsoluteValue L ℝ) (h : w.restriction K = v) (a : K) :
+    (w : AbsoluteValue L ℝ) (h : w.under K = v) (a : K) :
     letI := normedAlgebraCompletionOfEq v w h
     algebraMap v.Completion w.Completion (algebraMap K v.Completion a) =
       algebraMap L w.Completion (algebraMap K L a) := by
   subst v
-  change algebraMap (w.restriction K).Completion w.Completion
-    (WithAbs.toAbs (w.restriction K) a : (w.restriction K).Completion) =
+  change algebraMap (w.under K).Completion w.Completion
+    (WithAbs.toAbs (w.under K) a : (w.under K).Completion) =
       (WithAbs.toAbs w (algebraMap K L a) : w.Completion)
-  rw [algebraMap_completion_def, UniformSpace.Completion.mapRingHom_coe]
+  rw [AbsoluteValue.Completion.algebraMap_eq, UniformSpace.Completion.mapRingHom_coe]
   rfl
 
 /-- The canonical completed embeddings respect an arbitrary field tower,
@@ -64,8 +54,8 @@ with explicitly identified restrictions of the three absolute values. -/
 theorem isScalarTower_completionOfEq_tower {M : Type*} [Field M]
     [Algebra K M] [Algebra L M] [IsScalarTower K L M]
     (v : AbsoluteValue K ℝ) (w : AbsoluteValue L ℝ) (u : AbsoluteValue M ℝ)
-    (hvw : w.restriction K = v) (hwu : u.restriction L = w)
-    (hvu : u.restriction K = v) :
+    (hvw : w.under K = v) (hwu : u.under L = w)
+    (hvu : u.under K = v) :
     letI := normedAlgebraCompletionOfEq v w hvw
     letI := normedAlgebraCompletionOfEq w u hwu
     letI := normedAlgebraCompletionOfEq v u hvu
@@ -100,7 +90,7 @@ variable {K : Type u} [Field K] {L : Type w} [Field L] [Algebra K L]
 /-- Both completed scalar extensions identify canonically with
 `w.Completion ⊗[K] E`. -/
 def completedScalarExtensionEquiv (v : AbsoluteValue K ℝ) (w : AbsoluteValue L ℝ)
-    (h : w.restriction K = v) :
+    (h : w.under K = v) :
     letI := AbsoluteValue.normedAlgebraCompletionOfEq v w h
     w.Completion ⊗[L] (L ⊗[K] E) ≃ₗ[w.Completion]
       w.Completion ⊗[v.Completion] (v.Completion ⊗[K] E) := by
@@ -113,7 +103,7 @@ def completedScalarExtensionEquiv (v : AbsoluteValue K ℝ) (w : AbsoluteValue L
 /-- Exact formula on decomposable vectors in the extended completed fibre. -/
 @[simp]
 theorem completedScalarExtensionEquiv_tmul (v : AbsoluteValue K ℝ)
-    (w : AbsoluteValue L ℝ) (h : w.restriction K = v)
+    (w : AbsoluteValue L ℝ) (h : w.under K = v)
     (a : w.Completion) (b : L) (x : E) :
     letI := AbsoluteValue.normedAlgebraCompletionOfEq v w h
     completedScalarExtensionEquiv E v w h (a ⊗ₜ[L] (b ⊗ₜ[K] x)) =
@@ -126,7 +116,7 @@ theorem completedScalarExtensionEquiv_tmul (v : AbsoluteValue K ℝ)
 /-- Exact inverse formula on decomposable vectors over the base completion. -/
 @[simp]
 theorem completedScalarExtensionEquiv_symm_tmul (v : AbsoluteValue K ℝ)
-    (w : AbsoluteValue L ℝ) (h : w.restriction K = v)
+    (w : AbsoluteValue L ℝ) (h : w.under K = v)
     (a : w.Completion) (b : v.Completion) (x : E) :
     letI := AbsoluteValue.normedAlgebraCompletionOfEq v w h
     (completedScalarExtensionEquiv E v w h).symm (a ⊗ₜ[v.Completion] (b ⊗ₜ[K] x)) =
@@ -144,8 +134,8 @@ completed-field embeddings. -/
 theorem completedScalarExtensionEquiv_tower {M : Type*} [Field M]
     [Algebra K M] [Algebra L M] [IsScalarTower K L M]
     (v : AbsoluteValue K ℝ) (w : AbsoluteValue L ℝ) (u : AbsoluteValue M ℝ)
-    (hvw : w.restriction K = v) (hwu : u.restriction L = w)
-    (hvu : u.restriction K = v)
+    (hvw : w.under K = v) (hwu : u.under L = w)
+    (hvu : u.under K = v)
     (z : u.Completion ⊗[M] (M ⊗[L] (L ⊗[K] E))) :
     letI := AbsoluteValue.normedAlgebraCompletionOfEq v w hvw
     letI := AbsoluteValue.normedAlgebraCompletionOfEq w u hwu

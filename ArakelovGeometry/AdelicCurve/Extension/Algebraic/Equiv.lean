@@ -27,7 +27,7 @@ variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
 def pullbackAlgEquiv (σ : L ≃ₐ[K] M) (x : ParameterSpaceExtension S M) :
     ParameterSpaceExtension S L where
   base := x.base
-  abv := x.abv.pullback σ.toRingHom
+  abv := x.abv.comp σ.toRingHom.injective
   restrict_eq := by
     ext a
     change x.abv (σ (algebraMap K L a)) = S.ϕ x.base a

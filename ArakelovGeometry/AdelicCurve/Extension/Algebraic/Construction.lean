@@ -43,7 +43,7 @@ theorem integrable_log_measure (a : L) (ha : a ≠ 0) :
   funext x
   exact congrArg Real.log (congrArg (fun w : AbsoluteValue F ℝ ↦ w b)
     (ParameterSpaceFinExtension.extendAbsoluteValue_restriction (K := K) F
-      ((ParameterSpaceExtension.ϕ x).restriction F))).symm
+      ((ParameterSpaceExtension.ϕ x).under F))).symm
 
 /-- Chen--Moriwaki, Definition 3.4.11: the concrete algebraic extension adelic structure
 `S ⊗_K L`. -/
@@ -83,7 +83,7 @@ theorem isProper_algebraicExtension [AS.IsProper] :
   funext x
   exact congrArg Real.log (congrArg (fun w : AbsoluteValue F ℝ ↦ w b)
     (ParameterSpaceFinExtension.extendAbsoluteValue_restriction (K := K) F
-      ((ParameterSpaceExtension.ϕ x).restriction F))).symm
+      ((ParameterSpaceExtension.ϕ x).under F))).symm
 
 end ArakelovGeometry.AdelicStructure.Algebraic
 

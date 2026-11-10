@@ -100,9 +100,9 @@ theorem projectiveScalarExtension_completed_trans
     let v₀ := S.ϕ x.base.base
     let w₀ := x.base.abv
     let u₀ := x.abv
-    let hvw : w₀.restriction K = v₀ := x.base.restrict_eq
-    let hwu : u₀.restriction L = w₀ := x.restrict_eq
-    let hvu : u₀.restriction K = v₀ := (scalarExtensionTowerPlace x).restrict_eq
+    let hvw : w₀.under K = v₀ := x.base.restrict_eq
+    let hwu : u₀.under L = w₀ := x.restrict_eq
+    let hvu : u₀.under K = v₀ := (scalarExtensionTowerPlace x).restrict_eq
     let := AbsoluteValue.normedAlgebraCompletionOfEq v₀ w₀ hvw
     let := AbsoluteValue.normedAlgebraCompletionOfEq w₀ u₀ hwu
     let := AbsoluteValue.normedAlgebraCompletionOfEq v₀ u₀ hvu
@@ -144,9 +144,9 @@ theorem projectiveScalarExtension_completed_trans_apply
     let v₀ := S.ϕ x.base.base
     let w₀ := x.base.abv
     let u₀ := x.abv
-    let hvw : w₀.restriction K = v₀ := x.base.restrict_eq
-    let hwu : u₀.restriction L = w₀ := x.restrict_eq
-    let hvu : u₀.restriction K = v₀ := (scalarExtensionTowerPlace x).restrict_eq
+    let hvw : w₀.under K = v₀ := x.base.restrict_eq
+    let hwu : u₀.under L = w₀ := x.restrict_eq
+    let hvu : u₀.under K = v₀ := (scalarExtensionTowerPlace x).restrict_eq
     let := AbsoluteValue.normedAlgebraCompletionOfEq v₀ w₀ hvw
     let := AbsoluteValue.normedAlgebraCompletionOfEq w₀ u₀ hwu
     let := AbsoluteValue.normedAlgebraCompletionOfEq v₀ u₀ hvu
@@ -189,9 +189,9 @@ theorem injectiveScalarExtension_completed_trans_of_norm_eq
     let v₀ := S.ϕ x.base.base
     let w₀ := x.base.abv
     let u₀ := x.abv
-    let hvw : w₀.restriction K = v₀ := x.base.restrict_eq
-    let hwu : u₀.restriction L = w₀ := x.restrict_eq
-    let hvu : u₀.restriction K = v₀ := (scalarExtensionTowerPlace x).restrict_eq
+    let hvw : w₀.under K = v₀ := x.base.restrict_eq
+    let hwu : u₀.under L = w₀ := x.restrict_eq
+    let hvu : u₀.under K = v₀ := (scalarExtensionTowerPlace x).restrict_eq
     let := AbsoluteValue.normedAlgebraCompletionOfEq v₀ w₀ hvw
     let := AbsoluteValue.normedAlgebraCompletionOfEq w₀ u₀ hwu
     let := AbsoluteValue.normedAlgebraCompletionOfEq v₀ u₀ hvu
@@ -243,9 +243,9 @@ theorem injectiveScalarExtension_completed_trans_apply_of_norm_eq
     let v₀ := S.ϕ x.base.base
     let w₀ := x.base.abv
     let u₀ := x.abv
-    let hvw : w₀.restriction K = v₀ := x.base.restrict_eq
-    let hwu : u₀.restriction L = w₀ := x.restrict_eq
-    let hvu : u₀.restriction K = v₀ := (scalarExtensionTowerPlace x).restrict_eq
+    let hvw : w₀.under K = v₀ := x.base.restrict_eq
+    let hwu : u₀.under L = w₀ := x.restrict_eq
+    let hvu : u₀.under K = v₀ := (scalarExtensionTowerPlace x).restrict_eq
     let := AbsoluteValue.normedAlgebraCompletionOfEq v₀ w₀ hvw
     let := AbsoluteValue.normedAlgebraCompletionOfEq w₀ u₀ hwu
     let := AbsoluteValue.normedAlgebraCompletionOfEq v₀ u₀ hvu
@@ -299,9 +299,9 @@ theorem projectiveScalarExtension_completed_trans_apply_of_norm_eq
     let v₀ := S.ϕ x.base.base
     let w₀ := x.base.abv
     let u₀ := x.abv
-    let hvw : w₀.restriction K = v₀ := x.base.restrict_eq
-    let hwu : u₀.restriction L = w₀ := x.restrict_eq
-    let hvu : u₀.restriction K = v₀ := (scalarExtensionTowerPlace x).restrict_eq
+    let hvw : w₀.under K = v₀ := x.base.restrict_eq
+    let hwu : u₀.under L = w₀ := x.restrict_eq
+    let hvu : u₀.under K = v₀ := (scalarExtensionTowerPlace x).restrict_eq
     let := AbsoluteValue.normedAlgebraCompletionOfEq v₀ w₀ hvw
     let := AbsoluteValue.normedAlgebraCompletionOfEq w₀ u₀ hwu
     let := AbsoluteValue.normedAlgebraCompletionOfEq v₀ u₀ hvu

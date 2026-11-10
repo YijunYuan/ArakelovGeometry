@@ -31,12 +31,12 @@ Completeness of the ground value forces the specified value on `L`. -/
 theorem exists_compatible_absoluteValue_on_algebraicClosure
     (v : AbsoluteValue k ℝ) [CompleteSpace (WithAbs v)]
     (vL : AbsoluteValue L ℝ) (vH : AbsoluteValue H ℝ)
-    (hL : vL.restriction k = v) (hH : vH.restriction k = v) :
+    (hL : vL.under k = v) (hH : vH.under k = v) :
     ∃ (i : L →ₐ[k] AlgebraicClosure H) (u : AbsoluteValue (AlgebraicClosure H) ℝ),
-      u.restriction H = vH ∧ u.pullback i.toRingHom = vL := by
+      u.under H = vH ∧ u.comp i.toRingHom.injective = vL := by
   let i : L →ₐ[k] AlgebraicClosure H := IsAlgClosed.lift
   obtain ⟨u, hu⟩ := AbsoluteValue.exists_extension (L := AlgebraicClosure H) vH
-  have hbase : (u.pullback i.toRingHom).restriction k = v := by
+  have hbase : (u.comp i.toRingHom.injective).under k = v := by
     ext a
     change u (i (algebraMap k L a)) = v a
     rw [i.commutes, IsScalarTower.algebraMap_apply k H (AlgebraicClosure H)]
@@ -56,12 +56,12 @@ theorem exists_valued_scheme_baseChange_lift.{u}
     [Algebra k L] [Algebra k H] [FiniteDimensional k L]
     (v : AbsoluteValue k ℝ) [CompleteSpace (WithAbs v)]
     (vL : AbsoluteValue L ℝ) (vH : AbsoluteValue H ℝ)
-    (hL : vL.restriction k = v) (hH : vH.restriction k = v)
+    (hL : vL.under k = v) (hH : vH.under k = v)
     (X : Scheme.{u}) (f : X ⟶ Spec (CommRingCat.of k))
     (x : Spec (CommRingCat.of H) ⟶ X)
     (hx : x ≫ f = Spec.map (CommRingCat.ofHom (algebraMap k H))) :
     ∃ (i : L →ₐ[k] AlgebraicClosure H) (u : AbsoluteValue (AlgebraicClosure H) ℝ),
-      u.restriction H = vH ∧ u.pullback i.toRingHom = vL ∧
+      u.under H = vH ∧ u.comp i.toRingHom.injective = vL ∧
       ∃ y : Spec (CommRingCat.of (AlgebraicClosure H)) ⟶
         pullback f (Spec.map (CommRingCat.ofHom (algebraMap k L))),
         y ≫ pullback.fst f (Spec.map (CommRingCat.ofHom (algebraMap k L))) =
