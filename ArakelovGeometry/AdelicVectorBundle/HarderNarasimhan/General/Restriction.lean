@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Ordered
 public import ArakelovGeometry.AdelicVectorBundle.Operator.Height
+public import ArakelovGeometry.AdelicVectorBundle.Slope.Subquotient
 import ArakelovGeometry.AdelicVectorBundle.Degree.Supermodular
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Functoriality
 import ArakelovGeometry.AdelicVectorBundle.Slope.Finite
@@ -63,16 +64,6 @@ theorem minimalSlope_restrict_generalHNFiltration_orderedSlope
   rw [hc] at hlo ⊢
   exact le_antisymm (EReal.coe_le_coe hcμ) hlo
 
-/-- Canonical nested restrictions have identical actual minimal slopes.
-The comparison is the completed norm identity for the canonical subtype equivalence. -/
-theorem minimalSlope_restrict_restrict (U W : Submodule K E) (hUW : U ≤ W) :
-    ((V.restrictOfMeasurableBase W hS).restrictOfMeasurableBase
-      (U.comap W.subtype) hS).minimalSlope hS hN =
-      (V.restrictOfMeasurableBase U hS).minimalSlope hS hN := by
-  apply minimalSlope_eq_of_completed_isometry _ _ (Submodule.comapSubtypeEquivOfLe hUW)
-    hS hN
-  intro ω z
-  exact (V.toNormFamily.restrict_restrict_norm_eq U W hUW ω z).symm
 
 /-- The actual canonical inclusion contracts every completed vector, so
 the intrinsic filtration of any restriction maps into the ambient one. -/

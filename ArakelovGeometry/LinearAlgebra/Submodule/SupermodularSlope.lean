@@ -5,8 +5,10 @@ Authors: Yijun Yuan
 -/
 module
 
+public import ArakelovGeometry.Order.HarderNarasimhan.Slope
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+public import Mathlib.RingTheory.Artinian.Module
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 
 /-!
@@ -18,6 +20,8 @@ Source Proposition 4.3.28 requires no boundedness or continuity hypothesis.
 -/
 
 @[expose] public section
+
+open HarderNarasimhan
 
 namespace ArakelovGeometry
 
@@ -169,8 +173,8 @@ theorem exists_pos_modular_submodule_rank_eq_mul_finrank [Nontrivial V]
 
 /-- On every nonzero interval of the actual subspace lattice, a positive
 modular rank and a supermodular degree admit a largest slope maximizer.
-The induction chooses a largest-dimensional subspace above the ambient
-slope; it never assumes that the slopes are bounded or attained. -/
+A breakpoint of the restricted Harder–Narasimhan game supplies the maximizer
+without any boundedness, attainment, or rank-normalization hypothesis. -/
 theorem exists_largest_supermodular_slope_maximizer_le
     (r d : Submodule K V → ℝ)
     (hrzero : r ⊥ = 0) (hrpos : ∀ U, U ≠ ⊥ → 0 < r U)
@@ -181,78 +185,51 @@ theorem exists_largest_supermodular_slope_maximizer_le
       ∀ F : Submodule K V, F ≤ P → F ≠ ⊥ →
         d F / r F ≤ d D / r D ∧ (d F / r F = d D / r D → F ≤ D) := by
   classical
-  let μ := fun F : Submodule K V ↦ d F / r F
-  have hmono := modular_submodule_rank_strictMono r hrzero hrpos hrmod
-  suffices h : ∀ n (P : Submodule K V), Module.finrank K P = n → P ≠ ⊥ →
-      ∃ D : Submodule K V, D ≤ P ∧ D ≠ ⊥ ∧
-        ∀ F : Submodule K V, F ≤ P → F ≠ ⊥ →
-          μ F ≤ μ D ∧ (μ F = μ D → F ≤ D) by
-    exact h (Module.finrank K P) P rfl hP
-  intro n
-  induction n using Nat.strong_induction_on with
-  | h n ih =>
-    intro P hPn hP
-    by_cases hall : ∀ F : Submodule K V, F ≤ P → F ≠ ⊥ → μ F ≤ μ P
-    · exact ⟨P, le_rfl, hP, fun F hFP hF ↦ ⟨hall F hFP hF, fun _ ↦ hFP⟩⟩
-    · push Not at hall
-      obtain ⟨U₀, hU₀P, hU₀, hμ₀⟩ := hall
-      let q := fun k : ℕ ↦ ∃ U : Submodule K V,
-        U ≤ P ∧ U ≠ ⊥ ∧ μ P < μ U ∧ Module.finrank K U = k
-      have hq : q (Nat.findGreatest q (Module.finrank K P)) :=
-        Nat.findGreatest_spec (Submodule.finrank_mono hU₀P)
-          ⟨U₀, hU₀P, hU₀, hμ₀, rfl⟩
-      obtain ⟨U, hUP, hU, hμU, hUr⟩ := hq
-      have hUPstrict : U < P := lt_of_le_of_ne hUP (by
-        intro he
-        rw [he] at hμU
-        exact lt_irrefl _ hμU)
-      have hUrn : Module.finrank K U < n := by
-        rw [← hPn]
-        exact Submodule.finrank_lt_finrank_of_lt hUPstrict
-      obtain ⟨D, hDU, hD, hDmax⟩ := ih (Module.finrank K U) hUrn U rfl hU
-      have hμUD : μ U ≤ μ D := (hDmax U le_rfl hU).1
-      refine ⟨D, hDU.trans hUP, hD, fun F hFP hF ↦ ?_⟩
-      by_cases hFU : F ≤ U
-      · exact hDmax F hFU hF
-      · let I := F ⊓ U
-        let T := F ⊔ U
-        have hUT : U < T := lt_of_le_of_ne le_sup_right (by
-          intro he
-          apply hFU
-          exact (le_sup_left : F ≤ T).trans_eq he.symm)
-        have hTP : T ≤ P := sup_le hFP hUP
-        have hμT : μ T ≤ μ P := by
-          by_contra hn
-          have hgood : q (Module.finrank K T) :=
-            ⟨T, hTP, ne_bot_of_gt hUT, lt_of_not_ge hn, rfl⟩
-          have hmax := Nat.le_findGreatest (Submodule.finrank_mono hTP) hgood
-          rw [← hUr] at hmax
-          exact not_le_of_gt (Submodule.finrank_lt_finrank_of_lt hUT) hmax
-        have hI : d I ≤ μ D * r I := by
-          by_cases hz : I = ⊥
-          · simpa only [hz, hrzero, mul_zero] using hdzero
-          · exact (div_le_iff₀ (hrpos I hz)).mp (hDmax I inf_le_right hz).1
-        have hTr : 0 < r T := (hrpos U hU).trans (hmono hUT)
-        have hT : d T < μ U * r T :=
-          (div_lt_iff₀ hTr).mp (hμT.trans_lt hμU)
-        have hIF : I < F := lt_of_le_of_ne inf_le_left (by
-          intro he
-          apply hFU
-          rw [← he]
-          exact inf_le_right)
-        have hstep : μ U * (r F - r I) ≤ μ D * (r F - r I) :=
-          mul_le_mul_of_nonneg_right hμUD (sub_nonneg.mpr (hmono hIF).le)
-        have hUeq : d U = μ U * r U := by
-          dsimp only [μ]
-          rw [div_mul_cancel₀ _ (hrpos U hU).ne']
-        have hmodU := congrArg (fun x : ℝ ↦ μ U * x) (hrmod F U)
-        have hsuper := hdsuper F U
-        have hFdeg : d F < μ D * r F := by
-          change d F + d U ≤ d I + d T at hsuper
-          change μ U * (r I + r T) = μ U * (r F + r U) at hmodU
-          nlinarith
-        have hFslope : μ F < μ D := (div_lt_iff₀ (hrpos F hF)).mpr hFdeg
-        exact ⟨hFslope.le, fun he ↦ False.elim (hFslope.ne he)⟩
+  let d₀ : Submodule K V → ℝ := fun U ↦ if U = ⊥ then 0 else d U
+  have hd₀ : d₀ ⊥ = 0 := ite_eq_left rfl
+  have hsuper : ∀ U W, d₀ U + d₀ W ≤ d₀ (U ⊓ W) + d₀ (U ⊔ W) := by
+    intro U W
+    by_cases hU : U = ⊥
+    · subst U
+      simp only [bot_inf_eq, bot_sup_eq, hd₀, zero_add, le_refl]
+    by_cases hW : W = ⊥
+    · subst W
+      simp only [inf_bot_eq, sup_bot_eq, hd₀, zero_add, add_zero, le_refl]
+    have hsup : U ⊔ W ≠ ⊥ := by
+      intro he
+      exact hU (bot_unique (le_sup_left.trans_eq he))
+    by_cases hi : U ⊓ W = ⊥
+    · simp only [d₀, ite_eq_right hU, ite_eq_right hW, hi, ite_eq_left rfl,
+        ite_eq_right hsup, zero_add]
+      have h := hdsuper U W
+      rw [hi] at h
+      linarith
+    · simpa only [d₀, ite_eq_right hU, ite_eq_right hW, ite_eq_right hi,
+        ite_eq_right hsup] using hdsuper U W
+  let hr := modular_submodule_rank_strictMono r hrzero hrpos hrmod
+  let μ := rankDegreePayoff r d₀ hr
+  let : μ.IsSlopeLike := isSlopeLike_rankDegreePayoff r d₀ hr
+  let hcvx : μ.IsConvex := isConvex_rankDegreePayoff r d₀ hr hrmod hsuper
+  let J : StrictIntvl (Submodule K V) := ⟨⊥, P, bot_lt_iff_ne_bot.mpr hP⟩
+  let ν := μ.restrict J
+  let : ν.IsConvex := PayoffFunction.isConvexOn_iff_isConvex_restrict.mp
+    ⟨fun U W _ _ hUW ↦ hcvx.le U W hUW⟩
+  obtain ⟨D, hD, hmax⟩ := PayoffFunction.exists_largest_initialPayoff (μ := ν)
+  have hDne : D.val ≠ ⊥ := fun h ↦ hD.ne' (Subtype.ext h)
+  refine ⟨D.val, D.property.2, hDne, fun F hFP hF ↦ ?_⟩
+  let F' : ↥J := ⟨F, bot_le, hFP⟩
+  have hF' : (⊥ : ↥J) < F' := by
+    change (⊥ : Submodule K V) < F
+    exact bot_lt_iff_ne_bot.mpr hF
+  have h := hmax F' hF'
+  simp only [ν, PayoffFunction.restrict_apply, μ, rankDegreePayoff_apply] at h
+  change DedekindCut.principal ((d₀ F - d₀ ⊥) / (r F - r ⊥)) ≤
+      DedekindCut.principal ((d₀ D.val - d₀ ⊥) / (r D.val - r ⊥)) ∧
+    (DedekindCut.principal ((d₀ F - d₀ ⊥) / (r F - r ⊥)) =
+      DedekindCut.principal ((d₀ D.val - d₀ ⊥) / (r D.val - r ⊥)) → F ≤ D.val) at h
+  simpa only [hrzero, hd₀, sub_zero,
+    show d₀ F = d F from ite_eq_right hF, show d₀ D.val = d D.val from ite_eq_right hDne,
+    DedekindCut.principal_le_principal, DedekindCut.principal_inj] using h
 
 /-- Source Proposition 4.3.28: there is a unique largest maximizing
 nonzero subspace, for arbitrary actual real-valued modular rank and

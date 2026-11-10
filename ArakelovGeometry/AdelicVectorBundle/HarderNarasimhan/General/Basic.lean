@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.Basic
+public import ArakelovGeometry.AdelicVectorBundle.Slope.Subquotient
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.LargestSubspace
 import ArakelovGeometry.AdelicVectorBundle.Slope.Finite
 import ArakelovGeometry.AdelicVectorBundle.Slope.Quotient
@@ -148,12 +149,6 @@ theorem generalHNFiltration_eq_bot_of_finrank_eq_zero
   exact iInf_le_of_le 1 (iInf_le_of_le zero_lt_one
     (le_of_eq (V.generalHNSlopeSum_eq_bot_of_finrank_eq_zero hS hN hr (t - 1))))
 
-/-- The actual top restriction has the original minimum, including rank zero. -/
-theorem minimalSlope_restrict_top :
-    (V.restrictOfMeasurableBase ⊤ hS).minimalSlope hS hN = V.minimalSlope hS hN := by
-  apply minimalSlope_eq_of_completed_isometry _ _ Submodule.topEquiv hS hN
-  intro ω z
-  rfl
 
 /-- Above the actual ambient maximal slope there are no nonzero eligible
 summands: each restricted minimum is at most its mean and the ambient maximum. -/

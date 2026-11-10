@@ -15,5 +15,10 @@ name = "mathlib"
 scope = "leanprover-community"
 rev = "v4.35.0"
 
+[[require]]
+name = "HarderNarasimhan"
+git = "https://github.com/YijunYuan/HarderNarasimhan"
+rev = "14b3090e1e169b77fe381102a1289f24c2b08a11"
+
 [[lean_lib]]
 name = "ArakelovGeometry"

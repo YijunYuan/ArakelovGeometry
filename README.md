@@ -7,13 +7,13 @@
 
 A Lean 4 formalization of Huayi Chen and Atsushi Moriwaki,
 *Arakelov Geometry over Adelic Curves* (Lecture Notes in Mathematics 2258, Springer, 2020),
-built on mathlib.
+built on mathlib and the [HarderNarasimhan library](https://github.com/YijunYuan/HarderNarasimhan).
 
 ## Current scope
 
 Status updated: **2026-11-11**.
 
-This snapshot contains **741 Lean source files, including the library entry point**.
+This snapshot contains **749 Lean source files, including the library entry point**.
 The main development covers adelic curves in Chapter 3 and a substantial part of
 adelic vector bundles, degrees, slopes and number-field models in Chapter 4.
 Selected prerequisites from Chapters 1 and 2 are also implemented.
@@ -131,6 +131,16 @@ morphism machinery. For proper curves, degree descends to divisor classes.
 | **Classical minima and transference** | Pure number-field first-minimum estimates, impurity-dependent extensions, lattice/polar counting and trace-dual ingredients. The valued Vandermonde support isometry and its real-weighted support bound are also proved. | Full all-index transference and the global factorial-family/absolute-bound consumers remain open. |
 | **Strong-to-ordinary implication** | The general implication with the additional Archimedean correction, and the established Hermitian or zero-Archimedean-mass cases. | The unrestricted positive-C implication at the **same C** remains open and is not assumed. |
 
+The [HarderNarasimhan library](https://github.com/YijunYuan/HarderNarasimhan) supplies existence and uniqueness
+of the general finite HN flag and the largest slope maximizers used in the
+Hermitian theory. The [adelic game](ArakelovGeometry/AdelicVectorBundle/HarderNarasimhan/Game/Payoff.lean)
+uses the actual normed subquotients. Its first-player values equal their minimal
+slopes, and the [compatibility theorems](ArakelovGeometry/AdelicVectorBundle/HarderNarasimhan/General/Game.lean)
+recover the original real-indexed filtration, including rank zero. The existing
+measurable-base and normalization hypotheses are retained. These proofs use
+Chen–Jeannin’s [Harder–Narasimhan Games](https://chenhuayi.lab.westlake.edu.cn/Recherche/HNgame.pdf),
+Remark 2.5 and Theorem 3.10.
+
 Selected entry points are [Degree/Basic.lean](ArakelovGeometry/AdelicVectorBundle/Degree/Basic.lean),
 [Degree/Positive/RiemannRoch.lean](ArakelovGeometry/AdelicVectorBundle/Degree/Positive/RiemannRoch.lean),
 [Slope/Basic.lean](ArakelovGeometry/AdelicVectorBundle/Slope/Basic.lean),
@@ -208,6 +218,10 @@ formalizations of Chapters 1 and 2**.
 The project is pinned to Lean **4.35.0** and mathlib **v4.35.0** by
 `lean-toolchain`, `lakefile.toml` and `lake-manifest.json`.
 
+The [HarderNarasimhan dependency](https://github.com/YijunYuan/HarderNarasimhan) is pinned to commit
+[`14b3090e1e16`](https://github.com/YijunYuan/HarderNarasimhan/tree/14b3090e1e169b77fe381102a1289f24c2b08a11)
+in the Lake configuration and manifest. It uses the same Lean and mathlib versions.
+
 ```bash
 lake exe cache get
 lake build
@@ -221,7 +235,7 @@ LEAN_NUM_THREADS=2 lake build --wfail --rehash
 ```
 
 [ArakelovGeometry.lean](ArakelovGeometry.lean) publicly imports every shipped Lean
-module, so the default build checks all 741 source files. Its imports are kept
+module, so the default build checks all 749 source files. Its imports are kept
 when the dependency graph is minimized. Unfinished geometric drafts remain
 outside this snapshot; the implemented results retain the boundaries described
 above.
@@ -240,6 +254,7 @@ number-field models and arithmetic applications are grouped in `NumberTheory`.
 | [AdelicDivisor/](ArakelovGeometry/AdelicDivisor/) | Integrable divisors and their class spaces. |
 | [Analysis/](ArakelovGeometry/Analysis/) and [LinearAlgebra/](ArakelovGeometry/LinearAlgebra/) | Absolute values and completions, local norm comparisons, tensor and exterior constructions, and finite-dimensional algebra. |
 | [MeasureTheory/](ArakelovGeometry/MeasureTheory/) and [FieldTheory/](ArakelovGeometry/FieldTheory/) | Measure and integration lemmas, monotone-class arguments, and algebraic-tower prerequisites. |
+| [Order/HarderNarasimhan/](ArakelovGeometry/Order/HarderNarasimhan/) | Generic game adapters for slope maximizers and finite semistable flags. |
 | [AlgebraicGeometry/](ArakelovGeometry/AlgebraicGeometry/) | Valued points, completed fibres, base change and locally free sheaves. |
 | [NumberTheory/NumberField/](ArakelovGeometry/NumberTheory/NumberField/) | Normalized adelic curves, local arithmetic, lattice models, covolumes, trace duality, minima and arithmetic Riemann–Roch. |
 | [GeometryOfNumbers/](ArakelovGeometry/GeometryOfNumbers/) | Convex bodies, lattice geometry, polar duality, normalized measures and counting. |
@@ -277,7 +292,10 @@ project source for complete library exports and build coverage.
 
 ## References
 
-- Huayi Chen and Atsushi Moriwaki, *Arakelov Geometry over Adelic Curves*,
+- Huayi Chen and Atsushi Moriwaki,
+  [*Arakelov Geometry over Adelic Curves*](https://chenhuayi.lab.westlake.edu.cn/Recherche/adelic_curve.pdf),
   Lecture Notes in Mathematics 2258, Springer, 2020.
+- Huayi Chen and Marion Jeannin, [*Harder–Narasimhan Games*](https://chenhuayi.lab.westlake.edu.cn/Recherche/HNgame.pdf).
+- Yijun Yuan, [HarderNarasimhan Lean library](https://github.com/YijunYuan/HarderNarasimhan), commit `14b3090e1e16`.
 - Jürgen Neukirch, *Algebraic Number Theory*, Grundlehren 322, Springer, 1999.
 - Keith Conrad, *Ostrowski for number fields*.

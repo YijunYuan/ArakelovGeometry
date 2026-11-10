@@ -215,6 +215,8 @@ public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Galois.Maxima
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Galois.ScalarExtensionDegree
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Galois.ScalarExtensionNorm
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Galois.Semistability
+public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Game.Payoff
+public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Game.Semistability
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Basic
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Degree
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Factors
@@ -222,6 +224,7 @@ public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.First
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Flag
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.FlagUniqueness
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Functoriality
+public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Game
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Measure
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Modified
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.ModifiedFlag
@@ -408,10 +411,12 @@ public import ArakelovGeometry.AdelicVectorBundle.Slope.Dual
 public import ArakelovGeometry.AdelicVectorBundle.Slope.DualUpper
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Extension
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Finite
+public import ArakelovGeometry.AdelicVectorBundle.Slope.Flag
 public import ArakelovGeometry.AdelicVectorBundle.Slope.LinearMap
 public import ArakelovGeometry.AdelicVectorBundle.Slope.LinearMapFinite
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Quotient
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Rescaling
+public import ArakelovGeometry.AdelicVectorBundle.Slope.Subquotient
 public import ArakelovGeometry.AdelicVectorBundle.Slope.SubspaceSum
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Tensor
 public import ArakelovGeometry.AdelicVectorBundle.Subquotient.Elementary
@@ -745,7 +750,9 @@ public import ArakelovGeometry.NumberTheory.NumberField.TraceDual.DualizingLine.
 public import ArakelovGeometry.NumberTheory.NumberField.TraceDual.DualizingLine.Covolume
 public import ArakelovGeometry.NumberTheory.NumberField.TraceDual.Integral
 public import ArakelovGeometry.NumberTheory.NumberField.TraceDual.OrdinaryNorm
-import Mathlib.NumberTheory.ArithmeticFunction.Misc
+public import ArakelovGeometry.Order.HarderNarasimhan.Comparison
+public import ArakelovGeometry.Order.HarderNarasimhan.FiniteFlag
+public import ArakelovGeometry.Order.HarderNarasimhan.Slope
 
 /-!
 # Arakelov geometry over adelic curves
@@ -754,6 +761,9 @@ Library root. Aggregates the verified development for the full `lake build`.
 Follows Chen–Moriwaki, *Arakelov Geometry over Adelic Curves* (Springer LNM 2258):
 Chapter 3 and the implemented Chapter 4 norm families, adelic divisors,
 degrees, slopes, Harder–Narasimhan filtrations, minima and number-field models.
+The Harder–Narasimhan game library proves existence and uniqueness of general finite flags
+and supplies the largest slope maximizers used in the Hermitian theory.
+The adelic bridge retains actual subquotient norms and the original real filtration.
 Selected local analytic and geometric prerequisites are also included.
 Chapter 4 remains incomplete; the README records the precise scope and TODOs.
 

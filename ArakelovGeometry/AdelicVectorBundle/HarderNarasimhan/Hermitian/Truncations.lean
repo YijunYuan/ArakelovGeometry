@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.Basic
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.Basic
+public import ArakelovGeometry.AdelicVectorBundle.Slope.Subquotient
 import ArakelovGeometry.AdelicVectorBundle.Degree.Supermodular
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.Semistability
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.Uniqueness
@@ -44,51 +45,6 @@ variable [S.IsProper] (V : AdelicVectorBundle S E)
   (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
   (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
 
-omit [S.IsProper] [FiniteDimensional K E] in
-/-- The canonical quotient map on a nested restriction has exactly the
-pulled-back lower-subspace kernel. -/
-theorem nested_restrict_quotient_map_ker (A B C : Submodule K E) (hBC : B ≤ C) :
-    ((A.comap B.subtype).mkQ.comp
-      (Submodule.comapSubtypeEquivOfLe hBC).toLinearMap).ker =
-        (A.comap C.subtype).comap (B.comap C.subtype).subtype := by
-  ext x
-  change (A.comap B.subtype).mkQ ((Submodule.comapSubtypeEquivOfLe hBC) x) = 0 ↔ _
-  rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
-  rfl
-
-omit [S.IsProper] in
-/-- Taking a factor after restricting through an intermediate subspace
-preserves the actual completed norm under the canonical quotient equivalence. -/
-theorem nested_restrict_quotient_norm_eq (ξ : NormFamily S E)
-    (A B C : Submodule K E) (hBC : B ≤ C) (ω : S.Ω)
-    (z : (S.ϕ ω).Completion ⊗[K]
-      ((B.comap C.subtype) ⧸
-        ((A.comap B.subtype).mkQ.comp
-          (Submodule.comapSubtypeEquivOfLe hBC).toLinearMap).ker)) :
-    let e := Submodule.comapSubtypeEquivOfLe hBC
-    let π := (A.comap B.subtype).mkQ.comp e.toLinearMap
-    let hπ := (A.comap B.subtype).mkQ_surjective.comp e.surjective
-    ((ξ.restrict B).quotient (A.comap B.subtype)).norm ω
-      ((π.quotKerEquivOfSurjective hπ).toLinearMap.baseChange (S.ϕ ω).Completion z) =
-        (((ξ.restrict C).restrict (B.comap C.subtype)).quotient π.ker).norm ω z := by
-  let e := Submodule.comapSubtypeEquivOfLe hBC
-  let T := A.comap B.subtype
-  let π := T.mkQ.comp e.toLinearMap
-  let hπ := T.mkQ_surjective.comp e.surjective
-  let η := (ξ.restrict C).restrict (B.comap C.subtype)
-  have hp : η.pushforward e.toLinearMap e.surjective = ξ.restrict B := by
-    ext ω y
-    obtain ⟨x, rfl⟩ := LinearMap.baseChange_surjective (S.ϕ ω).Completion e.surjective y
-    rw [η.pushforward_norm_of_injective e.toLinearMap e.surjective e.injective]
-    exact ξ.restrict_restrict_norm_eq B C hBC ω x
-  change ((ξ.restrict B).quotient T).norm ω
-    ((π.quotKerEquivOfSurjective hπ).toLinearMap.baseChange (S.ϕ ω).Completion z) =
-      (η.quotient π.ker).norm ω z
-  rw [← hp]
-  change ((η.pushforward e.toLinearMap e.surjective).pushforward T.mkQ T.mkQ_surjective).norm ω
-    ((π.quotKerEquivOfSurjective hπ).toLinearMap.baseChange (S.ϕ ω).Completion z) = _
-  rw [η.pushforward_comp_norm]
-  exact η.quotient_ker_equiv_norm_eq π hπ ω z
 
 /-- Actual factors in an initial subspace flag remain semistable and
 have the original factor mean. -/

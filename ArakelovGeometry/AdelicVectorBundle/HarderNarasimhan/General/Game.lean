@@ -1,0 +1,209 @@
+/-
+Copyright (c) 2026 Yijun Yuan. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yijun Yuan
+-/
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.Basic
+public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Game.Semistability
+public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Semistability
+public import ArakelovGeometry.AdelicVectorBundle.Slope.Flag
+import ArakelovGeometry.Order.HarderNarasimhan.Comparison
+import ArakelovGeometry.Order.HarderNarasimhan.FiniteFlag
+
+/-!
+# General adelic semistability and game flags
+
+The existing positive-rank semistability predicate agrees with game semistability.
+The game supplies a unique finite flag. Direct comparison identifies its terms
+with the original real-indexed filtration, without a second factor construction.
+-/
+
+@[expose] public section
+
+open HarderNarasimhan
+
+namespace ArakelovGeometry.AdelicVectorBundle
+
+noncomputable section
+
+universe u v w
+
+variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+  {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  (V : AdelicVectorBundle S E)
+  (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+  (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+
+/-- The game's semistable intervals are exactly the actual semistable subquotients.
+Strictness of the interval supplies the positive-rank condition. -/
+theorem isSemistable_subquotient_iff_game (I : StrictIntvl (Submodule K E)) :
+    ((V.restrictOfMeasurableBase I.right hS).quotientOfMeasurableBase
+      (I.left.comap I.right.subtype) hS).IsSemistable hS hN ↔
+        ((V.maximalSlopePayoff hS hN).restrict I).IsSemistable := by
+  have hr : 0 < Module.finrank K (I.right ⧸ I.left.comap I.right.subtype) := by
+    rw [Submodule.finrank_quotient, (Submodule.comapSubtypeEquivOfLe I.lt.le).finrank_eq]
+    exact Nat.sub_pos_of_lt (Submodule.finrank_lt_finrank_of_lt I.lt)
+  rw [isSemistable_iff_minimalSlope_restrict_le _ hS hN hr,
+    V.isSemistable_restrict_maximalSlopePayoff_iff]
+
+/-- On a semistable flag factor, the game value is its actual modified slope. -/
+theorem A_maximalSlopePayoff_flag_eq_modifiedSlope {n : ℕ}
+    (F : Fin (n + 1) → Submodule K E) (hF : StrictMono F) (i : Fin n)
+    (hsemi : (V.flagQuotientOfMeasurableBase F hS i).IsSemistable hS hN) :
+    (V.maximalSlopePayoff hS hN).A
+      ⟨F i.castSucc, F i.succ, hF Fin.castSucc_lt_succ⟩ =
+        ((V.flagQuotientOfMeasurableBase F hS i).modifiedSlope hS hN : EReal) := by
+  rw [V.A_maximalSlopePayoff_eq_minimalSlope]
+  exact ((V.flagQuotientOfMeasurableBase F hS i).isSemistable_iff_modifiedSlope_eq_minimalSlope
+    hS hN hsemi.1).mp hsemi |>.symm
+
+/-- The abstract game's finite-series uniqueness identifies actual adelic flags,
+including the length-zero flag of a zero bundle. -/
+theorem generalHNFlags_eq {n m : ℕ}
+    (F : Fin (n + 1) → Submodule K E) (G : Fin (m + 1) → Submodule K E)
+    (hF : StrictMono F) (hG : StrictMono G)
+    (hF0 : F 0 = ⊥) (hG0 : G 0 = ⊥)
+    (hFtop : F (Fin.last n) = ⊤) (hGtop : G (Fin.last m) = ⊤)
+    (hFsemi : ∀ i, (V.flagQuotientOfMeasurableBase F hS i).IsSemistable hS hN)
+    (hGsemi : ∀ i, (V.flagQuotientOfMeasurableBase G hS i).IsSemistable hS hN)
+    (hFA : StrictAnti fun i ↦ (V.flagQuotientOfMeasurableBase F hS i).modifiedSlope hS hN)
+    (hGA : StrictAnti fun i ↦ (V.flagQuotientOfMeasurableBase G hS i).modifiedSlope hS hN) :
+    (⟨n, F⟩ : Σ k : ℕ, Fin (k + 1) → Submodule K E) = ⟨m, G⟩ := by
+  apply PayoffFunction.finiteFlags_eq (μ := V.maximalSlopePayoff hS hN)
+    F G hF hG hF0 hG0 hFtop hGtop
+  · intro i
+    exact (V.isSemistable_subquotient_iff_game hS hN
+      ⟨F i.castSucc, F i.succ, hF Fin.castSucc_lt_succ⟩).mp (hFsemi i)
+  · intro i
+    exact (V.isSemistable_subquotient_iff_game hS hN
+      ⟨G i.castSucc, G i.succ, hG Fin.castSucc_lt_succ⟩).mp (hGsemi i)
+  · intro i j hij
+    exact (V.A_maximalSlopePayoff_flag_eq_modifiedSlope hS hN F hF j (hFsemi j)).trans_lt
+      ((EReal.coe_lt_coe (hFA hij)).trans_eq
+        (V.A_maximalSlopePayoff_flag_eq_modifiedSlope hS hN F hF i (hFsemi i)).symm)
+  · intro i j hij
+    exact (V.A_maximalSlopePayoff_flag_eq_modifiedSlope hS hN G hG j (hGsemi j)).trans_lt
+      ((EReal.coe_lt_coe (hGA hij)).trans_eq
+        (V.A_maximalSlopePayoff_flag_eq_modifiedSlope hS hN G hG i (hGsemi i)).symm)
+
+
+/-- An actual contractive image in a semistable factor bounds the restricted minimum. -/
+theorem minimalSlope_restrict_le_minimalSlope_semistable_factor
+    (A B M : Submodule K E) (hMB : M ≤ B) (hMA : ¬ M ≤ A)
+    (hQ : ((V.restrictOfMeasurableBase B hS).quotientOfMeasurableBase
+      (A.comap B.subtype) hS).IsSemistable hS hN) :
+    (V.restrictOfMeasurableBase M hS).minimalSlope hS hN ≤
+      ((V.restrictOfMeasurableBase B hS).quotientOfMeasurableBase
+        (A.comap B.subtype) hS).minimalSlope hS hN := by
+  let A₀ := A ⊓ B
+  have hcomap : A₀.comap B.subtype = A.comap B.subtype := by
+    ext x
+    exact and_iff_left x.prop
+  have hnot : ¬ M ≤ A₀ := fun h ↦ hMA (h.trans inf_le_left)
+  have hsup : M ⊔ A₀ ≤ B := sup_le hMB inf_le_right
+  have hAB : A₀ < B := (right_lt_sup.mpr hnot).trans_le hsup
+  have hM : ⊥ < M := bot_lt_iff_ne_bot.mpr (fun he ↦ hMA (he ▸ bot_le))
+  let I : StrictIntvl (Submodule K E) := ⟨A₀, B, hAB⟩
+  let μ := V.maximalSlopePayoff hS hN
+  have hs : (μ.restrict I).IsSemistable :=
+    (V.isSemistable_subquotient_iff_game hS hN I).mp (by
+      change ((V.restrictOfMeasurableBase B hS).quotientOfMeasurableBase
+        (A₀.comap B.subtype) hS).IsSemistable hS hN
+      rwa [hcomap])
+  calc
+    _ = μ.A ⟨⊥, M, hM⟩ := (V.A_maximalSlopePayoff_bot hS hN M hM).symm
+    _ ≤ μ.A I := hs.A_le_of_not_le hM bot_le hMB hnot
+    _ = _ := by
+      rw [V.A_maximalSlopePayoff_eq_minimalSlope hS hN I]
+      change ((V.restrictOfMeasurableBase B hS).quotientOfMeasurableBase
+        (A₀.comap B.subtype) hS).minimalSlope hS hN = _
+      rw [hcomap]
+
+/-- Every actual exhaustive decreasing semistable flag recovers the genuine filtration. -/
+theorem generalHNFiltration_eq_of_semistableFlag {n : ℕ}
+    (U : Fin (n + 1) → Submodule K E) (hU : StrictMono U) (hz : U 0 = ⊥)
+    (ht : U (Fin.last n) = ⊤)
+    (hsemi : ∀ i : Fin n, (V.flagQuotientOfMeasurableBase U hS i).IsSemistable hS hN)
+    (hb : StrictAnti (fun i : Fin n ↦ (V.flagQuotientOfMeasurableBase U hS i).modifiedSlope
+      hS hN)) (t : ℝ) :
+    V.generalHNFiltration hS hN t =
+      ⨆ (i : Fin n) (_ : t ≤ (V.flagQuotientOfMeasurableBase U hS i).modifiedSlope hS hN),
+        U i.succ := by
+  classical
+  let b : Fin n → ℝ := fun i ↦ (V.flagQuotientOfMeasurableBase U hS i).modifiedSlope hS hN
+  have he : ∀ i : Fin n, (V.flagQuotientOfMeasurableBase U hS i).minimalSlope hS hN =
+      (b i : EReal) := by
+    intro i
+    exact ((isSemistable_iff_modifiedSlope_eq_minimalSlope
+      (V.flagQuotientOfMeasurableBase U hS i) hS hN (hsemi i).1).mp (hsemi i)).symm
+  have hl := V.le_minimalSlope_restrict_flag_of_factor_minima hS hN U b hU.monotone hz
+    hb.antitone (fun i ↦ (he i).ge)
+  apply le_antisymm
+  · rw [V.generalHNFiltration_eq_generalHNSlopeSum hS hN t]
+    apply iSup_le
+    intro M
+    apply iSup_le
+    intro hM
+    apply iSup_le
+    intro hmin
+    let J : Finset (Fin (n + 1)) := Finset.univ.filter (fun j ↦ M ≤ U j)
+    have hJ : J.Nonempty := ⟨Fin.last n, Finset.mem_filter.mpr
+      ⟨Finset.mem_univ _, by rw [ht]; exact le_top⟩⟩
+    let k := J.min' hJ
+    have hkM : M ≤ U k := (Finset.mem_filter.mp (Finset.min'_mem J hJ)).2
+    have hkpos : 0 < k.val := by
+      by_contra hn
+      have hk0 : k = 0 := Fin.ext (by change k.val = 0; omega)
+      rw [hk0, hz] at hkM
+      exact hM (le_antisymm hkM bot_le)
+    let i : Fin n := ⟨k.val - 1, by have h := k.isLt; omega⟩
+    have hik : i.succ = k := Fin.ext (by dsimp [i]; omega)
+    have hMA : ¬ M ≤ U i.castSucc := by
+      intro h
+      have hiJ : i.castSucc ∈ J := Finset.mem_filter.mpr ⟨Finset.mem_univ _, h⟩
+      have hk := Finset.min'_le J i.castSucc hiJ
+      change k.val ≤ i.val at hk
+      dsimp [i] at hk
+      omega
+    have hMB : M ≤ U i.succ := by rw [hik]; exact hkM
+    have hs := V.minimalSlope_restrict_le_minimalSlope_semistable_factor hS hN
+      (U i.castSucc) (U i.succ) M hMB hMA (hsemi i)
+    change (V.restrictOfMeasurableBase M hS).minimalSlope hS hN ≤
+      (V.flagQuotientOfMeasurableBase U hS i).minimalSlope hS hN at hs
+    rw [he i] at hs
+    have hti : t ≤ b i := EReal.coe_le_coe_iff.mp (hmin.trans hs)
+    exact hMB.trans (le_iSup_of_le i (le_iSup_of_le hti le_rfl))
+  · apply iSup_le
+    intro i
+    apply iSup_le
+    intro hti
+    exact V.le_generalHNFiltration_of_le_minimalSlope_restrict hS hN (U i.succ) t
+      ((EReal.coe_le_coe hti).trans (hl i))
+
+/-- Source Theorem 4.3.58: the actual exhaustive decreasing semistable flag is unique. -/
+theorem existsUnique_generalHNFlag :
+    ∃! p : Σ n : ℕ, Fin (n + 1) → Submodule K E,
+      StrictMono p.2 ∧ p.2 0 = ⊥ ∧ p.2 (Fin.last p.1) = ⊤ ∧
+      (∀ i : Fin p.1, (V.flagQuotientOfMeasurableBase p.2 hS i).IsSemistable hS hN) ∧
+      StrictAnti (fun i : Fin p.1 ↦
+        (V.flagQuotientOfMeasurableBase p.2 hS i).modifiedSlope hS hN) := by
+  obtain ⟨n, U, hU, hz, ht, hsemi, hA⟩ :=
+    (V.maximalSlopePayoff hS hN).exists_finiteFlag
+  have hs : ∀ i : Fin n, (V.flagQuotientOfMeasurableBase U hS i).IsSemistable hS hN :=
+    fun i ↦ (V.isSemistable_subquotient_iff_game hS hN
+      ⟨U i.castSucc, U i.succ, hU Fin.castSucc_lt_succ⟩).mpr (hsemi i)
+  have hbeta : StrictAnti (fun i : Fin n ↦
+      (V.flagQuotientOfMeasurableBase U hS i).modifiedSlope hS hN) := by
+    intro i j hij
+    apply EReal.coe_lt_coe_iff.mp
+    exact (V.A_maximalSlopePayoff_flag_eq_modifiedSlope hS hN U hU j (hs j)).symm.trans_lt
+      ((hA hij).trans_eq (V.A_maximalSlopePayoff_flag_eq_modifiedSlope hS hN U hU i (hs i)))
+  refine ⟨⟨n, U⟩, ⟨hU, hz, ht, hs, hbeta⟩, ?_⟩
+  rintro ⟨m, F⟩ ⟨hF, hFz, hFt, hFs, hFb⟩
+  exact V.generalHNFlags_eq hS hN F U hF hU hFz hz hFt ht hFs hs hFb hbeta
+
+end
+
+end ArakelovGeometry.AdelicVectorBundle
