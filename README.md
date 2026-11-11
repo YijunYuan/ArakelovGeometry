@@ -38,10 +38,10 @@ it is the paper referred to as `bost_conjecture.pdf` in the workspace instructio
 | A3: common adapted bases | The arbitrary two-filtration theorem is checked and retained. | Pages 28–32 need a basis shared by a primary filtration and the chosen HN lift. Simultaneous adaptation to an arbitrary family is unnecessary. |
 | A4: numerical operations | Intrinsic expectation, pairing, centering and fixed-basis real variation are checked. | Page 32, (48), uses these linear/quadratic identities; no additional geometry of the full filtration space is needed. |
 | A5: tensor and quotient filtrations | The binary canonical graded decomposition, quotient maps, actual norm correspondence and naturality are checked. Existing finite-family weight formulas are retained; additional finite-family graded refinement is deferred. | Pages 28–30, (44) and (46), use two factors, collisions of total weights, and the original quotient weights. The finite-family conclusion of Theorem 1.1 is obtained by binary iteration on page 32. |
-| A6: graded norm comparison | Canonical component contractions and finite-image HN degree producers are checked. Assembly of the Bost consumers, including the eventual upper bound for the actual chosen HN variation, remains in progress. | This replaces the whole orthogonal-direct-sum norm argument in Lemmas 7.1 and 7.2 while preserving the needed numerical conclusions. Componentwise contraction is not asserted to imply l2-sum contraction. |
+| A6: graded norm comparison | Canonical component contractions, finite-image HN degree bounds and the eventual upper bound for the same actual HN variation are checked, including direct A6-to-A9 composition (63 standard-only axiom probes). The smaller-rank tensor-HN induction condition remains explicit. | This replaces the whole orthogonal-direct-sum norm argument in Lemmas 7.1 and 7.2 while preserving the needed numerical conclusions. Componentwise contraction is not asserted to imply l2-sum contraction. |
 | A7: lifting filtrations | Actual prescribed quotient lifts and their HN specialization are checked, with expectation and weighted pairing formulas. | Pages 29 and 32 need a chosen lift of the subquotient HN filtrations. A canonical or unique lift is unnecessary; the ambient HN filtration cannot replace this construction. |
 | A8: instability input | Only the binary, specific tensor/determinant representation and the direction from geometric instability to a K-defined negative centered candidate are required. General DVR Cartan, actual local determinant-weight extraction, SL tensor-power semisimplicity and conditional negative-pair descent to K are checked. Separation, actual orbit specialization and residue-polynomial descent remain open. | The geometrically semistable case is handled by Section 6; page 31 needs the unstable direction. Integer/rational weights suffice for the closed-field initial candidate, while optimizer descent retains real weights. A full two-way real-weight HM theorem is unnecessary. |
-| A9: optimal filtration | Conditional finite-family existence and uniqueness, the direct binary optimizer, and the actual HN-lift variation lower bound are checked. The A8 geometric negative candidate and composition with A6's arithmetic upper bound remain open. | Pages 31–32 need this minimum and the HN-lift consequence, not the full CM inequality (5.13). The retained uniqueness theorem is used by the separately checked negative-pair descent to the original field. |
+| A9: optimal filtration | Conditional finite-family existence and uniqueness, the direct binary optimizer, and the actual HN-lift variation lower bound are checked. Direct composition with A6's arithmetic upper bound is checked. The A8 geometric negative candidate and final packaging of the original-field optimizer remain open. | Pages 31–32 need this minimum and the HN-lift consequence, not the full CM inequality (5.13). The retained uniqueness theorem is used by the separately checked negative-pair descent to the original field. |
 
 ### The A6 replacement argument
 
@@ -56,12 +56,18 @@ The existing surjective slope comparison and Hermitian flag degree additivity gi
 This proves the degree bound needed in Lemma 7.2 after identifying `S` with its
 secondary-weight image filtration, using the explicitly stated smaller-rank tensor
 HN induction hypothesis. The same image-flag argument applied to arbitrary target
-quotients supplies the input for Lemma 7.1. Checked intermediate producers now
-cover canonical component contractions, accumulated image flags and finite-image
-HN degree bounds. The remaining assembly must connect these to the same actual
-HN lifts and bases used by the optimality theorem, prove the eventual quotient
-expectation upper bound, and complete the intended Bost consumers. These
-intermediate results are not counted as that final assembly. See
+quotients supplies the input for Lemma 7.1. The checked
+[GradedDegree](ArakelovGeometry/AdelicVectorBundle/Tensor/GradedDegree.lean)
+consumer now proves `N(epsilon) ≤ N(0) + epsilon delta` eventually for positive
+`epsilon`, with `delta ≤ mu(Q)`, for the same actual HN lifts and common bases
+used by A9. It retains the original quotient norms, including trivial valuations.
+The direct composition with A9's slope lower bound passed a separate kernel check;
+63 transitive axiom probes use only standard Lean axioms. This sufficient
+one-sided estimate replaces the paper's exact affine identity and full CM (5.13).
+No whole orthogonal-sum contraction or unused refinement generality from CM
+Remark 5.5.6 is claimed. The strictly smaller-rank tensor-HN compatibility remains
+an explicit induction condition; standalone full HN identification and the
+assembly of Bost Theorem 1.1 are separate. See
 [graded-tensor-contraction.tex](blueprint/src/graded-tensor-contraction.tex).
 
 Real weights remain necessary for A4–A7 and A9: the secondary weights are actual
@@ -97,8 +103,10 @@ affine identity from Lemma 7.2 is stronger than this consumer needs: a proved
 upper bound with the same slope parameter, itself bounded by `mu(Q)`, suffices.
 Its actual HN pairing, quotient translation and global-optimality consumers have
 passed narrow builds, twelve standard-only axiom probes and independent reviews.
-The upper bound for those same lifts, bases and quotient remains A6's explicit
-input; geometric existence of the negative candidate remains A8's input.
+A6 now proves the upper bound for those same lifts, bases and quotient, and the
+direct slope composition has been kernel-checked. Geometric existence of the
+negative candidate remains A8's input; the smaller-rank tensor-HN induction
+condition is still explicit in the arithmetic bound.
 
 ## Selected external results
 

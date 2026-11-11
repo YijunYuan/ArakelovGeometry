@@ -187,6 +187,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Ba
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HN
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HNLift
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HNOptimalVariation
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.GradedDegree
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Optimal
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Inverse
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Pairing
