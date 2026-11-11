@@ -15,6 +15,14 @@ public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HN
 The source bundles are actual binary tensors of actual grades. Their maps
 to the original quotient grade are the canonical A5 maps. The finite-image
 HN inequality consumes the proved completed contractions directly.
+
+This is the binary component route for Bost pp.29–32. CM Remark 5.5.6
+provides the relevant subquotient comparison; its wider refinement setting
+and contraction of the paper's whole orthogonal direct sum are not asserted.
+The final consumer proves the sufficient eventual affine upper bound, with
+the original quotient norm and the same chosen HN lifts as A9. The strictly
+smaller-rank tensor-HN compatibility remains an explicit induction boundary;
+neither full CM (5.13) nor the assembled tensor semistability theorem is claimed.
 -/
 
 @[expose] public section
@@ -301,6 +309,98 @@ theorem eventual_image_expectation_le_of_graded_mem
   have hh := div_le_div_of_nonneg_right hsum (Nat.cast_nonneg (finrank K Q))
   simpa only [Finset.sum_add_distrib, ← Finset.mul_sum, add_div, mul_div_assoc] using hh
 
+/-- Finite filtrations on every actual grade admit a simultaneous lifting.
+The equality is on the original graded quotients, including zero grades. -/
+theorem exists_lift_filtrationOnGraded
+    (hP : Antitone P) (hbot : ∃ t, P t = ⊥) (htop : ∃ t, P t = ⊤)
+    (hleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → P s = P t)
+    (H : ∀ t, ℝ → Submodule K (FiltrationGraded P t))
+    (hH : ∀ t, Antitone (H t)) (hHb : ∀ t, ∃ a, H t a = ⊥)
+    (hHt : ∀ t, ∃ a, H t a = ⊤)
+    (hHl : ∀ t a, ∃ ε > 0, ∀ s, a - ε < s → s ≤ a → H t s = H t a) :
+    ∃ L : ℝ → Submodule K E, Antitone L ∧ (∃ t, L t = ⊥) ∧ (∃ t, L t = ⊤) ∧
+      (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → L s = L t) ∧
+      ∀ t, filtrationOnGraded P L t = H t := by
+  classical
+  obtain ⟨n, U, a, hU, hz, ht, _, _, _, hlevel, hright, hrec⟩ :=
+    exists_strictMono_flag_and_jumps_of_antitone hP hbot htop hleft
+  let D (A : Submodule K E × Submodule K E) :=
+    {G : ℝ → Submodule K (A.1 ⧸ A.2.comap A.1.subtype) //
+      Antitone G ∧ (∃ t, G t = ⊥) ∧ (∃ t, G t = ⊤) ∧
+        ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → G s = G t}
+  have hp (i : Fin n) : (P (a i), filtrationRightLimit P (a i)) =
+      (U i.succ, U i.castSucc) := Prod.ext (hlevel i) (hright i)
+  let d₀ (i : Fin n) : D (P (a i), filtrationRightLimit P (a i)) :=
+    ⟨H (a i), hH (a i), hHb (a i), hHt (a i), hHl (a i)⟩
+  let d₁ (i : Fin n) : D (U i.succ, U i.castSucc) := (hp i) ▸ d₀ i
+  obtain ⟨_, _, _, _, L, _, _, _, _, hL, hLb, hLt, hLl, hc⟩ :=
+    exists_lift_prescribed_filtrations U hU.monotone hz ht (fun i ↦ (d₁ i).val)
+      (fun i ↦ (d₁ i).property.1) (fun i ↦ (d₁ i).property.2.1)
+      (fun i ↦ (d₁ i).property.2.2.1) (fun i ↦ (d₁ i).property.2.2.2)
+  refine ⟨L, hL, hLb, hLt, hLl, fun t ↦ ?_⟩
+  by_cases hm : t ∈ Set.range a
+  · obtain ⟨i, rfl⟩ := hm
+    let PropCut (A : Submodule K E × Submodule K E) (d : D A) :=
+      ∀ s, ((L s).comap A.1.subtype).map (A.2.comap A.1.subtype).mkQ = d.val s
+    have transport {A B : Submodule K E × Submodule K E} (e : A = B) (d : D A) :
+        PropCut B (e ▸ d) → PropCut A d := by
+      cases e
+      exact id
+    exact funext (transport (hp i) (d₀ i) (hc i))
+  · have := (Module.finrank_eq_zero_iff_of_free K (FiltrationGraded P t)).mp
+      (finrank_filtrationGraded_eq_zero_of_flag U a hlevel hrec hm)
+    exact Subsingleton.elim _ _
+
+/-- Secondary weights on all actual primary grades sum to the weights of
+any common adapted lifting basis. -/
+theorem finsum_secondary_grades_eq_sum_weights
+    {ι : Type*} [Fintype ι] (b : Basis ι K E) (w s : ι → ℝ)
+    {L : ℝ → Submodule K E}
+    (hP : ∀ t, P t = span K (b '' {i | t ≤ w i}))
+    (hL : ∀ t, L t = span K (b '' {i | t ≤ s i})) :
+    (∑ᶠ t : ℝ, ∑ᶠ a : ℝ, a *
+      (finrank K (FiltrationGraded (filtrationOnGraded P L t) a) : ℝ)) = ∑ i, s i := by
+  classical
+  have hp : Antitone P := by
+    rw [funext hP]
+    exact antitone_span_weights b w
+  have hl : Antitone L := by
+    rw [funext hL]
+    exact antitone_span_weights b s
+  have hc (t a : ℝ) : finrank K (FiltrationGraded (filtrationOnGraded P L t) a) =
+      (Finset.univ.filter fun i ↦ w i = t ∧ s i = a).card := by
+    rw [finrank_filtrationGraded_filtrationOnGraded hp hl,
+      filtrationJointMultiplicity_eq_card b w s hP hL]
+  have hs (t : ℝ) : (∑ᶠ a : ℝ, a *
+      (finrank K (FiltrationGraded (filtrationOnGraded P L t) a) : ℝ)) =
+      ∑ i ∈ Finset.univ.filter (fun i ↦ w i = t), s i := by
+    rw [finsum_eq_sum_of_support_subset _ (s := Finset.univ.image s) (by
+      intro a ha
+      by_contra hn
+      have hz : (Finset.univ.filter fun i ↦ w i = t ∧ s i = a) = ∅ := by
+        apply Finset.eq_empty_iff_forall_notMem.mpr
+        intro i hi
+        exact hn (Finset.mem_image.mpr ⟨i, Finset.mem_univ _, (Finset.mem_filter.mp hi).2.2⟩)
+      exact ha (by simp only [hc, hz, Finset.card_empty, Nat.cast_zero, mul_zero]))]
+    simp_rw [hc]
+    have he := Finset.sum_fiberwise_of_maps_to'
+      (s := Finset.univ.filter fun i ↦ w i = t) (t := Finset.univ.image s)
+      (g := s) (fun i _ ↦ Finset.mem_image.mpr ⟨i, Finset.mem_univ _, rfl⟩)
+      (fun a : ℝ ↦ a)
+    simpa only [Finset.filter_filter, Finset.sum_const, nsmul_eq_mul, mul_comm] using he
+  simp_rw [hs]
+  rw [finsum_eq_sum_of_support_subset _ (s := Finset.univ.image w) (by
+    intro t ht
+    by_contra hn
+    have hz : (Finset.univ.filter fun i ↦ w i = t) = ∅ := by
+      apply Finset.eq_empty_iff_forall_notMem.mpr
+      intro i hi
+      exact hn (Finset.mem_image.mpr ⟨i, Finset.mem_univ _, (Finset.mem_filter.mp hi).2⟩)
+    exact ht (by simp only [hz, Finset.sum_empty]))]
+  exact Finset.sum_fiberwise_of_maps_to
+    (s := Finset.univ) (t := Finset.univ.image w)
+    (g := w) (fun i hi ↦ Finset.mem_image.mpr ⟨i, hi, rfl⟩) s
+
 end Submodule
 
 namespace ArakelovGeometry.AdelicVectorBundle
@@ -311,6 +411,34 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {E F : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
   {Q : Type w'} [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
+
+/-- The chosen HN variation lift has the actual grade-HN cuts at every
+real level. Its finite flag data also settle levels outside the jump set. -/
+theorem HNVariationLift.filtrationOnGraded_eq
+    [S.IsProper]
+    {V : AdelicVectorBundle S E}
+    {hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield}
+    {hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
+    {hV : V.toNormFamily.IsHermitian hN} {P : ℝ → Submodule K E}
+    (L : V.HNVariationLift hS hN hV P) (t : ℝ) :
+    Submodule.filtrationOnGraded P L.direction t =
+      (V.filtrationGraded P t hS).hermitianHNFiltration hS hN (hV.filtrationGraded P t) := by
+  classical
+  by_cases hm : t ∈ Set.range L.weight
+  · obtain ⟨i, rfl⟩ := hm
+    let C (A : Submodule K E × Submodule K E) :=
+      ∀ s, ((L.direction s).comap A.1.subtype).map (A.2.comap A.1.subtype).mkQ =
+        ((V.restrictOfMeasurableBase A.1 hS).quotientOfMeasurableBase
+          (A.2.comap A.1.subtype) hS).hermitianHNFiltration
+          hS hN ((hV.restrict A.1).quotient (A.2.comap A.1.subtype)) s
+    have hp : (P (L.weight i), Submodule.filtrationRightLimit P (L.weight i)) =
+        (L.flag i.succ, L.flag i.castSucc) := Prod.ext (L.level i) (L.right i)
+    have hc : C (L.flag i.succ, L.flag i.castSucc) := L.cuts i
+    exact funext ((congrArg C hp).mpr hc)
+  · have := (Module.finrank_eq_zero_iff_of_free K (Submodule.FiltrationGraded P t)).mp
+      (Submodule.finrank_filtrationGraded_eq_zero_of_flag
+        L.flag L.weight L.level L.reconstruct hm)
+    exact Subsingleton.elim _ _
 
 /-- The actual source bundle of a canonical binary graded pair. This is the
 existing Hermitian tensor constructor applied to the actual two grades. -/
@@ -538,5 +666,157 @@ theorem tensorFiltrationSecondaryImage_weighted_le_slope
   exact div_le_div_of_nonneg_right
     (finsum_le_degree_of_filtration_grade_bounds B hS hN hB PQ hPQ hbot htop hleft d hz hd)
     (Nat.cast_nonneg _)
+
+/-- The concrete binary Bost numerical consumer for the SAME chosen HN
+lifts and common bases as the optimizer. The actual secondary image weight
+is bounded by the original quotient slope and gives an eventual affine
+upper bound. Only strictly smaller-rank tensor-HN compatibility is assumed.
+This one-sided form of Bost pp.30–32 suffices for the A9 lower bound; the
+paper's exact affine identity and full CM (5.13) are not asserted. -/
+theorem tensorFiltrationQuotient_eventual_hn_upper
+    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hV : V.toNormFamily.IsHermitian hN) (hW : W.toNormFamily.IsHermitian hN)
+    (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q)
+    {P : ℝ → Submodule K E} {R : ℝ → Submodule K F}
+    (hP : Antitone P) (hR : Antitone R)
+    {ι κ : Type*} [Finite ι] [Finite κ]
+    (b : Basis ι K E) (c : Basis κ K F) (w : ι → ℝ) (z : κ → ℝ)
+    (hPw : ∀ t, P t = Submodule.span K (b '' {i | t ≤ w i}))
+    (hRz : ∀ u, R u = Submodule.span K (c '' {j | u ≤ z j}))
+    (L : V.HNVariationLift hS hN hV P) (M : W.HNVariationLift hS hN hW R)
+    (s : ι → ℝ) (v : κ → ℝ)
+    (hLs : ∀ t, L.direction t = Submodule.span K (b '' {i | t ≤ s i}))
+    (hMv : ∀ t, M.direction t = Submodule.span K (c '' {j | t ≤ v j}))
+    (hsmall : ∀ i j, finrank K (Submodule.FiltrationGraded P (w i)) +
+      finrank K (Submodule.FiltrationGraded R (z j)) < finrank K E + finrank K F)
+    (hInd : ∀ t u,
+      finrank K (Submodule.FiltrationGraded P t) + finrank K (Submodule.FiltrationGraded R u) <
+        finrank K E + finrank K F →
+      (tensorFiltrationGradedSource V W hS hN hV hW P R t u).hermitianHNFiltration hS hN
+        (tensorFiltrationGradedSource_isHermitian V W hS hN hV hW P R t u) =
+      Submodule.tensorFiltration
+        ((V.filtrationGraded P t hS).hermitianHNFiltration hS hN (hV.filtrationGraded P t))
+        ((W.filtrationGraded R u hS).hermitianHNFiltration hS hN (hW.filtrationGraded R u))) :
+    let T := V.orthogonalTensorPair W hS hN hV hW
+    let B := T.pushforward q hq (T.isMeasurable.pushforward_of_discrete_or_countable hS q hq)
+    let δ := (∑ᶠ γ : ℝ, ∑ᶠ t : ℝ, t * (finrank K (Submodule.FiltrationGraded
+      (tensorFiltrationSecondaryImage V W hS hN hV hW q hP hR w z γ) t) : ℝ)) /
+      (finrank K Q : ℝ)
+    δ ≤ B.slope hS hN ∧ ∃ η > 0, ∀ ε, 0 < ε → ε < η →
+      Submodule.filtrationExpectation (fun t ↦
+        (Submodule.tensorFiltration (Submodule.weightedBasisVariation b w s ε)
+          (Submodule.weightedBasisVariation c z v ε) t).map q) ≤
+      Submodule.filtrationExpectation (fun t ↦ (Submodule.tensorFiltration P R t).map q) +
+        ε * δ := by
+  classical
+  dsimp only
+  refine ⟨tensorFiltrationSecondaryImage_weighted_le_slope V W hS hN hV hW q hq
+    hP hR b c w z hPw hRz hsmall hInd, ?_⟩
+  let PQ : ℝ → Submodule K Q := fun t ↦ (Submodule.tensorFiltration P R t).map q
+  let H := tensorFiltrationSecondaryImage V W hS hN hV hW q hP hR w z
+  have hfinite (γ : ℝ) : Antitone (H γ) ∧ (∃ t, H γ t = ⊥) ∧ (∃ t, H γ t = ⊤) ∧
+      ∀ t, ∃ ε > 0, ∀ a, t - ε < a → a ≤ t → H γ a = H γ t := by
+    let J := {ij : ι × κ // w ij.1 + z ij.2 = γ}
+    let C := fun p : J ↦ tensorFiltrationGradedSource V W hS hN hV hW P R
+      (w p.val.1) (z p.val.2)
+    let hC := fun p : J ↦ tensorFiltrationGradedSource_isHermitian V W hS hN hV hW P R
+      (w p.val.1) (z p.val.2)
+    let g := fun p : J ↦ Submodule.tensorFiltrationGradedQuotientPair q hP hR p.property
+    have he : H γ = Submodule.imageFiltration g
+        (fun p ↦ (C p).hermitianHNFiltration hS hN (hC p)) := by
+      apply congrArg (Submodule.imageFiltration g)
+      funext p
+      exact (hInd _ _ (hsmall p.val.1 p.val.2)).symm
+    rw [he]
+    exact hermitianHN_imageFiltration_finite C g hS hN hC
+      (Submodule.iSup_range_tensorFiltrationGradedQuotientPair b c w z q hP hR hPw hRz γ)
+  obtain ⟨d₀, a₀, hd₀⟩ := Submodule.exists_weighted_basis_image
+    (b.tensorProduct c) (fun p ↦ w p.1 + z p.2) q hq
+  have hPQ (t : ℝ) : PQ t = Submodule.span K (d₀ '' {i | t ≤ a₀ i}) := by
+    dsimp only [PQ]
+    rw [Submodule.tensorFiltration_eq_span_tensorProduct b c w z hPw hRz]
+    exact hd₀ t
+  have hPQa : Antitone PQ := by
+    rw [funext hPQ]
+    exact Submodule.antitone_span_weights d₀ a₀
+  obtain ⟨hPQb, hPQt⟩ := Submodule.span_weights_attains_bot_top d₀ a₀
+  have hPQl := Submodule.span_weights_locallyConstant_left d₀ a₀
+  simp_rw [← hPQ] at hPQb hPQt hPQl
+  obtain ⟨N, hNant, hNb, hNt, hNl, hcuts⟩ := Submodule.exists_lift_filtrationOnGraded
+    hPQa hPQb hPQt hPQl H (fun γ ↦ (hfinite γ).1)
+    (fun γ ↦ (hfinite γ).2.1) (fun γ ↦ (hfinite γ).2.2.1)
+    (fun γ ↦ (hfinite γ).2.2.2)
+  obtain ⟨d, a, r, hd, hNr, _, _⟩ := Submodule.exists_common_weighted_basis
+    hPQa hPQb hPQt hPQl hNant hNb hNt hNl
+  have hmean : Submodule.filtrationExpectation N =
+      (∑ᶠ γ : ℝ, ∑ᶠ t : ℝ, t * (finrank K (Submodule.FiltrationGraded (H γ) t) : ℝ)) /
+        (finrank K Q : ℝ) := by
+    rw [Submodule.filtrationExpectation_eq_sum_weights d r hNr]
+    congr 1
+    have hh := Submodule.finsum_secondary_grades_eq_sum_weights d a r hd hNr
+    have heq : Submodule.filtrationOnGraded PQ N = H := funext hcuts
+    rw [heq] at hh
+    exact hh.symm
+  have hb (i : ι) : b i ∈ P (w i) := by
+    rw [hPw]
+    exact Submodule.subset_span ⟨i, (show w i ≤ w i from le_rfl), rfl⟩
+  have hc (j : κ) : c j ∈ R (z j) := by
+    rw [hRz]
+    exact Submodule.subset_span ⟨j, (show z j ≤ z j from le_rfl), rfl⟩
+  have hH (t u : ℝ) :
+      (V.filtrationGraded P t hS).hermitianHNFiltration hS hN (hV.filtrationGraded P t) u =
+        Submodule.span K (Submodule.filtrationGradedGenerator b w hb t ''
+          {i | u ≤ s i.val}) := by
+    rw [← L.filtrationOnGraded_eq]
+    exact Submodule.filtrationOnGraded_eq_span_generators b w s hPw hLs hb t u
+  have hJ (t u : ℝ) :
+      (W.filtrationGraded R t hS).hermitianHNFiltration hS hN (hW.filtrationGraded R t) u =
+        Submodule.span K (Submodule.filtrationGradedGenerator c z hc t ''
+          {i | u ≤ v i.val}) := by
+    rw [← M.filtrationOnGraded_eq]
+    exact Submodule.filtrationOnGraded_eq_span_generators c z v hRz hMv hc t u
+  have hspan (γ ℓ : ℝ) : H γ ℓ = Submodule.span K
+      (Submodule.tensorQuotientGradedGenerator b c w z hb hc q hP hR γ ''
+        {p | ℓ ≤ s p.val.1 + v p.val.2}) :=
+    Submodule.imageFiltration_tensor_secondary_eq_span b c w z hb hc q hP hR s v _ _ hH hJ γ ℓ
+  have hm (p : ι × κ) : q ((b.tensorProduct c) p) ∈ PQ (w p.1 + z p.2) := by
+    dsimp only [PQ]
+    rw [Submodule.tensorFiltration_eq_span_tensorProduct b c w z hPw hRz]
+    exact ⟨(b.tensorProduct c) p, Submodule.subset_span
+      ⟨p, (show w p.1 + z p.2 ≤ w p.1 + z p.2 from le_rfl), rfl⟩, rfl⟩
+  have hclass (p : ι × κ) : Submodule.filtrationGradedMk PQ (w p.1 + z p.2)
+      ⟨q ((b.tensorProduct c) p), hm p⟩ ∈
+        Submodule.filtrationOnGraded PQ N (w p.1 + z p.2) (s p.1 + v p.2) := by
+    rw [hcuts, hspan]
+    refine Submodule.subset_span
+      ⟨⟨p, rfl⟩, (show s p.1 + v p.2 ≤ s p.1 + v p.2 from le_rfl), ?_⟩
+    dsimp only [Submodule.tensorQuotientGradedGenerator,
+      Submodule.tensorFiltrationGradedQuotientPair, Submodule.filtrationGradedGenerator,
+      LinearMap.comp_apply]
+    rw [Submodule.tensorFiltrationGradedPair_mk, Submodule.filtrationGradedMap_mk]
+    congr 1
+    apply Subtype.ext
+    exact congrArg q (Basis.tensorProduct_apply b c p.1 p.2).symm
+  obtain ⟨η, hη, hu⟩ := Submodule.eventual_image_expectation_le_of_graded_mem
+    (b.tensorProduct c) (fun p ↦ w p.1 + z p.2) (fun p ↦ s p.1 + v p.2)
+    q hq d a r hd hNr hm hclass
+  refine ⟨η, hη, fun ε hε he ↦ ?_⟩
+  have hvar : Submodule.tensorFiltration (Submodule.weightedBasisVariation b w s ε)
+      (Submodule.weightedBasisVariation c z v ε) =
+      Submodule.weightedBasisVariation (b.tensorProduct c)
+        (fun p ↦ w p.1 + z p.2) (fun p ↦ s p.1 + v p.2) ε := by
+    funext t
+    unfold Submodule.weightedBasisVariation
+    rw [Submodule.tensorFiltration_eq_span_tensorProduct b c
+      (fun i ↦ w i + ε * s i) (fun j ↦ z j + ε * v j) (fun _ ↦ rfl) (fun _ ↦ rfl)]
+    congr 2
+    ext p
+    change (t ≤ (w p.1 + ε * s p.1) + (z p.2 + ε * v p.2)) ↔
+      t ≤ (w p.1 + z p.2) + ε * (s p.1 + v p.2)
+    ring_nf
+  rw [hvar]
+  simpa only [hmean] using hu ε hε he
 
 end ArakelovGeometry.AdelicVectorBundle
