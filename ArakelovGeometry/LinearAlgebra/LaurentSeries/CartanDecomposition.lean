@@ -69,6 +69,62 @@ theorem exists_matrix_diagonal (A : Matrix ι ι R) (hA : Function.Injective A.m
 
 end PID
 
+section OneParameter
+
+variable (R : Type*) [CommRing R]
+
+/-- The diagonal one-parameter subgroup on units of any coefficient ring. -/
+def diagonalOneParameter (a : ι → ℤ) : Rˣ →* GL ι R where
+  toFun t := ⟨diagonal (fun i ↦ ((t ^ a i : Rˣ) : R)),
+    diagonal (fun i ↦ ((t ^ (-a i) : Rˣ) : R)),
+    by simp [diagonal_mul_diagonal, ← Units.val_mul],
+    by simp [diagonal_mul_diagonal, ← Units.val_mul]⟩
+  map_one' := by ext i j : 2; simp
+  map_mul' t u := by
+    apply Units.ext
+    simp [diagonal_mul_diagonal, mul_zpow]
+
+@[simp]
+theorem diagonalOneParameter_val (a : ι → ℤ) (t : Rˣ) :
+    (diagonalOneParameter R a t : Matrix ι ι R) =
+      diagonal (fun i ↦ ((t ^ a i : Rˣ) : R)) := rfl
+
+theorem diagonalOneParameter_det (a : ι → ℤ) (t : Rˣ) :
+    GeneralLinearGroup.det (diagonalOneParameter R a t) = t ^ (∑ i, a i) := by
+  apply Units.ext
+  change (diagonal (fun i ↦ ((t ^ a i : Rˣ) : R))).det = _
+  rw [det_diagonal]
+  have hs (s : Finset ι) : (∏ i ∈ s, ((t ^ a i : Rˣ) : R)) =
+      ((t ^ (∑ i ∈ s, a i) : Rˣ) : R) := by
+    induction s using Finset.induction_on with
+    | empty => simp
+    | @insert i s hi ih => simp [hi, ih, zpow_add]
+  exact hs Finset.univ
+
+/-- Zero total weight gives a special-linear one-parameter subgroup. -/
+def diagonalOneParameterSL (a : ι → ℤ) (ha : ∑ i, a i = 0) :
+    Rˣ →* SpecialLinearGroup ι R where
+  toFun t := ⟨diagonalOneParameter R a t, by
+    have h := congrArg Units.val (diagonalOneParameter_det R a t)
+    simpa [ha] using h⟩
+  map_one' := by apply Subtype.ext; exact congrArg Units.val (map_one _)
+  map_mul' t u := by apply Subtype.ext; exact congrArg Units.val (map_mul _ t u)
+
+/-- Diagonal one-parameter subgroups commute with every change of coefficient ring. -/
+theorem map_diagonalOneParameter {S : Type*} [CommRing S] (f : R →+* S)
+    (a : ι → ℤ) (t : Rˣ) :
+    GeneralLinearGroup.map f (diagonalOneParameter R a t) =
+      diagonalOneParameter S a (Units.map f t) := by
+  apply Units.ext
+  change (diagonal (fun i ↦ ((t ^ a i : Rˣ) : R))).map f =
+    diagonal (fun i ↦ (((Units.map f t) ^ a i : Sˣ) : S))
+  rw [diagonal_map (map_zero f)]
+  congr 1
+  funext i
+  exact congrArg Units.val (map_zpow (Units.map f.toMonoidHom) t (a i))
+
+end OneParameter
+
 section Laurent
 
 variable {K : Type*} [Field K]
@@ -264,6 +320,22 @@ theorem exists_specialLinear_cartan (g : GL ι K⸨X⸩)
           (S.map φ * diagonal (fun i ↦ x ^ a i) * T.map φ) *
           (Q : Matrix ι ι K⟦X⟧).map φ := by rw [hmid]
       _ = _ := by simp only [Matrix.mul_assoc]
+
+/-- A nonpositive weight can occur in a vector vanishing at `X = 0` only when
+the corresponding integral coordinate has zero constant term. -/
+theorem constantCoeff_eq_zero_of_nonpositive_weight (a : ℤ) (ha : a ≤ 0)
+    (f h : K⟦X⟧)
+    (heq : (algebraMap K⟦X⟧ K⸨X⸩ PowerSeries.X) ^ a *
+      algebraMap K⟦X⟧ K⸨X⸩ f = algebraMap K⟦X⟧ K⸨X⸩ (PowerSeries.X * h)) :
+    PowerSeries.constantCoeff f = 0 := by
+  have hc := congrArg (fun z : K⸨X⸩ ↦ z.coeff a) heq
+  by_cases hneg : a < 0
+  · simpa [LaurentSeries.coe_algebraMap, ← RatFunc.single_zpow,
+      HahnSeries.coeff_single_mul, PowerSeries.coeff_coe, show a < 1 by omega] using hc
+  · have he : a = 0 := le_antisymm ha (le_of_not_gt hneg)
+    subst a
+    simpa [LaurentSeries.coe_algebraMap, HahnSeries.coeff_single_mul,
+      PowerSeries.coeff_coe] using hc
 
 end Laurent
 
