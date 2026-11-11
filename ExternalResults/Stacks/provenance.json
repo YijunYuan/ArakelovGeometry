@@ -24,7 +24,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
+      "checked_status": "Current local source covered by the full library build; four Stacks producer transitive axiom checks passed after refactor (see implementation_refactor_2026_11_11)."
     },
     {
       "original_path": "StacksCore/Tactic/EgaSgaAttribute.lean",
@@ -35,7 +35,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
+      "checked_status": "Current local source covered by the full library build; four Stacks producer transitive axiom checks passed after refactor (see implementation_refactor_2026_11_11)."
     },
     {
       "original_path": "StacksCore/Tactic/StacksAttribute.lean",
@@ -46,7 +46,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
+      "checked_status": "Current local source covered by the full library build; four Stacks producer transitive axiom checks passed after refactor (see implementation_refactor_2026_11_11)."
     },
     {
       "original_path": "StacksFrontier/AlgebraicGeometry/Limits/NoetherianValuativeCriterion/DiscreteValuationSpecialization.lean",
@@ -59,7 +59,7 @@
         "Add local adoption and exact downstream-boundary documentation; original text retained.",
         "Update current downstream module references after the directory refactor; proof unchanged."
       ],
-      "checked_status": "Current documentation refactor validation pending; previous checks retained below."
+      "checked_status": "Current local source covered by the full library build; four Stacks producer transitive axiom checks passed after refactor (see implementation_refactor_2026_11_11)."
     },
     {
       "original_path": "StacksFrontier/AlgebraicGeometry/Morphisms/Closure/ImageValuativeDiagram.lean",
@@ -70,7 +70,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
+      "checked_status": "Current local source covered by the full library build; four Stacks producer transitive axiom checks passed after refactor (see implementation_refactor_2026_11_11)."
     },
     {
       "original_path": "StacksFrontier/RingTheory/Artinian/Basic.lean",
@@ -83,7 +83,7 @@
         "Move module docstring before public section; sort/group imports.",
         "Replace 31 broad Mathlib public imports with HopkinsLevitzki (which publicly exports finite length and prime spectrum results); keep explicit annotation imports."
       ],
-      "checked_status": "Original proof checked before refactor; current import/header refactor validation pending."
+      "checked_status": "Current local source covered by the full library build; four Stacks producer transitive axiom checks passed after refactor (see implementation_refactor_2026_11_11)."
     },
     {
       "original_path": "StacksFrontier/RingTheory/DiscreteValuationRing/Existence.lean",
@@ -95,7 +95,7 @@
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes.",
         "Move module docstring before public section; sort/group imports."
       ],
-      "checked_status": "Original proof checked before refactor; current import/header refactor validation pending."
+      "checked_status": "Current local source covered by the full library build; four Stacks producer transitive axiom checks passed after refactor (see implementation_refactor_2026_11_11)."
     },
     {
       "original_path": "StacksFrontier/RingTheory/Ideal/Over/HeightOne.lean",
@@ -107,7 +107,7 @@
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes.",
         "Move module docstring before public section; sort/group imports."
       ],
-      "checked_status": "Original proof checked before refactor; current import/header refactor validation pending."
+      "checked_status": "Current local source covered by the full library build; four Stacks producer transitive axiom checks passed after refactor (see implementation_refactor_2026_11_11)."
     },
     {
       "original_path": "StacksFrontier/RingTheory/IntegralClosure/DedekindDomain.lean",
@@ -120,7 +120,7 @@
         "Move module docstring before public section; sort/group imports.",
         "Use the suggested rwa proof in place of rw followed by assumption."
       ],
-      "checked_status": "Original proof checked before refactor; current import/header refactor validation pending."
+      "checked_status": "Current local source covered by the full library build; four Stacks producer transitive axiom checks passed after refactor (see implementation_refactor_2026_11_11)."
     },
     {
       "original_path": "StacksFrontier/RingTheory/KrullAkizuki.lean",
@@ -131,7 +131,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
+      "checked_status": "Current local source covered by the full library build; four Stacks producer transitive axiom checks passed after refactor (see implementation_refactor_2026_11_11)."
     },
     {
       "original_path": "StacksFrontier/RingTheory/KrullAkizuki/DominatingDimOne.lean",
@@ -143,7 +143,7 @@
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes.",
         "Correct informal proof: choose a generator with maximal multiplicative valuation in a dominating valuation ring, not an arbitrary nonzero maximal-ideal element; formal proof unchanged."
       ],
-      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
+      "checked_status": "Current local source covered by the full library build; four Stacks producer transitive axiom checks passed after refactor (see implementation_refactor_2026_11_11)."
     },
     {
       "original_path": "StacksFrontier/RingTheory/KrullAkizuki/IntermediateRingNoetherian.lean",
@@ -154,7 +154,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
+      "checked_status": "Current local source covered by the full library build; four Stacks producer transitive axiom checks passed after refactor (see implementation_refactor_2026_11_11)."
     },
     {
       "original_path": "StacksFrontier/RingTheory/KrullAkizuki/LengthBound.lean",
@@ -165,7 +165,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
+      "checked_status": "Current local source covered by the full library build; four Stacks producer transitive axiom checks passed after refactor (see implementation_refactor_2026_11_11)."
     },
     {
       "original_path": "StacksFrontier/RingTheory/Spectrum/Prime/Integral.lean",
@@ -176,7 +176,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
+      "checked_status": "Current local source covered by the full library build; four Stacks producer transitive axiom checks passed after refactor (see implementation_refactor_2026_11_11)."
     }
   ],
   "checks": [
@@ -226,10 +226,7 @@
     "result": "satisfactory mathematical producer; corrected informal-proof defect; no formal defect found",
     "limits": "High confidence for target and load-bearing algebraic route, medium for ancillary copied declarations. No claim of upstream human review."
   },
-  "retained_upstream_warnings": [
-    "Module docstring placement: Artinian/Basic.lean, Ideal/Over/HeightOne.lean, IntegralClosure/DedekindDomain.lean, DiscreteValuationRing/Existence.lean. Preserved upstream layout; no proof warning.",
-    "Optional rwa suggestion in IntegralClosure/DedekindDomain.lean. Preserved proof."
-  ],
+  "retained_upstream_warnings": [],
   "honesty_review": {
     "reviewer": "independent honesty-reviewer /root/honesty",
     "result": "satisfactory; honest partial progress; exact closure, hashes, license and unchanged proof bodies confirmed",
@@ -275,6 +272,31 @@
         ]
       }
     },
-    "validation": "pending; historical checks below refer to their recorded original revisions"
-  }
+    "validation": {
+      "result": "passed",
+      "production_source_revision": "514db957c7b989d52283b04daddb8b405c5d331f",
+      "full_build": {
+        "name": "full-build-final",
+        "command": "LEAN_NUM_THREADS=2 lake build ArakelovGeometry ExternalResults ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianInnerProduct",
+        "exit_code": 0,
+        "seconds": 21.008,
+        "stopped_for_memory": false,
+        "minimum_available_MiB": 18644
+      },
+      "axiom_check": {
+        "name": "exports-axioms",
+        "command": "LEAN_NUM_THREADS=2 lake env lean -j2 reports/2026-11-11-code-refactor/FinalExports.lean",
+        "exit_code": 0,
+        "seconds": 3.001,
+        "stopped_for_memory": false,
+        "minimum_available_MiB": 18999
+      },
+      "evidence_directory": "reports/2026-11-11-code-refactor",
+      "scope": "Full project and selected donor closure; current producer and consumer axiom roots. Historical reviews below remain reviews of their recorded revisions."
+    }
+  },
+  "upstream_warnings_before_refactor": [
+    "Module docstring placement: Artinian/Basic.lean, Ideal/Over/HeightOne.lean, IntegralClosure/DedekindDomain.lean, DiscreteValuationRing/Existence.lean. Preserved upstream layout; no proof warning.",
+    "Optional rwa suggestion in IntegralClosure/DedekindDomain.lean. Preserved proof."
+  ]
 }

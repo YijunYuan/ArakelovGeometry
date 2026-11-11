@@ -265,7 +265,11 @@ See [the refactor report](reports/2026-11-11-code-refactor/report.txt),
 [the module map](reports/2026-11-11-code-refactor/module-moves.json), and
 [the preserved commit map](reports/2026-11-11-code-refactor/history-map.json).
 Direct checks use `LEAN_NUM_THREADS=2 lake build ArakelovGeometry ExternalResults`
-and `lake env lean -j2 Tests/Typeclasses.lean`.
+and an explicit build of
+`ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianInnerProduct` for the old import facade.
+Instance, import-compatibility and axiom-check inputs are preserved in
+[check-inputs.txt](reports/2026-11-11-code-refactor/check-inputs.txt), with results in
+the same report directory. The temporary test Lean files are removed after validation.
 
 ## Current scope
 

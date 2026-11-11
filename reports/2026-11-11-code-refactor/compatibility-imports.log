@@ -1,0 +1,39 @@
+ArakelovGeometry.piDualDistrib_baseChange_apply.{u_1, u_2, u_3, u_4} (K : Type u_1) (L : Type u_2) [Field K] [Field L]
+  [Algebra K L] {ι : Type u_3} [Finite ι] (E : ι → Type u_4) [(i : ι) → AddCommGroup (E i)] [(i : ι) → Module K (E i)]
+  [∀ (i : ι), FiniteDimensional K (E i)] (z : TensorProduct K L (PiTensorProduct K fun i => Module.Dual K (E i)))
+  (x : TensorProduct K L (PiTensorProduct K fun i => E i)) :
+  ((ArakelovGeometry.dualBaseChangeEquiv K L (PiTensorProduct K fun i => E i))
+        ((LinearMap.baseChange L PiTensorProduct.dualDistrib) z))
+      x =
+    (PiTensorProduct.dualDistrib
+        ((PiTensorProduct.congr fun i => ArakelovGeometry.dualBaseChangeEquiv K L (E i))
+          ((ArakelovGeometry.tensorBaseChangeEquiv K L fun i => Module.Dual K (E i)) z)))
+      ((ArakelovGeometry.tensorBaseChangeEquiv K L E) x)
+ArakelovGeometry.NormFamily.orthogonalTensor_norm_tmulEquivDep_of_infinite.{u, v, w, wι} {K : Type u} [Field K]
+  {S : ArakelovGeometry.AdelicStructure K} {I J : Type wι} [Fintype I] [Fintype J] {V : I ⊕ J → Type w}
+  [(i : I ⊕ J) → AddCommGroup (V i)] [(i : I ⊕ J) → Module K (V i)] [∀ (i : I ⊕ J), FiniteDimensional K (V i)]
+  (ξ : (i : I ⊕ J) → ArakelovGeometry.NormFamily S (V i)) (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+  (hξ : ∀ (i : I ⊕ J), (ξ i).IsHermitian hN) (ω : S.Ω) (hω : ω ∈ S.Ωinf)
+  (z :
+    TensorProduct K (S.ϕ ω).Completion
+      (TensorProduct K (PiTensorProduct K fun i => V (Sum.inl i)) (PiTensorProduct K fun j => V (Sum.inr j)))) :
+  ((ArakelovGeometry.NormFamily.orthogonalTensor ξ hN hξ).norm ω)
+      ((LinearMap.baseChange (S.ϕ ω).Completion ↑(PiTensorProduct.tmulEquivDep K V)) z) =
+    (((ArakelovGeometry.NormFamily.orthogonalTensor (fun i => ξ (Sum.inl i)) hN ⋯).orthogonalTensorPair
+            (ArakelovGeometry.NormFamily.orthogonalTensor (fun j => ξ (Sum.inr j)) hN ⋯) hN ⋯ ⋯).norm
+        ω)
+      z
+ArakelovGeometry.tensorBaseChangeEquiv_assoc.{u_1, u_2, u_3, u_4, u_5} (K : Type u_1) (L : Type u_2) [Field K] [Field L]
+  [Algebra K L] (E : Type u_3) (F : Type u_4) (G : Type u_5) [AddCommGroup E] [Module K E] [AddCommGroup F] [Module K F]
+  [AddCommGroup G] [Module K G] (z : TensorProduct K L (TensorProduct K (TensorProduct K E F) G)) :
+  (TensorProduct.map LinearMap.id ↑(TensorProduct.AlgebraTensorModule.distribBaseChange K L F G))
+      ((TensorProduct.AlgebraTensorModule.distribBaseChange K L E (TensorProduct K F G))
+        ((LinearMap.baseChange L ↑(TensorProduct.assoc K E F G)) z)) =
+    (TensorProduct.assoc L (TensorProduct K L E) (TensorProduct K L F) (TensorProduct K L G))
+      ((TensorProduct.map (↑(TensorProduct.AlgebraTensorModule.distribBaseChange K L E F)) LinearMap.id)
+        ((TensorProduct.AlgebraTensorModule.distribBaseChange K L (TensorProduct K E F) G) z))
+ArakelovGeometry.NormFamily.orthogonalTensor.{u, v, w, wι} {K : Type u} [Field K]
+  {S : ArakelovGeometry.AdelicStructure K} {ι : Type wι} [Fintype ι] {E : ι → Type w} [(i : ι) → AddCommGroup (E i)]
+  [(i : ι) → Module K (E i)] [∀ (i : ι), FiniteDimensional K (E i)] (ξ : (i : ι) → ArakelovGeometry.NormFamily S (E i))
+  (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (hξ : ∀ (i : ι), (ξ i).IsHermitian hS) :
+  ArakelovGeometry.NormFamily S (PiTensorProduct K fun i => E i)

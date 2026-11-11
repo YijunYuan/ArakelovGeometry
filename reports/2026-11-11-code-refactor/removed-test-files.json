@@ -1,0 +1,27 @@
+[
+  {
+    "path": "Tests/Typeclasses.lean",
+    "sha256": "83b78464025e9775b1f381b42fe754c31fc18def1db75e883e1f6d744ba9c2dc",
+    "tracked_before_removal": true
+  },
+  {
+    "path": "Tests/HermitianImports.lean",
+    "sha256": "fd18d93b2657f40d39ca209bb78cdac1f180b27428d253b8ec319b73c53f0b15",
+    "tracked_before_removal": false
+  },
+  {
+    "path": "reports/2026-11-11-code-refactor/FinalExports.lean",
+    "sha256": "b48cd7bf8a2983dfb5c55842c61c1dfc4e433e13bc19954f608143735a6d7c62",
+    "tracked_before_removal": false
+  },
+  {
+    "path": "ExternalResults/EtingofRepresentationTheory/evidence/AxiomAudit.lean",
+    "sha256": "6d1f38f4e9411a1e6ac6475ba2de4795ed1d606d1de1ca792b3f3cd660fc2433",
+    "tracked_before_removal": true
+  },
+  {
+    "path": "reports/2026-11-11-bost-lite-verification/FinalExports.lean",
+    "sha256": "4ddaa4762ea64ad82111fd07b1654afb25d928ce220f9db1d8fd87a387f5fd9d",
+    "tracked_before_removal": false
+  }
+]

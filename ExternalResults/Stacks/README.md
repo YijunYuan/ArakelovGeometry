@@ -33,10 +33,13 @@ A source consisting merely of the orbit closure does not supply such an element.
 This is the geometric input for the general-DVR matrix route. The orbit morphism
 and its finite-type/quasi-compact hypotheses, invariant separation, compatible
 ground-field structures, a primitive initial determinant vector, and descent from
-the arbitrary DVR residue field are separate unmet consumers. The local
+the arbitrary DVR residue field are separate project consumers. The local
 `ArakelovGeometry.InvariantTheory.DVR.Weights` producer now proves the actual A2
 tensor/exterior/dual coordinate-weight implication using general DVR Cartan. This port alone does not prove A8 or a
-Hilbert–Mumford theorem.
+Hilbert–Mumford theorem. The project-specific consumers are now connected in
+`InvariantTheory/Binary/Orbit/DVR.lean`, `InvariantTheory/Binary/NegativeFiltration.lean`
+and `AdelicVectorBundle/Examples/Trivial/Filtration/Optimal/Instability.lean`;
+see the project README for their exact scope.
 
 Verification: the narrow target passed (96.1 s; 5.3 s after the documentation
 correction); four transitive axiom probes passed (28.6 s), using only
@@ -44,8 +47,12 @@ correction); four transitive axiom probes passed (28.6 s), using only
 found no defect in the target or its main algebraic route. It corrected the
 informal proof of dimension-one domination: choose a generator of maximal
 valuation in a dominating valuation ring. The original formal proof already
-made this choice. Four upstream module-header placement warnings and one
-optional tactic suggestion are retained to minimize changes; no proof warnings
-or sorries occur. The API is at the level of `Scheme`; compatibility with the
+made this choice. The implementation refactor fixes four upstream module-header
+placement warnings and applies the optional `rwa` suggestion. The Artinian module
+imports `Mathlib.RingTheory.HopkinsLevitzki` instead of 31 broad mathlib modules;
+this exports the required finite-length and prime-spectrum results. Statements
+are unchanged, and local hashes are updated in the provenance record.
+The API is at the level of `Scheme`; compatibility with the
 ground-field structure and interpretation as a ground-field group functor point
-are additional downstream obligations.
+remain obligations for each application. Current direct-build and axiom-check
+evidence is recorded in [the refactor report](../../reports/2026-11-11-code-refactor/report.txt).

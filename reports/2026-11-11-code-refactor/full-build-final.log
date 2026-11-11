@@ -1,0 +1,12 @@
+✔ [4333/4345] Built ArakelovGeometry.InvariantTheory.Semistability (1.6s)
+✔ [4339/4498] Built ArakelovGeometry.InvariantTheory.QuotientDeterminant (4.4s)
+✔ [4872/4881] Built ArakelovGeometry.InvariantTheory.Linearization (4.4s)
+✔ [4875/4883] Built ArakelovGeometry.InvariantTheory.Polynomial.Action (1.5s)
+✔ [4876/4978] Built ArakelovGeometry.InvariantTheory.Polynomial.HomogeneousTensor (2.1s)
+✔ [4921/4978] Built ArakelovGeometry.InvariantTheory.TensorPower.Semisimple (2.4s)
+✔ [4951/5080] Built ArakelovGeometry.InvariantTheory.Plucker (5.2s)
+✔ [5192/5216] Built ArakelovGeometry.InvariantTheory.Projective (2.2s)
+✔ [5316/5427] Built ArakelovGeometry.InvariantTheory.Binary.PolynomialSemisimple (3.3s)
+✔ [5419/5427] Built ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianInnerProduct (1.4s)
+✔ [5421/5427] Built ArakelovGeometry.InvariantTheory.Binary.OrbitSeparation (4.7s)
+Build completed successfully (5427 jobs).

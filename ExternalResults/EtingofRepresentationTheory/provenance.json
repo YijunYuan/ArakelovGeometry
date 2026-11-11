@@ -314,6 +314,33 @@
       "Update executable axiom probe import; historical evidence retains its original module paths.",
       "Add the missing standard project copyright header to the consumer; no mathematical change."
     ],
-    "validation": "pending final build and axiom audit"
+    "validation": {
+      "result": "passed",
+      "production_source_revision": "514db957c7b989d52283b04daddb8b405c5d331f",
+      "full_build": {
+        "name": "full-build-final",
+        "command": "LEAN_NUM_THREADS=2 lake build ArakelovGeometry ExternalResults ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianInnerProduct",
+        "exit_code": 0,
+        "seconds": 21.008,
+        "stopped_for_memory": false,
+        "minimum_available_MiB": 18644
+      },
+      "axiom_check": {
+        "name": "etingof-axioms",
+        "command": "LEAN_NUM_THREADS=2 lake env lean -j2 ExternalResults/EtingofRepresentationTheory/evidence/AxiomAudit.lean",
+        "exit_code": 0,
+        "seconds": 6.004,
+        "stopped_for_memory": false,
+        "minimum_available_MiB": 19101
+      },
+      "evidence_directory": "reports/2026-11-11-code-refactor",
+      "scope": "Full project and selected donor closure; current producer and consumer axiom roots. Historical reviews below remain reviews of their recorded revisions."
+    },
+    "test_file_removal": {
+      "path": "ExternalResults/EtingofRepresentationTheory/evidence/AxiomAudit.lean",
+      "reason": "Removed after successful validation at user request. Historical check records retain the original input path.",
+      "current_inputs": "reports/2026-11-11-code-refactor/check-inputs.txt",
+      "current_results": "reports/2026-11-11-code-refactor/etingof-axioms.log"
+    }
   }
 }

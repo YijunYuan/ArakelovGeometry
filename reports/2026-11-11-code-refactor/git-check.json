@@ -1,0 +1,12 @@
+{
+  "original_project_head": "161ea63971628dd225ff1748b913aaae80e52e07",
+  "migrated_project_head": "7108675a6e9f5f02fcf9915cd7365d23f7c7c48a",
+  "production_source_revision": "514db957c7b989d52283b04daddb8b405c5d331f",
+  "forbidden_paths_in_new_commits": [],
+  "production_sources_match_final_checks": true,
+  "lean_changes_after_final_checks": [
+    "D\tExternalResults/EtingofRepresentationTheory/evidence/AxiomAudit.lean",
+    "D\tTests/Typeclasses.lean"
+  ],
+  "normal_fast_forward_from_origin_lite": true
+}

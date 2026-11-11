@@ -1,0 +1,17 @@
+'Submodule.exists_centered_negative_tensor_filtrations_of_not_geometricallySemistable' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Submodule.exists_normalized_tensor_quotient_optimizer_of_not_geometricallySemistable' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'ArakelovGeometry.AdelicVectorBundle.slope_sum_le_tensor_quotient_of_not_geometricallySemistable' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'AlgebraicGeometry.nonempty_discreteValuationSpecialization' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AlgebraicGeometry.exists_discreteValuationSpecialization_genericPoint_specializes' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'AlgebraicGeometry.exists_specializes_of_image_point' depends on axioms: [propext, Classical.choice, Quot.sound]
+'exists_isDiscreteValuationRing_isFractionRing_of_not_isField' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

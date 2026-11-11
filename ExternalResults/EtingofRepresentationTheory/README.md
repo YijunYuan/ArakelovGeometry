@@ -22,8 +22,10 @@ separation remain separate. The infinite group algebra is not asserted semisimpl
 
 [provenance.json](provenance.json) records exact source/local hashes, retained
 regions, alterations, imports, and kernel evidence. The evidence directory
-retains the final build record, the twelve-root transitive axiom audit and its
-degree-zero example. The donor source was fetched at the pin; kernel evidence
+retains the historical build and twelve-root axiom-audit results. Current audit
+inputs, including the degree-zero example, and new results are preserved in
+[the refactor report](../../reports/2026-11-11-code-refactor/report.txt); standalone
+test Lean files are removed after validation. The donor source was fetched at the pin; kernel evidence
 comes from local Lean 4.35/mathlib, not a build of the original donor package.
 
 Import the concrete project consumer above. For the selected donor theorem alone,

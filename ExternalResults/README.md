@@ -7,12 +7,17 @@ mathlib and HarderNarasimhan dependencies remain the first sources to consult.
 The selected Stacks DVR producer and its 14-module closure are locally checked:
 four transitive axiom probes use only standard axioms, and independent semantic
 and honesty reviews passed. [Its provenance record](Stacks/provenance.json)
-contains fixed revisions, hashes, retained warnings and exact consumer boundaries.
+contains fixed revisions, hashes, historical reviews and exact consumer boundaries.
 The local concrete orbit-map/DVR and residue-descent consumers are now checked;
 see `InvariantTheory/Binary/Orbit/DVR.lean` and `InvariantTheory/Binary/NegativeFiltration.lean`.
 Their final original-field consumer is checked in
 `AdelicVectorBundle/Examples/Trivial/Filtration/Optimal/Instability.lean`.
 Upstream `StacksFrontier` is not asserted to have human review.
+
+The implementation refactor keeps the donor statements unchanged. It narrows the
+Artinian module's 31 broad mathlib imports to `HopkinsLevitzki`, fixes four module
+docstring placements, and applies one suggested `rwa` simplification. Local hashes
+and new verification records are kept alongside the original provenance.
 
 The Etingof Schur–Weyl port contains five selected proof modules (892 lines),
 reduced from the surveyed seven-file closure. These and the actual local SL
