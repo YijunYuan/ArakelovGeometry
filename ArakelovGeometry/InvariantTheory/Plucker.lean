@@ -2,6 +2,7 @@ module
 
 public import ArakelovGeometry.InvariantTheory.Semistability
 public import ArakelovGeometry.InvariantTheory.QuotientDeterminant
+public import ArakelovGeometry.InvariantTheory.Linearization
 public import Mathlib.LinearAlgebra.SpecialLinearGroup
 public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 
@@ -34,25 +35,6 @@ def exteriorRepresentation (r : ℕ) (ρ : Representation k G W) :
     rw [map_mul]
     exact exteriorPower.map_comp (ρ h) (ρ g)
 
-/-- The canonical product action on a finite tensor product. -/
-def tensorRepresentation {J : Type*} (E : J → Type*)
-    [∀ j, AddCommGroup (E j)] [∀ j, Module k (E j)] :
-    Representation k (∀ j, E j ≃ₗ[k] E j) (⨂[k] j, E j) where
-  toFun g := PiTensorProduct.map fun j ↦ (g j).toLinearMap
-  map_one' := PiTensorProduct.map_id
-  map_mul' g h := by
-    simpa using PiTensorProduct.map_mul (fun j ↦ (g j).toLinearMap)
-      (fun j ↦ (h j).toLinearMap)
-
-/-- Restrict the tensor action to the product of the actual special linear groups. -/
-def tensorSLRepresentation {J : Type*} (E : J → Type*)
-    [∀ j, AddCommGroup (E j)] [∀ j, Module k (E j)] :
-    Representation k (∀ j, SpecialLinearGroup k (E j)) (⨂[k] j, E j) :=
-  (tensorRepresentation E).comp
-    { toFun := fun g j ↦ (g j).val
-      map_one' := rfl
-      map_mul' := fun _ _ ↦ rfl }
-
 /-- Plücker semistability of a linear map from a finite-dimensional space.
 For a subspace use its inclusion; for a quotient use its dual inclusion. -/
 def IsPluckerSemistable [FiniteDimensional k V] (ρ : Representation k G W)
@@ -79,6 +61,28 @@ theorem isPluckerSemistable_iff [FiniteDimensional k V] (ρ : Representation k G
     exact (isPolynomialSemistable_smul_iff _ _ _ hc).mp h
   · exact fun h ↦ ⟨η, hη, h⟩
 
+/-- A nonzero rational determinant generator can be used to test the condition
+after any field extension, through the canonical exterior base-change map. -/
+theorem isPluckerSemistable_baseChange_iff [FiniteDimensional k V]
+    (L : Type*) [Field L] [Algebra k L]
+    (ρ : Representation L G (L ⊗[k] W)) (i : V →ₗ[k] W)
+    (η : ⋀[k]^(Module.finrank k V) V) (hη : η ≠ 0) :
+    let ηL := exteriorPowerDegreeEquiv L (L ⊗[k] V) Module.finrank_baseChange.symm
+      (exteriorBaseChangeEquiv k L V (Module.finrank k V) ((1 : L) ⊗ₜ[k] η))
+    IsPluckerSemistable ρ (i.baseChange L) ↔
+      IsPolynomialSemistable (Module.Free.chooseBasis L _)
+        (exteriorRepresentation (Module.finrank L (L ⊗[k] V)) ρ)
+        (exteriorPower.map (Module.finrank L (L ⊗[k] V)) (i.baseChange L) ηL) := by
+  dsimp only
+  apply isPluckerSemistable_iff
+  intro h
+  have h₁ := (LinearEquiv.map_eq_zero_iff _).mp h
+  have h₂ := (LinearEquiv.map_eq_zero_iff _).mp h₁
+  apply hη
+  apply Module.FaithfullyFlat.tensorProduct_mk_injective
+    (A := k) (B := L) (⋀[k]^(Module.finrank k V) V)
+  simpa using h₂
+
 /-- Quotient semistability uses the contragredient action on the dual inclusion. -/
 def IsQuotientSemistable [FiniteDimensional k V] (ρ : Representation k G W)
     (q : W →ₗ[k] V) : Prop :=
@@ -91,13 +95,6 @@ theorem pairingDual_equivariant (r : ℕ) (ρ : Representation k G W) (g : G)
       (exteriorRepresentation r ρ).dual g (exteriorPower.pairingDual k W r z) := by
   exact congrArg (fun f : (⋀[k]^r (Module.Dual k W)) →ₗ[k]
       Module.Dual k (⋀[k]^r W) ↦ f z) (pairingDual_map_dualMap r (ρ g⁻¹))
-
-/-- The tensor-power representation used for the determinant quotient point. -/
-def tensorPowerRepresentation (r : ℕ) (ρ : Representation k G W) :
-    Representation k G (⨂[k]^r W) where
-  toFun g := PiTensorProduct.map fun _ ↦ ρ g
-  map_one' := by simp only [map_one]; exact PiTensorProduct.map_one
-  map_mul' g h := by simp only [map_mul]; exact PiTensorProduct.map_mul _ _
 
 /-- Tensor-to-exterior projection commutes with the representation. -/
 theorem tensorToExterior_equivariant (r : ℕ) (ρ : Representation k G W) (g : G)
@@ -116,13 +113,118 @@ theorem exteriorCovector_equivariant (r : ℕ) (ρ : Representation k G W) (g : 
     (z : ⋀[k]^r (Module.Dual k W)) :
     exteriorCovector r (exteriorRepresentation r ρ.dual g z) =
       (tensorPowerRepresentation r ρ).dual g (exteriorCovector r z) := by
-  ext x
+  apply LinearMap.ext
+  intro x
   change exteriorPower.pairingDual k W r (exteriorRepresentation r ρ.dual g z)
       (tensorToExterior k W r x) =
     exteriorPower.pairingDual k W r z
       (tensorToExterior k W r (tensorPowerRepresentation r ρ g⁻¹ x))
   rw [pairingDual_equivariant, tensorToExterior_equivariant]
   rfl
+
+/-- The canonical retraction of exterior covectors, obtained by alternating tensors. -/
+def exteriorCovectorRetraction [FiniteDimensional k W] [CharZero k] (r : ℕ) :
+    Module.Dual k (⨂[k]^r W) →ₗ[k] (⋀[k]^r (Module.Dual k W)) :=
+  (LinearEquiv.ofBijective (exteriorPower.pairingDual k W r)
+    (exteriorPower.bijective_pairingDual k W r)).symm.toLinearMap.comp
+      (exteriorTensorSection (k := k) (W := W) r).dualMap
+
+theorem pairingDual_exteriorCovectorRetraction [FiniteDimensional k W] [CharZero k]
+    (r : ℕ) (f : Module.Dual k (⨂[k]^r W)) :
+    exteriorPower.pairingDual k W r (exteriorCovectorRetraction r f) =
+      (exteriorTensorSection r).dualMap f := by
+  exact (LinearEquiv.ofBijective (exteriorPower.pairingDual k W r)
+    (exteriorPower.bijective_pairingDual k W r)).apply_symm_apply _
+
+/-- Alternating retraction is a left inverse on all exterior covectors. -/
+theorem exteriorCovectorRetraction_leftInverse [FiniteDimensional k W] [CharZero k]
+    (r : ℕ) (z : ⋀[k]^r (Module.Dual k W)) :
+    exteriorCovectorRetraction r (exteriorCovector r z) = z := by
+  apply (exteriorPower.bijective_pairingDual k W r).injective
+  rw [pairingDual_exteriorCovectorRetraction]
+  apply LinearMap.ext
+  intro x
+  change exteriorPower.pairingDual k W r z
+    (tensorToExterior k W r (exteriorTensorSection r x)) = _
+  rw [tensorToExterior_section]
+
+/-- The alternating retraction commutes with the contragredient representations. -/
+theorem exteriorCovectorRetraction_equivariant [FiniteDimensional k W] [CharZero k]
+    (r : ℕ) (ρ : Representation k G W) (g : G) (f : Module.Dual k (⨂[k]^r W)) :
+    exteriorCovectorRetraction r ((tensorPowerRepresentation r ρ).dual g f) =
+      exteriorRepresentation r ρ.dual g (exteriorCovectorRetraction r f) := by
+  apply (exteriorPower.bijective_pairingDual k W r).injective
+  rw [pairingDual_exteriorCovectorRetraction, pairingDual_equivariant,
+    pairingDual_exteriorCovectorRetraction]
+  apply LinearMap.ext
+  intro x
+  change f (PiTensorProduct.map (fun _ : Fin r ↦ ρ g⁻¹) (exteriorTensorSection r x)) =
+    f (exteriorTensorSection r (exteriorPower.map r (ρ g⁻¹) x))
+  rw [exteriorTensorSection_map]
+
+/-- The exterior and tensor presentations have the same semistable vectors. -/
+theorem isPolynomialSemistable_exteriorCovector_iff [FiniteDimensional k W] [CharZero k]
+    (r : ℕ) (ρ : Representation k G W) (z : ⋀[k]^r (Module.Dual k W)) :
+    IsPolynomialSemistable (Module.Free.chooseBasis k _)
+      ((tensorPowerRepresentation r ρ).dual) (exteriorCovector r z) ↔
+    IsPolynomialSemistable (Module.Free.chooseBasis k _)
+      (exteriorRepresentation r ρ.dual) z := by
+  constructor
+  · intro h
+    exact IsPolynomialSemistable.of_map
+      (Module.Free.chooseBasis k (Module.Dual k (⨂[k]^r W)))
+      (Module.Free.chooseBasis k (⋀[k]^r (Module.Dual k W)))
+      ((tensorPowerRepresentation r ρ).dual) (exteriorRepresentation r ρ.dual)
+      (exteriorCovector r) (exteriorCovector_equivariant r ρ) z h
+  · intro h
+    exact IsPolynomialSemistable.of_map
+      (Module.Free.chooseBasis k (⋀[k]^r (Module.Dual k W)))
+      (Module.Free.chooseBasis k (Module.Dual k (⨂[k]^r W)))
+      (exteriorRepresentation r ρ.dual) ((tensorPowerRepresentation r ρ).dual)
+      (exteriorCovectorRetraction r)
+      (exteriorCovectorRetraction_equivariant r ρ) (exteriorCovector r z)
+      (by rwa [exteriorCovectorRetraction_leftInverse])
+
+/-- Quotient Plücker semistability is the invariant-polynomial condition on the
+actual tensor-to-determinant quotient covector. -/
+theorem isQuotientSemistable_iff_tensor [FiniteDimensional k V] [FiniteDimensional k W]
+    [CharZero k] (ρ : Representation k G W) (q : W →ₗ[k] V) :
+    IsQuotientSemistable ρ q ↔
+      ∃ η : ⋀[k]^(Module.finrank k V) (Module.Dual k V), η ≠ 0 ∧
+        IsPolynomialSemistable (Module.Free.chooseBasis k _)
+          ((tensorPowerRepresentation (Module.finrank k V) ρ).dual)
+          ((quotientExterior (Module.finrank k V) q).dualMap
+            (exteriorPower.pairingDual k V (Module.finrank k V) η)) := by
+  have hd : Module.finrank k (Module.Dual k V) = Module.finrank k V := by simp
+  let P (n : ℕ) : Prop := ∃ η : ⋀[k]^n (Module.Dual k V), η ≠ 0 ∧
+    IsPolynomialSemistable (Module.Free.chooseBasis k (⋀[k]^n (Module.Dual k W)))
+      (exteriorRepresentation n ρ.dual) (exteriorPower.map n q.dualMap η)
+  change P (Module.finrank k (Module.Dual k V)) ↔ _
+  rw [hd]
+  dsimp only [P]
+  apply exists_congr
+  intro η
+  apply and_congr_right
+  intro _
+  rw [← exteriorCovector_map_dualMap]
+  exact (isPolynomialSemistable_exteriorCovector_iff _ ρ _).symm
+
+/-- The quotient's dual Plücker condition is the book's determinant-twisted
+polynomial section condition on its actual tensor-to-determinant covector. -/
+theorem isQuotientSemistable_iff_determinantTwisted {J : Type*} [Fintype J]
+    (E : J → Type*) [∀ j, AddCommGroup (E j)] [∀ j, Module k (E j)]
+    [∀ j, FiniteDimensional k (E j)] [∀ j, Nontrivial (E j)]
+    [IsAlgClosed k] [CharZero k] [FiniteDimensional k V]
+    (q : (⨂[k] j, E j) →ₗ[k] V) :
+    IsQuotientSemistable (tensorSLRepresentation E) q ↔
+      ∃ η : ⋀[k]^(Module.finrank k V) (Module.Dual k V), η ≠ 0 ∧
+        IsDeterminantTwistedSemistable E (Module.finrank k V)
+          ((quotientExterior (Module.finrank k V) q).dualMap
+            (exteriorPower.pairingDual k V (Module.finrank k V) η)) := by
+  rw [isQuotientSemistable_iff_tensor]
+  apply exists_congr
+  intro η
+  rw [isPolynomialSemistable_iff_determinantTwisted]
 
 /-- Geometric Plücker semistability of a tensor subspace, evaluated over the
 algebraic closure and the full product of special linear groups there. -/
