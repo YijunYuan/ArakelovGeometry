@@ -20,6 +20,7 @@ the assembled map retains every pair with that total weight.
 @[expose] public section
 
 open scoped TensorProduct DirectSum
+open Module
 
 namespace Submodule
 
@@ -167,5 +168,162 @@ theorem tensorFiltrationGradedSum_surjective {ι κ : Type*} (b : ι → E) (c :
   obtain ⟨x, rfl⟩ := ((filtrationRightLimit (tensorFiltration F G) γ).comap
     (tensorFiltration F G γ).subtype).mkQ_surjective y
   exact hmem x.val x.property
+
+section Inverse
+
+variable {ι κ : Type*} (b : Basis ι K E) (c : Basis κ K V)
+  (w : ι → ℝ) (z : κ → ℝ)
+  (hF : ∀ t, F t = span K (b '' {i | t ≤ w i}))
+  (hG : ∀ u, G u = span K (c '' {j | u ≤ z j}))
+
+/-- An adapted tensor basis splits the grade into its original equal-total-weight pairs. -/
+noncomputable def tensorFiltrationGradedInverseAux (γ : ℝ) :
+    E ⊗[K] V →ₗ[K] (⨁ p : {p : ℝ × ℝ // p.1 + p.2 = γ},
+      FiltrationGraded F p.val.1 ⊗[K] FiltrationGraded G p.val.2) := by
+  classical
+  exact (b.tensorProduct c).constr K fun ij ↦
+    if h : w ij.1 + z ij.2 = γ then
+      DirectSum.lof K _ _ ⟨(w ij.1, z ij.2), h⟩
+        (filtrationGradedMk F (w ij.1) ⟨b ij.1, by
+          rw [hF]; exact subset_span ⟨ij.1, show w ij.1 ≤ w ij.1 from le_rfl, rfl⟩⟩ ⊗ₜ[K]
+        filtrationGradedMk G (z ij.2) ⟨c ij.2, by
+          rw [hG]; exact subset_span ⟨ij.2, show z ij.2 ≤ z ij.2 from le_rfl, rfl⟩⟩)
+    else 0
+
+/-- The splitting map vanishes on tensor basis vectors above the threshold. -/
+theorem tensorFiltrationGradedInverseAux_tmul_of_ne (γ : ℝ) (i : ι) (j : κ)
+    (h : w i + z j ≠ γ) :
+    tensorFiltrationGradedInverseAux b c w z hF hG γ (b i ⊗ₜ[K] c j) = 0 := by
+  classical
+  rw [← Basis.tensorProduct_apply b c i j, tensorFiltrationGradedInverseAux, Basis.constr_basis]
+  exact dite_eq_right h
+
+/-- Strict tensor weights lie in the kernel of the adapted splitting map. -/
+theorem tensorFiltrationGradedInverseAux_ker (γ : ℝ) :
+    filtrationRightLimit (tensorFiltration F G) γ ≤
+      LinearMap.ker (tensorFiltrationGradedInverseAux b c w z hF hG γ) := by
+  change (⨆ s : {s : ℝ // γ < s}, tensorFiltration F G s.val) ≤ _
+  rw [tensorFiltration_rightLimit_eq_span b c w z hF hG]
+  apply span_le.mpr
+  rintro _ ⟨⟨i, j⟩, hij, rfl⟩
+  exact tensorFiltrationGradedInverseAux_tmul_of_ne b c w z hF hG γ i j (ne_of_gt hij)
+
+/-- A basis splitting descends to the actual total-weight quotient. -/
+noncomputable def tensorFiltrationGradedInverse (γ : ℝ) :
+    FiltrationGraded (tensorFiltration F G) γ →ₗ[K]
+      (⨁ p : {p : ℝ × ℝ // p.1 + p.2 = γ},
+        FiltrationGraded F p.val.1 ⊗[K] FiltrationGraded G p.val.2) :=
+  Submodule.liftQ _
+    ((tensorFiltrationGradedInverseAux b c w z hF hG γ).comp
+      (tensorFiltration F G γ).subtype)
+    (fun _ hx ↦ tensorFiltrationGradedInverseAux_ker b c w z hF hG γ hx)
+
+/-- On two filtered vectors the splitting recovers their original pair of quotient classes. -/
+theorem tensorFiltrationGradedInverseAux_tmul {t u γ : ℝ} (h : t + u = γ)
+    (x : F t) (y : G u) :
+    tensorFiltrationGradedInverseAux b c w z hF hG γ (x.val ⊗ₜ[K] y.val) =
+      DirectSum.lof K {p : ℝ × ℝ // p.1 + p.2 = γ}
+        (fun p ↦ FiltrationGraded F p.val.1 ⊗[K] FiltrationGraded G p.val.2) ⟨(t, u), h⟩
+        (filtrationGradedMk F t x ⊗ₜ[K] filtrationGradedMk G u y) := by
+  classical
+  obtain ⟨x, hx⟩ := x
+  obtain ⟨y, hy⟩ := y
+  have hx' := hx
+  rw [hF] at hx'
+  induction hx' using span_induction with
+  | mem x hx' =>
+    obtain ⟨i, hi, rfl⟩ := hx'
+    change t ≤ w i at hi
+    have hy' := hy
+    rw [hG] at hy'
+    induction hy' using span_induction with
+    | mem y hy' =>
+      obtain ⟨j, hj, rfl⟩ := hy'
+      change u ≤ z j at hj
+      rcases lt_or_eq_of_le hi with hi | rfl
+      · rw [tensorFiltrationGradedInverseAux_tmul_of_ne b c w z hF hG γ i j (by linarith)]
+        have hz : filtrationGradedMk F t ⟨b i, hx⟩ = 0 := by
+          apply (filtrationGradedMk_eq_zero _ _ _).mpr
+          apply mem_iSup_of_mem ⟨w i, hi⟩
+          rw [hF]
+          exact subset_span ⟨i, show w i ≤ w i from le_rfl, rfl⟩
+        rw [hz, TensorProduct.zero_tmul, map_zero]
+      · rcases lt_or_eq_of_le hj with hj | rfl
+        · rw [tensorFiltrationGradedInverseAux_tmul_of_ne b c w z hF hG γ i j (by linarith)]
+          have hz : filtrationGradedMk G u ⟨c j, hy⟩ = 0 := by
+            apply (filtrationGradedMk_eq_zero _ _ _).mpr
+            apply mem_iSup_of_mem ⟨z j, hj⟩
+            rw [hG]
+            exact subset_span ⟨j, show z j ≤ z j from le_rfl, rfl⟩
+          rw [hz, TensorProduct.tmul_zero, map_zero]
+        · rw [← Basis.tensorProduct_apply b c i j,
+            tensorFiltrationGradedInverseAux, Basis.constr_basis]
+          simp only [h, dite_true]
+    | zero =>
+      rw [show (⟨0, hy⟩ : G u) = 0 from rfl]
+      simp
+    | add a d ha hd iha ihd =>
+      have haG : a ∈ G u := (hG u).symm ▸ ha
+      have hdG : d ∈ G u := (hG u).symm ▸ hd
+      rw [show (⟨a + d, hy⟩ : G u) = ⟨a, haG⟩ + ⟨d, hdG⟩ from rfl]
+      simpa only [Submodule.coe_add, Subtype.coe_mk, TensorProduct.tmul_add, map_add] using
+        congrArg₂ (· + ·) (iha haG) (ihd hdG)
+    | smul a d hd ih =>
+      have hdG : d ∈ G u := (hG u).symm ▸ hd
+      rw [show (⟨a • d, hy⟩ : G u) = a • ⟨d, hdG⟩ from rfl]
+      simpa only [Submodule.coe_smul, Subtype.coe_mk, TensorProduct.tmul_smul, map_smul] using
+        congrArg (a • ·) (ih hdG)
+  | zero =>
+    rw [show (⟨0, hx⟩ : F t) = 0 from rfl]
+    simp
+  | add a d ha hd iha ihd =>
+    have haF : a ∈ F t := (hF t).symm ▸ ha
+    have hdF : d ∈ F t := (hF t).symm ▸ hd
+    rw [show (⟨a + d, hx⟩ : F t) = ⟨a, haF⟩ + ⟨d, hdF⟩ from rfl]
+    simpa only [Submodule.coe_add, Subtype.coe_mk, TensorProduct.add_tmul, map_add] using
+      congrArg₂ (· + ·) (iha haF) (ihd hdF)
+  | smul a d hd ih =>
+    have hdF : d ∈ F t := (hF t).symm ▸ hd
+    rw [show (⟨a • d, hx⟩ : F t) = a • ⟨d, hdF⟩ from rfl]
+    simpa only [Submodule.coe_smul, Subtype.coe_mk, ← TensorProduct.smul_tmul', map_smul] using
+      congrArg (a • ·) (ih hdF)
+
+/-- The adapted splitting is a left inverse to the canonical map on all pair summands. -/
+theorem tensorFiltrationGradedInverse_comp (hFa : Antitone F) (hGa : Antitone G) (γ : ℝ) :
+    (tensorFiltrationGradedInverse b c w z hF hG γ).comp
+      (tensorFiltrationGradedSum hFa hGa γ) = LinearMap.id := by
+  apply DirectSum.linearMap_ext
+  intro p
+  apply TensorProduct.ext'
+  intro x y
+  obtain ⟨x, rfl⟩ := ((filtrationRightLimit F p.val.1).comap (F p.val.1).subtype).mkQ_surjective x
+  obtain ⟨y, rfl⟩ := ((filtrationRightLimit G p.val.2).comap (G p.val.2).subtype).mkQ_surjective y
+  simp only [LinearMap.comp_apply, LinearMap.id_apply, tensorFiltrationGradedSum,
+    DirectSum.toModule_lof]
+  change tensorFiltrationGradedInverse b c w z hF hG γ
+    (tensorFiltrationGradedPair hFa hGa p.property
+      (filtrationGradedMk F p.val.1 x ⊗ₜ[K] filtrationGradedMk G p.val.2 y)) = _
+  rw [tensorFiltrationGradedPair_mk]
+  exact tensorFiltrationGradedInverseAux_tmul b c w z hF hG p.property x y
+
+include hF hG in
+/-- The canonical sum of all equal-total-weight pair maps is bijective. -/
+theorem tensorFiltrationGradedSum_bijective (hFa : Antitone F) (hGa : Antitone G) (γ : ℝ) :
+    Function.Bijective (tensorFiltrationGradedSum hFa hGa γ) := by
+  refine ⟨?_, tensorFiltrationGradedSum_surjective b c w z hFa hGa hF hG γ⟩
+  have hleft : Function.LeftInverse (tensorFiltrationGradedInverse b c w z hF hG γ)
+      (tensorFiltrationGradedSum hFa hGa γ) :=
+    fun x ↦ LinearMap.congr_fun (tensorFiltrationGradedInverse_comp b c w z hF hG hFa hGa γ) x
+  exact hleft.injective
+
+/-- The canonical decomposition of a tensor grade, with every equal-total-weight pair retained. -/
+noncomputable def tensorFiltrationGradedEquiv (hFa : Antitone F) (hGa : Antitone G) (γ : ℝ) :
+    (⨁ p : {p : ℝ × ℝ // p.1 + p.2 = γ},
+      FiltrationGraded F p.val.1 ⊗[K] FiltrationGraded G p.val.2) ≃ₗ[K]
+      FiltrationGraded (tensorFiltration F G) γ :=
+  LinearEquiv.ofBijective (tensorFiltrationGradedSum hFa hGa γ)
+    (tensorFiltrationGradedSum_bijective b c w z hF hG hFa hGa γ)
+
+end Inverse
 
 end Submodule
