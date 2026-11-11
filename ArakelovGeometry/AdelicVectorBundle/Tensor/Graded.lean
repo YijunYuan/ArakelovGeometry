@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.LinearAlgebra.Filtration.TensorGraded
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.PairMap
 import Mathlib.Analysis.InnerProductSpace.ProdL2
+import ArakelovGeometry.Analysis.Tensor.Bilinear
 
 /-!
 # Actual norms and contractions on filtration grades
@@ -190,6 +191,7 @@ theorem tensorFiltrationGradedLift_norm_le
   simp only [restrict_norm, he]
   exact orthogonalTensorPair_restrict_map_norm_le ξ η hN hξ hη _ _ ω z
 
+omit [FiniteDimensional K E] [FiniteDimensional K F] in
 /-- The canonical binary-to-finite completed tensor identification is natural
 for the given rational factor maps. -/
 theorem tensorPairFibre_map
@@ -224,6 +226,191 @@ theorem tensorPairFibre_map
   have hz := DFunLike.congr_fun (congrArg (fun h ↦ h.baseChange L) hc) z
   simp only [LinearMap.baseChange_comp, LinearMap.comp_apply] at hz
   rw [hz, tensorBaseChangeEquiv_map]
+
+omit [FiniteDimensional K V] in
+/-- A contraction from the tensor of two spaces which descends through both
+factor quotients contracts their actual quotient tensor norms. -/
+theorem orthogonalTensorPair_descend_norm_le
+    (ξ : NormFamily S E) (η : NormFamily S F) (θ : NormFamily S V)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (hθ : θ.IsHermitian hN)
+    (U : Submodule K E) (T : Submodule K F)
+    (f : ((E ⧸ U) ⊗[K] (F ⧸ T)) →ₗ[K] V) (ω : S.Ω)
+    (hf : ∀ z, θ.norm ω
+      ((f.comp (TensorProduct.map U.mkQ T.mkQ)).baseChange (S.ϕ ω).Completion z) ≤
+        (ξ.orthogonalTensorPair η hN hξ hη).norm ω z)
+    (z : (S.ϕ ω).Completion ⊗[K] ((E ⧸ U) ⊗[K] (F ⧸ T))) :
+    θ.norm ω (f.baseChange (S.ϕ ω).Completion z) ≤
+      ((ξ.quotient U).orthogonalTensorPair (η.quotient T) hN
+        (hξ.quotient U) (hη.quotient T)).norm ω z := by
+  let L := (S.ϕ ω).Completion
+  let X i := L ⊗[K] BinaryTensorFactors E F i
+  let Y i := L ⊗[K] BinaryTensorFactors (E ⧸ U) (F ⧸ T) i
+  let ξs := tensorPairFactors ξ η
+  let ηs := tensorPairFactors (ξ.quotient U) (η.quotient T)
+  let : ∀ i, NormedAddCommGroup (X i) := fun i ↦ (ξs i).fibreNormedAddCommGroup ω
+  let : ∀ i, NormedSpace L (X i) := fun i ↦ (ξs i).fibreNormedSpace ω
+  let : ∀ i, NormedAddCommGroup (Y i) := fun i ↦ (ηs i).fibreNormedAddCommGroup ω
+  let : ∀ i, NormedSpace L (Y i) := fun i ↦ (ηs i).fibreNormedSpace ω
+  let := θ.fibreNormedAddCommGroup ω
+  let := θ.fibreNormedSpace ω
+  let B₁ := (binaryTensorEquiv K (BinaryTensorFactors E F)).baseChange K L _ _
+  let B₂ := (binaryTensorEquiv K (BinaryTensorFactors (E ⧸ U) (F ⧸ T))).baseChange K L _ _
+  let A₁ := B₁.symm.trans (tensorBaseChangeEquiv K L (BinaryTensorFactors E F))
+  let A₂ := B₂.symm.trans
+    (tensorBaseChangeEquiv K L (BinaryTensorFactors (E ⧸ U) (F ⧸ T)))
+  let q : ∀ i, X i →ₗ[L] Y i := fun i ↦
+    (show BinaryTensorFactors E F i →ₗ[K] BinaryTensorFactors (E ⧸ U) (F ⧸ T) i from
+      match i with | .inl _ => U.mkQ | .inr _ => T.mkQ).baseChange L
+  have hc (x : L ⊗[K] (E ⊗[K] F)) :
+      A₂ ((TensorProduct.map U.mkQ T.mkQ).baseChange L x) =
+        PiTensorProduct.map q (A₁ x) := tensorPairFibre_map L U.mkQ T.mkQ x
+  let g := (f.baseChange L).comp A₂.symm.toLinearMap
+  have hpre (x : ⨂[L] i, X i) :
+      θ.norm ω (g (PiTensorProduct.map q x)) ≤
+        (ξ.orthogonalTensorPair η hN hξ hη).norm ω (A₁.symm x) := by
+    have he := hc (A₁.symm x)
+    rw [LinearEquiv.apply_symm_apply] at he
+    change θ.norm ω (f.baseChange L (A₂.symm (PiTensorProduct.map q x))) ≤ _
+    rw [← he, LinearEquiv.symm_apply_apply]
+    simpa only [LinearMap.baseChange_comp, LinearMap.comp_apply] using hf (A₁.symm x)
+  have hxnorm (x : ⨂[L] i, X i) :
+      (ξ.orthogonalTensorPair η hN hξ hη).norm ω (A₁.symm x) =
+        (orthogonalTensor ξs hN (hξ.tensorPairFactors hη)).norm ω
+          ((tensorBaseChangeEquiv K L (BinaryTensorFactors E F)).symm x) := by
+    change (orthogonalTensor ξs hN (hξ.tensorPairFactors hη)).norm ω
+      (B₁.symm (B₁ ((tensorBaseChangeEquiv K L (BinaryTensorFactors E F)).symm x))) = _
+    rw [LinearEquiv.symm_apply_apply]
+  by_cases hω : ω ∈ S.Ωinf
+  · let := hN ω hω
+    let := IsRCLikeNormedField.rclike L
+    let : ∀ i, InnerProductSpace L (X i) :=
+      fun i ↦ (hξ.tensorPairFactors hη i).fibreInnerProductSpace ω hω
+    let : ∀ i, InnerProductSpace L (Y i) :=
+      fun i ↦ ((hξ.quotient U).tensorPairFactors (hη.quotient T) i).fibreInnerProductSpace ω hω
+    obtain ⟨s₁, hs₁, hn₁⟩ := hξ.exists_pushforward_section U.mkQ U.mkQ_surjective ω hω
+    obtain ⟨s₂, hs₂, hn₂⟩ := hη.exists_pushforward_section T.mkQ T.mkQ_surjective ω hω
+    let s : ∀ i, Y i →ₗᵢ[L] X i := fun i ↦ match i with
+      | .inl _ => { toLinearMap := s₁, norm_map' := hn₁ }
+      | .inr _ => { toLinearMap := s₂, norm_map' := hn₂ }
+    have hqs (y : ⨂[L] i, Y i) :
+        PiTensorProduct.map q (PiTensorProduct.map (fun i ↦ (s i).toLinearMap) y) = y := by
+      induction y using PiTensorProduct.induction_on with
+      | smul_tprod a y =>
+        simp only [map_smul, PiTensorProduct.map_tprod]
+        congr 2
+        funext i
+        cases i with
+        | inl i => exact hs₁ _
+        | inr i => exact hs₂ _
+      | add x y hx hy => simp only [map_add, hx, hy]
+    have hb := hpre (PiTensorProduct.map (fun i ↦ (s i).toLinearMap) (A₂ z))
+    rw [hqs, hxnorm, orthogonalTensor_norm_of_infinite _ _ _ ω hω] at hb
+    change θ.norm ω (f.baseChange L (A₂.symm (A₂ z))) ≤
+      orthogonalTensorSeminorm (fun i ↦ stdOrthonormalBasis L (X i))
+        (tensorBaseChangeEquiv K L (BinaryTensorFactors E F)
+          ((tensorBaseChangeEquiv K L (BinaryTensorFactors E F)).symm
+            (PiTensorProduct.map (fun i ↦ (s i).toLinearMap) (A₂ z)))) at hb
+    rw [LinearEquiv.apply_symm_apply, LinearEquiv.symm_apply_apply,
+      orthogonalTensorSeminorm_map_eq
+      (fun i ↦ stdOrthonormalBasis L (Y i)) (fun i ↦ stdOrthonormalBasis L (X i)) s] at hb
+    change θ.norm ω (f.baseChange L z) ≤
+      (orthogonalTensor ηs hN ((hξ.quotient U).tensorPairFactors (hη.quotient T))).norm ω
+        (B₂.symm z)
+    rw [orthogonalTensor_norm_of_infinite _ _ _ ω hω]
+    exact hb
+  · have hfin : ω ∈ S.Ωfin := not_not.mp hω
+    have hp₀ (x : ∀ i, X i) :
+        θ.norm ω (g (⨂ₜ[L] i, q i (x i))) ≤ ∏ i, ‖x i‖ := by
+      have hb := hpre (⨂ₜ[L] i, x i)
+      rw [PiTensorProduct.map_tprod, hxnorm, orthogonalTensor_norm_tprod] at hb
+      exact hb
+    have hp (y : ∀ i, Y i) : ‖g (⨂ₜ[L] i, y i)‖ ≤ ∏ i, ‖y i‖ := by
+      change θ.norm ω (g (⨂ₜ[L] i, y i)) ≤ _
+      simp only [Fintype.prod_sum_type, Fintype.prod_unique]
+      change θ.norm ω (g (⨂ₜ[L] i, y i)) ≤
+        (ξ.quotient U).norm ω (y (.inl ())) * (η.quotient T).norm ω (y (.inr ()))
+      rw [mul_comm]
+      apply ξ.le_mul_pushforward_norm U.mkQ U.mkQ_surjective ω (y (.inl ()))
+        ((η.quotient T).norm_nonneg ω _) 
+      intro x hx
+      rw [mul_comm]
+      apply η.le_mul_pushforward_norm T.mkQ T.mkQ_surjective ω (y (.inr ()))
+        (ξ.norm_nonneg ω x)
+      intro v hv
+      let xv : ∀ i, X i := fun i ↦ match i with | .inl _ => x | .inr _ => v
+      have he : (fun i ↦ q i (xv i)) = y := by
+        funext i
+        cases i with
+        | inl i => simpa using hx
+        | inr i => simpa using hv
+      have hb := hp₀ xv
+      rw [he] at hb
+      simp only [Fintype.prod_sum_type, Fintype.prod_unique] at hb
+      change θ.norm ω (g (⨂ₜ[L] i, y i)) ≤ ξ.norm ω x * η.norm ω v at hb
+      exact hb
+    have hb := norm_linearMap_le_injective_of_ultrametric_factors g (hθ.1 ω hfin) hp (A₂ z)
+    change θ.norm ω (f.baseChange L (A₂.symm (A₂ z))) ≤ _ at hb
+    rw [LinearEquiv.symm_apply_apply] at hb
+    rw [orthogonalTensorPair_norm_of_finite _ _ _ _ _ ω hfin]
+    exact hb
+
+/-- A5's canonical graded pair map contracts the actual tensor of the two
+grade norms into the actual tensor grade norm, on all completed fibre vectors. -/
+theorem tensorFiltrationGradedPair_norm_le
+    (ξ : NormFamily S E) (η : NormFamily S F)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN)
+    {P : ℝ → Submodule K E} {R : ℝ → Submodule K F}
+    (hP : Antitone P) (hR : Antitone R) {t u γ : ℝ} (h : t + u = γ)
+    (ω : S.Ω)
+    (z : (S.ϕ ω).Completion ⊗[K]
+      (Submodule.FiltrationGraded P t ⊗[K] Submodule.FiltrationGraded R u)) :
+    ((ξ.orthogonalTensorPair η hN hξ hη).filtrationGraded
+        (Submodule.tensorFiltration P R) γ).norm ω
+      ((Submodule.tensorFiltrationGradedPair hP hR h).baseChange (S.ϕ ω).Completion z) ≤
+      ((ξ.filtrationGraded P t).orthogonalTensorPair (η.filtrationGraded R u) hN
+        (hξ.filtrationGraded P t) (hη.filtrationGraded R u)).norm ω z := by
+  apply orthogonalTensorPair_descend_norm_le (ξ.restrict (P t)) (η.restrict (R u))
+    ((ξ.orthogonalTensorPair η hN hξ hη).filtrationGraded _ γ) hN
+    (hξ.restrict _) (hη.restrict _)
+    ((orthogonalTensorPair_isHermitian ξ η hN hξ hη).filtrationGraded _ _)
+    _ _ (Submodule.tensorFiltrationGradedPair hP hR h) ω
+  intro x
+  have hc : (Submodule.tensorFiltrationGradedPair hP hR h).comp
+      (TensorProduct.map (Submodule.filtrationGradedMk P t)
+        (Submodule.filtrationGradedMk R u)) =
+      Submodule.tensorFiltrationGradedLift P R h := by ext x y; rfl
+  change ((ξ.orthogonalTensorPair η hN hξ hη).filtrationGraded _ γ).norm ω
+    (((Submodule.tensorFiltrationGradedPair hP hR h).comp
+      (TensorProduct.map (Submodule.filtrationGradedMk P t)
+        (Submodule.filtrationGradedMk R u))).baseChange (S.ϕ ω).Completion x) ≤ _
+  rw [hc]
+  exact tensorFiltrationGradedLift_norm_le ξ η hN hξ hη P R h ω x
+
+/-- Each canonical graded pair contracts into the actual quotient grade, with
+its original subquotient norm from the actual quotient of the tensor bundle. -/
+theorem tensorFiltrationGradedPair_pushforward_norm_le
+    (ξ : NormFamily S E) (η : NormFamily S F)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN)
+    (q : (E ⊗[K] F) →ₗ[K] V) (hq : Function.Surjective q)
+    {P : ℝ → Submodule K E} {R : ℝ → Submodule K F}
+    (hP : Antitone P) (hR : Antitone R) {t u γ : ℝ} (h : t + u = γ)
+    (ω : S.Ω)
+    (z : (S.ϕ ω).Completion ⊗[K]
+      (Submodule.FiltrationGraded P t ⊗[K] Submodule.FiltrationGraded R u)) :
+    (((ξ.orthogonalTensorPair η hN hξ hη).pushforward q hq).filtrationGraded
+        (fun s ↦ (Submodule.tensorFiltration P R s).map q) γ).norm ω
+      (((Submodule.filtrationGradedMap q
+          (fun s ↦ Submodule.le_comap_map q (Submodule.tensorFiltration P R s)) γ).comp
+        (Submodule.tensorFiltrationGradedPair hP hR h)).baseChange (S.ϕ ω).Completion z) ≤
+      ((ξ.filtrationGraded P t).orthogonalTensorPair (η.filtrationGraded R u) hN
+        (hξ.filtrationGraded P t) (hη.filtrationGraded R u)).norm ω z := by
+  rw [LinearMap.baseChange_comp, LinearMap.comp_apply]
+  exact (filtrationGradedMap_pushforward_norm_le
+    (ξ.orthogonalTensorPair η hN hξ hη) q hq _ γ ω _).trans
+      (tensorFiltrationGradedPair_norm_le ξ η hN hξ hη hP hR h ω z)
 
 end Binary
 
