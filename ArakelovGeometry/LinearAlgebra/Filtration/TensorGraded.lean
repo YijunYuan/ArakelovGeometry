@@ -19,7 +19,7 @@ the assembled map retains every pair with that total weight.
 
 @[expose] public section
 
-open scoped TensorProduct
+open scoped TensorProduct DirectSum
 
 namespace Submodule
 
@@ -28,7 +28,7 @@ variable {K E V : Type*} [Field K] [AddCommGroup E] [Module K E]
 
 variable {F : ℝ → Submodule K E} {G : ℝ → Submodule K V}
 
-/-- Tensoring a strict left-factor vector with a filtered right-factor vector raises total weight. -/
+/-- A strict left-factor vector raises the total tensor weight. -/
 theorem tmul_mem_tensorFiltration_rightLimit_left (hF : Antitone F)
     {t u γ : ℝ} (h : t + u = γ) {x : E} {y : V}
     (hx : x ∈ filtrationRightLimit F t) (hy : y ∈ G u) :
@@ -37,7 +37,7 @@ theorem tmul_mem_tensorFiltration_rightLimit_left (hF : Antitone F)
   exact mem_iSup_of_mem ⟨t + ε + u, by linarith⟩
     (tmul_mem_tensorFiltration (F := F) (G := G) le_rfl hx hy)
 
-/-- Tensoring a filtered left-factor vector with a strict right-factor vector raises total weight. -/
+/-- A strict right-factor vector raises the total tensor weight. -/
 theorem tmul_mem_tensorFiltration_rightLimit_right (hG : Antitone G)
     {t u γ : ℝ} (h : t + u = γ) {x : E} {y : V}
     (hx : x ∈ F t) (hy : y ∈ filtrationRightLimit G u) :
@@ -112,5 +112,60 @@ noncomputable def tensorFiltrationGradedSum (hF : Antitone F) (hG : Antitone G) 
       FiltrationGraded F p.val.1 ⊗[K] FiltrationGraded G p.val.2) →ₗ[K]
       FiltrationGraded (tensorFiltration F G) γ :=
   DirectSum.toModule K _ _ (fun p ↦ tensorFiltrationGradedPair hF hG p.property)
+
+/-- Weighted generators prove that all equal-total-weight pair maps together cover the grade. -/
+theorem tensorFiltrationGradedSum_surjective {ι κ : Type*} (b : ι → E) (c : κ → V)
+    (w : ι → ℝ) (z : κ → ℝ) (hFa : Antitone F) (hGa : Antitone G)
+    (hF : ∀ t, F t = span K (b '' {i | t ≤ w i}))
+    (hG : ∀ u, G u = span K (c '' {j | u ≤ z j})) (γ : ℝ) :
+    Function.Surjective (tensorFiltrationGradedSum hFa hGa γ) := by
+  classical
+  let f := tensorFiltrationGradedSum hFa hGa γ
+  have hspan := tensorFiltration_eq_span b c w z hF hG γ
+  have hmem : ∀ (v : E ⊗[K] V) (hv : v ∈ tensorFiltration F G γ),
+      filtrationGradedMk (tensorFiltration F G) γ ⟨v, hv⟩ ∈ LinearMap.range f := by
+    intro v hv
+    have hv' := hv
+    rw [hspan] at hv'
+    induction hv' using span_induction with
+    | mem v hv' =>
+      obtain ⟨⟨i, j⟩, hij, rfl⟩ := hv'
+      by_cases he : w i + z j = γ
+      · have hbi : b i ∈ F (w i) := by
+          rw [hF]
+          exact subset_span ⟨i, show w i ≤ w i from le_rfl, rfl⟩
+        have hcj : c j ∈ G (z j) := by
+          rw [hG]
+          exact subset_span ⟨j, show z j ≤ z j from le_rfl, rfl⟩
+        refine ⟨DirectSum.lof K _ _ ⟨(w i, z j), he⟩
+          (filtrationGradedMk F (w i) ⟨b i, hbi⟩ ⊗ₜ[K]
+            filtrationGradedMk G (z j) ⟨c j, hcj⟩), ?_⟩
+        simp only [f, tensorFiltrationGradedSum, DirectSum.toModule_lof,
+          tensorFiltrationGradedPair_mk]
+        rfl
+      · have hzero : filtrationGradedMk (tensorFiltration F G) γ
+            ⟨b i ⊗ₜ[K] c j, hv⟩ = 0 := by
+          apply (filtrationGradedMk_eq_zero _ _ _).mpr
+          change b i ⊗ₜ[K] c j ∈ ⨆ s : {s : ℝ // γ < s}, tensorFiltration F G s.val
+          rw [tensorFiltration_rightLimit_eq_span b c w z hF hG]
+          exact subset_span ⟨(i, j), lt_of_le_of_ne hij (Ne.symm he), rfl⟩
+        rw [hzero]
+        exact (LinearMap.range f).zero_mem
+    | zero => exact (LinearMap.range f).zero_mem
+    | add x y hx hy ihx ihy =>
+      have hxT : x ∈ tensorFiltration F G γ := hspan.symm ▸ hx
+      have hyT : y ∈ tensorFiltration F G γ := hspan.symm ▸ hy
+      change filtrationGradedMk _ _ (⟨x, hxT⟩ + ⟨y, hyT⟩) ∈ _
+      rw [map_add]
+      exact add_mem (ihx hxT) (ihy hyT)
+    | smul a x hx ih =>
+      have hxT : x ∈ tensorFiltration F G γ := hspan.symm ▸ hx
+      change filtrationGradedMk _ _ (a • ⟨x, hxT⟩) ∈ _
+      rw [map_smul]
+      exact smul_mem _ a (ih hxT)
+  intro y
+  obtain ⟨x, rfl⟩ := ((filtrationRightLimit (tensorFiltration F G) γ).comap
+    (tensorFiltration F G γ).subtype).mkQ_surjective y
+  exact hmem x.val x.property
 
 end Submodule
