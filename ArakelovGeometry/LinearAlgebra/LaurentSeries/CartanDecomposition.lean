@@ -150,8 +150,10 @@ theorem exists_cartan (g : GL ι K⸨X⸩) :
     (((P * U : GL ι K⟦X⟧) : Matrix ι ι K⟦X⟧).map φ *
       diagonal (fun i ↦ x ^ ((k i : ℤ) - m)) * (Q : Matrix ι ι K⟦X⟧).map φ)
   rw [h, Units.val_mul, Matrix.map_mul]
-  rw [← smul_mul_assoc, ← mul_smul_comm, Matrix.mul_assoc]
-  congr 2
+  rw [← smul_mul_assoc, ← mul_smul_comm]
+  apply congrArg (fun B : Matrix ι ι K⸨X⸩ ↦ B * (Q : Matrix ι ι K⟦X⟧).map φ)
+  rw [Matrix.mul_assoc]
+  apply congrArg (fun B : Matrix ι ι K⸨X⸩ ↦ (P : Matrix ι ι K⟦X⟧).map φ * B)
   change diagonal (fun i ↦ φ (d i)) =
     (diagonal (fun i ↦ (u i : K⟦X⟧))).map φ *
       (x ^ m • diagonal (fun i ↦ x ^ ((k i : ℤ) - m)))
