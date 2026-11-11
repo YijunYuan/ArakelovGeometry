@@ -1,0 +1,175 @@
+{
+  "repository": "https://github.com/AxiomMath/Stacks",
+  "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
+  "license": "Apache-2.0",
+  "license_original_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+  "lean_toolchain": "leanprover/lean4:v4.35.0",
+  "mathlib_commit": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "upstream_human_reviewed": false,
+  "selection": "Exact recursive Stacks import closure of DiscreteValuationSpecialization; 14 modules, 4814 original lines; no donor dependency.",
+  "boundaries": [
+    "No completeness or power-series identification.",
+    "No assertion that the DVR residue field is finite over or equal to the ground field.",
+    "Fraction-field lift yields an action element only for the actual group orbit parameter map.",
+    "Orbit-map hypotheses, invariant separation, A2 action/weight bridge, residue-field descent remain downstream."
+  ],
+  "files": [
+    {
+      "original_path": "StacksCore/LinearAlgebra/Matrix/CommSemiring.lean",
+      "original_sha256": "8564631c9bcd736a17cedb90e3213fc8ab694c421fc6b19f64ce389ebbd4432e",
+      "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
+      "local_path": "ExternalResults/Stacks/StacksCore/LinearAlgebra/Matrix/CommSemiring.lean",
+      "local_sha256": "8564631c9bcd736a17cedb90e3213fc8ab694c421fc6b19f64ce389ebbd4432e",
+      "edits": [
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+      ],
+      "checked_status": "pending"
+    },
+    {
+      "original_path": "StacksCore/Tactic/EgaSgaAttribute.lean",
+      "original_sha256": "4a6bc26a770f086b204b9be63bbfc166ec8ba262facc7a3dfd9e5fd99f9368d9",
+      "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
+      "local_path": "ExternalResults/Stacks/StacksCore/Tactic/EgaSgaAttribute.lean",
+      "local_sha256": "4a6bc26a770f086b204b9be63bbfc166ec8ba262facc7a3dfd9e5fd99f9368d9",
+      "edits": [
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+      ],
+      "checked_status": "pending"
+    },
+    {
+      "original_path": "StacksCore/Tactic/StacksAttribute.lean",
+      "original_sha256": "12d2f68a0fd94dd869328b15cc9d23c9f0422a0c77e5ed1ddef00e37522c4e46",
+      "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
+      "local_path": "ExternalResults/Stacks/StacksCore/Tactic/StacksAttribute.lean",
+      "local_sha256": "aaa639202012174979297227eb589b1971bbbb0ac83b68adf336f9c64c40b286",
+      "edits": [
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+      ],
+      "checked_status": "pending"
+    },
+    {
+      "original_path": "StacksFrontier/AlgebraicGeometry/Limits/NoetherianValuativeCriterion/DiscreteValuationSpecialization.lean",
+      "original_sha256": "20a4c8bfb584a4886c46eb5128a964a194552fae25e6aaa4adbb8faffc3d5ad5",
+      "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
+      "local_path": "ExternalResults/Stacks/StacksFrontier/AlgebraicGeometry/Limits/NoetherianValuativeCriterion/DiscreteValuationSpecialization.lean",
+      "local_sha256": "b537bf92f25c722e5028b3e0da79b51f30c32fc630237bb2cd23952ef6c5985b",
+      "edits": [
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes.",
+        "Add local adoption and exact downstream-boundary documentation; original text retained."
+      ],
+      "checked_status": "pending"
+    },
+    {
+      "original_path": "StacksFrontier/AlgebraicGeometry/Morphisms/Closure/ImageValuativeDiagram.lean",
+      "original_sha256": "13a71166cb1495d2ca3b5b1e6c3c198d3d6872051ad7d701102faa1731c211ff",
+      "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
+      "local_path": "ExternalResults/Stacks/StacksFrontier/AlgebraicGeometry/Morphisms/Closure/ImageValuativeDiagram.lean",
+      "local_sha256": "03e0d949fd406811a48dd054746ca5d8f74eecda78fdf2effc313f8933961e4e",
+      "edits": [
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+      ],
+      "checked_status": "pending"
+    },
+    {
+      "original_path": "StacksFrontier/RingTheory/Artinian/Basic.lean",
+      "original_sha256": "269c8617cbfefca905069d001b655ac74d0a4079893d72522b28fd13ccaef6b0",
+      "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
+      "local_path": "ExternalResults/Stacks/StacksFrontier/RingTheory/Artinian/Basic.lean",
+      "local_sha256": "12d245f68b1eaee087093753557e720cd3e150ef5dc418b94b116cedf98461b6",
+      "edits": [
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+      ],
+      "checked_status": "pending"
+    },
+    {
+      "original_path": "StacksFrontier/RingTheory/DiscreteValuationRing/Existence.lean",
+      "original_sha256": "448fb4af3bb585c5fd8047b5baa8ae784e7fdec485b8248a982707abb62b725e",
+      "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
+      "local_path": "ExternalResults/Stacks/StacksFrontier/RingTheory/DiscreteValuationRing/Existence.lean",
+      "local_sha256": "4ef4c4e6bbc0de8e6b93a327ed5e7d5155daead0b336091fc05232433797b196",
+      "edits": [
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+      ],
+      "checked_status": "pending"
+    },
+    {
+      "original_path": "StacksFrontier/RingTheory/Ideal/Over/HeightOne.lean",
+      "original_sha256": "c3debdbe202757b240e7816da0cfbd24be4d8c91992fbadae0d3d5c11d877417",
+      "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
+      "local_path": "ExternalResults/Stacks/StacksFrontier/RingTheory/Ideal/Over/HeightOne.lean",
+      "local_sha256": "411403d1bd1ece7431fa730360d6fd146115894d6a583eba924e3102c9e77290",
+      "edits": [
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+      ],
+      "checked_status": "pending"
+    },
+    {
+      "original_path": "StacksFrontier/RingTheory/IntegralClosure/DedekindDomain.lean",
+      "original_sha256": "cf2752de5c6159e44252e816a93ae0fe87543b9de6e770b2b756dd8fd0d89de7",
+      "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
+      "local_path": "ExternalResults/Stacks/StacksFrontier/RingTheory/IntegralClosure/DedekindDomain.lean",
+      "local_sha256": "1b6dd696687e61b96fdcf959946624427433b8f288e2eed8240ca3bd20c46591",
+      "edits": [
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+      ],
+      "checked_status": "pending"
+    },
+    {
+      "original_path": "StacksFrontier/RingTheory/KrullAkizuki.lean",
+      "original_sha256": "7bb5bf40b1a0e28e881a44ff266ebab3374fbcdbaa4839b6524b818d2a21387e",
+      "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
+      "local_path": "ExternalResults/Stacks/StacksFrontier/RingTheory/KrullAkizuki.lean",
+      "local_sha256": "e82c4f629f62ef0398ff757572187285d49a1e03218e886c3e5519a45af05e01",
+      "edits": [
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+      ],
+      "checked_status": "pending"
+    },
+    {
+      "original_path": "StacksFrontier/RingTheory/KrullAkizuki/DominatingDimOne.lean",
+      "original_sha256": "5eca095fe19b0bb2a02857f9acb887164339da07ae42943cd09ef5228d24c7ce",
+      "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
+      "local_path": "ExternalResults/Stacks/StacksFrontier/RingTheory/KrullAkizuki/DominatingDimOne.lean",
+      "local_sha256": "a080d507f7b41c164222bdb09631196e0807ebbce28f76ea7beab0c20ab469ec",
+      "edits": [
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+      ],
+      "checked_status": "pending"
+    },
+    {
+      "original_path": "StacksFrontier/RingTheory/KrullAkizuki/IntermediateRingNoetherian.lean",
+      "original_sha256": "15d7a54789da60ea32bbae30117d0e8aa2cedecfe1c67e484b7b23607c7e7e25",
+      "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
+      "local_path": "ExternalResults/Stacks/StacksFrontier/RingTheory/KrullAkizuki/IntermediateRingNoetherian.lean",
+      "local_sha256": "087f042706a74059778b54a0af331f330f1e5c3d8e3f2e08fe49d28b9157ea66",
+      "edits": [
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+      ],
+      "checked_status": "pending"
+    },
+    {
+      "original_path": "StacksFrontier/RingTheory/KrullAkizuki/LengthBound.lean",
+      "original_sha256": "5cb73c68b0ec800c29a7cb8679e38a7d6aabbc6fbfe0308f83b879f8b5f4e3e3",
+      "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
+      "local_path": "ExternalResults/Stacks/StacksFrontier/RingTheory/KrullAkizuki/LengthBound.lean",
+      "local_sha256": "e8364c95e23f3683aa70c352226751554ff2c3813884534bca04bc3cf33d8075",
+      "edits": [
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+      ],
+      "checked_status": "pending"
+    },
+    {
+      "original_path": "StacksFrontier/RingTheory/Spectrum/Prime/Integral.lean",
+      "original_sha256": "1d3b4db4f44aed7214a6104d292bc49774eec124f655e65d66bd52706111324a",
+      "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
+      "local_path": "ExternalResults/Stacks/StacksFrontier/RingTheory/Spectrum/Prime/Integral.lean",
+      "local_sha256": "eb8e2988aea323cbfd7eae66dd848de2e3a9e17246433c31cc5f740b7ecf2e47",
+      "edits": [
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+      ],
+      "checked_status": "pending"
+    }
+  ],
+  "checks": [],
+  "semantic_review": "pending"
+}

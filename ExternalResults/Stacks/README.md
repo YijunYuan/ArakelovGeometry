@@ -1,0 +1,37 @@
+# Selected Stacks DVR specialization
+
+This subtree contains only the recursive Stacks-source import closure of
+`StacksFrontier/AlgebraicGeometry/Limits/NoetherianValuativeCriterion/DiscreteValuationSpecialization.lean`
+from [AxiomMath/Stacks](https://github.com/AxiomMath/Stacks/tree/c496df0d9beea9deaeabcea8492605f9a0a2313b),
+commit `c496df0d9beea9deaeabcea8492605f9a0a2313b`: 14 modules, 4,814 original lines.
+Files were downloaded individually. There is no donor package dependency.
+Lean `v4.35.0` and Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679`
+match the host. The Apache-2.0 license is retained in `LICENSE`; original headers
+are preserved. `provenance.json` records each original hash, local path, edits,
+and verification status. Mathematical namespaces remain upstream namespaces.
+Only Stacks imports acquire the prefix `ExternalResults.Stacks.`.
+
+The upstream scope is retained: for a locally finite type, quasi-compact morphism
+`f : X ⟶ Y` with `Y` locally Noetherian and `y ∈ closure (range f.base)`,
+`AlgebraicGeometry.nonempty_discreteValuationSpecialization` produces a DVR `R`,
+its fraction field `L`, maps `Spec L → X` and `Spec R → Y`, their commutative
+square, and the specified closed point. It also selects a generic point of an
+irreducible component of `X`. When that point does not already map to `y`, the
+fraction field is identified with the residue field of that source point.
+
+It asserts **no** completeness, identification with a power-series ring, or
+finiteness of the DVR residue field over any ground field. In the already-in-image
+case the constructed DVR is a localization of a polynomial ring over the source
+residue field; the fraction field is enlarged. Frontier is not human-reviewed
+upstream; local independent review and kernel/axiom results are recorded in the
+provenance file as they become available.
+
+For Bost p31 (Theorem 1.1, via the binary instability input to CM Theorem 5.4.3),
+apply the producer to the **actual group orbit parameter morphism**. Only then
+is `Spec L → X` an actual group element whose action specializes to zero.
+A source consisting merely of the orbit closure does not supply such an element.
+This is the geometric input for the general-DVR matrix route. The orbit morphism
+and its finite-type/quasi-compact hypotheses, invariant separation, the bridge to
+the A2 tensor/exterior/dual action, and descent from the arbitrary DVR residue
+field are separate unmet consumers. This port alone does not prove A8 or a
+Hilbert–Mumford theorem.
