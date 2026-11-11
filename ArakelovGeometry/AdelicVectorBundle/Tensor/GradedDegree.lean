@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.ImageHN
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Tensor
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HNOptimalVariation
 
 /-!
 # Binary graded tensor images in Bost's degree argument
@@ -165,6 +166,85 @@ theorem imageFiltration_tensor_secondary_eq_span
       exact subset_span ⟨⟨p.val.2, rfl⟩, (show v p.val.2 ≤ v p.val.2 from le_rfl), rfl⟩
 
 end SecondaryCoordinates
+
+omit [FiniteDimensional K E] in
+/-- A common adapted basis induces the literal equal-primary-weight
+generators on the actual grade. This applies to chosen HN lift cuts. -/
+theorem filtrationOnGraded_eq_span_generators
+    {ι : Type*} (b : Basis ι K E) (w s : ι → ℝ)
+    {L : ℝ → Submodule K E}
+    (hP : ∀ t, P t = span K (b '' {i | t ≤ w i}))
+    (hL : ∀ a, L a = span K (b '' {i | a ≤ s i}))
+    (hb : ∀ i, b i ∈ P (w i)) (t a : ℝ) :
+    filtrationOnGraded P L t a = span K
+      (filtrationGradedGenerator b w hb t '' {i | a ≤ s i.val}) := by
+  let C := {i : ι | a ≤ s i ∧ t ≤ w i}
+  have hC (i : C) : b i.val ∈ P t := by
+    rw [hP]
+    exact subset_span ⟨i.val, i.property.2, rfl⟩
+  let l : C → P t := fun i ↦ ⟨b i.val, hC i⟩
+  have he : (span K (Set.range l)).map (P t).subtype = L a ⊓ P t := by
+    have hm : (P t).subtype '' Set.range l = b '' C := by
+      ext x
+      constructor
+      · rintro ⟨_, ⟨i, rfl⟩, rfl⟩
+        exact ⟨i.val, i.property, rfl⟩
+      · rintro ⟨i, hi, rfl⟩
+        exact ⟨l ⟨i, hi⟩, ⟨⟨i, hi⟩, rfl⟩, rfl⟩
+    rw [map_span, hm, hL, hP, span_basis_image_inf]
+    rfl
+  have hc : (L a).comap (P t).subtype = span K (Set.range l) := by
+    have hh := congrArg (Submodule.comap (P t).subtype) he
+    simpa only [comap_map_eq, ker_subtype, sup_bot_eq, comap_inf,
+      comap_subtype_self, inf_top_eq] using hh.symm
+  rw [filtrationOnGraded, hc, map_span]
+  apply le_antisymm
+  · apply span_le.mpr
+    rintro _ ⟨_, ⟨i, rfl⟩, rfl⟩
+    by_cases hi : w i.val = t
+    · exact subset_span ⟨⟨i.val, hi⟩, i.property.1, rfl⟩
+    · have ht : t < w i.val := lt_of_le_of_ne i.property.2 (Ne.symm hi)
+      have hz : filtrationGradedMk P t (l i) = 0 := by
+        apply (Submodule.Quotient.mk_eq_zero _).mpr
+        change b i.val ∈ filtrationRightLimit P t
+        rw [filtrationRightLimit_eq_span_weights b w hP]
+        exact subset_span ⟨i.val, ht, rfl⟩
+      rw [hz]
+      exact zero_mem _
+  · apply span_le.mpr
+    rintro _ ⟨i, hi, rfl⟩
+    exact subset_span ⟨l ⟨i.val, hi, i.property.ge⟩,
+      ⟨⟨i.val, hi, i.property.ge⟩, rfl⟩, rfl⟩
+
+omit [FiniteDimensional K E] in
+/-- A class lying in an induced secondary cut has lexicographically bounded
+coordinates in any basis adapted to the primary and lifted filtrations. -/
+theorem primary_lt_or_secondary_le_of_graded_mem
+    {ι : Type*} (b : Basis ι K E) (w s : ι → ℝ)
+    {L : ℝ → Submodule K E}
+    (hP : ∀ t, P t = span K (b '' {i | t ≤ w i}))
+    (hL : ∀ a, L a = span K (b '' {i | a ≤ s i}))
+    {t a : ℝ} (x : P t)
+    (hx : filtrationGradedMk P t x ∈ filtrationOnGraded P L t a)
+    (i : ι) (hi : b.repr (x : E) i ≠ 0) : t < w i ∨ a ≤ s i := by
+  obtain ⟨y, hy, he⟩ := hx
+  have hz : (y : E) - (x : E) ∈ filtrationRightLimit P t := by
+    exact (show y - x ∈ (filtrationRightLimit P t).comap (P t).subtype from
+      (Submodule.Quotient.eq _).mp he)
+  by_cases ht : t < w i
+  · exact Or.inl ht
+  · right
+    have hzi : b.repr ((y : E) - (x : E)) i = 0 := by
+      rw [filtrationRightLimit_eq_span_weights b w hP] at hz
+      exact Finsupp.notMem_support_iff.mp (fun hn ↦ ht (b.mem_span_image.mp hz hn))
+    have hni : b.repr (y : E) i ≠ 0 := by
+      simp only [map_sub, Finsupp.sub_apply, sub_eq_zero] at hzi
+      rw [hzi]
+      exact hi
+    have hy' : (y : E) ∈ span K (b '' {j | a ≤ s j}) := by
+      change (y : E) ∈ L a at hy
+      rwa [hL] at hy
+    exact b.mem_span_image.mp hy' (Finsupp.mem_support_iff.mpr hni)
 
 end Submodule
 
