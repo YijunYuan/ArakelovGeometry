@@ -380,7 +380,6 @@ theorem binaryQuotientCovector_ne_zero
   rw [hmat, Matrix.det_one] at he
   exact one_ne_zero he
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The actual Bost quotient-determinant consumer. Polynomial closure produces
 its own DVR and fraction-field group element, then Cartan gives actual integral
 SL changes with nonempty negative residue support. The quotient over the fraction
@@ -413,17 +412,24 @@ theorem exists_binary_quotient_negative_support_of_orbit_closure
         (∀ p, IsLocalRing.residue d.valuationRing (c p) ≠ 0 →
           (∑ l, ∑ j, a j (p l j)) < 0) ∧
         ∃ p, IsLocalRing.residue d.valuationRing (c p) ≠ 0 := by
-  let f := exteriorCovector r
-    (exteriorPower.map r q.dualMap (exteriorPower.ιMulti k r b.coord))
+  generalize hfdef : (exteriorCovector r
+    (exteriorPower.map r q.dualMap (exteriorPower.ιMulti k r b.coord))) = f at hclosure ⊢
+  have hf : f ≠ 0 := by
+    rw [← hfdef]
+    exact binaryQuotientCovector_ne_zero q b hq
   obtain ⟨d⟩ := nonempty_binaryCovectorDegeneration (k := k) (ι := ι) (r := r) f hclosure
-  obtain ⟨Q, a, c, ha, he, hn, hp⟩ := BinaryCovectorDegeneration.exists_negative_support
-    (k := k) (ι := ι) (r := r) (f := f) d (binaryQuotientCovector_ne_zero q b hq)
-  refine ⟨d, Q, a, c, ha, ?_, hn, hp⟩
+  refine ⟨d, ?_⟩
+  have hs := BinaryCovectorDegeneration.exists_negative_support
+    (k := k) (ι := ι) (r := r) (f := f) d hf
+  rcases hs with ⟨Q, a, c, ha, he, hn, hp⟩
+  refine ⟨Q, a, c, ha, ?_, hn, hp⟩
   intro p
   have hh := he p
-  rw [binaryQuotientCoordinateBaseChange_covector] at hh
-  simpa only [binaryTensorBasis_apply, tensorPower_dual_quotientDeterminant_eval,
-    Pi.inv_def, Pi.basisFun_coord, LinearMap.proj_apply] using hh
+  have hfL := congrArg (binaryCovectorBaseChange d.fractionField) hfdef
+  rw [binaryQuotientCoordinateBaseChange_covector] at hfL
+  rw [← hfL] at hh
+  simp only [binaryTensorBasis_apply, tensorPower_dual_quotientDeterminant_eval] at hh
+  simpa [Module.Basis.coord_apply, Pi.inv_def] using hh
 
 /-- The determinant polynomial over the original ground field. Matrix variables
 are columns of the inverse integral Cartan factors; the output indices are rows.
@@ -457,7 +463,7 @@ theorem binaryQuotientDeterminantPolynomial_eval
         ∏ j, U j (s j) (p l j)) := by
     ext l t
     change ev (M l t) = _
-    simp [M, ev, map_sum, map_prod]
+    simp [M, ev, map_sum]
   exact (ev.map_det M).trans (congrArg (Matrix.det (n := Fin r)) hM)
 
 set_option backward.isDefEq.respectTransparency false in
