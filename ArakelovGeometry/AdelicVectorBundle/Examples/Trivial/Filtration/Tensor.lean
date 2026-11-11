@@ -18,6 +18,19 @@ public import ArakelovGeometry.AdelicVectorBundle.Tensor.Domination
 
 The canonical binary injective norm realizes the intrinsic tensor convolution.
 Single adapted bases in the two factors suffice.
+
+## Scope for the Bost proof
+
+The binary construction supplies the tensor and quotient filtrations used in
+`bost.pdf`, pp. 28–30, equations (44) and (46), from the ingredients of
+Chen–Moriwaki §5.1 and Proposition 5.5.5. Together with the canonical graded maps,
+it retains the original real weights, collisions of total weights and vanished
+quotient grades. The main theorem's finite-family conclusion follows by iteration
+of its binary conclusion (p. 32), so a separate arbitrary-family graded refinement
+theory is not required here. Stronger finite-family weighted-span formulas already
+proved below remain available. Actual nontrivial-place graded contractions and
+the HN image-degree comparison are separate obligations, not consequences of
+these trivial-place norm identities alone.
 -/
 
 @[expose] public section
