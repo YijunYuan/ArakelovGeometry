@@ -206,9 +206,10 @@ pair for the scalar extension of a surjective positive-rank quotient produces an
 actual centered negative pair over the original characteristic-zero field, with
 unit total self-pairing. The extension is algebraic and algebraically closed,
 possibly of infinite degree; weights remain real. Galois invariance is derived
-from the unique global optimizer over `L`, and is not an input. This specializes
-the rationality part of CM optimal instability to the binary Bost consumer:
-geometric instability producing negativity and the variational inequality are
+from the unique global optimizer over `L`, and is not an input. This locally
+proves the rationality auxiliary step for the binary Bost application using the
+conditional CM optimization argument. Geometric instability producing negativity
+and the variational inequality are
 not assumed or proved here, and descended global optimality is not asserted. -/
 theorem exists_centered_negative_tensor_filtrations_of_baseChange
     (q : E ⊗[K] V →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)
