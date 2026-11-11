@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.Analysis.Tensor.Basic
+public import ArakelovGeometry.Analysis.Hermitian.Norm
 public import Mathlib.Analysis.InnerProductSpace.PiL2
 import ArakelovGeometry.Analysis.Dual.ArchimedeanDual
 import Mathlib.Analysis.InnerProductSpace.Dual
@@ -89,6 +90,75 @@ theorem orthogonalTensorSeminorm_sq (z : ⨂[L] i, E i) :
     (orthogonalTensorSeminorm b z) ^ 2 = RCLike.re ((orthogonalTensorCore b).inner z z) := by
   classical
   exact norm_sq_eq_re_inner (𝕜 := L) (orthogonalTensorCoordinates b z)
+
+section OrthogonalNorm
+
+attribute [-instance] PiTensorProduct.instSeminormedAddCommGroup
+  PiTensorProduct.instNormedSpace
+
+/-- The existing orthogonal seminorm gives a norm on the actual tensor module. -/
+abbrev orthogonalTensorNormedAddCommGroup : NormedAddCommGroup (⨂[L] i, E i) :=
+  (⟨(orthogonalTensorSeminorm b).toAddGroupSeminorm,
+    fun z ↦ (orthogonalTensorSeminorm_eq_zero_iff b z).mp⟩ :
+    AddGroupNorm (⨂[L] i, E i)).toNormedAddCommGroup
+
+/-- The orthogonal tensor norm uses the canonical scalar action. -/
+abbrev orthogonalTensorNormedSpace :
+    let := orthogonalTensorNormedAddCommGroup b
+    NormedSpace L (⨂[L] i, E i) := by
+  let := orthogonalTensorNormedAddCommGroup b
+  exact ⟨fun a z ↦ (map_smul_eq_mul (orthogonalTensorSeminorm b) a z).le⟩
+
+open Classical in
+/-- The tensor coordinates are an isometry for the existing orthogonal norm. -/
+def orthogonalTensorIsometry :
+    let := orthogonalTensorNormedAddCommGroup b
+    let := orthogonalTensorNormedSpace b
+    (⨂[L] i, E i) ≃ₗᵢ[L] EuclideanSpace L (∀ i, κ i) := by
+  intro nT nsT
+  let := nT
+  let := nsT
+  exact { orthogonalTensorCoordinates b with norm_map' := fun _ ↦ rfl }
+
+/-- The product inner form induces precisely the installed orthogonal norm. -/
+abbrev orthogonalTensorInnerProductSpace :
+    let := orthogonalTensorNormedAddCommGroup b
+    let := orthogonalTensorNormedSpace b
+    InnerProductSpace L (⨂[L] i, E i) := by
+  intro nT nsT
+  let := nT
+  let := nsT
+  exact innerProductSpaceOfCoreNorm (orthogonalTensorCore b) (orthogonalTensorSeminorm_sq b)
+
+open Classical in
+/-- The tensor products of the factor orthonormal bases form an orthonormal basis. -/
+def orthogonalTensorOrthonormalBasis :
+    let := orthogonalTensorNormedAddCommGroup b
+    let := orthogonalTensorNormedSpace b
+    let := orthogonalTensorInnerProductSpace b
+    OrthonormalBasis (∀ i, κ i) L (⨂[L] i, E i) := by
+  intro nT nsT iT
+  let := nT
+  let := nsT
+  let := iT
+  exact ⟨orthogonalTensorIsometry b⟩
+
+open Classical in
+/-- The orthonormal tensor basis is the canonical algebraic tensor basis. -/
+theorem orthogonalTensorOrthonormalBasis_apply (p : ∀ i, κ i) :
+    orthogonalTensorOrthonormalBasis b p = ⨂ₜ[L] i, b i (p i) := by
+  let := orthogonalTensorNormedAddCommGroup b
+  let := orthogonalTensorNormedSpace b
+  let := orthogonalTensorInnerProductSpace b
+  apply (orthogonalTensorCoordinates b).injective
+  change (orthogonalTensorOrthonormalBasis b).repr
+    (orthogonalTensorOrthonormalBasis b p) = _
+  rw [OrthonormalBasis.repr_self]
+  ext q
+  simp only [orthogonalTensorCoordinates_tprod, OrthonormalBasis.repr_self,
+    PiLp.single_apply, Fintype.prod_ite_zero, ← funext_iff, Finset.prod_const_one]
+
+end OrthogonalNorm
 
 /-- The orthogonal norm of a pure tensor is the product of all factor norms,
 including the empty tensor product. -/
