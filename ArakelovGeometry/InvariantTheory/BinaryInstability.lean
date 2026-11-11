@@ -121,6 +121,7 @@ theorem binaryCovectorCoordinates_equivariant
 
 variable [∀ j, FiniteDimensional k (E j)]
 
+omit [∀ j, DecidableEq (ι j)] in
 /-- Polynomial nonsemistability passes to factor coordinates using the actual
 group isomorphism and polynomial pullback, not a change of chooseBasis alone. -/
 theorem not_isPolynomialSemistable_binaryCovectorCoordinates
@@ -131,6 +132,7 @@ theorem not_isPolynomialSemistable_binaryCovectorCoordinates
     ¬ IsPolynomialSemistable (Module.Free.chooseBasis k _)
       (tensorPowerRepresentation r (tensorSLRepresentation (fun j ↦ ι j → k))).dual
       (binaryCovectorCoordinates b r f) := by
+  classical
   intro h
   let τ := (tensorPowerRepresentation r (tensorSLRepresentation (k := k)
     (fun j ↦ ι j → k))).dual
@@ -146,6 +148,7 @@ theorem not_isPolynomialSemistable_binaryCovectorCoordinates
 
 variable {Q : Type*} [AddCommGroup Q] [Module k Q]
 
+omit [∀ j, DecidableEq (ι j)] [∀ j, FiniteDimensional k (E j)] in
 /-- The covector being tested after coordinate transport is precisely the
 determinant covector of the original quotient precomposed with the basis tensor. -/
 theorem binaryCovectorCoordinates_quotient
@@ -161,8 +164,8 @@ theorem binaryCovectorCoordinates_quotient
   change exteriorCovector r (exteriorPower.map r q.dualMap
     (exteriorPower.ιMulti k r d.coord)) ((binaryTensorPowerCoordinates b r).symm
       (⨂ₜ[k] l, x l)) = _
-  simp [binaryTensorPowerCoordinates, PiTensorProduct.congr_symm,
-    binaryQuotientInCoordinates]
+  simp [binaryTensorPowerCoordinates, binaryQuotientInCoordinates]
+  rfl
 
 end Coordinates
 
