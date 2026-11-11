@@ -1,6 +1,9 @@
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Exterior.BaseChange
+public import ArakelovGeometry.AdelicVectorBundle.Determinant.DualBaseChange
+public import ArakelovGeometry.AdelicVectorBundle.Dual.Map
+public import Mathlib.LinearAlgebra.PiTensorProduct.Finite
 
 /-!
 # The determinant quotient and its dual Plücker vector
@@ -36,6 +39,15 @@ theorem quotientExterior_surjective (r : ℕ) (q : W →ₗ[k] Q)
     (hq : Function.Surjective q) : Function.Surjective (quotientExterior r q) :=
   (exteriorPower.map_surjective hq).comp (tensorToExterior_surjective k W r)
 
+/-- The actual tensor-to-determinant quotient commutes with scalar extension. -/
+theorem quotientExterior_baseChange (L : Type*) [Field L] [Algebra k L]
+    (r : ℕ) (q : W →ₗ[k] Q) (z : L ⊗[k] (⨂[k]^r W)) :
+    exteriorBaseChangeEquiv k L Q r ((quotientExterior r q).baseChange L z) =
+      quotientExterior r (q.baseChange L)
+        (tensorBaseChangeEquiv k L (fun _ : Fin r ↦ W) z) := by
+  simp only [quotientExterior, LinearMap.baseChange_comp, LinearMap.comp_apply]
+  rw [exteriorBaseChangeEquiv_map, exteriorBaseChangeEquiv_tensorToExterior]
+
 /-- The canonical map of dual exterior vectors into tensor covectors. -/
 def exteriorCovector (r : ℕ) :
     (⋀[k]^r (Module.Dual k W)) →ₗ[k] Module.Dual k (⨂[k]^r W) :=
@@ -68,6 +80,24 @@ theorem exteriorCovector_map_dualMap (r : ℕ) (q : W →ₗ[k] Q)
       (exteriorPower.pairingDual k W r (exteriorPower.map r q.dualMap z)) = _
   rw [show exteriorPower.pairingDual k W r (exteriorPower.map r q.dualMap z) =
       (exteriorPower.map r q).dualMap (exteriorPower.pairingDual k Q r z) from h]
+  rfl
+
+/-- Exterior-to-tensor covectors commute with the canonical scalar-extension
+maps on exterior powers, tensors and duals, on all vectors. -/
+theorem exteriorCovector_baseChange [FiniteDimensional k W]
+    (L : Type*) [Field L] [Algebra k L] (r : ℕ)
+    (z : L ⊗[k] (⋀[k]^r (Module.Dual k W))) (x : L ⊗[k] (⨂[k]^r W)) :
+    dualBaseChangeEquiv k L (⨂[k]^r W) ((exteriorCovector r).baseChange L z) x =
+      exteriorCovector r
+        (exteriorPower.map r (dualBaseChangeEquiv k L W).toLinearMap
+          (exteriorBaseChangeEquiv k L (Module.Dual k W) r z))
+        (tensorBaseChangeEquiv k L (fun _ : Fin r ↦ W) x) := by
+  simp only [exteriorCovector, LinearMap.baseChange_comp, LinearMap.comp_apply]
+  rw [dualBaseChangeEquiv_dualMap]
+  change dualBaseChangeEquiv k L (⋀[k]^r W)
+      ((exteriorPower.pairingDual k W r).baseChange L z)
+      ((tensorToExterior k W r).baseChange L x) = _
+  rw [exteriorPairingDual_baseChange, exteriorBaseChangeEquiv_tensorToExterior]
   rfl
 
 /-- In top degree the target of the quotient has dimension one. -/
