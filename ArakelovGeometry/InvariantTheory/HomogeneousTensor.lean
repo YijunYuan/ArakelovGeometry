@@ -151,4 +151,32 @@ theorem homogeneousTensorMap_equivariant
     simp only [tensorLinearPolynomial_equivariant, polynomialRepresentation_apply, map_prod]
   | add x y hx hy => simp only [map_add, hx, hy]
 
+/-- The actual homogeneous block as a representation; no new polynomial model. -/
+def homogeneousPolynomialRepresentation {M : Type*} [AddCommGroup M] [Module k M]
+    (b : Module.Basis ι k M) (ρ : Representation k G M) (d : ℕ) :
+    Representation k G (homogeneousSubmodule ι k d) where
+  toFun g := (polynomialRepresentation b ρ g).restrict fun p hp ↦
+    polynomialRepresentation_isHomogeneous b ρ g hp
+  map_one' := by
+    apply LinearMap.ext
+    intro p
+    apply Subtype.ext
+    exact DFunLike.congr_fun ((polynomialRepresentation b ρ).map_one) p.val
+  map_mul' g h := by
+    apply LinearMap.ext
+    intro p
+    apply Subtype.ext
+    exact DFunLike.congr_fun ((polynomialRepresentation b ρ).map_mul g h) p.val
+
+/-- Surjectivity of multiplication with its actual homogeneous codomain. -/
+theorem homogeneousTensorMap_surjective [FiniteDimensional k T]
+    (b : Module.Basis ι k (Module.Dual k T)) (d : ℕ) :
+    Function.Surjective ((homogeneousTensorMap b d).codRestrict
+      (homogeneousSubmodule ι k d) (homogeneousTensorMap_mem b d)) := by
+  intro p
+  have hp : p.val ∈ (homogeneousTensorMap b d).range := by
+    simpa only [homogeneousTensorMap_range] using p.property
+  obtain ⟨t, ht⟩ := hp
+  exact ⟨t, Subtype.ext ht⟩
+
 end ArakelovGeometry.InvariantTheory
