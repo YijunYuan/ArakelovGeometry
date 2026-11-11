@@ -59,7 +59,8 @@ theorem exists_matrix_diagonal (A : Matrix ι ι R) (hA : Function.Injective A.m
     ext i j
     simp [LinearMap.toMatrix_apply, hdiag, diagonal_apply, eq_comm]
   have h := basis_toMatrix_mul_linearMap_toMatrix_mul_basis_toMatrix e c e b A.toLin'
-  simpa only [hD, Matrix.toLin_eq_toLin', LinearMap.toMatrix_toLin'] using h.symm
+  simpa only [hD, e, LinearMap.toMatrix_eq_toMatrix', LinearMap.toMatrix'_toLin'] using
+    h.symm
 
 end PID
 
@@ -89,6 +90,29 @@ theorem exists_unit_mul_X_pow (f : K⟦X⟧) (hf : f ≠ 0) :
   refine ⟨PowerSeries.Unit_of_divided_by_X_pow_order f, f.order.toNat, ?_⟩
   rw [PowerSeries.Unit_of_divided_by_X_pow_order_nonzero hf, mul_comm]
   exact PowerSeries.X_pow_order_mul_divXPowOrder.symm
+
+/-- Laurent-series factorization with integral elementary divisors before absorbing
+their units and shifting the exponents. -/
+theorem exists_integral_diagonal (g : GL ι K⸨X⸩) :
+    ∃ (m : ℕ) (P Q : GL ι K⟦X⟧) (d : ι → K⟦X⟧),
+      (∀ i, d i ≠ 0) ∧
+      (algebraMap K⟦X⟧ K⸨X⸩ PowerSeries.X) ^ m • (g : Matrix ι ι K⸨X⸩) =
+        (P : Matrix ι ι K⟦X⟧).map (algebraMap K⟦X⟧ K⸨X⸩) *
+          diagonal (fun i ↦ algebraMap K⟦X⟧ K⸨X⸩ (d i)) *
+          (Q : Matrix ι ι K⟦X⟧).map (algebraMap K⟦X⟧ K⸨X⸩) := by
+  obtain ⟨m, A, hA⟩ := exists_powerSeries_matrix (g : Matrix ι ι K⸨X⸩)
+  have hX : algebraMap K⟦X⟧ K⸨X⸩ PowerSeries.X ≠ 0 :=
+    map_ne_zero (IsFractionRing.injective K⟦X⟧ K⸨X⸩) PowerSeries.X_ne_zero
+  have hdet : A.det ≠ 0 := by
+    intro h
+    have h' := congrArg Matrix.det hA
+    rw [← RingHom.map_det, h, map_zero, Matrix.det_smul] at h'
+    exact (mul_ne_zero (pow_ne_zero _ (pow_ne_zero _ hX))
+      (GeneralLinearGroup.det g).ne_zero) h'.symm
+  obtain ⟨P, Q, d, hd, h⟩ := exists_matrix_diagonal A
+    (Matrix.mulVec_injective_of_det_ne_zero hdet)
+  refine ⟨m, P, Q, d, hd, ?_⟩
+  rw [← hA, h, Matrix.map_mul, Matrix.map_mul, Matrix.map_diagonal]
 
 end Laurent
 
