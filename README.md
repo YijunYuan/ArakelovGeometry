@@ -108,6 +108,21 @@ direct slope composition has been kernel-checked. Geometric existence of the
 negative candidate remains A8's input; the smaller-rank tensor-HN induction
 condition is still explicit in the arithmetic bound.
 
+The checked `LinearAlgebra/Filtration/RankDrop` and
+`Tensor/HNVariationAssembly` now construct the optimizer, grade-HN lifts and
+common bases from an actual centered negative original-field pair. Centering and
+nonzero total self-pairing prove strict decrease of the **sum** of the grade
+ranks. The explicitly quantified smaller-rank tensor-HN induction assumption
+therefore applies to the grades chosen by the optimizer. Combining A6 and A9
+on those same witnesses proves the quotient slope bound in Bost pp.31–32,
+equation (47), with the original tensor-pushforward norm. Four transitive axiom
+roots and independent mathematical, consumer and honesty reviews passed.
+This preserves proper adelic curves, the discrete-or-common-countable-dense-subfield
+context, real weights and Hermitian norms including trivial valuations. The
+full HN induction, the separate Section 6 branch and Bost Theorem 1.1 are not
+claimed here. The remaining A8 geometric input and final public composition
+are still in progress.
+
 ## Selected external results
 
 New external transplants belong in [ExternalResults/](ExternalResults/README.md),
