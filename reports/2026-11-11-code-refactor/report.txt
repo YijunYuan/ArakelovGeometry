@@ -76,3 +76,9 @@ file is a temporary donor axiom probe. InvariantTheory now has 5 direct modules
 The user requested removal of test Lean files after validation. Temporary
 Typeclasses, HermitianImports and axiom probes will be removed after running;
 the report retains their exact inputs and result logs for reproduction.
+
+Header-lint follow-up: the first whole-library build reported missing copyright
+headers in three invariant-theory files. A source scan found ten first-party
+files in that development without headers; all ten now use the standard Apache
+project-contributor header. No donor attribution was replaced. Final validation
+must rebuild these corrected sources.

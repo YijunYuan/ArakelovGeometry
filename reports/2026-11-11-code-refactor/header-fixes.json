@@ -1,0 +1,12 @@
+[
+  "ArakelovGeometry/InvariantTheory/Linearization.lean",
+  "ArakelovGeometry/InvariantTheory/Projective.lean",
+  "ArakelovGeometry/InvariantTheory/QuotientDeterminant.lean",
+  "ArakelovGeometry/InvariantTheory/Plucker.lean",
+  "ArakelovGeometry/InvariantTheory/Semistability.lean",
+  "ArakelovGeometry/InvariantTheory/Binary/PolynomialSemisimple.lean",
+  "ArakelovGeometry/InvariantTheory/Binary/OrbitSeparation.lean",
+  "ArakelovGeometry/InvariantTheory/Polynomial/HomogeneousTensor.lean",
+  "ArakelovGeometry/InvariantTheory/Polynomial/Action.lean",
+  "ArakelovGeometry/InvariantTheory/TensorPower/Semisimple.lean"
+]

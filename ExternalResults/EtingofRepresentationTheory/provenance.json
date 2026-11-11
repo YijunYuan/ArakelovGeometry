@@ -256,7 +256,7 @@
   "retained_lean_line_count": 892,
   "consumer": {
     "path": "ArakelovGeometry/InvariantTheory/TensorPower/Semisimple.lean",
-    "sha256": "b4bc8db4a234d71b1d00b590891985df864d98fc4a4c22fe1b323ef2cf51d057",
+    "sha256": "1e2d639fb46b1847bed6eb8f9d981c0d56ece3b0667c56928a130f0709fdd131",
     "roots": [
       "ArakelovGeometry.InvariantTheory.tensorPowerSL_image_eq",
       "ArakelovGeometry.InvariantTheory.tensorPowerSL_isSemisimpleModule",
@@ -311,7 +311,8 @@
     },
     "changes": [
       "Move consumer into TensorPower/Semisimple; normalize imports; preserve declarations and proof bodies.",
-      "Update executable axiom probe import; historical evidence retains its original module paths."
+      "Update executable axiom probe import; historical evidence retains its original module paths.",
+      "Add the missing standard project copyright header to the consumer; no mathematical change."
     ],
     "validation": "pending final build and axiom audit"
   }
