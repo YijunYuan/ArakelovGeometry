@@ -191,12 +191,79 @@ theorem sum_exponents_eq_zero (P Q : GL ι K⟦X⟧) (a : ι → ℤ)
     change (φ.mapMatrix (P : Matrix ι ι K⟦X⟧)).det * (∏ i, x ^ a i) *
       (φ.mapMatrix (Q : Matrix ι ι K⟦X⟧)).det = 1 at h
     rw [← φ.map_det, ← φ.map_det] at h
-    rw [← zpow_sum₀ hx] at h
+    have hs (s : Finset ι) : (∏ i ∈ s, x ^ a i) = x ^ (∑ i ∈ s, a i) := by
+      induction s using Finset.induction_on with
+      | empty => simp
+      | @insert i s hi ih => simp [hi, ih, zpow_add₀ hx]
+    rw [hs] at h
     simpa [u, map_mul, mul_assoc, mul_left_comm, mul_comm] using h
   apply exponent_eq_zero_of_eq_unit (∑ i, a i) u⁻¹
   apply mul_left_cancel₀ (u.isUnit.map φ).ne_zero
   rw [hprod, ← map_mul]
   simp
+
+/-- Determinant-one Laurent matrices admit integral special-linear outer factors. -/
+theorem exists_specialLinear_cartan (g : GL ι K⸨X⸩)
+    (hg : (g : Matrix ι ι K⸨X⸩).det = 1) :
+    ∃ (P Q : SpecialLinearGroup ι K⟦X⟧) (a : ι → ℤ),
+      (∑ i, a i = 0) ∧ (g : Matrix ι ι K⸨X⸩) =
+        (P : Matrix ι ι K⟦X⟧).map (algebraMap K⟦X⟧ K⸨X⸩) *
+          diagonal (fun i ↦ (algebraMap K⟦X⟧ K⸨X⸩ PowerSeries.X) ^ a i) *
+          (Q : Matrix ι ι K⟦X⟧).map (algebraMap K⟦X⟧ K⸨X⸩) := by
+  obtain ⟨P, Q, a, h⟩ := exists_cartan g
+  have ha : ∑ i, a i = 0 := sum_exponents_eq_zero P Q a (h ▸ hg)
+  let φ := algebraMap K⟦X⟧ K⸨X⸩
+  let x : K⸨X⸩ := φ PowerSeries.X
+  have hx : x ≠ 0 := by simp [x, φ]
+  have hD : (diagonal (fun i ↦ x ^ a i)).det = 1 := by
+    rw [det_diagonal]
+    have hs (s : Finset ι) : (∏ i ∈ s, x ^ a i) = x ^ (∑ i ∈ s, a i) := by
+      induction s using Finset.induction_on with
+      | empty => simp
+      | @insert i s hi ih => simp [hi, ih, zpow_add₀ hx]
+    rw [hs, ha, zpow_zero]
+  have hpq : (P : Matrix ι ι K⟦X⟧).det * (Q : Matrix ι ι K⟦X⟧).det = 1 := by
+    apply IsFractionRing.injective K⟦X⟧ K⸨X⸩
+    have hh := congrArg Matrix.det h
+    rw [hg, det_mul, det_mul, hD, mul_one] at hh
+    simpa only [map_mul, map_one, RingHom.map_det, RingHom.mapMatrix_apply] using hh.symm
+  cases isEmpty_or_nonempty ι with
+  | inl he =>
+    exact ⟨1, 1, a, ha, Subsingleton.elim _ _⟩
+  | inr he =>
+    obtain ⟨i₀⟩ := he
+    let u := GeneralLinearGroup.det P
+    let s : ι → K⟦X⟧ˣ := fun i ↦ if i = i₀ then u⁻¹ else 1
+    let S : Matrix ι ι K⟦X⟧ := diagonal (fun i ↦ (s i : K⟦X⟧))
+    let T : Matrix ι ι K⟦X⟧ := diagonal (fun i ↦ ((s i)⁻¹ : K⟦X⟧ˣ))
+    have hS : S.det = (u⁻¹ : K⟦X⟧ˣ) := by simp [S, s, apply_ite]
+    have hT : T.det = (u : K⟦X⟧) := by simp [T, s, apply_ite]
+    have hp : ((P : Matrix ι ι K⟦X⟧) * S).det = 1 := by
+      rw [det_mul, hS]
+      exact u.val_inv
+    have hq : (T * (Q : Matrix ι ι K⟦X⟧)).det = 1 := by
+      rw [det_mul, hT]
+      exact hpq
+    refine ⟨⟨(P : Matrix ι ι K⟦X⟧) * S, hp⟩,
+      ⟨T * (Q : Matrix ι ι K⟦X⟧), hq⟩, a, ha, ?_⟩
+    change (g : Matrix ι ι K⸨X⸩) =
+      ((P : Matrix ι ι K⟦X⟧) * S).map φ * diagonal (fun i ↦ x ^ a i) *
+        (T * (Q : Matrix ι ι K⟦X⟧)).map φ
+    rw [h, Matrix.map_mul, Matrix.map_mul]
+    have hmid : S.map φ * diagonal (fun i ↦ x ^ a i) * T.map φ =
+        diagonal (fun i ↦ x ^ a i) := by
+      dsimp only [S, T]
+      rw [diagonal_map (map_zero φ), diagonal_map (map_zero φ),
+        diagonal_mul_diagonal, diagonal_mul_diagonal]
+      congr 1
+      funext i
+      rw [mul_right_comm, ← map_mul]
+      simp
+    calc
+      _ = (P : Matrix ι ι K⟦X⟧).map φ *
+          (S.map φ * diagonal (fun i ↦ x ^ a i) * T.map φ) *
+          (Q : Matrix ι ι K⟦X⟧).map φ := by rw [hmid]
+      _ = _ := by simp only [Matrix.mul_assoc]
 
 end Laurent
 
