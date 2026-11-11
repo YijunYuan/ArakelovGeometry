@@ -525,3 +525,75 @@ theorem exists_unique_normalized_quotient_optimizer
 end ActualFiltrations
 
 end Submodule
+
+namespace Submodule
+
+open ArakelovGeometry
+open scoped TensorProduct
+
+section Binary
+
+universe u
+
+variable {K : Type*} [Field K] {E V : Type u} {Q : Type*}
+  [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  [AddCommGroup V] [Module K V] [FiniteDimensional K V]
+  [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
+
+set_option quotPrecheck false in
+local notation "CenteredE" => (fun F : ℝ → Submodule K E ↦
+  Antitone F ∧ (∃ t, F t = ⊥) ∧ (∃ t, F t = ⊤) ∧
+  (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t) ∧ filtrationExpectation F = 0)
+set_option quotPrecheck false in
+local notation "CenteredV" => (fun G : ℝ → Submodule K V ↦
+  Antitone G ∧ (∃ t, G t = ⊥) ∧ (∃ t, G t = ⊤) ∧
+  (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → G s = G t) ∧ filtrationExpectation G = 0)
+
+/-- The direct ordinary binary tensor interface: an actual centered negative
+candidate gives an actual centered unit global minimum. -/
+theorem exists_normalized_tensor_quotient_optimizer
+    (q : E ⊗[K] V →ₗ[K] Q) (hq : Function.Surjective q)
+    (hE : 0 < finrank K E) (hV : 0 < finrank K V)
+    (F₀ : ℝ → Submodule K E) (G₀ : ℝ → Submodule K V)
+    (hF₀ : CenteredE F₀) (hG₀ : CenteredV G₀)
+    (hneg₀ : filtrationExpectation (fun t ↦ (tensorFiltration F₀ G₀ t).map q) < 0) :
+    ∃ (P : ℝ → Submodule K E) (R : ℝ → Submodule K V),
+      CenteredE P ∧ CenteredV R ∧ filtrationPairing P P + filtrationPairing R R = 1 ∧
+      filtrationExpectation (fun t ↦ (tensorFiltration P R t).map q) < 0 ∧
+      ∀ (F : ℝ → Submodule K E) (G : ℝ → Submodule K V),
+        CenteredE F → CenteredV G → 0 < filtrationPairing F F + filtrationPairing G G →
+        filtrationExpectation (fun t ↦ (tensorFiltration P R t).map q) ≤
+          filtrationExpectation (fun t ↦ (tensorFiltration F G t).map q) /
+            Real.sqrt (filtrationPairing F F + filtrationPairing G G) := by
+  let e := binaryTensorEquiv K (BinaryTensorFactors E V)
+  let q' := q.comp e.toLinearMap
+  let pair (F : ℝ → Submodule K E) (G : ℝ → Submodule K V) :
+      ∀ i, ℝ → Submodule K (BinaryTensorFactors E V i) := fun i ↦ match i with
+    | .inl _ => F
+    | .inr _ => G
+  have hvalue (H : ∀ i, ℝ → Submodule K (BinaryTensorFactors E V i)) :
+      filtrationExpectation (fun t ↦ (piTensorFiltration H t).map q') =
+        filtrationExpectation (fun t ↦ (tensorFiltration (H (.inl ())) (H (.inr ())) t).map q) := by
+    dsimp only [q', e]
+    simp_rw [← map_map, piTensorFiltration_map_binaryTensorEquiv]
+  have ha : ∀ i, 0 < finrank K (BinaryTensorFactors E V i) := by
+    rintro (⟨⟩ | ⟨⟩)
+    · exact hE
+    · exact hV
+  obtain ⟨P, hP, hPE, hneg, hmin⟩ := exists_normalized_quotient_optimizer q'
+    (hq.comp e.surjective) ha (pair F₀ G₀)
+    (by rintro (⟨⟩ | ⟨⟩); exact hF₀; exact hG₀)
+    (by rw [hvalue]; exact hneg₀)
+  rw [hvalue] at hneg
+  simp only [Fintype.sum_sum_type, Fintype.sum_unique] at hPE
+  refine ⟨P (.inl ()), P (.inr ()), hP (.inl ()), hP (.inr ()), hPE, hneg, ?_⟩
+  intro F G hF hG hpos
+  have hh := hmin (pair F G)
+    (by rintro (⟨⟩ | ⟨⟩); exact hF; exact hG)
+    (by simpa only [Fintype.sum_sum_type, Fintype.sum_unique] using hpos)
+  rw [hvalue, hvalue] at hh
+  simpa only [Fintype.sum_sum_type, Fintype.sum_unique] using hh
+
+end Binary
+
+end Submodule

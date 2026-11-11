@@ -189,3 +189,121 @@ theorem filtrationExpectation_piTensor_image_eq_sup'
     (fun p ↦ ∑ j, w j (p j)) c q hq
 
 end Submodule
+
+namespace Submodule
+
+open scoped TensorProduct
+open ArakelovGeometry
+
+section BinaryTransport
+
+variable {K : Type*} [Field K] {E : Unit ⊕ Unit → Type*}
+  [∀ i, AddCommGroup (E i)] [∀ i, Module K (E i)]
+
+/-- The canonical binary equivalence carries the actual finite convolution
+onto the actual ordinary tensor-product convolution, at every threshold. -/
+theorem piTensorFiltration_map_binaryTensorEquiv
+    (F : ∀ i, ℝ → Submodule K (E i)) (γ : ℝ) :
+    (piTensorFiltration F γ).map (binaryTensorEquiv K E).toLinearMap =
+      tensorFiltration (F (.inl ())) (F (.inr ())) γ := by
+  classical
+  apply le_antisymm
+  · rw [piTensorFiltration, map_iSup]
+    apply iSup_le
+    intro t
+    rw [map_iSup]
+    apply iSup_le
+    intro ht
+    rw [PiTensorProduct.mapIncl, PiTensorProduct.map_range_eq_span_tprod, map_span]
+    apply span_le.mpr
+    rintro _ ⟨_, ⟨x, rfl⟩, rfl⟩
+    simp only [LinearEquiv.coe_coe, binaryTensorEquiv_tprod]
+    apply tmul_mem_tensorFiltration _ (x (.inl ())).property (x (.inr ())).property
+    simpa only [Fintype.sum_sum_type, Fintype.sum_unique] using ht
+  · apply iSup_le
+    intro t
+    apply iSup_le
+    intro u
+    apply iSup_le
+    intro htu
+    rintro _ ⟨z, rfl⟩
+    induction z with
+    | tmul x y =>
+      let s : Unit ⊕ Unit → ℝ := Sum.elim (fun _ ↦ t) (fun _ ↦ u)
+      let v : ∀ i, E i := fun i ↦ match i with
+        | .inl _ => x.val
+        | .inr _ => y.val
+      refine ⟨⨂ₜ[K] i, v i, ?_, ?_⟩
+      · apply tprod_mem_piTensorFiltration (t := s)
+        · simpa [s, Fintype.sum_sum_type] using htu
+        · rintro (⟨⟩ | ⟨⟩)
+          · exact x.property
+          · exact y.property
+      · simp [v]
+    | add x y hx hy => simpa only [map_add] using add_mem hx hy
+
+end BinaryTransport
+
+section BinaryMaximum
+
+variable {K E V Q ι κ : Type*} [Field K]
+  [AddCommGroup E] [Module K E] [AddCommGroup V] [Module K V]
+  [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q] [Finite ι] [Finite κ]
+
+/-- The ordinary binary quotient has the same actual determinant maximum,
+with the two original weights added and with the quotient-rank denominator. -/
+theorem filtrationExpectation_tensor_image_eq_sup'
+    (b : Basis ι K E) (c : Basis κ K V) (w : ι → ℝ) (z : κ → ℝ)
+    {F : ℝ → Submodule K E} {G : ℝ → Submodule K V}
+    (hF : ∀ t, F t = span K (b '' {i | t ≤ w i}))
+    (hG : ∀ t, G t = span K (c '' {i | t ≤ z i}))
+    (d : Basis (Fin (finrank K Q)) K Q) (q : E ⊗[K] V →ₗ[K] Q)
+    (hq : Function.Surjective q) :
+    filtrationExpectation (fun t ↦ (tensorFiltration F G t).map q) =
+      (quotientDeterminantSupport (b.tensorProduct c) d q).sup'
+        (quotientDeterminantSupport_nonempty (b.tensorProduct c) d q hq)
+        (fun σ ↦ ∑ k, (w (σ k).1 + z (σ k).2)) / finrank K Q := by
+  simp_rw [tensorFiltration_eq_span_tensorProduct b c w z hF hG]
+  exact filtrationExpectation_image_eq_sup' (b.tensorProduct c) _ d q hq
+
+end BinaryMaximum
+
+end Submodule
+
+namespace ArakelovGeometry.NormFamily
+
+open AdelicStructure Submodule
+open scoped TensorProduct
+
+universe u
+
+variable {K Q ι κ : Type*} [Field K] {E V : Type u}
+  [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  [AddCommGroup V] [Module K V] [FiniteDimensional K V]
+  [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q] [Finite ι] [Finite κ]
+
+/-- The literal ordinary binary epsilon quotient norm has the determinant
+maximum of the prescribed original factor weights. -/
+theorem filtrationExpectation_pushforward_injectiveTensorPair_eq_sup'
+    (ξ : NormFamily (singleTrivialPlace K) E) (η : NormFamily (singleTrivialPlace K) V)
+    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric)
+    (b : Basis ι K E) (c : Basis κ K V) (w : ι → ℝ) (z : κ → ℝ)
+    (hb : ∀ t, ξ.trivialFiltration hξ t = span K (b '' {i | t ≤ w i}))
+    (hc : ∀ t, η.trivialFiltration hη t = span K (c '' {i | t ≤ z i}))
+    (d : Basis (Fin (finrank K Q)) K Q) (q : E ⊗[K] V →ₗ[K] Q)
+    (hq : Function.Surjective q) :
+    filtrationExpectation (((ξ.injectiveTensorPair η).pushforward q hq).trivialFiltration
+      ((ξ.injectiveTensorPair_isUltrametric η).pushforward q hq)) =
+      (quotientDeterminantSupport (b.tensorProduct c) d q).sup'
+        (quotientDeterminantSupport_nonempty (b.tensorProduct c) d q hq)
+        (fun σ ↦ ∑ k, (w (σ k).1 + z (σ k).2)) / finrank K Q := by
+  have hspan (t : ℝ) :
+      (ξ.injectiveTensorPair η).trivialFiltration (ξ.injectiveTensorPair_isUltrametric η) t =
+        span K (b.tensorProduct c '' {ij | t ≤ w ij.1 + z ij.2}) := by
+    rw [trivialFiltration_injectiveTensorPair ξ η hξ hη]
+    exact tensorFiltration_eq_span_tensorProduct b c w z hb hc t
+  exact filtrationExpectation_pushforward_eq_sup' (ξ.injectiveTensorPair η)
+    (ξ.injectiveTensorPair_isUltrametric η) (b.tensorProduct c)
+    (fun ij ↦ w ij.1 + z ij.2) hspan d q hq
+
+end ArakelovGeometry.NormFamily
