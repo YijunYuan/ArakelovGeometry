@@ -190,6 +190,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Op
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Inverse
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Pairing
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.QuotientDegree
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Rationality
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Quotient
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Tensor
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Variation
