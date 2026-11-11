@@ -1,0 +1,1212 @@
+{
+  "original_project_head": "161ea63971628dd225ff1748b913aaae80e52e07",
+  "workspace_head": "47880a32a1803bebea69820e8f94d744afb168ad",
+  "migrated_project_head": "7108675a6e9f5f02fcf9915cd7365d23f7c7c48a",
+  "excluded": [
+    "blueprint/**",
+    "bost.pdf",
+    "hgraph*/**",
+    "hgraph-source.yaml"
+  ],
+  "method": "Replay selected project snapshots as commits, preserve author/committer identities, dates and messages; append Workspace-Commit. Existing project history is unchanged. Empty excluded-only commits are skipped.",
+  "commits": [
+    {
+      "workspace_commit": "2edd04eeaaf5b9d4897cffa5fafaeadbfc68b451",
+      "project_commit": "8c3621ef534e397f02ff5fb10449ff1669674d34",
+      "subject": "feat(linear-algebra): construct a common basis for two finite flags",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/CommonAdaptedBasis.lean"
+      ]
+    },
+    {
+      "workspace_commit": "e18925346bab6443e897487a729eb974bf9c258c",
+      "project_commit": "57df8453e00f88d235b090bc7b1c87599bccd3bf",
+      "subject": "feat(tensor): prove finite orthogonal tensor dual norm identity",
+      "changed_paths": [
+        "ArakelovGeometry/Analysis/Tensor/HermitianDual.lean",
+        "ArakelovGeometry/Analysis/Tensor/HermitianTensor.lean"
+      ]
+    },
+    {
+      "workspace_commit": "6b4c4e9cca5ea1e768006e9974c3f16c442fe288",
+      "project_commit": "78a93ec240d1c96aebe53f44f8f5530d09bbb053",
+      "subject": "fix: bound Lean workers and serialize dependency rebuilds",
+      "changed_paths": [
+        "lakefile.toml"
+      ]
+    },
+    {
+      "workspace_commit": "9594d53804acaa4f4d35766291ebc71c3fa2a58a",
+      "project_commit": "c6e6796438450dbdfa7691ef25477d331358a2ca",
+      "subject": "workspace[0005] system: baseline",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Quotient.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Norm/CommonAdaptedBasis.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Norm/Quotient.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HermitianDual.lean",
+        "ArakelovGeometry/InvariantTheory/QuotientDeterminant.lean",
+        "ArakelovGeometry/InvariantTheory/Semistability.lean"
+      ]
+    },
+    {
+      "workspace_commit": "bbe59f827d6fc72db98552848d5023375c207297",
+      "project_commit": "a43be3e37a68ff5ece0c17cdc9b649828b509df9",
+      "subject": "workspace[0006] system: baseline",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Norm/CommonAdaptedBasis.lean",
+        "ArakelovGeometry/InvariantTheory/QuotientDeterminant.lean",
+        "ArakelovGeometry/InvariantTheory/Semistability.lean"
+      ]
+    },
+    {
+      "workspace_commit": "824afb3b336a0b469188fba679d7276d9c2dc9f5",
+      "project_commit": "498f604df63621e265bfa231a84b6be576763dca",
+      "subject": "feat(filtration): identify actual quotient balls with threshold images",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Quotient.lean"
+      ]
+    },
+    {
+      "workspace_commit": "1cbc982e709051f9f5f1595b99845f66fbcb61e7",
+      "project_commit": "1eff755b9c9ec80549549ca5627694720239a1b0",
+      "subject": "workspace[0003 r0] horizon A3: integrate 0005-horizon-A3",
+      "changed_paths": [
+        "ArakelovGeometry.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HermitianDual.lean",
+        "ArakelovGeometry/InvariantTheory/Plucker.lean",
+        "ArakelovGeometry/InvariantTheory/QuotientDeterminant.lean",
+        "ArakelovGeometry/LinearAlgebra/Filtration/Graded.lean",
+        "ArakelovGeometry/LinearAlgebra/Filtration/Tensor.lean",
+        "ArakelovGeometry/LinearAlgebra/LaurentSeries/CartanDecomposition.lean"
+      ]
+    },
+    {
+      "workspace_commit": "9d227a0666dd233881e1a9d576b0fbaeda52bb4d",
+      "project_commit": "cdea4f783309f5f3b7d9a45f6444d48407fb7312",
+      "subject": "workspace[0003] run finished",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/LaurentSeries/CartanDecomposition.lean"
+      ]
+    },
+    {
+      "workspace_commit": "24597558090b11365a5222cd518a1415989b2d49",
+      "project_commit": "6d4ead9cb485cb75983a62aa72be6d4a625d3a33",
+      "subject": "workspace[0004 r0] horizon A5-Q: integrate 0006-horizon-A5-Q",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HermitianDual.lean",
+        "ArakelovGeometry/InvariantTheory/Plucker.lean",
+        "ArakelovGeometry/InvariantTheory/QuotientDeterminant.lean",
+        "ArakelovGeometry/LinearAlgebra/Filtration/Tensor.lean",
+        "ArakelovGeometry/LinearAlgebra/Filtration/TensorGraded.lean",
+        "ArakelovGeometry/LinearAlgebra/LaurentSeries/CartanDecomposition.lean"
+      ]
+    },
+    {
+      "workspace_commit": "247af46feb9e479ca3d6aa687d960e81daec7f54",
+      "project_commit": "8d7dd0d853d6b662e976eed3805a860e8142fbe2",
+      "subject": "workspace[0004] run finished",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HermitianDual.lean",
+        "ArakelovGeometry/LinearAlgebra/LaurentSeries/CartanDecomposition.lean"
+      ]
+    },
+    {
+      "workspace_commit": "52bac0a7cbd3d0e5ef3fe30660df47bde223e1f5",
+      "project_commit": "2b71bdc46a74ae101bd0442bbb57c069200c2787",
+      "subject": "workspace[0007] system: baseline",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/LaurentSeries/CartanDecomposition.lean"
+      ]
+    },
+    {
+      "workspace_commit": "b231f5520d9defe964704b4df991f085e9ff79c2",
+      "project_commit": "031df61bb92b589c3049f8edda2bd0effd892d83",
+      "subject": "workspace[0008] system: baseline",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HermitianDual.lean",
+        "ArakelovGeometry/InvariantTheory/QuotientDeterminant.lean",
+        "ArakelovGeometry/InvariantTheory/Semistability.lean",
+        "ArakelovGeometry/LinearAlgebra/Filtration/TensorGraded.lean",
+        "ArakelovGeometry/LinearAlgebra/LaurentSeries/CartanDecomposition.lean"
+      ]
+    },
+    {
+      "workspace_commit": "4e653cd13844d9766d7b7eb03dc5d6538db64888",
+      "project_commit": "1c430c46b32b18a54ab418a2ef1818964d51ef22",
+      "subject": "feat(cartan): factor Laurent matrices with special-linear normalization",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/LaurentSeries/CartanDecomposition.lean"
+      ]
+    },
+    {
+      "workspace_commit": "498c6f6a70007d88b2aeb26a51ddb40c33eeb131",
+      "project_commit": "6ad257d7168cd2ea5470e4cd34711fa025ed96bb",
+      "subject": "feat(tensor): prove canonical finite reindexing preserves norms",
+      "changed_paths": [
+        "ArakelovGeometry/Analysis/Tensor/HermitianDual.lean"
+      ]
+    },
+    {
+      "workspace_commit": "bbb5eaa4369e8631e712571dfa37d0b6278280be",
+      "project_commit": "f5b7d1026c57e3890509e5a35b6972864c25a451",
+      "subject": "feat(cartan): construct natural diagonal one-parameter subgroups",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/LaurentSeries/CartanDecomposition.lean"
+      ]
+    },
+    {
+      "workspace_commit": "845abe966f14f37e9439b3b2e79c57b136f0d7c7",
+      "project_commit": "e8d8d46c64f98819051fb7ba2e3b3e78ba4fbf0c",
+      "subject": "feat(filtration): construct bases lifting prescribed flag quotient bases",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/Filtration/Lift.lean"
+      ]
+    },
+    {
+      "workspace_commit": "781fc8c53520668b3a095654b13c70d75f5f1b47",
+      "project_commit": "0ef19a161cb8c9ddfb524698758559ed72157463",
+      "subject": "feat(cartan): extract diagonal SL degenerations from Laurent arcs",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/LaurentSeries/CartanDecomposition.lean"
+      ]
+    },
+    {
+      "workspace_commit": "c90e1cefedebdb3375a1dfd9861d1ce2e51492c9",
+      "project_commit": "11037b0fefd5b566f7314366344816d59888ce10",
+      "subject": "feat(filtration): recover prescribed quotient cuts from lifted bases",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/Filtration/Lift.lean"
+      ]
+    },
+    {
+      "workspace_commit": "977df1885099a73d3d4b236bcb440ece1f2f66bb",
+      "project_commit": "d02b8e3c81ae9bd5e3895eb5ff8592db3c517309",
+      "subject": "Prove finite ultrametric tensor duality on all vectors",
+      "changed_paths": [
+        "ArakelovGeometry/Analysis/Tensor/HermitianDual.lean"
+      ]
+    },
+    {
+      "workspace_commit": "ffdf5caec643a8433b30ee4d73b3625ec710dbb7",
+      "project_commit": "9adac27eb8bb771a71042023cce141c12fbc2883",
+      "subject": "feat: integrate quotient filtrations and record verified A-group progress",
+      "changed_paths": [
+        "ArakelovGeometry.lean",
+        "todo.md"
+      ]
+    },
+    {
+      "workspace_commit": "47c1aaa54cb4d1bdf394442958c95528a8c340dc",
+      "project_commit": "52a82dd2f534e644f1d805428fddf20b964845fe",
+      "subject": "feat(invariant-theory): compare SL invariants with determinant-twisted GL polynomials",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/Linearization.lean",
+        "ArakelovGeometry/InvariantTheory/QuotientDeterminant.lean"
+      ]
+    },
+    {
+      "workspace_commit": "b81dcee4a2d5ee68b50bd2e6e37a9f8913abc818",
+      "project_commit": "88c09e1e49686b5d9b2bba1f60a6591feeb88d90",
+      "subject": "feat(filtration): construct canonical graded tensor maps and prove surjectivity",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/Filtration/TensorGraded.lean"
+      ]
+    },
+    {
+      "workspace_commit": "f786d856ea3cb3bc18e6aadafa73edb5173ec497",
+      "project_commit": "91d3ee22fb43137ecc96ac95557c47b09fc582b3",
+      "subject": "Transport finite orthogonal duality and reindexing to every completed fibre",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HermitianDual.lean"
+      ]
+    },
+    {
+      "workspace_commit": "4295cff7e4f279160acd1522d614af1a67e50956",
+      "project_commit": "0e23488e7195ff1df116f08f8046211d1b3dcc73",
+      "subject": "feat(filtration): derive intrinsic expectation and pairing from graded dimensions",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/Filtration/Pairing.lean"
+      ]
+    },
+    {
+      "workspace_commit": "fd2eec4ab90d29510d7faad688ecd6541cc5ed53",
+      "project_commit": "ad7990f8934d59a62f67fd40fd213dcf3cd6946b",
+      "subject": "Prove finite orthogonal grouping preserves the full inner form",
+      "changed_paths": [
+        "ArakelovGeometry/Analysis/Tensor/HermitianDual.lean"
+      ]
+    },
+    {
+      "workspace_commit": "7e4867a59ad7d9bdaf77e1562837cdd668c48373",
+      "project_commit": "ca6f657c668cda3934e3033e140af18a008cdcb2",
+      "subject": "feat(filtration): prove the full canonical graded tensor decomposition",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/Filtration/TensorGraded.lean"
+      ]
+    },
+    {
+      "workspace_commit": "e955c0544bc70339a3b999f90f1beeef289680ef",
+      "project_commit": "cc5d4fc3934a5c3cdd58c2439f6df63d226d18ff",
+      "subject": "Control canonical joining by the injective product norm",
+      "changed_paths": [
+        "ArakelovGeometry/Analysis/Tensor/HermitianDual.lean"
+      ]
+    },
+    {
+      "workspace_commit": "496650a99cb2876ddf2b56e9f384760d24ab6dbf",
+      "project_commit": "7406a799670ec2042fe28e9bcec0db94c79e7bb4",
+      "subject": "feat(invariant-theory): connect quotient Plucker invariants to the tensor linearization",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/Plucker.lean"
+      ]
+    },
+    {
+      "workspace_commit": "bbf49d71d79d83ebbf114f8e52986f4d76dd8664",
+      "project_commit": "2e06803f9b4b9eef0c8409ce076183d67b455a25",
+      "subject": "feat(filtration): prove tensor naturality and canonical image-grade surjection",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/Filtration/TensorGraded.lean"
+      ]
+    },
+    {
+      "workspace_commit": "bac6bae24c9221af187891c9ac3beeed0c987777",
+      "project_commit": "324a3d21b9296709749fe9f33dcc5b324fb3b0a5",
+      "subject": "feat(filtration): construct prescribed quotient lifts and add their degrees",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Lift.lean"
+      ]
+    },
+    {
+      "workspace_commit": "7a545dfbb86349248558bab1e1a05af3fe811eb8",
+      "project_commit": "acfbcab0007243914ff059bfc682601e85b11d8c",
+      "subject": "feat(filtration): identify intrinsic expectation with actual adelic slope",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Expectation.lean"
+      ]
+    },
+    {
+      "workspace_commit": "499ea602b0fe43e51f4cf5c9568ff6d72b1a980d",
+      "project_commit": "127eb71e6351ee2dc3fbef95a23a4fffdf080b09",
+      "subject": "workspace[0006 r0] horizon A8-CARTAN: integrate 0002-horizon-A8-CARTAN",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Tensor.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Variation.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HermitianDual.lean",
+        "ArakelovGeometry/InvariantTheory/Plucker.lean",
+        "ArakelovGeometry/InvariantTheory/Projective.lean",
+        "ArakelovGeometry/LinearAlgebra/Filtration/Lift.lean"
+      ]
+    },
+    {
+      "workspace_commit": "4c197b014e3de55be678bd68802092c5167e29c0",
+      "project_commit": "1920aaba157d67364c8441ff766e4117ea3fd55a",
+      "subject": "feat: expose Laurent-series Cartan decomposition",
+      "changed_paths": [
+        "ArakelovGeometry.lean"
+      ]
+    },
+    {
+      "workspace_commit": "74007c98d9ed244f42ee54856a1c7e7a9a699735",
+      "project_commit": "1ca09899bbe04ceb3303e35737fde7013d650a31",
+      "subject": "workspace[0006] run finished",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Tensor.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Variation.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HermitianDual.lean",
+        "ArakelovGeometry/LinearAlgebra/Filtration/Lift.lean"
+      ]
+    },
+    {
+      "workspace_commit": "da7382d5809c5b6f5168810935f3ada99d5cc518",
+      "project_commit": "3febcebbb17009aa9a795bd3f69375209ff97a94",
+      "subject": "Expose finite completed dual isometry and canonical grouping bridges",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HermitianDual.lean"
+      ]
+    },
+    {
+      "workspace_commit": "444f8a7bb12bb6164896fbfdbf080952bbb442a9",
+      "project_commit": "f5fd770792beb0e20134eb00d1fb6251dd45e98c",
+      "subject": "workspace[0009] system: baseline",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Lift.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Tensor.lean",
+        "ArakelovGeometry/LinearAlgebra/Filtration/Pairing.lean"
+      ]
+    },
+    {
+      "workspace_commit": "f8fdd94fe00ac6153edf86b5e2d6f95d5acde1f9",
+      "project_commit": "f9eb28f97c116c49af8fbc5599bf1a084074cdc2",
+      "subject": "fix: export Cartan producers through the module system",
+      "changed_paths": [
+        "ArakelovGeometry.lean",
+        "ArakelovGeometry/LinearAlgebra/LaurentSeries/CartanDecomposition.lean"
+      ]
+    },
+    {
+      "workspace_commit": "be8fcb6a7c1d2c1cf1cb901f31b275736ec536b7",
+      "project_commit": "6e564222dd0c5ec9fa2732f70fd318b74e649a6c",
+      "subject": "Assemble orthogonal grouping on completed archimedean fibres",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HermitianDual.lean"
+      ]
+    },
+    {
+      "workspace_commit": "4f56e058a779022619d4445c9e63fb96eb6e585e",
+      "project_commit": "8ab2a461fc6d4ea15ebde0dadcf753cd4cde91cc",
+      "subject": "style: add the Cartan module license header",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/LaurentSeries/CartanDecomposition.lean"
+      ]
+    },
+    {
+      "workspace_commit": "bbccb4d68ed19115ec0410301bd16add9f90976a",
+      "project_commit": "a5c94a01c8fc7c03cf934810f7c32262367b2d6b",
+      "subject": "feat(filtration): identify epsilon tensor balls and actual quotient grades",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Tensor.lean"
+      ]
+    },
+    {
+      "workspace_commit": "22fa2f61b5e46266305be63a7beafef7bb0ad827",
+      "project_commit": "996328c201bd8ef4cb9ad791fdf2696699977765",
+      "subject": "workspace[0002 r0] horizon A2: integrate 0006-horizon-A2",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/HNLift.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Lift.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Pairing.lean"
+      ]
+    },
+    {
+      "workspace_commit": "9766c5f3d1f5a7ecc7e70cb1f67421108aef5290",
+      "project_commit": "67230b07a9e14ff6b3ea0815adba500d05b12710",
+      "subject": "docs: record checked A2 completion and the Cartan boundary",
+      "changed_paths": [
+        "todo.md"
+      ]
+    },
+    {
+      "workspace_commit": "34914205354052143bb7c3bc341623af1cb59545",
+      "project_commit": "8f91eaae2d755b39873d944220de004396eb7e2b",
+      "subject": "feat(filtration): prove finite-family tensor weighted and strict spans",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/Filtration/Tensor.lean"
+      ]
+    },
+    {
+      "workspace_commit": "4c413f53dc600dac1c3719e9238e70f8baabe499",
+      "project_commit": "58166df6be089fb5b69f5ffec50f04cd810b810b",
+      "subject": "Prove finite grouping isometric at every completed place",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HermitianDual.lean"
+      ]
+    },
+    {
+      "workspace_commit": "9681df1710ca8de61ba635757caa88a0ab1d62ee",
+      "project_commit": "efad2fc968649c1aa24e946a83d18279b25a9fbf",
+      "subject": "feat(filtration): prove the actual other-norm graded degree pairing formula",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Pairing.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Variation.lean",
+        "ArakelovGeometry/LinearAlgebra/Filtration/Pairing.lean"
+      ]
+    },
+    {
+      "workspace_commit": "bbe6695dbace91991c164aa8da2a7be4086d9e85",
+      "project_commit": "513b4de9c46c33f3b0e7ee1b2b680bd27a6733ed",
+      "subject": "feat(filtration): lift actual quotient HN filtrations with both weighted identities",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/HNLift.lean"
+      ]
+    },
+    {
+      "workspace_commit": "48f94dd1f0b9844d77147a56ff7c5c4d58a591a3",
+      "project_commit": "c3e8178b2c48efe33c6543907cc2af9af98391c2",
+      "subject": "feat(filtration): derive determinant maximum from adapted quotient weights",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/Filtration/Optimization.lean"
+      ]
+    },
+    {
+      "workspace_commit": "5a47193add15c0fdd726934c4bbf7b832605091e",
+      "project_commit": "1a1288fcd7f118e49b982ddcaea07e5d92149add",
+      "subject": "Derive completed finite rearrangement and tensor-power regrouping",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HermitianDual.lean"
+      ]
+    },
+    {
+      "workspace_commit": "b3d8727d25bd93a4957d7c809387086176b4c20f",
+      "project_commit": "d4d7a66b5c98b5a88c98eeb15227392c39235b46",
+      "subject": "workspace[0007 r0] horizon A4: integrate 0002-horizon-A4",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/QuotientDegree.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Tensor.lean"
+      ]
+    },
+    {
+      "workspace_commit": "73422f49f29f5c3d935d960158b7e374e3d0bb74",
+      "project_commit": "8d86441723864fd3b168440997d7afd09bd1848e",
+      "subject": "workspace[0008] run finished",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Optimal.lean"
+      ]
+    },
+    {
+      "workspace_commit": "b98a678eeda5a402012fb87d34c5c40a3fb3d25f",
+      "project_commit": "94f992d91be958d5fd0dac176816a7d26e75bec8",
+      "subject": "feat: expose filtration variation and actual HN quotient lifting",
+      "changed_paths": [
+        "ArakelovGeometry.lean"
+      ]
+    },
+    {
+      "workspace_commit": "68b674ecc5b49770ebc011c29cd3e2028acd8e71",
+      "project_commit": "e9206714bafa7bbb4e8f2f9bab3ae8a057916091",
+      "subject": "workspace[0005 r0] horizon A5-T: integrate 0002-horizon-A5-T",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Optimal.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HermitianDual.lean"
+      ]
+    },
+    {
+      "workspace_commit": "f86cc957418d386382e7b049a991b6d48989655a",
+      "project_commit": "7d7b3a4cefff67e3fa4e8ba80930fcaef0473944",
+      "subject": "feat(filtration): minimize actual quotient values over realized supports",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/QuotientDegree.lean"
+      ]
+    },
+    {
+      "workspace_commit": "8048f823807327afde9d6929a1c7ad70ed0b8311",
+      "project_commit": "1f9e94a662da86a92b0ebd784423ce573d8cb5d3",
+      "subject": "feat(tensor): prove completed binary commutor and associator norm identities",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HermitianDual.lean"
+      ]
+    },
+    {
+      "workspace_commit": "e8c2c9cd3bb1f1cd09ec64e7d493aff1d8c7cb69",
+      "project_commit": "ab541365a5fb712a9ccfa05757ddc3bb52a60081",
+      "subject": "refactor: scope CM inputs to the Bost consumers",
+      "changed_paths": [
+        "ArakelovGeometry.lean",
+        "todo.md"
+      ]
+    },
+    {
+      "workspace_commit": "151698699ad970a6caa72f2768af2fb217bb3b84",
+      "project_commit": "323b885dba8635ac098ad5e982e4327945f4b52f",
+      "subject": "workspace[0010] system: baseline",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Optimal.lean"
+      ]
+    },
+    {
+      "workspace_commit": "635f7e8951887f064eacac7ccc00cc85a8999d4e",
+      "project_commit": "c5484f41447b43affe764e8582990f04538f48e2",
+      "subject": "feat(filtration): prove unique actual normalized quotient optimizer",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Optimal.lean"
+      ]
+    },
+    {
+      "workspace_commit": "013447a0a9720f5b1136d57308a63babd7d5a500",
+      "project_commit": "72444e8c778b2b45b5d98e50d9c7038042a578f0",
+      "subject": "feat(tensor): prove full evaluation coherence for duality and regrouping",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HermitianDual.lean"
+      ]
+    },
+    {
+      "workspace_commit": "7804ec5d2e496795dcad2f7ab9146e00dd4ea74d",
+      "project_commit": "b8d3ea23790bcc2f7c286cf84beb866562d5a5c1",
+      "subject": "docs: make Bost scope and selective external provenance explicit",
+      "changed_paths": [
+        "ExternalResults.lean",
+        "ExternalResults/README.md",
+        "README.md",
+        "lakefile.toml"
+      ]
+    },
+    {
+      "workspace_commit": "c6f5dd3c938f3cfce9dee88a3a54cf6d34c5f1ac",
+      "project_commit": "7fd5c77afb0384b1cea50757100248c27890ac08",
+      "subject": "docs: explain why the binary filtration interface suffices for Bost",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Tensor.lean"
+      ]
+    },
+    {
+      "workspace_commit": "8b917e969a95d71a4c21200c076b6f33bfd3c391",
+      "project_commit": "bece363408fd943ce173636fff9a4e2a8e6aa638",
+      "subject": "Prove canonical graded maps contract actual subquotient norms",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/Graded.lean"
+      ]
+    },
+    {
+      "workspace_commit": "fdd1f1e3d24315bfa157482045b48e5ebb0e1480",
+      "project_commit": "209bc4f061f4884647df60f18fa58ca0651d262a",
+      "subject": "workspace[0001 r0] horizon A1: integrate 0005-horizon-A1",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Optimal.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/QuotientDegree.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/Graded.lean"
+      ]
+    },
+    {
+      "workspace_commit": "ae301d2afa3437c0bd098f20dabec44c745cfc58",
+      "project_commit": "2d6419e72da499e198a550e12085d28e7326c67c",
+      "subject": "workspace[0011] system: baseline",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Optimal.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/Graded.lean"
+      ]
+    },
+    {
+      "workspace_commit": "0a5d2963c1ab12c7ad4efbbe456087716d4955f1",
+      "project_commit": "74b63af6728904525bd59297d21319eced280d92",
+      "subject": "feat: integrate checked orthogonal tensor duality for Bost",
+      "changed_paths": [
+        "ArakelovGeometry.lean",
+        "README.md",
+        "todo.md"
+      ]
+    },
+    {
+      "workspace_commit": "d55125f88b3971348fdfb278e28ab26b4045447a",
+      "project_commit": "86d3f371358e7c98af142dd6c582f1e7cfcdf6d9",
+      "subject": "Prove all-place canonical binary graded pair contractions",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/Graded.lean"
+      ]
+    },
+    {
+      "workspace_commit": "8080567f50b707ce59b9cea7a0720d553f8fcd14",
+      "project_commit": "0a34f434996cfa4f8960da7f8b9e6c88c9ace880",
+      "subject": "workspace[0009 r0] horizon A9-CORE: integrate 0002-horizon-A9-CORE",
+      "changed_paths": [
+        "ArakelovGeometry/LinearAlgebra/Valuation/CartanDecomposition.lean",
+        "ExternalResults/Stacks/LICENSE",
+        "ExternalResults/Stacks/README.md",
+        "ExternalResults/Stacks/StacksCore/LinearAlgebra/Matrix/CommSemiring.lean",
+        "ExternalResults/Stacks/StacksCore/Tactic/EgaSgaAttribute.lean",
+        "ExternalResults/Stacks/StacksCore/Tactic/StacksAttribute.lean",
+        "ExternalResults/Stacks/StacksFrontier/AlgebraicGeometry/Limits/NoetherianValuativeCriterion/DiscreteValuationSpecialization.lean",
+        "ExternalResults/Stacks/StacksFrontier/AlgebraicGeometry/Morphisms/Closure/ImageValuativeDiagram.lean",
+        "ExternalResults/Stacks/StacksFrontier/RingTheory/Artinian/Basic.lean",
+        "ExternalResults/Stacks/StacksFrontier/RingTheory/DiscreteValuationRing/Existence.lean",
+        "ExternalResults/Stacks/StacksFrontier/RingTheory/Ideal/Over/HeightOne.lean",
+        "ExternalResults/Stacks/StacksFrontier/RingTheory/IntegralClosure/DedekindDomain.lean",
+        "ExternalResults/Stacks/StacksFrontier/RingTheory/KrullAkizuki.lean",
+        "ExternalResults/Stacks/StacksFrontier/RingTheory/KrullAkizuki/DominatingDimOne.lean",
+        "ExternalResults/Stacks/StacksFrontier/RingTheory/KrullAkizuki/IntermediateRingNoetherian.lean",
+        "ExternalResults/Stacks/StacksFrontier/RingTheory/KrullAkizuki/LengthBound.lean",
+        "ExternalResults/Stacks/StacksFrontier/RingTheory/Spectrum/Prime/Integral.lean",
+        "ExternalResults/Stacks/provenance.json"
+      ]
+    },
+    {
+      "workspace_commit": "b1ba58899b579dcff5564c56773f2a81a953e54b",
+      "project_commit": "a9a03623c9cf2df8cf28aada5e913530935f7fc2",
+      "subject": "Integrate conditional optimizer and narrow external representation input",
+      "changed_paths": [
+        "ArakelovGeometry.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Optimal.lean",
+        "ExternalResults/README.md",
+        "README.md"
+      ]
+    },
+    {
+      "workspace_commit": "62a3b4d441176ddfe1a006aaa9272ab0ab087c1e",
+      "project_commit": "747af5a198925f95f4639a1ff1fb6798d2a4922e",
+      "subject": "workspace[0012] system: baseline",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Degree/Flag/ImageHN.lean",
+        "ArakelovGeometry/LinearAlgebra/Valuation/CartanDecomposition.lean",
+        "ExternalResults/Stacks/README.md",
+        "ExternalResults/Stacks/StacksFrontier/RingTheory/KrullAkizuki/DominatingDimOne.lean",
+        "ExternalResults/Stacks/provenance.json"
+      ]
+    },
+    {
+      "workspace_commit": "93b76af304e1435a541a2f5204c6b1105a409122",
+      "project_commit": "c9f2e1a3fa6d5bd9506ecd0619b7e62becb9240d",
+      "subject": "feat(dvr): port the selected Stacks specialization producer",
+      "changed_paths": [
+        "ExternalResults/Stacks/provenance.json"
+      ]
+    },
+    {
+      "workspace_commit": "564481a9fdf558135cb8f92c185ea953771c26a4",
+      "project_commit": "8c5ab78f5f20d909f2be0dcad37dbedfdc71d98c",
+      "subject": "Record verified selective Stacks port and its remaining consumers",
+      "changed_paths": [
+        "ExternalResults/README.md",
+        "README.md"
+      ]
+    },
+    {
+      "workspace_commit": "0d40e7461798c02822717e5af574c81bf57403c8",
+      "project_commit": "e2786e5e1e35a91c959463ff82eb390e5d667a32",
+      "subject": "Scope Bost HN variation to its finite-epsilon consequence",
+      "changed_paths": [
+        "README.md"
+      ]
+    },
+    {
+      "workspace_commit": "ded5cc9d5bd725fb3db3e1bb3d1c20953c65f3e5",
+      "project_commit": "63c85db65ca4ec5e45f669147e802e587eb2bfad",
+      "subject": "workspace[0013] system: baseline",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Degree/Flag/ImageHN.lean",
+        "ArakelovGeometry/InvariantTheory/DVRWeights.lean"
+      ]
+    },
+    {
+      "workspace_commit": "d5971f1d7adcbdf9604dda20a8e268568549cb79",
+      "project_commit": "dbb4665885b00338db140a10287579521e9bc25d",
+      "subject": "Prove finite-image grade spanning and same-slope degree bound",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Degree/Flag/ImageHN.lean"
+      ]
+    },
+    {
+      "workspace_commit": "ca27714edae6d472eda244f9bf0c401a7b4709a2",
+      "project_commit": "6d35beb2f3b85ed1769e55a923d04d88fb45c486",
+      "subject": "Document sufficient variation upper bound and clear HN lift style warning",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Lift.lean",
+        "README.md"
+      ]
+    },
+    {
+      "workspace_commit": "51a2183d139e9c137f7ad55a03ad61a43a398af0",
+      "project_commit": "097316e35e1e36d094d9eab24b09f4c447c71031",
+      "subject": "Prove selected semisimple centralizer input for tensor powers",
+      "changed_paths": [
+        "ExternalResults/EtingofRepresentationTheory/CentralizerDecomposition.lean",
+        "ExternalResults/EtingofRepresentationTheory/LICENSE",
+        "ExternalResults/EtingofRepresentationTheory/NOTICE",
+        "ExternalResults/EtingofRepresentationTheory/provenance.json"
+      ]
+    },
+    {
+      "workspace_commit": "73d2f600d75553e1e060c85ca8521af8042fc2b4",
+      "project_commit": "30a012fdae47dbbb0d11b40848883e2519630720",
+      "subject": "workspace[0014] system: baseline",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Degree/Flag/ImageHN.lean",
+        "ArakelovGeometry/InvariantTheory/DVRWeights.lean",
+        "ExternalResults/EtingofRepresentationTheory/Auxiliary/MutualCentralizers.lean",
+        "ExternalResults/EtingofRepresentationTheory/PiTensorProduct/Constructions.lean",
+        "ExternalResults/EtingofRepresentationTheory/PiTensorProduct/MapSpanCentralizer.lean",
+        "ExternalResults/EtingofRepresentationTheory/TensorProducts/Auxiliary.lean"
+      ]
+    },
+    {
+      "workspace_commit": "5d897dd65206a0ab14ab21bf3905c41cb1b4a952",
+      "project_commit": "a2b8650fb868179eca40bf4d16870af7efa74a31",
+      "subject": "Prove selected tensor image semisimplicity and GL spanning",
+      "changed_paths": [
+        "ExternalResults/EtingofRepresentationTheory/Auxiliary/MutualCentralizers.lean",
+        "ExternalResults/EtingofRepresentationTheory/PiTensorProduct/MapSpanCentralizer.lean",
+        "ExternalResults/EtingofRepresentationTheory/provenance.json"
+      ]
+    },
+    {
+      "workspace_commit": "53a3802496ade2f7fa78642bb4fefa2580f2bed1",
+      "project_commit": "b875ab427c9e942d289583bdf0fdaebe65f352ea",
+      "subject": "Prove the actual finite-image HN weighted degree inequality",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Degree/Flag/ImageHN.lean"
+      ]
+    },
+    {
+      "workspace_commit": "e0884a18f9233942458ee595019c52bc02236cbb",
+      "project_commit": "6d93c1b3c0f7954dd54a6a997b8803a7ddb95666",
+      "subject": "Prove semistable actual HN lifts have nonpositive centered pairing",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/HNOptimalVariation.lean"
+      ]
+    },
+    {
+      "workspace_commit": "cec618debc790d15b7cc3ed571f88603d1b50ac0",
+      "project_commit": "32b1d7610641a503fbe23bc3dd3b5f4d45b67aee",
+      "subject": "Prove actual filtration images and invariants commute with scalar extension",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/ScalarExtension.lean"
+      ]
+    },
+    {
+      "workspace_commit": "490ac8e921b1eb2d0cd788a988078d9c1e1ad4f4",
+      "project_commit": "6a54ab9f446f5bedd27ce0e63a8c16333c54bb80",
+      "subject": "Prove actual SL tensor-power semisimplicity and invariant lifts",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/TensorPowerSemisimple.lean",
+        "ExternalResults/EtingofRepresentationTheory/Auxiliary/MutualCentralizers.lean",
+        "ExternalResults/EtingofRepresentationTheory/PiTensorProduct/MapSpanCentralizer.lean",
+        "ExternalResults/EtingofRepresentationTheory/README-entry.txt",
+        "ExternalResults/EtingofRepresentationTheory/README.md",
+        "ExternalResults/EtingofRepresentationTheory/evidence/2026-11-11T04-17-30.150449+00-00-bc8907f2ff9b4473.json",
+        "ExternalResults/EtingofRepresentationTheory/evidence/2026-11-11T04-18-08.490920+00-00-5d3e714e09632681.json",
+        "ExternalResults/EtingofRepresentationTheory/evidence/AxiomAudit.lean",
+        "ExternalResults/EtingofRepresentationTheory/evidence/AxiomAudit.results.txt",
+        "ExternalResults/EtingofRepresentationTheory/provenance.json"
+      ]
+    },
+    {
+      "workspace_commit": "74a934a5b729070611710d516e47d2fa59ca22ca",
+      "project_commit": "79e9c8c4d58e1ddc8ddc12fdf41a1f5a0745321f",
+      "subject": "Prove exact tensor quotient base change and Galois invariance",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/ScalarExtension.lean"
+      ]
+    },
+    {
+      "workspace_commit": "39de3ed0b866bea1152b15e162f0399c23e615ed",
+      "project_commit": "416ee8163765fffbda6ba1c4720101cb5a622476",
+      "subject": "Derive Bost HN slope lower bound from actual quotient optimality",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/HNOptimalVariation.lean"
+      ]
+    },
+    {
+      "workspace_commit": "af7cd224f4a448cc3fee26c74fb95e1b9ea36534",
+      "project_commit": "ce22f1bb3ded624011d0a60eb8c17323969daa24",
+      "subject": "Integrate the minimal verified SL tensor-power foundation",
+      "changed_paths": [
+        "ArakelovGeometry.lean",
+        "ExternalResults/README.md",
+        "README.md"
+      ]
+    },
+    {
+      "workspace_commit": "e55519e12dbf6fa48ff438da6645946a3bc619b5",
+      "project_commit": "b89765e1a96a4e7c47ee7bb7835c84b180708203",
+      "subject": "feat(dvr): prove actual binary determinant negative support",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/DVRWeights.lean",
+        "ArakelovGeometry/LinearAlgebra/Valuation/CartanDecomposition.lean",
+        "ExternalResults/Stacks/README.md",
+        "ExternalResults/Stacks/StacksFrontier/AlgebraicGeometry/Limits/NoetherianValuativeCriterion/DiscreteValuationSpecialization.lean",
+        "ExternalResults/Stacks/provenance.json"
+      ]
+    },
+    {
+      "workspace_commit": "9397c033ff61ed560cc27e217bc42b3444781492",
+      "project_commit": "3e79243ba774b54f34ef650fa92d0eb33daea802",
+      "subject": "workspace[0012 r0] horizon A8-SCHUR: integrate 0002-horizon-A8-SCHUR",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/HNOptimalVariation.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Rationality.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/Graded.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/GradedDegree.lean"
+      ]
+    },
+    {
+      "workspace_commit": "31a50ed25359d541825e43c507b316ca9d03d0c3",
+      "project_commit": "339ca0900771c45280f9315394371308acb22eae",
+      "subject": "workspace[0011 r0] horizon A8-DVR: integrate 0002-horizon-A8-DVR",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Rationality.lean"
+      ]
+    },
+    {
+      "workspace_commit": "dd40dd2ca045e91d56f9cbf6b5895a8c06bb2f5b",
+      "project_commit": "76945fa18ac7a69a15e97eb349721e8eb02d765f",
+      "subject": "Descend an actual centered negative binary pair by optimizer uniqueness",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Rationality.lean"
+      ]
+    },
+    {
+      "workspace_commit": "b21d4f10c9ab4dab81f0c606b7fef2874ec4452b",
+      "project_commit": "37ab15675d4c99c86efa9669759aff71033ce987",
+      "subject": "Consume actual graded pairs in the Bost local degree bound",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Degree/Flag/ImageHN.lean"
+      ]
+    },
+    {
+      "workspace_commit": "114be84c4ae0f434077eb544e38ae34be5549370",
+      "project_commit": "deab95746d55141325cef9ffa5a29ce118374a1e",
+      "subject": "Integrate actual DVR quotient determinant weight extraction",
+      "changed_paths": [
+        "ArakelovGeometry.lean",
+        "README.md"
+      ]
+    },
+    {
+      "workspace_commit": "1a769d3379678974f892d54de68b5dec061d2dac",
+      "project_commit": "16f4953d9ca18ddc3db96fd82435bed98e4ce9bd",
+      "subject": "Clarify local provenance of the rationality descent argument",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Rationality.lean"
+      ]
+    },
+    {
+      "workspace_commit": "14aa760fc5dd86aecbb8f134aa5069159d26b9dd",
+      "project_commit": "e7401ca0b4778581d42fc2adde433e27961beb85",
+      "subject": "workspace[0013 r0] horizon A9-HN-VAR: integrate 0002-horizon-A9-HN-VAR",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/GradedDegree.lean",
+        "ArakelovGeometry/InvariantTheory/BinaryOrbitCoordinates.lean"
+      ]
+    },
+    {
+      "workspace_commit": "08f1f8d778de487a243aedbfce040368924b8278",
+      "project_commit": "c374ec9e24a17f87ac0e0df56bce1592dc0e033e",
+      "subject": "Integrate actual negative-filtration descent over infinite extensions",
+      "changed_paths": [
+        "ArakelovGeometry.lean",
+        "README.md"
+      ]
+    },
+    {
+      "workspace_commit": "279d700a4a1f93c9e7e94c3eb4eb887892bb1a14",
+      "project_commit": "ec17ef5fba803767a4858a90425e149631616708",
+      "subject": "Construct actual binary SL orbit coordinates and prove scheme-image closure",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryOrbitCoordinates.lean"
+      ]
+    },
+    {
+      "workspace_commit": "daa8ef74673d0a3704e195ee1104bbe23dfd7841",
+      "project_commit": "9ec990ad650907feb5897007be711b5339749841",
+      "subject": "Prove global Bost degree bound and actual grade coordinates",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/GradedDegree.lean"
+      ]
+    },
+    {
+      "workspace_commit": "ae574f23ea945329bf900de8a5a2a6900d5d2ced",
+      "project_commit": "a458b5fd2c86cc50349d468c5919e8dd8c7c36dc",
+      "subject": "Prove the actual inverse-pullback polynomial action and degree compatibility",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/PolynomialAction.lean"
+      ]
+    },
+    {
+      "workspace_commit": "883558c4a79921e56d31e4f65f60a979bbf32dbc",
+      "project_commit": "ed62364f187b2409bc20986f46b8253b348c0659",
+      "subject": "Prove homogeneous multiplication surjectivity and successive invariant lifting",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryPolynomialSemisimple.lean",
+        "ArakelovGeometry/InvariantTheory/HomogeneousTensor.lean"
+      ]
+    },
+    {
+      "workspace_commit": "9309bf38acb7b6054701565884b0b28b6f6fadaf",
+      "project_commit": "24cb71e62b321cd146c383e3229106313a6d293d",
+      "subject": "workspace[0014 r0] horizon A8-RATIONALITY: integrate 0002-horizon-A8-RATIONALITY",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/GradedDegree.lean",
+        "ArakelovGeometry/InvariantTheory/BinaryOrbitDVR.lean",
+        "ArakelovGeometry/InvariantTheory/BinaryPolynomialSemisimple.lean"
+      ]
+    },
+    {
+      "workspace_commit": "bf8d734726be12e8d06c5a6a2c99e2d83487fb3d",
+      "project_commit": "7a93c1990c51821870fea00028ebed0c45c76875",
+      "subject": "workspace[0014] run finished",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryPolynomialSemisimple.lean"
+      ]
+    },
+    {
+      "workspace_commit": "ae5a0c1e52b6c3829a5830d0a6ab769064e408a5",
+      "project_commit": "57b3cda8b812ad791013991705b3ed0df1929424",
+      "subject": "workspace[0017] system: baseline",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryPolynomialSemisimple.lean"
+      ]
+    },
+    {
+      "workspace_commit": "a46b3424a4cc92964d88d99dfb9d64946b84e946",
+      "project_commit": "4d019f536ce1812dc4564b64a03f22599e9a5ef5",
+      "subject": "Integrate the proved Bost HN-lift optimality consequence",
+      "changed_paths": [
+        "ArakelovGeometry.lean",
+        "README.md"
+      ]
+    },
+    {
+      "workspace_commit": "98f3e8638f1cc1ce0fd85f7e0f65c7404cc593d0",
+      "project_commit": "3f14240ec64d038e90e4a89719b611c78b327327",
+      "subject": "Prove actual binary bounded-polynomial module semisimplicity",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryPolynomialSemisimple.lean",
+        "ArakelovGeometry/InvariantTheory/HomogeneousTensor.lean"
+      ]
+    },
+    {
+      "workspace_commit": "09b33f136173c5ca823ac9a2e874887ca52615ec",
+      "project_commit": "2fc3cef32cde70914d2c26e3b0722e73471ac796",
+      "subject": "Prove finite polynomial solvability descent to an algebraically closed field",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/PolynomialSolutionDescent.lean"
+      ]
+    },
+    {
+      "workspace_commit": "434d725c63057ffceabe028fa8cdcd71baa57715",
+      "project_commit": "734ec5c981f95b664b647b8a9478d706a1130af3",
+      "subject": "Prove the actual Bost HN-lift quotient variation upper bound",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/GradedDegree.lean"
+      ]
+    },
+    {
+      "workspace_commit": "5869a49610ca9fc8a15e939ec03086396ad5b3bf",
+      "project_commit": "a2f4307e6d699b2c57b8222e3ce90863f8077a3c",
+      "subject": "Descend determinant equations to actual centered negative filtrations",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryNegativeFiltration.lean"
+      ]
+    },
+    {
+      "workspace_commit": "12e18ecae0568c0a3d88fe48bf0a63c757121b46",
+      "project_commit": "a6efa57b5895b03e72dd971066003dc9ed4cc2c7",
+      "subject": "Prove actual binary tensor orbit separation and coordinate transports",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/OrbitSeparation.lean"
+      ]
+    },
+    {
+      "workspace_commit": "e74dc0694622cea1f11ac5d40b40be53915259ed",
+      "project_commit": "711a949c2e81990bc4a899a76cdd111dd9cdcc13",
+      "subject": "workspace[0018] system: baseline",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryNegativeFiltration.lean",
+        "ArakelovGeometry/InvariantTheory/BinaryOrbitDVR.lean"
+      ]
+    },
+    {
+      "workspace_commit": "a1735791c44910f514ee4465cc892028bae21c86",
+      "project_commit": "008fbba87343a00dd00ae66405f1d678a9482a95",
+      "subject": "workspace[0010 r0] horizon A6: integrate 0002-horizon-A6",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryNegativeFiltration.lean"
+      ]
+    },
+    {
+      "workspace_commit": "24f6f0feb3a6e0d871edbb3c8d90a916a9a9d983",
+      "project_commit": "2f0eae1ed6f9b14e1449c872933ea8e858281117",
+      "subject": "Integrate the checked Bost graded-degree and HN variation bound",
+      "changed_paths": [
+        "ArakelovGeometry.lean",
+        "README.md"
+      ]
+    },
+    {
+      "workspace_commit": "0b4880f0e9f7c055fc8d5cc4ee1c3f3d53eaadd2",
+      "project_commit": "db18cb36378ac27b7dc5993b660a5ddbaa1828a0",
+      "subject": "Identify original quotient determinants through base change and residue",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryNegativeFiltration.lean"
+      ]
+    },
+    {
+      "workspace_commit": "cda0f9b90859509995c8d79cd99bf298aca65f5a",
+      "project_commit": "aa4e415ff69d4e723126fbf769968b03219c9ff3",
+      "subject": "Integrate actual binary orbit separation for the Bost instability route",
+      "changed_paths": [
+        "ArakelovGeometry.lean",
+        "README.md"
+      ]
+    },
+    {
+      "workspace_commit": "094c0282e61225149d691d9ba3e59c5564e22e6d",
+      "project_commit": "080eaa0c45230fab87d83a2c138ac5457246116e",
+      "subject": "workspace[0015 r0] horizon A8-SEPARATION: integrate 0002-horizon-A8-SEPARATION",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryOrbitDVR.lean",
+        "ArakelovGeometry/InvariantTheory/BinaryTensorTransport.lean"
+      ]
+    },
+    {
+      "workspace_commit": "18ae592b62bac47c5e29a471f9a9b6a80f4e22f0",
+      "project_commit": "565db0438c7434f97517ecbd2bc34e829d1c4abe",
+      "subject": "workspace[0015] run finished",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryInstability.lean"
+      ]
+    },
+    {
+      "workspace_commit": "2d668797e0c79bf0617c0b53dfbb664ba54f45c1",
+      "project_commit": "e1ee281c3a4c18e7baab351cb28b2fc4284b004f",
+      "subject": "workspace[0019] system: baseline",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryInstability.lean",
+        "ArakelovGeometry/InvariantTheory/BinaryOrbitDVR.lean"
+      ]
+    },
+    {
+      "workspace_commit": "53f523be2bfc0d269e426de93f5971930e6afbf8",
+      "project_commit": "6f36f443fffa0f1c6e1f01783e2fbb016d3aad28",
+      "subject": "Transport binary SL actions and actual quotient covectors to coordinates",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryInstability.lean"
+      ]
+    },
+    {
+      "workspace_commit": "e520ad7e034ad3c8eabc47251dc5f137101a73a3",
+      "project_commit": "2c91d15a8059da9de80fe117e7c05e4c2f3b25f5",
+      "subject": "workspace[0016 r0] horizon A8-ORBIT: integrate 0002-horizon-A8-ORBIT",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HNVariationAssembly.lean",
+        "ArakelovGeometry/InvariantTheory/BinaryInstability.lean",
+        "ArakelovGeometry/InvariantTheory/BinaryNegativeFiltration.lean",
+        "ArakelovGeometry/LinearAlgebra/Filtration/RankDrop.lean"
+      ]
+    },
+    {
+      "workspace_commit": "a0ccadf06ea90f2be2426514bafdf74f06b6ee1c",
+      "project_commit": "4744900ba5595ee36958882891a73ffe0281a47f",
+      "subject": "workspace[0016] run finished",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryNegativeFiltration.lean"
+      ]
+    },
+    {
+      "workspace_commit": "72a7f972604b73e8358e9a37817fa85a7123158f",
+      "project_commit": "6702e3ee345ae20f74c642c7eb171e1151691bd8",
+      "subject": "Integrate the actual binary orbit DVR degeneration",
+      "changed_paths": [
+        "ArakelovGeometry.lean",
+        "README.md"
+      ]
+    },
+    {
+      "workspace_commit": "ca4e3bf2edb92f8b1456b9f26c02be6bb4d7f72d",
+      "project_commit": "d95fa62430236c1af4d2d3f043d1cef88346d1d9",
+      "subject": "Preserve quotient layers under weighted factor basis transport",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryTensorTransport.lean"
+      ]
+    },
+    {
+      "workspace_commit": "5b2dbb6a596a91fcf33cf4cba0de488a03b44d24",
+      "project_commit": "a3938843668d2e068c9a1a835eb0af05fc83c980",
+      "subject": "Document checked optimizer rank drop and conditional arithmetic assembly",
+      "changed_paths": [
+        "README.md"
+      ]
+    },
+    {
+      "workspace_commit": "aa4a6308b7e3ea93e8efac95cf1d2d8cf77b14d9",
+      "project_commit": "b2ef2e58ad287e8b6cf74c6b430bbdc11550afda",
+      "subject": "Prove actual negative filtrations from binary orbit closure",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryNegativeFiltration.lean"
+      ]
+    },
+    {
+      "workspace_commit": "c95a323c8d98fe2342ce2aa1cf7fc96227c694c4",
+      "project_commit": "8c2b5fb1cdfda981fe24d101fa0dbde5f77bdf21",
+      "subject": "workspace[0017 r0] horizon A8-RESIDUE: integrate 0002-horizon-A8-RESIDUE",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Instability.lean",
+        "ArakelovGeometry/InvariantTheory/BinaryInstability.lean"
+      ]
+    },
+    {
+      "workspace_commit": "a7d1485650006cf128f4cd8bc87ebf47269bdc93",
+      "project_commit": "0037198e81850be10b02233ad5245d280ca7b401",
+      "subject": "Prove binary geometric instability yields actual negative filtrations",
+      "changed_paths": [
+        "ArakelovGeometry/InvariantTheory/BinaryInstability.lean"
+      ]
+    },
+    {
+      "workspace_commit": "4ad209e2fe26a7d5bd7a60cceca539aff6324001",
+      "project_commit": "833d3260f572aad0de780977ff8848f7a42f9fcd",
+      "subject": "Descend geometric binary instability to a normalized negative pair over K",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Instability.lean"
+      ]
+    },
+    {
+      "workspace_commit": "e85d49e7b1892668bb763057ad6dddfc10075c7e",
+      "project_commit": "50fc120daf5f973cc6751483e9d75a13bbc8626f",
+      "subject": "Integrate residue descent and synchronize the Bost demand ledger",
+      "changed_paths": [
+        "ArakelovGeometry.lean",
+        "ExternalResults/README.md",
+        "README.md",
+        "todo.md"
+      ]
+    },
+    {
+      "workspace_commit": "4bd03f3d6aa86d8823449cfa09b5f7360bd9c5ce",
+      "project_commit": "81148b8523e1a82fe6c0d6919e83281b0e5906c1",
+      "subject": "Derive the actual Bost unstable quotient bound from geometric instability",
+      "changed_paths": [
+        "ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/GeometricOptimal.lean",
+        "ArakelovGeometry/AdelicVectorBundle/Tensor/HNVariationAssembly.lean"
+      ]
+    },
+    {
+      "workspace_commit": "10b402e9513d856c311793359263306e64c33836",
+      "project_commit": "7108675a6e9f5f02fcf9915cd7365d23f7c7c48a",
+      "subject": "Integrate geometric instability and the Bost HN slope consumer",
+      "changed_paths": [
+        "ArakelovGeometry.lean",
+        "ExternalResults/README.md",
+        "README.md",
+        "todo.md"
+      ]
+    }
+  ],
+  "excluded_only_commits": [
+    "1ff7558dda34c215eda1dae69dbe2548b5968d6f",
+    "dc355abe36dd8bb318af46da204af1fadd2090eb",
+    "27020b96f307cd94fdc7ac697054732b36a81f4d",
+    "281a94662b699ba656d67ddb02b7a5db69842201",
+    "22978d0ef0e8b97f32efa5bb4fb8e2fb74deaf8a",
+    "8ec40fe3af5ba255a57e901f1f4efda36d608535",
+    "f065fb08f9c18bd5e57f61c88032ae8a4b3eac14",
+    "2b44dee74039fc96710ee74a4b7097ac010e111e",
+    "decce7c377e21c305a67054c68fb020f0594d557",
+    "694e29522bbc346f3786611aafeb7f55c99b21e5",
+    "5d552f7ba58cc025aca6ecbb9a41cfc6a779f7f4",
+    "befe41ae7d9f67118092f59d842da28dab45e0de",
+    "ec98e4bc3de7625a651450e3b7a0f61a0b2410a0",
+    "3e0e8e077443de348a385715998fae575f5c7115",
+    "978a8284ae4af10861c528811256e0f062fc4e8e",
+    "d9e0566b14a6eed9c43048d79f82e83610863074",
+    "3406f6d31a03f29bfec8e51ad44e8b152c96e3f7",
+    "17017394450e05ad8d8cb24555f1d11eb372dbea",
+    "82d05943ef45028be3b4bfbe54ec807542775116",
+    "044f8552a7bcd7aa82e523f206a74c00b61408da",
+    "ef58a6dfe80b137cb312087af0848fdfb6120821",
+    "98a77f7b3ae678c470c7d83b7edc35e8d573d201",
+    "76ee3021c568ee314bae0f35ed3cb5c278231a09",
+    "22ed63acefd9812f0d9bd1ccf9cd5d4c4b266d91",
+    "704f0c110f4a7f784e256514392ac117a5a7ce27",
+    "d96610fb809933965f92f15c628f8244636e8cae",
+    "2ec4419ec27254eda2874bd16fc2d58dc77886ae",
+    "895ac23378ee0b16f7ddece29719d05792f4883c",
+    "8476e68a3585af29594e0d22cf4b1e1b99679ec1",
+    "154268d27a4d4ecc8fe4a4ef542197826d5f2b94",
+    "c70811948d3908460d951c0e31d3c93d5110ae47",
+    "ed195f06166be23a117164fb7d045ae711cb82a2",
+    "4acb3c8718f6d6f618086d8042fe6308962c983f",
+    "ffc8621a4fa3653e91dfbc04d96cabfd47bae34c",
+    "de6489b71f3ea34c00cd50a4efacb0cda9b13106",
+    "f846b4803d0f4e365173db67d776a61434cd31de",
+    "a61af3028d824970b1b2f2ec4b261e90c24762ec",
+    "89261150374e65370020995e3b3f94649072ca36",
+    "06e39fb0faca9b5aa8f9115d9cef3192c98feaef",
+    "817284d5c89b420a8314ae2ed9a18c050bdc2aee",
+    "34591dff100cbd4046a4a3e5b353fe03e01828c1",
+    "08b8fed5fe22415f8eedde2052596b88dded0f1b",
+    "80769f9aee43a398987e4ffc4bba82532a581a8f",
+    "1047ca2e6ad99a75c896cd0b226a2c5add4b96eb",
+    "42521e15e69bb3a33ff797c86ce614346a75aa84",
+    "57b856a667b41a715b0c199b6c6fa4afa5ae5daf",
+    "1c7782639994b517bf8877457dacdfa9cf195c6a",
+    "dc2f5d53108e714f0cd7569eceda97b1d7c65a5a"
+  ]
+}

@@ -39,6 +39,12 @@ theorem countable_algebraicClosure_subfield (K₀ : Subfield K) [Countable K₀]
     exact mem_algebraicClosure_iff.mp ha
   exact hc.to_subtype
 
+/-- Countability is canonical for the relative algebraic closure of a countable subfield.
+The subfield occurs in the target, so instance search can recover every parameter. -/
+instance (K₀ : Subfield K) [Countable K₀] :
+    Countable (algebraicClosure K₀ L).toSubfield :=
+  countable_algebraicClosure_subfield K₀
+
 /-- A small monic evaluation produces an actual nearby root, counting multiplicities.
 No positive-degree or nontrivial-valuation hypothesis is needed. -/
 theorem exists_root_abv_sub_lt (w : AbsoluteValue L ℝ)

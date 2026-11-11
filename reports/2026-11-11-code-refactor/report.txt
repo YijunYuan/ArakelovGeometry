@@ -1,0 +1,33 @@
+Code refactor and project-history migration (work in progress)
+
+User scope: simplify Lean syntax, improve typeclass inference, organize modules,
+follow mathlib naming/style, update documentation, commit and push origin/lite.
+Use direct Git/Lean/Lake; do not invoke Horizon or launch runs.
+Exclude blueprint/, bost.pdf and all hgraph paths from every new commit.
+
+History restored: original lite 161ea63971628dd225ff1748b913aaae80e52e07 is
+unchanged and remains an ancestor. Its tree exactly matched the initial workspace
+snapshot. Replayed 127 nonempty project commits with original authors, committer
+identities, dates and messages, plus Workspace-Commit provenance. Skipped 48
+commits that only affected excluded paths. Migrated tip:
+7108675a6e9f5f02fcf9915cd7365d23f7c7c48a. See history-map.json.
+A backup ref and original index remain in .git/workspace-migration.
+
+Initial scan: 797 first-party Lean files, 160201 lines. The fullest directories
+have 17-18 direct modules; the new invariant-theory/filtration/tensor developments
+are the main organization targets. HermitianDual.lean has 1202 lines and can be
+split at existing mathematical section boundaries.
+
+Typeclass audit: norm constructions depending on a chosen basis, fibre norm or
+embedding must remain explicit definitions; their extra data is absent from the
+instance target, and competing norms coexist on the same carrier. The general
+finiteDimensional_complete theorem also cannot become an unrestricted instance:
+its scalar field is not determined by CompleteSpace V. Existing compatibility
+aliases for proper adelic curves already inherit the original structure instance.
+Selected canonical improvements: number-field strongly dominated families have
+T0Space and MetricSpace instances (same original pseudometric/topology), and the
+relative algebraic closure of a countable subfield has a Countable instance.
+
+Standards consulted: https://mathlib.org/contribute/naming.html and
+https://mathlib.org/contribute/style.html (the old community naming URL redirects).
+Validation and final change summary will be added after the refactor.

@@ -152,16 +152,14 @@ theorem numberField_eq_of_dist_eq_zero
   exact congrArg (fun p ↦ p z) he
 
 /-- The already constructed source pseudometric is a metric over the normalized number field. -/
-theorem numberFieldT0Space : T0Space (StronglyDominatedNormFamily (N) E) :=
+instance numberFieldT0Space : T0Space (StronglyDominatedNormFamily (N) E) :=
   (t0Space_iff_inseparable _).mpr fun ξ η h ↦
     numberField_eq_of_dist_eq_zero ξ η h.dist_eq_zero
 
 /-- The metric strengthening retains the original upper-integral distance and topology. -/
-@[instance_reducible]
-noncomputable def numberFieldMetricSpace :
-    MetricSpace (StronglyDominatedNormFamily (N) E) := by
-  letI := numberFieldT0Space (K := K) (E := E)
-  exact MetricSpace.ofT0PseudoMetricSpace _
+noncomputable instance numberFieldMetricSpace :
+    MetricSpace (StronglyDominatedNormFamily (N) E) :=
+  MetricSpace.ofT0PseudoMetricSpace _
 
 /-- Classical families, as the actual classical subspace of strongly dominated families. -/
 abbrev ClassicalFamily (K : Type*) [Field K] [NumberField K]
@@ -180,7 +178,7 @@ noncomputable def classicalFamilyCompletion : AbstractCompletion (ClassicalFamil
   coe := Subtype.val
   uniformStruct := inferInstance
   complete := by infer_instance
-  separation := numberFieldT0Space
+  separation := inferInstance
   isUniformInducing := classicalFamily_isometry.isUniformInducing
   dense := by
     intro ξ
