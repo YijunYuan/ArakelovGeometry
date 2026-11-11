@@ -26,10 +26,20 @@ noncomputable section
 
 namespace ArakelovGeometry
 
+universe u
+
 /-- The binary indexing convention: false is the left factor and true the right. -/
 def boolEquivUnitSumUnit : Bool ≃ Unit ⊕ Unit :=
   Equiv.boolEquivPUnitSumPUnit.{0, 0}.trans
     (Equiv.sumCongr (Equiv.ofUnique PUnit Unit) (Equiv.ofUnique PUnit Unit))
+
+/-- The existing binary factor family, reindexed by false/true. -/
+abbrev BoolTensorFactors (E F : Type u) : Bool → Type u :=
+  fun j ↦ BinaryTensorFactors E F (boolEquivUnitSumUnit j)
+
+instance boolTensorFactorsNontrivial {E F : Type u} [Nontrivial E] [Nontrivial F]
+    (j : Bool) : Nontrivial (BoolTensorFactors E F j) := by
+  cases j <;> assumption
 
 variable (K : Type*) [Field K] (E : Bool → Type*)
   [∀ j, AddCommGroup (E j)] [∀ j, Module K (E j)]
@@ -153,5 +163,33 @@ theorem piTensor_image_bool_baseChange
       (q.comp (boolTensorEquiv K E).toLinearMap)) =
     (tensorFiltration (F false) (F true) t).map (tensorQuotientBaseChange q) := by
   rw [piTensorQuotientBaseChange_bool, map_comp, piTensorFiltration_map_boolTensorEquiv]
+
+end Submodule
+
+namespace Submodule
+
+open Module
+
+variable {k : Type*} [Field k] {ι : Bool → Type*}
+  {E V : Bool → Type*} [∀ j, AddCommGroup (E j)] [∀ j, Module k (E j)]
+  [∀ j, AddCommGroup (V j)] [∀ j, Module k (V j)]
+  {Q : Type*} [AddCommGroup Q] [Module k Q]
+
+/-- Transporting weighted bases along factor equivalences preserves the actual
+quotient convolution layers. This returns coordinate negative filtrations to
+the original factors in Bost's binary instability argument. -/
+theorem piTensorFiltration_image_map_basis
+    (e : ∀ j, E j ≃ₗ[k] V j) (b : ∀ j, Basis (ι j) k (E j))
+    (w : ∀ j, ι j → ℝ) (q : (⨂[k] j, V j) →ₗ[k] Q) (t : ℝ) :
+    (piTensorFiltration (fun j s ↦ span k ((b j).map (e j) '' {i | s ≤ w j i})) t).map q =
+    (piTensorFiltration (fun j s ↦ span k (b j '' {i | s ≤ w j i})) t).map
+      (q.comp (PiTensorProduct.congr e).toLinearMap) := by
+  rw [piTensorFiltration_eq_span (fun j ↦ (b j).map (e j)) w (fun _ _ ↦ rfl),
+    piTensorFiltration_eq_span b w (fun _ _ ↦ rfl), map_span, map_span,
+    Set.image_image, Set.image_image]
+  congr 1
+  apply Set.image_congr
+  intro p _
+  simp [Basis.piTensorProduct_apply]
 
 end Submodule
