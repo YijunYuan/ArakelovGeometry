@@ -100,6 +100,36 @@ def binaryQuotientCoefficients (b : ∀ j, Basis (ι j) k (E j))
     (d : Basis (Fin r) k Q) (q : (⨂[k] j, E j) →ₗ[k] Q) :
     Fin r → (∀ j, ι j) → k := fun t s ↦ d.repr (q (⨂ₜ[k] j, b j (s j))) t
 
+/-- The original quotient expressed in factor coordinates. The map is the actual
+quotient precomposed with the tensor of the chosen basis equivalences. -/
+def binaryQuotientInCoordinates (b : ∀ j, Basis (ι j) k (E j))
+    (q : (⨂[k] j, E j) →ₗ[k] Q) : (⨂[k] j, (ι j → k)) →ₗ[k] Q :=
+  q.comp (PiTensorProduct.congr (fun j ↦ (b j).equivFun.symm)).toLinearMap
+
+@[simp]
+theorem binaryQuotientInCoordinates_basis (b : ∀ j, Basis (ι j) k (E j))
+    (q : (⨂[k] j, E j) →ₗ[k] Q) (s : ∀ j, ι j) :
+    binaryQuotientInCoordinates b q (⨂ₜ[k] j, Pi.single (s j) 1) =
+      q (⨂ₜ[k] j, b j (s j)) := by
+  simp [binaryQuotientInCoordinates, Basis.equivFun_symm_apply]
+
+omit [∀ j, DecidableEq (ι j)] in
+/-- Basis transport preserves surjectivity of the original quotient. -/
+theorem binaryQuotientInCoordinates_surjective (b : ∀ j, Basis (ι j) k (E j))
+    (q : (⨂[k] j, E j) →ₗ[k] Q) (hq : Function.Surjective q) :
+    Function.Surjective (binaryQuotientInCoordinates b q) :=
+  hq.comp (PiTensorProduct.congr (fun j ↦ (b j).equivFun.symm)).surjective
+
+omit [∀ j, DecidableEq (ι j)] in
+/-- Coefficient transport preserves precisely the original array. -/
+theorem binaryQuotientInCoordinates_coefficients (b : ∀ j, Basis (ι j) k (E j))
+    (d : Basis (Fin r) k Q) (q : (⨂[k] j, E j) →ₗ[k] Q) :
+    binaryQuotientCoefficients (fun j ↦ Pi.basisFun k (ι j)) d
+      (binaryQuotientInCoordinates b q) = binaryQuotientCoefficients b d q := by
+  classical
+  funext t s
+  simp [binaryQuotientCoefficients]
+
 /-- An actual basis transported by a determinant-one matrix. -/
 def binaryChangedBasis (b : ∀ j, Basis (ι j) k (E j))
     (h : ∀ j, Matrix.SpecialLinearGroup (ι j) k) (j : Bool) : Basis (ι j) k (E j) :=
