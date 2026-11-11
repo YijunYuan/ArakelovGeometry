@@ -1,11 +1,13 @@
 # Selected external results for the Bost foundation
 
-This directory contains selected, locally verified transplants used by the `lite`
+This directory houses selected transplants for local verification and use by the `lite`
 branch. It is not a checkout or dependency on an entire donor project. The existing
 mathlib and HarderNarasimhan dependencies remain the first sources to consult.
 
-No external Lean theorem has been transplanted into this directory yet. Survey
-findings are candidates, not verification evidence.
+The Stacks port is in progress, and the Etingof Schur–Weyl port is being started.
+Presence of a source file does not certify its proof or consumer: consult the
+donor's provenance record for completed kernel and axiom checks. Survey findings
+are candidates, not verification evidence.
 
 ## Layout and ownership
 
@@ -13,6 +15,8 @@ findings are candidates, not verification evidence.
   upstream `StacksCore` and `StacksFrontier` paths.
 - `TauCeti/`: selected TauCeti modules, preserving upstream mathematical namespaces
   unless a documented compatibility change is necessary.
+- `EtingofRepresentationTheory/`: selected tensor-power semisimplicity and GL
+  action-span proofs from the official Apache-licensed release, not the draft.
 - Each donor subtree owns its own `provenance.json` and license notices, so parallel
   migration tasks do not edit a shared provenance file.
 - `ExternalResults.lean` is deliberately a small entry point. Consumers import the
@@ -39,10 +43,12 @@ semantic review. A source scan without `sorry` is not an axiom audit.
 ## Initial selection policy
 
 Prefer the fixed, same-toolchain Stacks DVR closure over general algebraic-stack
-machinery. For TauCeti, first assess its Lean 4.35.0 history and the smallest useful
-SL/invariant interfaces. Its Mathlib pin differs from this project even in that
-history, so compatibility must be proved by local builds. Do not upgrade the shared
-toolchain or add a complete donor project as a shortcut.
+machinery. For the invariant argument, the first selection is the seven-file
+Etingof Schur–Weyl source closure, pruned to its consumed declarations. Its Lean
+4.32.2 source must be adapted and checked on this project's 4.35.0 pin. TauCeti's
+smaller historical Schur–Weyl core remains a fallback; the hundreds of modules
+for general SL linear reductivity are not the chosen dependency. Do not upgrade
+the shared toolchain or add a complete donor project as a shortcut.
 
 Use the project's already proved PID matrix diagonalization before copying another
 Smith-normal-form implementation. Bost needs the specific binary tensor/quotient

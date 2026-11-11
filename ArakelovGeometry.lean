@@ -186,8 +186,10 @@ public import ArakelovGeometry.AdelicVectorBundle.Examples.SquareNorm
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HN
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HNLift
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Optimal
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Inverse
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Pairing
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.QuotientDegree
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Quotient
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Tensor
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Variation

@@ -41,7 +41,7 @@ it is the paper referred to as `bost_conjecture.pdf` in the workspace instructio
 | A6: graded norm comparison | The revised target is componentwise canonical graded contractions plus the finite-image HN degree estimate below; implementation is in progress. | This replaces the whole orthogonal-direct-sum norm argument in Lemmas 7.1 and 7.2 while preserving their numerical conclusions. Componentwise contraction is not asserted to imply l2-sum contraction. |
 | A7: lifting filtrations | Actual prescribed quotient lifts and their HN specialization are checked, with expectation and weighted pairing formulas. | Pages 29 and 32 need a chosen lift of the subquotient HN filtrations. A canonical or unique lift is unnecessary; the ambient HN filtration cannot replace this construction. |
 | A8: instability input | Only the binary, specific tensor/determinant representation and the direction from geometric instability to a K-defined negative centered candidate are required. Cartan is checked; the full bridge remains open. | The geometrically semistable case is handled by Section 6; page 31 needs the unstable direction. Integer/rational weights suffice for this initial candidate. A full two-way real-weight HM theorem is unnecessary. |
-| A9: optimal filtration | Given an actual negative candidate, construct a negative normalized minimum across all actual bases/filtrations and the needed right variation. Work remains in progress. | Pages 31–32 use existence and the HN-lift variation, not the full CM inequality (5.13) or a public uniqueness theorem. If uniqueness is used internally for A8 descent, that lemma remains an explicit obligation. |
+| A9: optimal filtration | Conditional finite-family existence and uniqueness, and the direct binary optimizer, are checked: an actual negative candidate gives a negative normalized global minimum across all actual bases/filtrations. The A8 candidate and HN-lift right variation remain open. | Pages 31–32 need this minimum and the HN-lift variation, not the full CM inequality (5.13). The retained uniqueness theorem supplies a producer for the separate A8 Galois-descent argument; that descent is not implied by uniqueness alone. |
 
 ### The A6 replacement argument
 
@@ -78,9 +78,15 @@ commit, license, exact original statement, local changes, the Bost consumer, and
 build/axiom evidence in each donor's provenance record. The Lean docstrings must
 also disclose any specialization or weakening and explain its sufficiency.
 
-The initial candidates are the small Stacks DVR-specialization closure and selected
-TauCeti SL/invariant tools. They have been surveyed, not yet certified as local
-dependencies. In particular, a DVR specialization does not by itself prove
+The active selections are the Stacks DVR-specialization closure and the official
+Apache-licensed EtingofRepresentationTheory Schur–Weyl core. The latter's surveyed
+source closure is seven files; this is not a compilation-memory estimate, and its
+broad upstream Mathlib imports must be narrowed locally. These ports are in
+progress, not yet certified local dependencies. The intended representation
+consumer is semisimplicity of the specific SL tensor powers, followed by bounded
+polynomial subquotients and successive invariant lifts for the two commuting
+factors. This avoids importing a general reductivity library. The existing local
+GL-to-SL scalar decomposition is reused. In particular, a DVR specialization does not by itself prove
 Hilbert–Mumford, and an invariant-lifting theorem with an abstract linear-reductivity
 hypothesis does not establish that hypothesis for the concrete binary SL group.
 

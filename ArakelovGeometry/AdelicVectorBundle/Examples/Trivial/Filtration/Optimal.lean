@@ -17,6 +17,16 @@ public import Mathlib.Algebra.Order.GroupWithZero.Finset
 The coordinate energy retains the reciprocal dimension of each factor.
 Every coordinate expression below is connected to the intrinsic filtration
 pairing or to the proved actual quotient finite maximum.
+
+This is the conditional part of Chen–Moriwaki §5.2 used on pages 31–32 of
+`bost.pdf`: a supplied actual centered negative candidate yields a normalized
+global minimum over all actual filtrations, not merely one fixed basis.
+The finite-family existence and uniqueness results are retained, and a direct
+binary quotient consumer is supplied. Uniqueness can be used in the separate
+descent argument for the instability input. The general CM variational
+inequality (5.13) is not claimed here: Bost needs only the subsequent HN-lift
+right variation. Geometric instability producing the initial negative candidate
+and that variation assembly remain separate obligations.
 -/
 
 @[expose] public section
