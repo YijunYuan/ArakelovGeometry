@@ -415,8 +415,7 @@ theorem exists_binary_quotient_negative_support_of_orbit_closure
         ∃ p, IsLocalRing.residue d.valuationRing (c p) ≠ 0 := by
   let f := exteriorCovector r
     (exteriorPower.map r q.dualMap (exteriorPower.ιMulti k r b.coord))
-  let d : BinaryCovectorDegeneration f :=
-    Classical.choice (nonempty_binaryCovectorDegeneration (k := k) (ι := ι) (r := r) f hclosure)
+  obtain ⟨d⟩ := nonempty_binaryCovectorDegeneration (k := k) (ι := ι) (r := r) f hclosure
   obtain ⟨Q, a, c, ha, he, hn, hp⟩ := BinaryCovectorDegeneration.exists_negative_support
     (k := k) (ι := ι) (r := r) (f := f) d (binaryQuotientCovector_ne_zero q b hq)
   refine ⟨d, Q, a, c, ha, ?_, hn, hp⟩
