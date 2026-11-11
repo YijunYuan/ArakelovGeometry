@@ -9,6 +9,7 @@ public import ArakelovGeometry.LinearAlgebra.Filtration.Lift
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.CommonAdaptedBasis
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Quotient
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.Hermitian
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Expectation
 
 /-!
 # Chosen lifts of prescribed quotient filtrations
@@ -190,5 +191,89 @@ theorem degree_lift_eq_sum
       (U i.castSucc) (U i.succ) (F i) (hF i) (hFbot i) (hFtop i) (hFleft i) (hc i)
   exact (V.sum_flagQuotient_degree_eq_of_isHermitian U hU hzero htop hS hN hV).symm.trans
     (Finset.sum_congr rfl (fun i _ ↦ congrArg (fun W ↦ W.degree hS hN) (hq i)))
+
+/-- Adapted weights compute the actual degree of the realized filtration. -/
+theorem degree_ofTrivialFiltration_eq_sum_weights
+    (hS : DiscreteMeasurableSpace (singleTrivialPlace K).Ω ∨
+      (singleTrivialPlace K).HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ (singleTrivialPlace K).Ωinf,
+      IsRCLikeNormedField ((singleTrivialPlace K).ϕ ω).Completion)
+    (F : ℝ → Submodule K E) (hF : Antitone F)
+    (hbot : ∃ t, F t = ⊥) (htop : ∃ t, F t = ⊤)
+    (hleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t)
+    {ι : Type*} [Fintype ι] (b : Basis ι K E) (a : ι → ℝ)
+    (hb : ∀ t, F t = Submodule.span K (b '' {i | t ≤ a i})) :
+    (ofTrivialFiltration F hF hbot htop hleft).degree hS hN = ∑ i, a i := by
+  have he := degree_eq_finsum_trivialFiltration
+    (ofTrivialFiltration F hF hbot htop hleft) hS hN
+    (NormFamily.ofTrivialFiltration_isUltrametric F hF hbot htop hleft)
+  have hr : (NormFamily.ofTrivialFiltration F hF hbot htop hleft).trivialFiltration
+      (NormFamily.ofTrivialFiltration_isUltrametric F hF hbot htop hleft) = F :=
+    funext (NormFamily.trivialFiltration_ofTrivialFiltration F hF hbot htop hleft)
+  simpa only [ofTrivialFiltration_toNormFamily, hr,
+    Submodule.finsum_weight_mul_finrank_filtrationGraded b a hb] using he
+
+/-- Expectation is additive with rank multiplicities, including zero-rank quotients. -/
+theorem finrank_mul_expectation_lift_eq_sum
+    (hS : DiscreteMeasurableSpace (singleTrivialPlace K).Ω ∨
+      (singleTrivialPlace K).HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ (singleTrivialPlace K).Ωinf,
+      IsRCLikeNormedField ((singleTrivialPlace K).ϕ ω).Completion)
+    {n : ℕ} (U : Fin (n + 1) → Submodule K E) (hU : Monotone U)
+    (hzero : U 0 = ⊥) (htop : U (Fin.last n) = ⊤)
+    (F : ∀ i : Fin n, ℝ → Submodule K
+      ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype))
+    (hF : ∀ i, Antitone (F i)) (hFbot : ∀ i, ∃ t, F i t = ⊥)
+    (hFtop : ∀ i, ∃ t, F i t = ⊤)
+    (hFleft : ∀ i t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F i s = F i t)
+    (R : ℝ → Submodule K E) (hR : Antitone R)
+    (hRbot : ∃ t, R t = ⊥) (hRtop : ∃ t, R t = ⊤)
+    (hRleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → R s = R t)
+    (hc : ∀ i t, ((R t).comap (U i.succ).subtype).map
+      ((U i.castSucc).comap (U i.succ).subtype).mkQ = F i t) :
+    (finrank K E : ℝ) * Submodule.filtrationExpectation R =
+      ∑ i, (finrank K ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype) : ℝ) *
+        Submodule.filtrationExpectation (F i) := by
+  have he := degree_lift_eq_sum hS hN U hU hzero htop F hF hFbot hFtop hFleft
+    R hR hRbot hRtop hRleft hc
+  simpa only [degree_eq_rank_mul_slope, slope_ofTrivialFiltration_eq_expectation] using he
+
+/-- Pairing with the original flag groups the unchanged quotient weights by block. -/
+theorem pairing_lift_eq_sum_quotient_degrees
+    (hS : DiscreteMeasurableSpace (singleTrivialPlace K).Ω ∨
+      (singleTrivialPlace K).HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ (singleTrivialPlace K).Ωinf,
+      IsRCLikeNormedField ((singleTrivialPlace K).ϕ ω).Completion)
+    {n : ℕ} (U : Fin (n + 1) → Submodule K E)
+    {ι : Fin n → Type*} [∀ i, Fintype (ι i)]
+    (b : ∀ i, Basis (ι i) K ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype))
+    (w : ∀ i, ι i → ℝ) (B : Basis (Σ i, ι i) K E)
+    (hspan : ∀ k : Fin (n + 1), Submodule.span K (B '' {a | a.1.val < k.val}) = U k)
+    (F : ∀ i : Fin n, ℝ → Submodule K
+      ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype))
+    (hF : ∀ i, Antitone (F i)) (hFbot : ∀ i, ∃ t, F i t = ⊥)
+    (hFtop : ∀ i, ∃ t, F i t = ⊤)
+    (hFleft : ∀ i t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F i s = F i t)
+    (hb : ∀ i t, F i t = Submodule.span K (b i '' {j | t ≤ w i j}))
+    (R : ℝ → Submodule K E)
+    (hR : ∀ t, R t = Submodule.span K (B '' {j | t ≤ w j.1 j.2}))
+    (a : Fin n → ℝ) (ha : Antitone a) :
+    (finrank K E : ℝ) * Submodule.filtrationPairing
+      (fun t ↦ ⨆ (i : Fin n) (_ : t ≤ a i), U i.succ) R =
+        ∑ i, a i * (ofTrivialFiltration (F i) (hF i) (hFbot i)
+          (hFtop i) (hFleft i)).degree hS hN := by
+  classical
+  simp_rw [degree_ofTrivialFiltration_eq_sum_weights hS hN _ _ _ _ _ (b _) (w _) (hb _)]
+  rw [Submodule.filtrationPairing_eq_sum_weights B (fun j ↦ a j.1)
+    (fun j ↦ w j.1 j.2) (Submodule.iSup_flag_eq_span_weights U B hspan a ha) hR]
+  have hs : (∑ j : Σ i, ι i, a j.1 * w j.1 j.2) = ∑ i, a i * ∑ j, w i j := by
+    simp only [Fintype.sum_sigma, Finset.mul_sum]
+  by_cases hz : finrank K E = 0
+  · have hc : Fintype.card (Σ i, ι i) = 0 := by
+      rw [← finrank_eq_card_basis B, hz]
+    letI : IsEmpty (Σ i, ι i) := Fintype.card_eq_zero_iff.mp hc
+    rw [← hs]
+    simp
+  · rw [mul_div_cancel₀ _ (Nat.cast_ne_zero.mpr hz), hs]
 
 end ArakelovGeometry.AdelicVectorBundle

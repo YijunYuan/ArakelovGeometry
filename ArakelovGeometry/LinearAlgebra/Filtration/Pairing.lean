@@ -297,4 +297,101 @@ theorem support_filtrationJointMultiplicity [Finite ι]
     Finset.card_ne_zero, Finset.filter_nonempty_iff, Finset.mem_univ, true_and,
     Set.mem_range, Prod.ext_iff]
 
+omit [Fintype ι] [FiniteDimensional K E] in
+/-- The other filtration induces cuts on the actual shared graded quotient. -/
+noncomputable def filtrationOnGraded (F G : ℝ → Submodule K E) (s t : ℝ) :
+    Submodule K (FiltrationGraded F s) :=
+  ((G t).comap (F s).subtype).map (filtrationGradedMk F s)
+
+omit [Fintype ι] [FiniteDimensional K E] in
+theorem antitone_filtrationOnGraded (F : ℝ → Submodule K E)
+    {G : ℝ → Submodule K E} (hG : Antitone G) (s : ℝ) :
+    Antitone (filtrationOnGraded F G s) := by
+  intro u v huv
+  exact map_mono (comap_mono (hG huv))
+
+omit [Fintype ι] [FiniteDimensional K E] in
+theorem filtrationRightLimit_comap {V : Type*} [AddCommGroup V] [Module K V]
+    {G : ℝ → Submodule K E} (hG : Antitone G) (f : V →ₗ[K] E) (t : ℝ) :
+    filtrationRightLimit (fun u ↦ (G u).comap f) t = (filtrationRightLimit G t).comap f := by
+  let : Nonempty {u : ℝ // t < u} := ⟨⟨t + 1, lt_add_one t⟩⟩
+  have hd : Directed (· ≤ ·) (fun u : {u : ℝ // t < u} ↦ G u.val) := by
+    intro u v
+    exact ⟨⟨min u.val v.val, lt_min u.property v.property⟩,
+      hG (min_le_left _ _), hG (min_le_right _ _)⟩
+  have hd' : Directed (· ≤ ·) (fun u : {u : ℝ // t < u} ↦ (G u.val).comap f) := by
+    intro u v
+    obtain ⟨w, huw, hvw⟩ := hd u v
+    exact ⟨w, comap_mono huw, comap_mono hvw⟩
+  ext x
+  simp only [filtrationRightLimit, mem_iSup_of_directed _ hd', mem_comap,
+    mem_iSup_of_directed _ hd]
+
+omit [Fintype ι] [FiniteDimensional K E] in
+theorem filtrationRightLimit_filtrationOnGraded (F : ℝ → Submodule K E)
+    {G : ℝ → Submodule K E} (hG : Antitone G) (s t : ℝ) :
+    filtrationRightLimit (filtrationOnGraded F G s) t =
+      ((filtrationRightLimit G t).comap (F s).subtype).map (filtrationGradedMk F s) := by
+  change (⨆ u : {u : ℝ // t < u}, ((G u.val).comap (F s).subtype).map
+    (filtrationGradedMk F s)) = _
+  rw [← map_iSup]
+  rw [← filtrationRightLimit_comap hG (F s).subtype t]
+  rfl
+
+omit [Fintype ι] [FiniteDimensional K E] in
+theorem finrank_comap_subtype (A B : Submodule K E) :
+    finrank K (B.comap A.subtype) = finrank K ↥(A ⊓ B) := by
+  rw [← finrank_map_subtype_eq A (B.comap A.subtype), map_comap_subtype]
+
+omit [Fintype ι] in
+theorem finrank_map_mkQ (P Q : Submodule K E) :
+    finrank K (P.map Q.mkQ) = finrank K P - finrank K ↥(P ⊓ Q) := by
+  have h := (Q.mkQ.comp P.subtype).finrank_range_add_finrank_ker
+  rw [LinearMap.range_comp, range_subtype, LinearMap.ker_comp, ker_mkQ,
+    finrank_comap_subtype] at h
+  omega
+
+omit [Fintype ι] in
+theorem finrank_map_filtrationGradedMk {F : ℝ → Submodule K E}
+    (hF : Antitone F) (B : Submodule K E) (s : ℝ) :
+    finrank K ((B.comap (F s).subtype).map (filtrationGradedMk F s)) =
+      finrank K ↥(F s ⊓ B) - finrank K ↥(filtrationRightLimit F s ⊓ B) := by
+  change finrank K ((B.comap (F s).subtype).map
+    ((filtrationRightLimit F s).comap (F s).subtype).mkQ) = _
+  rw [finrank_map_mkQ, ← comap_inf, finrank_comap_subtype, finrank_comap_subtype]
+  have he : F s ⊓ (B ⊓ filtrationRightLimit F s) = filtrationRightLimit F s ⊓ B := by
+    rw [inf_comm B, ← inf_assoc, inf_eq_right.mpr (filtrationRightLimit_le hF s)]
+  rw [he]
+
+omit [Fintype ι] in
+/-- The intrinsic joint multiplicity is the dimension of the actual iterated grade. -/
+theorem finrank_filtrationGraded_filtrationOnGraded
+    {F G : ℝ → Submodule K E} (hF : Antitone F) (hG : Antitone G) (s t : ℝ) :
+    finrank K (FiltrationGraded (filtrationOnGraded F G s) t) =
+      filtrationJointMultiplicity F G s t := by
+  change finrank K ((filtrationOnGraded F G s t) ⧸
+    (filtrationRightLimit (filtrationOnGraded F G s) t).comap
+      (filtrationOnGraded F G s t).subtype) = _
+  rw [finrank_quotient,
+    (comapSubtypeEquivOfLe (filtrationRightLimit_le (antitone_filtrationOnGraded F hG s) t)).finrank_eq,
+    filtrationRightLimit_filtrationOnGraded F hG]
+  change finrank K (((G t).comap (F s).subtype).map (filtrationGradedMk F s)) - _ = _
+  rw [finrank_map_filtrationGradedMk hF, finrank_map_filtrationGradedMk hF]
+  have hFs := filtrationRightLimit_le hF s
+  have hGt := filtrationRightLimit_le hG t
+  have hBC : (filtrationRightLimit F s ⊓ G t) ⊓ (F s ⊓ filtrationRightLimit G t) =
+      filtrationRightLimit F s ⊓ filtrationRightLimit G t := by
+    apply le_antisymm
+    · exact le_inf (inf_le_left.trans inf_le_left) (inf_le_right.trans inf_le_right)
+    · exact le_inf (inf_le_inf le_rfl hGt) (inf_le_inf hFs le_rfl)
+  have hd := finrank_sup_add_finrank_inf_eq
+    (filtrationRightLimit F s ⊓ G t) (F s ⊓ filtrationRightLimit G t)
+  rw [hBC] at hd
+  have hle : (filtrationRightLimit F s ⊓ G t) ⊔ (F s ⊓ filtrationRightLimit G t) ≤
+      F s ⊓ G t := sup_le (inf_le_inf hFs le_rfl) (inf_le_inf le_rfl hGt)
+  have hr := finrank_mono hle
+  have hDC := finrank_mono (inf_le_inf hFs (le_refl (filtrationRightLimit G t)))
+  unfold filtrationJointMultiplicity
+  omega
+
 end Submodule

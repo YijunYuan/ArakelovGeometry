@@ -78,6 +78,144 @@ theorem trivialSeminorm_injectiveTensorPair_dual_tmul_le
     LinearMap.baseChange_tmul] at h
   exact h
 
+variable {ι κ : Type*} (b : Basis ι K E) (c : Basis κ K V)
+
+omit η [FiniteDimensional K E] in
+/-- A single ball-adapted basis bounds each nonzero coordinate's basis radius. -/
+theorem trivialSeminorm_basis_le_of_adapted (hξ : ξ.IsUltrametric)
+    (hb : ∀ t x, x ∈ ξ.trivialFiltration hξ t ↔
+      ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration hξ t)
+    (x : E) (i : ι) (hi : b.repr x i ≠ 0) :
+    ξ.trivialSeminorm (b i) ≤ ξ.trivialSeminorm x := by
+  classical
+  have hx : x ≠ 0 := by intro h; simp [h] at hi
+  have hp : 0 < ξ.trivialSeminorm x := by
+    rw [trivialSeminorm_apply]
+    exact ξ.norm_rational_pos PUnit.unit hx
+  have hm := (hb (-Real.log (ξ.trivialSeminorm x)) x).mp
+    ((ξ.mem_trivialFiltration_iff_le_neg_log hξ _ x hx).mpr le_rfl) i hi
+  simpa only [mem_trivialFiltration, neg_neg, Real.exp_log hp] using hm
+
+omit η [FiniteDimensional K E] in
+/-- The original logarithmic basis weights describe every factor step exactly. -/
+theorem trivialFiltration_eq_span_neg_log_of_adapted (hξ : ξ.IsUltrametric)
+    (hb : ∀ t x, x ∈ ξ.trivialFiltration hξ t ↔
+      ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration hξ t) (t : ℝ) :
+    ξ.trivialFiltration hξ t = Submodule.span K
+      (b '' {i | t ≤ -Real.log (ξ.trivialSeminorm (b i))}) := by
+  ext x
+  rw [b.mem_span_image, hb]
+  constructor
+  · intro hx i hi
+    exact (ξ.mem_trivialFiltration_iff_le_neg_log hξ t (b i) (b.ne_zero i)).mp
+      (hx i (Finsupp.mem_support_iff.mp hi))
+  · intro hx i hi
+    exact (ξ.mem_trivialFiltration_iff_le_neg_log hξ t (b i) (b.ne_zero i)).mpr
+      (hx (Finsupp.mem_support_iff.mpr hi))
+
+/-- Nonzero tensor coordinates give the sharp lower bound for the actual epsilon norm. -/
+theorem trivialSeminorm_injectiveTensorPair_coordinate_le
+    (hb : ∀ x i, b.repr x i ≠ 0 → ξ.trivialSeminorm (b i) ≤ ξ.trivialSeminorm x)
+    (hc : ∀ y j, c.repr y j ≠ 0 → η.trivialSeminorm (c j) ≤ η.trivialSeminorm y)
+    (x : E ⊗[K] V) (i : ι) (j : κ) (hij : (b.tensorProduct c).repr x (i, j) ≠ 0) :
+    ξ.trivialSeminorm (b i) * η.trivialSeminorm (c j) ≤
+      (ξ.injectiveTensorPair η).trivialSeminorm x := by
+  classical
+  let C := (AbsoluteValue.trivial : AbsoluteValue K ℝ).Completion
+  have hbi : 0 < ξ.trivialSeminorm (b i) := by
+    rw [trivialSeminorm_apply]
+    exact ξ.norm_rational_pos PUnit.unit (b.ne_zero i)
+  have hcj : 0 < η.trivialSeminorm (c j) := by
+    rw [trivialSeminorm_apply]
+    exact η.norm_rational_pos PUnit.unit (c.ne_zero j)
+  have hdb := ξ.trivialSeminorm_dual_le_inv_of_ge_away_kernel (b.coord i) hbi (hb · i)
+  have hdc := η.trivialSeminorm_dual_le_inv_of_ge_away_kernel (c.coord j) hcj (hc · j)
+  have he : (TensorProduct.dualDistrib K E V) (b.coord i ⊗ₜ[K] c.coord j) =
+      (b.tensorProduct c).coord (i, j) := by
+    apply TensorProduct.ext'
+    intro v w
+    simp only [TensorProduct.dualDistrib_apply, Basis.coord_apply,
+      Basis.tensorProduct_repr_tmul_apply, smul_eq_mul, mul_comm]
+  have hd := ξ.trivialSeminorm_injectiveTensorPair_dual_tmul_le η (b.coord i) (c.coord j)
+  rw [he] at hd
+  have hdual := hd.trans (mul_le_mul hdb hdc
+    (apply_nonneg η.dual.trivialSeminorm _) (inv_nonneg.mpr hbi.le))
+  have hev := (ξ.injectiveTensorPair η).norm_dual_tmul_apply_tmul_le PUnit.unit
+    (1 : C) (1 : C) ((b.tensorProduct c).coord (i, j)) x
+  change ‖(1 : C) * 1 * algebraMap K C ((b.tensorProduct c).coord (i, j) x)‖ ≤ _ at hev
+  rw [one_mul, one_mul, norm_trivialCompletion K, trivialCompletionAlgEquiv_algebraMap,
+    Basis.coord_apply, AbsoluteValue.trivial_apply hij] at hev
+  change 1 ≤ (ξ.injectiveTensorPair η).dual.trivialSeminorm
+    ((b.tensorProduct c).coord (i, j)) * (ξ.injectiveTensorPair η).trivialSeminorm x at hev
+  have hh := hev.trans (mul_le_mul_of_nonneg_right hdual
+    (apply_nonneg (ξ.injectiveTensorPair η).trivialSeminorm x))
+  calc
+    _ = (ξ.trivialSeminorm (b i) * η.trivialSeminorm (c j)) * 1 := (mul_one _).symm
+    _ ≤ (ξ.trivialSeminorm (b i) * η.trivialSeminorm (c j)) *
+        ((ξ.trivialSeminorm (b i))⁻¹ * (η.trivialSeminorm (c j))⁻¹ *
+          (ξ.injectiveTensorPair η).trivialSeminorm x) :=
+      mul_le_mul_of_nonneg_left hh (mul_nonneg hbi.le hcj.le)
+    _ = _ := by field_simp
+
+/-- The intrinsic convolution is contained in the actual epsilon ball at each threshold. -/
+theorem tensorFiltration_le_trivialFiltration_injectiveTensorPair
+    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric) (γ : ℝ) :
+    Submodule.tensorFiltration (ξ.trivialFiltration hξ) (η.trivialFiltration hη) γ ≤
+      (ξ.injectiveTensorPair η).trivialFiltration (ξ.injectiveTensorPair_isUltrametric η) γ := by
+  apply iSup_le
+  intro t
+  apply iSup_le
+  intro u
+  apply iSup_le
+  intro h
+  rintro _ ⟨x, rfl⟩
+  induction x with
+  | tmul x y =>
+    change (ξ.injectiveTensorPair η).trivialSeminorm (x.val ⊗ₜ[K] y.val) ≤ Real.exp (-γ)
+    calc
+      _ ≤ ξ.trivialSeminorm x.val * η.trivialSeminorm y.val :=
+        ξ.trivialSeminorm_injectiveTensorPair_tmul_le η _ _
+      _ ≤ Real.exp (-t) * Real.exp (-u) :=
+        mul_le_mul x.property y.property (apply_nonneg η.trivialSeminorm _) (Real.exp_pos _).le
+      _ = Real.exp (-(t + u)) := by rw [← Real.exp_add, neg_add]
+      _ ≤ _ := Real.exp_le_exp.mpr (neg_le_neg h)
+  | add x y hx hy => simpa only [map_add] using Submodule.add_mem _ hx hy
+
+/-- Arbitrary given factor filtrations from actual norms have exactly the epsilon tensor balls. -/
+theorem trivialFiltration_injectiveTensorPair
+    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric) (γ : ℝ) :
+    (ξ.injectiveTensorPair η).trivialFiltration (ξ.injectiveTensorPair_isUltrametric η) γ =
+      Submodule.tensorFiltration (ξ.trivialFiltration hξ) (η.trivialFiltration hη) γ := by
+  classical
+  apply le_antisymm
+  · obtain ⟨b, hb⟩ := ξ.exists_basis_adapted_trivialFiltration hξ
+    obtain ⟨c, hc⟩ := η.exists_basis_adapted_trivialFiltration hη
+    let w := fun i ↦ -Real.log (ξ.trivialSeminorm (b i))
+    let z := fun j ↦ -Real.log (η.trivialSeminorm (c j))
+    have hF := ξ.trivialFiltration_eq_span_neg_log_of_adapted b hξ hb
+    have hG := η.trivialFiltration_eq_span_neg_log_of_adapted c hη hc
+    rw [Submodule.tensorFiltration_eq_span_tensorProduct b c w z hF hG]
+    intro x hx
+    apply (b.tensorProduct c).mem_span_image.mpr
+    intro ij hij
+    have hcoord := ξ.trivialSeminorm_injectiveTensorPair_coordinate_le η b c
+      (ξ.trivialSeminorm_basis_le_of_adapted b hξ hb)
+      (η.trivialSeminorm_basis_le_of_adapted c hη hc) x ij.1 ij.2
+      (Finsupp.mem_support_iff.mp hij)
+    have hbi : 0 < ξ.trivialSeminorm (b ij.1) := by
+      rw [trivialSeminorm_apply]
+      exact ξ.norm_rational_pos PUnit.unit (b.ne_zero ij.1)
+    have hcj : 0 < η.trivialSeminorm (c ij.2) := by
+      rw [trivialSeminorm_apply]
+      exact η.norm_rational_pos PUnit.unit (c.ne_zero ij.2)
+    have hbound := hcoord.trans hx
+    change γ ≤ -Real.log (ξ.trivialSeminorm (b ij.1)) +
+      -Real.log (η.trivialSeminorm (c ij.2))
+    have hlog := Real.log_le_log (mul_pos hbi hcj) hbound
+    rw [Real.log_mul hbi.ne' hcj.ne', Real.log_exp] at hlog
+    linarith
+  · exact ξ.tensorFiltration_le_trivialFiltration_injectiveTensorPair η hξ hη γ
+
 end
 
 end ArakelovGeometry.NormFamily
