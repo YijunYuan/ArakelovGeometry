@@ -145,7 +145,7 @@ theorem AdelicStructure.HasCommonCountableDenseSubfield.algebraicExtension_of_is
     (S.algebraicExtension L).HasCommonCountableDenseSubfield := by
   obtain ⟨K₀, hc, hd⟩ := hS
   let : Countable K₀ := hc
-  refine ⟨(algebraicClosure K₀ L).toSubfield, countable_algebraicClosure_subfield K₀, ?_⟩
+  refine ⟨(algebraicClosure K₀ L).toSubfield, inferInstance, ?_⟩
   intro x
   change S.ParameterSpaceExtension L at x
   have hb : DenseRange (fun c : K₀ =>

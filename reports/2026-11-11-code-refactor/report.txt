@@ -31,3 +31,13 @@ relative algebraic closure of a countable subfield has a Countable instance.
 Standards consulted: https://mathlib.org/contribute/naming.html and
 https://mathlib.org/contribute/style.html (the old community naming URL redirects).
 Validation and final change summary will be added after the refactor.
+
+Instance verification checkpoint: direct Lake targets passed (4185 jobs), and
+Tests/Typeclasses.lean passed via lake env lean -j2. The initial consumer test
+exposed two missing exports: the canonical finite Archimedean mass fact was
+local, and completeness was only privately imported. Both are now public,
+so CompleteSpace also synthesizes. The regression checks definitionally identical
+pseudometric and distance, not just existence of an arbitrary metric. Its first
+attempt also needed a noncomputable section for the data-valued example; that
+failed attempt is not counted as a successful check. The actual algebraic-closure
+density consumer now uses inferInstance and passed LSP diagnostics.

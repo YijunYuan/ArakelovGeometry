@@ -18,6 +18,8 @@ and relative algebraic closures must inherit countability without a local instan
 open ArakelovGeometry ArakelovGeometry.AdelicStructure
 open ArakelovGeometry.StronglyDominatedNormFamily
 
+noncomputable section
+
 variable {K E : Type*} [Field K] [NumberField K]
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
@@ -25,6 +27,9 @@ example : T0Space (StronglyDominatedNormFamily (normalizedNumberFieldAdelicStruc
   inferInstance
 
 example : MetricSpace (StronglyDominatedNormFamily (normalizedNumberFieldAdelicStructure K) E) :=
+  inferInstance
+
+example : CompleteSpace (StronglyDominatedNormFamily (normalizedNumberFieldAdelicStructure K) E) :=
   inferInstance
 
 example : (numberFieldMetricSpace (K := K) (E := E)).toPseudoMetricSpace =

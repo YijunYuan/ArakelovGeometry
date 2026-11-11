@@ -5,9 +5,9 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Completion.Metric
+public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Completion.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.Full.Gauge
-import ArakelovGeometry.AdelicVectorBundle.NormFamily.Completion.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Completion.Density
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Subquotient
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Coherence.Model
@@ -116,7 +116,9 @@ end NormFamily
 
 namespace StronglyDominatedNormFamily
 
-local instance normalizedInfiniteMeasureFinite :
+/-- The normalized number-field curve has finite Archimedean mass. This canonical
+fact lets downstream metric and completeness instances use the source pseudometric. -/
+instance normalizedInfiniteMeasureFinite :
     Fact ((N).v (N).Ωinf < ⊤) :=
   ⟨(N).v_Ωinf_lt_top_of_isRCLike normalizedNumberFieldArchimedeanCompletions⟩
 
