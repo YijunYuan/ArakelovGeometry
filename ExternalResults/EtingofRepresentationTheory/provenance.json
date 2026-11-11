@@ -1,0 +1,54 @@
+{
+  "donor": "mathlib-initiative/EtingofRepresentationTheory",
+  "repository": "https://github.com/mathlib-initiative/EtingofRepresentationTheory",
+  "commit": "752fe269b3233f08f0795aa4bcdc5b4c84be7a50",
+  "license": "Apache-2.0",
+  "upstream_toolchain": "Lean 4.32.2",
+  "local_toolchain": "Lean 4.35.0",
+  "local_mathlib_commit": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "scope": "Selected fixed-degree Schur-Weyl producers for Bost p31; no general reductivity, bounded-polynomial bridge or orbit separation claim.",
+  "legal_files": [
+    {
+      "path": "LICENSE",
+      "upstream_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "local_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "NOTICE",
+      "upstream_sha256": "3f30f2c25dbc5042f999af57f7ece7ebbd5f919b765507b17dd797261b26270d",
+      "local_sha256": "3f30f2c25dbc5042f999af57f7ece7ebbd5f919b765507b17dd797261b26270d"
+    }
+  ],
+  "files": [
+    {
+      "upstream_path": "RepresentationTheory/CentralizerDecomposition.lean",
+      "upstream_sha256": "fdde95bb1d790eb0ecef58a4f4dfba6b0af8c391f6ebbbbee3fa5e75887d2db8",
+      "local_path": "ExternalResults/EtingofRepresentationTheory/CentralizerDecomposition.lean",
+      "local_sha256": "b990d308ba43217bf6674c24e434b3c65a2e6af0b6d20eb47aba85de17bf19ab",
+      "retained_upstream_lines": [
+        [
+          221,
+          262
+        ]
+      ],
+      "alterations": [
+        "Retain only isSemisimpleRing_centralizer and its variable context.",
+        "Replace import Mathlib and alignment metadata with narrow WedderburnArtin import.",
+        "Add module/public/expose declarations for local Lean module system.",
+        "Remove redundant FaithfulSMul hypothesis: proof does not use it.",
+        "Replace haveI with have, normalize proof whitespace and add Bost scope docstrings."
+      ]
+    }
+  ],
+  "source_evidence": "Raw files fetched at pinned commit and SHA256 recorded; no donor build asserted.",
+  "kernel_evidence": [
+    {
+      "command": "LEAN_NUM_THREADS=2 horizon check ExternalResults.EtingofRepresentationTheory.CentralizerDecomposition --timeout 120 --json",
+      "status": "passed",
+      "fingerprint": "70b31fb1c776ad98",
+      "duration_seconds": 5.228
+    }
+  ],
+  "axiom_evidence": [],
+  "selection_status": "centralizer milestone checked; tensor and SL consumers in progress"
+}
