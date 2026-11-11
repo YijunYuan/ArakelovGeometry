@@ -357,6 +357,36 @@ theorem degree_ge_of_finite_same_slope_spanning_contractions [Finite ι]
     (fun i ↦ hf (e i))
   exact (Equiv.iSup_comp (g := fun i ↦ (f i).range) e).trans hspan
 
+/-- The same source family bounds the slope of every nonzero actual quotient
+of the target. This is the quotient half of the componentwise Bost Lemma 7.1
+argument, retaining the target's quotient norm. -/
+theorem slope_quotient_ge_of_finite_same_slope_spanning_contractions [Finite ι]
+    (V : ∀ i, AdelicVectorBundle S (C i)) (W : AdelicVectorBundle S Q)
+    (f : ∀ i, C i →ₗ[K] Q)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hV : ∀ i, (V i).toNormFamily.IsHermitian hN) (hW : W.toNormFamily.IsHermitian hN)
+    (a : ℝ)
+    (hsemi : ∀ i, Module.finrank K (C i) = 0 ∨
+      ((V i).IsMeanSlopeSemistable hS hN ∧ (V i).slope hS hN = a))
+    (hspan : (⨆ i, (f i).range) = ⊤)
+    (hf : ∀ i ω x, W.toNormFamily.norm ω ((f i).baseChange (S.ϕ ω).Completion x) ≤
+      (V i).toNormFamily.norm ω x)
+    (U : Submodule K Q) (hr : 0 < Module.finrank K (Q ⧸ U)) :
+    a ≤ (W.quotientOfMeasurableBase U hS).slope hS hN := by
+  have hspan' : (⨆ i, (U.mkQ.comp (f i)).range) = ⊤ := by
+    simp only [LinearMap.range_comp, ← Submodule.map_iSup, hspan, Submodule.map_top,
+      LinearMap.range_eq_top.mpr U.mkQ_surjective]
+  have hn (i : ι) (ω : S.Ω) (x : (S.ϕ ω).Completion ⊗[K] C i) :
+      (W.toNormFamily.quotient U).norm ω
+        ((U.mkQ.comp (f i)).baseChange (S.ϕ ω).Completion x) ≤
+          (V i).toNormFamily.norm ω x := by
+    rw [LinearMap.baseChange_comp, LinearMap.comp_apply]
+    exact (W.toNormFamily.quotient_norm_mk_le U ω _).trans (hf i ω x)
+  exact (le_div_iff₀ (Nat.cast_pos.mpr hr)).mpr
+    (degree_ge_of_finite_same_slope_spanning_contractions V (W.quotientOfMeasurableBase U hS)
+      (fun i ↦ U.mkQ.comp (f i)) hS hN hV (hW.quotient U) a hsemi hspan' hn)
+
 omit [FiniteDimensional K Q] in
 /-- For a finite family of actual Hermitian bundles, its common HN image is
 a finite real filtration whenever the images span the target. The source
