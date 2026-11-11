@@ -229,9 +229,9 @@ theorem binaryNested_factor_semisimple [IsAlgClosed k] [CharZero k]
       (⨂[k]^d (⨂[k]^r (⨂[k] i, E i))) :=
     (binaryNestedRepresentation k E r d).comp (binaryFactorHom k E j)
   let b (i : Bool) := Module.Free.chooseBasis k (E i)
-  let B := Module.Basis.piTensorProduct (fun _ : Fin d ↦
-    Module.Basis.piTensorProduct (fun _ : Fin r ↦
-      Module.Basis.piTensorProduct b))
+  let B := Basis.piTensorProduct (fun _ : Fin d ↦
+    Basis.piTensorProduct (fun _ : Fin r ↦
+      Basis.piTensorProduct b))
   let f (p : Fin d → Fin r → ∀ i, Module.Free.ChooseBasisIndex k (E i)) :=
     Representation.IntertwiningMap.equivLinearMapAsModule ρ τ
       ((binaryTensorCopy k E r d j (fun a l i ↦ b i (p a l i))).intertwiningMap_of_isIntertwiningMap
@@ -250,7 +250,7 @@ theorem binaryNested_factor_semisimple [IsAlgClosed k] [CharZero k]
     apply Submodule.mem_iSup_of_mem p
     refine ⟨PiTensorProduct.tprod k (fun a ↦ b j (p a.1 a.2 j)), ?_⟩
     change binaryTensorCopy k E r d j (fun a l i ↦ b i (p a l i)) _ = B p
-    simp [binaryTensorCopy_tprod, B, Module.Basis.piTensorProduct_apply]
+    simp [binaryTensorCopy_tprod, B, Basis.piTensorProduct_apply]
   | zero => exact Submodule.zero_mem _
   | add x y hx hy hix hiy => exact Submodule.add_mem _ hix hiy
   | smul a x hx hix => exact Submodule.smul_of_tower_mem _ a hix
