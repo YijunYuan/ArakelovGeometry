@@ -143,9 +143,9 @@ theorem exists_cartan (g : GL ι K⸨X⸩) :
       by simp [diagonal_mul_diagonal], by simp [diagonal_mul_diagonal]⟩
   let φ := algebraMap K⟦X⟧ K⸨X⸩
   let x : K⸨X⸩ := φ PowerSeries.X
-  have hx : x ≠ 0 := by simp [x, φ, PowerSeries.coe_X]
+  have hx : x ≠ 0 := by simp [x, φ]
   refine ⟨P * U, Q, fun i ↦ (k i : ℤ) - m, ?_⟩
-  apply smul_left_cancel₀ (pow_ne_zero m hx)
+  apply smul_right_injective (M := Matrix ι ι K⸨X⸩) (pow_ne_zero m hx)
   change x ^ m • (g : Matrix ι ι K⸨X⸩) = x ^ m •
     (((P * U : GL ι K⟦X⟧) : Matrix ι ι K⟦X⟧).map φ *
       diagonal (fun i ↦ x ^ ((k i : ℤ) - m)) * (Q : Matrix ι ι K⟦X⟧).map φ)

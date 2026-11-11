@@ -152,7 +152,8 @@ theorem orthogonalTensorPair_dual_norm
     let := IsRCLikeNormedField.rclike L
     let X i := L ⊗[K] BinaryTensorFactors E F i
     let D i := L ⊗[K] BinaryTensorFactors (Module.Dual K E) (Module.Dual K F) i
-    let : ∀ i, NormedAddCommGroup (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedAddCommGroup ω
+    let : ∀ i, NormedAddCommGroup (X i) :=
+      fun i ↦ (tensorPairFactors ξ η i).fibreNormedAddCommGroup ω
     let : ∀ i, NormedSpace L (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedSpace ω
     let : ∀ i, InnerProductSpace L (X i) :=
       fun i ↦ (hξ.tensorPairFactors hη i).fibreInnerProductSpace ω hω
@@ -223,6 +224,31 @@ theorem orthogonalTensorPair_dual_norm
     rw [← mixedTensorPair_dual_norm_eq_injective]
     simp only [dual_norm_eq_sSup, orthogonalTensorPair_norm_of_finite _ _ _ _ _ ω hfin,
       mixedTensorPair_norm_of_mem_Ωfin _ _ ω hfin]
+
+/-- Equality of norm families under the canonical algebraic dual isomorphism. -/
+theorem orthogonalTensorPair_dual_pullback
+    (ξ : NormFamily S E) (η : NormFamily S F)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) :
+    (ξ.orthogonalTensorPair η hN hξ hη).dual.pullback (TensorProduct.dualDistrib K E F)
+      (by
+        simpa only [← TensorProduct.toLinearMap_dualDistribEquiv, LinearEquiv.coe_coe] using
+          (TensorProduct.dualDistribEquiv K E F).injective) =
+      ξ.dual.orthogonalTensorPair η.dual hN hξ.dual hη.dual := by
+  ext ω z
+  exact orthogonalTensorPair_dual_norm ξ η hN hξ hη ω z
+
+/-- The canonical binary tensor-dual isometry on the actual completed fibres. -/
+def orthogonalTensorPairDualIsometry
+    (ξ : NormFamily S E) (η : NormFamily S F)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω) :
+    letI := (ξ.dual.orthogonalTensorPair η.dual hN hξ.dual hη.dual).fibreNormedAddCommGroup ω
+    letI := (ξ.orthogonalTensorPair η hN hξ hη).dual.fibreNormedAddCommGroup ω
+    ((S.ϕ ω).Completion ⊗[K] (Module.Dual K E ⊗[K] Module.Dual K F)) ≃ₗᵢ[(S.ϕ ω).Completion]
+      ((S.ϕ ω).Completion ⊗[K] Module.Dual K (E ⊗[K] F)) :=
+  { (TensorProduct.dualDistribEquiv K E F).baseChange K (S.ϕ ω).Completion _ _ with
+    norm_map' := orthogonalTensorPair_dual_norm ξ η hN hξ hη ω }
 
 end NormFamily
 
