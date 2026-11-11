@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian
 public import ArakelovGeometry.Analysis.Tensor.HermitianDual
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.DualNorm
+import Mathlib.Analysis.Normed.Group.Ultra
 
 /-!
 # Orthogonal tensor duality on completed fibres
@@ -62,6 +63,23 @@ theorem piDualDistrib_baseChange_apply
             map_prod, mul_one]
           ring
 
+omit [∀ i, FiniteDimensional K (E i)] in
+/-- Canonical finite reindexing commutes with the actual tensor base-change map. -/
+theorem tensorBaseChangeEquiv_reindex {J : Type*} [Finite J] (e : ι ≃ J)
+    (z : L ⊗[K] (⨂[K] i, E i)) :
+    tensorBaseChangeEquiv K L (fun j ↦ E (e.symm j))
+      ((PiTensorProduct.reindex K E e).toLinearMap.baseChange L z) =
+    PiTensorProduct.reindex L (fun i ↦ L ⊗[K] E i) e (tensorBaseChangeEquiv K L E z) := by
+  induction z using TensorProduct.inductionOn with
+  | add z t hz ht => simp only [map_add, hz, ht]
+  | tmul a t =>
+    induction t using PiTensorProduct.induction_on with
+    | add t u ht hu => simp only [TensorProduct.tmul_add, map_add, ht, hu]
+    | smul_tprod c x =>
+      simp only [TensorProduct.tmul_smul, TensorProduct.smul_tmul', LinearMap.baseChange_tmul,
+        LinearEquiv.coe_coe, PiTensorProduct.reindex_tprod, tensorBaseChangeEquiv_tmul_tprod,
+        map_smul]
+
 end Algebra
 
 namespace NormFamily
@@ -107,6 +125,91 @@ theorem orthogonalTensor_dual_norm_of_infinite
   funext x
   rw [piDualDistrib_baseChange_apply, orthogonalTensor_norm_of_infinite _ _ _ ω hω]
   rfl
+
+/-- Finite tensor duality acts on arbitrary vectors of every completed fibre. -/
+theorem orthogonalTensor_dual_norm
+    (ξ : ∀ i, NormFamily S (E i))
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hξ : ∀ i, (ξ i).IsHermitian hN) (ω : S.Ω)
+    (z : (S.ϕ ω).Completion ⊗[K] (⨂[K] i, Module.Dual K (E i))) :
+    (orthogonalTensor ξ hN hξ).dual.norm ω
+      (PiTensorProduct.dualDistrib.baseChange (S.ϕ ω).Completion z) =
+    (orthogonalTensor (fun i ↦ (ξ i).dual) hN (fun i ↦ (hξ i).dual)).norm ω z := by
+  by_cases hω : ω ∈ S.Ωinf
+  · exact orthogonalTensor_dual_norm_of_infinite ξ hN hξ ω hω z
+  have hfin : ω ∈ S.Ωfin := not_not.mp hω
+  let L := (S.ϕ ω).Completion
+  let X i := L ⊗[K] E i
+  let D i := L ⊗[K] Module.Dual K (E i)
+  let : ∀ i, NormedAddCommGroup (X i) := fun i ↦ (ξ i).fibreNormedAddCommGroup ω
+  let : ∀ i, NormedSpace L (X i) := fun i ↦ (ξ i).fibreNormedSpace ω
+  let : ∀ i, IsUltrametricDist (X i) := fun i ↦
+    IsUltrametricDist.isUltrametricDist_of_forall_norm_add_le_max_norm ((hξ i).1 ω hfin)
+  let : ∀ i, NormedAddCommGroup (D i) := fun i ↦ (ξ i).dual.fibreNormedAddCommGroup ω
+  let : ∀ i, NormedSpace L (D i) := fun i ↦ (ξ i).dual.fibreNormedSpace ω
+  let : ∀ i, NormedAddCommGroup (Module.Dual L (X i)) :=
+    fun i ↦ linearDualNormedAddCommGroup (k := L) (E := X i)
+  let : ∀ i, NormedSpace L (Module.Dual L (X i)) :=
+    fun i ↦ linearDualNormedSpace (k := L) (E := X i)
+  let e : ∀ i, D i ≃ₗᵢ[L] Module.Dual L (X i) := fun i ↦
+    { toLinearEquiv := dualBaseChangeEquiv K L (E i), norm_map' := fun _ ↦ rfl }
+  let t := tensorBaseChangeEquiv K L (fun i ↦ Module.Dual K (E i)) z
+  have hL (a b : L) : ‖a + b‖ ≤ max ‖a‖ ‖b‖ := by
+    refine UniformSpace.Completion.induction_on₂ a b ?_ ?_
+    · exact isClosed_le (by fun_prop) (by fun_prop)
+    · intro x y
+      change ‖(↑x : (S.ϕ ω).Completion) + ↑y‖ ≤
+        max ‖(↑x : (S.ϕ ω).Completion)‖ ‖(↑y : (S.ϕ ω).Completion)‖
+      rw [← UniformSpace.Completion.coe_add, UniformSpace.Completion.norm_coe,
+        UniformSpace.Completion.norm_coe, UniformSpace.Completion.norm_coe]
+      exact hfin x.ofAbs y.ofAbs
+  rw [dual_norm_eq_sSup, orthogonalTensor_norm_of_finite _ _ _ ω hfin]
+  change _ = ArakelovGeometry.injectiveTensorSeminorm t
+  rw [← injectiveTensorSeminorm_congr_linearIsometryEquiv e t,
+    injectiveTensor_dual_eq_sSup_of_ultrametric hL]
+  congr 1
+  rw [← (tensorBaseChangeEquiv K L E).surjective.range_comp]
+  congr 1
+  funext x
+  rw [piDualDistrib_baseChange_apply, orthogonalTensor_norm_of_finite _ _ _ ω hfin]
+  rfl
+
+/-- Every canonical finite permutation preserves the actual norm at every place. -/
+theorem orthogonalTensor_norm_reindex {J : Type*} [Fintype J]
+    (ξ : ∀ i, NormFamily S (E i))
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hξ : ∀ i, (ξ i).IsHermitian hN) (e : ι ≃ J) (ω : S.Ω)
+    (z : (S.ϕ ω).Completion ⊗[K] (⨂[K] i, E i)) :
+    (orthogonalTensor (fun j ↦ ξ (e.symm j)) hN (fun j ↦ hξ (e.symm j))).norm ω
+      ((PiTensorProduct.reindex K E e).toLinearMap.baseChange (S.ϕ ω).Completion z) =
+      (orthogonalTensor ξ hN hξ).norm ω z := by
+  let L := (S.ϕ ω).Completion
+  let : ∀ i, NormedAddCommGroup (L ⊗[K] E i) := fun i ↦ (ξ i).fibreNormedAddCommGroup ω
+  let : ∀ i, NormedSpace L (L ⊗[K] E i) := fun i ↦ (ξ i).fibreNormedSpace ω
+  by_cases hω : ω ∈ S.Ωinf
+  · let := hN ω hω
+    let := IsRCLikeNormedField.rclike L
+    let : ∀ i, InnerProductSpace L (L ⊗[K] E i) :=
+      fun i ↦ (hξ i).fibreInnerProductSpace ω hω
+    rw [orthogonalTensor_norm_of_infinite _ _ _ ω hω,
+      orthogonalTensor_norm_of_infinite _ _ _ ω hω]
+    change ArakelovGeometry.orthogonalTensorSeminorm
+      (fun j ↦ stdOrthonormalBasis L (L ⊗[K] E (e.symm j)))
+      (tensorBaseChangeEquiv K L (fun j ↦ E (e.symm j)) _) =
+      ArakelovGeometry.orthogonalTensorSeminorm (fun i ↦ stdOrthonormalBasis L (L ⊗[K] E i))
+        (tensorBaseChangeEquiv K L E z)
+    rw [tensorBaseChangeEquiv_reindex]
+    exact ArakelovGeometry.orthogonalTensorSeminorm_reindex
+      (fun i ↦ stdOrthonormalBasis L (L ⊗[K] E i)) e (tensorBaseChangeEquiv K L E z)
+  · have hfin : ω ∈ S.Ωfin := not_not.mp hω
+    rw [orthogonalTensor_norm_of_finite _ _ _ ω hfin,
+      orthogonalTensor_norm_of_finite _ _ _ ω hfin]
+    change ArakelovGeometry.injectiveTensorSeminorm
+      (tensorBaseChangeEquiv K L (fun j ↦ E (e.symm j)) _) =
+      ArakelovGeometry.injectiveTensorSeminorm (tensorBaseChangeEquiv K L E z)
+    rw [tensorBaseChangeEquiv_reindex]
+    exact ArakelovGeometry.injectiveTensorSeminorm_reindex
+      (V := fun i ↦ L ⊗[K] E i) e (tensorBaseChangeEquiv K L E z)
 
 end NormFamily
 
