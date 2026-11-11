@@ -326,4 +326,83 @@ noncomputable def tensorFiltrationGradedEquiv (hFa : Antitone F) (hGa : Antitone
 
 end Inverse
 
+section Naturality
+
+variable {E' V' : Type*} [AddCommGroup E'] [Module K E']
+  [AddCommGroup V'] [Module K V']
+  {F' : ℝ → Submodule K E'} {G' : ℝ → Submodule K V'}
+  (f : E →ₗ[K] E') (g : V →ₗ[K] V')
+  (hf : ∀ t, F t ≤ (F' t).comap f) (hg : ∀ u, G u ≤ (G' u).comap g)
+
+include hf hg in
+/-- Tensoring two filtered maps preserves their intrinsic convolution filtrations. -/
+theorem tensorFiltration_map_le (γ : ℝ) :
+    tensorFiltration F G γ ≤ (tensorFiltration F' G' γ).comap (TensorProduct.map f g) := by
+  apply iSup_le
+  intro t
+  apply iSup_le
+  intro u
+  apply iSup_le
+  intro h
+  rintro _ ⟨x, rfl⟩
+  induction x with
+  | tmul x y =>
+    exact tmul_mem_tensorFiltration h (hf t x.property) (hg u y.property)
+  | add x y hx hy => simpa only [map_add] using add_mem hx hy
+
+/-- Canonical pair maps commute with the grades of filtered tensor maps. -/
+theorem tensorFiltrationGradedPair_natural
+    (hFa : Antitone F) (hGa : Antitone G) (hFa' : Antitone F') (hGa' : Antitone G')
+    {t u γ : ℝ} (h : t + u = γ) :
+    (filtrationGradedMap (TensorProduct.map f g) (tensorFiltration_map_le f g hf hg) γ).comp
+      (tensorFiltrationGradedPair hFa hGa h) =
+    (tensorFiltrationGradedPair hFa' hGa' h).comp
+      (TensorProduct.map (filtrationGradedMap f hf t) (filtrationGradedMap g hg u)) := by
+  apply TensorProduct.ext'
+  intro x y
+  obtain ⟨x, rfl⟩ := ((filtrationRightLimit F t).comap (F t).subtype).mkQ_surjective x
+  obtain ⟨y, rfl⟩ := ((filtrationRightLimit G u).comap (G u).subtype).mkQ_surjective y
+  rfl
+
+/-- The full graded decomposition is natural for filtered tensor maps. -/
+theorem tensorFiltrationGradedSum_natural
+    (hFa : Antitone F) (hGa : Antitone G) (hFa' : Antitone F') (hGa' : Antitone G') (γ : ℝ) :
+    (filtrationGradedMap (TensorProduct.map f g) (tensorFiltration_map_le f g hf hg) γ).comp
+      (tensorFiltrationGradedSum hFa hGa γ) =
+    (tensorFiltrationGradedSum hFa' hGa' γ).comp
+      (DirectSum.lmap fun p : {p : ℝ × ℝ // p.1 + p.2 = γ} ↦
+        TensorProduct.map (filtrationGradedMap f hf p.val.1)
+          (filtrationGradedMap g hg p.val.2)) := by
+  apply DirectSum.linearMap_ext
+  intro p
+  apply LinearMap.ext
+  intro x
+  simpa only [LinearMap.comp_apply, tensorFiltrationGradedSum, DirectSum.toModule_lof,
+    DirectSum.lmap_lof] using
+    LinearMap.congr_fun (tensorFiltrationGradedPair_natural f g hf hg hFa hGa hFa' hGa'
+      p.property) x
+
+end Naturality
+
+/-- Composition with an image-filtration grade gives the canonical quotient map. -/
+noncomputable def tensorFiltrationGradedQuotient {Q : Type*} [AddCommGroup Q] [Module K Q]
+    (q : E ⊗[K] V →ₗ[K] Q) (hF : Antitone F) (hG : Antitone G) (γ : ℝ) :
+    (⨁ p : {p : ℝ × ℝ // p.1 + p.2 = γ},
+      FiltrationGraded F p.val.1 ⊗[K] FiltrationGraded G p.val.2) →ₗ[K]
+      FiltrationGraded (fun t ↦ (tensorFiltration F G t).map q) γ :=
+  (filtrationGradedMap q (fun t ↦ le_comap_map q (tensorFiltration F G t)) γ).comp
+    (tensorFiltrationGradedSum hF hG γ)
+
+/-- Every image-grade class has a lift in the sum of the original pair grades. -/
+theorem tensorFiltrationGradedQuotient_surjective {Q ι κ : Type*}
+    [AddCommGroup Q] [Module K Q] (q : E ⊗[K] V →ₗ[K] Q)
+    (b : ι → E) (c : κ → V) (w : ι → ℝ) (z : κ → ℝ)
+    (hFa : Antitone F) (hGa : Antitone G)
+    (hF : ∀ t, F t = span K (b '' {i | t ≤ w i}))
+    (hG : ∀ u, G u = span K (c '' {j | u ≤ z j})) (γ : ℝ) :
+    Function.Surjective (tensorFiltrationGradedQuotient q hFa hGa γ) :=
+  (filtrationGradedMap_surjective q
+    (fun t ↦ le_comap_map q (tensorFiltration F G t)) γ rfl).comp
+    (tensorFiltrationGradedSum_surjective b c w z hFa hGa hF hG γ)
+
 end Submodule
