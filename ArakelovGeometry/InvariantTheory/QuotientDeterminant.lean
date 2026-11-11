@@ -75,4 +75,28 @@ theorem finrank_topExterior [FiniteDimensional k Q] :
     Module.finrank k (⋀[k]^(Module.finrank k Q) Q) = 1 := by
   simp
 
+/-- Alternating a tensor and projecting to the exterior power multiplies by `r!`. -/
+theorem tensorToExterior_toTensorPower (r : ℕ) :
+    (tensorToExterior k W r).comp (exteriorPower.toTensorPower k W r) =
+      (r.factorial : k) • LinearMap.id := by
+  apply exteriorPower.linearMap_ext
+  have h : (tensorToExterior k W r).compMultilinearMap (PiTensorProduct.tprod k) =
+      (exteriorPower.ιMulti k r).toMultilinearMap := by
+    ext x
+    exact tensorToExterior_tprod k W r x
+  ext x
+  change tensorToExterior k W r
+      ((PiTensorProduct.tprod k).alternatization x) = _
+  rw [← LinearMap.compAlternatingMap_apply,
+    ← LinearMap.compMultilinearMap_alternatization, h, AlternatingMap.coe_alternatization]
+  simp
+
+/-- The alternating tensor inclusion is natural for all linear maps. -/
+theorem toTensorPower_map (r : ℕ) (f : W →ₗ[k] Q) :
+    (exteriorPower.toTensorPower k Q r).comp (exteriorPower.map r f) =
+      (PiTensorProduct.map fun _ : Fin r ↦ f).comp (exteriorPower.toTensorPower k W r) := by
+  apply exteriorPower.linearMap_ext
+  ext x
+  simp [Function.comp_def]
+
 end ArakelovGeometry.InvariantTheory

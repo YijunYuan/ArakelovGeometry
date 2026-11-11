@@ -187,6 +187,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Ba
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HN
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Inverse
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.AdaptedBasis
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.CommonAdaptedBasis
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.Bidual
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.BidualHN
@@ -567,6 +568,7 @@ public import ArakelovGeometry.GeometryOfNumbers.Polar.LatticeSpanningPolarCount
 public import ArakelovGeometry.GeometryOfNumbers.Polar.PolarLatticeAnnihilation
 public import ArakelovGeometry.LinearAlgebra.Dual.BaseChange
 public import ArakelovGeometry.LinearAlgebra.FiniteFiltration
+public import ArakelovGeometry.LinearAlgebra.CommonAdaptedBasis
 public import ArakelovGeometry.LinearAlgebra.FiniteFlagRanks
 public import ArakelovGeometry.LinearAlgebra.MaximalMinor
 public import ArakelovGeometry.LinearAlgebra.MeasurableMaximalMinor
