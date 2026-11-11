@@ -89,4 +89,73 @@ theorem orthogonalTensor_dual_eq_sSup {A : ι → Type*} {ν : ι → Type*}
   exact (orthogonalTensor_dual_transport b c e he z).symm.trans
     (linearMapOperatorSeminorm_eq_sSup _)
 
+omit [∀ i, FiniteDimensional L (E i)] in
+/-- Canonical reindexing preserves the orthogonal inner product on all vectors. -/
+theorem orthogonalTensorCore_reindex {ι' : Type*} [Fintype ι'] (e : ι ≃ ι')
+    (x y : ⨂[L] i, E i) :
+    (orthogonalTensorCore (fun j ↦ b (e.symm j))).inner
+      (PiTensorProduct.reindex L E e x) (PiTensorProduct.reindex L E e y) =
+      (orthogonalTensorCore b).inner x y := by
+  classical
+  change inner L (orthogonalTensorCoordinates (fun j ↦ b (e.symm j))
+    (PiTensorProduct.reindex L E e x))
+    (orthogonalTensorCoordinates (fun j ↦ b (e.symm j)) (PiTensorProduct.reindex L E e y)) =
+    inner L (orthogonalTensorCoordinates b x) (orthogonalTensorCoordinates b y)
+  induction x using PiTensorProduct.induction_on with
+  | smul_tprod r x =>
+    induction y using PiTensorProduct.induction_on with
+    | smul_tprod s y =>
+      simp only [map_smul, PiTensorProduct.reindex_tprod, inner_smul_left, inner_smul_right]
+      change s * ((starRingEnd L) r * (orthogonalTensorCore (fun j ↦ b (e.symm j))).inner _ _) =
+        s * ((starRingEnd L) r * (orthogonalTensorCore b).inner _ _)
+      rw [orthogonalTensorCore_tprod, orthogonalTensorCore_tprod]
+      congr 2
+      exact Fintype.prod_equiv e.symm _ _ (fun _ ↦ rfl)
+    | add y z hy hz => simp only [map_add, inner_add_right, hy, hz]
+  | add x z hx hz => simp only [map_add, inner_add_left, hx, hz]
+
+omit [∀ i, FiniteDimensional L (E i)] in
+/-- Every canonical finite permutation is an isometry for the orthogonal norm. -/
+theorem orthogonalTensorSeminorm_reindex {ι' : Type*} [Fintype ι'] (e : ι ≃ ι')
+    (z : ⨂[L] i, E i) :
+    orthogonalTensorSeminorm (fun j ↦ b (e.symm j)) (PiTensorProduct.reindex L E e z) =
+      orthogonalTensorSeminorm b z := by
+  apply (sq_eq_sq₀ (apply_nonneg _ _) (apply_nonneg _ _)).mp
+  rw [orthogonalTensorSeminorm_sq, orthogonalTensorSeminorm_sq, orthogonalTensorCore_reindex]
+
+section InjectiveReindex
+
+variable {k I J : Type*} [NormedField k] [CompleteSpace k] [Fintype I] [Fintype J]
+  {V : I → Type*} [∀ i, NormedAddCommGroup (V i)] [∀ i, NormedSpace k (V i)]
+  [∀ i, FiniteDimensional k (V i)]
+
+omit [CompleteSpace k] [∀ i, FiniteDimensional k (V i)] in
+/-- Reindexing respects the algebraic evaluation pairing on arbitrary tensors. -/
+theorem tensorDualEval_reindex (e : I ≃ J) (φ : ∀ i, Module.Dual k (V i))
+    (z : ⨂[k] i, V i) :
+    tensorDualEval (fun j ↦ φ (e.symm j)) (PiTensorProduct.reindex k V e z) =
+      tensorDualEval φ z := by
+  induction z using PiTensorProduct.induction_on with
+  | smul_tprod a x =>
+    simp only [map_smul, PiTensorProduct.reindex_tprod, tensorDualEval_tprod]
+    congr 1
+    exact Fintype.prod_equiv e.symm _ _ (fun _ ↦ rfl)
+  | add z t hz ht => simp only [map_add, hz, ht]
+
+/-- Reindexing preserves the injective norm over any complete normed field. -/
+theorem injectiveTensorSeminorm_reindex (e : I ≃ J) (z : ⨂[k] i, V i) :
+    injectiveTensorSeminorm (PiTensorProduct.reindex k V e z) = injectiveTensorSeminorm z := by
+  rw [injectiveTensorSeminorm_eq_sSup, injectiveTensorSeminorm_eq_sSup]
+  congr 1
+  rw [← (Equiv.piCongrLeft' (fun i ↦ Module.Dual k (V i)) e).surjective.range_comp]
+  congr 1
+  funext φ
+  change ‖tensorDualEval (fun j ↦ φ (e.symm j)) (PiTensorProduct.reindex k V e z)‖ /
+    (∏ j, linearMapOperatorSeminorm (φ (e.symm j))) = _
+  rw [tensorDualEval_reindex]
+  congr 1
+  exact Fintype.prod_equiv e.symm _ _ (fun _ ↦ rfl)
+
+end InjectiveReindex
+
 end ArakelovGeometry
