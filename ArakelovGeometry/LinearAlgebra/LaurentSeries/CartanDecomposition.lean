@@ -1,9 +1,11 @@
-import Mathlib.LinearAlgebra.FreeModule.PID
-import Mathlib.LinearAlgebra.Matrix.Basis
-import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
-import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
-import Mathlib.RingTheory.LaurentSeries
-import Mathlib.RingTheory.Localization.Integer
+module
+
+public import Mathlib.LinearAlgebra.FreeModule.PID
+public import Mathlib.LinearAlgebra.Matrix.Basis
+public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
+public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
+public import Mathlib.RingTheory.LaurentSeries
+public import Mathlib.RingTheory.Localization.Integer
 
 /-!
 # Elementary divisors over formal Laurent series
@@ -18,6 +20,8 @@ through its full-rank basis and coefficient API in `FreeModule.PID`.
 `LaurentSeries` supplies localization at powers of `X` and the fraction-field
 instance. No field closure or descent hypothesis enters these producers.
 -/
+
+@[expose] public section
 
 noncomputable section
 
