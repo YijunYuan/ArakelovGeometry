@@ -235,7 +235,7 @@ theorem exists_centered_negative_tensor_filtrations_of_baseChange
   let q' := q.comp e.toLinearMap
   have hprod : 0 < finrank K E * finrank K V := by
     rw [← Module.finrank_tensorProduct]
-    exact hQ.trans_le (LinearMap.finrank_le_finrank_of_surjective q hq)
+    exact hQ.trans_le (LinearMap.finrank_le_finrank_of_surjective hq)
   have ha : ∀ i, 0 < finrank K (A i) := by
     rintro (⟨⟩ | ⟨⟩)
     · exact Nat.pos_of_mul_pos_right hprod
@@ -245,10 +245,8 @@ theorem exists_centered_negative_tensor_filtrations_of_baseChange
     | .inr _ => G₀
   have hnegF : filtrationExpectation (fun t ↦
       (piTensorFiltration F t).map (piTensorQuotientBaseChange q')) < 0 := by
-    change filtrationExpectation (fun t ↦ (piTensorFiltration F t).map
-      (piTensorQuotientBaseChange (q.comp (binaryTensorEquiv K A).toLinearMap))) < 0
-    simp_rw [piTensor_image_binary_baseChange q F]
-    exact hneg₀
+    exact (congrArg filtrationExpectation
+      (funext (piTensor_image_binary_baseChange q F))).trans_lt hneg₀
   obtain ⟨P, hP, hPE, hnegP, hstable⟩ :=
     exists_galois_stable_normalized_negative_family q' (hq.comp e.surjective) ha F
       (by
