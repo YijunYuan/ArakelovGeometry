@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.InvariantTheory.OrbitSeparation
 public import ArakelovGeometry.InvariantTheory.BinaryNegativeFiltration
+public import ArakelovGeometry.InvariantTheory.BinaryTensorTransport
 
 /-!
 # Actual binary geometric instability over an algebraically closed field
@@ -25,6 +26,9 @@ open scoped TensorProduct
 open Module
 
 noncomputable section
+
+-- Prefer the canonical vector-space instance over the imported geometric module instances.
+attribute [local instance 2000] Module.Free.of_divisionRing
 
 namespace ArakelovGeometry.InvariantTheory
 
@@ -209,5 +213,66 @@ theorem not_isPolynomialSemistable_binaryQuotientInCoordinates
   · rwa [← exteriorCovector_map_dualMap]
 
 end Quotient
+
+section GeometricAssembly
+
+universe u
+
+variable {k : Type u} [Field k] [CharZero k] [IsAlgClosed k]
+  {E : Bool → Type u} [∀ j, AddCommGroup (E j)] [∀ j, Module k (E j)]
+  [∀ j, FiniteDimensional k (E j)] [∀ j, Nontrivial (E j)]
+  {Q : Type u} [AddCommGroup Q] [Module k Q] [FiniteDimensional k Q]
+
+/-- The binary geometric implication needed on Bost p31: actual A2 quotient
+nonsemistability over an algebraically closed characteristic-zero field produces
+actual centered finite left-continuous real filtrations with negative quotient
+expectation. The proof composes invariant separation, the genuine DVR orbit
+degeneration, original-coefficient residue polynomial descent and checked factor
+coordinate transport. No group lift, negative candidate or extra nonzero
+coordinate certificate is assumed. This is the one-way binary implication,
+not a general-group Hilbert--Mumford converse; original-field normalization is
+the subsequent Rationality consumer. -/
+theorem exists_binary_negative_filtrations_of_not_isQuotientSemistable
+    (q : (⨂[k] j, E j) →ₗ[k] Q) (hq : Function.Surjective q)
+    (hQ : 0 < finrank k Q)
+    (hns : ¬ IsQuotientSemistable (tensorSLRepresentation E) q) :
+    ∃ P : ∀ j, ℝ → Submodule k (E j),
+      (∀ j, Antitone (P j) ∧ (∃ t, P j t = ⊥) ∧ (∃ t, P j t = ⊤) ∧
+        (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → P j s = P j t) ∧
+        Submodule.filtrationExpectation (P j) = 0) ∧
+      Submodule.filtrationExpectation
+        (fun t ↦ (Submodule.piTensorFiltration P t).map q) < 0 := by
+  classical
+  let ι j := Free.ChooseBasisIndex k (E j)
+  let b : ∀ j, Basis (ι j) k (E j) := fun j ↦ Free.chooseBasis k (E j)
+  let d := FiniteDimensional.finBasis k Q
+  let qc := binaryQuotientInCoordinates b q
+  have hqc := binaryQuotientInCoordinates_surjective b q hq
+  have hnsc := not_isPolynomialSemistable_binaryQuotientInCoordinates b d q hns
+  obtain ⟨F, _, hneg, a, c, ha, hc⟩ :=
+    exists_binary_negative_filtrations_of_orbit_closure qc d hqc hQ
+      (binary_standard_orbit_zero_of_not_isPolynomialSemistable _ hnsc)
+  let c' j := (c j).map (b j).equivFun.symm
+  let w : ∀ j, ι j → ℝ := fun j i ↦ a j i
+  let P : ∀ j, ℝ → Submodule k (E j) :=
+    fun j t ↦ Submodule.span k (c' j '' {i | t ≤ w j i})
+  refine ⟨P, ?_, ?_⟩
+  · intro j
+    obtain ⟨hb, ht⟩ := Submodule.span_weights_attains_bot_top (c' j) (w j)
+    refine ⟨Submodule.antitone_span_weights (c' j) (w j), hb, ht,
+      Submodule.span_weights_locallyConstant_left (c' j) (w j), ?_⟩
+    rw [Submodule.filtrationExpectation_eq_sum_weights (c' j) (w j) (fun _ ↦ rfl)]
+    have hs : ∑ i, w j i = 0 := by
+      dsimp only [w]
+      exact_mod_cast ha j
+    rw [hs, zero_div]
+  · have hF : (fun j t ↦ Submodule.span k (c j '' {i | t ≤ w j i})) = F :=
+      funext fun j ↦ funext fun t ↦ (hc j t).symm
+    have he (t : ℝ) := Submodule.piTensorFiltration_image_map_basis
+      (fun j ↦ (b j).equivFun.symm) c w q t
+    rw [hF] at he
+    exact (congrArg Submodule.filtrationExpectation (funext he)).trans_lt hneg
+
+end GeometricAssembly
 
 end ArakelovGeometry.InvariantTheory
