@@ -204,14 +204,13 @@ theorem degree_ofTrivialFiltration_eq_sum_weights
     {ι : Type*} [Fintype ι] (b : Basis ι K E) (a : ι → ℝ)
     (hb : ∀ t, F t = Submodule.span K (b '' {i | t ≤ a i})) :
     (ofTrivialFiltration F hF hbot htop hleft).degree hS hN = ∑ i, a i := by
-  have he := degree_eq_finsum_trivialFiltration
-    (ofTrivialFiltration F hF hbot htop hleft) hS hN
-    (NormFamily.ofTrivialFiltration_isUltrametric F hF hbot htop hleft)
-  have hr : (NormFamily.ofTrivialFiltration F hF hbot htop hleft).trivialFiltration
-      (NormFamily.ofTrivialFiltration_isUltrametric F hF hbot htop hleft) = F :=
-    funext (NormFamily.trivialFiltration_ofTrivialFiltration F hF hbot htop hleft)
-  simpa only [ofTrivialFiltration_toNormFamily, hr,
-    Submodule.finsum_weight_mul_finrank_filtrationGraded b a hb] using he
+  rw [degree_eq_rank_mul_slope, slope_ofTrivialFiltration_eq_sum_weights
+    hS hN F hF hbot htop hleft b a hb]
+  by_cases hz : finrank K E = 0
+  · have hc : Fintype.card ι = 0 := by rw [← finrank_eq_card_basis b, hz]
+    let : IsEmpty ι := Fintype.card_eq_zero_iff.mp hc
+    simp
+  · exact mul_div_cancel₀ _ (Nat.cast_ne_zero.mpr hz)
 
 /-- Expectation is additive with rank multiplicities, including zero-rank quotients. -/
 theorem finrank_mul_expectation_lift_eq_sum
@@ -245,7 +244,7 @@ theorem pairing_lift_eq_sum_quotient_degrees
     (hN : ∀ ω ∈ (singleTrivialPlace K).Ωinf,
       IsRCLikeNormedField ((singleTrivialPlace K).ϕ ω).Completion)
     {n : ℕ} (U : Fin (n + 1) → Submodule K E)
-    {ι : Fin n → Type*} [∀ i, Fintype (ι i)]
+    {ι : Fin n → Type*}
     (b : ∀ i, Basis (ι i) K ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype))
     (w : ∀ i, ι i → ℝ) (B : Basis (Σ i, ι i) K E)
     (hspan : ∀ k : Fin (n + 1), Submodule.span K (B '' {a | a.1.val < k.val}) = U k)
@@ -263,6 +262,7 @@ theorem pairing_lift_eq_sum_quotient_degrees
         ∑ i, a i * (ofTrivialFiltration (F i) (hF i) (hFbot i)
           (hFtop i) (hFleft i)).degree hS hN := by
   classical
+  letI : ∀ i, Fintype (ι i) := fun i ↦ FiniteDimensional.fintypeBasisIndex (b i)
   simp_rw [degree_ofTrivialFiltration_eq_sum_weights hS hN _ _ _ _ _ (b _) (w _) (hb _)]
   rw [Submodule.filtrationPairing_eq_sum_weights B (fun j ↦ a j.1)
     (fun j ↦ w j.1 j.2) (Submodule.iSup_flag_eq_span_weights U B hspan a ha) hR]
@@ -271,7 +271,7 @@ theorem pairing_lift_eq_sum_quotient_degrees
   by_cases hz : finrank K E = 0
   · have hc : Fintype.card (Σ i, ι i) = 0 := by
       rw [← finrank_eq_card_basis B, hz]
-    letI : IsEmpty (Σ i, ι i) := Fintype.card_eq_zero_iff.mp hc
+    let : IsEmpty (Σ i, ι i) := Fintype.card_eq_zero_iff.mp hc
     rw [← hs]
     simp
   · rw [mul_div_cancel₀ _ (Nat.cast_ne_zero.mpr hz), hs]
