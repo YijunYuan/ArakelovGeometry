@@ -672,7 +672,43 @@ theorem orthogonalTensor_norm_tmulEquivDep
     rw [hσ]
     exact h
 
+/-- Joining and then reindexing gives an isometry for any finite rearrangement. -/
+theorem orthogonalTensor_norm_regroup {M : Type*} [Fintype M]
+    (ξ : ∀ i, NormFamily S (V i))
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hξ : ∀ i, (ξ i).IsHermitian hN) (e : I ⊕ J ≃ M) (ω : S.Ω)
+    (z : (S.ϕ ω).Completion ⊗[K]
+      ((⨂[K] i, V (.inl i)) ⊗[K] (⨂[K] j, V (.inr j)))) :
+    (orthogonalTensor (fun m ↦ ξ (e.symm m)) hN (fun m ↦ hξ (e.symm m))).norm ω
+      ((PiTensorProduct.reindex K V e).toLinearMap.baseChange (S.ϕ ω).Completion
+        ((PiTensorProduct.tmulEquivDep K V).toLinearMap.baseChange (S.ϕ ω).Completion z)) =
+    ((orthogonalTensor (fun i ↦ ξ (.inl i)) hN (fun i ↦ hξ (.inl i))).orthogonalTensorPair
+      (orthogonalTensor (fun j ↦ ξ (.inr j)) hN (fun j ↦ hξ (.inr j))) hN
+      (orthogonalTensor_isHermitian _ _ _) (orthogonalTensor_isHermitian _ _ _)).norm ω z := by
+  rw [orthogonalTensor_norm_reindex]
+  exact orthogonalTensor_norm_tmulEquivDep ξ hN hξ ω z
+
 end Grouping
+
+/-- Tensor powers regroup through the canonical sum-of-finite-sets equivalence. -/
+theorem orthogonalTensorPower_norm_regroup
+    {K : Type*} [Field K] {S : AdelicStructure K}
+    {E : Type*} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+    (ξ : NormFamily S E)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hξ : ξ.IsHermitian hN) (m n : ℕ) (ω : S.Ω)
+    (z : (S.ϕ ω).Completion ⊗[K]
+      ((⨂[K] _ : Fin m, E) ⊗[K] (⨂[K] _ : Fin n, E))) :
+    (orthogonalTensor (fun _ : Fin (m + n) ↦ ξ) hN (fun _ ↦ hξ)).norm ω
+      ((PiTensorProduct.reindex K (fun _ : Fin m ⊕ Fin n ↦ E) finSumFinEquiv).toLinearMap.baseChange
+        (S.ϕ ω).Completion
+        ((PiTensorProduct.tmulEquivDep K (fun _ : Fin m ⊕ Fin n ↦ E)).toLinearMap.baseChange
+          (S.ϕ ω).Completion z)) =
+    ((orthogonalTensor (fun _ : Fin m ↦ ξ) hN (fun _ ↦ hξ)).orthogonalTensorPair
+      (orthogonalTensor (fun _ : Fin n ↦ ξ) hN (fun _ ↦ hξ)) hN
+      (orthogonalTensor_isHermitian _ _ _) (orthogonalTensor_isHermitian _ _ _)).norm ω z :=
+  orthogonalTensor_norm_regroup (fun _ : Fin m ⊕ Fin n ↦ ξ) hN (fun _ ↦ hξ)
+    finSumFinEquiv ω z
 
 end NormFamily
 
