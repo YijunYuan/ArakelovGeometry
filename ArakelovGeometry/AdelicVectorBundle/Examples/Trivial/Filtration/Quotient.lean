@@ -40,7 +40,10 @@ theorem trivialFiltration_pushforward
   constructor
   · intro hy
     obtain ⟨x, hx, hn⟩ := ξ.exists_trivialSeminorm_pushforward_lift q hq hξ y
-    exact Submodule.mem_map.mpr ⟨x, hn ▸ hy, hx⟩
+    refine Submodule.mem_map.mpr ⟨x, ?_, hx⟩
+    change ξ.trivialSeminorm x ≤ Real.exp (-t)
+    rw [hn]
+    exact hy
   · intro hy
     obtain ⟨x, hx, rfl⟩ := Submodule.mem_map.mp hy
     exact (ξ.trivialSeminorm_pushforward_le q hq x).trans hx
@@ -56,7 +59,9 @@ theorem trivialFiltration_pushforward_ofTrivialFiltration
     ((ofTrivialFiltration F hF hbot htop hleft).pushforward q hq).trivialFiltration
       ((ofTrivialFiltration_isUltrametric F hF hbot htop hleft).pushforward q hq) t =
       (F t).map q := by
-  rw [trivialFiltration_pushforward, trivialFiltration_ofTrivialFiltration]
+  rw [trivialFiltration_pushforward _
+    (ofTrivialFiltration_isUltrametric F hF hbot htop hleft),
+    trivialFiltration_ofTrivialFiltration]
 
 end
 
