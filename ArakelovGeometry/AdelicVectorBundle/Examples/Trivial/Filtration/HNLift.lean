@@ -31,6 +31,18 @@ variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
   (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
   (hV : V.toNormFamily.IsHermitian hN)
 
+omit [FiniteDimensional K E] in
+private theorem finrank_grade_of_endpoints (F : ℝ → Submodule K E) (t : ℝ)
+    (A B : Submodule K E) (hA : F t = A) (hB : Submodule.filtrationRightLimit F t = B) :
+    finrank K (Submodule.FiltrationGraded F t) = finrank K (A ⧸ B.comap A.subtype) := by
+  unfold Submodule.FiltrationGraded
+  rw [hA, hB]
+
+private theorem finrank_self_quotient (A : Submodule K E) :
+    finrank K (A ⧸ A.comap A.subtype) = 0 := by
+  rw [Submodule.comap_subtype_self, Submodule.finrank_quotient,
+    finrank_top, Nat.sub_self]
+
 /-- The actual HN filtration has the original bundle's degree as its intrinsic
 weighted graded sum. This statement includes rank zero. -/
 theorem finsum_hermitianHNFiltration_eq_degree :
@@ -46,12 +58,13 @@ theorem finsum_hermitianHNFiltration_eq_degree :
         V.hermitianHNFiltration hS hN hV t :=
       V.hermitianHNFiltrationPlus_eq_of_ne_factor_slope hS hN hV t
         (fun i hi ↦ ht ⟨i, hi⟩)
-    simp only [Submodule.FiltrationGraded, hp, Submodule.comap_subtype_self,
-      Submodule.finrank_quotient, finrank_top, Nat.sub_self]
+    exact (finrank_grade_of_endpoints _ t _ _ rfl hp).trans (finrank_self_quotient _)
   rw [finsum_eq_sum_of_support_subset _ (s := Finset.univ.image a) (by
     intro t ht
     by_contra hn
-    exact ht (by rw [hz t (by simpa using hn), Nat.cast_zero, mul_zero]))]
+    apply ht
+    simpa only [Nat.cast_zero, mul_zero] using
+      (congrArg (fun r : ℕ ↦ t * (r : ℝ)) (hz t (by simpa using hn))))]
   rw [Finset.sum_image (fun i _ j _ h ↦
     (V.hermitianHNFactor_slope_strictAnti hS hN hV).injective h)]
   have he (i : Fin (V.hermitianHNLength hS hN hV)) :
@@ -64,10 +77,15 @@ theorem finsum_hermitianHNFiltration_eq_degree :
     have hf : V.hermitianHNFiltration hS hN hV (a i) =
         V.hermitianHNFlag hS hN hV i.succ :=
       V.hermitianHNFiltration_factor_slope hS hN hV i
-    simp only [Submodule.FiltrationGraded, hp, hf]
-    exact V.finrank_hermitianHNFlagQuotient_eq hS hN hV i
-  simp_rw [he]
-  simpa only [a, mul_comm] using V.sum_hermitianHNFactor_rank_mul_slope_eq_degree hS hN hV
+    exact (finrank_grade_of_endpoints _ (a i) _ _ hf hp).trans
+      (V.finrank_hermitianHNFlagQuotient_eq hS hN hV i)
+  calc
+    _ = ∑ i, a i * (finrank K ((V.hermitianHNTerm hS hN hV (i.val + 1)).map
+        (V.hermitianHNTerm hS hN hV i.val).mkQ) : ℝ) :=
+      Finset.sum_congr rfl (fun i _ ↦ congrArg (fun r : ℕ ↦ a i * (r : ℝ)) (he i))
+    _ = V.degree hS hN := by
+      simpa only [a, mul_comm] using
+        V.sum_hermitianHNFactor_rank_mul_slope_eq_degree hS hN hV
 
 /-- The expectation of the actual Hermitian HN filtration equals the actual mean slope. -/
 theorem expectation_hermitianHNFiltration_eq_slope :
@@ -132,7 +150,9 @@ theorem exists_hermitianHN_quotient_lift
       have hw (i : Fin n) : (∑ j, w i j) = (Q i).degree hS hN := by
         rw [← Submodule.finsum_weight_mul_finrank_filtrationGraded (b i) (w i) (hb i)]
         exact (Q i).finsum_hermitianHNFiltration_eq_degree hS hN (hQ i)
-      have hs : (∑ j, w j.1 j.2) = V.degree hS hN := by
+      have hs : (∑ j : Σ i : Fin n,
+          Fin (finrank K ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype)),
+          w j.1 j.2) = V.degree hS hN := by
         rw [Fintype.sum_sigma]
         simp_rw [hw]
         exact V.sum_flagQuotient_degree_eq_of_isHermitian U hU hzero htop hS hN hV
@@ -149,13 +169,15 @@ theorem exists_hermitianHN_quotient_lift
     have hw (i : Fin n) : (∑ j, w i j) = (Q i).degree hS hN := by
       rw [← Submodule.finsum_weight_mul_finrank_filtrationGraded (b i) (w i) (hb i)]
       exact (Q i).finsum_hermitianHNFiltration_eq_degree hS hN (hQ i)
-    have hs : (∑ j, a j.1 * w j.1 j.2) = ∑ i, a i * (Q i).degree hS hN := by
+    have hs : (∑ j : Σ i : Fin n,
+        Fin (finrank K ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype)),
+        a j.1 * w j.1 j.2) = ∑ i, a i * (Q i).degree hS hN := by
       simp only [Fintype.sum_sigma, ← Finset.mul_sum, hw]
     by_cases hz : finrank K E = 0
     · have hc : Fintype.card (Σ i : Fin n,
           Fin (finrank K ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype))) = 0 := by
         rw [← finrank_eq_card_basis B, hz]
-      letI : IsEmpty (Σ i : Fin n,
+      let : IsEmpty (Σ i : Fin n,
         Fin (finrank K ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype))) :=
           Fintype.card_eq_zero_iff.mp hc
       rw [← hs]
