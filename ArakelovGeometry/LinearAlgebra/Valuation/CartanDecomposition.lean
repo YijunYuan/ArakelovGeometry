@@ -15,8 +15,9 @@ The existing PID matrix diagonalization is retained and specialized to a DVR;
 no completeness or coefficient-field hypothesis enters. This supplies the two
 matrix factorizations needed by the binary instability direction used on Bost
 p31, rather than the full finite-family Hilbert–Mumford equivalence of CM 5.2.10.
-The actual orbit parameter map, its geometric hypotheses, the A2 integral
-representation bridge, and descent from the DVR residue field remain downstream.
+The actual A2 coordinate-weight consumer is proved in `InvariantTheory.DVRWeights`.
+The orbit parameter map, its geometric and ground-field hypotheses, primitivity
+of the initial determinant vector, and residue-field descent remain downstream.
 -/
 
 @[expose] public section
@@ -35,7 +36,7 @@ include hπ
 omit [Fintype ι] [DecidableEq ι] in
 /-- Specializing finite denominator clearing to a DVR gives an integral multiple
 by a uniformizer power. Bost p31 uses this before each binary Cartan factorization;
-it needs no completion. The orbit and A2 representation/descent bridges remain. -/
+it needs no completion. The orbit, primitive-vector and residue-descent bridges remain. -/
 theorem exists_integral_matrix [Finite ι] (g : Matrix ι ι L) :
     ∃ (m : ℕ) (A : Matrix ι ι R),
       A.map (algebraMap R L) = (algebraMap R L π) ^ m • g := by
@@ -54,7 +55,7 @@ theorem exists_integral_matrix [Finite ι] (g : Matrix ι ι L) :
 
 /-- Specialization of PID diagonalization to an integral multiple of a fraction-field
 matrix, retaining actual integral invertible factors. This is the intermediate
-Bost p31 matrix input; orbit, A2 action and residue descent remain downstream. -/
+Bost p31 matrix input; orbit, primitive-vector and residue descent remain downstream. -/
 theorem exists_integral_diagonal (g : GL ι L) :
     ∃ (m : ℕ) (P Q : GL ι R) (d : ι → R),
       (∀ i, d i ≠ 0) ∧
@@ -80,7 +81,8 @@ theorem exists_integral_diagonal (g : GL ι L) :
 
 /-- Cartan factorization for a general DVR fraction field, extending the local
 Laurent-series result with no completion assumption. Bost p31 needs this only
-for its two SL factors; actual action/weight and residue descent bridges remain. -/
+for its two SL factors; `InvariantTheory.DVRWeights` supplies the actual action
+consumer. The orbit, primitive-vector and residue-descent bridges remain. -/
 theorem exists_cartan (g : GL ι L) :
     ∃ (P Q : GL ι R) (a : ι → ℤ),
       (g : Matrix ι ι L) =
@@ -120,7 +122,8 @@ theorem exists_cartan (g : GL ι L) :
 omit [IsDomain R] [IsDiscreteValuationRing R] in
 /-- A pure uniformizer power which is an integral unit has exponent zero.
 This extends the Laurent coefficient argument to any DVR, exactly as needed
-for determinant-one weights in Bost p31. The geometric/action bridges remain. -/
+for determinant-one weights in Bost p31. The orbit, primitive-vector and
+residue-descent bridges remain. -/
 theorem exponent_eq_zero_of_eq_unit (a : ℤ) (u : Rˣ)
     (h : (algebraMap R L π) ^ a = algebraMap R L (u : R)) : a = 0 := by
   let φ := algebraMap R L
@@ -148,7 +151,8 @@ theorem exponent_eq_zero_of_eq_unit (a : ℤ) (u : Rˣ)
 omit [IsDomain R] [IsDiscreteValuationRing R] in
 /-- Every DVR Cartan factorization of a determinant-one matrix has zero total exponent.
 This retains the Laurent producer over an arbitrary DVR and supplies the normalized
-binary weights for Bost p31. Orbit, actual A2 action and residue descent remain. -/
+binary weights for Bost p31. The A2 coordinate consumer is in
+`InvariantTheory.DVRWeights`; orbit, primitive-vector and residue descent remain. -/
 theorem sum_exponents_eq_zero (P Q : GL ι R) (a : ι → ℤ)
     (h : ((P : Matrix ι ι R).map (algebraMap R L) *
       diagonal (fun i ↦ (algebraMap R L π) ^ a i) *
@@ -177,7 +181,8 @@ theorem sum_exponents_eq_zero (P Q : GL ι R) (a : ι → ℤ)
 /-- Determinant-one matrices over a DVR fraction field admit integral special-linear
 outer factors and zero-sum integer exponents, including dimension zero. This extends
 the Laurent statement without completion and suffices for the two matrix factors
-in Bost p31; the orbit-map, actual A2 action/weights and residue descent remain. -/
+in Bost p31. `InvariantTheory.DVRWeights` proves the actual A2 coordinate-weight
+consumer; the orbit-map, primitive-vector and residue-descent bridges remain. -/
 theorem exists_specialLinear_cartan (g : GL ι L)
     (hg : (g : Matrix ι ι L).det = 1) :
     ∃ (P Q : SpecialLinearGroup ι R) (a : ι → ℤ),

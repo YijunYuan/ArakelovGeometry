@@ -60,8 +60,10 @@ For the binary instability input used by Bost p31 (Theorem 1.1 via CM Theorem 5.
 the source must be the actual group parameter space and `f` its orbit map: then
 `toSource` supplies the actual action element over the fraction field. An orbit
 closure as source does not supply this lift. Construction of that orbit morphism
-and its hypotheses, invariant separation, the A2 representation degeneration,
-and any descent from the arbitrary DVR residue field remain downstream bridges.
+and its hypotheses, invariant separation, the compatible ground-field structures
+and primitive-vector input, and descent from the arbitrary DVR residue field
+remain downstream bridges. The local A2 matrix/coordinate-weight consumer is
+proved separately in `ArakelovGeometry.InvariantTheory.DVRWeights`.
 This selected `StacksFrontier` code is not human-reviewed upstream.
 
 ## References
@@ -376,7 +378,9 @@ Local adoption: the original finite-type scheme statement is retained in full.
 For Bost p31 it supplies the DVR diagram only when `f` is the actual group orbit
 parameter map, so `toSource` is a genuine fraction-field action element. This is
 sufficient for the specialization input to the binary matrix route; the orbit-map
-hypotheses, A2 action/weight bridge and residue-field descent are still unmet.
+hypotheses, compatible ground-field structures, primitive-vector input and
+residue-field descent are still unmet. The local A2 matrix/coordinate-weight
+consumer is proved in `ArakelovGeometry.InvariantTheory.DVRWeights`.
 There is no completeness, power-series, or finite DVR residue-field assertion. -/
 @[stacks 0CM2]
 theorem nonempty_discreteValuationSpecialization {X Y : Scheme.{u}} (f : X ⟶ Y)

@@ -16,10 +16,12 @@ This is the coordinate step in the binary instability direction used by Bost p31
 The general CM Hilbert–Mumford equivalence is not asserted. We retain actual
 A2 tensor-power and dual actions: the dual uses the inverse group element, so a
 nonzero residue coordinate has a negative original tensor weight sum.
-The remaining bridges are the actual orbit parameter map over the ground field,
-transport of the integral lattice through the two Cartan outer factors in A2,
-and descent from the arbitrary DVR residue field. No coefficient field or
-completion is assumed.
+The terminal producers transport integral evaluations through both Cartan outer
+factors using the actual A2 action. They give literal residue support of actual
+transformed quotient determinants. The remaining bridges are the actual orbit
+parameter map over the ground field, the initial integral primitive determinant
+vector from that diagram, and descent from the arbitrary DVR residue field.
+No coefficient field or completion is assumed.
 -/
 
 @[expose] public section
@@ -34,7 +36,7 @@ variable {R L : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
 
 /-- General-DVR replacement for the Laurent constant-coefficient argument:
 a nonpositive transformed weight forces zero residue. This is the exact scalar
-input for Bost p31; the A2 integral lattice, orbit and residue-descent bridges remain. -/
+input for Bost p31; the integral transport is proved below; orbit and residue descent remain. -/
 theorem residue_eq_zero_of_nonpositive_weight {π : R} (hπ : Irreducible π)
     (a : ℤ) (ha : a ≤ 0) (c h : R)
     (heq : (algebraMap R L π) ^ a * algebraMap R L c =
@@ -60,7 +62,7 @@ variable {L G W : Type*} [Field L] [Group G] [AddCommGroup W] [Module L W]
 
 /-- In the actual A2 tensor-power representation, eigenvectors tensor with the
 sum of their integer weights. This retains the elementary representation identity
-needed for binary Bost p31; integral Cartan transport and geometric/descent bridges remain. -/
+needed for binary Bost p31; integral transport is proved below; geometric/descent bridges remain. -/
 theorem tensorPowerRepresentation_tprod_eigenvectors (ρ : Representation L G W)
     (r : ℕ) (g : G) (t : L) (ht : t ≠ 0) (a : Fin r → ℤ) (x : Fin r → W)
     (hx : ∀ i, ρ g (x i) = t ^ a i • x i) :
@@ -79,7 +81,7 @@ theorem tensorPowerRepresentation_tprod_eigenvectors (ρ : Representation L G W)
 
 /-- Actual contragredient evaluation has the negative eigenweight. This is the
 inverse-parameter convention required by the quotient formula in CM Example 5.2.6
-and Bost p31. It proves evaluation on vectors; integral and geometric bridges remain. -/
+and Bost p31. It proves evaluation on vectors; the geometric/descent bridges remain. -/
 theorem dual_apply_of_eigenvector (ρ : Representation L G W) (g : G)
     (t : L) (ht : t ≠ 0) (a : ℤ) (x : W) (hx : ρ g x = t ^ a • x)
     (f : Module.Dual L W) : ρ.dual g f x = t ^ (-a) * f x := by
@@ -97,6 +99,22 @@ theorem dual_apply_of_eigenvector (ρ : Representation L G W) (g : G)
   change f (ρ g⁻¹ x) = _
   rw [hinv, map_smul, smul_eq_mul]
 
+/-- Evaluation of the actual transformed quotient determinant is the determinant
+of the transformed quotient images. This is the A2 naturality identity used in
+Bost p31, with the inverse group element required by the contragredient convention.
+It asserts no orbit specialization or ground-field residue descent. -/
+theorem tensorPower_dual_quotientDeterminant_eval (ρ : Representation L G W)
+    (r : ℕ) (g : G) {Q : Type*} [AddCommGroup Q] [Module L Q]
+    (q : W →ₗ[L] Q) (b : Module.Basis (Fin r) L Q) (x : Fin r → W) :
+    (tensorPowerRepresentation r ρ).dual g
+      (exteriorCovector r (exteriorPower.map r q.dualMap (exteriorPower.ιMulti L r b.coord)))
+      (⨂ₜ[L] i, x i) =
+    Matrix.det (Matrix.of fun i j ↦ b.coord j (q (ρ g⁻¹ (x i)))) := by
+  change exteriorCovector r
+    (exteriorPower.map r q.dualMap (exteriorPower.ιMulti L r b.coord))
+      (PiTensorProduct.map (fun _ : Fin r ↦ ρ g⁻¹) (⨂ₜ[L] i, x i)) = _
+  simp
+
 section Binary
 
 variable {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
@@ -105,7 +123,7 @@ variable (E : Bool → Type*) [∀ j, AddCommGroup (E j)] [∀ j, Module L (E j)
 
 /-- The actual binary A2 SL action has the sum of the two factor eigenweights.
 This is the tensor part of Bost p31; no geometric instability equivalence or
-residue-field descent is asserted. The integral Cartan transport remains downstream. -/
+residue-field descent is asserted. Integral Cartan transport is proved below. -/
 theorem tensorSLRepresentation_binary_eigenvectors
     (g : ∀ j, SpecialLinearGroup L (E j)) (t : L) (ht : t ≠ 0)
     (a : Bool → ℤ) (x : ∀ j, E j) (hx : ∀ j, (g j).val (x j) = t ^ a j • x j) :
@@ -123,7 +141,7 @@ residue has a strictly negative original tensor weight sum when its transformed
 coordinate is in the maximal-ideal lattice. This retains only the diagonal
 coordinate step needed by Bost p31, with the inverse-parameter sign of CM 5.2.6.
 The hypothesis concerns evaluation of the actual contragredient action, not a
-numerical certificate. Transport through the Cartan outer factors, the orbit map
+numerical certificate. Transport through the Cartan outer factors is proved below; the orbit map
 and descent to the ground field are still required. -/
 theorem binary_tensorPower_dual_negative_weight_of_residue_ne_zero
     {π : R} (hπ : Irreducible π) (r : ℕ)
@@ -158,8 +176,8 @@ theorem binary_tensorPower_dual_negative_weight_of_residue_ne_zero
 of a binary tensor quotient: its coordinate is the determinant of the displayed
 quotient images, with no factorial factor. This is the diagonal specialization
 of the CM quotient criterion needed in Bost p31. The actual exterior action is
-used through A2 equivariance; arbitrary Cartan transport, orbit and ground-field
-descent are still unmet and are not assumed as numerical certificates. -/
+used through A2 equivariance; Cartan transport is proved below. The orbit map and
+ground-field descent are not assumed as numerical certificates. -/
 theorem binary_quotientDeterminant_negative_weight_of_residue_ne_zero
     {π : R} (hπ : Irreducible π) (r : ℕ)
     (g : ∀ j, SpecialLinearGroup L (E j))
@@ -277,8 +295,11 @@ theorem exists_binary_cartan_negative_support {π : R} (hπ : Irreducible π)
   have hmatrix (j) : g j = Matrix.SpecialLinearGroup.map φ (P j) * D j *
       Matrix.SpecialLinearGroup.map φ (Q j) := by
     apply Subtype.ext
-    simpa [D, LaurentCartan.diagonalOneParameterSL, LaurentCartan.diagonalOneParameter,
-      Units.val_zpow_eq_zpow_val, t] using hfact j
+    change (g j : Matrix (ι j) (ι j) L) =
+      (P j : Matrix (ι j) (ι j) R).map φ *
+        diagonal (fun k ↦ ((t ^ a j k : Lˣ) : L)) *
+        (Q j : Matrix (ι j) (ι j) R).map φ
+    simpa [t] using hfact j
   have hgroup : gL = pL * dL * qL := by
     funext j
     dsimp only [gL, pL, dL, qL, Pi.mul_apply]
@@ -292,36 +313,96 @@ theorem exists_binary_cartan_negative_support {π : R} (hπ : Irreducible π)
       ρ dL (ρ qL f)
         (⨂ₜ[L] i, (⨂ₜ[L] j, fun k ↦ φ (x i j k))) = φ c := by
     rw [hcancel]
-    simpa only [map_inv, Pi.inv_apply] using
-      binary_tensorPower_dual_preserves_integral_evaluations r (fun j ↦ (P j)⁻¹)
-        (IsLocalRing.maximalIdeal R) (ρ gL f) hvan x
+    have hinv : (fun j ↦ Matrix.SpecialLinearGroup.toLin'_equiv
+        (Matrix.SpecialLinearGroup.map φ ((P j)⁻¹))) = pL⁻¹ := by
+      funext j
+      simp [pL]
+    rw [← hinv]
+    exact binary_tensorPower_dual_preserves_integral_evaluations r (fun j ↦ (P j)⁻¹)
+      (IsLocalRing.maximalIdeal R) (ρ gL f) hvan x
   refine ⟨Q, a, ha, ?_⟩
   intro p
   let xR : Fin r → ∀ j, ι j → R := fun i j ↦ Pi.single (p i j) 1
   have hxmap (i j) : (fun k ↦ φ (xR i j k)) = Pi.single (p i j) (1 : L) := by
     ext k
     simp [xR, Pi.single_apply, apply_ite]
+  have hxt : (⨂ₜ[L] i, (⨂ₜ[L] j, fun k ↦ φ (xR i j k))) =
+      (⨂ₜ[L] i, (⨂ₜ[L] j, Pi.single (p i j) (1 : L))) := by
+    congr 1
+    funext i
+    congr 1
+    funext j
+    exact hxmap i j
   obtain ⟨c, -, hc⟩ := binary_tensorPower_dual_preserves_integral_evaluations
     r Q ⊤ f (fun x ↦ by obtain ⟨c, hc⟩ := hf x; exact ⟨c, trivial, hc⟩) xR
   change ρ qL f (⨂ₜ[L] i, (⨂ₜ[L] j, fun k ↦ φ (xR i j k))) = φ c at hc
-  simp_rw [hxmap] at hc
+  rw [hxt] at hc
   refine ⟨c, hc, ?_⟩
   intro hres
-  apply binary_tensorPower_dual_negative_weight_of_residue_ne_zero
+  refine binary_tensorPower_dual_negative_weight_of_residue_ne_zero
     (fun j ↦ ι j → L) hπ r dL (fun i j ↦ a j (p i j))
-    (fun i j ↦ Pi.single (p i j) 1) ?_ (ρ qL f) c hc hres
+    (fun i j ↦ Pi.single (p i j) 1) ?_ (ρ qL f) c hc hres ?_
   · intro i j
     change (diagonal (fun k ↦ ((t ^ a j k : Lˣ) : L))) *ᵥ
       Pi.single (p i j) 1 = _
     ext k
     by_cases hk : k = p i j
-    · subst k; simp [mulVec_diagonal, t]
-    · simp [mulVec_diagonal, Pi.single_apply, hk]
+    · subst k; simp [mulVec_diagonal, t, φ]
+    · simp [mulVec_diagonal, hk]
   · obtain ⟨z, hz, hh⟩ := hdiag xR
     rw [hπ.maximalIdeal_eq, Ideal.mem_span_singleton] at hz
     obtain ⟨h, rfl⟩ := hz
-    simp_rw [hxmap] at hh
+    rw [hxt] at hh
     exact ⟨h, hh⟩
+
+/-- For an actual binary tensor quotient, an actual exterior-dual SL degeneration
+produces integral SL basis changes and zero-sum weights whose nonzero reduced
+quotient determinants have negative sums. This is the coordinate specialization
+of the instability input used on Bost p31, not the full CM numerical equivalence.
+Integrality and maximal-ideal membership are literal determinant evaluations.
+The orbit-map/ground-field bridge must still provide these hypotheses and a
+nonzero residue determinant; descent from the arbitrary residue field remains. -/
+theorem exists_binary_quotientDeterminant_negative_support
+    {π : R} (hπ : Irreducible π) (r : ℕ)
+    (g : ∀ j, Matrix.SpecialLinearGroup (ι j) L)
+    {V : Type*} [AddCommGroup V] [Module L V]
+    (q : (⨂[L] j, (ι j → L)) →ₗ[L] V) (b : Module.Basis (Fin r) L V)
+    (hq : ∀ x : Fin r → ∀ j, ι j → R, ∃ c : R,
+      Matrix.det (Matrix.of fun i k ↦ b.coord k
+        (q (⨂ₜ[L] j, fun l ↦ algebraMap R L (x i j l)))) = algebraMap R L c)
+    (hvan : ∀ x : Fin r → ∀ j, ι j → R, ∃ c ∈ IsLocalRing.maximalIdeal R,
+      exteriorCovector r
+        (exteriorRepresentation r (tensorSLRepresentation (k := L) (fun j ↦ ι j → L)).dual
+          (fun j ↦ Matrix.SpecialLinearGroup.toLin'_equiv (g j))
+          (exteriorPower.map r q.dualMap (exteriorPower.ιMulti L r b.coord)))
+        (⨂ₜ[L] i, (⨂ₜ[L] j, fun l ↦ algebraMap R L (x i j l))) = algebraMap R L c) :
+    ∃ (Q : ∀ j, Matrix.SpecialLinearGroup (ι j) R) (a : ∀ j, ι j → ℤ),
+      (∀ j, ∑ k, a j k = 0) ∧
+      ∀ p : Fin r → ∀ j, ι j, ∃ c : R,
+        Matrix.det (Matrix.of fun i k ↦ b.coord k (q
+          (tensorSLRepresentation (k := L) (fun j ↦ ι j → L)
+            (fun j ↦ (Matrix.SpecialLinearGroup.toLin'_equiv
+              (Matrix.SpecialLinearGroup.map (algebraMap R L) (Q j)))⁻¹)
+            (⨂ₜ[L] j, Pi.single (p i j) 1)))) = algebraMap R L c ∧
+        (IsLocalRing.residue R c ≠ 0 → (∑ i, ∑ j, a j (p i j)) < 0) := by
+  let f := exteriorCovector r
+    (exteriorPower.map r q.dualMap (exteriorPower.ιMulti L r b.coord))
+  have hf : ∀ x : Fin r → ∀ j, ι j → R, ∃ c : R,
+      f (⨂ₜ[L] i, (⨂ₜ[L] j, fun l ↦ algebraMap R L (x i j l))) = algebraMap R L c := by
+    intro x
+    simpa [f] using hq x
+  have hg : ∀ x : Fin r → ∀ j, ι j → R, ∃ c ∈ IsLocalRing.maximalIdeal R,
+      (tensorPowerRepresentation r (tensorSLRepresentation (k := L) (fun j ↦ ι j → L))).dual
+        (fun j ↦ Matrix.SpecialLinearGroup.toLin'_equiv (g j)) f
+        (⨂ₜ[L] i, (⨂ₜ[L] j, fun l ↦ algebraMap R L (x i j l))) = algebraMap R L c := by
+    intro x
+    simpa only [exteriorCovector_equivariant] using hvan x
+  obtain ⟨Q, a, ha, hs⟩ := exists_binary_cartan_negative_support hπ r g f hf hg
+  refine ⟨Q, a, ha, ?_⟩
+  intro p
+  obtain ⟨c, hc, hcneg⟩ := hs p
+  refine ⟨c, ?_, hcneg⟩
+  simpa only [f, tensorPower_dual_quotientDeterminant_eval, Pi.inv_def] using hc
 
 end IntegralTransport
 

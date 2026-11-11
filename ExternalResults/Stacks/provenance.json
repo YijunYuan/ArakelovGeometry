@@ -11,8 +11,8 @@
     "No completeness or power-series identification.",
     "No assertion that the DVR residue field is finite over or equal to the ground field.",
     "Fraction-field lift yields an action element only for the actual group orbit parameter map.",
-    "Orbit-map hypotheses, invariant separation, A2 action/weight bridge, residue-field descent remain downstream.",
-    "The Scheme-level diagram still needs compatible ground-field algebra structures and an Over/actual group-point bridge."
+    "Orbit-map hypotheses, invariant separation, primitive initial determinant input and residue-field descent remain downstream. The local actual A2 coordinate-weight consumer is proved in ArakelovGeometry.InvariantTheory.DVRWeights.",
+    "The Scheme-level diagram still needs compatible ground-field algebra structures and an actual group-point bridge. For affine schemes these can be recovered from constants and diagram commutativity; a general Over theorem is not required."
   ],
   "files": [
     {
@@ -53,7 +53,7 @@
       "original_sha256": "20a4c8bfb584a4886c46eb5128a964a194552fae25e6aaa4adbb8faffc3d5ad5",
       "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
       "local_path": "ExternalResults/Stacks/StacksFrontier/AlgebraicGeometry/Limits/NoetherianValuativeCriterion/DiscreteValuationSpecialization.lean",
-      "local_sha256": "b537bf92f25c722e5028b3e0da79b51f30c32fc630237bb2cd23952ef6c5985b",
+      "local_sha256": "753b0d926baccba1ea6f78ae82b70541a077babacce64e73bf7c5662db9094de",
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes.",
         "Add local adoption and exact downstream-boundary documentation; original text retained."
@@ -194,6 +194,24 @@
         "Classical.choice",
         "Quot.sound"
       ]
+    },
+    {
+      "command": "/home/yijunyuan/.local/bin/horizon --root /home/yijunyuan/ageo-workspace check ExternalResults.Stacks.StacksFrontier.AlgebraicGeometry.Limits.NoetherianValuativeCriterion.DiscreteValuationSpecialization ArakelovGeometry.InvariantTheory.DVRWeights",
+      "result": "passed",
+      "seconds": 15.6,
+      "purpose": "Final source snapshot after downstream-boundary documentation update."
+    },
+    {
+      "command": "/home/yijunyuan/.local/bin/horizon --root /home/yijunyuan/ageo-workspace check --lean <session>/DVRAudit.lean",
+      "result": "passed",
+      "seconds": 29.7,
+      "scope": "Combined final audit: 4 Stacks producer declarations, 6 general DVR Cartan declarations, 11 actual A2 coordinate-weight declarations.",
+      "transitive_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "evidence": "runs/0011/sessions/0002-horizon-A8-DVR/DVRAudit.lean and DVR-final-axioms.log"
     }
   ],
   "semantic_review": {
@@ -208,6 +226,6 @@
   "honesty_review": {
     "reviewer": "independent honesty-reviewer /root/honesty",
     "result": "satisfactory; honest partial progress; exact closure, hashes, license and unchanged proof bodies confirmed",
-    "outstanding": "No actual project orbit consumer yet; orbit/Over, A2 and residue descent remain."
+    "outstanding": "No actual project orbit consumer yet; orbit/ground-field compatibility, primitive initial vector and residue descent remain. The local A2 coordinate-weight bridge is proved separately."
   }
 }

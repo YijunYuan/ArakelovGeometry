@@ -31,9 +31,11 @@ apply the producer to the **actual group orbit parameter morphism**. Only then
 is `Spec L → X` an actual group element whose action specializes to zero.
 A source consisting merely of the orbit closure does not supply such an element.
 This is the geometric input for the general-DVR matrix route. The orbit morphism
-and its finite-type/quasi-compact hypotheses, invariant separation, the bridge to
-the A2 tensor/exterior/dual action, and descent from the arbitrary DVR residue
-field are separate unmet consumers. This port alone does not prove A8 or a
+and its finite-type/quasi-compact hypotheses, invariant separation, compatible
+ground-field structures, a primitive initial determinant vector, and descent from
+the arbitrary DVR residue field are separate unmet consumers. The local
+`ArakelovGeometry.InvariantTheory.DVRWeights` producer now proves the actual A2
+tensor/exterior/dual coordinate-weight implication using general DVR Cartan. This port alone does not prove A8 or a
 Hilbert–Mumford theorem.
 
 Verification: the narrow target passed (96.1 s; 5.3 s after the documentation
