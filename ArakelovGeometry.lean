@@ -186,14 +186,16 @@ public import ArakelovGeometry.AdelicVectorBundle.Examples.SquareNorm
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HN
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Inverse
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Quotient
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.AdaptedBasis
-public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.CommonAdaptedBasis
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.Bidual
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.BidualHN
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.CommonAdaptedBasis
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.DualConstancy
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.Minkowski
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.NearOrthogonal
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.Quotient
 public import ArakelovGeometry.AdelicVectorBundle.Exterior.BaseChange
 public import ArakelovGeometry.AdelicVectorBundle.Exterior.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Exterior.Domination
@@ -567,8 +569,8 @@ public import ArakelovGeometry.GeometryOfNumbers.Polar.LatticePolarSpan
 public import ArakelovGeometry.GeometryOfNumbers.Polar.LatticeSpanningPolarCount
 public import ArakelovGeometry.GeometryOfNumbers.Polar.PolarLatticeAnnihilation
 public import ArakelovGeometry.LinearAlgebra.Dual.BaseChange
-public import ArakelovGeometry.LinearAlgebra.FiniteFiltration
 public import ArakelovGeometry.LinearAlgebra.CommonAdaptedBasis
+public import ArakelovGeometry.LinearAlgebra.FiniteFiltration
 public import ArakelovGeometry.LinearAlgebra.FiniteFlagRanks
 public import ArakelovGeometry.LinearAlgebra.MaximalMinor
 public import ArakelovGeometry.LinearAlgebra.MeasurableMaximalMinor

@@ -100,7 +100,15 @@ p.28 把商 `W ↠ Q` 的几何半稳定性定义为对偶子空间 `Q^∨ ⊂ W
 
 ### A3. 两个任意有限实滤过的共同适配基
 
-- [ ] 证明两个有限实滤过存在同一个适配基，并提供对两个滤过同时有效的坐标刻画。
+- [x] 证明两个有限实滤过存在同一个适配基，并提供对两个滤过同时有效的坐标刻画。
+
+**完成补记（2026-11-11）。**
+[CommonAdaptedBasis.lean](ArakelovGeometry/LinearAlgebra/CommonAdaptedBasis.lean)
+与 [Norm/CommonAdaptedBasis.lean](ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Norm/CommonAdaptedBasis.lean)
+已给出共同基、两组实权重、所有阈值的张成及坐标判据，以及实际完备纤维上的两个范数公式，包含零维情形。
+`Submodule.exists_common_weighted_basis` 的实际范数消费者为
+`exists_common_orthogonal_basis_ofTrivialFiltration`。窄模块核检查、八项传递公理检查及独立审查均通过；
+认证提交为 `22978d0`，加入公开入口后的全项目构建也已通过。下述“当前覆盖及缺口”保留原审计基准的记录。
 
 **书中出处。** 命题 5.1.3，p.300：平凡赋值域上两个超度量范数有共同正交基；
 推论 5.1.4，p.301：两个有限旗有共同适配基。两种形式通过 §5.1 的范数—滤过对应连接。
@@ -163,6 +171,14 @@ $$
 ### A5. 张量滤过、商滤过及规范分次张量分解
 
 - [ ] 构造任意给定权重的张量/商滤过，证明它们与范数实现及规范分次映射相容。
+
+**商部分完成补记（2026-11-11）。**
+[Norm/Quotient.lean](ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Norm/Quotient.lean)
+与 [Filtration/Quotient.lean](ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Quotient.lean)
+已证明实际完备商范数的最小 lift 存在，并证明
+`trivialFiltration_pushforward_ofTrivialFiltration` 的逐阈值像等式，保留闭端点与零维情况。
+两个模块的核检查、五项传递公理检查及独立审查通过，认证提交为 `824afb3`、`f065fb0`。
+张量范数对应、规范分次直和及其自然性仍由 A5-T 继续完成；本项整体尚未完成。
 
 **书中出处。** 定义 5.1.5、注记 5.1.6，p.301；定义 5.1.1，p.298；
 命题 5.5.5，p.318。商滤过与商范数的对应也用于例 5.2.6 和推论 5.2.10。
