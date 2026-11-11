@@ -568,10 +568,11 @@ public import ArakelovGeometry.GeometryOfNumbers.Polar.LatticePolarCountLower
 public import ArakelovGeometry.GeometryOfNumbers.Polar.LatticePolarSpan
 public import ArakelovGeometry.GeometryOfNumbers.Polar.LatticeSpanningPolarCount
 public import ArakelovGeometry.GeometryOfNumbers.Polar.PolarLatticeAnnihilation
-public import ArakelovGeometry.LinearAlgebra.Dual.BaseChange
 public import ArakelovGeometry.LinearAlgebra.CommonAdaptedBasis
+public import ArakelovGeometry.LinearAlgebra.Dual.BaseChange
 public import ArakelovGeometry.LinearAlgebra.FiniteFiltration
 public import ArakelovGeometry.LinearAlgebra.FiniteFlagRanks
+public import ArakelovGeometry.LinearAlgebra.LaurentSeries.CartanDecomposition
 public import ArakelovGeometry.LinearAlgebra.MaximalMinor
 public import ArakelovGeometry.LinearAlgebra.MeasurableMaximalMinor
 public import ArakelovGeometry.LinearAlgebra.Submodule.SupermodularSlope
