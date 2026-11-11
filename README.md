@@ -40,7 +40,7 @@ it is the paper referred to as `bost_conjecture.pdf` in the workspace instructio
 | A5: tensor and quotient filtrations | The binary canonical graded decomposition, quotient maps, actual norm correspondence and naturality are checked. Existing finite-family weight formulas are retained; additional finite-family graded refinement is deferred. | Pages 28–30, (44) and (46), use two factors, collisions of total weights, and the original quotient weights. The finite-family conclusion of Theorem 1.1 is obtained by binary iteration on page 32. |
 | A6: graded norm comparison | Canonical component contractions, finite-image HN degree bounds and the eventual upper bound for the same actual HN variation are checked, including direct A6-to-A9 composition (63 standard-only axiom probes). The smaller-rank tensor-HN induction condition remains explicit. | This replaces the whole orthogonal-direct-sum norm argument in Lemmas 7.1 and 7.2 while preserving the needed numerical conclusions. Componentwise contraction is not asserted to imply l2-sum contraction. |
 | A7: lifting filtrations | Actual prescribed quotient lifts and their HN specialization are checked, with expectation and weighted pairing formulas. | Pages 29 and 32 need a chosen lift of the subquotient HN filtrations. A canonical or unique lift is unnecessary; the ambient HN filtration cannot replace this construction. |
-| A8: instability input | Only the binary, specific tensor/determinant representation and the direction from geometric instability to a K-defined negative centered candidate are required. General DVR Cartan, actual local determinant-weight extraction, SL tensor-power semisimplicity and conditional negative-pair descent to K are checked. Separation, actual orbit specialization and residue-polynomial descent remain open. | The geometrically semistable case is handled by Section 6; page 31 needs the unstable direction. Integer/rational weights suffice for the closed-field initial candidate, while optimizer descent retains real weights. A full two-way real-weight HM theorem is unnecessary. |
+| A8: instability input | Only the binary, specific tensor/determinant representation and the direction from geometric instability to a K-defined negative centered candidate are required. General DVR Cartan, actual local determinant-weight extraction, SL tensor-power semisimplicity and conditional negative-pair descent to K are checked. Actual binary orbit separation is checked; the DVR specialization, residue-polynomial descent and final original-field assembly remain open. | The geometrically semistable case is handled by Section 6; page 31 needs the unstable direction. Integer/rational weights suffice for the closed-field initial candidate, while optimizer descent retains real weights. A full two-way real-weight HM theorem is unnecessary. |
 | A9: optimal filtration | Conditional finite-family existence and uniqueness, the direct binary optimizer, and the actual HN-lift variation lower bound are checked. Direct composition with A6's arithmetic upper bound is checked. The A8 geometric negative candidate and final packaging of the original-field optimizer remain open. | Pages 31–32 need this minimum and the HN-lift consequence, not the full CM inequality (5.13). The retained uniqueness theorem is used by the separately checked negative-pair descent to the original field. |
 
 ### The A6 replacement argument
@@ -151,9 +151,21 @@ axiom probes use only standard axioms; see
 
 This specializes the representation input needed in Bost page 31. General
 reductivity and semisimplicity of the infinite group's group algebra are not
-claimed. Bounded-polynomial quotients, the two-factor regrouping and successive
-invariant lifts, and actual orbit-ideal separation remain separate producers.
-Neither this input nor the DVR specialization alone completes A8.
+claimed. The checked local
+[OrbitSeparation](ArakelovGeometry/InvariantTheory/OrbitSeparation.lean)
+consumer now supplies the one-way null-cone separation step for the actual A2
+dual tensor powers of two positive-rank SL factors. An equivariant multiplication
+quotient and fixed-degree tensor semisimplicity give semisimplicity of bounded
+polynomial modules for each factor. Successive invariant lifting proves that
+every polynomial vanishing on a nonsemistable point's actual group orbit
+vanishes at zero. The actual nonzero quotient determinant covector, arbitrary
+coordinate bases, binary index transport and standard tensor coordinates are
+covered; the latter directly gives the actual Spec orbit-closure input. Eleven
+transitive axiom probes and independent mathematical, consumer and honesty
+reviews passed. This is the finite-module separation needed on Bost page 31;
+it assumes no general reductivity or invariant-ring finite generation. Actual
+DVR specialization, residue descent and final original-field assembly remain
+separate consumers, so this result does not yet complete A8.
 
 ## Current scope
 

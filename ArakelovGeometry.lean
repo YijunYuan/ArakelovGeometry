@@ -581,6 +581,7 @@ public import ArakelovGeometry.GeometryOfNumbers.Polar.PolarLatticeAnnihilation
 public import ArakelovGeometry.InvariantTheory.Projective
 public import ArakelovGeometry.InvariantTheory.DVRWeights
 public import ArakelovGeometry.InvariantTheory.TensorPowerSemisimple
+public import ArakelovGeometry.InvariantTheory.OrbitSeparation
 public import ArakelovGeometry.LinearAlgebra.CommonAdaptedBasis
 public import ArakelovGeometry.LinearAlgebra.Dual.BaseChange
 public import ArakelovGeometry.LinearAlgebra.FiniteFiltration
