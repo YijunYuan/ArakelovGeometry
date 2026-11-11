@@ -439,6 +439,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Tensor.Domination
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Dual
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.DualNorm
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianDual
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianInnerProduct
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Line
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Operator

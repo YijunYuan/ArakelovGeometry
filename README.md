@@ -33,7 +33,7 @@ it is the paper referred to as `bost_conjecture.pdf` in the workspace instructio
 
 | Input | Retained scope and status | Why this suffices for Bost |
 | --- | --- | --- |
-| A1: tensor duality | Actual completed-fibre duality, tensor powers of arbitrary degree, and the required permutations/regroupings; final assembly remains in progress. | Section 6, (40)–(43), uses arbitrary vectors and unbounded auxiliary degree. No separate arbitrary-block grouping theory is required. |
+| A1: tensor duality | Actual completed-fibre duality, finite grouping/reindexing, arbitrary-degree power regrouping and evaluation/base-change coherence are checked (42 transitive axiom audits). | Section 6, (40)–(43), uses arbitrary vectors and unbounded auxiliary degree. Its specific block transpose assembles from these interfaces; no separate named block-transpose theorem is claimed. |
 | A2: geometric semistability | The finite-dimensional Plücker, quotient determinant and projective interfaces are checked. The stronger SL/GL comparison already proved is retained. | Pages 26–28 need actual positive-degree homogeneous invariants and the dual quotient point. The binary main proof uses SL(E) × SL(F), without a general scheme-theoretic GIT quotient. |
 | A3: common adapted bases | The arbitrary two-filtration theorem is checked and retained. | Pages 28–32 need a basis shared by a primary filtration and the chosen HN lift. Simultaneous adaptation to an arbitrary family is unnecessary. |
 | A4: numerical operations | Intrinsic expectation, pairing, centering and fixed-basis real variation are checked. | Page 32, (48), uses these linear/quadratic identities; no additional geometry of the full filtration space is needed. |
