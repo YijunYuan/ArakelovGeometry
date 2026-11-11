@@ -246,6 +246,61 @@ theorem primary_lt_or_secondary_le_of_graded_mem
       rwa [hL] at hy
     exact b.mem_span_image.mp hy' (Finsupp.mem_support_iff.mpr hni)
 
+omit [FiniteDimensional K E] in
+/-- Actual secondary cut membership gives the one-sided variation estimate
+in the same source basis. Finite primary gaps control every nonzero matrix
+coefficient; the determinant maximum is that of the actual quotient. -/
+theorem eventual_image_expectation_le_of_graded_mem
+    [FiniteDimensional K Q] {ι : Type*} [Finite ι]
+    (b : Basis ι K E) (w s : ι → ℝ)
+    (q : E →ₗ[K] Q) (hq : Function.Surjective q)
+    {T L : ℝ → Submodule K Q}
+    (d : Basis (Fin (finrank K Q)) K Q) (a r : Fin (finrank K Q) → ℝ)
+    (hT : ∀ t, T t = span K (d '' {j | t ≤ a j}))
+    (hL : ∀ t, L t = span K (d '' {j | t ≤ r j}))
+    (hm : ∀ i, q (b i) ∈ T (w i))
+    (hc : ∀ i, filtrationGradedMk T (w i) ⟨q (b i), hm i⟩ ∈
+      filtrationOnGraded T L (w i) (s i)) :
+    ∃ η > 0, ∀ ε, 0 < ε → ε < η →
+      filtrationExpectation (fun t ↦ (weightedBasisVariation b w s ε t).map q) ≤
+        filtrationExpectation T + ε * filtrationExpectation L := by
+  classical
+  have he : ∀ᶠ ε : ℝ in nhds 0, ∀ i j, w i < a j →
+      w i + ε * s i ≤ a j + ε * r j := by
+    apply Filter.eventually_all.mpr
+    intro i
+    apply Filter.eventually_all.mpr
+    intro j
+    by_cases hij : w i < a j
+    · have hf : ContinuousAt (fun ε : ℝ ↦ w i + ε * s i) 0 := by fun_prop
+      have hg : ContinuousAt (fun ε : ℝ ↦ a j + ε * r j) 0 := by fun_prop
+      filter_upwards [hf.eventually_lt hg (by simpa using hij)] with ε hε _
+      exact hε.le
+    · exact Filter.Eventually.of_forall fun _ h ↦ (hij h).elim
+  obtain ⟨η, hη, he⟩ := Metric.eventually_nhds_iff.mp he
+  refine ⟨η, hη, fun ε hε hεη ↦ ?_⟩
+  have hcoord (i : ι) : q (b i) ∈ span K (d ''
+      {j | w i + ε * s i ≤ a j + ε * r j}) := by
+    apply d.mem_span_image.mpr
+    intro j hj
+    have hn := Finsupp.mem_support_iff.mp hj
+    rcases primary_lt_or_secondary_le_of_graded_mem d a r hT hL
+      ⟨q (b i), hm i⟩ (hc i) j hn with hlt | hle
+    · exact he (by simpa only [Real.dist_eq, sub_zero, abs_of_pos hε] using hεη) i j hlt
+    · have hp : w i ≤ a j := d.mem_span_image.mp (hT (w i) ▸ hm i) hj
+      exact add_le_add hp (mul_le_mul_of_nonneg_left hle hε.le)
+  obtain ⟨σ, hσ, hmax, _⟩ := exists_quotient_expectation_maximum
+    b (fun i ↦ w i + ε * s i) d q hq
+  change filtrationExpectation (fun t ↦
+    (span K (b '' {i | t ≤ w i + ε * s i})).map q) ≤ _
+  rw [hmax, filtrationExpectation_eq_sum_weights d a hT,
+    filtrationExpectation_eq_sum_weights d r hL]
+  have hsum := sum_le_sum_weights_of_det_ne_zero d (fun j ↦ a j + ε * r j)
+    (fun j ↦ w (σ j) + ε * s (σ j)) (fun j ↦ q (b (σ j)))
+    (fun j ↦ hcoord (σ j)) ((mem_quotientDeterminantSupport b d q σ).mp hσ)
+  have hh := div_le_div_of_nonneg_right hsum (Nat.cast_nonneg (finrank K Q))
+  simpa only [Finset.sum_add_distrib, ← Finset.mul_sum, add_div, mul_div_assoc] using hh
+
 end Submodule
 
 namespace ArakelovGeometry.AdelicVectorBundle

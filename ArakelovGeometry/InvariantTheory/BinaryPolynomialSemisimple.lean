@@ -1,6 +1,7 @@
 module
 
 public import ArakelovGeometry.InvariantTheory.TensorPowerSemisimple
+public import ArakelovGeometry.InvariantTheory.HomogeneousTensor
 public import Mathlib.RepresentationTheory.Intertwining
 public import Mathlib.LinearAlgebra.PiTensorProduct.Basis
 public import Mathlib.Algebra.Group.Pi.Lemmas
@@ -213,6 +214,46 @@ theorem binaryTensorCopy_equivariant (r d : ℕ) (j : Bool)
     funext l
     exact (tensorSL_single_update k E j g (y i l) (x ⟨i, l⟩)).symm
   | add x y hx hy => simp only [map_add, hx, hy]
+
+/-- For either actual binary SL factor, the nested tensor module is generated
+by fixed-degree semisimple tensor copies. The other factor supplies finite
+multiplicity, with no claim about semisimplicity of its group algebra. -/
+theorem binaryNested_factor_semisimple [IsAlgClosed k] [CharZero k]
+    [∀ j, FiniteDimensional k (E j)] [∀ j, Nontrivial (E j)]
+    (r d : ℕ) (j : Bool) :
+    IsSemisimpleModule (MonoidAlgebra k (SpecialLinearGroup k (E j)))
+      (Representation.asModule ((binaryNestedRepresentation k E r d).comp (binaryFactorHom k E j))) := by
+  classical
+  let ρ := indexedTensorSLRepresentation k E j (Σ _ : Fin d, Fin r)
+  let τ : Representation k (SpecialLinearGroup k (E j))
+      (⨂[k]^d (⨂[k]^r (⨂[k] i, E i))) :=
+    (binaryNestedRepresentation k E r d).comp (binaryFactorHom k E j)
+  let b (i : Bool) := Module.Free.chooseBasis k (E i)
+  let B := Module.Basis.piTensorProduct (fun _ : Fin d ↦
+    Module.Basis.piTensorProduct (fun _ : Fin r ↦
+      Module.Basis.piTensorProduct b))
+  let f (p : Fin d → Fin r → ∀ i, Module.Free.ChooseBasisIndex k (E i)) :=
+    Representation.IntertwiningMap.equivLinearMapAsModule ρ τ
+      ((binaryTensorCopy k E r d j (fun a l i ↦ b i (p a l i))).intertwiningMap_of_isIntertwiningMap
+        ρ τ (binaryTensorCopy_equivariant k E r d j _))
+  have : IsSemisimpleModule (MonoidAlgebra k (SpecialLinearGroup k (E j))) ρ.asModule :=
+    indexedTensorSL_semisimple k E j _
+  apply isSemisimpleModule_of_isSemisimpleModule_submodule'
+    (p := fun p ↦ (f p).range) (fun p ↦ IsSemisimpleModule.range (f p))
+  apply top_unique
+  intro x _
+  have htop : Submodule.span k (Set.range B) = ⊤ := B.span_eq
+  have hx : τ.asModuleEquiv x ∈ Submodule.span k (Set.range B) := by rw [htop]; trivial
+  induction hx using Submodule.span_induction with
+  | mem v hv =>
+    obtain ⟨p, rfl⟩ := hv
+    apply Submodule.mem_iSup_of_mem p
+    refine ⟨PiTensorProduct.tprod k (fun a ↦ b j (p a.1 a.2 j)), ?_⟩
+    change binaryTensorCopy k E r d j (fun a l i ↦ b i (p a l i)) _ = B p
+    simp [binaryTensorCopy_tprod, B, Module.Basis.piTensorProduct_apply]
+  | zero => exact Submodule.zero_mem _
+  | add x y hx hy hix hiy => exact Submodule.add_mem _ hix hiy
+  | smul a x hx hix => exact Submodule.smul_of_tower_mem _ a hix
 
 end TensorCopies
 
