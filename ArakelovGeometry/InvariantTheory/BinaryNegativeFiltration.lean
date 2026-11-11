@@ -85,6 +85,43 @@ theorem exists_binarySL_vanishing_of_extension [IsAlgClosed k]
   intro p hp
   exact hx _ (Or.inr ⟨p, hp, rfl⟩)
 
+/-- Evaluation of matrix-coordinate polynomials commutes with algebra maps.
+This transports integral evaluations separately to the fraction and residue fields. -/
+theorem evalBinarySLPolynomial_map
+    {A B : Type*} [CommRing A] [CommRing B] [Algebra k A] [Algebra k B]
+    (φ : A →ₐ[k] B) (h : ∀ j, Matrix.SpecialLinearGroup (ι j) A)
+    (P : MvPolynomial (BinarySLVariables ι) k) :
+    evalBinarySLPolynomial (fun j ↦ Matrix.SpecialLinearGroup.map φ.toRingHom (h j)) P =
+      φ (evalBinarySLPolynomial h P) := by
+  have he : evalBinarySLPolynomial
+      (fun j ↦ Matrix.SpecialLinearGroup.map φ.toRingHom (h j)) =
+      φ.comp (evalBinarySLPolynomial h) := by
+    ext v
+    simp [evalBinarySLPolynomial]
+  exact congrArg (fun f : MvPolynomial (BinarySLVariables ι) k →ₐ[k] B ↦ f P) he
+
+/-- A fraction-field equality recovers the integral polynomial value by
+injectivity and then reduces it. The scalar graph is `k → R → L` and
+`k → R → ResidueField R`; no map from `L` to the residue field is used. -/
+theorem evalBinarySLPolynomial_residue_of_fraction
+    {R L : Type*} [CommRing R] [IsDomain R] [IsLocalRing R]
+    [Field L] [Algebra k R] [Algebra R L] [Algebra k L]
+    [IsScalarTower k R L] [IsFractionRing R L]
+    (h : ∀ j, Matrix.SpecialLinearGroup (ι j) R)
+    (P : MvPolynomial (BinarySLVariables ι) k) (c : R)
+    (hc : evalBinarySLPolynomial
+      (fun j ↦ Matrix.SpecialLinearGroup.map (algebraMap R L) (h j)) P =
+      algebraMap R L c) :
+    evalBinarySLPolynomial
+      (fun j ↦ Matrix.SpecialLinearGroup.map (IsLocalRing.residue R) (h j)) P =
+      IsLocalRing.residue R c := by
+  have he : evalBinarySLPolynomial h P = c := by
+    apply IsFractionRing.injective R L
+    exact (evalBinarySLPolynomial_map (IsScalarTower.toAlgHom k R L) h P).symm.trans hc
+  exact (evalBinarySLPolynomial_map
+    (IsScalarTower.toAlgHom k R (IsLocalRing.ResidueField R)) h P).trans
+      (congrArg (IsLocalRing.residue R) he)
+
 end Polynomials
 
 section OriginalQuotient
