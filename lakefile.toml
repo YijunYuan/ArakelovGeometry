@@ -3,6 +3,8 @@ version = "0.1.0"
 keywords = ["math"]
 defaultTargets = ["ArakelovGeometry"]
 requiresModuleSystem = true
+# Bound each compiler process as well as Lake's own runtime pool.
+weakLeanArgs = ["-j2"]
 
 [leanOptions]
 pp.unicode.fun = true # pretty-prints `fun a ↦ b`
