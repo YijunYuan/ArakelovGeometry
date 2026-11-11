@@ -172,6 +172,7 @@ theorem filtrationExpectation_weightedBasisVariation (ε : ℝ) :
   simp only [Finset.sum_add_distrib, ← Finset.mul_sum, add_div, mul_div_assoc]
 
 include hF hG in
+omit [FiniteDimensional K E] in
 theorem filtrationPairing_weightedBasisVariation_self (ε : ℝ) :
     filtrationPairing (weightedBasisVariation b a c ε) (weightedBasisVariation b a c ε) =
       filtrationPairing F F + 2 * ε * filtrationPairing F G +
@@ -207,5 +208,30 @@ theorem filtrationNorm_eq_zero_iff (F : ℝ → Submodule K E)
   obtain ⟨b, a, _, hFa, _, _, _⟩ := exists_common_weighted_basis
     hanti hbot htop hleft hanti hbot htop hleft
   exact filtrationNorm_eq_zero_iff_trivial b a hFa hdim
+
+omit [Finite ι] in
+/-- Translating by the mean preserves all the real-filtration axioms and has mean zero. -/
+theorem filtrationCenter_properties (F : ℝ → Submodule K E)
+    (hanti : Antitone F) (hbot : ∃ t, F t = ⊥) (htop : ∃ t, F t = ⊤)
+    (hleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t) :
+    Antitone (filtrationCenter F) ∧
+      (∃ t, filtrationCenter F t = ⊥) ∧ (∃ t, filtrationCenter F t = ⊤) ∧
+      (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t →
+        filtrationCenter F s = filtrationCenter F t) ∧
+      filtrationExpectation (filtrationCenter F) = 0 := by
+  obtain ⟨b, a, _, hFa, _, _, _⟩ := exists_common_weighted_basis
+    hanti hbot htop hleft hanti hbot htop hleft
+  have hc : filtrationCenter F = fun t ↦
+      span K (b '' {i | t ≤ a i - filtrationExpectation F}) :=
+    funext (filtrationCenter_eq_span_weights b a hFa)
+  refine ⟨?_, ?_, ?_, ?_, filtrationExpectation_center b a hFa⟩
+  · rw [hc]
+    exact antitone_span_weights b _
+  · rw [hc]
+    exact (span_weights_attains_bot_top b _).1
+  · rw [hc]
+    exact (span_weights_attains_bot_top b _).2
+  · rw [hc]
+    exact span_weights_locallyConstant_left b _
 
 end Submodule

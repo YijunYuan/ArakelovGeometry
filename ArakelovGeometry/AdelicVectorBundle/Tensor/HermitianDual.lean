@@ -120,13 +120,19 @@ theorem tensorBaseChangeEquiv_tmulEquivDep
     intro y
     change tensorBaseChangeEquiv K L V
       ((PiTensorProduct.tmulEquivDep K V).toLinearMap.baseChange L
-        (a ⊗ₜ[K] ((⨂ₜ[K] i, x i) ⊗ₜ[K] (⨂ₜ[K] j, y j)))) = _
-    simp only [f, g, LinearMap.comp_apply, LinearMap.restrictScalars_apply,
-      LinearMap.baseChange_tmul, LinearEquiv.coe_coe,
+        (a ⊗ₜ[K] ((⨂ₜ[K] i, x i) ⊗ₜ[K] (⨂ₜ[K] j, y j)))) =
+      PiTensorProduct.tmulEquivDep L (fun i ↦ L ⊗[K] V i)
+        (TensorProduct.congr (tensorBaseChangeEquiv K L (fun i ↦ V (.inl i)))
+          (tensorBaseChangeEquiv K L (fun j ↦ V (.inr j)))
+          (TensorProduct.AlgebraTensorModule.distribBaseChange K L
+            (⨂[K] i, V (.inl i)) (⨂[K] j, V (.inr j))
+            (a ⊗ₜ[K] ((⨂ₜ[K] i, x i) ⊗ₜ[K] (⨂ₜ[K] j, y j)))))
+    simp only [LinearMap.baseChange_tmul, LinearEquiv.coe_coe,
       PiTensorProduct.tmulEquivDep_apply, tensorBaseChangeEquiv_tmul_tprod,
       TensorProduct.AlgebraTensorModule.distribBaseChange_tmul,
       TensorProduct.congr_tmul, map_smul, TensorProduct.smul_tmul,
       smul_eq_mul, mul_one, one_smul]
+    rw [TensorProduct.tmul_smul, map_smul, PiTensorProduct.tmulEquivDep_apply]
     congr 2
     funext i
     cases i <;> rfl

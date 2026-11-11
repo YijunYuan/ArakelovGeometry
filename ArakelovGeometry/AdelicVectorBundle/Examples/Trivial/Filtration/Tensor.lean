@@ -56,7 +56,8 @@ theorem trivialSeminorm_injectiveTensorPair_tmul_le (x : E) (y : V) :
   change (ξ.projectiveTensorPair η).norm PUnit.unit
     ((TensorProduct.AlgebraTensorModule.distribBaseChange K C E V).symm
       (((1 : C) ⊗ₜ[K] x) ⊗ₜ[C] ((1 : C) ⊗ₜ[K] y))) ≤ _ at h
-  simpa only [TensorProduct.AlgebraTensorModule.distribBaseChange_symm_tmul, one_mul] using h
+  simp only [TensorProduct.AlgebraTensorModule.distribBaseChange_symm_tmul, one_mul] at h
+  exact h
 
 /-- The canonical dual tensor functional has at most the product of the actual dual norms. -/
 theorem trivialSeminorm_injectiveTensorPair_dual_tmul_le
@@ -73,8 +74,9 @@ theorem trivialSeminorm_injectiveTensorPair_dual_tmul_le
     ((TensorProduct.dualDistrib K E V).baseChange C
       ((TensorProduct.AlgebraTensorModule.distribBaseChange K C (Dual K E) (Dual K V)).symm
         (((1 : C) ⊗ₜ[K] ℓ) ⊗ₜ[C] ((1 : C) ⊗ₜ[K] m)))) ≤ _ at h
-  simpa only [TensorProduct.AlgebraTensorModule.distribBaseChange_symm_tmul, one_mul,
-    LinearMap.baseChange_tmul] using h
+  simp only [TensorProduct.AlgebraTensorModule.distribBaseChange_symm_tmul, one_mul,
+    LinearMap.baseChange_tmul] at h
+  exact h
 
 end
 

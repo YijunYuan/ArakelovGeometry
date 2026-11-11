@@ -350,8 +350,8 @@ theorem iSup_flag_eq_span_weights {n : ℕ} {ι : Fin n → Type*}
     exact Fin.le_iff_val_le_val.mpr (Nat.le_of_lt_succ hj)
   · apply span_le.mpr
     rintro _ ⟨j, hj, rfl⟩
-    apply le_iSup_of_le j.1
-    apply le_iSup_of_le hj
+    apply (le_iSup_of_le j.1 (le_iSup (fun _ : t ≤ a j.1 ↦ U j.1.succ) hj) :
+      U j.1.succ ≤ _)
     rw [← hspan j.1.succ]
     exact subset_span ⟨j, Nat.lt_succ_self _, rfl⟩
 
