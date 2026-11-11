@@ -4,10 +4,14 @@ This directory houses selected transplants for local verification and use by the
 branch. It is not a checkout or dependency on an entire donor project. The existing
 mathlib and HarderNarasimhan dependencies remain the first sources to consult.
 
-The Stacks port is in progress, and the Etingof Schur–Weyl port is being started.
-Presence of a source file does not certify its proof or consumer: consult the
-donor's provenance record for completed kernel and axiom checks. Survey findings
-are candidates, not verification evidence.
+The selected Stacks DVR producer and its 14-module closure are locally checked:
+four transitive axiom probes use only standard axioms, and independent semantic
+and honesty reviews passed. [Its provenance record](Stacks/provenance.json)
+contains fixed revisions, hashes, retained warnings and exact consumer boundaries.
+The concrete orbit-map and residue-descent consumers are still open; upstream
+`StacksFrontier` is not asserted to have human review. The Etingof Schur–Weyl
+port is in progress. Presence of a source file alone does not certify its proof
+or consumer, and survey findings are not verification evidence.
 
 ## Layout and ownership
 

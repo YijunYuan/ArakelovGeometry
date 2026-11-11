@@ -81,8 +81,12 @@ also disclose any specialization or weakening and explain its sufficiency.
 The active selections are the Stacks DVR-specialization closure and the official
 Apache-licensed EtingofRepresentationTheory Schur–Weyl core. The latter's surveyed
 source closure is seven files; this is not a compilation-memory estimate, and its
-broad upstream Mathlib imports must be narrowed locally. These ports are in
-progress, not yet certified local dependencies. The intended representation
+broad upstream Mathlib imports must be narrowed locally. The selected Stacks
+DVR producer and its 14-module closure have passed narrow local builds, four
+standard-only transitive axiom audits and independent semantic/honesty review;
+see [its provenance record](ExternalResults/Stacks/provenance.json). The concrete
+orbit-map and residue-descent consumers remain open. The Etingof port is in
+progress. The intended representation
 consumer is semisimplicity of the specific SL tensor powers, followed by bounded
 polynomial subquotients and successive invariant lifts for the two commuting
 factors. This avoids importing a general reductivity library. The existing local
