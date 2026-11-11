@@ -130,8 +130,7 @@ theorem tensorBaseChangeEquiv_tmulEquivDep
     simp only [LinearMap.baseChange_tmul, LinearEquiv.coe_coe,
       PiTensorProduct.tmulEquivDep_apply, tensorBaseChangeEquiv_tmul_tprod,
       TensorProduct.AlgebraTensorModule.distribBaseChange_tmul,
-      TensorProduct.congr_tmul, map_smul, TensorProduct.smul_tmul,
-      smul_eq_mul, mul_one, one_smul]
+      TensorProduct.congr_tmul, TensorProduct.smul_tmul, one_smul]
     rw [TensorProduct.tmul_smul, map_smul, PiTensorProduct.tmulEquivDep_apply]
     congr 2
     funext i
@@ -231,6 +230,23 @@ theorem orthogonalTensor_dual_norm
   funext x
   rw [piDualDistrib_baseChange_apply, orthogonalTensor_norm_of_finite _ _ _ ω hfin]
   rfl
+
+/-- Canonical finite tensor-dual isometry on the prescribed completed fibres. -/
+def orthogonalTensorDualIsometry
+    (ξ : ∀ i, NormFamily S (E i))
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hξ : ∀ i, (ξ i).IsHermitian hN) (ω : S.Ω) :
+    letI := (orthogonalTensor (fun i ↦ (ξ i).dual) hN
+      (fun i ↦ (hξ i).dual)).fibreNormedAddCommGroup ω
+    letI := (orthogonalTensor ξ hN hξ).dual.fibreNormedAddCommGroup ω
+    ((S.ϕ ω).Completion ⊗[K] (⨂[K] i, Module.Dual K (E i))) ≃ₗᵢ[(S.ϕ ω).Completion]
+      ((S.ϕ ω).Completion ⊗[K] Module.Dual K (⨂[K] i, E i)) := by
+  letI := (orthogonalTensor (fun i ↦ (ξ i).dual) hN
+    (fun i ↦ (hξ i).dual)).fibreNormedAddCommGroup ω
+  letI := (orthogonalTensor ξ hN hξ).dual.fibreNormedAddCommGroup ω
+  exact { (PiTensorProduct.dualDistribEquiv (R := K) (M := E)).baseChange K
+      (S.ϕ ω).Completion _ _ with
+    norm_map' := orthogonalTensor_dual_norm ξ hN hξ ω }
 
 /-- Every canonical finite permutation preserves the actual norm at every place. -/
 theorem orthogonalTensor_norm_reindex {J : Type*} [Fintype J]
@@ -336,7 +352,8 @@ theorem orthogonalTensorPair_norm_eq_hilbert
     (tensorBaseChangeEquiv K L (BinaryTensorFactors E F) (B.symm.toLinearMap.baseChange L z)) =
     TensorProduct.AlgebraTensorModule.distribBaseChange K L E F
       ((B.baseChange K L _ _) ((B.baseChange K L _ _).symm z)) at he
-  simpa only [LinearEquiv.apply_symm_apply] using congrArg norm he
+  congr 1
+  simpa only [LinearEquiv.apply_symm_apply] using he
 
 /-- Canonical binary dual distribution is isometric on all completed vectors. -/
 theorem orthogonalTensorPair_dual_norm
