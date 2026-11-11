@@ -38,6 +38,92 @@
         "Remove redundant FaithfulSMul hypothesis: proof does not use it.",
         "Replace haveI with have, normalize proof whitespace and add Bost scope docstrings."
       ]
+    },
+    {
+      "upstream_path": "RepresentationTheory/PiTensorProduct/Constructions.lean",
+      "upstream_sha256": "185f4788e0dc7c1108e2e9d59a00139fcc3010ed539af36318928ddba6a0f462",
+      "local_path": "ExternalResults/EtingofRepresentationTheory/PiTensorProduct/Constructions.lean",
+      "local_sha256": "54ecca2505dbc37ebb2a6c11f200f9cfdfbeff1f810da0dd12d8c11841b81198",
+      "retained_upstream_lines": [
+        [
+          235,
+          238
+        ],
+        [
+          246,
+          251
+        ]
+      ],
+      "alterations": [
+        "Retain only piTensorEndSubalgebraAlternate and its variable context; omit symmetric-power, Lie-action and general algebra constructions.",
+        "Drop unused Module.Finite section variable.",
+        "Replace umbrella Mathlib and metadata imports with narrow imports, remove source_ref attributes.",
+        "Use module/public/expose for local Lean module system; retain upstream declaration namespaces.",
+        "Replace haveI by have; normalize whitespace, line wrapping, and isolated bullets; add scope docstrings."
+      ]
+    },
+    {
+      "upstream_path": "RepresentationTheory/TensorProducts/Auxiliary.lean",
+      "upstream_sha256": "a7401c060e567091482b9efd7f1667408b9af925c0e17cb33f43694a290c9357",
+      "local_path": "ExternalResults/EtingofRepresentationTheory/TensorProducts/Auxiliary.lean",
+      "local_sha256": "33ece541c71853b8f5432465d3622804a8248ce1156ec3126d2dc9682644cc33",
+      "retained_upstream_lines": [
+        [
+          10,
+          268
+        ]
+      ],
+      "alterations": [
+        "Retain matrix-unit spanning and inclusion-exclusion polarization proofs.",
+        "Replace if_neg with ite_eq_right.",
+        "Replace umbrella Mathlib and metadata imports with narrow imports, remove source_ref attributes.",
+        "Use module/public/expose for local Lean module system; retain upstream declaration namespaces.",
+        "Replace haveI by have; normalize whitespace, line wrapping, and isolated bullets; add scope docstrings."
+      ]
+    },
+    {
+      "upstream_path": "RepresentationTheory/Auxiliary/MutualCentralizers.lean",
+      "upstream_sha256": "4845550dfdfca474d179a5276d2f50bc75c1a63f55a176699da48ffdccd9c9dc",
+      "local_path": "ExternalResults/EtingofRepresentationTheory/Auxiliary/MutualCentralizers.lean",
+      "local_sha256": "77c7d1b0303f35866428e3d8a1a8178a7eb26504f0f87cb125c463e77cf5c465",
+      "retained_upstream_lines": [
+        [
+          13,
+          211
+        ],
+        [
+          235,
+          250
+        ]
+      ],
+      "alterations": [
+        "Retain actual permutation/tensor algebras, centralizer equality, and associatedSubalgebras_semisimple.",
+        "Omit reverse double-centralizer and all detailed decomposition/group homomorphism results.",
+        "Import TensorProducts.Auxiliary directly, omitting AuxiliaryEndomorphismActions (Lie enveloping algebra).",
+        "Replace umbrella Mathlib and metadata imports with narrow imports, remove source_ref attributes.",
+        "Use module/public/expose for local Lean module system; retain upstream declaration namespaces.",
+        "Replace haveI by have; normalize whitespace, line wrapping, and isolated bullets; add scope docstrings."
+      ]
+    },
+    {
+      "upstream_path": "RepresentationTheory/PiTensorProduct/MapSpanCentralizer.lean",
+      "upstream_sha256": "12a7435e00dd58122c6f958f40c15d1570f2a7f87fdcac6cabafe9b89faad3cc",
+      "local_path": "ExternalResults/EtingofRepresentationTheory/PiTensorProduct/MapSpanCentralizer.lean",
+      "local_sha256": "4d2d39e33535e6f1e1c5e5a8d8e107b6c10a84932ba62a4de37b535b1b9e2a06",
+      "retained_upstream_lines": [
+        [
+          10,
+          250
+        ]
+      ],
+      "alterations": [
+        "Retain interpolation proof and span_range_piTensorProduct_map_eq_auxiliary only.",
+        "Omit centralizer corollary and rational/real examples.",
+        "Replace Polynomial.finite_setOf_isRoot with finite_setOfPred_isRoot; qualify ambiguous Auxiliary namespace.",
+        "Replace umbrella Mathlib and metadata imports with narrow imports, remove source_ref attributes.",
+        "Use module/public/expose for local Lean module system; retain upstream declaration namespaces.",
+        "Replace haveI by have; normalize whitespace, line wrapping, and isolated bullets; add scope docstrings."
+      ]
     }
   ],
   "source_evidence": "Raw files fetched at pinned commit and SHA256 recorded; no donor build asserted.",
@@ -47,8 +133,19 @@
       "status": "passed",
       "fingerprint": "70b31fb1c776ad98",
       "duration_seconds": 5.228
+    },
+    {
+      "command": "LEAN_NUM_THREADS=2 horizon check ExternalResults.EtingofRepresentationTheory.PiTensorProduct.MapSpanCentralizer --timeout 180 --json",
+      "status": "passed without warnings",
+      "fingerprint": "6d17b9e626dd0008",
+      "duration_seconds": 6.93,
+      "finished_at": "2026-11-11T04:13:07.309647+00:00"
     }
   ],
   "axiom_evidence": [],
-  "selection_status": "centralizer milestone checked; tensor and SL consumers in progress"
+  "selection_status": "Five selected donor modules kernel checked; actual SL consumer in progress.",
+  "omitted_source_files": [
+    "RepresentationTheory/Alignment/Attribute.lean",
+    "RepresentationTheory/AuxiliaryEndomorphismActions.lean"
+  ]
 }

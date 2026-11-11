@@ -93,7 +93,8 @@ theorem permutationActionAlgebra_le_centralizer_auxiliaryEndomorphismAlgebra :
   unfold auxiliaryEndomorphismAlgebra at hy
   have hcomm : ∀ g ∈ Set.range (fun (f : Module.End k V) =>
       PiTensorProduct.map (R := k) (fun (_ : Fin n) => f)),
-      Commute (↑(auxiliarySpacePermutationEquiv k V n σ) : Module.End k (auxiliarySpace k V n)) g := by
+      Commute (↑(auxiliarySpacePermutationEquiv k V n σ) :
+        Module.End k (auxiliarySpace k V n)) g := by
     rintro g ⟨f, rfl⟩
     exact auxiliarySpacePermutationEquiv_comp_factorwiseMap k V n σ f
   exact (Algebra.commute_of_mem_adjoin_of_forall_mem_commute hy hcomm).symm.eq
@@ -220,7 +221,9 @@ theorem centralizer_permutationActionAlgebra
   · exact auxiliaryEndomorphismAlgebra_le_centralizer_permutationActionAlgebra
       k V n
 
-/-- Both associated endomorphism subalgebras are semisimple over a characteristic-zero field. -/
+/-- Both actual tensor endomorphism subalgebras are semisimple in characteristic zero.
+This retained donor producer supplies the fixed-degree image algebra for Bost p31;
+the detailed Schur--Weyl decomposition and general reductivity are not asserted. -/
 theorem associatedSubalgebras_semisimple
     [CharZero k] :
     IsSemisimpleRing (permutationActionAlgebra k V n)

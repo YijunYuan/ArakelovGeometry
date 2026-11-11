@@ -72,7 +72,7 @@ private lemma finite_nonunit_shifts (f : Module.End k V) :
     have hnu := mt (LinearMap.isUnit_iff_isUnit_det _).mpr ht
     rwa [isUnit_iff_ne_zero, not_not] at hnu
   exact Set.Finite.subset
-    (Polynomial.finite_setOf_isRoot
+    (Polynomial.finite_setOfPred_isRoot
       (Polynomial.Monic.ne_zero (LinearMap.charpoly_monic (-f))))
     (fun t ht => key t ht)
 
@@ -234,7 +234,9 @@ private lemma endomorphism_map_mem_linearEquiv_span (f : Module.End k V) :
 end Auxiliary
 
 /-- Over an infinite field, the span of the range of the pointwise tensor-product maps induced
-by linear equivalences is the underlying submodule of the auxiliary subalgebra. -/
+by linear equivalences is the underlying submodule of the actual diagonal image algebra.
+This retained donor statement supplies the fixed-degree GL producer for Bost p31;
+no polynomial or orbit-separation claim is made here. -/
 theorem span_range_piTensorProduct_map_eq_auxiliary
     {k : Type*} [Field k] [Infinite k]
     {V : Type*} [AddCommGroup V] [Module k V] [Module.Finite k V]
@@ -242,7 +244,7 @@ theorem span_range_piTensorProduct_map_eq_auxiliary
     Submodule.span k (Set.range fun (g : V ≃ₗ[k] V) =>
       PiTensorProduct.map (fun (_ : Fin n) => g.toLinearMap)) =
     (auxiliaryEndomorphismAlgebra k V n).toSubmodule := by
-  open Auxiliary in
+  open _root_.RepresentationTheory.PiTensorProduct.MapSpanCentralizer.Auxiliary in
   apply le_antisymm
   · apply Submodule.span_le.mpr
     rintro _ ⟨g, rfl⟩
