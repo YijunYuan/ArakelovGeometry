@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.GradedDegree
 public import ArakelovGeometry.LinearAlgebra.Filtration.RankDrop
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.GeometricOptimal
 
 /-!
 # Bost's actual HN variation assembly
@@ -23,6 +24,9 @@ Rank drop makes this hypothesis applicable; it does not prove it. The one-sided
 variation bound suffices, so neither the full CM (5.13), the exact affine identity,
 the entire Bost Theorem 1.1 nor its separate Section 6 branch is asserted.
 The proper adelic, discrete-or-countable and Hermitian norm context is retained.
+The final theorem obtains the candidate from the actual A2 geometric instability
+hypothesis over the original characteristic-zero field, leaving only the genuine
+smaller-rank tensor-HN induction boundary.
 -/
 
 @[expose] public section
@@ -33,6 +37,8 @@ open scoped TensorProduct
 namespace ArakelovGeometry.AdelicVectorBundle
 
 universe u
+
+section Conditional
 
 variable {K : Type*} [Field K] {E F : Type u} {Q : Type*}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
@@ -85,5 +91,52 @@ theorem slope_sum_le_tensor_quotient_of_negative_candidate
     q hq hP.1 hR.1 b c a d hPb hRc L M r s hL hM
       (fun i j ↦ hsmall (a i) (d j)) (hInd P R)
   exact (hlower _ hupper).trans hδ
+
+end Conditional
+
+section Geometric
+
+open ArakelovGeometry.InvariantTheory
+
+variable {K E F Q : Type u} [Field K] [CharZero K]
+  [AddCommGroup E] [Module K E] [FiniteDimensional K E] [Nontrivial E]
+  [AddCommGroup F] [Module K F] [FiniteDimensional K F] [Nontrivial F]
+  [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q] [Nontrivial Q]
+  {S : AdelicStructure K} [S.IsProper]
+  (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+  (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+  (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+  (hV : V.toNormFamily.IsHermitian hN) (hW : W.toNormFamily.IsHermitian hN)
+
+/-- The actual geometric unstable case of Bost pp.31–32, equation (47), with the
+genuine smaller-rank tensor-HN induction hypothesis still explicit. A2 geometric
+nonsemistability produces an original-field unit negative global optimizer; its
+actual candidate enters the proved optimizer/HN-lift arithmetic assembly. There
+is no assumed numerical inequality or rank-drop certificate. The original tensor
+pushforward quotient norm, proper adelic and discrete-or-countable setting are
+retained, including trivial valuations. Only the binary HN variation is needed;
+full CM (5.13), the full HN induction, Section 6 and Bost Theorem 1.1 are not asserted. -/
+theorem slope_sum_le_tensor_quotient_of_not_geometricallySemistable
+    (hsemiV : V.IsMeanSlopeSemistable hS hN) (hsemiW : W.IsMeanSlopeSemistable hS hN)
+    (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)
+    (hInd : ∀ (P : ℝ → Submodule K E) (R : ℝ → Submodule K F) (t u : ℝ),
+      finrank K (FiltrationGraded P t) + finrank K (FiltrationGraded R u) <
+        finrank K E + finrank K F →
+      (tensorFiltrationGradedSource V W hS hN hV hW P R t u).hermitianHNFiltration hS hN
+        (tensorFiltrationGradedSource_isHermitian V W hS hN hV hW P R t u) =
+      tensorFiltration
+        ((V.filtrationGraded P t hS).hermitianHNFiltration hS hN (hV.filtrationGraded P t))
+        ((W.filtrationGraded R u hS).hermitianHNFiltration hS hN (hW.filtrationGraded R u)))
+    (hns : ¬ IsGeometricallySemistableTensorQuotient (BoolTensorFactors E F)
+      (q.comp (boolTensorEquiv K (BoolTensorFactors E F)).toLinearMap)) :
+    let T := V.orthogonalTensorPair W hS hN hV hW
+    let B := T.pushforward q hq (T.isMeasurable.pushforward_of_discrete_or_countable hS q hq)
+    V.slope hS hN + W.slope hS hN ≤ B.slope hS hN := by
+  obtain ⟨P₀, R₀, hP₀, hR₀, _, hneg₀, _⟩ :=
+    exists_normalized_tensor_quotient_optimizer_of_not_geometricallySemistable q hq hQ hns
+  exact slope_sum_le_tensor_quotient_of_negative_candidate V W hS hN hV hW
+    hsemiV hsemiW q hq hQ hInd P₀ R₀ hP₀ hR₀ hneg₀
+
+end Geometric
 
 end ArakelovGeometry.AdelicVectorBundle
