@@ -508,6 +508,20 @@ theorem normalized_quotient_optimizer_unique
   have he : x = y := funext fun j ↦ funext fun i ↦ sub_eq_zero.mp (hxy j i)
   rw [heP, heR, he]
 
+/-- The independent conditional optimizer: one actual centered negative
+candidate gives a unique unit-normalized global minimizer among all actual
+centered real filtrations. No geometric instability or optimality premise is used. -/
+theorem exists_unique_normalized_quotient_optimizer
+    (ha : ∀ j, 0 < finrank K (E j)) (F₀ : Families)
+    (hF₀ : Admissible F₀) (hneg₀ : Value F₀ < 0) :
+    ∃! P : Families, Admissible P ∧ Energy P = 1 ∧ Value P < 0 ∧
+      ∀ F : Families, Admissible F → 0 < Energy F →
+        Value P ≤ Value F / Real.sqrt (Energy F) := by
+  obtain ⟨P, hP, hPE, hneg, hmin⟩ := exists_normalized_quotient_optimizer q hq ha F₀ hF₀ hneg₀
+  refine ⟨P, ⟨hP, hPE, hneg, hmin⟩, ?_⟩
+  rintro R ⟨hR, hRE, _, hRmin⟩
+  exact (normalized_quotient_optimizer_unique q hq ha P R hP hR hPE hRE hneg hmin hRmin).symm
+
 end ActualFiltrations
 
 end Submodule
