@@ -546,4 +546,37 @@ theorem expectation_hermitianHN_imageFiltration_le_slope [Finite ι]
     (finsum_hermitianHN_imageFiltration_le_degree V W f hS hN hV hW hspan hf)
     (Nat.cast_nonneg _)
 
+/-- Bounds supported on the nonzero grades of an actual finite filtration
+sum to a bound for the original Hermitian bundle's degree. -/
+theorem finsum_le_degree_of_filtration_grade_bounds
+    (W : AdelicVectorBundle S Q)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hW : W.toNormFamily.IsHermitian hN)
+    (F : ℝ → Submodule K Q) (hF : Antitone F)
+    (hbot : ∃ t, F t = ⊥) (htop : ∃ t, F t = ⊤)
+    (hleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t)
+    (d : ℝ → ℝ)
+    (hzero : ∀ t, Module.finrank K (Submodule.FiltrationGraded F t) = 0 → d t = 0)
+    (hgrade : ∀ t, d t ≤ (W.filtrationGraded F t hS).degree hS hN) :
+    (∑ᶠ t : ℝ, d t) ≤ W.degree hS hN := by
+  classical
+  obtain ⟨n, U, a, hU, hz, ht, _, ha, _, hlevel, hright, hrec⟩ :=
+    Submodule.exists_strictMono_flag_and_jumps_of_antitone hF hbot htop hleft
+  rw [finsum_eq_sum_of_support_subset _ (s := Finset.univ.image a) (by
+    intro t hd
+    by_contra hn
+    exact hd (hzero t (Submodule.finrank_filtrationGraded_eq_zero_of_flag U a hlevel hrec
+      (by simpa using hn))))]
+  rw [Finset.sum_image (fun i _ j _ hij ↦ ha.injective hij)]
+  rw [← W.sum_flagQuotient_degree_eq_of_isHermitian U hU.monotone hz ht hS hN hW]
+  apply Finset.sum_le_sum
+  intro i _
+  have hp : (F (a i), Submodule.filtrationRightLimit F (a i)) =
+      (U i.succ, U i.castSucc) := Prod.ext (hlevel i) (hright i)
+  have he := congrArg (fun p : Submodule K Q × Submodule K Q ↦
+    d (a i) ≤ ((W.restrictOfMeasurableBase p.1 hS).quotientOfMeasurableBase
+      (p.2.comap p.1.subtype) hS).degree hS hN) hp
+  exact Eq.mp he (hgrade (a i))
+
 end ArakelovGeometry.AdelicVectorBundle
