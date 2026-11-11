@@ -40,7 +40,7 @@ it is the paper referred to as `bost_conjecture.pdf` in the workspace instructio
 | A5: tensor and quotient filtrations | The binary canonical graded decomposition, quotient maps, actual norm correspondence and naturality are checked. Existing finite-family weight formulas are retained; additional finite-family graded refinement is deferred. | Pages 28–30, (44) and (46), use two factors, collisions of total weights, and the original quotient weights. The finite-family conclusion of Theorem 1.1 is obtained by binary iteration on page 32. |
 | A6: graded norm comparison | The revised target is componentwise canonical graded contractions plus the finite-image HN degree estimate below; implementation is in progress. | This replaces the whole orthogonal-direct-sum norm argument in Lemmas 7.1 and 7.2 while preserving their numerical conclusions. Componentwise contraction is not asserted to imply l2-sum contraction. |
 | A7: lifting filtrations | Actual prescribed quotient lifts and their HN specialization are checked, with expectation and weighted pairing formulas. | Pages 29 and 32 need a chosen lift of the subquotient HN filtrations. A canonical or unique lift is unnecessary; the ambient HN filtration cannot replace this construction. |
-| A8: instability input | Only the binary, specific tensor/determinant representation and the direction from geometric instability to a K-defined negative centered candidate are required. Cartan is checked; the full bridge remains open. | The geometrically semistable case is handled by Section 6; page 31 needs the unstable direction. Integer/rational weights suffice for this initial candidate. A full two-way real-weight HM theorem is unnecessary. |
+| A8: instability input | Only the binary, specific tensor/determinant representation and the direction from geometric instability to a K-defined negative centered candidate are required. General DVR Cartan, actual local determinant-weight extraction and SL tensor-power semisimplicity are checked. Separation, actual orbit specialization and descent remain open. | The geometrically semistable case is handled by Section 6; page 31 needs the unstable direction. Integer/rational weights suffice for the closed-field initial candidate, while optimizer descent retains real weights. A full two-way real-weight HM theorem is unnecessary. |
 | A9: optimal filtration | Conditional finite-family existence and uniqueness, and the direct binary optimizer, are checked: an actual negative candidate gives a negative normalized global minimum across all actual bases/filtrations. The A8 candidate and HN-lift right variation remain open. | Pages 31–32 need this minimum and the HN-lift variation, not the full CM inequality (5.13). The retained uniqueness theorem supplies a producer for the separate A8 Galois-descent argument; that descent is not implied by uniqueness alone. |
 
 ### The A6 replacement argument
@@ -95,6 +95,19 @@ The selected Stacks DVR producer and its 14-module closure have passed narrow
 local builds, four standard-only transitive axiom audits and independent
 semantic/honesty review; see [its provenance record](ExternalResults/Stacks/provenance.json).
 The concrete orbit-map and residue-descent consumers remain open.
+
+The checked local [DVRWeights](ArakelovGeometry/InvariantTheory/DVRWeights.lean)
+consumer reuses local PID diagonalization to obtain general DVR Cartan factors
+in integral SL, with integer exponents summing to zero. It specializes the CM
+numerical-equivalence input to the local implication needed on Bost page 31:
+when an actual A2 tensor/exterior-dual SL action sends an integral covector into
+the maximal-ideal lattice, every nonzero reduced quotient determinant after the
+specified integral SL changes has negative original weight sum. The combined
+DVR/Stacks audit checked 21 declarations with only standard axioms. Producing
+that actual group action from orbit closure, matching the ground-field model,
+proving the initial vector primitive and descending the residue equations remain
+separate obligations. No complete DVR, power-series model, or finite/equal residue
+field is assumed or claimed.
 
 The Apache-licensed EtingofRepresentationTheory port was reduced from its surveyed
 seven-file closure to five proof modules (892 lines), with narrow Mathlib imports.
