@@ -8,6 +8,10 @@ module
 public import ArakelovGeometry.Analysis.Tensor.HermitianTensor
 public import ArakelovGeometry.Analysis.ScalarExtension.Hermitian.Dual
 public import Mathlib.LinearAlgebra.PiTensorProduct.Finite
+public import ArakelovGeometry.Analysis.Tensor.Bilinear
+public import ArakelovGeometry.Analysis.Tensor.InjectiveTensorPure
+import ArakelovGeometry.Analysis.Dual.UltrametricDual
+import ArakelovGeometry.Analysis.Determinant.Basic
 
 /-!
 # Duality for finite orthogonal tensor products
@@ -157,5 +161,61 @@ theorem injectiveTensorSeminorm_reindex (e : I ≃ J) (z : ⨂[k] i, V i) :
   exact Fintype.prod_equiv e.symm _ _ (fun _ ↦ rfl)
 
 end InjectiveReindex
+
+section UltrametricDual
+
+variable {k I : Type*} [NormedField k] [CompleteSpace k] [Fintype I]
+  {V : I → Type*} [∀ i, NormedAddCommGroup (V i)] [∀ i, NormedSpace k (V i)]
+  [∀ i, FiniteDimensional k (V i)] [∀ i, IsUltrametricDist (V i)]
+
+/-- Finite injective tensor duality, including the trivial valuation and empty family. -/
+theorem injectiveTensor_dual_eq_sSup_of_ultrametric
+    (hk : ∀ a b : k, ‖a + b‖ ≤ max ‖a‖ ‖b‖)
+    (z : ⨂[k] i, Module.Dual k (V i)) :
+    letI := fun i ↦ linearDualNormedAddCommGroup (k := k) (E := V i)
+    letI := fun i ↦ linearDualNormedSpace (k := k) (E := V i)
+    injectiveTensorSeminorm z = sSup (Set.range fun t : ⨂[k] i, V i ↦
+      ‖PiTensorProduct.dualDistrib z t‖ / injectiveTensorSeminorm t) := by
+  let := fun i ↦ linearDualNormedAddCommGroup (k := k) (E := V i)
+  let := fun i ↦ linearDualNormedSpace (k := k) (E := V i)
+  have hev (x : ∀ i, V i) : PiTensorProduct.dualDistrib z (⨂ₜ[k] i, x i) =
+      tensorDualEval (fun i ↦ Module.Dual.eval k (V i) (x i)) z := by
+    induction z using PiTensorProduct.induction_on with
+    | smul_tprod a f =>
+      simp only [map_smul, LinearMap.smul_apply, PiTensorProduct.dualDistrib_apply,
+        tensorDualEval_tprod, Module.Dual.eval_apply]
+    | add z t hz ht => simp only [map_add, LinearMap.add_apply, hz, ht]
+  have hn (i : I) (x : V i) :
+      linearMapOperatorSeminorm (Module.Dual.eval k (V i) x) = ‖x‖ := by
+    rw [linearMapOperatorSeminorm_eq_sSup, norm_eq_sSup_linearMap_ratios (L := k)]
+    rfl
+  have hp (x : ∀ i, V i) : ‖PiTensorProduct.dualDistrib z (⨂ₜ[k] i, x i)‖ ≤
+      injectiveTensorSeminorm z * ∏ i, ‖x i‖ := by
+    rw [hev]
+    simpa only [hn] using norm_tensorDualEval_le_injective
+      (fun i ↦ Module.Dual.eval k (V i) (x i)) z
+  have hr (t : ⨂[k] i, V i) :
+      ‖PiTensorProduct.dualDistrib z t‖ / injectiveTensorSeminorm t ≤
+        injectiveTensorSeminorm z := by
+    by_cases ht : injectiveTensorSeminorm t = 0
+    · simp only [ht, div_zero, apply_nonneg]
+    · apply (div_le_iff₀ (lt_of_le_of_ne (apply_nonneg _ _) (Ne.symm ht))).mpr
+      exact norm_linearMap_le_mul_injective_of_ultrametric_factors
+        (PiTensorProduct.dualDistrib z) hk (apply_nonneg _ _) hp t
+  have hb : BddAbove (Set.range fun t : ⨂[k] i, V i ↦
+      ‖PiTensorProduct.dualDistrib z t‖ / injectiveTensorSeminorm t) :=
+    ⟨injectiveTensorSeminorm z, by rintro _ ⟨t, rfl⟩; exact hr t⟩
+  apply le_antisymm
+  · apply (injectiveTensorSeminorm_le_iff z _).mpr
+    intro φ
+    choose x hx using fun i ↦ (Module.evalEquiv k (V i)).surjective (φ i)
+    have hφ : φ = fun i ↦ Module.Dual.eval k (V i) (x i) := funext (fun i ↦ (hx i).symm)
+    rw [hφ]
+    simp only [hn]
+    rw [← hev, ← injectiveTensorSeminorm_tprod_eq_of_ultrametric (L := k) (E := V) x]
+    exact le_csSup hb ⟨⨂ₜ[k] i, x i, rfl⟩
+  · exact csSup_le (Set.range_nonempty _) (by rintro _ ⟨t, rfl⟩; exact hr t)
+
+end UltrametricDual
 
 end ArakelovGeometry
