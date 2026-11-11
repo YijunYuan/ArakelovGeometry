@@ -575,22 +575,30 @@ theorem exists_normalized_tensor_quotient_optimizer
       filtrationExpectation (fun t ↦ (piTensorFiltration H t).map q') =
         filtrationExpectation (fun t ↦ (tensorFiltration (H (.inl ())) (H (.inr ())) t).map q) := by
     dsimp only [q', e]
-    simp_rw [← map_map, piTensorFiltration_map_binaryTensorEquiv]
+    simp_rw [map_comp, piTensorFiltration_map_binaryTensorEquiv]
   have ha : ∀ i, 0 < finrank K (BinaryTensorFactors E V i) := by
     rintro (⟨⟩ | ⟨⟩)
     · exact hE
     · exact hV
   obtain ⟨P, hP, hPE, hneg, hmin⟩ := exists_normalized_quotient_optimizer q'
     (hq.comp e.surjective) ha (pair F₀ G₀)
-    (by rintro (⟨⟩ | ⟨⟩); exact hF₀; exact hG₀)
-    (by rw [hvalue]; exact hneg₀)
+    (by
+      rintro (⟨⟩ | ⟨⟩)
+      · exact hF₀
+      · exact hG₀)
+    (by dsimp only; rw [hvalue]; exact hneg₀)
+  dsimp only at hneg
   rw [hvalue] at hneg
   simp only [Fintype.sum_sum_type, Fintype.sum_unique] at hPE
   refine ⟨P (.inl ()), P (.inr ()), hP (.inl ()), hP (.inr ()), hPE, hneg, ?_⟩
   intro F G hF hG hpos
   have hh := hmin (pair F G)
-    (by rintro (⟨⟩ | ⟨⟩); exact hF; exact hG)
+    (by
+      rintro (⟨⟩ | ⟨⟩)
+      · exact hF
+      · exact hG)
     (by simpa only [Fintype.sum_sum_type, Fintype.sum_unique] using hpos)
+  dsimp only at hh
   rw [hvalue, hvalue] at hh
   simpa only [Fintype.sum_sum_type, Fintype.sum_unique] using hh
 

@@ -142,6 +142,7 @@ theorem IsHermitian.exists_pushforward_section {ξ : NormFamily S E}
     change ‖W.quotientEquivOrthogonal (e.symm z)‖ = ‖e.symm z‖
     exact W.quotientEquivOrthogonal.norm_map _
 
+omit [FiniteDimensional K V] in
 /-- A nonnegative multiple of the actual quotient norm is determined by all
 completed lifts. This includes a zero multiplier and a zero quotient. -/
 theorem le_mul_pushforward_norm (ξ : NormFamily S E)
@@ -212,6 +213,7 @@ theorem tensorPairFibre_map
     apply LinearMap.ext
     intro y
     apply B₂.injective
+    simp only [LinearMap.comp_apply, LinearEquiv.coe_coe, LinearEquiv.apply_symm_apply]
     change TensorProduct.map f g y = B₂ (PiTensorProduct.map ff (B₁.symm y))
     obtain ⟨x, rfl⟩ := B₁.surjective y
     rw [LinearEquiv.symm_apply_apply]
