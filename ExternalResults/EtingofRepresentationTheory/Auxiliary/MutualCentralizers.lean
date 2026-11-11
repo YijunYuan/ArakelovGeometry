@@ -167,17 +167,6 @@ instance permutationActionAlgebra_semisimple
   exact (permutationGroupAlgebraAction k V n).toRingHom.rangeRestrict.isSemisimpleRing_of_surjective
     (permutationGroupAlgebraAction k V n).toRingHom.rangeRestrict_surjective
 
-omit [Module.Finite k V] in
-/-- The permutation-action algebra acts faithfully on the auxiliary space. -/
-theorem faithfulSMul_permutationActionAlgebra_auxiliarySpace :
-    FaithfulSMul (permutationActionAlgebra k V n) (auxiliarySpace k V n) := by
-  constructor
-  intro a b hab
-  apply Subtype.ext
-  apply LinearMap.ext
-  intro x
-  exact hab x
-
 /-- The centralizer of the permutation-action algebra is the auxiliary endomorphism algebra. -/
 theorem centralizer_permutationActionAlgebra
     [CharZero k] :
@@ -233,7 +222,6 @@ theorem associatedSubalgebras_semisimple
   · rw [← centralizer_permutationActionAlgebra
       k V n]
     have := permutationActionAlgebra_semisimple k V n
-    have := faithfulSMul_permutationActionAlgebra_auxiliarySpace k V n
     exact CentralizerDecomposition.isSemisimpleRing_centralizer
       k (auxiliarySpace k V n) (permutationActionAlgebra k V n)
 

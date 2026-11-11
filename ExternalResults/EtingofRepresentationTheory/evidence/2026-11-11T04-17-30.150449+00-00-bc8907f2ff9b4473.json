@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "fingerprint": "bc8907f2ff9b4473",
+  "command": [
+    "lake",
+    "build",
+    "ArakelovGeometry.InvariantTheory.TensorPowerSemisimple"
+  ],
+  "cwd": "ArakelovGeometry",
+  "status": "passed",
+  "ok": true,
+  "returncode": 0,
+  "timed_out": false,
+  "reused": false,
+  "wait_seconds": 10.902,
+  "duration_seconds": 9.938,
+  "started_at": "2026-11-11T04:17:20.212624+00:00",
+  "finished_at": "2026-11-11T04:17:30.150449+00:00",
+  "finished_epoch": 1794370650.150449
+}

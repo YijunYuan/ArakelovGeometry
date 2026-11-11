@@ -37,6 +37,10 @@
         "Add module/public/expose declarations for local Lean module system.",
         "Remove redundant FaithfulSMul hypothesis: proof does not use it.",
         "Replace haveI with have, normalize proof whitespace and add Bost scope docstrings."
+      ],
+      "upstream_url": "https://github.com/mathlib-initiative/EtingofRepresentationTheory/blob/752fe269b3233f08f0795aa4bcdc5b4c84be7a50/RepresentationTheory/CentralizerDecomposition.lean",
+      "local_imports": [
+        "Mathlib.RingTheory.SimpleModule.WedderburnArtin"
       ]
     },
     {
@@ -60,6 +64,11 @@
         "Replace umbrella Mathlib and metadata imports with narrow imports, remove source_ref attributes.",
         "Use module/public/expose for local Lean module system; retain upstream declaration namespaces.",
         "Replace haveI by have; normalize whitespace, line wrapping, and isolated bullets; add scope docstrings."
+      ],
+      "upstream_url": "https://github.com/mathlib-initiative/EtingofRepresentationTheory/blob/752fe269b3233f08f0795aa4bcdc5b4c84be7a50/RepresentationTheory/PiTensorProduct/Constructions.lean",
+      "local_imports": [
+        "Mathlib.LinearAlgebra.PiTensorProduct.Basic",
+        "Mathlib.RingTheory.Adjoin.Basic"
       ]
     },
     {
@@ -79,21 +88,34 @@
         "Replace umbrella Mathlib and metadata imports with narrow imports, remove source_ref attributes.",
         "Use module/public/expose for local Lean module system; retain upstream declaration namespaces.",
         "Replace haveI by have; normalize whitespace, line wrapping, and isolated bullets; add scope docstrings."
+      ],
+      "upstream_url": "https://github.com/mathlib-initiative/EtingofRepresentationTheory/blob/752fe269b3233f08f0795aa4bcdc5b4c84be7a50/RepresentationTheory/TensorProducts/Auxiliary.lean",
+      "local_imports": [
+        "ExternalResults.EtingofRepresentationTheory.PiTensorProduct.Constructions",
+        "Mathlib.LinearAlgebra.PiTensorProduct.Basis",
+        "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "Mathlib.Data.Nat.Choose.Sum",
+        "Mathlib.LinearAlgebra.FiniteDimensional.Defs",
+        "Mathlib.Data.Fintype.Perm"
       ]
     },
     {
       "upstream_path": "RepresentationTheory/Auxiliary/MutualCentralizers.lean",
       "upstream_sha256": "4845550dfdfca474d179a5276d2f50bc75c1a63f55a176699da48ffdccd9c9dc",
       "local_path": "ExternalResults/EtingofRepresentationTheory/Auxiliary/MutualCentralizers.lean",
-      "local_sha256": "77c7d1b0303f35866428e3d8a1a8178a7eb26504f0f87cb125c463e77cf5c465",
+      "local_sha256": "922d2dda3370fbae61a3eea11a6b10e92950ca5887a60754acf4070d02d5731a",
       "retained_upstream_lines": [
         [
           13,
-          211
+          153
         ],
         [
-          235,
-          250
+          166,
+          208
+        ],
+        [
+          230,
+          243
         ]
       ],
       "alterations": [
@@ -102,18 +124,31 @@
         "Import TensorProducts.Auxiliary directly, omitting AuxiliaryEndomorphismActions (Lie enveloping algebra).",
         "Replace umbrella Mathlib and metadata imports with narrow imports, remove source_ref attributes.",
         "Use module/public/expose for local Lean module system; retain upstream declaration namespaces.",
-        "Replace haveI by have; normalize whitespace, line wrapping, and isolated bullets; add scope docstrings."
+        "Replace haveI by have; normalize whitespace, line wrapping, and isolated bullets; add scope docstrings.",
+        "Remove obsolete faithful-action lemma and the unused local instance in associatedSubalgebras_semisimple (upstream line 242)."
+      ],
+      "upstream_url": "https://github.com/mathlib-initiative/EtingofRepresentationTheory/blob/752fe269b3233f08f0795aa4bcdc5b4c84be7a50/RepresentationTheory/Auxiliary/MutualCentralizers.lean",
+      "local_imports": [
+        "ExternalResults.EtingofRepresentationTheory.CentralizerDecomposition",
+        "ExternalResults.EtingofRepresentationTheory.TensorProducts.Auxiliary",
+        "Mathlib.RepresentationTheory.Maschke",
+        "Mathlib.Algebra.Algebra.Subalgebra.Centralizer",
+        "Mathlib.Data.Finite.Perm"
       ]
     },
     {
       "upstream_path": "RepresentationTheory/PiTensorProduct/MapSpanCentralizer.lean",
       "upstream_sha256": "12a7435e00dd58122c6f958f40c15d1570f2a7f87fdcac6cabafe9b89faad3cc",
       "local_path": "ExternalResults/EtingofRepresentationTheory/PiTensorProduct/MapSpanCentralizer.lean",
-      "local_sha256": "4d2d39e33535e6f1e1c5e5a8d8e107b6c10a84932ba62a4de37b535b1b9e2a06",
+      "local_sha256": "852dd749f34611ee3fcb2d428fd84a6a3e25b8e68609079cbdc01fb9b68f3234",
       "retained_upstream_lines": [
         [
           10,
-          250
+          113
+        ],
+        [
+          122,
+          249
         ]
       ],
       "alterations": [
@@ -122,7 +157,14 @@
         "Replace Polynomial.finite_setOf_isRoot with finite_setOfPred_isRoot; qualify ambiguous Auxiliary namespace.",
         "Replace umbrella Mathlib and metadata imports with narrow imports, remove source_ref attributes.",
         "Use module/public/expose for local Lean module system; retain upstream declaration namespaces.",
-        "Replace haveI by have; normalize whitespace, line wrapping, and isolated bullets; add scope docstrings."
+        "Replace haveI by have; normalize whitespace, line wrapping, and isolated bullets; add scope docstrings.",
+        "Remove unused private piecewise_univ_eq helper (upstream lines 115-120)."
+      ],
+      "upstream_url": "https://github.com/mathlib-initiative/EtingofRepresentationTheory/blob/752fe269b3233f08f0795aa4bcdc5b4c84be7a50/RepresentationTheory/PiTensorProduct/MapSpanCentralizer.lean",
+      "local_imports": [
+        "ExternalResults.EtingofRepresentationTheory.Auxiliary.MutualCentralizers",
+        "Mathlib.LinearAlgebra.Lagrange",
+        "Mathlib.LinearAlgebra.Charpoly.Basic"
       ]
     }
   ],
@@ -140,12 +182,119 @@
       "fingerprint": "6d17b9e626dd0008",
       "duration_seconds": 6.93,
       "finished_at": "2026-11-11T04:13:07.309647+00:00"
+    },
+    {
+      "schema_version": 1,
+      "fingerprint": "bc8907f2ff9b4473",
+      "command": [
+        "lake",
+        "build",
+        "ArakelovGeometry.InvariantTheory.TensorPowerSemisimple"
+      ],
+      "cwd": "ArakelovGeometry",
+      "status": "passed",
+      "ok": true,
+      "returncode": 0,
+      "timed_out": false,
+      "reused": false,
+      "wait_seconds": 10.902,
+      "duration_seconds": 9.938,
+      "started_at": "2026-11-11T04:17:20.212624+00:00",
+      "finished_at": "2026-11-11T04:17:30.150449+00:00",
+      "finished_epoch": 1794370650.150449
     }
   ],
-  "axiom_evidence": [],
-  "selection_status": "Five selected donor modules kernel checked; actual SL consumer in progress.",
+  "axiom_evidence": [
+    {
+      "check": {
+        "schema_version": 1,
+        "fingerprint": "5d3e714e09632681",
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "-j2",
+          "/home/yijunyuan/ageo-workspace/.archon-horizon/runs/0012/sessions/0002-horizon-A8-SCHUR/AxiomAudit.lean"
+        ],
+        "cwd": "ArakelovGeometry",
+        "status": "passed",
+        "ok": true,
+        "returncode": 0,
+        "timed_out": false,
+        "reused": false,
+        "wait_seconds": 0.0,
+        "duration_seconds": 23.067,
+        "started_at": "2026-11-11T04:17:45.423594+00:00",
+        "finished_at": "2026-11-11T04:18:08.490920+00:00",
+        "finished_epoch": 1794370688.49092
+      },
+      "audit_input": "ExternalResults/EtingofRepresentationTheory/evidence/AxiomAudit.lean",
+      "roots": [
+        "RepresentationTheory.CentralizerDecomposition.isSemisimpleRing_centralizer",
+        "RepresentationTheory.TensorProducts.Auxiliary.span_range_map_eq_top",
+        "RepresentationTheory.TensorProducts.Auxiliary.sum_reindexConjugates_mem_auxiliary",
+        "RepresentationTheory.Auxiliary.MutualCentralizers.centralizer_permutationActionAlgebra",
+        "RepresentationTheory.Auxiliary.MutualCentralizers.associatedSubalgebras_semisimple",
+        "RepresentationTheory.PiTensorProduct.MapSpanCentralizer.span_range_piTensorProduct_map_eq_auxiliary",
+        "ArakelovGeometry.InvariantTheory.tensorPowerSL_span_eq_gl_span",
+        "ArakelovGeometry.InvariantTheory.tensorPowerSL_image_eq",
+        "ArakelovGeometry.InvariantTheory.tensorPowerSL_isSemisimpleModule",
+        "ArakelovGeometry.InvariantTheory.tensorPowerSL_isSemisimpleRepresentation",
+        "ArakelovGeometry.InvariantTheory.tensorPowerSL_submodule_surjection_splits",
+        "ArakelovGeometry.InvariantTheory.tensorPowerSL_exists_invariant_lift"
+      ],
+      "result": "All twelve roots depend only on propext, Classical.choice, Quot.sound; explicit n=0 consumer instantiation also passed.",
+      "results_file": "ExternalResults/EtingofRepresentationTheory/evidence/AxiomAudit.results.txt"
+    }
+  ],
+  "selection_status": "Five selected donor modules and actual SL group-algebra consumer are kernel checked; independent honesty/source/consumer review completed with minor provenance corrections.",
   "omitted_source_files": [
     "RepresentationTheory/Alignment/Attribute.lean",
     "RepresentationTheory/AuxiliaryEndomorphismActions.lean"
+  ],
+  "retained_lean_file_count": 5,
+  "retained_lean_line_count": 892,
+  "consumer": {
+    "path": "ArakelovGeometry/InvariantTheory/TensorPowerSemisimple.lean",
+    "sha256": "46087148eaf3bdcd69a9adf86268d4576472b7e5dac7541c89f110d399497145",
+    "roots": [
+      "ArakelovGeometry.InvariantTheory.tensorPowerSL_image_eq",
+      "ArakelovGeometry.InvariantTheory.tensorPowerSL_isSemisimpleModule",
+      "ArakelovGeometry.InvariantTheory.tensorPowerSL_isSemisimpleRepresentation",
+      "ArakelovGeometry.InvariantTheory.tensorPowerSL_submodule_surjection_splits",
+      "ArakelovGeometry.InvariantTheory.tensorPowerSL_exists_invariant_lift"
+    ]
+  },
+  "unshipped_source_hashes": [
+    {
+      "upstream_path": "RepresentationTheory/Alignment/Attribute.lean",
+      "sha256": "4fddd4b051f6b510fa881c1e05ee4a37705befaa8e22da27fb699237f1f9b224",
+      "reason": "metadata or unused Lie action, deliberately omitted"
+    },
+    {
+      "upstream_path": "RepresentationTheory/AuxiliaryEndomorphismActions.lean",
+      "sha256": "9b88850edbbbc680064f762e7e73a6b8ea7c92fa47e8caa5c53abaff94d416de",
+      "reason": "metadata or unused Lie action, deliberately omitted"
+    }
+  ],
+  "reviews": [
+    {
+      "role": "honesty-reviewer",
+      "status": "satisfactory / honest",
+      "scope": "Actual producer route, assumptions, degree zero, image ring versus group algebra, quotient splitting and invariant lift; final build/audit and hashes inspected.",
+      "result": "No material issue; scalar normalization node checked; minor blueprint forward-reference wording corrected."
+    },
+    {
+      "role": "source-fidelity-reviewer",
+      "status": "satisfactory",
+      "scope": "Pinned donor hashes, retained source ranges, mathematical meanings, Bost consumer scope, blueprint attachments and actual consumer dependency route.",
+      "result": "No remaining source/consumer issue after source-context citation, source range, and unused-helper corrections."
+    },
+    {
+      "role": "janitor",
+      "status": "satisfactory",
+      "scope": "Horizon skill reconciliation and initial collection health.",
+      "result": "Only skill delta is deliberate serialization correction matching runtime; retained unchanged. No collection warnings or stale scratch."
+    }
   ]
 }

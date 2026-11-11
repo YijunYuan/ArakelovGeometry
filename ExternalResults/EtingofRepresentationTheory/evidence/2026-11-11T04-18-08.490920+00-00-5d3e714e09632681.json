@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "fingerprint": "5d3e714e09632681",
+  "command": [
+    "lake",
+    "env",
+    "lean",
+    "-j2",
+    "/home/yijunyuan/ageo-workspace/.archon-horizon/runs/0012/sessions/0002-horizon-A8-SCHUR/AxiomAudit.lean"
+  ],
+  "cwd": "ArakelovGeometry",
+  "status": "passed",
+  "ok": true,
+  "returncode": 0,
+  "timed_out": false,
+  "reused": false,
+  "wait_seconds": 0.0,
+  "duration_seconds": 23.067,
+  "started_at": "2026-11-11T04:17:45.423594+00:00",
+  "finished_at": "2026-11-11T04:18:08.490920+00:00",
+  "finished_epoch": 1794370688.49092
+}

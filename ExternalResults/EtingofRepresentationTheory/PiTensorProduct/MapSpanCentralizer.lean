@@ -128,13 +128,6 @@ private lemma tensorPower_add_smul_id_expansion
   ext1 S
   exact map_piecewise_smul_factor n f t S
 
-omit [Infinite k] [Module.Finite k V] in
-private lemma piecewise_univ_eq (f : Module.End k V) :
-    (fun i => ((Finset.univ : Finset (Fin n)).piecewise
-      (fun _ => f) (fun _ => LinearMap.id) i)) = (fun _ => f) := by
-  ext i
-  simp [Finset.mem_univ]
-
 omit [Infinite k] in
 private lemma lagrange_eval_zero_pow
     (v : Fin (n + 1) → k) (hv : Function.Injective v)
