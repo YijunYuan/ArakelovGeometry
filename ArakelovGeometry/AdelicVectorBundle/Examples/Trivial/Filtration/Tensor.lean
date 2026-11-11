@@ -11,6 +11,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.BidualHN
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Quotient
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Dual
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.PairNorm
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.Domination
 
 /-!
 # Actual epsilon tensor norms and trivial-place filtrations
@@ -330,5 +331,130 @@ theorem trivialTensorQuotientGradedMap_surjective
     (η.trivialFiltration_eq_span_neg_log_of_adapted c hη hc) γ
 
 end
+
+section FiniteFamily
+
+variable {K : Type*} [Field K] {J : Type*} [Fintype J] {M : J → Type*}
+  [∀ j, AddCommGroup (M j)] [∀ j, Module K (M j)]
+  [∀ j, FiniteDimensional K (M j)]
+  (ν : ∀ j, NormFamily (singleTrivialPlace K) (M j))
+
+/-- The existing finite epsilon norm has the pure-tensor product bound at the trivial place. -/
+theorem trivialSeminorm_injectiveTensor_tprod_le (x : ∀ j, M j) :
+    (injectiveTensor ν).trivialSeminorm (⨂ₜ[K] j, x j) ≤ ∏ j, (ν j).trivialSeminorm (x j) := by
+  classical
+  simp only [trivialSeminorm_apply]
+  exact (injectiveTensor_norm_le_projectiveTensor_norm ν PUnit.unit _).trans
+    (projectiveTensor_norm_rational_tprod_le ν x PUnit.unit)
+
+variable {κ : J → Type*} [∀ j, Finite (κ j)] (b : ∀ j, Basis (κ j) K (M j))
+
+/-- Each nonzero tuple coordinate bounds the actual finite epsilon norm from below. -/
+theorem trivialSeminorm_injectiveTensor_coordinate_le
+    (hb : ∀ j x i, (b j).repr x i ≠ 0 →
+      (ν j).trivialSeminorm (b j i) ≤ (ν j).trivialSeminorm x)
+    (x : ⨂[K] j, M j) (p : ∀ j, κ j) (hp : (Basis.piTensorProduct b).repr x p ≠ 0) :
+    (∏ j, (ν j).trivialSeminorm (b j (p j))) ≤ (injectiveTensor ν).trivialSeminorm x := by
+  classical
+  let C := (AbsoluteValue.trivial : AbsoluteValue K ℝ).Completion
+  let r := fun j ↦ (ν j).trivialSeminorm (b j (p j))
+  have hr (j : J) : 0 < r j := by
+    rw [show r j = (ν j).trivialSeminorm (b j (p j)) from rfl, trivialSeminorm_apply]
+    exact (ν j).norm_rational_pos PUnit.unit ((b j).ne_zero _)
+  let : ∀ j, Fintype (κ j) := fun j ↦ Fintype.ofFinite (κ j)
+  have hd (j : J) : (ν j).dual.trivialSeminorm ((b j).dualBasis (p j)) ≤ (r j)⁻¹ := by
+    simpa only [Basis.coe_dualBasis] using
+      (ν j).trivialSeminorm_dual_le_inv_of_ge_away_kernel ((b j).coord (p j)) (hr j) (hb j · _)
+  have he := norm_tensor_coordinate_le_injective b ν PUnit.unit p ((1 : C) ⊗ₜ[K] x)
+  change ‖((Basis.piTensorProduct b).baseChange C).equivFun ((1 : C) ⊗ₜ[K] x) p‖ ≤ _ at he
+  rw [Basis.equivFun_apply, Basis.baseChange_repr_tmul, Algebra.smul_def, mul_one,
+    norm_trivialCompletion K, trivialCompletionAlgEquiv_algebraMap,
+    AbsoluteValue.trivial_apply hp] at he
+  change 1 ≤ (∏ j, (ν j).dual.trivialSeminorm ((b j).dualBasis (p j))) *
+    (injectiveTensor ν).trivialSeminorm x at he
+  have hdprod : (∏ j, (ν j).dual.trivialSeminorm ((b j).dualBasis (p j))) ≤
+      ∏ j, (r j)⁻¹ :=
+    Finset.prod_le_prod₀ (fun j _ ↦ apply_nonneg _ _) (fun j _ ↦ hd j)
+  have hbound := he.trans (mul_le_mul_of_nonneg_right hdprod
+    (apply_nonneg (injectiveTensor ν).trivialSeminorm x))
+  rw [Finset.prod_inv_distrib] at hbound
+  have hprod : 0 < ∏ j, r j := Finset.prod_pos (fun j _ ↦ hr j)
+  have hm := mul_le_mul_of_nonneg_left hbound hprod.le
+  simpa only [mul_one, ← mul_assoc, mul_inv_cancel₀ hprod.ne', one_mul] using hm
+
+/-- Finite-family epsilon balls are tensor-basis spans with the original sums of weights. -/
+theorem trivialFiltration_injectiveTensor_eq_span
+    (hν : ∀ j, (ν j).IsUltrametric)
+    (hb : ∀ j t x, x ∈ (ν j).trivialFiltration (hν j) t ↔
+      ∀ i, (b j).repr x i ≠ 0 → b j i ∈ (ν j).trivialFiltration (hν j) t) (γ : ℝ) :
+    (injectiveTensor ν).trivialFiltration (injectiveTensor_isUltrametric ν) γ =
+      Submodule.span K (Basis.piTensorProduct b ''
+        {p | γ ≤ ∑ j, -Real.log ((ν j).trivialSeminorm (b j (p j)))}) := by
+  classical
+  have hrad (p : ∀ j, κ j) :
+      Real.exp (-(∑ j, -Real.log ((ν j).trivialSeminorm (b j (p j))))) =
+        ∏ j, (ν j).trivialSeminorm (b j (p j)) := by
+    rw [Finset.sum_neg_distrib, neg_neg, Real.exp_sum]
+    apply Finset.prod_congr rfl
+    intro j _
+    apply Real.exp_log
+    rw [trivialSeminorm_apply]
+    exact (ν j).norm_rational_pos PUnit.unit ((b j).ne_zero _)
+  apply le_antisymm
+  · intro x hx
+    apply (Basis.piTensorProduct b).mem_span_image.mpr
+    intro p hp
+    have hl := trivialSeminorm_injectiveTensor_coordinate_le ν b
+      (fun j ↦ (ν j).trivialSeminorm_basis_le_of_adapted (b j) (hν j) (hb j))
+      x p (Finsupp.mem_support_iff.mp hp)
+    rw [← hrad] at hl
+    exact neg_le_neg_iff.mp (Real.exp_le_exp.mp (hl.trans hx))
+  · apply Submodule.span_le.mpr
+    rintro _ ⟨p, hp, rfl⟩
+    change (injectiveTensor ν).trivialSeminorm (Basis.piTensorProduct b p) ≤ Real.exp (-γ)
+    rw [Basis.piTensorProduct_apply]
+    apply (trivialSeminorm_injectiveTensor_tprod_le ν _).trans
+    rw [← hrad]
+    exact Real.exp_le_exp.mpr (neg_le_neg hp)
+
+/-- The existing finite-family epsilon norm realizes the intrinsic convolution on all tuples. -/
+theorem trivialFiltration_injectiveTensor
+    (hν : ∀ j, (ν j).IsUltrametric) (γ : ℝ) :
+    (injectiveTensor ν).trivialFiltration (injectiveTensor_isUltrametric ν) γ =
+      Submodule.piTensorFiltration (fun j ↦ (ν j).trivialFiltration (hν j)) γ := by
+  classical
+  choose b hb using fun j ↦ (ν j).exists_basis_adapted_trivialFiltration (hν j)
+  rw [trivialFiltration_injectiveTensor_eq_span ν b hν hb]
+  exact (Submodule.piTensorFiltration_eq_span b _
+    (fun j ↦ (ν j).trivialFiltration_eq_span_neg_log_of_adapted (b j) (hν j) (hb j)) γ).symm
+
+omit [∀ j, Finite (κ j)] in
+/-- Any prescribed adapted factor weights give the same original sums in the actual epsilon ball. -/
+theorem trivialFiltration_injectiveTensor_eq_span_of_weights
+    (hν : ∀ j, (ν j).IsUltrametric) (w : ∀ j, κ j → ℝ)
+    (hF : ∀ j t, (ν j).trivialFiltration (hν j) t =
+      Submodule.span K (b j '' {i | t ≤ w j i})) (γ : ℝ) :
+    (injectiveTensor ν).trivialFiltration (injectiveTensor_isUltrametric ν) γ =
+      Submodule.span K (Basis.piTensorProduct b '' {p | γ ≤ ∑ j, w j (p j)}) := by
+  rw [trivialFiltration_injectiveTensor ν hν]
+  exact Submodule.piTensorFiltration_eq_span b w hF γ
+
+omit [∀ j, Finite (κ j)] in
+/-- Actual quotient epsilon balls retain tuple weights and allow their images to vanish. -/
+theorem trivialFiltration_pushforward_injectiveTensor_eq_span_of_weights
+    {Q : Type*} [AddCommGroup Q] [Module K Q]
+    (hν : ∀ j, (ν j).IsUltrametric) (w : ∀ j, κ j → ℝ)
+    (hF : ∀ j t, (ν j).trivialFiltration (hν j) t =
+      Submodule.span K (b j '' {i | t ≤ w j i}))
+    (q : (⨂[K] j, M j) →ₗ[K] Q) (hq : Function.Surjective q) (γ : ℝ) :
+    ((injectiveTensor ν).pushforward q hq).trivialFiltration
+      ((injectiveTensor_isUltrametric ν).pushforward q hq) γ =
+      Submodule.span K ((fun p ↦ q (Basis.piTensorProduct b p)) ''
+        {p | γ ≤ ∑ j, w j (p j)}) := by
+  rw [trivialFiltration_pushforward _ (injectiveTensor_isUltrametric ν),
+    trivialFiltration_injectiveTensor_eq_span_of_weights ν b hν w hF,
+    Submodule.map_span, Set.image_image]
+
+end FiniteFamily
 
 end ArakelovGeometry.NormFamily
