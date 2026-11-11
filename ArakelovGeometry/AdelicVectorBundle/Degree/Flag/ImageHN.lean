@@ -203,7 +203,8 @@ theorem imageFlagQuotientMap_surjective (f : ∀ i, D i →ₗ[K] Q) (i : Fin n)
   apply (Submodule.Quotient.eq _).mpr
   change f i y - (x : Q) ∈ imageFlag f i.castSucc
   rw [← hab]
-  convert (imageFlag f i.castSucc).neg_mem ha using 1 <;> abel
+  convert (imageFlag f i.castSucc).neg_mem ha using 1
+  abel
 
 end Submodule
 
@@ -255,6 +256,7 @@ section ImageFlag
 variable {n : ℕ} {D : Fin n → Type*} [∀ i, AddCommGroup (D i)]
   [∀ i, Module K (D i)] [∀ i, FiniteDimensional K (D i)]
 
+omit [S.IsProper] in
 /-- The newly adjoined source contracts onto the actual adjacent image-flag
 quotient, with the norms inherited from the original target bundle. -/
 theorem imageFlagQuotientMap_norm_le
@@ -272,10 +274,10 @@ theorem imageFlagQuotientMap_norm_le
   have he := DFunLike.congr_fun
     (congrArg (fun g ↦ g.baseChange (S.ϕ ω).Completion) hc) z
   simp only [LinearMap.baseChange_comp, LinearMap.comp_apply] at he
-  change ((W.toNormFamily.restrict (Submodule.imageFlag f i.succ)).quotient _).norm ω
-    (((_).mkQ.comp (Submodule.imageFlagStep f i)).baseChange (S.ϕ ω).Completion z) ≤ _
-  simp only [LinearMap.baseChange_comp, LinearMap.comp_apply]
-  apply ((W.toNormFamily.restrict (Submodule.imageFlag f i.succ)).quotient_norm_mk_le _ ω _).trans
+  dsimp only [Submodule.imageFlagQuotientMap]
+  rw [LinearMap.baseChange_comp, LinearMap.comp_apply]
+  apply ((W.toNormFamily.restrict (Submodule.imageFlag f i.succ)).quotient_norm_mk_le
+    ((Submodule.imageFlag f i.castSucc).comap (Submodule.imageFlag f i.succ).subtype) ω _).trans
   simpa only [NormFamily.restrict_norm, he] using hf i ω z
 
 /-- The componentwise form of Bost Lemma 7.1: finitely many zero or semistable
@@ -314,7 +316,10 @@ theorem degree_ge_of_same_slope_spanning_contractions
       ((F i.succ) ⧸ (F i.castSucc).comap (F i.succ).subtype)) = Module.finrank K Q := by
     have h := Submodule.card_flag_quotient_basis F (fun i ↦ Module.finBasis K
       ((F i.succ) ⧸ (F i.castSucc).comap (F i.succ).subtype)) hF hzero
-    simpa only [Fintype.card_sigma, Fintype.card_fin, htop, finrank_top] using h
+    have ht : Module.finrank K (F (Fin.last n)) = Module.finrank K Q := by
+      rw [htop, finrank_top]
+    refine Eq.trans ?_ ht
+    simpa only [Fintype.card_sigma, Fintype.card_fin] using h
   calc
     _ = ∑ i : Fin n, a * (Module.finrank K
         ((F i.succ) ⧸ (F i.castSucc).comap (F i.succ).subtype) : ℝ) := by
