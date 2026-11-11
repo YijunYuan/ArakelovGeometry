@@ -187,3 +187,107 @@ theorem piTensor_image_binary_baseChange
 end BinaryBaseChange
 
 end Submodule
+
+namespace Submodule
+
+section BinaryRationality
+
+universe u
+
+variable {K L : Type*} [Field K] [Field L] [Algebra K L]
+  [CharZero K] [Algebra.IsAlgebraic K L] [IsAlgClosed L]
+  {E V : Type u} {Q : Type*}
+  [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  [AddCommGroup V] [Module K V] [FiniteDimensional K V]
+  [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
+
+/-- Binary rationality needed on page 31 of `bost.pdf`: any actual centered negative
+pair for the scalar extension of a surjective positive-rank quotient produces an
+actual centered negative pair over the original characteristic-zero field, with
+unit total self-pairing. The extension is algebraic and algebraically closed,
+possibly of infinite degree; weights remain real. Galois invariance is derived
+from the unique global optimizer over `L`, and is not an input. This specializes
+the rationality part of CM optimal instability to the binary Bost consumer:
+geometric instability producing negativity and the variational inequality are
+not assumed or proved here, and descended global optimality is not asserted. -/
+theorem exists_centered_negative_tensor_filtrations_of_baseChange
+    (q : E ⊗[K] V →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)
+    (F₀ : ℝ → Submodule L (L ⊗[K] E)) (G₀ : ℝ → Submodule L (L ⊗[K] V))
+    (hF₀ : Antitone F₀ ∧ (∃ t, F₀ t = ⊥) ∧ (∃ t, F₀ t = ⊤) ∧
+      (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F₀ s = F₀ t) ∧
+      filtrationExpectation F₀ = 0)
+    (hG₀ : Antitone G₀ ∧ (∃ t, G₀ t = ⊥) ∧ (∃ t, G₀ t = ⊤) ∧
+      (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → G₀ s = G₀ t) ∧
+      filtrationExpectation G₀ = 0)
+    (hneg₀ : filtrationExpectation
+      (fun t ↦ (tensorFiltration F₀ G₀ t).map (tensorQuotientBaseChange q)) < 0) :
+    ∃ (P : ℝ → Submodule K E) (R : ℝ → Submodule K V),
+      (Antitone P ∧ (∃ t, P t = ⊥) ∧ (∃ t, P t = ⊤) ∧
+        (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → P s = P t) ∧
+        filtrationExpectation P = 0) ∧
+      (Antitone R ∧ (∃ t, R t = ⊥) ∧ (∃ t, R t = ⊤) ∧
+        (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → R s = R t) ∧
+        filtrationExpectation R = 0) ∧
+      filtrationPairing P P + filtrationPairing R R = 1 ∧
+      filtrationExpectation (fun t ↦ (tensorFiltration P R t).map q) < 0 := by
+  let A := BinaryTensorFactors E V
+  let e := binaryTensorEquiv K A
+  let q' := q.comp e.toLinearMap
+  have hprod : 0 < finrank K E * finrank K V := by
+    rw [← Module.finrank_tensorProduct]
+    exact hQ.trans_le (LinearMap.finrank_le_finrank_of_surjective q hq)
+  have ha : ∀ i, 0 < finrank K (A i) := by
+    rintro (⟨⟩ | ⟨⟩)
+    · exact Nat.pos_of_mul_pos_right hprod
+    · exact Nat.pos_of_mul_pos_left hprod
+  let F : ∀ i, ℝ → Submodule L (L ⊗[K] A i) := fun i ↦ match i with
+    | .inl _ => F₀
+    | .inr _ => G₀
+  have hnegF : filtrationExpectation (fun t ↦
+      (piTensorFiltration F t).map (piTensorQuotientBaseChange q')) < 0 := by
+    change filtrationExpectation (fun t ↦ (piTensorFiltration F t).map
+      (piTensorQuotientBaseChange (q.comp (binaryTensorEquiv K A).toLinearMap))) < 0
+    simp_rw [piTensor_image_binary_baseChange q F]
+    exact hneg₀
+  obtain ⟨P, hP, hPE, hnegP, hstable⟩ :=
+    exists_galois_stable_normalized_negative_family q' (hq.comp e.surjective) ha F
+      (by
+        rintro (⟨⟩ | ⟨⟩)
+        · exact hF₀
+        · exact hG₀) hnegF
+  let D : ∀ i, ℝ → Submodule K (A i) := fun i t ↦ rationalPart (P i t)
+  have hD i := finite_filtration_rationalPart (P i) (hP i).1 (hP i).2.1
+    (hP i).2.2.1 (hP i).2.2.2.1 (hstable i)
+  have he i : (fun t ↦ (D i t).baseChange L) = P i := funext (hD i).1
+  have hDc i : Antitone (D i) ∧ (∃ t, D i t = ⊥) ∧ (∃ t, D i t = ⊤) ∧
+      (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → D i s = D i t) ∧
+      filtrationExpectation (D i) = 0 := by
+    refine ⟨(hD i).2.1, (hD i).2.2.1, (hD i).2.2.2.1, (hD i).2.2.2.2, ?_⟩
+    rw [← filtrationExpectation_baseChange (L := L) (D i) (hD i).2.1
+      (hD i).2.2.1 (hD i).2.2.2.1 (hD i).2.2.2.2, he]
+    exact (hP i).2.2.2.2
+  have hDe : (∑ i, filtrationPairing (D i) (D i)) = 1 := by
+    calc
+      _ = ∑ i, filtrationPairing (P i) (P i) := by
+        apply Finset.sum_congr rfl
+        intro i _
+        rw [← filtrationPairing_baseChange (L := L) (D i) (D i)
+          (hD i).2.1 (hD i).2.2.1 (hD i).2.2.2.1 (hD i).2.2.2.2
+          (hD i).2.1 (hD i).2.2.1 (hD i).2.2.2.1 (hD i).2.2.2.2, he]
+      _ = 1 := hPE
+  have hDn : filtrationExpectation (fun t ↦ (piTensorFiltration D t).map q') < 0 := by
+    rw [← filtrationExpectation_piTensor_image_baseChange (L := L) D
+      (fun i ↦ (hD i).2) q' (hq.comp e.surjective)]
+    have he' : (fun i t ↦ (D i t).baseChange L) = P := funext he
+    rw [he']
+    exact hnegP
+  refine ⟨D (.inl ()), D (.inr ()), hDc (.inl ()), hDc (.inr ()), ?_, ?_⟩
+  · simpa only [Fintype.sum_sum_type, Fintype.sum_unique] using hDe
+  · change filtrationExpectation (fun t ↦ (piTensorFiltration D t).map
+      (q.comp (binaryTensorEquiv K A).toLinearMap)) < 0 at hDn
+    simp_rw [map_comp, piTensorFiltration_map_binaryTensorEquiv] at hDn
+    exact hDn
+
+end BinaryRationality
+
+end Submodule
