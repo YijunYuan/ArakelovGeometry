@@ -477,4 +477,89 @@ def orthogonalTensorPairDualIsometry
 
 end NormFamily
 
+namespace NormFamily
+
+section Grouping
+
+universe u v w wι
+
+attribute [-instance] PiTensorProduct.instSeminormedAddCommGroup
+  PiTensorProduct.instNormedSpace
+
+variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+  {I J : Type wι} [Fintype I] [Fintype J] {V : I ⊕ J → Type w}
+  [∀ i, AddCommGroup (V i)] [∀ i, Module K (V i)]
+  [∀ i, FiniteDimensional K (V i)]
+
+/-- Joining two finite groups is isometric on arbitrary completed archimedean vectors. -/
+theorem orthogonalTensor_norm_tmulEquivDep_of_infinite
+    (ξ : ∀ i, NormFamily S (V i))
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hξ : ∀ i, (ξ i).IsHermitian hN) (ω : S.Ω) (hω : ω ∈ S.Ωinf)
+    (z : (S.ϕ ω).Completion ⊗[K]
+      ((⨂[K] i, V (.inl i)) ⊗[K] (⨂[K] j, V (.inr j)))) :
+    (orthogonalTensor ξ hN hξ).norm ω
+      ((PiTensorProduct.tmulEquivDep K V).toLinearMap.baseChange (S.ϕ ω).Completion z) =
+    ((orthogonalTensor (fun i ↦ ξ (.inl i)) hN (fun i ↦ hξ (.inl i))).orthogonalTensorPair
+      (orthogonalTensor (fun j ↦ ξ (.inr j)) hN (fun j ↦ hξ (.inr j))) hN
+      (orthogonalTensor_isHermitian _ _ _) (orthogonalTensor_isHermitian _ _ _)).norm ω z := by
+  let L := (S.ϕ ω).Completion
+  let := hN ω hω
+  let := IsRCLikeNormedField.rclike L
+  let X i := L ⊗[K] V i
+  let : ∀ i, NormedAddCommGroup (X i) := fun i ↦ (ξ i).fibreNormedAddCommGroup ω
+  let : ∀ i, NormedSpace L (X i) := fun i ↦ (ξ i).fibreNormedSpace ω
+  let : ∀ i, InnerProductSpace L (X i) := fun i ↦ (hξ i).fibreInnerProductSpace ω hω
+  let b := fun i ↦ stdOrthonormalBasis L (X i)
+  let ξl := orthogonalTensor (fun i ↦ ξ (.inl i)) hN (fun i ↦ hξ (.inl i))
+  let ξr := orthogonalTensor (fun j ↦ ξ (.inr j)) hN (fun j ↦ hξ (.inr j))
+  let hl := orthogonalTensor_isHermitian (fun i ↦ ξ (.inl i)) hN (fun i ↦ hξ (.inl i))
+  let hr := orthogonalTensor_isHermitian (fun j ↦ ξ (.inr j)) hN (fun j ↦ hξ (.inr j))
+  let := ξl.fibreNormedAddCommGroup ω
+  let := ξl.fibreNormedSpace ω
+  let := hl.fibreInnerProductSpace ω hω
+  let := ξr.fibreNormedAddCommGroup ω
+  let := ξr.fibreNormedSpace ω
+  let := hr.fibreInnerProductSpace ω hω
+  let := orthogonalTensorNormedAddCommGroup (fun i ↦ b (.inl i))
+  let := orthogonalTensorNormedSpace (fun i ↦ b (.inl i))
+  let := orthogonalTensorInnerProductSpace (fun i ↦ b (.inl i))
+  let := orthogonalTensorNormedAddCommGroup (fun j ↦ b (.inr j))
+  let := orthogonalTensorNormedSpace (fun j ↦ b (.inr j))
+  let := orthogonalTensorInnerProductSpace (fun j ↦ b (.inr j))
+  let el : (L ⊗[K] (⨂[K] i, V (.inl i))) ≃ₗᵢ[L] (⨂[L] i, X (.inl i)) :=
+    { toLinearEquiv := tensorBaseChangeEquiv K L (fun i ↦ V (.inl i))
+      norm_map' := fun x ↦ by
+        change ArakelovGeometry.orthogonalTensorSeminorm (fun i ↦ b (.inl i))
+          (tensorBaseChangeEquiv K L (fun i ↦ V (.inl i)) x) = ξl.norm ω x
+        exact (orthogonalTensor_norm_of_infinite
+          (fun i ↦ ξ (.inl i)) hN (fun i ↦ hξ (.inl i)) ω hω x).symm }
+  let er : (L ⊗[K] (⨂[K] j, V (.inr j))) ≃ₗᵢ[L] (⨂[L] j, X (.inr j)) :=
+    { toLinearEquiv := tensorBaseChangeEquiv K L (fun j ↦ V (.inr j))
+      norm_map' := fun x ↦ by
+        change ArakelovGeometry.orthogonalTensorSeminorm (fun j ↦ b (.inr j))
+          (tensorBaseChangeEquiv K L (fun j ↦ V (.inr j)) x) = ξr.norm ω x
+        exact (orthogonalTensor_norm_of_infinite
+          (fun j ↦ ξ (.inr j)) hN (fun j ↦ hξ (.inr j)) ω hω x).symm }
+  let A := TensorProduct.AlgebraTensorModule.distribBaseChange K L
+    (⨂[K] i, V (.inl i)) (⨂[K] j, V (.inr j))
+  rw [orthogonalTensor_norm_of_infinite _ _ _ ω hω,
+    orthogonalTensorPair_norm_eq_hilbert _ _ _ _ _ ω hω]
+  change ArakelovGeometry.orthogonalTensorSeminorm b
+    (tensorBaseChangeEquiv K L V _) = ‖A z‖
+  rw [tensorBaseChangeEquiv_tmulEquivDep]
+  have hg := orthogonalTensorSeminorm_tmulEquivDep_symm b
+    (PiTensorProduct.tmulEquivDep L X
+      ((TensorProduct.congr el.toLinearEquiv er.toLinearEquiv) (A z)))
+  rw [LinearEquiv.symm_apply_apply] at hg
+  change ArakelovGeometry.orthogonalTensorSeminorm b
+    (PiTensorProduct.tmulEquivDep L X
+      ((TensorProduct.congr el.toLinearEquiv er.toLinearEquiv) (A z))) = ‖A z‖
+  rw [← hg]
+  exact (TensorProduct.congrIsometry el er).norm_map (A z)
+
+end Grouping
+
+end NormFamily
+
 end ArakelovGeometry
