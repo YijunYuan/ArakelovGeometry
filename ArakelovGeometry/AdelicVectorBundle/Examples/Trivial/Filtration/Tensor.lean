@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.LinearAlgebra.Filtration.TensorGraded
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.AdaptedBasis
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.BidualHN
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Quotient
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Dual
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.PairNorm
 
@@ -20,7 +21,7 @@ Single adapted bases in the two factors suffice.
 
 @[expose] public section
 
-open scoped TensorProduct
+open scoped TensorProduct DirectSum
 open Module
 
 namespace ArakelovGeometry.NormFamily
@@ -215,6 +216,118 @@ theorem trivialFiltration_injectiveTensorPair
     rw [Real.log_mul hbi.ne' hcj.ne', Real.log_exp] at hlog
     linarith
   · exact ξ.tensorFiltration_le_trivialFiltration_injectiveTensorPair η hξ hη γ
+
+/-- The tensor basis retains the sums of the two original logarithmic weights. -/
+theorem trivialFiltration_injectiveTensorPair_eq_span
+    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric)
+    (hb : ∀ t x, x ∈ ξ.trivialFiltration hξ t ↔
+      ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration hξ t)
+    (hc : ∀ t y, y ∈ η.trivialFiltration hη t ↔
+      ∀ j, c.repr y j ≠ 0 → c j ∈ η.trivialFiltration hη t) (γ : ℝ) :
+    (ξ.injectiveTensorPair η).trivialFiltration (ξ.injectiveTensorPair_isUltrametric η) γ =
+      Submodule.span K ((b.tensorProduct c) '' {ij |
+        γ ≤ -Real.log (ξ.trivialSeminorm (b ij.1)) +
+          -Real.log (η.trivialSeminorm (c ij.2))}) := by
+  rw [ξ.trivialFiltration_injectiveTensorPair η hξ hη]
+  exact Submodule.tensorFiltration_eq_span_tensorProduct b c _ _
+    (ξ.trivialFiltration_eq_span_neg_log_of_adapted b hξ hb)
+    (η.trivialFiltration_eq_span_neg_log_of_adapted c hη hc) γ
+
+/-- The actual epsilon norm is the coordinate maximum of the products of the original radii. -/
+theorem trivialSeminorm_injectiveTensorPair_eq_sup
+    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric)
+    (hb : ∀ t x, x ∈ ξ.trivialFiltration hξ t ↔
+      ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration hξ t)
+    (hc : ∀ t y, y ∈ η.trivialFiltration hη t ↔
+      ∀ j, c.repr y j ≠ 0 → c j ∈ η.trivialFiltration hη t) (x : E ⊗[K] V) :
+    (ξ.injectiveTensorPair η).trivialSeminorm x =
+      ((((b.tensorProduct c).repr x).support.sup fun ij ↦
+        ⟨ξ.trivialSeminorm (b ij.1) * η.trivialSeminorm (c ij.2),
+          mul_nonneg (apply_nonneg _ _) (apply_nonneg _ _)⟩ : NNReal) : ℝ) := by
+  classical
+  let s := ((b.tensorProduct c).repr x).support
+  let f : ι × κ → NNReal := fun ij ↦
+    ⟨ξ.trivialSeminorm (b ij.1) * η.trivialSeminorm (c ij.2),
+      mul_nonneg (apply_nonneg _ _) (apply_nonneg _ _)⟩
+  let M := s.sup f
+  have hl : M ≤ (⟨(ξ.injectiveTensorPair η).trivialSeminorm x,
+      apply_nonneg _ _⟩ : NNReal) := by
+    apply Finset.sup_le
+    intro ij hij
+    exact ξ.trivialSeminorm_injectiveTensorPair_coordinate_le η b c
+      (ξ.trivialSeminorm_basis_le_of_adapted b hξ hb)
+      (η.trivialSeminorm_basis_le_of_adapted c hη hc) x ij.1 ij.2
+      (Finsupp.mem_support_iff.mp hij)
+  apply le_antisymm _ (show (M : ℝ) ≤ (ξ.injectiveTensorPair η).trivialSeminorm x from hl)
+  by_cases hx : x = 0
+  · subst x
+    rw [map_zero]
+    exact M.property
+  have hs : s.Nonempty := Finsupp.support_nonempty_iff.mpr
+    (fun h ↦ hx ((b.tensorProduct c).repr.map_eq_zero_iff.mp h))
+  obtain ⟨ij, hij⟩ := hs
+  have hbi : 0 < ξ.trivialSeminorm (b ij.1) := by
+    rw [trivialSeminorm_apply]
+    exact ξ.norm_rational_pos PUnit.unit (b.ne_zero ij.1)
+  have hcj : 0 < η.trivialSeminorm (c ij.2) := by
+    rw [trivialSeminorm_apply]
+    exact η.norm_rational_pos PUnit.unit (c.ne_zero ij.2)
+  have hM : 0 < (M : ℝ) := (mul_pos hbi hcj).trans_le
+    (show (f ij : ℝ) ≤ (M : ℝ) from Finset.le_sup (f := f) hij)
+  have hxball : x ∈ (ξ.injectiveTensorPair η).trivialFiltration
+      (ξ.injectiveTensorPair_isUltrametric η) (-Real.log M) := by
+    apply (Submodule.span_le.mpr ?_) ((b.tensorProduct c).mem_span_repr_support x)
+    rintro _ ⟨ij, hij, rfl⟩
+    change (ξ.injectiveTensorPair η).trivialSeminorm ((b.tensorProduct c) ij) ≤
+      Real.exp (-(-Real.log M))
+    rw [Basis.tensorProduct_apply', neg_neg, Real.exp_log hM]
+    exact (ξ.trivialSeminorm_injectiveTensorPair_tmul_le η _ _).trans
+      (show (f ij : ℝ) ≤ (M : ℝ) from Finset.le_sup (f := f) hij)
+  simpa only [mem_trivialFiltration, neg_neg, Real.exp_log hM] using hxball
+
+/-- The actual quotient of the epsilon norm has the image of the original tensor filtration. -/
+theorem trivialFiltration_pushforward_injectiveTensorPair
+    {Q : Type*} [AddCommGroup Q] [Module K Q]
+    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric)
+    (q : E ⊗[K] V →ₗ[K] Q) (hq : Function.Surjective q) (γ : ℝ) :
+    ((ξ.injectiveTensorPair η).pushforward q hq).trivialFiltration
+      ((ξ.injectiveTensorPair_isUltrametric η).pushforward q hq) γ =
+      (Submodule.tensorFiltration (ξ.trivialFiltration hξ) (η.trivialFiltration hη) γ).map q := by
+  rw [trivialFiltration_pushforward _ (ξ.injectiveTensorPair_isUltrametric η),
+    trivialFiltration_injectiveTensorPair ξ η hξ hη]
+
+/-- The canonical map from all pair grades to the grade of the actual quotient epsilon norm. -/
+noncomputable def trivialTensorQuotientGradedMap
+    {Q : Type*} [AddCommGroup Q] [Module K Q]
+    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric)
+    (q : E ⊗[K] V →ₗ[K] Q) (hq : Function.Surjective q) (γ : ℝ) :
+    (⨁ p : {p : ℝ × ℝ // p.1 + p.2 = γ},
+      Submodule.FiltrationGraded (ξ.trivialFiltration hξ) p.val.1 ⊗[K]
+        Submodule.FiltrationGraded (η.trivialFiltration hη) p.val.2) →ₗ[K]
+      Submodule.FiltrationGraded
+        (((ξ.injectiveTensorPair η).pushforward q hq).trivialFiltration
+          ((ξ.injectiveTensorPair_isUltrametric η).pushforward q hq)) γ :=
+  (Submodule.filtrationGradedMap q (fun t ↦ by
+    rw [ξ.trivialFiltration_pushforward_injectiveTensorPair η hξ hη q hq t]
+    exact Submodule.le_comap_map _ _) γ).comp
+      (Submodule.tensorFiltrationGradedSum (ξ.antitone_trivialFiltration hξ)
+        (η.antitone_trivialFiltration hη) γ)
+
+/-- The canonical map to an actual quotient-norm grade is surjective without removing collisions. -/
+theorem trivialTensorQuotientGradedMap_surjective
+    {Q : Type*} [AddCommGroup Q] [Module K Q]
+    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric)
+    (q : E ⊗[K] V →ₗ[K] Q) (hq : Function.Surjective q) (γ : ℝ) :
+    Function.Surjective (ξ.trivialTensorQuotientGradedMap η hξ hη q hq γ) := by
+  obtain ⟨b, hb⟩ := ξ.exists_basis_adapted_trivialFiltration hξ
+  obtain ⟨c, hc⟩ := η.exists_basis_adapted_trivialFiltration hη
+  apply Function.Surjective.comp
+    (Submodule.filtrationGradedMap_surjective q _ γ
+      (ξ.trivialFiltration_pushforward_injectiveTensorPair η hξ hη q hq γ).symm)
+  exact Submodule.tensorFiltrationGradedSum_surjective b c _ _
+    (ξ.antitone_trivialFiltration hξ) (η.antitone_trivialFiltration hη)
+    (ξ.trivialFiltration_eq_span_neg_log_of_adapted b hξ hb)
+    (η.trivialFiltration_eq_span_neg_log_of_adapted c hη hc) γ
 
 end
 
