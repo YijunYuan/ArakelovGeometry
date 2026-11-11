@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian
 public import ArakelovGeometry.Analysis.Tensor.HermitianDual
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.DualNorm
+import ArakelovGeometry.AdelicVectorBundle.Tensor.PairMap
 import ArakelovGeometry.Analysis.ScalarExtension.Hermitian.Tensor
 import Mathlib.Analysis.Normed.Group.Ultra
 
@@ -138,6 +139,33 @@ theorem tensorBaseChangeEquiv_tmulEquivDep
   exact LinearMap.congr_fun h z
 
 end GroupingBaseChange
+
+section BinaryCoherenceBaseChange
+
+variable (K L : Type*) [Field K] [Field L] [Algebra K L]
+  (E F : Type*) [AddCommGroup E] [Module K E] [AddCommGroup F] [Module K F]
+
+/-- Binary symmetry commutes with the canonical completed tensor identification. -/
+theorem tensorBaseChangeEquiv_comm (z : L ⊗[K] (E ⊗[K] F)) :
+    TensorProduct.AlgebraTensorModule.distribBaseChange K L F E
+      ((TensorProduct.comm K E F).toLinearMap.baseChange L z) =
+    TensorProduct.comm L (L ⊗[K] E) (L ⊗[K] F)
+      (TensorProduct.AlgebraTensorModule.distribBaseChange K L E F z) := by
+  induction z using TensorProduct.inductionOn with
+  | add z t hz ht => simp only [map_add, hz, ht]
+  | tmul a z =>
+    induction z using TensorProduct.inductionOn with
+    | add x y hx hy => simp only [TensorProduct.tmul_add, map_add, hx, hy]
+    | tmul x y =>
+      simp only [LinearMap.baseChange_tmul, LinearEquiv.coe_coe, TensorProduct.comm_tmul,
+        TensorProduct.AlgebraTensorModule.distribBaseChange_tmul]
+      have ha (v : E) : a ⊗ₜ[K] v = a • (1 ⊗ₜ[K] v) := by
+        rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one]
+      have hb (v : F) : a ⊗ₜ[K] v = a • (1 ⊗ₜ[K] v) := by
+        rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one]
+      rw [ha, hb, TensorProduct.smul_tmul, TensorProduct.tmul_smul]
+
+end BinaryCoherenceBaseChange
 
 namespace NormFamily
 
