@@ -219,6 +219,45 @@ theorem injectiveTensor_dual_eq_sSup_of_ultrametric
 
 end UltrametricDual
 
+section InjectiveGrouping
+
+variable {k I J : Type*} [NormedField k] [Fintype I] [Fintype J]
+  {V : I ⊕ J → Type*} [∀ i, NormedAddCommGroup (V i)] [∀ i, NormedSpace k (V i)]
+
+/-- Product evaluation factors through canonical grouping, on arbitrary group tensors. -/
+theorem tensorDualEval_tmulEquivDep (φ : ∀ i, Module.Dual k (V i))
+    (x : ⨂[k] i, V (.inl i)) (y : ⨂[k] j, V (.inr j)) :
+    tensorDualEval φ (PiTensorProduct.tmulEquivDep k V (x ⊗ₜ[k] y)) =
+      tensorDualEval (fun i ↦ φ (.inl i)) x * tensorDualEval (fun j ↦ φ (.inr j)) y := by
+  induction x using PiTensorProduct.induction_on with
+  | add x z hx hz => simp only [TensorProduct.add_tmul, map_add, add_mul, hx, hz]
+  | smul_tprod a x =>
+    induction y using PiTensorProduct.induction_on with
+    | add y z hy hz => simp only [TensorProduct.tmul_add, map_add, mul_add, hy, hz]
+    | smul_tprod c y =>
+      simp only [TensorProduct.smul_tmul, TensorProduct.tmul_smul, map_smul,
+        PiTensorProduct.tmulEquivDep_apply, tensorDualEval_tprod, Fintype.prod_sum_type,
+        smul_eq_mul]
+      ring
+
+variable [CompleteSpace k] [∀ i, FiniteDimensional k (V i)]
+
+/-- Joining two arbitrary tensor vectors has at most their product injective norm. -/
+theorem injectiveTensorSeminorm_tmulEquivDep_le
+    (x : ⨂[k] i, V (.inl i)) (y : ⨂[k] j, V (.inr j)) :
+    injectiveTensorSeminorm (PiTensorProduct.tmulEquivDep k V (x ⊗ₜ[k] y)) ≤
+      injectiveTensorSeminorm x * injectiveTensorSeminorm y := by
+  apply (injectiveTensorSeminorm_le_iff _ _).mpr
+  intro φ
+  rw [tensorDualEval_tmulEquivDep, norm_mul, Fintype.prod_sum_type, mul_div_mul_comm]
+  exact mul_le_mul
+    ((injectiveTensorSeminorm_le_iff x _).mp le_rfl (fun i ↦ φ (.inl i)))
+    ((injectiveTensorSeminorm_le_iff y _).mp le_rfl (fun j ↦ φ (.inr j)))
+    (div_nonneg (norm_nonneg _) (Finset.prod_nonneg (fun _ _ ↦ apply_nonneg _ _)))
+    (apply_nonneg _ _)
+
+end InjectiveGrouping
+
 section OrthogonalGrouping
 
 variable {k I J : Type*} [RCLike k] [Fintype I] [Fintype J]
