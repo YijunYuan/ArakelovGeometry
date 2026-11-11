@@ -187,7 +187,10 @@ public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Ba
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HN
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HNLift
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HNOptimalVariation
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Instability
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.GeometricOptimal
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.GradedDegree
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.HNVariationAssembly
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Optimal
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Inverse
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Pairing
@@ -584,10 +587,13 @@ public import ArakelovGeometry.InvariantTheory.TensorPowerSemisimple
 public import ArakelovGeometry.InvariantTheory.OrbitSeparation
 public import ArakelovGeometry.InvariantTheory.BinaryOrbitDVR
 public import ArakelovGeometry.InvariantTheory.BinaryNegativeFiltration
+public import ArakelovGeometry.InvariantTheory.BinaryTensorTransport
+public import ArakelovGeometry.InvariantTheory.BinaryInstability
 public import ArakelovGeometry.LinearAlgebra.CommonAdaptedBasis
 public import ArakelovGeometry.LinearAlgebra.Dual.BaseChange
 public import ArakelovGeometry.LinearAlgebra.FiniteFiltration
 public import ArakelovGeometry.LinearAlgebra.FiniteFlagRanks
+public import ArakelovGeometry.LinearAlgebra.Filtration.RankDrop
 public import ArakelovGeometry.LinearAlgebra.LaurentSeries.CartanDecomposition
 public import ArakelovGeometry.LinearAlgebra.MaximalMinor
 public import ArakelovGeometry.LinearAlgebra.MeasurableMaximalMinor

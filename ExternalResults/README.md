@@ -10,8 +10,9 @@ and honesty reviews passed. [Its provenance record](Stacks/provenance.json)
 contains fixed revisions, hashes, retained warnings and exact consumer boundaries.
 The local concrete orbit-map/DVR and residue-descent consumers are now checked;
 see `InvariantTheory/BinaryOrbitDVR.lean` and `BinaryNegativeFiltration.lean`.
-Final original-field assembly remains open. Upstream `StacksFrontier` is not
-asserted to have human review.
+Their final original-field consumer is checked in
+`AdelicVectorBundle/Examples/Trivial/Filtration/Instability.lean`.
+Upstream `StacksFrontier` is not asserted to have human review.
 
 The Etingof Schur–Weyl port contains five selected proof modules (892 lines),
 reduced from the surveyed seven-file closure. These and the actual local SL
@@ -22,7 +23,8 @@ records the pinned Apache-licensed release, omissions, narrow import adaptations
 hashes and evidence. The local bounded-polynomial and actual orbit-separation
 consumers are now checked in `InvariantTheory/OrbitSeparation.lean`; they use
 successive invariant lifting for the two SL factors. This does not claim a general
-reductivity theorem or complete the final original-field instability assembly.
+reductivity theorem; the local final original-field instability assembly is
+checked separately and consumes this result.
 Presence of a source file alone does not certify its proof or consumer.
 
 ## Layout and ownership

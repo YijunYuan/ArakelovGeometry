@@ -40,8 +40,8 @@ it is the paper referred to as `bost_conjecture.pdf` in the workspace instructio
 | A5: tensor and quotient filtrations | The binary canonical graded decomposition, quotient maps, actual norm correspondence and naturality are checked. Existing finite-family weight formulas are retained; additional finite-family graded refinement is deferred. | Pages 28–30, (44) and (46), use two factors, collisions of total weights, and the original quotient weights. The finite-family conclusion of Theorem 1.1 is obtained by binary iteration on page 32. |
 | A6: graded norm comparison | Canonical component contractions, finite-image HN degree bounds and the eventual upper bound for the same actual HN variation are checked, including direct A6-to-A9 composition (63 standard-only axiom probes). The smaller-rank tensor-HN induction condition remains explicit. | This replaces the whole orthogonal-direct-sum norm argument in Lemmas 7.1 and 7.2 while preserving the needed numerical conclusions. Componentwise contraction is not asserted to imply l2-sum contraction. |
 | A7: lifting filtrations | Actual prescribed quotient lifts and their HN specialization are checked, with expectation and weighted pairing formulas. | Pages 29 and 32 need a chosen lift of the subquotient HN filtrations. A canonical or unique lift is unnecessary; the ambient HN filtration cannot replace this construction. |
-| A8: instability input | Only the binary, specific tensor/determinant representation and the direction from geometric instability to a K-defined negative centered candidate are required. General DVR Cartan, actual local determinant-weight extraction, SL tensor-power semisimplicity and conditional negative-pair descent to K are checked. Actual binary orbit separation, geometric DVR degeneration and residue-polynomial descent to a closed-field negative candidate are checked. The final original-field assembly remains open. | The geometrically semistable case is handled by Section 6; page 31 needs the unstable direction. Integer/rational weights suffice for the closed-field initial candidate, while optimizer descent retains real weights. A full two-way real-weight HM theorem is unnecessary. |
-| A9: optimal filtration | Conditional finite-family existence and uniqueness, the direct binary optimizer, and the actual HN-lift variation lower bound are checked. Direct composition with A6's arithmetic upper bound is checked. The A8 geometric negative candidate and final packaging of the original-field optimizer remain open. | Pages 31–32 need this minimum and the HN-lift consequence, not the full CM inequality (5.13). The retained uniqueness theorem is used by the separately checked negative-pair descent to the original field. |
+| A8: instability input | The binary implication from actual A2 geometric instability of the same quotient to centered, finite, left-continuous real filtrations over K, with unit energy and strictly negative quotient expectation, is checked. It composes orbit separation, actual DVR degeneration, original-coefficient residue descent and optimizer descent. | The geometrically semistable case is handled by Section 6; page 31 needs the unstable direction. Integer weights suffice for the closed-field initial candidate, while optimizer descent retains real weights. A full two-way real-weight HM theorem is unnecessary. |
+| A9: optimal filtration | Actual geometric instability now yields an original-field unit negative global optimizer over all admissible centered real pairs. The same optimizer, grade-HN lifts and common bases feed the checked A6/A9 arithmetic slope bound; smaller-rank tensor-HN induction remains explicit. | Pages 31–32 need this minimum and the one-sided HN variation consequence, not full CM (5.13). Uniqueness supplies the Galois stability needed for descent; rank decrease is proved for the actual selected grades. |
 
 ### The A6 replacement argument
 
@@ -86,9 +86,26 @@ descent supplies the rational layers. The actual quotient-image filtration,
 expectation and pairing are preserved under scalar extension. This conditional
 binary result retains real weights and reciprocal-rank normalization; it supplies
 the negative input required by the optimizer over `K`, as checked by a composition
-probe. Descended global optimality and a full geometric-instability equivalence
-are not asserted. Producing the initial closed-field negative candidate remains
-the separate geometric task.
+probe. This auxiliary alone does not assert descended global optimality or a full
+geometric-instability equivalence. The checked geometric assembly below supplies
+its initial closed-field negative candidate and then optimizes over `K`.
+
+The checked [Instability](ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Instability.lean)
+proves the Bost page-31 binary instability implication over every characteristic-zero
+field `K`, for nonzero finite-dimensional factors and a surjective positive-rank
+ordinary binary quotient. Its hypothesis is the existing A2 geometric quotient
+predicate on the Bool presentation of that **same** quotient. Explicit basis and
+matrix/module-SL transports connect the actual determinant covector to polynomial
+orbit separation, DVR degeneration and original-coefficient residue descent.
+Quotient-layer and scalar-extension identities pass the resulting negative pair
+over `AlgebraicClosure K` to optimizer descent. Uniqueness derives Galois stability;
+infinite Galois descent returns actual centered finite left-continuous real
+filtrations over `K` with total energy one and negative quotient expectation.
+No negative-candidate, group-lift, coordinate-nonzero or Galois-stability premise
+is added. All 21 new declarations have standard-only transitive axiom audits;
+independent mathematical, consumer and honesty reviews passed. This supplies the
+geometric input used by A9 below. No arbitrary-group converse, semistability over
+arbitrary further extensions, or rationality of the real weights is asserted.
 
 The checked [HNOptimalVariation](ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/HNOptimalVariation.lean)
 specialization supplies only the page-32 lower bound. For a unit
@@ -104,24 +121,29 @@ upper bound with the same slope parameter, itself bounded by `mu(Q)`, suffices.
 Its actual HN pairing, quotient translation and global-optimality consumers have
 passed narrow builds, twelve standard-only axiom probes and independent reviews.
 A6 now proves the upper bound for those same lifts, bases and quotient, and the
-direct slope composition has been kernel-checked. Geometric existence of the
-negative candidate remains A8's input; the smaller-rank tensor-HN induction
+direct slope composition has been kernel-checked. A8 supplies geometric existence
+of the negative candidate; the smaller-rank tensor-HN induction
 condition is still explicit in the arithmetic bound.
 
-The checked `LinearAlgebra/Filtration/RankDrop` and
-`Tensor/HNVariationAssembly` now construct the optimizer, grade-HN lifts and
-common bases from an actual centered negative original-field pair. Centering and
-nonzero total self-pairing prove strict decrease of the **sum** of the grade
-ranks. The explicitly quantified smaller-rank tensor-HN induction assumption
-therefore applies to the grades chosen by the optimizer. Combining A6 and A9
-on those same witnesses proves the quotient slope bound in Bost pp.31–32,
-equation (47), with the original tensor-pushforward norm. Four transitive axiom
-roots and independent mathematical, consumer and honesty reviews passed.
-This preserves proper adelic curves, the discrete-or-common-countable-dense-subfield
-context, real weights and Hermitian norms including trivial valuations. The
-full HN induction, the separate Section 6 branch and Bost Theorem 1.1 are not
-claimed here. The remaining A8 geometric input and final public composition
-are still in progress.
+The checked [GeometricOptimal](ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/GeometricOptimal.lean)
+and [HNVariationAssembly](ArakelovGeometry/AdelicVectorBundle/Tensor/HNVariationAssembly.lean)
+prove the binary geometric unstable-case step of Bost pp.31–32, equation (47).
+Actual A2 geometric nonsemistability of the same surjective positive-rank quotient
+yields an actual original-field unit negative global optimizer, comparing all
+admissible centered real pairs of positive energy. The arithmetic assembly
+constructs actual grade-HN lifts and common bases; `LinearAlgebra/Filtration/RankDrop`
+derives strict decrease of the **sum** of grade ranks from centering and nonzero
+energy. A universally quantified smaller-rank tensor-HN induction hypothesis
+then applies to those newly chosen actual subquotients. On the same data, A6 proves
+an eventual affine upper bound and `delta ≤ mu(Q)` for the original
+tensor-pushforward quotient norm; A9 proves `mu(E) + mu(F) ≤ delta`.
+All six new transitive axiom roots are standard-only, and independent mathematical,
+source, consumer and honesty reviews passed. The proper-adelic,
+discrete-or-common-countable-dense-subfield, real-weight and Hermitian norm setting
+is preserved, including trivial valuations. This one-sided binary HN variation
+suffices in place of full CM (5.13) or an exact affine identity. It does not prove
+the entire Bost Theorem 1.1, its separate Section 6 branch, or the full HN
+induction/identification.
 
 ## Selected external results
 
@@ -136,7 +158,8 @@ also disclose any specialization or weakening and explain its sufficiency.
 The selected Stacks DVR producer and its 14-module closure have passed narrow
 local builds, four standard-only transitive axiom audits and independent
 semantic/honesty review; see [its provenance record](ExternalResults/Stacks/provenance.json).
-The concrete orbit-map/DVR and residue-descent consumers are now checked; final original-field assembly remains open.
+The concrete orbit-map/DVR, residue-descent and final original-field instability
+consumers are checked; the latter is described above.
 
 The checked local [DVRWeights](ArakelovGeometry/InvariantTheory/DVRWeights.lean)
 consumer reuses local PID diagonalization to obtain general DVR Cartan factors
@@ -176,12 +199,11 @@ algebraicity. Vanishing of coordinates of nonnegative original weight and the
 actual quotient maximum then produce genuine centered integer-weighted basis
 filtrations with strictly negative quotient expectation. The public orbit
 composition uses standard factor coordinates; checked arbitrary-basis coefficient
-transport supports the remaining module transport. Five transitive axiom roots
+transport feeds the checked module transport. Five transitive axiom roots
 and independent mathematical, consumer, honesty and blueprint reviews passed.
 This is the Bost p31 negative candidate before optimization. Combining arbitrary
-module transport and the separately proved optimizer descent to the original
-nonclosed field remains the final A8 assembly; further-extension semistability
-is not claimed.
+module transport and optimizer descent to the original nonclosed field is now
+checked in the final A8 assembly above; further-extension semistability is not claimed.
 
 The Apache-licensed EtingofRepresentationTheory port was reduced from its surveyed
 seven-file closure to five proof modules (892 lines), with narrow Mathlib imports.
@@ -211,8 +233,8 @@ covered; the latter directly gives the actual Spec orbit-closure input. Eleven
 transitive axiom probes and independent mathematical, consumer and honesty
 reviews passed. This is the finite-module separation needed on Bost page 31;
 it assumes no general reductivity or invariant-ring finite generation. Actual
-DVR specialization and residue descent are checked separately. Final original-field
-assembly remains open, so this result alone does not complete A8.
+DVR specialization and residue descent are checked separately and consumed by
+the checked original-field A8 assembly above.
 
 ## Current scope
 
