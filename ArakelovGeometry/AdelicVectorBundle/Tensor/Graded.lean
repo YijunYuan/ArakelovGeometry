@@ -16,6 +16,14 @@ import ArakelovGeometry.Analysis.Tensor.Bilinear
 Every grade carries the restriction followed by the quotient of the original
 norm family. The canonical graded map descends a completed contraction by
 comparing every completed lift, including at trivially valued places.
+
+The binary pair and quotient-composite statements supply the componentwise
+route to Bost, Section 7, Lemmas 7.1--7.2 (pages 29--30). Chen--Moriwaki's
+October 2019 Remark 5.5.6 treats individual refinement subquotients; here only
+the canonical binary real grades needed by this consumer are constructed.
+No contraction of a whole orthogonal direct sum is asserted. The image-flag
+degree argument is in `Degree.Flag.ImageHN`; the chosen HN-lift variation
+assembly is a separate consumer.
 -/
 
 @[expose] public section
@@ -356,7 +364,9 @@ theorem orthogonalTensorPair_descend_norm_le
     exact hb
 
 /-- A5's canonical graded pair map contracts the actual tensor of the two
-grade norms into the actual tensor grade norm, on all completed fibre vectors. -/
+grade norms into the actual tensor grade norm, on all completed fibre vectors.
+This is the binary component bound used in Bost Lemmas 7.1--7.2, rather than
+the paper's whole-sum bound or a general refinement theorem. -/
 theorem tensorFiltrationGradedPair_norm_le
     (ξ : NormFamily S E) (η : NormFamily S F)
     (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)

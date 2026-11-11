@@ -79,6 +79,8 @@ structure HNVariationLift (P : ℝ → Submodule K E) where
   flag_top : flag (Fin.last length) = ⊤
   weight : Fin length → ℝ
   antitone_weight : Antitone weight
+  level : ∀ i, P (weight i) = flag i.succ
+  right : ∀ i, Submodule.filtrationRightLimit P (weight i) = flag i.castSucc
   reconstruct : ∀ t, P t = ⨆ (i : Fin length) (_ : t ≤ weight i), flag i.succ
   direction : ℝ → Submodule K E
   antitone_direction : Antitone direction
@@ -103,13 +105,13 @@ theorem exists_hnVariationLift (P : ℝ → Submodule K E)
     (hl : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → P s = P t) :
     Nonempty (V.HNVariationLift hS hN hV P) := by
   classical
-  obtain ⟨n, U, a, hU, hz, htop, _, ha, _, _, _, hrec⟩ :=
+  obtain ⟨n, U, a, hU, hz, htop, _, ha, _, hlevel, hright, hrec⟩ :=
     Submodule.exists_strictMono_flag_and_jumps_of_antitone hP hb ht hl
   obtain ⟨b, w, B, hB, _, hHN, hquot, hspan, hRspan, hR, hRb, hRt, hRl, hc, hm, hp⟩ :=
     V.exists_hermitianHN_quotient_lift hS hN hV U hU.monotone hz htop
   have hPspan (t : ℝ) : P t = Submodule.span K (B '' {j | t ≤ a j.1}) :=
     (hrec t).trans (Submodule.iSup_flag_eq_span_weights U B hspan a ha.antitone t)
-  refine ⟨⟨n, U, hU.monotone, hz, htop, a, ha.antitone, hrec,
+  refine ⟨⟨n, U, hU.monotone, hz, htop, a, ha.antitone, hlevel, hright, hrec,
     _, hR, hRb, hRt, hRl, hc, hm, ?_, ?_⟩⟩
   · simpa only [← funext hrec] using hp a ha.antitone
   · rw [Submodule.filtrationExpectation_eq_sum_weights B _ hPspan]
@@ -570,6 +572,11 @@ theorem exists_bost_hn_variation_bound
     ∃ (P : ℝ → Submodule K E) (T : ℝ → Submodule K F),
       CenteredE P ∧ CenteredF T ∧ filtrationPairing P P + filtrationPairing T T = 1 ∧
       filtrationExpectation (fun t ↦ (tensorFiltration P T t).map q) < 0 ∧
+      (∀ (A : ℝ → Submodule K E) (B : ℝ → Submodule K F),
+        CenteredE A → CenteredF B → 0 < filtrationPairing A A + filtrationPairing B B →
+        filtrationExpectation (fun t ↦ (tensorFiltration P T t).map q) ≤
+          filtrationExpectation (fun t ↦ (tensorFiltration A B t).map q) /
+            Real.sqrt (filtrationPairing A A + filtrationPairing B B)) ∧
       ∃ (L : V.HNVariationLift hS hN hV P) (M : Z.HNVariationLift hS hN hZ T)
         (b : Basis (Fin (finrank K E)) K E) (d : Basis (Fin (finrank K F)) K F)
         (a r : Fin (finrank K E) → ℝ) (v s : Fin (finrank K F) → ℝ),
@@ -593,7 +600,7 @@ theorem exists_bost_hn_variation_bound
   obtain ⟨d, v, s, hTd, hW, _, _⟩ := exists_common_weighted_basis
     hT.1 hT.2.1 hT.2.2.1 hT.2.2.2.1
     M.antitone_direction M.direction_bot M.direction_top M.direction_left
-  refine ⟨P, T, hP, hT, hunit, hneg, L, M, b, d, a, r, v, s, hPb, hR, hTd, hW, ?_⟩
+  refine ⟨P, T, hP, hT, hunit, hneg, hmin, L, M, b, d, a, r, v, s, hPb, hR, hTd, hW, ?_⟩
   intro δ hu
   exact L.slope_sum_le_of_eventual_upper_bound M b d a r v s hPb hR hTd hW q hq hQ
     hsemiV hsemiZ hP.2.2.2.2 hT.2.2.2.2 hunit hneg hmin δ hu

@@ -1,0 +1,323 @@
+/-
+Copyright (c) 2026 Yijun Yuan. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yijun Yuan
+-/
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.ImageHN
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Tensor
+
+/-!
+# Binary graded tensor images in Bost's degree argument
+
+The source bundles are actual binary tensors of actual grades. Their maps
+to the original quotient grade are the canonical A5 maps. The finite-image
+HN inequality consumes the proved completed contractions directly.
+-/
+
+@[expose] public section
+
+open scoped TensorProduct BigOperators
+open Module
+
+namespace Submodule
+
+variable {K E V Q : Type*} [Field K]
+  [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  [AddCommGroup V] [Module K V] [FiniteDimensional K V]
+  [AddCommGroup Q] [Module K Q]
+  {P : ℝ → Submodule K E} {R : ℝ → Submodule K V}
+
+/-- The exact canonical A5 pair followed by its canonical quotient-grade map.
+This abbreviation does not change the carrier or choose an image norm. -/
+noncomputable abbrev tensorFiltrationGradedQuotientPair
+    (q : E ⊗[K] V →ₗ[K] Q) (hP : Antitone P) (hR : Antitone R)
+    {t u γ : ℝ} (h : t + u = γ) :
+    FiltrationGraded P t ⊗[K] FiltrationGraded R u →ₗ[K]
+      FiltrationGraded (fun s ↦ (tensorFiltration P R s).map q) γ :=
+  (filtrationGradedMap q (fun s ↦ le_comap_map q (tensorFiltration P R s)) γ).comp
+    (tensorFiltrationGradedPair hP hR h)
+
+/-- Only finitely many actual pair grades are needed to span a quotient
+grade. Repeated basis weights retain repeated copies of the same canonical
+pair map, which does not affect their common image. -/
+theorem iSup_range_tensorFiltrationGradedQuotientPair
+    {ι κ : Type*} [Finite ι] [Finite κ]
+    (b : Basis ι K E) (c : Basis κ K V) (w : ι → ℝ) (z : κ → ℝ)
+    (q : E ⊗[K] V →ₗ[K] Q) (hP : Antitone P) (hR : Antitone R)
+    (hPw : ∀ t, P t = span K (b '' {i | t ≤ w i}))
+    (hRz : ∀ u, R u = span K (c '' {j | u ≤ z j})) (γ : ℝ) :
+    (⨆ p : {ij : ι × κ // w ij.1 + z ij.2 = γ},
+      (tensorFiltrationGradedQuotientPair q hP hR p.property).range) = ⊤ := by
+  classical
+  let M := ⨆ p : {ij : ι × κ // w ij.1 + z ij.2 = γ},
+    (tensorFiltrationGradedQuotientPair q hP hR p.property).range
+  have hm (p : {p : ℝ × ℝ // p.1 + p.2 = γ})
+      (x : FiltrationGraded P p.val.1 ⊗[K] FiltrationGraded R p.val.2) :
+      tensorFiltrationGradedQuotientPair q hP hR p.property x ∈ M := by
+    rcases p with ⟨⟨t, u⟩, hp⟩
+    by_cases ht : t ∈ Set.range w
+    · obtain ⟨i, rfl⟩ := ht
+      by_cases hu : u ∈ Set.range z
+      · obtain ⟨j, rfl⟩ := hu
+        exact (le_iSup (fun p : {ij : ι × κ // w ij.1 + z ij.2 = γ} ↦
+          (tensorFiltrationGradedQuotientPair q hP hR p.property).range) ⟨(i, j), hp⟩) ⟨x, rfl⟩
+      · have hz : Module.finrank K (FiltrationGraded R u) = 0 := by
+          by_contra hn
+          exact hu ((support_finrank_filtrationGraded c z hRz) ▸ hn)
+        have hr : Module.finrank K (FiltrationGraded P (w i) ⊗[K] FiltrationGraded R u) = 0 := by
+          rw [Module.finrank_tensorProduct, hz, mul_zero]
+        have := (Module.finrank_eq_zero_iff_of_free K _).mp hr
+        rw [Subsingleton.elim x 0, map_zero]
+        exact M.zero_mem
+    · have hz : Module.finrank K (FiltrationGraded P t) = 0 := by
+        by_contra hn
+        exact ht ((support_finrank_filtrationGraded b w hPw) ▸ hn)
+      have hr : Module.finrank K (FiltrationGraded P t ⊗[K] FiltrationGraded R u) = 0 := by
+        rw [Module.finrank_tensorProduct, hz, zero_mul]
+      have := (Module.finrank_eq_zero_iff_of_free K _).mp hr
+      rw [Subsingleton.elim x 0, map_zero]
+      exact M.zero_mem
+  apply top_unique
+  intro y hy
+  clear hy
+  obtain ⟨x, rfl⟩ := tensorFiltrationGradedQuotient_surjective q b c w z hP hR hPw hRz γ y
+  induction x using DirectSum.induction_on with
+  | zero => simp
+  | add x y hx hy => simpa only [map_add] using M.add_mem hx hy
+  | of p x =>
+    rw [← DirectSum.lof_eq_of K]
+    simpa only [tensorFiltrationGradedQuotient, LinearMap.comp_apply,
+      tensorFiltrationGradedSum, DirectSum.toModule_lof] using hm p x
+
+section SecondaryCoordinates
+
+variable {ι κ : Type*} (b : ι → E) (c : κ → V) (w : ι → ℝ) (z : κ → ℝ)
+  (hb : ∀ i, b i ∈ P (w i)) (hc : ∀ j, c j ∈ R (z j))
+
+omit [FiniteDimensional K E] in
+/-- The class of a prescribed primary-weight generator in its actual grade. -/
+noncomputable def filtrationGradedGenerator (t : ℝ) (i : {i : ι // w i = t}) :
+    FiltrationGraded P t :=
+  filtrationGradedMk P t ⟨b i.val, (congrArg P i.property).le (hb i.val)⟩
+
+/-- The class of an original tensor generator in the actual quotient grade,
+expressed through the exact canonical pair composite. -/
+noncomputable def tensorQuotientGradedGenerator
+    (q : E ⊗[K] V →ₗ[K] Q) (hP : Antitone P) (hR : Antitone R) (γ : ℝ)
+    (p : {ij : ι × κ // w ij.1 + z ij.2 = γ}) :
+    FiltrationGraded (fun s ↦ (tensorFiltration P R s).map q) γ :=
+  tensorFiltrationGradedQuotientPair q hP hR p.property
+    (filtrationGradedGenerator b w hb (w p.val.1) ⟨p.val.1, rfl⟩ ⊗ₜ[K]
+      filtrationGradedGenerator c z hc (z p.val.2) ⟨p.val.2, rfl⟩)
+
+omit [FiniteDimensional K E] [FiniteDimensional K V] in
+/-- The canonical maps identify the secondary image with the literal span
+of original tensor classes having the specified primary and secondary
+weights. The premises specify the chosen source generators, not an image
+filtration or a degree bound. -/
+theorem imageFiltration_tensor_secondary_eq_span
+    (q : E ⊗[K] V →ₗ[K] Q) (hP : Antitone P) (hR : Antitone R)
+    (s : ι → ℝ) (v : κ → ℝ)
+    (H : ∀ t, ℝ → Submodule K (FiltrationGraded P t))
+    (J : ∀ u, ℝ → Submodule K (FiltrationGraded R u))
+    (hH : ∀ t a, H t a = span K
+      (filtrationGradedGenerator b w hb t '' {i | a ≤ s i.val}))
+    (hJ : ∀ u a, J u a = span K
+      (filtrationGradedGenerator c z hc u '' {j | a ≤ v j.val})) (γ ℓ : ℝ) :
+    imageFiltration
+      (fun p : {ij : ι × κ // w ij.1 + z ij.2 = γ} ↦
+        tensorFiltrationGradedQuotientPair q hP hR p.property)
+      (fun p ↦ tensorFiltration (H (w p.val.1)) (J (z p.val.2))) ℓ =
+    span K (tensorQuotientGradedGenerator b c w z hb hc q hP hR γ ''
+      {p | ℓ ≤ s p.val.1 + v p.val.2}) := by
+  have he (p : {ij : ι × κ // w ij.1 + z ij.2 = γ})
+      (i : {i : ι // w i = w p.val.1}) (j : {j : κ // z j = z p.val.2}) :
+      tensorFiltrationGradedQuotientPair q hP hR p.property
+        (filtrationGradedGenerator b w hb _ i ⊗ₜ[K] filtrationGradedGenerator c z hc _ j) =
+      tensorQuotientGradedGenerator b c w z hb hc q hP hR γ
+        ⟨(i.val, j.val), by rw [i.property, j.property]; exact p.property⟩ := by
+    rfl
+  apply le_antisymm
+  · apply iSup_le
+    intro p
+    dsimp only
+    rw [tensorFiltration_eq_span
+      (filtrationGradedGenerator b w hb (w p.val.1))
+      (filtrationGradedGenerator c z hc (z p.val.2))
+      (fun i ↦ s i.val) (fun j ↦ v j.val) (hH (w p.val.1)) (hJ (z p.val.2)), map_span]
+    apply span_le.mpr
+    rintro _ ⟨_, ⟨⟨i, j⟩, hij, rfl⟩, rfl⟩
+    rw [he p i j]
+    exact subset_span ⟨⟨(i.val, j.val), by rw [i.property, j.property]; exact p.property⟩, hij, rfl⟩
+  · apply span_le.mpr
+    rintro _ ⟨p, hp, rfl⟩
+    apply (le_iSup (fun p : {ij : ι × κ // w ij.1 + z ij.2 = γ} ↦
+      (tensorFiltration (H (w p.val.1)) (J (z p.val.2)) ℓ).map
+        (tensorFiltrationGradedQuotientPair q hP hR p.property)) p)
+    refine ⟨filtrationGradedGenerator b w hb _ ⟨p.val.1, rfl⟩ ⊗ₜ[K]
+      filtrationGradedGenerator c z hc _ ⟨p.val.2, rfl⟩, ?_, rfl⟩
+    apply tmul_mem_tensorFiltration hp
+    · rw [hH]
+      exact subset_span ⟨⟨p.val.1, rfl⟩, (show s p.val.1 ≤ s p.val.1 from le_rfl), rfl⟩
+    · rw [hJ]
+      exact subset_span ⟨⟨p.val.2, rfl⟩, (show v p.val.2 ≤ v p.val.2 from le_rfl), rfl⟩
+
+end SecondaryCoordinates
+
+end Submodule
+
+namespace ArakelovGeometry.AdelicVectorBundle
+
+universe u v w w'
+
+variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+  {E F : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  [AddCommGroup F] [Module K F] [FiniteDimensional K F]
+  {Q : Type w'} [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
+
+/-- The actual source bundle of a canonical binary graded pair. This is the
+existing Hermitian tensor constructor applied to the actual two grades. -/
+noncomputable def tensorFiltrationGradedSource
+    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hV : V.toNormFamily.IsHermitian hN) (hW : W.toNormFamily.IsHermitian hN)
+    (P : ℝ → Submodule K E) (R : ℝ → Submodule K F) (t u : ℝ) :
+    AdelicVectorBundle S (Submodule.FiltrationGraded P t ⊗[K] Submodule.FiltrationGraded R u) :=
+  (V.filtrationGraded P t hS).orthogonalTensorPair (W.filtrationGraded R u hS) hS hN
+    (hV.filtrationGraded P t) (hW.filtrationGraded R u)
+
+theorem tensorFiltrationGradedSource_isHermitian
+    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hV : V.toNormFamily.IsHermitian hN) (hW : W.toNormFamily.IsHermitian hN)
+    (P : ℝ → Submodule K E) (R : ℝ → Submodule K F) (t u : ℝ) :
+    (tensorFiltrationGradedSource V W hS hN hV hW P R t u).toNormFamily.IsHermitian hN :=
+  orthogonalTensorPair_isHermitian _ _ hS hN _ _
+
+/-- The actual quotient of the original tensor bundle, followed by its
+actual image-filtration grade. The target norm is not induced from a pair. -/
+noncomputable def tensorFiltrationQuotientGraded
+    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hV : V.toNormFamily.IsHermitian hN) (hW : W.toNormFamily.IsHermitian hN)
+    (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q)
+    (P : ℝ → Submodule K E) (R : ℝ → Submodule K F) (γ : ℝ) :
+    AdelicVectorBundle S (Submodule.FiltrationGraded
+      (fun s ↦ (Submodule.tensorFiltration P R s).map q) γ) :=
+  let T := V.orthogonalTensorPair W hS hN hV hW
+  (T.pushforward q hq
+    (T.isMeasurable.pushforward_of_discrete_or_countable hS q hq)).filtrationGraded
+    (fun s ↦ (Submodule.tensorFiltration P R s).map q) γ hS
+
+theorem tensorFiltrationQuotientGraded_isHermitian
+    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hV : V.toNormFamily.IsHermitian hN) (hW : W.toNormFamily.IsHermitian hN)
+    (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q)
+    (P : ℝ → Submodule K E) (R : ℝ → Submodule K F) (γ : ℝ) :
+    (tensorFiltrationQuotientGraded V W hS hN hV hW q hq P R γ).toNormFamily.IsHermitian hN := by
+  dsimp only [tensorFiltrationQuotientGraded, filtrationGraded]
+  apply NormFamily.IsHermitian.quotient
+  apply NormFamily.IsHermitian.restrict
+  exact (NormFamily.orthogonalTensorPair_isHermitian
+    V.toNormFamily W.toNormFamily hN hV hW).pushforward q hq
+
+variable [S.IsProper]
+
+/-- The actual canonical binary pair family satisfies the finite-image HN
+degree bound in each actual quotient grade. Neither spanning nor contraction
+is assumed: the A5 quotient-surjectivity theorem and the completed pair
+contraction producer discharge both. This is the numerical grade bound of
+the adapted Bost Lemma 7.2 route before identifying secondary HN weights. -/
+theorem tensorFiltrationQuotientGraded_hnImage_degree_ge
+    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hV : V.toNormFamily.IsHermitian hN) (hW : W.toNormFamily.IsHermitian hN)
+    (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q)
+    {P : ℝ → Submodule K E} {R : ℝ → Submodule K F}
+    (hP : Antitone P) (hR : Antitone R)
+    {ι κ : Type*} [Finite ι] [Finite κ]
+    (b : Basis ι K E) (c : Basis κ K F) (w : ι → ℝ) (z : κ → ℝ)
+    (hPw : ∀ t, P t = Submodule.span K (b '' {i | t ≤ w i}))
+    (hRz : ∀ u, R u = Submodule.span K (c '' {j | u ≤ z j})) (γ : ℝ) :
+    let J := {ij : ι × κ // w ij.1 + z ij.2 = γ}
+    let C := fun p : J ↦ tensorFiltrationGradedSource V W hS hN hV hW P R (w p.val.1) (z p.val.2)
+    let hC := fun p : J ↦ tensorFiltrationGradedSource_isHermitian V W hS hN hV hW P R
+      (w p.val.1) (z p.val.2)
+    let g := fun p : J ↦ Submodule.tensorFiltrationGradedQuotientPair q hP hR p.property
+    let H := Submodule.imageFiltration g (fun p ↦ (C p).hermitianHNFiltration hS hN (hC p))
+    (∑ᶠ t : ℝ, t * (finrank K (Submodule.FiltrationGraded H t) : ℝ)) ≤
+      (tensorFiltrationQuotientGraded V W hS hN hV hW q hq P R γ).degree hS hN := by
+  dsimp only
+  apply finsum_hermitianHN_imageFiltration_le_degree
+    (fun p : {ij : ι × κ // w ij.1 + z ij.2 = γ} ↦
+      tensorFiltrationGradedSource V W hS hN hV hW P R (w p.val.1) (z p.val.2))
+    (tensorFiltrationQuotientGraded V W hS hN hV hW q hq P R γ)
+    (fun p ↦ Submodule.tensorFiltrationGradedQuotientPair q hP hR p.property)
+    hS hN _ (tensorFiltrationQuotientGraded_isHermitian V W hS hN hV hW q hq P R γ)
+    (Submodule.iSup_range_tensorFiltrationGradedQuotientPair b c w z q hP hR hPw hRz γ)
+  intro p ω x
+  exact NormFamily.tensorFiltrationGradedPair_pushforward_norm_le V.toNormFamily W.toNormFamily
+    hN hV hW q hq hP hR p.property ω x
+
+/-- Under the explicitly smaller-rank tensor-HN compatibility induction
+boundary, the actual canonical pair images of the tensor-HN secondary
+filtrations satisfy Bost's local weighted degree bound. This theorem does
+not yet identify those images with a chosen ambient HN lifting's cuts. -/
+theorem tensorFiltrationQuotientGraded_secondary_degree_ge
+    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hV : V.toNormFamily.IsHermitian hN) (hW : W.toNormFamily.IsHermitian hN)
+    (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q)
+    {P : ℝ → Submodule K E} {R : ℝ → Submodule K F}
+    (hP : Antitone P) (hR : Antitone R)
+    {ι κ : Type*} [Finite ι] [Finite κ]
+    (b : Basis ι K E) (c : Basis κ K F) (w : ι → ℝ) (z : κ → ℝ)
+    (hPw : ∀ t, P t = Submodule.span K (b '' {i | t ≤ w i}))
+    (hRz : ∀ u, R u = Submodule.span K (c '' {j | u ≤ z j})) (γ : ℝ)
+    (hsmall : ∀ p : {ij : ι × κ // w ij.1 + z ij.2 = γ},
+      finrank K (Submodule.FiltrationGraded P (w p.val.1)) +
+        finrank K (Submodule.FiltrationGraded R (z p.val.2)) < finrank K E + finrank K F)
+    (hInd : ∀ t u,
+      finrank K (Submodule.FiltrationGraded P t) + finrank K (Submodule.FiltrationGraded R u) <
+        finrank K E + finrank K F →
+      (tensorFiltrationGradedSource V W hS hN hV hW P R t u).hermitianHNFiltration hS hN
+        (tensorFiltrationGradedSource_isHermitian V W hS hN hV hW P R t u) =
+      Submodule.tensorFiltration
+        ((V.filtrationGraded P t hS).hermitianHNFiltration hS hN (hV.filtrationGraded P t))
+        ((W.filtrationGraded R u hS).hermitianHNFiltration hS hN (hW.filtrationGraded R u))) :
+    let J := {ij : ι × κ // w ij.1 + z ij.2 = γ}
+    let g := fun p : J ↦ Submodule.tensorFiltrationGradedQuotientPair q hP hR p.property
+    let H := Submodule.imageFiltration g (fun p ↦ Submodule.tensorFiltration
+      ((V.filtrationGraded P (w p.val.1) hS).hermitianHNFiltration hS hN
+        (hV.filtrationGraded P (w p.val.1)))
+      ((W.filtrationGraded R (z p.val.2) hS).hermitianHNFiltration hS hN
+        (hW.filtrationGraded R (z p.val.2))))
+    (∑ᶠ t : ℝ, t * (finrank K (Submodule.FiltrationGraded H t) : ℝ)) ≤
+      (tensorFiltrationQuotientGraded V W hS hN hV hW q hq P R γ).degree hS hN := by
+  have h := tensorFiltrationQuotientGraded_hnImage_degree_ge V W hS hN hV hW q hq
+    hP hR b c w z hPw hRz γ
+  have he : (fun p : {ij : ι × κ // w ij.1 + z ij.2 = γ} ↦
+      (tensorFiltrationGradedSource V W hS hN hV hW P R
+        (w p.val.1) (z p.val.2)).hermitianHNFiltration
+          hS hN (tensorFiltrationGradedSource_isHermitian V W hS hN hV hW P R
+          (w p.val.1) (z p.val.2))) =
+      (fun p : {ij : ι × κ // w ij.1 + z ij.2 = γ} ↦ Submodule.tensorFiltration
+        ((V.filtrationGraded P (w p.val.1) hS).hermitianHNFiltration hS hN
+          (hV.filtrationGraded P (w p.val.1)))
+        ((W.filtrationGraded R (z p.val.2) hS).hermitianHNFiltration hS hN
+          (hW.filtrationGraded R (z p.val.2)))) :=
+    funext fun p ↦ hInd _ _ (hsmall p)
+  dsimp only at h ⊢
+  rw [he] at h
+  exact h
+
+end ArakelovGeometry.AdelicVectorBundle
