@@ -8,7 +8,6 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian
 public import ArakelovGeometry.Analysis.Tensor.HermitianDual
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.DualNorm
-import ArakelovGeometry.AdelicVectorBundle.Tensor.PairMap
 import ArakelovGeometry.Analysis.ScalarExtension.Hermitian.Tensor
 import Mathlib.Analysis.Normed.Group.Ultra
 
@@ -1068,5 +1067,136 @@ theorem orthogonalTensorPair_norm_assoc
 end BinaryCoherence
 
 end NormFamily
+
+section EvaluationCoherence
+
+variable {K : Type*} [Field K]
+
+/-- Simultaneous reindexing preserves the full finite tensor evaluation pairing. -/
+theorem piDualDistrib_reindex_apply
+    {I J : Type*} [Finite I] [Finite J] {V : I → Type*}
+    [∀ i, AddCommGroup (V i)] [∀ i, Module K (V i)] (e : I ≃ J)
+    (z : ⨂[K] i, Module.Dual K (V i)) (x : ⨂[K] i, V i) :
+    PiTensorProduct.dualDistrib
+      (PiTensorProduct.reindex K (fun i ↦ Module.Dual K (V i)) e z)
+      (PiTensorProduct.reindex K V e x) = PiTensorProduct.dualDistrib z x := by
+  let := Fintype.ofFinite I
+  let := Fintype.ofFinite J
+  induction z using PiTensorProduct.induction_on with
+  | add z t hz ht => simp only [map_add, LinearMap.add_apply, hz, ht]
+  | smul_tprod a f =>
+    induction x using PiTensorProduct.induction_on with
+    | add x y hx hy => simp only [map_add, hx, hy]
+    | smul_tprod b x =>
+      simp only [map_smul, PiTensorProduct.reindex_tprod, LinearMap.smul_apply,
+        PiTensorProduct.dualDistrib_apply, smul_eq_mul]
+      congr 2
+      exact Fintype.prod_equiv e.symm _ _ (fun _ ↦ rfl)
+
+/-- Tensor dual distribution commutes with ordinary associativity on all tensors. -/
+theorem dualDistrib_assoc_apply
+    {E F G : Type*} [AddCommGroup E] [Module K E] [AddCommGroup F] [Module K F]
+    [AddCommGroup G] [Module K G]
+    (z : (Module.Dual K E ⊗[K] Module.Dual K F) ⊗[K] Module.Dual K G)
+    (x : (E ⊗[K] F) ⊗[K] G) :
+    TensorProduct.dualDistrib K E (F ⊗[K] G)
+      (TensorProduct.map LinearMap.id (TensorProduct.dualDistrib K F G)
+        (TensorProduct.assoc K (Module.Dual K E) (Module.Dual K F) (Module.Dual K G) z))
+      (TensorProduct.assoc K E F G x) =
+    TensorProduct.dualDistrib K (E ⊗[K] F) G
+      (TensorProduct.map (TensorProduct.dualDistrib K E F) LinearMap.id z) x := by
+  induction z using TensorProduct.inductionOn with
+  | add z t hz ht => simp only [map_add, LinearMap.add_apply, hz, ht]
+  | tmul z h =>
+    induction z using TensorProduct.inductionOn with
+    | add z t hz ht => simp only [TensorProduct.add_tmul, map_add, LinearMap.add_apply, hz, ht]
+    | tmul f g =>
+      induction x using TensorProduct.inductionOn with
+      | add x y hx hy => simp only [map_add, hx, hy]
+      | tmul x w =>
+        induction x using TensorProduct.inductionOn with
+        | add x y hx hy => simp only [TensorProduct.add_tmul, map_add, hx, hy]
+        | tmul u v =>
+          simp only [TensorProduct.assoc_tmul, TensorProduct.map_tmul, LinearMap.id_apply,
+            TensorProduct.dualDistrib_apply, mul_assoc]
+
+/-- Joining arbitrary finite dual tensors intertwines finite and binary evaluation. -/
+theorem piDualDistrib_tmulEquivDep_apply
+    {I J : Type*} [Finite I] [Finite J] {V : I ⊕ J → Type*}
+    [∀ i, AddCommGroup (V i)] [∀ i, Module K (V i)]
+    (z : (⨂[K] i, Module.Dual K (V (.inl i))) ⊗[K]
+      (⨂[K] j, Module.Dual K (V (.inr j))))
+    (x : (⨂[K] i, V (.inl i)) ⊗[K] (⨂[K] j, V (.inr j))) :
+    PiTensorProduct.dualDistrib
+      (PiTensorProduct.tmulEquivDep K (fun i ↦ Module.Dual K (V i)) z)
+      (PiTensorProduct.tmulEquivDep K V x) =
+    TensorProduct.dualDistrib K (⨂[K] i, V (.inl i)) (⨂[K] j, V (.inr j))
+      (TensorProduct.map PiTensorProduct.dualDistrib PiTensorProduct.dualDistrib z) x := by
+  let := Fintype.ofFinite I
+  let := Fintype.ofFinite J
+  induction z using TensorProduct.inductionOn with
+  | add z t hz ht => simp only [map_add, LinearMap.add_apply, hz, ht]
+  | tmul f g =>
+    induction f using PiTensorProduct.induction_on with
+    | add f h hf hh => simp only [TensorProduct.add_tmul, map_add, LinearMap.add_apply, hf, hh]
+    | smul_tprod a f =>
+      induction g using PiTensorProduct.induction_on with
+      | add g h hg hh => simp only [TensorProduct.tmul_add, map_add, LinearMap.add_apply, hg, hh]
+      | smul_tprod b g =>
+        induction x using TensorProduct.inductionOn with
+        | add x y hx hy => simp only [map_add, hx, hy]
+        | tmul x y =>
+          induction x using PiTensorProduct.induction_on with
+          | add x u hx hu => simp only [TensorProduct.add_tmul, map_add, hx, hu]
+          | smul_tprod c x =>
+            induction y using PiTensorProduct.induction_on with
+            | add y v hy hv => simp only [TensorProduct.tmul_add, map_add, hy, hv]
+            | smul_tprod d y =>
+              simp only [TensorProduct.smul_tmul, TensorProduct.tmul_smul, map_smul,
+                PiTensorProduct.tmulEquivDep_apply, LinearMap.smul_apply,
+                PiTensorProduct.dualDistrib_apply, TensorProduct.map_tmul,
+                TensorProduct.dualDistrib_apply, Fintype.prod_sum_type, smul_eq_mul]
+
+end EvaluationCoherence
+
+section BinaryEvaluationBaseChange
+
+universe w₂
+
+variable (K L : Type*) [Field K] [Field L] [Algebra K L]
+  (E F : Type w₂) [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  [AddCommGroup F] [Module K F] [FiniteDimensional K F]
+
+/-- Binary dual distribution commutes with scalar extension on arbitrary dual
+and primal tensors, not merely on decomposable primal vectors. -/
+theorem dualDistrib_baseChange_tensor_apply
+    (z : L ⊗[K] (Module.Dual K E ⊗[K] Module.Dual K F))
+    (x : L ⊗[K] (E ⊗[K] F)) :
+    dualBaseChangeEquiv K L (E ⊗[K] F)
+      ((TensorProduct.dualDistrib K E F).baseChange L z) x =
+    TensorProduct.dualDistrib L (L ⊗[K] E) (L ⊗[K] F)
+      (TensorProduct.map (dualBaseChangeEquiv K L E).toLinearMap
+        (dualBaseChangeEquiv K L F).toLinearMap
+        (TensorProduct.AlgebraTensorModule.distribBaseChange K L
+          (Module.Dual K E) (Module.Dual K F) z))
+      (TensorProduct.AlgebraTensorModule.distribBaseChange K L E F x) := by
+  let A := TensorProduct.AlgebraTensorModule.distribBaseChange K L E F
+  obtain ⟨t, rfl⟩ := A.symm.surjective x
+  induction t using TensorProduct.inductionOn with
+  | add t u ht hu => simp only [map_add, ht, hu]
+  | tmul x y =>
+    rw [LinearEquiv.apply_symm_apply]
+    rw [dualDistrib_baseChange_bilinear_apply]
+    generalize TensorProduct.map (dualBaseChangeEquiv K L E).toLinearMap
+      (dualBaseChangeEquiv K L F).toLinearMap
+      (TensorProduct.AlgebraTensorModule.distribBaseChange K L
+        (Module.Dual K E) (Module.Dual K F) z) = q
+    induction q using TensorProduct.inductionOn with
+    | add q r hq hr => simp only [map_add, LinearMap.add_apply, hq, hr]
+    | tmul f g =>
+      simp only [dualTensorHom_apply, TensorProduct.dualDistrib_apply, LinearMap.smul_apply,
+        smul_eq_mul]
+
+end BinaryEvaluationBaseChange
 
 end ArakelovGeometry
