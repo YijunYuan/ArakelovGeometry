@@ -5,6 +5,7 @@ Authors: Yijun Yuan
 -/
 module
 
+public import ArakelovGeometry.LinearAlgebra.FiniteFiltration
 public import Mathlib.LinearAlgebra.Dimension.Constructions
 public import Mathlib.LinearAlgebra.Dimension.OrzechProperty
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
@@ -171,5 +172,165 @@ theorem exists_basis_lifting_flag_quotients (hU : Monotone U) (hzero : U 0 = ⊥
   exact basisOfFlagQuotientLifts_apply U b v hv hU hzero htop i j
 
 end Flag
+
+section QuotientCuts
+
+variable {n : ℕ} (U : Fin (n + 1) → Submodule K E) (hU : Monotone U)
+  {ι : Fin n → Type*}
+  (b : ∀ i, Basis (ι i) K ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype))
+  (B : Basis (Σ i, ι i) K E)
+  (hmem : ∀ i j, B ⟨i, j⟩ ∈ U i.succ)
+  (hquot : ∀ i j, ((U i.castSucc).comap (U i.succ).subtype).mkQ
+    ⟨B ⟨i, j⟩, hmem i j⟩ = b i j)
+  (hspan : ∀ k : Fin (n + 1), span K (B '' {a | a.1.val < k.val}) = U k)
+
+include hspan in
+/-- Intersecting a selected basis span with a flag step selects exactly the earlier blocks. -/
+theorem span_lifted_basis_inf_flag (s : Set (Σ i, ι i)) (k : Fin (n + 1)) :
+    span K (B '' s) ⊓ U k = span K (B '' (s ∩ {a | a.1.val < k.val})) := by
+  rw [← hspan k]
+  ext x
+  simp only [mem_inf, B.mem_span_image, Set.subset_inter_iff]
+
+include hU hquot hspan in
+/-- On each actual adjacent quotient, an arbitrary selection of the lifted basis induces
+exactly the same selection of its prescribed quotient basis. -/
+theorem map_comap_span_lifted_basis (s : Set (Σ i, ι i)) (i : Fin n) :
+    ((span K (B '' s)).comap (U i.succ).subtype).map
+        ((U i.castSucc).comap (U i.succ).subtype).mkQ =
+      span K (b i '' {j | (⟨i, j⟩ : Σ i, ι i) ∈ s}) := by
+  let C : Set (Σ k, ι k) := s ∩ {a | a.1.val < i.succ.val}
+  have hC : ∀ a : C, B a.val ∈ U i.succ := by
+    intro ⟨⟨k, j⟩, ha⟩
+    exact hU (by change k.val + 1 ≤ i.val + 1; exact ha.2) (hmem k j)
+  let l : C → U i.succ := fun a ↦ ⟨B a.val, hC a⟩
+  have he : (span K (Set.range l)).map (U i.succ).subtype =
+      span K (B '' s) ⊓ U i.succ := by
+    rw [span_lifted_basis_inf_flag U B hspan, map_span]
+    congr 1
+    ext x
+    constructor
+    · rintro ⟨_, ⟨a, rfl⟩, rfl⟩
+      exact ⟨a.val, a.property, rfl⟩
+    · rintro ⟨a, ha, rfl⟩
+      exact ⟨l ⟨a, ha⟩, ⟨⟨a, ha⟩, rfl⟩, rfl⟩
+  have hc : (span K (B '' s)).comap (U i.succ).subtype = span K (Set.range l) := by
+    have hh := congrArg (Submodule.comap (U i.succ).subtype) he
+    simpa only [comap_map_eq, ker_subtype, sup_bot_eq, comap_inf,
+      comap_subtype_self, inf_top_eq] using hh.symm
+  rw [hc, map_span]
+  apply le_antisymm
+  · apply span_le.mpr
+    rintro _ ⟨_, ⟨a, rfl⟩, rfl⟩
+    rcases a with ⟨⟨k, j⟩, ha⟩
+    by_cases hki : k = i
+    · subst k
+      change ((U i.castSucc).comap (U i.succ).subtype).mkQ
+        ⟨B ⟨i, j⟩, _⟩ ∈ _
+      rw [hquot]
+      exact subset_span ⟨j, ha.1, rfl⟩
+    · have hki' : k.succ ≤ i.castSucc := by
+        have hne : k.val ≠ i.val := fun h ↦ hki (Fin.ext h)
+        have hle : k.val < i.val + 1 := ha.2
+        change k.val + 1 ≤ i.val
+        omega
+      have hz : ((U i.castSucc).comap (U i.succ).subtype).mkQ
+          (l ⟨⟨k, j⟩, ha⟩) = 0 := by
+        apply (Quotient.mk_eq_zero _).mpr
+        exact hU hki' (hmem k j)
+      rw [hz]
+      exact zero_mem _
+  · apply span_le.mpr
+    rintro _ ⟨j, hj, rfl⟩
+    have ha : (⟨i, j⟩ : Σ k, ι k) ∈ C := ⟨hj, Nat.lt_succ_self _⟩
+    apply subset_span
+    refine ⟨l ⟨⟨i, j⟩, ha⟩, ⟨⟨⟨i, j⟩, ha⟩, rfl⟩, ?_⟩
+    exact hquot i j
+
+end QuotientCuts
+
+section Weights
+
+variable {ι : Type*} (B : Basis ι K E) (w : ι → ℝ)
+
+/-- Weighted spans decrease with the threshold. -/
+theorem antitone_span_weights : Antitone (fun t : ℝ ↦ span K (B '' {a | t ≤ w a})) := by
+  intro s t hst
+  exact span_mono (Set.image_mono (fun _ hi ↦ hst.trans hi))
+
+variable [Finite ι]
+
+/-- A finite weighted basis gives both extreme cuts, including an empty basis. -/
+theorem span_weights_attains_bot_top :
+    (∃ t : ℝ, span K (B '' {a | t ≤ w a}) = ⊥) ∧
+    (∃ t : ℝ, span K (B '' {a | t ≤ w a}) = ⊤) := by
+  obtain ⟨u, hu⟩ := (Set.finite_range w).bddAbove
+  obtain ⟨l, hl⟩ := (Set.finite_range w).bddBelow
+  constructor
+  · refine ⟨u + 1, ?_⟩
+    have he : {a | u + 1 ≤ w a} = ∅ := by
+      apply Set.eq_empty_iff_forall_notMem.mpr
+      intro a ha
+      have h := hu (Set.mem_range_self a)
+      change u + 1 ≤ w a at ha
+      linarith
+    rw [he, Set.image_empty, span_empty]
+  · refine ⟨l, ?_⟩
+    have he : {a | l ≤ w a} = Set.univ :=
+      Set.eq_univ_iff_forall.mpr fun a ↦ hl (Set.mem_range_self a)
+    rw [he, Set.image_univ, B.span_eq]
+
+/-- Included weighted cuts are constant on a genuine left interval at every threshold. -/
+theorem span_weights_locallyConstant_left (t : ℝ) :
+    ∃ ε > 0, ∀ s, t - ε < s → s ≤ t →
+      span K (B '' {a | s ≤ w a}) = span K (B '' {a | t ≤ w a}) := by
+  let A := Set.range w ∩ Set.Iio t
+  have hA : A.Finite := (Set.finite_range w).subset Set.inter_subset_left
+  have hgap : ∃ ε > 0, ∀ a, w a < t → w a ≤ t - ε := by
+    by_cases hn : A.Nonempty
+    · have hm : sSup A ∈ A := hn.csSup_mem hA
+      refine ⟨t - sSup A, sub_pos.mpr hm.2, ?_⟩
+      intro a ha
+      have h := le_csSup hA.bddAbove (show w a ∈ A from ⟨Set.mem_range_self a, ha⟩)
+      linarith
+    · exact ⟨1, zero_lt_one, fun a ha ↦ (hn ⟨w a, Set.mem_range_self a, ha⟩).elim⟩
+  obtain ⟨ε, hε, hgap⟩ := hgap
+  refine ⟨ε, hε, fun s hs hst ↦ ?_⟩
+  congr 2
+  ext a
+  constructor
+  · intro ha
+    by_contra ht
+    have h := hgap a (lt_of_not_ge ht)
+    change s ≤ w a at ha
+    linarith
+  · exact fun ha ↦ hst.trans ha
+
+end Weights
+
+section WeightedLift
+
+variable [FiniteDimensional K E] {n : ℕ}
+  (U : Fin (n + 1) → Submodule K E) (hU : Monotone U) (hzero : U 0 = ⊥)
+  (htop : U (Fin.last n) = ⊤) {ι : Fin n → Type*}
+  (b : ∀ i, Basis (ι i) K ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype))
+  (w : ∀ i, ι i → ℝ)
+
+include hU hzero htop in
+/-- Prescribed weighted quotient bases lift without changing a single weight.
+Every threshold on the actual quotient agrees with its prescribed weighted span. -/
+theorem exists_basis_lifting_weighted_quotients :
+    ∃ (B : Basis (Σ i, ι i) K E) (hB : ∀ i j, B ⟨i, j⟩ ∈ U i.succ),
+      (∀ i j, ((U i.castSucc).comap (U i.succ).subtype).mkQ
+        ⟨B ⟨i, j⟩, hB i j⟩ = b i j) ∧
+      (∀ k : Fin (n + 1), span K (B '' {a | a.1.val < k.val}) = U k) ∧
+      ∀ i t, ((span K (B '' {a | t ≤ w a.1 a.2})).comap (U i.succ).subtype).map
+        ((U i.castSucc).comap (U i.succ).subtype).mkQ =
+          span K (b i '' {j | t ≤ w i j}) := by
+  obtain ⟨B, hB, hquot, hspan⟩ := exists_basis_lifting_flag_quotients U b hU hzero htop
+  exact ⟨B, hB, hquot, hspan, fun i t ↦
+    map_comap_span_lifted_basis U hU b B hB hquot hspan {a | t ≤ w a.1 a.2} i⟩
+
+end WeightedLift
 
 end Submodule
