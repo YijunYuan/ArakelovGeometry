@@ -5,19 +5,94 @@
 [![mathlib](https://img.shields.io/badge/mathlib-v4.35.0-5C2D91)](https://github.com/leanprover-community/mathlib4)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 
-A Lean 4 formalization of Huayi Chen and Atsushi Moriwaki,
-*Arakelov Geometry over Adelic Curves* (Lecture Notes in Mathematics 2258, Springer, 2020),
-built on mathlib and the [HarderNarasimhan library](https://github.com/YijunYuan/HarderNarasimhan).
+The `lite` branch develops the Chen–Moriwaki foundations needed by the main theorem
+of [bost.pdf](bost.pdf), *Rectangular Specht lattices and tensor semistability —
+A proposed proof over adelic curves of characteristic zero* (10 November 2026).
+It builds on mathlib and the
+[HarderNarasimhan library](https://github.com/YijunYuan/HarderNarasimhan), reusing
+results from Huayi Chen and Atsushi Moriwaki, *Arakelov Geometry over Adelic Curves*
+(Lecture Notes in Mathematics 2258, Springer, 2020).
+
+## The lite branch's consumer contract
+
+The deliverable is a complete, lightweight foundation for the Chen–Moriwaki
+inputs actually used in Bost Theorem 1.1. Coverage of the entire book is not a
+completion criterion. The theorem's proper adelic curve, countable characteristic-zero
+field, positive-rank Hermitian factors, and actual completed norms remain part of
+the contract. In particular, a number-field-only result does not discharge this goal.
+
+Use [todo.md](todo.md) as the demand ledger. Each specialization or weaker replacement
+must explain in its Lean module/declaration docstrings and here: the source result,
+the retained statement, the omitted generality, the Bost page/formula that consumes
+it, and the mathematical reason it suffices. A missing bridge is an open obligation,
+not an implicit hypothesis. Already checked stronger results remain available.
+
+The local paper is named `bost.pdf` (35 pages; SHA256
+`2b8639841b17e421a9a62bf32d158e1bb5529dfe37d286a0dc830e35019a4c57`);
+it is the paper referred to as `bost_conjecture.pdf` in the workspace instructions.
+
+| Input | Retained scope and status | Why this suffices for Bost |
+| --- | --- | --- |
+| A1: tensor duality | Actual completed-fibre duality, tensor powers of arbitrary degree, and the required permutations/regroupings; final assembly remains in progress. | Section 6, (40)–(43), uses arbitrary vectors and unbounded auxiliary degree. No separate arbitrary-block grouping theory is required. |
+| A2: geometric semistability | The finite-dimensional Plücker, quotient determinant and projective interfaces are checked. The stronger SL/GL comparison already proved is retained. | Pages 26–28 need actual positive-degree homogeneous invariants and the dual quotient point. The binary main proof uses SL(E) × SL(F), without a general scheme-theoretic GIT quotient. |
+| A3: common adapted bases | The arbitrary two-filtration theorem is checked and retained. | Pages 28–32 need a basis shared by a primary filtration and the chosen HN lift. Simultaneous adaptation to an arbitrary family is unnecessary. |
+| A4: numerical operations | Intrinsic expectation, pairing, centering and fixed-basis real variation are checked. | Page 32, (48), uses these linear/quadratic identities; no additional geometry of the full filtration space is needed. |
+| A5: tensor and quotient filtrations | The binary canonical graded decomposition, quotient maps, actual norm correspondence and naturality are checked. Existing finite-family weight formulas are retained; additional finite-family graded refinement is deferred. | Pages 28–30, (44) and (46), use two factors, collisions of total weights, and the original quotient weights. The finite-family conclusion of Theorem 1.1 is obtained by binary iteration on page 32. |
+| A6: graded norm comparison | The revised target is componentwise canonical graded contractions plus the finite-image HN degree estimate below; implementation is in progress. | This replaces the whole orthogonal-direct-sum norm argument in Lemmas 7.1 and 7.2 while preserving their numerical conclusions. Componentwise contraction is not asserted to imply l2-sum contraction. |
+| A7: lifting filtrations | Actual prescribed quotient lifts and their HN specialization are checked, with expectation and weighted pairing formulas. | Pages 29 and 32 need a chosen lift of the subquotient HN filtrations. A canonical or unique lift is unnecessary; the ambient HN filtration cannot replace this construction. |
+| A8: instability input | Only the binary, specific tensor/determinant representation and the direction from geometric instability to a K-defined negative centered candidate are required. Cartan is checked; the full bridge remains open. | The geometrically semistable case is handled by Section 6; page 31 needs the unstable direction. Integer/rational weights suffice for this initial candidate. A full two-way real-weight HM theorem is unnecessary. |
+| A9: optimal filtration | Given an actual negative candidate, construct a negative normalized minimum across all actual bases/filtrations and the needed right variation. Work remains in progress. | Pages 31–32 use existence and the HN-lift variation, not the full CM inequality (5.13) or a public uniqueness theorem. If uniqueness is used internally for A8 descent, that lemma remains an explicit obligation. |
+
+### The A6 replacement argument
+
+For finitely many actual completed contractions `f_i : C_i → Q` whose images span
+`Q`, let `S^λ Q = Σ_i f_i(HN(C_i)^λ)`. For each fixed `λ`, the nonzero source HN
+grades are semistable of slope `λ`. Their induced maps to `gr_S^λ Q` contract and
+their images span. Accumulating these images gives a finite flag whose nonzero
+adjacent actual quotients are surjective contraction images of those source grades.
+The existing surjective slope comparison and Hermitian flag degree additivity give
+`deg(Q) ≥ Σ_λ λ dim(gr_S^λ Q)`, hence `μ(Q) ≥ e(S)` for nonzero `Q`.
+
+This proves the degree bound needed in Lemma 7.2 after identifying `S` with its
+secondary-weight image filtration, using the explicitly stated smaller-rank tensor
+HN induction hypothesis. The same image-flag argument applied to arbitrary target
+quotients supplies Lemma 7.1. The Lean work must still establish strict-right-limit
+compatibility, actual subquotient contraction, zero-image cases and that filtration
+identification. This is an independently reviewed proof plan, not a claim that its
+new Lean consumers have already passed. See
+[graded-tensor-contraction.tex](blueprint/src/graded-tensor-contraction.tex).
+
+Real weights remain necessary for A4–A7 and A9: the secondary weights are actual
+HN slopes, and page 32 varies by a real parameter. Restricting the compactness and
+variation argument to rational weights would require additional proofs. Likewise,
+a minimum in one fixed basis is insufficient; A9 must minimize over the finite
+collection of support types realized by all actual bases.
+
+## Selected external results
+
+New external transplants belong in [ExternalResults/](ExternalResults/README.md),
+not in a dependency on an entire donor project. Select only a needed theorem and
+its unavoidable source dependencies, first checking whether mathlib or the existing
+HarderNarasimhan dependency already supplies them. Record upstream URL and fixed
+commit, license, exact original statement, local changes, the Bost consumer, and
+build/axiom evidence in each donor's provenance record. The Lean docstrings must
+also disclose any specialization or weakening and explain its sufficiency.
+
+The initial candidates are the small Stacks DVR-specialization closure and selected
+TauCeti SL/invariant tools. They have been surveyed, not yet certified as local
+dependencies. In particular, a DVR specialization does not by itself prove
+Hilbert–Mumford, and an invariant-lifting theorem with an abstract linear-reductivity
+hypothesis does not establish that hypothesis for the concrete binary SL group.
 
 ## Current scope
 
 Status updated: **2026-11-11**.
 
-This snapshot contains **749 Lean source files, including the library entry point**.
-The main development covers adelic curves in Chapter 3 and a substantial part of
+The retained development covers adelic curves in Chapter 3 and a substantial part of
 adelic vector bundles, degrees, slopes and number-field models in Chapter 4.
 Selected prerequisites from Chapters 1 and 2 are also implemented.
-**Chapter 4 is not complete.** The outstanding results are listed below; a
+**Chapter 4 is not complete.** The historical library inventory below records broader
+coverage and gaps; those gaps are lite-branch tasks only when a Bost consumer needs them. A
 constructed interface or an auxiliary lemma is not counted as its consumer theorem.
 
 An adelic curve consists of a field, a measure space of places, and absolute values
