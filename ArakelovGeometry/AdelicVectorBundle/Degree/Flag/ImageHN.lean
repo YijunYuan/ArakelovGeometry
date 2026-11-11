@@ -9,6 +9,8 @@ public import ArakelovGeometry.AdelicVectorBundle.Tensor.Graded
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HNLift
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.Hermitian
 public import ArakelovGeometry.AdelicVectorBundle.Slope.LinearMap
+import ArakelovGeometry.AdelicVectorBundle.Degree.Supermodular
+import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.Semistability
 
 /-!
 # Finite images of actual Harder--Narasimhan filtrations
@@ -102,6 +104,7 @@ theorem imageFiltration_left (f : ∀ i, C i →ₗ[K] Q)
   · have : IsEmpty ι := not_nonempty_iff.mp hn
     exact ⟨1, zero_lt_one, fun _ _ _ ↦ by simp [imageFiltration]⟩
 
+omit [Finite ι] in
 /-- The canonical maps from the source grades jointly span the actual image
 grade. No splitting of any source or target filtration is chosen. -/
 theorem imageFiltration_graded_range (f : ∀ i, C i →ₗ[K] Q)
@@ -117,7 +120,10 @@ theorem imageFiltration_graded_range (f : ∀ i, C i →ₗ[K] Q)
       apply (le_iSup (fun i ↦
         (filtrationGradedMap (f i) (le_comap_imageFiltration f H i) t).range) i)
       exact ⟨filtrationGradedMk (H i) t ⟨y, hy⟩, rfl⟩
-    | zero => simpa using R.zero_mem
+    | zero =>
+      change filtrationGradedMk (imageFiltration f H) t 0 ∈ R
+      rw [map_zero]
+      exact R.zero_mem
     | add x y hx hy ihx ihy =>
       change filtrationGradedMk (imageFiltration f H) t (⟨x, hx⟩ + ⟨y, hy⟩) ∈ R
       rw [map_add]
@@ -129,3 +135,265 @@ theorem imageFiltration_graded_range (f : ∀ i, C i →ₗ[K] Q)
   exact hm x x.property
 
 end Submodule
+
+namespace Submodule
+
+variable {K Q : Type*} [Field K] [AddCommGroup Q] [Module K Q]
+  {n : ℕ} {D : Fin n → Type*} [∀ i, AddCommGroup (D i)] [∀ i, Module K (D i)]
+
+/-- The flag obtained by successively adjoining the actual images. -/
+noncomputable def imageFlag (f : ∀ i, D i →ₗ[K] Q) (k : Fin (n + 1)) : Submodule K Q :=
+  ⨆ (i : Fin n) (_ : i.val < k.val), (f i).range
+
+theorem imageFlag_monotone (f : ∀ i, D i →ₗ[K] Q) : Monotone (imageFlag f) := by
+  intro k l hkl
+  exact iSup_le fun i ↦ iSup_le fun hi ↦ le_iSup_of_le i (le_iSup_of_le (hi.trans_le hkl) le_rfl)
+
+theorem imageFlag_zero (f : ∀ i, D i →ₗ[K] Q) : imageFlag f 0 = ⊥ := by
+  simp [imageFlag]
+
+theorem imageFlag_last (f : ∀ i, D i →ₗ[K] Q) : imageFlag f (Fin.last n) = ⨆ i, (f i).range := by
+  simp [imageFlag]
+
+theorem imageFlag_succ (f : ∀ i, D i →ₗ[K] Q) (i : Fin n) :
+    imageFlag f i.succ = imageFlag f i.castSucc ⊔ (f i).range := by
+  apply le_antisymm
+  · apply iSup_le
+    intro j
+    apply iSup_le
+    intro hj
+    by_cases hji : j = i
+    · subst j
+      exact le_sup_right
+    · have hlt : j.val < i.val := by
+        have hne : j.val ≠ i.val := fun h ↦ hji (Fin.ext h)
+        simp only [Fin.val_succ] at hj
+        omega
+      have hmem : (f j).range ≤ imageFlag f i.castSucc :=
+        le_iSup_of_le j (le_iSup_of_le (show j.val < i.castSucc.val from hlt) le_rfl)
+      exact hmem.trans le_sup_left
+  · apply sup_le
+    · exact imageFlag_monotone f i.castSucc_le_succ
+    · exact le_iSup_of_le i (le_iSup_of_le (Nat.lt_succ_self _) le_rfl)
+
+/-- The next source maps canonically to the next accumulated image. -/
+noncomputable def imageFlagStep (f : ∀ i, D i →ₗ[K] Q) (i : Fin n) :
+    D i →ₗ[K] imageFlag f i.succ :=
+  (f i).codRestrict _ (fun x ↦ by
+    apply mem_iSup_of_mem i
+    apply mem_iSup_of_mem (show i.val < i.succ.val from Nat.lt_succ_self _)
+    exact ⟨x, rfl⟩)
+
+/-- The actual adjacent image-flag quotient receives the source canonically. -/
+noncomputable def imageFlagQuotientMap (f : ∀ i, D i →ₗ[K] Q) (i : Fin n) :
+    D i →ₗ[K] ((imageFlag f i.succ) ⧸
+      (imageFlag f i.castSucc).comap (imageFlag f i.succ).subtype) :=
+  ((imageFlag f i.castSucc).comap (imageFlag f i.succ).subtype).mkQ.comp (imageFlagStep f i)
+
+/-- Every adjacent actual quotient is a surjective image of the newly
+adjoined source, including repeated flag steps. -/
+theorem imageFlagQuotientMap_surjective (f : ∀ i, D i →ₗ[K] Q) (i : Fin n) :
+    Function.Surjective (imageFlagQuotientMap f i) := by
+  intro z
+  obtain ⟨x, rfl⟩ := ((imageFlag f i.castSucc).comap (imageFlag f i.succ).subtype).mkQ_surjective z
+  have hx : (x : Q) ∈ imageFlag f i.castSucc ⊔ (f i).range :=
+    (imageFlag_succ f i).le x.property
+  obtain ⟨a, ha, b, ⟨y, rfl⟩, hab⟩ := mem_sup.mp hx
+  refine ⟨y, ?_⟩
+  apply (Submodule.Quotient.eq _).mpr
+  change f i y - (x : Q) ∈ imageFlag f i.castSucc
+  rw [← hab]
+  convert (imageFlag f i.castSucc).neg_mem ha using 1 <;> abel
+
+end Submodule
+
+namespace ArakelovGeometry.AdelicVectorBundle
+
+variable {K : Type*} [Field K] {S : AdelicStructure K}
+  {E Q : Type*} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
+
+/-- The adelic bundle on the canonical grade, with the actual restriction
+followed by quotient norms. -/
+noncomputable def filtrationGraded (V : AdelicVectorBundle S E)
+    (F : ℝ → Submodule K E) (t : ℝ)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield) :
+    AdelicVectorBundle S (Submodule.FiltrationGraded F t) :=
+  (V.restrictOfMeasurableBase (F t) hS).quotientOfMeasurableBase
+    ((Submodule.filtrationRightLimit F t).comap (F t).subtype) hS
+
+variable [S.IsProper]
+
+/-- A semistable source of slope `a` maps contractively onto an actual target
+of degree at least `a` times its rank. Rank-zero targets are included. This
+is the one-step degree argument in the adapted Bost Lemma 7.1 proof. -/
+theorem degree_ge_of_semistable_surjective_contraction
+    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S Q)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hV : V.toNormFamily.IsHermitian hN) (a : ℝ)
+    (hsemi : V.IsMeanSlopeSemistable hS hN) (ha : V.slope hS hN = a)
+    (f : E →ₗ[K] Q) (hs : Function.Surjective f)
+    (hf : ∀ ω x, W.toNormFamily.norm ω (f.baseChange (S.ϕ ω).Completion x) ≤
+      V.toNormFamily.norm ω x) :
+    a * (Module.finrank K Q : ℝ) ≤ W.degree hS hN := by
+  by_cases hr : Module.finrank K Q = 0
+  · rw [hr, Nat.cast_zero, mul_zero, W.degree_eq_zero_of_finrank_eq_zero hS hN hr]
+  · have hh := V.mapHeight_le_zero_of_completed_contraction W f hf
+    have hm := V.minimalSlope_le_slope_add_mapHeight_of_surjective W hS hN f hs
+      (Nat.pos_of_ne_zero hr)
+    have he := (V.isMeanSlopeSemistable_iff_minimalSlope_eq_slope_of_isHermitian
+      hS hN hV hsemi.1).mp hsemi
+    rw [he, ha] at hm
+    have hw : a ≤ W.slope hS hN := EReal.coe_le_coe_iff.mp
+      (hm.trans (by simpa [add_comm] using add_le_add_left hh (W.slope hS hN : EReal)))
+    rw [W.degree_eq_rank_mul_slope hS hN, mul_comm a]
+    exact mul_le_mul_of_nonneg_left hw (Nat.cast_nonneg _)
+
+section ImageFlag
+
+variable {n : ℕ} {D : Fin n → Type*} [∀ i, AddCommGroup (D i)]
+  [∀ i, Module K (D i)] [∀ i, FiniteDimensional K (D i)]
+
+/-- The newly adjoined source contracts onto the actual adjacent image-flag
+quotient, with the norms inherited from the original target bundle. -/
+theorem imageFlagQuotientMap_norm_le
+    (V : ∀ i, AdelicVectorBundle S (D i)) (W : AdelicVectorBundle S Q)
+    (f : ∀ i, D i →ₗ[K] Q)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    (hf : ∀ i ω x, W.toNormFamily.norm ω ((f i).baseChange (S.ϕ ω).Completion x) ≤
+      (V i).toNormFamily.norm ω x) (i : Fin n) (ω : S.Ω)
+    (z : (S.ϕ ω).Completion ⊗[K] D i) :
+    (W.flagQuotientOfMeasurableBase (Submodule.imageFlag f) hS i).toNormFamily.norm ω
+      ((Submodule.imageFlagQuotientMap f i).baseChange (S.ϕ ω).Completion z) ≤
+        (V i).toNormFamily.norm ω z := by
+  have hc : (Submodule.imageFlag f i.succ).subtype.comp
+      (Submodule.imageFlagStep f i) = f i := by ext x; rfl
+  have he := DFunLike.congr_fun
+    (congrArg (fun g ↦ g.baseChange (S.ϕ ω).Completion) hc) z
+  simp only [LinearMap.baseChange_comp, LinearMap.comp_apply] at he
+  change ((W.toNormFamily.restrict (Submodule.imageFlag f i.succ)).quotient _).norm ω
+    (((_).mkQ.comp (Submodule.imageFlagStep f i)).baseChange (S.ϕ ω).Completion z) ≤ _
+  simp only [LinearMap.baseChange_comp, LinearMap.comp_apply]
+  apply ((W.toNormFamily.restrict (Submodule.imageFlag f i.succ)).quotient_norm_mk_le _ ω _).trans
+  simpa only [NormFamily.restrict_norm, he] using hf i ω z
+
+/-- The componentwise form of Bost Lemma 7.1: finitely many zero or semistable
+sources of slope `a`, mapping contractively with spanning images into an actual
+Hermitian target, force degree at least `a` times rank. The proof uses the
+actual accumulated-image flag, not a norm on their direct sum. -/
+theorem degree_ge_of_same_slope_spanning_contractions
+    (V : ∀ i, AdelicVectorBundle S (D i)) (W : AdelicVectorBundle S Q)
+    (f : ∀ i, D i →ₗ[K] Q)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hV : ∀ i, (V i).toNormFamily.IsHermitian hN) (hW : W.toNormFamily.IsHermitian hN)
+    (a : ℝ)
+    (hsemi : ∀ i, Module.finrank K (D i) = 0 ∨
+      ((V i).IsMeanSlopeSemistable hS hN ∧ (V i).slope hS hN = a))
+    (hspan : (⨆ i, (f i).range) = ⊤)
+    (hf : ∀ i ω x, W.toNormFamily.norm ω ((f i).baseChange (S.ϕ ω).Completion x) ≤
+      (V i).toNormFamily.norm ω x) :
+    a * (Module.finrank K Q : ℝ) ≤ W.degree hS hN := by
+  let F := Submodule.imageFlag f
+  have hF := Submodule.imageFlag_monotone f
+  have hzero := Submodule.imageFlag_zero f
+  have htop : F (Fin.last n) = ⊤ := (Submodule.imageFlag_last f).trans hspan
+  have hd (i : Fin n) :
+      a * (Module.finrank K ((F i.succ) ⧸ (F i.castSucc).comap (F i.succ).subtype) : ℝ) ≤
+        (W.flagQuotientOfMeasurableBase F hS i).degree hS hN := by
+    have hs := Submodule.imageFlagQuotientMap_surjective f i
+    rcases hsemi i with hz | ⟨hss, ha⟩
+    · have hr : Module.finrank K ((F i.succ) ⧸ (F i.castSucc).comap (F i.succ).subtype) = 0 :=
+        Nat.eq_zero_of_le_zero (hz ▸ LinearMap.finrank_le_finrank_of_surjective hs)
+      rw [hr, Nat.cast_zero, mul_zero,
+        (W.flagQuotientOfMeasurableBase F hS i).degree_eq_zero_of_finrank_eq_zero hS hN hr]
+    · exact degree_ge_of_semistable_surjective_contraction (V i) _ hS hN (hV i) a hss ha
+        (Submodule.imageFlagQuotientMap f i) hs (imageFlagQuotientMap_norm_le V W f hS hf i)
+  have hr : (∑ i : Fin n, Module.finrank K
+      ((F i.succ) ⧸ (F i.castSucc).comap (F i.succ).subtype)) = Module.finrank K Q := by
+    have h := Submodule.card_flag_quotient_basis F (fun i ↦ Module.finBasis K
+      ((F i.succ) ⧸ (F i.castSucc).comap (F i.succ).subtype)) hF hzero
+    simpa only [Fintype.card_sigma, Fintype.card_fin, htop, finrank_top] using h
+  calc
+    _ = ∑ i : Fin n, a * (Module.finrank K
+        ((F i.succ) ⧸ (F i.castSucc).comap (F i.succ).subtype) : ℝ) := by
+      rw [← Finset.mul_sum, ← Nat.cast_sum, hr]
+    _ ≤ ∑ i : Fin n, (W.flagQuotientOfMeasurableBase F hS i).degree hS hN :=
+      Finset.sum_le_sum fun i _ ↦ hd i
+    _ = W.degree hS hN := W.sum_flagQuotient_degree_eq_of_isHermitian
+      F hF hzero htop hS hN hW
+
+end ImageFlag
+
+variable {ι : Type*} {C : ι → Type*} [∀ i, AddCommGroup (C i)]
+  [∀ i, Module K (C i)] [∀ i, FiniteDimensional K (C i)]
+
+omit [FiniteDimensional K Q] in
+/-- For a finite family of actual Hermitian bundles, its common HN image is
+a finite real filtration whenever the images span the target. The source
+bundles need not have equal slopes. -/
+theorem hermitianHN_imageFiltration_finite [Finite ι]
+    (V : ∀ i, AdelicVectorBundle S (C i)) (f : ∀ i, C i →ₗ[K] Q)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hV : ∀ i, (V i).toNormFamily.IsHermitian hN)
+    (hspan : (⨆ i, (f i).range) = ⊤) :
+    let F := Submodule.imageFiltration f (fun i ↦ (V i).hermitianHNFiltration hS hN (hV i))
+    Antitone F ∧ (∃ t, F t = ⊥) ∧ (∃ t, F t = ⊤) ∧
+      ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t := by
+  let H := fun i ↦ (V i).hermitianHNFiltration hS hN (hV i)
+  have hH : ∀ i, Antitone (H i) := fun i ↦
+    (V i).hermitianHNFiltration_antitone hS hN (hV i)
+  refine ⟨Submodule.imageFiltration_antitone f H hH,
+    Submodule.imageFiltration_exists_bot f H hH ?_,
+    Submodule.imageFiltration_exists_top f H hH ?_ hspan,
+    Submodule.imageFiltration_left f H ?_⟩
+  · intro i
+    obtain ⟨t, ht⟩ := (V i).hermitianHNFiltration_separated hS hN (hV i)
+    exact ⟨t + 1, ht _ (by linarith)⟩
+  · intro i
+    obtain ⟨t, ht⟩ := (V i).hermitianHNFiltration_exhaustive hS hN (hV i)
+    exact ⟨t, ht _ le_rfl⟩
+  · intro i t
+    obtain ⟨δ, hδ, hd⟩ := (V i).hermitianHNFiltration_locallyConstantLeft hS hN (hV i) t
+    refine ⟨δ, hδ, fun s hs hst ↦ ?_⟩
+    simpa using hd (t - s) (by linarith) (by linarith)
+
+/-- The canonical maps into the common HN image grade contract its original
+actual subquotient norms. No same-slope premise is imposed on the sources. -/
+theorem hermitianHN_imageFiltration_gradedMap_norm_le
+    (V : ∀ i, AdelicVectorBundle S (C i)) (W : AdelicVectorBundle S Q)
+    (f : ∀ i, C i →ₗ[K] Q)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hV : ∀ i, (V i).toNormFamily.IsHermitian hN)
+    (hf : ∀ i ω x, W.toNormFamily.norm ω ((f i).baseChange (S.ϕ ω).Completion x) ≤
+      (V i).toNormFamily.norm ω x) (i : ι) (t : ℝ) (ω : S.Ω)
+    (z : (S.ϕ ω).Completion ⊗[K]
+      Submodule.FiltrationGraded ((V i).hermitianHNFiltration hS hN (hV i)) t) :
+    let H := fun i ↦ (V i).hermitianHNFiltration hS hN (hV i)
+    (W.filtrationGraded (Submodule.imageFiltration f H) t hS).toNormFamily.norm ω
+      ((Submodule.filtrationGradedMap (f i) (Submodule.le_comap_imageFiltration f H i) t).baseChange
+        (S.ϕ ω).Completion z) ≤
+      ((V i).filtrationGraded (H i) t hS).toNormFamily.norm ω z :=
+  NormFamily.filtrationGradedMap_norm_le (V i).toNormFamily W.toNormFamily
+    (f i) _ t ω (hf i ω) z
+
+/-- The canonical source HN grade, with the actual norm used by the graded
+maps above, is zero or semistable of slope equal to its threshold. -/
+theorem filtrationGraded_hermitianHN_zero_or_semistable
+    (V : AdelicVectorBundle S E)
+    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hV : V.toNormFamily.IsHermitian hN) (t : ℝ) :
+    Module.finrank K (Submodule.FiltrationGraded (V.hermitianHNFiltration hS hN hV) t) = 0 ∨
+      ((V.filtrationGraded (V.hermitianHNFiltration hS hN hV) t hS).IsMeanSlopeSemistable hS hN ∧
+        (V.filtrationGraded (V.hermitianHNFiltration hS hN hV) t hS).slope hS hN = t) := by
+  have h := V.hermitianHNGradedPiece_zero_or_semistable hS hN hV t
+  unfold hermitianHNGradedPiece at h
+  dsimp only at h
+  rw [LinearMap.ker_comp, Submodule.ker_mkQ] at h
+  exact h
+
+end ArakelovGeometry.AdelicVectorBundle
