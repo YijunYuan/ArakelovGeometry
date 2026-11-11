@@ -262,7 +262,7 @@ theorem pairing_lift_eq_sum_quotient_degrees
         ∑ i, a i * (ofTrivialFiltration (F i) (hF i) (hFbot i)
           (hFtop i) (hFleft i)).degree hS hN := by
   classical
-  letI : ∀ i, Fintype (ι i) := fun i ↦ FiniteDimensional.fintypeBasisIndex (b i)
+  let : ∀ i, Fintype (ι i) := fun i ↦ FiniteDimensional.fintypeBasisIndex (b i)
   simp_rw [degree_ofTrivialFiltration_eq_sum_weights hS hN _ _ _ _ _ (b _) (w _) (hb _)]
   rw [Submodule.filtrationPairing_eq_sum_weights B (fun j ↦ a j.1)
     (fun j ↦ w j.1 j.2) (Submodule.iSup_flag_eq_span_weights U B hspan a ha) hR]
