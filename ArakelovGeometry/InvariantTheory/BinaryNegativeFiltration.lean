@@ -8,7 +8,7 @@ module
 public import Mathlib.LinearAlgebra.TensorProduct.Basis
 public import ArakelovGeometry.InvariantTheory.PolynomialSolutionDescent
 public import ArakelovGeometry.InvariantTheory.BinaryOrbitCoordinates
-public import ArakelovGeometry.InvariantTheory.DVRWeights
+public import ArakelovGeometry.InvariantTheory.BinaryOrbitDVR
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.QuotientDegree
 
 /-!
@@ -346,5 +346,101 @@ theorem exists_binary_negative_filtrations_of_extension [IsAlgClosed k]
     exact div_neg_of_neg_of_pos hn' (Nat.cast_pos.mpr hr)
 
 end OriginalQuotient
+
+section OrbitComposition
+
+universe u
+variable {k : Type u} [Field k] {ι : Bool → Type u}
+  [∀ j, Fintype (ι j)] [∀ j, DecidableEq (ι j)]
+  {Q : Type u} [AddCommGroup Q] [Module k Q] {r : ℕ}
+
+/-- The generic coefficient polynomial is exactly A8-ORBIT's original quotient
+polynomial in standard factor coordinates. This is the shared interface. -/
+theorem binaryDeterminantPolynomial_eq_orbit_polynomial
+    (q : (⨂[k] j, (ι j → k)) →ₗ[k] Q) (b : Basis (Fin r) k Q)
+    (p : BinaryTensorIndex ι r) :
+    binaryDeterminantPolynomial
+      (binaryQuotientCoefficients (fun j ↦ Pi.basisFun k (ι j)) b q) p =
+      binaryQuotientDeterminantPolynomial q b p := by
+  simp only [binaryDeterminantPolynomial, binaryQuotientCoefficients,
+    binaryQuotientDeterminantPolynomial, Pi.basisFun_apply, Basis.coord_apply]
+  rfl
+
+/-- Concrete A8-ORBIT/DVR interface: its actual coordinate quotient determinant,
+with inverse Cartan factors, reduces to the original-k polynomial value. The
+original model is proved by binaryQuotientDeterminantPolynomial_actual_eval;
+it is not inferred from the generic DVR theorem. -/
+theorem binaryQuotientDeterminantPolynomial_residue
+    {R L : Type u} [CommRing R] [IsDomain R] [IsLocalRing R]
+    [Field L] [Algebra k R] [Algebra R L] [Algebra k L]
+    [IsScalarTower k R L] [IsFractionRing R L]
+    (q : (⨂[k] j, (ι j → k)) →ₗ[k] Q) (b : Basis (Fin r) k Q)
+    (H : ∀ j, Matrix.SpecialLinearGroup (ι j) R) (p : BinaryTensorIndex ι r) (c : R)
+    (hc : Matrix.det (Matrix.of fun l t ↦ binaryQuotientCoordinateBaseChange L q b
+      (tensorSLRepresentation (k := L) (fun j ↦ ι j → L)
+        (fun j ↦ (Matrix.SpecialLinearGroup.toLin'_equiv
+          (Matrix.SpecialLinearGroup.map (algebraMap R L) (H j)))⁻¹)
+        (⨂ₜ[L] j, Pi.single (p l j) 1)) t) = algebraMap R L c) :
+    evalBinarySLPolynomial
+      (fun j ↦ Matrix.SpecialLinearGroup.map (IsLocalRing.residue R) ((H j)⁻¹))
+      (binaryDeterminantPolynomial
+        (binaryQuotientCoefficients (fun j ↦ Pi.basisFun k (ι j)) b q) p) =
+      IsLocalRing.residue R c := by
+  apply evalBinarySLPolynomial_residue_of_fraction (L := L) (fun j ↦ (H j)⁻¹)
+  rw [binaryDeterminantPolynomial_eq_orbit_polynomial]
+  exact (binaryQuotientDeterminantPolynomial_actual_eval L q b
+    (fun j ↦ Matrix.SpecialLinearGroup.map (algebraMap R L) ((H j)⁻¹)) p).trans
+      (by simpa only [map_inv] using hc)
+
+variable [IsAlgClosed k] [FiniteDimensional k Q]
+
+omit [∀ j, DecidableEq (ι j)] in
+set_option maxHeartbeats 20000 in
+/-- Polynomial closure of the actual binary quotient orbit produces genuine
+centered negative filtrations over the original algebraically closed field.
+This is the Bost p31 negative-candidate implication in standard factor coordinates;
+the coordinate quotient maps above handle arbitrary chosen factor bases. It does
+not assert optimizer descent or semistability under further field extensions. -/
+theorem exists_binary_negative_filtrations_of_orbit_closure
+    (q : (⨂[k] j, (ι j → k)) →ₗ[k] Q) (b : Basis (Fin (finrank k Q)) k Q)
+    (hq : Function.Surjective q) (hr : 0 < finrank k Q)
+    (hclosure : ∀ P : MvPolynomial (BinaryTensorIndex ι (finrank k Q)) k,
+      (∀ g : ∀ j, _root_.SpecialLinearGroup k (ι j → k),
+        MvPolynomial.eval (fun p ↦ (tensorPowerRepresentation (finrank k Q)
+          (tensorSLRepresentation (k := k) (fun j ↦ ι j → k))).dual g
+          (exteriorCovector (finrank k Q) (exteriorPower.map (finrank k Q) q.dualMap
+            (exteriorPower.ιMulti k (finrank k Q) b.coord)))
+          (binaryTensorBasis k ι (finrank k Q) p)) P = 0) → MvPolynomial.eval 0 P = 0) :
+    ∃ F : ∀ j, ℝ → Submodule k (ι j → k),
+      (∀ j, Antitone (F j) ∧ (∃ t, F j t = ⊥) ∧ (∃ t, F j t = ⊤) ∧
+        (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F j s = F j t) ∧
+        Submodule.filtrationExpectation (F j) = 0) ∧
+      Submodule.filtrationExpectation
+        (fun t ↦ (Submodule.piTensorFiltration F t).map q) < 0 ∧
+      ∃ (a : ∀ j, ι j → ℤ) (b' : ∀ j, Basis (ι j) k (ι j → k)),
+        (∀ j, ∑ i, a j i = 0) ∧
+        ∀ j t, F j t = Submodule.span k (b' j '' {i | t ≤ (a j i : ℝ)}) := by
+  classical
+  obtain ⟨d, H, a, c, ha, he, hn, _⟩ :=
+    exists_binary_quotient_negative_support_of_orbit_closure
+      (k := k) (ι := ι) (r := finrank k Q) q b hq hclosure
+  have hz (p : BinaryTensorIndex ι (finrank k Q))
+      (hp : 0 ≤ ∑ l, ∑ j, a j (p l j)) :
+      evalBinarySLPolynomial
+        (fun j ↦ Matrix.SpecialLinearGroup.map (IsLocalRing.residue d.valuationRing) ((H j)⁻¹))
+        (binaryDeterminantPolynomial
+          (binaryQuotientCoefficients (fun j ↦ Pi.basisFun k (ι j)) b q) p) = 0 := by
+    have heq := binaryQuotientDeterminantPolynomial_residue
+      (k := k) (ι := ι) (r := finrank k Q)
+      (R := d.valuationRing) (L := d.fractionField) q b H p (c p) (he p)
+    apply heq.trans
+    by_contra hne
+    exact (not_lt_of_ge hp) (hn p hne)
+  obtain ⟨F, hF, hneg, b', hb'⟩ := exists_binary_negative_filtrations_of_extension
+    (fun j ↦ Pi.basisFun k (ι j)) b q hq hr a ha
+    (fun j ↦ Matrix.SpecialLinearGroup.map (IsLocalRing.residue d.valuationRing) ((H j)⁻¹)) hz
+  exact ⟨F, hF, hneg, a, b', ha, hb'⟩
+
+end OrbitComposition
 
 end ArakelovGeometry.InvariantTheory

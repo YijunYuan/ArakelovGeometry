@@ -169,4 +169,45 @@ theorem binaryCovectorCoordinates_quotient
 
 end Coordinates
 
+section Quotient
+
+variable {k : Type*} [Field k] [CharZero k] {ι : Bool → Type*}
+  [∀ j, Fintype (ι j)]
+  {E : Bool → Type*} [∀ j, AddCommGroup (E j)] [∀ j, Module k (E j)]
+  [∀ j, FiniteDimensional k (E j)]
+  {Q : Type*} [AddCommGroup Q] [Module k Q] [FiniteDimensional k Q]
+
+/-- Actual A2 quotient nonsemistability implies nonsemistability of the specific
+determinant covector in factor coordinates. No extra nonzero certificate is
+required: the target basis supplies its nonzero determinant generator. -/
+theorem not_isPolynomialSemistable_binaryQuotientInCoordinates
+    (b : ∀ j, Basis (ι j) k (E j)) (d : Basis (Fin (finrank k Q)) k Q)
+    (q : (⨂[k] j, E j) →ₗ[k] Q)
+    (hns : ¬ IsQuotientSemistable (tensorSLRepresentation E) q) :
+    ¬ IsPolynomialSemistable (Module.Free.chooseBasis k _)
+      (tensorPowerRepresentation (finrank k Q)
+        (tensorSLRepresentation (fun j ↦ ι j → k))).dual
+      (exteriorCovector (finrank k Q)
+        (exteriorPower.map (finrank k Q) (binaryQuotientInCoordinates b q).dualMap
+          (exteriorPower.ιMulti k (finrank k Q) d.coord))) := by
+  rw [← binaryCovectorCoordinates_quotient]
+  apply not_isPolynomialSemistable_binaryCovectorCoordinates
+  intro h
+  apply hns
+  apply (isQuotientSemistable_iff_tensor (tensorSLRepresentation E) q).mpr
+  refine ⟨exteriorPower.ιMulti k (finrank k Q) d.coord, ?_, ?_⟩
+  · intro hz
+    have he := congrArg (fun z ↦ exteriorCovector (finrank k Q) z
+      (⨂ₜ[k] l, d l)) hz
+    simp only [exteriorCovector_ιMulti_tprod, map_zero, LinearMap.zero_apply] at he
+    have hm : Matrix.of (fun i j ↦ d.coord j (d i)) =
+        (1 : Matrix (Fin (finrank k Q)) (Fin (finrank k Q)) k) := by
+      ext i j
+      simp [Basis.coord_apply, Basis.repr_self, Finsupp.single_apply, Matrix.one_apply]
+    rw [hm, Matrix.det_one] at he
+    exact one_ne_zero he
+  · rwa [← exteriorCovector_map_dualMap]
+
+end Quotient
+
 end ArakelovGeometry.InvariantTheory
