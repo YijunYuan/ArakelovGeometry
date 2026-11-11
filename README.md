@@ -68,6 +68,17 @@ variation argument to rational weights would require additional proofs. Likewise
 a minimum in one fixed basis is insufficient; A9 must minimize over the finite
 collection of support types realized by all actual bases.
 
+The remaining A9 variation target is only the page-32 lower bound. For a unit
+negative optimizer, actual HN lifts give `beta ≤ 0`. Centering those lifts yields
+energy `1 + 2 beta epsilon + D epsilon²`, with `D ≥ 0`. Global optimality then
+gives the actual uncentered quotient expectation the lower bound
+`c + epsilon (mu(E) + mu(F)) + c D epsilon²`. Combining this with A6's local
+affine formula and taking arbitrarily small positive `epsilon` proves
+`delta ≥ mu(E) + mu(F)`. This planned specialization avoids a general derivative
+theory or CM (5.13), while supplying exactly the inequality used there. Its actual
+HN pairing, quotient translation and optimality consumers are being implemented;
+the scalar argument alone is not counted as their proof.
+
 ## Selected external results
 
 New external transplants belong in [ExternalResults/](ExternalResults/README.md),
