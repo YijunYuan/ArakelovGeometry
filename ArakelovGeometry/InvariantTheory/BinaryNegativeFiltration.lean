@@ -424,6 +424,15 @@ theorem exists_binary_negative_filtrations_of_orbit_closure
   obtain ⟨d, H, a, c, ha, he, hn, _⟩ :=
     exists_binary_quotient_negative_support_of_orbit_closure
       (k := k) (ι := ι) (r := finrank k Q) q b hq hclosure
+  let : CommRing d.valuationRing := d.commRing
+  let : IsDomain d.valuationRing := d.isDomain
+  let : IsDiscreteValuationRing d.valuationRing := d.isDVR
+  let : Field d.fractionField := d.field
+  let : Algebra k d.valuationRing := d.groundAlgebra
+  let : Algebra d.valuationRing d.fractionField := d.algebra
+  let : Algebra k d.fractionField := d.groundFieldAlgebra
+  let : IsScalarTower k d.valuationRing d.fractionField := d.scalarTower
+  let : IsFractionRing d.valuationRing d.fractionField := d.isFractionRing
   have hz (p : BinaryTensorIndex ι (finrank k Q))
       (hp : 0 ≤ ∑ l, ∑ j, a j (p l j)) :
       evalBinarySLPolynomial
