@@ -119,4 +119,20 @@ theorem isPolynomialSemistable_basis_iff [Finite ι] [Finite κ] (b : Module.Bas
   · exact fun h ↦ h.of_map b c ρ ρ LinearMap.id (fun _ _ ↦ rfl) v
   · exact fun h ↦ h.of_map c b ρ ρ LinearMap.id (fun _ _ ↦ rfl) v
 
+/-- Equivariant linear equivalences preserve polynomial semistability in both directions. -/
+theorem isPolynomialSemistable_equiv_iff [Finite ι] [Finite κ]
+    (b : Module.Basis ι k M) (c : Module.Basis κ k N)
+    (ρ : Representation k G M) (τ : Representation k G N)
+    (e : M ≃ₗ[k] N) (he : ∀ g x, e (ρ g x) = τ g (e x)) (v : M) :
+    IsPolynomialSemistable c τ (e v) ↔ IsPolynomialSemistable b ρ v := by
+  constructor
+  · exact fun h ↦ h.of_map c b τ ρ e.toLinearMap he v
+  · intro h
+    have hi : ∀ g x, e.symm (τ g x) = ρ g (e.symm x) := by
+      intro g x
+      apply e.injective
+      rw [e.apply_symm_apply, he, e.apply_symm_apply]
+    exact IsPolynomialSemistable.of_map b c ρ τ e.symm.toLinearMap hi (e v)
+      (by simpa using h)
+
 end ArakelovGeometry.InvariantTheory

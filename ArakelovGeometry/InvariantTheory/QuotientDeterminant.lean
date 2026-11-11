@@ -128,4 +128,29 @@ theorem exteriorCovector_map_dualMap_ne_zero [FiniteDimensional k Q] (r : ℕ)
   rw [h] at ht
   exact ht.symm
 
+/-- The canonical alternating section of the tensor-to-exterior quotient. -/
+def exteriorTensorSection [CharZero k] (r : ℕ) :
+    (⋀[k]^r W) →ₗ[k] (⨂[k]^r W) :=
+  (r.factorial : k)⁻¹ • exteriorPower.toTensorPower k W r
+
+/-- In characteristic zero the normalized alternating sum is a section. -/
+theorem tensorToExterior_section [CharZero k] (r : ℕ) (x : ⋀[k]^r W) :
+    tensorToExterior k W r (exteriorTensorSection r x) = x := by
+  have h := congrArg (fun f : (⋀[k]^r W) →ₗ[k] (⋀[k]^r W) ↦ f x)
+    (tensorToExterior_toTensorPower (k := k) (W := W) r)
+  change tensorToExterior k W r (exteriorPower.toTensorPower k W r x) =
+    (r.factorial : k) • x at h
+  simp only [exteriorTensorSection, LinearMap.smul_apply, map_smul, h, smul_smul]
+  rw [inv_mul_cancel₀ (Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero r)), one_smul]
+
+/-- The normalized section commutes with every linear map. -/
+theorem exteriorTensorSection_map [CharZero k] (r : ℕ) (f : W →ₗ[k] Q)
+    (x : ⋀[k]^r W) :
+    exteriorTensorSection r (exteriorPower.map r f x) =
+      PiTensorProduct.map (fun _ : Fin r ↦ f) (exteriorTensorSection r x) := by
+  have h := congrArg (fun g : (⋀[k]^r W) →ₗ[k] (⨂[k]^r Q) ↦ g x)
+    (toTensorPower_map r f)
+  simpa only [exteriorTensorSection, LinearMap.smul_apply, map_smul, LinearMap.comp_apply] using
+    congrArg (fun z : ⨂[k]^r Q ↦ (r.factorial : k)⁻¹ • z) h
+
 end ArakelovGeometry.InvariantTheory

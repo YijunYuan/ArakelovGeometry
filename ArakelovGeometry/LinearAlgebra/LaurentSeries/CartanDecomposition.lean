@@ -162,7 +162,40 @@ theorem exists_cartan (g : GL ι K⸨X⸩) :
   funext i
   rw [hk i, map_mul, map_pow]
   dsimp only [x]
-  rw [smul_eq_mul, ← zpow_natCast (φ PowerSeries.X) m, ← zpow_add₀ hx]
+  rw [Pi.smul_apply, smul_eq_mul, ← zpow_natCast (φ PowerSeries.X) m, ← zpow_add₀ hx]
+  simp [x]
+
+/-- The only integral unit which is a pure Laurent monomial has exponent zero. -/
+theorem exponent_eq_zero_of_eq_unit (a : ℤ) (u : K⟦X⟧ˣ)
+    (h : (algebraMap K⟦X⟧ K⸨X⸩ PowerSeries.X) ^ a =
+      algebraMap K⟦X⟧ K⸨X⸩ (u : K⟦X⟧)) : a = 0 := by
+  by_contra ha
+  have hc := congrArg (fun f : K⸨X⸩ ↦ f.coeff 0) h
+  have hu := (PowerSeries.isUnit_constantCoeff (u : K⟦X⟧) u.isUnit).ne_zero
+  apply hu
+  simpa [LaurentSeries.coe_algebraMap, ← RatFunc.single_zpow,
+    HahnSeries.coeff_single, PowerSeries.coeff_coe, ha, Ne.symm ha] using hc.symm
+
+/-- Every Cartan factorization of a determinant-one matrix has zero total exponent. -/
+theorem sum_exponents_eq_zero (P Q : GL ι K⟦X⟧) (a : ι → ℤ)
+    (h : ((P : Matrix ι ι K⟦X⟧).map (algebraMap K⟦X⟧ K⸨X⸩) *
+      diagonal (fun i ↦ (algebraMap K⟦X⟧ K⸨X⸩ PowerSeries.X) ^ a i) *
+      (Q : Matrix ι ι K⟦X⟧).map (algebraMap K⟦X⟧ K⸨X⸩)).det = 1) :
+    ∑ i, a i = 0 := by
+  let φ := algebraMap K⟦X⟧ K⸨X⸩
+  let x : K⸨X⸩ := φ PowerSeries.X
+  let u := GeneralLinearGroup.det P * GeneralLinearGroup.det Q
+  have hx : x ≠ 0 := by simp [x, φ]
+  have hprod : φ (u : K⟦X⟧) * x ^ (∑ i, a i) = 1 := by
+    rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_diagonal] at h
+    change (φ.mapMatrix (P : Matrix ι ι K⟦X⟧)).det * (∏ i, x ^ a i) *
+      (φ.mapMatrix (Q : Matrix ι ι K⟦X⟧)).det = 1 at h
+    rw [← φ.map_det, ← φ.map_det] at h
+    rw [← zpow_sum₀ hx] at h
+    simpa [u, map_mul, mul_assoc, mul_left_comm, mul_comm] using h
+  apply exponent_eq_zero_of_eq_unit (∑ i, a i) u⁻¹
+  apply mul_left_cancel₀ (u.isUnit.map φ).ne_zero
+  rw [hprod, ← map_mul]
   simp
 
 end Laurent

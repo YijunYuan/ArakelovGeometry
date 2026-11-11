@@ -246,9 +246,16 @@ def orthogonalTensorPairDualIsometry
     letI := (ξ.dual.orthogonalTensorPair η.dual hN hξ.dual hη.dual).fibreNormedAddCommGroup ω
     letI := (ξ.orthogonalTensorPair η hN hξ hη).dual.fibreNormedAddCommGroup ω
     ((S.ϕ ω).Completion ⊗[K] (Module.Dual K E ⊗[K] Module.Dual K F)) ≃ₗᵢ[(S.ϕ ω).Completion]
-      ((S.ϕ ω).Completion ⊗[K] Module.Dual K (E ⊗[K] F)) :=
-  { (TensorProduct.dualDistribEquiv K E F).baseChange K (S.ϕ ω).Completion _ _ with
-    norm_map' := orthogonalTensorPair_dual_norm ξ η hN hξ hη ω }
+      ((S.ϕ ω).Completion ⊗[K] Module.Dual K (E ⊗[K] F)) := by
+  letI := (ξ.dual.orthogonalTensorPair η.dual hN hξ.dual hη.dual).fibreNormedAddCommGroup ω
+  letI := (ξ.orthogonalTensorPair η hN hξ hη).dual.fibreNormedAddCommGroup ω
+  exact { (TensorProduct.dualDistribEquiv K E F).baseChange K (S.ϕ ω).Completion _ _ with
+    norm_map' := fun z ↦ by
+      change (ξ.orthogonalTensorPair η hN hξ hη).dual.norm ω
+        ((TensorProduct.dualDistribEquiv K E F).toLinearMap.baseChange (S.ϕ ω).Completion z) =
+        (ξ.dual.orthogonalTensorPair η.dual hN hξ.dual hη.dual).norm ω z
+      rw [TensorProduct.toLinearMap_dualDistribEquiv]
+      exact orthogonalTensorPair_dual_norm ξ η hN hξ hη ω z }
 
 end NormFamily
 
