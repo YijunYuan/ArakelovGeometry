@@ -11,6 +11,12 @@ import Mathlib.RingTheory.Localization.Integer
 The route uses Smith normal form over the power-series discrete valuation ring.
 All coefficient fields are arbitrary; this algebraic input alone does not prove
 Hilbert–Mumford or rational descent.
+
+The imported elementary-divisor input is `Submodule.smithNormalFormOfRankEq`,
+through its full-rank basis and coefficient API in `FreeModule.PID`.
+`PowerSeries.Inverse` supplies the discrete valuation ring instance;
+`LaurentSeries` supplies localization at powers of `X` and the fraction-field
+instance. No field closure or descent hypothesis enters these producers.
 -/
 
 noncomputable section
@@ -336,6 +342,118 @@ theorem constantCoeff_eq_zero_of_nonpositive_weight (a : ℤ) (ha : a ≤ 0)
     subst a
     simpa [LaurentSeries.coe_algebraMap, HahnSeries.coeff_single_mul,
       PowerSeries.coeff_coe] using hc
+
+/-- A Laurent special-linear degeneration gives a constant special-linear change
+of coordinates supported entirely in strictly positive weights. -/
+theorem exists_constant_degeneration (g : GL ι K⸨X⸩)
+    (hg : (g : Matrix ι ι K⸨X⸩).det = 1) (v : ι → K)
+    (hv : ∃ w : ι → K⟦X⟧,
+      (g : Matrix ι ι K⸨X⸩) *ᵥ (fun i ↦ algebraMap K K⸨X⸩ (v i)) =
+        fun i ↦ algebraMap K⟦X⟧ K⸨X⸩ (PowerSeries.X * w i)) :
+    ∃ (q : SpecialLinearGroup ι K) (a : ι → ℤ),
+      (∑ i, a i = 0) ∧ ∀ i, a i ≤ 0 → ((q : Matrix ι ι K) *ᵥ v) i = 0 := by
+  obtain ⟨P, Q, a, ha, h⟩ := exists_specialLinear_cartan g hg
+  obtain ⟨w, hw⟩ := hv
+  let φ := algebraMap K⟦X⟧ K⸨X⸩
+  let vR : ι → K⟦X⟧ := fun i ↦ PowerSeries.C (v i)
+  let f : ι → K⟦X⟧ := (Q : Matrix ι ι K⟦X⟧) *ᵥ vR
+  let z : ι → K⟦X⟧ := ((P⁻¹ : SpecialLinearGroup ι K⟦X⟧) : Matrix ι ι K⟦X⟧) *ᵥ w
+  let q := SpecialLinearGroup.map (PowerSeries.constantCoeff : K⟦X⟧ →+* K) Q
+  have hmap (B : Matrix ι ι K⟦X⟧) (b : ι → K⟦X⟧) :
+      (fun i ↦ φ ((B *ᵥ b) i)) = B.map φ *ᵥ (fun i ↦ φ (b i)) := by
+    funext i
+    exact φ.map_mulVec B b i
+  have hvR : (fun i ↦ φ (vR i)) = fun i ↦ algebraMap K K⸨X⸩ (v i) := by
+    funext i
+    simp [φ, vR, LaurentSeries.algebraMap_apply]
+  have hPi : (((P⁻¹ : SpecialLinearGroup ι K⟦X⟧) : Matrix ι ι K⟦X⟧).map φ) *
+      (P : Matrix ι ι K⟦X⟧).map φ = 1 := by
+    rw [← Matrix.map_mul, ← SpecialLinearGroup.coe_mul]
+    simp
+  have hdiag : diagonal (fun i ↦ (φ PowerSeries.X) ^ a i) *ᵥ (fun i ↦ φ (f i)) =
+      fun i ↦ φ (PowerSeries.X * z i) := by
+    rw [hmap]
+    have hh := congrArg
+      (fun b ↦ (((P⁻¹ : SpecialLinearGroup ι K⟦X⟧) : Matrix ι ι K⟦X⟧).map φ) *ᵥ b) hw
+    rw [h] at hh
+    have hr : (fun i ↦ φ (PowerSeries.X * w i)) =
+        φ PowerSeries.X • (fun i ↦ φ (w i)) := by
+      funext i
+      simp
+    rw [hr, mulVec_smul] at hh
+    change (((P⁻¹ : SpecialLinearGroup ι K⟦X⟧) : Matrix ι ι K⟦X⟧).map φ) *ᵥ
+      (((P : Matrix ι ι K⟦X⟧).map φ * diagonal (fun i ↦ (φ PowerSeries.X) ^ a i) *
+        (Q : Matrix ι ι K⟦X⟧).map φ) *ᵥ _) = _ at hh
+    simp only [mulVec_mulVec, ← Matrix.mul_assoc, hPi, Matrix.one_mul] at hh
+    rw [hvR]
+    convert hh using 1
+    · exact mulVec_mulVec _ _ _
+    · funext i
+      simp only [map_mul, Pi.smul_apply, smul_eq_mul]
+      congr 1
+      exact φ.map_mulVec _ w i
+  refine ⟨q, a, ha, ?_⟩
+  intro i hi
+  have hi' := congrFun hdiag i
+  simp only [mulVec_diagonal] at hi'
+  have hf := constantCoeff_eq_zero_of_nonpositive_weight (K := K) (a i) hi (f i) (z i) hi'
+  have hc := (PowerSeries.constantCoeff : K⟦X⟧ →+* K).map_mulVec
+    (Q : Matrix ι ι K⟦X⟧) vR i
+  change (((Q : Matrix ι ι K⟦X⟧).map PowerSeries.constantCoeff) *ᵥ v) i = 0
+  simpa [f, vR, Function.comp_def] using hc.symm.trans hf
+
+/-- A diagonal Laurent action tends to zero exactly when every nonzero coordinate
+has strictly positive weight. The witness is an actual integral power-series vector. -/
+theorem diagonal_degeneration_iff (a : ι → ℤ) (v : ι → K) :
+    (∃ w : ι → K⟦X⟧,
+      diagonal (fun i ↦ (algebraMap K⟦X⟧ K⸨X⸩ PowerSeries.X) ^ a i) *ᵥ
+        (fun i ↦ algebraMap K K⸨X⸩ (v i)) =
+          fun i ↦ algebraMap K⟦X⟧ K⸨X⸩ (PowerSeries.X * w i)) ↔
+      ∀ i, a i ≤ 0 → v i = 0 := by
+  constructor
+  · rintro ⟨w, hw⟩ i hi
+    have h := congrFun hw i
+    simp only [mulVec_diagonal] at h
+    have hf := constantCoeff_eq_zero_of_nonpositive_weight (K := K) (a i) hi
+      (PowerSeries.C (v i)) (w i) (by simpa [LaurentSeries.algebraMap_apply] using h)
+    simpa using hf
+  · intro hv
+    refine ⟨fun i ↦ if 0 < a i then
+      PowerSeries.X ^ ((a i).toNat - 1) * PowerSeries.C (v i) else 0, ?_⟩
+    funext i
+    rw [mulVec_diagonal]
+    by_cases hp : 0 < a i
+    · dsimp only
+      simp only [hp, ↓reduceIte]
+      have hn : (a i).toNat - 1 + 1 = (a i).toNat := by omega
+      have hz : (algebraMap K⟦X⟧ K⸨X⸩ PowerSeries.X) ^ a i =
+          (algebraMap K⟦X⟧ K⸨X⸩ PowerSeries.X) ^ (a i).toNat := by
+        simpa only [Int.toNat_of_nonneg (le_of_lt hp)] using
+          zpow_natCast (algebraMap K⟦X⟧ K⸨X⸩ PowerSeries.X) (a i).toNat
+      simp only [hz, map_mul, map_pow, ← mul_assoc, ← pow_succ', hn]
+      congr 1
+    · simp [hp, hv i (le_of_not_gt hp)]
+
+/-- The concrete one-parameter degeneration extracted from a Laurent special-linear
+degeneration, using the canonical linear equivalence of the constant SL matrix. -/
+theorem exists_oneParameter_degeneration (g : GL ι K⸨X⸩)
+    (hg : (g : Matrix ι ι K⸨X⸩).det = 1) (v : ι → K)
+    (hv : ∃ w : ι → K⟦X⟧,
+      (g : Matrix ι ι K⸨X⸩) *ᵥ (fun i ↦ algebraMap K K⸨X⸩ (v i)) =
+        fun i ↦ algebraMap K⟦X⟧ K⸨X⸩ (PowerSeries.X * w i)) :
+    ∃ (q : SpecialLinearGroup ι K) (a : ι → ℤ) (ha : ∑ i, a i = 0)
+      (w : ι → K⟦X⟧),
+      (diagonalOneParameterSL K⸨X⸩ a ha
+        (Units.mk0 (algebraMap K⟦X⟧ K⸨X⸩ PowerSeries.X) (by simp)) : Matrix ι ι K⸨X⸩) *ᵥ
+          (fun i ↦ algebraMap K K⸨X⸩ (q.toLin' v i)) =
+            fun i ↦ algebraMap K⟦X⟧ K⸨X⸩ (PowerSeries.X * w i) := by
+  obtain ⟨q, a, ha, hv'⟩ := exists_constant_degeneration g hg v hv
+  obtain ⟨w, hw⟩ := (diagonal_degeneration_iff a ((q : Matrix ι ι K) *ᵥ v)).2 hv'
+  refine ⟨q, a, ha, w, ?_⟩
+  change diagonal (fun i ↦ ((Units.mk0
+    (algebraMap K⟦X⟧ K⸨X⸩ PowerSeries.X) (by simp) ^ a i : K⸨X⸩ˣ) : K⸨X⸩)) *ᵥ
+      (fun i ↦ algebraMap K K⸨X⸩ (((q : Matrix ι ι K) *ᵥ v) i)) = _
+  simpa using hw
 
 end Laurent
 
