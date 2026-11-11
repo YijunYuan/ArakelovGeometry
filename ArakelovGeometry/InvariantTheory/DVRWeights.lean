@@ -185,4 +185,144 @@ theorem binary_quotientDeterminant_negative_weight_of_residue_ne_zero
 
 end Binary
 
+section IntegralTransport
+
+open Matrix
+
+variable {R : Type*} [CommRing R] [Algebra R L]
+variable {ι : Bool → Type*} [∀ j, Fintype (ι j)] [∀ j, DecidableEq (ι j)]
+
+/-- Canonical matrix-to-module SL transport commutes with integral vector inclusion.
+This retains the ring-map identity needed to transport the actual A2 action in
+Bost p31; the orbit and ground-field descent bridges remain separate. -/
+theorem integralSL_apply {n : Type*} [Fintype n] [DecidableEq n]
+    (P : Matrix.SpecialLinearGroup n R) (x : n → R) :
+    (Matrix.SpecialLinearGroup.toLin'_equiv
+      (Matrix.SpecialLinearGroup.map (algebraMap R L) P)).val
+        (fun i ↦ algebraMap R L (x i)) =
+      fun i ↦ algebraMap R L (((P : Matrix n n R) *ᵥ x) i) := by
+  ext i
+  exact ((algebraMap R L).map_mulVec (P : Matrix n n R) x i).symm
+
+/-- Integral SL changes preserve actual A2 tensor-power covector evaluations in
+any ideal lattice. The hypothesis is literal evaluation on all integral pure
+tensors; the proof uses the inverse integral matrices. This is the Cartan outer
+factor step for Bost p31, with orbit and residue-field descent still downstream. -/
+theorem binary_tensorPower_dual_preserves_integral_evaluations
+    (r : ℕ) (P : ∀ j, Matrix.SpecialLinearGroup (ι j) R) (I : Ideal R)
+    (f : Module.Dual L (⨂[L]^r (⨂[L] j, (ι j → L))))
+    (hf : ∀ x : Fin r → ∀ j, ι j → R, ∃ c ∈ I,
+      f (⨂ₜ[L] i, (⨂ₜ[L] j, fun k ↦ algebraMap R L (x i j k))) = algebraMap R L c)
+    (x : Fin r → ∀ j, ι j → R) :
+    ∃ c ∈ I,
+      (tensorPowerRepresentation r (tensorSLRepresentation (k := L) (fun j ↦ ι j → L))).dual
+        (fun j ↦ Matrix.SpecialLinearGroup.toLin'_equiv
+          (Matrix.SpecialLinearGroup.map (algebraMap R L) (P j))) f
+        (⨂ₜ[L] i, (⨂ₜ[L] j, fun k ↦ algebraMap R L (x i j k))) = algebraMap R L c := by
+  obtain ⟨c, hc, heq⟩ := hf (fun i j ↦ ((P j)⁻¹ : Matrix.SpecialLinearGroup (ι j) R) *ᵥ x i j)
+  refine ⟨c, hc, ?_⟩
+  change f (PiTensorProduct.map (fun _ : Fin r ↦
+    (tensorSLRepresentation (k := L) (fun j ↦ ι j → L))
+      ((fun j ↦ Matrix.SpecialLinearGroup.toLin'_equiv
+        (Matrix.SpecialLinearGroup.map (algebraMap R L) (P j)))⁻¹)) _) = _
+  rw [PiTensorProduct.map_tprod]
+  change f (⨂ₜ[L] i, PiTensorProduct.map
+    (fun j ↦ ((Matrix.SpecialLinearGroup.toLin'_equiv
+      (Matrix.SpecialLinearGroup.map (algebraMap R L) (P j)))⁻¹).val.toLinearMap)
+      (⨂ₜ[L] j, fun k ↦ algebraMap R L (x i j k))) = _
+  simp_rw [PiTensorProduct.map_tprod, LinearEquiv.coe_coe, ← map_inv,
+    integralSL_apply]
+  exact heq
+
+variable [IsDomain R] [IsDiscreteValuationRing R] [IsFractionRing R L]
+
+/-- An actual binary SL fraction-field degeneration gives integral SL changes
+whose reduced tensor-covector support has negative original weight sums. This
+retains exactly the matrix/support implication needed by Bost p31, using A2's
+actual action and the local DVR Cartan producer. The integral lattice is expressed
+by evaluation on every integral pure tensor. Nonempty residue support (primitivity),
+the actual orbit map over the ground field, and residue-field descent are separate
+bridges; in particular this statement alone does not claim Hilbert–Mumford. -/
+theorem exists_binary_cartan_negative_support {π : R} (hπ : Irreducible π)
+    (r : ℕ) (g : ∀ j, Matrix.SpecialLinearGroup (ι j) L)
+    (f : Module.Dual L (⨂[L]^r (⨂[L] j, (ι j → L))))
+    (hf : ∀ x : Fin r → ∀ j, ι j → R, ∃ c : R,
+      f (⨂ₜ[L] i, (⨂ₜ[L] j, fun k ↦ algebraMap R L (x i j k))) = algebraMap R L c)
+    (hvan : ∀ x : Fin r → ∀ j, ι j → R, ∃ c ∈ IsLocalRing.maximalIdeal R,
+      (tensorPowerRepresentation r (tensorSLRepresentation (k := L) (fun j ↦ ι j → L))).dual
+        (fun j ↦ Matrix.SpecialLinearGroup.toLin'_equiv (g j)) f
+        (⨂ₜ[L] i, (⨂ₜ[L] j, fun k ↦ algebraMap R L (x i j k))) = algebraMap R L c) :
+    ∃ (Q : ∀ j, Matrix.SpecialLinearGroup (ι j) R) (a : ∀ j, ι j → ℤ),
+      (∀ j, ∑ k, a j k = 0) ∧
+      ∀ p : Fin r → ∀ j, ι j, ∃ c : R,
+        (tensorPowerRepresentation r (tensorSLRepresentation (k := L) (fun j ↦ ι j → L))).dual
+          (fun j ↦ Matrix.SpecialLinearGroup.toLin'_equiv
+            (Matrix.SpecialLinearGroup.map (algebraMap R L) (Q j))) f
+          (⨂ₜ[L] i, (⨂ₜ[L] j, Pi.single (p i j) 1)) = algebraMap R L c ∧
+        (IsLocalRing.residue R c ≠ 0 → (∑ i, ∑ j, a j (p i j)) < 0) := by
+  classical
+  choose P Q a ha hfact using fun j ↦
+    DVRCartan.exists_specialLinear_cartan hπ (g j).toGL (g j).prop
+  let φ := algebraMap R L
+  have hπL : φ π ≠ 0 := by
+    simpa only [map_zero] using (IsFractionRing.injective R L).ne hπ.ne_zero
+  let t : Lˣ := Units.mk0 (φ π) hπL
+  let D j := LaurentCartan.diagonalOneParameterSL L (a j) (ha j) t
+  let pL j := Matrix.SpecialLinearGroup.toLin'_equiv (Matrix.SpecialLinearGroup.map φ (P j))
+  let qL j := Matrix.SpecialLinearGroup.toLin'_equiv (Matrix.SpecialLinearGroup.map φ (Q j))
+  let dL j := Matrix.SpecialLinearGroup.toLin'_equiv (D j)
+  let gL j := Matrix.SpecialLinearGroup.toLin'_equiv (g j)
+  let ρ := (tensorPowerRepresentation r
+    (tensorSLRepresentation (k := L) (fun j ↦ ι j → L))).dual
+  have hmatrix (j) : g j = Matrix.SpecialLinearGroup.map φ (P j) * D j *
+      Matrix.SpecialLinearGroup.map φ (Q j) := by
+    apply Subtype.ext
+    simpa [D, LaurentCartan.diagonalOneParameterSL, LaurentCartan.diagonalOneParameter,
+      Units.val_zpow_eq_zpow_val, t] using hfact j
+  have hgroup : gL = pL * dL * qL := by
+    funext j
+    dsimp only [gL, pL, dL, qL, Pi.mul_apply]
+    rw [hmatrix, map_mul, map_mul]
+  have hcancel : ρ dL (ρ qL f) = ρ pL⁻¹ (ρ gL f) := by
+    simp only [← Module.End.mul_apply, ← map_mul]
+    congr 1
+    rw [hgroup]
+    group
+  have hdiag (x : Fin r → ∀ j, ι j → R) : ∃ c ∈ IsLocalRing.maximalIdeal R,
+      ρ dL (ρ qL f)
+        (⨂ₜ[L] i, (⨂ₜ[L] j, fun k ↦ φ (x i j k))) = φ c := by
+    rw [hcancel]
+    simpa only [map_inv, Pi.inv_apply] using
+      binary_tensorPower_dual_preserves_integral_evaluations r (fun j ↦ (P j)⁻¹)
+        (IsLocalRing.maximalIdeal R) (ρ gL f) hvan x
+  refine ⟨Q, a, ha, ?_⟩
+  intro p
+  let xR : Fin r → ∀ j, ι j → R := fun i j ↦ Pi.single (p i j) 1
+  have hxmap (i j) : (fun k ↦ φ (xR i j k)) = Pi.single (p i j) (1 : L) := by
+    ext k
+    simp [xR, Pi.single_apply, apply_ite]
+  obtain ⟨c, -, hc⟩ := binary_tensorPower_dual_preserves_integral_evaluations
+    r Q ⊤ f (fun x ↦ by obtain ⟨c, hc⟩ := hf x; exact ⟨c, trivial, hc⟩) xR
+  change ρ qL f (⨂ₜ[L] i, (⨂ₜ[L] j, fun k ↦ φ (xR i j k))) = φ c at hc
+  simp_rw [hxmap] at hc
+  refine ⟨c, hc, ?_⟩
+  intro hres
+  apply binary_tensorPower_dual_negative_weight_of_residue_ne_zero
+    (fun j ↦ ι j → L) hπ r dL (fun i j ↦ a j (p i j))
+    (fun i j ↦ Pi.single (p i j) 1) ?_ (ρ qL f) c hc hres
+  · intro i j
+    change (diagonal (fun k ↦ ((t ^ a j k : Lˣ) : L))) *ᵥ
+      Pi.single (p i j) 1 = _
+    ext k
+    by_cases hk : k = p i j
+    · subst k; simp [mulVec_diagonal, t]
+    · simp [mulVec_diagonal, Pi.single_apply, hk]
+  · obtain ⟨z, hz, hh⟩ := hdiag xR
+    rw [hπ.maximalIdeal_eq, Ideal.mem_span_singleton] at hz
+    obtain ⟨h, rfl⟩ := hz
+    simp_rw [hxmap] at hh
+    exact ⟨h, hh⟩
+
+end IntegralTransport
+
 end ArakelovGeometry.InvariantTheory
