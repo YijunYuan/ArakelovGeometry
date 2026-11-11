@@ -255,8 +255,8 @@
   "retained_lean_file_count": 5,
   "retained_lean_line_count": 892,
   "consumer": {
-    "path": "ArakelovGeometry/InvariantTheory/TensorPowerSemisimple.lean",
-    "sha256": "46087148eaf3bdcd69a9adf86268d4576472b7e5dac7541c89f110d399497145",
+    "path": "ArakelovGeometry/InvariantTheory/TensorPower/Semisimple.lean",
+    "sha256": "b4bc8db4a234d71b1d00b590891985df864d98fc4a4c22fe1b323ef2cf51d057",
     "roots": [
       "ArakelovGeometry.InvariantTheory.tensorPowerSL_image_eq",
       "ArakelovGeometry.InvariantTheory.tensorPowerSL_isSemisimpleModule",
@@ -296,5 +296,23 @@
       "scope": "Horizon skill reconciliation and initial collection health.",
       "result": "Only skill delta is deliberate serialization correction matching runtime; retained unchanged. No collection warnings or stale scratch."
     }
-  ]
+  ],
+  "implementation_refactor_2026_11_11": {
+    "previous_consumer": {
+      "path": "ArakelovGeometry/InvariantTheory/TensorPowerSemisimple.lean",
+      "sha256": "46087148eaf3bdcd69a9adf86268d4576472b7e5dac7541c89f110d399497145",
+      "roots": [
+        "ArakelovGeometry.InvariantTheory.tensorPowerSL_image_eq",
+        "ArakelovGeometry.InvariantTheory.tensorPowerSL_isSemisimpleModule",
+        "ArakelovGeometry.InvariantTheory.tensorPowerSL_isSemisimpleRepresentation",
+        "ArakelovGeometry.InvariantTheory.tensorPowerSL_submodule_surjection_splits",
+        "ArakelovGeometry.InvariantTheory.tensorPowerSL_exists_invariant_lift"
+      ]
+    },
+    "changes": [
+      "Move consumer into TensorPower/Semisimple; normalize imports; preserve declarations and proof bodies.",
+      "Update executable axiom probe import; historical evidence retains its original module paths."
+    ],
+    "validation": "pending final build and axiom audit"
+  }
 }

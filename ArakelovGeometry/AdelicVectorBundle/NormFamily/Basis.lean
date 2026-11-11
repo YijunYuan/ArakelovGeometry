@@ -123,8 +123,8 @@ variable {S E} {ι : Type*} [Fintype ι] (b : Module.Basis ι K E)
 /-- The coordinate sum formula holds also for the empty basis. -/
 theorem ofBasisSum_norm (ω : S.Ω) (x : (S.ϕ ω).Completion ⊗[K] E) :
     (ofBasisSum S E b).norm ω x =
-      ∑ i, ‖(b.baseChange (S.ϕ ω).Completion).equivFun x i‖ := by
-  exact PiLp.norm_eq_of_L1 _
+      ∑ i, ‖(b.baseChange (S.ϕ ω).Completion).equivFun x i‖ :=
+  PiLp.norm_eq_of_L1 _
 
 /-- At finite places the mixed family is the existing coordinate supremum family. -/
 theorem ofBasisMixed_norm_of_finite (ω : S.Ω) (hω : ω ∈ S.Ωfin)

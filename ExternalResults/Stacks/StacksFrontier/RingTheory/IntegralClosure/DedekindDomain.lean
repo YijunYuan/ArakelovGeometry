@@ -1,9 +1,8 @@
 module
 
 public import ExternalResults.Stacks.StacksFrontier.RingTheory.Ideal.Over.HeightOne
-import ExternalResults.Stacks.StacksCore.Tactic.EgaSgaAttribute
 
-@[expose] public section
+import ExternalResults.Stacks.StacksCore.Tactic.EgaSgaAttribute
 
 /-!
 # Krull–Akizuki for the integral closure of a one-dimensional Noetherian domain
@@ -44,6 +43,8 @@ converse `exists_fg_codisjoint`, which is what lets one choose the finitely many
 
 * [StacksProject 09IG](https://stacks.math.columbia.edu/tag/09IG)
 -/
+
+@[expose] public section
 
 open scoped nonZeroDivisors TensorProduct
 
@@ -219,8 +220,7 @@ public theorem solution
     fun m _ => Module.Finite.trans (A ⧸ m) _
   have : IsNoetherianRing C := isNoetherianRing_of_cofg_maximal_smul_top fun m hm => by
     have := hfin m
-    rw [Ideal.smul_top_eq_map]
-    assumption
+    rwa [Ideal.smul_top_eq_map]
   have : Ring.DimensionLEOne C := Ring.DimensionLEOne.of_isIntegral A C
   have : IsIntegrallyClosed C := (isIntegrallyClosed_iff L).mpr fun {x} hx =>
     ⟨IsIntegralClosure.mk' C x (isIntegral_trans (R := A) _ hx),

@@ -92,8 +92,8 @@ theorem scalarExtension_restrict_finiteStage_norm_eq (ξ : NormFamily S E)
     let e := (Submodule.toBaseChange.toLinearEquiv L B).trans (c.submoduleMap (B.baseChange L))
     ((ξ.scalarExtension (L := L)).restrict ((B.baseChange L).map c.toLinearMap)).norm
       (scalarExtensionTowerPlace x) (e.toLinearMap.baseChange x.abv.Completion z) =
-    (((ξ.scalarExtension (L := F)).restrict B).scalarExtension (L := L)).norm x z := by
-  exact scalarExtension_restrict_tower_norm_eq ξ hN hi B _ _ rfl x z
+    (((ξ.scalarExtension (L := F)).restrict B).scalarExtension (L := L)).norm x z :=
+  scalarExtension_restrict_tower_norm_eq ξ hN hi B _ _ rfl x z
 
 /-- Every finite actual target subspace family admits one produced complexifying
 field and actual finite-stage native restrictions whose extended norms are

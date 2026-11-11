@@ -45,8 +45,8 @@ def principalAffineChart (f : 𝓞 K) :
 
 /-- The principal affine chart is an open immersion. -/
 instance principalAffineChart_isOpenImmersion (f : 𝓞 K) :
-    IsOpenImmersion (principalAffineChart f) := by
-  exact IsAffineOpen.isOpenImmersion_fromSpec (isAffineOpen_principalOpen f)
+    IsOpenImmersion (principalAffineChart f) :=
+  IsAffineOpen.isOpenImmersion_fromSpec (isAffineOpen_principalOpen f)
 
 /-- The image of the principal affine chart is the corresponding basic open. -/
 theorem basicOpen_eq_principalAffineChart_image_top (f : 𝓞 K) :

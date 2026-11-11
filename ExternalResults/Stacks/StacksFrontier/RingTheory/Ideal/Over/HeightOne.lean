@@ -1,13 +1,12 @@
 module
 
+public import ExternalResults.Stacks.StacksFrontier.RingTheory.KrullAkizuki
 public import Mathlib.RingTheory.LocalRing.ResidueField.Ideal
 public import Mathlib.RingTheory.Localization.AtPrime.Extension
 public import Mathlib.RingTheory.QuasiFinite.Basic
-public import ExternalResults.Stacks.StacksFrontier.RingTheory.KrullAkizuki
-import ExternalResults.Stacks.StacksFrontier.RingTheory.Artinian.Basic
-import ExternalResults.Stacks.StacksCore.Tactic.EgaSgaAttribute
 
-@[expose] public section
+import ExternalResults.Stacks.StacksCore.Tactic.EgaSgaAttribute
+import ExternalResults.Stacks.StacksFrontier.RingTheory.Artinian.Basic
 
 /-!
 # Generically finite maps are quasi-finite in codimension one
@@ -93,6 +92,8 @@ merely finiteness of it. (4) The instantiation is not degenerate: for `A = â„¤ â
 
 height one prime, generically finite, quasi-finite, lying over
 -/
+
+@[expose] public section
 
 section
 

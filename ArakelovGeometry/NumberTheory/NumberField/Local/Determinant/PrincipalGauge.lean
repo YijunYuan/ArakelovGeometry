@@ -43,8 +43,8 @@ omit [FiniteDimensional K E] in
 theorem rationalLocalSpan_principalModule
     (b : Module.Basis (Fin (Module.finrank K E)) K E) (p : HeightOneSpectrum (𝓞 K)) :
     rationalLocalSpan (principalModule b) p =
-      Submodule.span (principalCoefficientRing p) (Set.range b) := by
-  exact Submodule.span_span_of_tower (𝓞 K) (principalCoefficientRing p) (Set.range b)
+      Submodule.span (principalCoefficientRing p) (Set.range b) :=
+  Submodule.span_span_of_tower (𝓞 K) (principalCoefficientRing p) (Set.range b)
 
 /-- A prescribed rational basis is a basis of its actual integral local span. -/
 def principalLocalBasis

@@ -1,16 +1,15 @@
 module
 
+public import ExternalResults.Stacks.StacksCore.LinearAlgebra.Matrix.CommSemiring
 public import ExternalResults.Stacks.StacksFrontier.RingTheory.IntegralClosure.DedekindDomain
 public import ExternalResults.Stacks.StacksFrontier.RingTheory.KrullAkizuki
 public import ExternalResults.Stacks.StacksFrontier.RingTheory.Spectrum.Prime.Integral
 public import Mathlib.FieldTheory.FinTrdeg
+public import Mathlib.RingTheory.KrullDimension.Field
 public import Mathlib.RingTheory.WittVector.IsPoly
 public import Mathlib.Tactic.ReduceModChar
-public import Mathlib.RingTheory.KrullDimension.Field
-public import ExternalResults.Stacks.StacksCore.LinearAlgebra.Matrix.CommSemiring
-import ExternalResults.Stacks.StacksCore.Tactic.EgaSgaAttribute
 
-@[expose] public section
+import ExternalResults.Stacks.StacksCore.Tactic.EgaSgaAttribute
 
 /-!
 # A discrete valuation ring with prescribed fraction field dominating a Noetherian local domain
@@ -62,6 +61,8 @@ Mathlib avoids having to compute `ringKrullDim A_𝔮`.
 
 * [Stacks Project, Tag 00PH](https://stacks.math.columbia.edu/tag/00PH)
 -/
+
+@[expose] public section
 
 namespace Stacks.DiscreteValuationRing.Existence
 

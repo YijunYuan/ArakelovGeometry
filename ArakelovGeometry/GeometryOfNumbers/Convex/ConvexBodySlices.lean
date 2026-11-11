@@ -60,8 +60,8 @@ variable [NormedAddCommGroup E] [NormedSpace ℝ E]
 theorem smul_add_mem_slice {C : Set (ℝ × E)} (hC : Convex ℝ C)
     {x y : ℝ} {u v : E} (hu : u ∈ slice C x) (hv : v ∈ slice C y)
     {r s : ℝ} (hr : 0 ≤ r) (hs : 0 ≤ s) (hrs : r + s = 1) :
-    r • u + s • v ∈ slice C (r * x + s * y) := by
-  exact hC hu hv hr hs hrs
+    r • u + s • v ∈ slice C (r * x + s * y) :=
+  hC hu hv hr hs hrs
 
 theorem convex_slice {C : Set (ℝ × E)} (hC : Convex ℝ C) (x : ℝ) :
     Convex ℝ (slice C x) := by
@@ -171,8 +171,8 @@ theorem isCompact_slice {C : Set (ℝ × E)} (hC : IsCompact C) (x : ℝ) :
     (fun _ => rfl) continuous_snd (Continuous.prodMk_right x)).isCompact_preimage hC
 
 theorem interior_slice_nonempty_of_mem_interior {C : Set (ℝ × E)} {x : ℝ} {u : E}
-    (hu : (x, u) ∈ interior C) : (interior (slice C x)).Nonempty := by
-  exact ⟨u, preimage_interior_subset_interior_preimage (Continuous.prodMk_right x) hu⟩
+    (hu : (x, u) ∈ interior C) : (interior (slice C x)).Nonempty :=
+  ⟨u, preimage_interior_subset_interior_preimage (Continuous.prodMk_right x) hu⟩
 
 variable [MeasurableSpace E]
 

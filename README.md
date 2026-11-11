@@ -242,7 +242,7 @@ The invariant-theory implementation separates generic `Polynomial/` operations,
 `TensorPower/` representation theory, `DVR/` weights, and the `Binary/` instability
 argument (with orbit coordinates and degeneration in `Binary/Orbit/`).
 `Examples/Trivial/Filtration/Optimal/` contains minimization, descent and the
-geometric consumer; its `HN/` directory contains lifts and optimal variation.
+geometric consumer; the sibling `HN/` directory contains lifts and optimal variation.
 Arithmetic graded comparisons live in `Tensor/Graded/`.
 
 The former large `Tensor/HermitianDual.lean` remains a compatibility import.
@@ -545,8 +545,8 @@ constructors retain their precise additional measurability hypotheses.
 
 Supporting results are placed with their mathematical subject and use mathlib's
 existing constructions wherever applicable. Specialized files import the modules
-they use; [ArakelovGeometry.lean](ArakelovGeometry.lean) publicly imports every
-project source for complete library exports and build coverage.
+they use; [ArakelovGeometry.lean](ArakelovGeometry.lean) publicly exports the project modules, including transitive imports, for complete
+library exports and build coverage.
 
 ## References
 

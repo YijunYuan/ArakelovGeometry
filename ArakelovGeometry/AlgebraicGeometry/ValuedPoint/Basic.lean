@@ -113,8 +113,8 @@ def eval (x : ValuedPoint X) (U : X.Opens) (hx : x.point ∈ U) (s : Γ(X, U)) :
 intrinsic valued points. -/
 theorem eval_map (f : X ⟶ Y) (x : ValuedPoint X) (U : Y.Opens)
     (hx : f x.point ∈ U) (s : Γ(Y, U)) :
-    (x.map f).eval U hx s = x.eval (f ⁻¹ᵁ U) hx (f.app U s) := by
-  exact congrArg x.value (Scheme.evaluation_naturality_apply f x.point hx s)
+    (x.map f).eval U hx s = x.eval (f ⁻¹ᵁ U) hx (f.app U s) :=
+  congrArg x.value (Scheme.evaluation_naturality_apply f x.point hx s)
 
 end ValuedPoint
 

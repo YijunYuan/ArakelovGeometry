@@ -115,14 +115,14 @@ def adaptedBasis :
 
 @[simp]
 theorem adaptedBasis_inl (i : Fin (Module.finrank ℤ (intersection L U))) :
-    adaptedBasis L U (Sum.inl i) = (intersectionBasis L U i : L) := by
-  exact Basis.sumQuot_inl _ _ i
+    adaptedBasis L U (Sum.inl i) = (intersectionBasis L U i : L) :=
+  Basis.sumQuot_inl _ _ i
 
 @[simp]
 theorem adaptedBasis_quotient_inr
     (j : Fin (Module.finrank ℤ (L ⧸ intersection L U))) :
-    (intersection L U).mkQ (adaptedBasis L U (Sum.inr j)) = quotientBasis L U j := by
-  exact Basis.sumQuot_inr _ _ j
+    (intersection L U).mkQ (adaptedBasis L U (Sum.inr j)) = quotientBasis L U j :=
+  Basis.sumQuot_inr _ _ j
 
 theorem adaptedBasis_repr_inr (x : L)
     (j : Fin (Module.finrank ℤ (L ⧸ intersection L U))) :

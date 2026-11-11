@@ -9,7 +9,7 @@ four transitive axiom probes use only standard axioms, and independent semantic
 and honesty reviews passed. [Its provenance record](Stacks/provenance.json)
 contains fixed revisions, hashes, retained warnings and exact consumer boundaries.
 The local concrete orbit-map/DVR and residue-descent consumers are now checked;
-see `InvariantTheory/Binary/Orbit/DVR.lean` and `BinaryNegativeFiltration.lean`.
+see `InvariantTheory/Binary/Orbit/DVR.lean` and `InvariantTheory/Binary/NegativeFiltration.lean`.
 Their final original-field consumer is checked in
 `AdelicVectorBundle/Examples/Trivial/Filtration/Optimal/Instability.lean`.
 Upstream `StacksFrontier` is not asserted to have human review.

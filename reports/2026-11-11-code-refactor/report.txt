@@ -44,7 +44,7 @@ density consumer now uses inferInstance and passed LSP diagnostics.
 
 Layout/naming checkpoint (full integration build still pending): moved 22 modules
 into Polynomial, TensorPower, Binary/Orbit, DVR, Optimal, HN and Tensor/Graded
-subdirectories. Split the 1202-line tensor duality module into 507/260/485-line
+subdirectories. Split the 1202-line tensor duality module into 508/260/485-line
 mathematical modules, retaining its 16-line compatibility facade. The previously
 published HermitianInnerProduct path is also preserved. Updated imports and
 current README/todo links; blueprint and hgraph files remain untouched/uncommitted.
@@ -54,3 +54,25 @@ blocks in 30 touched modules. The final exported theorem names are unchanged.
 Thirteen direct proof terms in ten files passed before/after LSP diagnostics.
 Some initial LSP checks were partial while dependencies rebuilt; they are recorded
 as deferred, not successful checks. No additional hypothesis or axiom was added.
+
+Additional implementation checkpoint (full build running): simplified 30 one-step
+exact proofs across 25 files. Twenty-four files have complete successful post-edit
+LSP diagnostics; LocallyFree is deferred to the kernel build after a partial LSP
+response. The Stacks Artinian module now imports HopkinsLevitzki instead of 31
+broad Mathlib modules. A first attempt importing only FiniteLength and spectrum
+Topology omitted the Hopkins-Levitzki theorem/instances and failed; adding the
+actual producer fixed the file and Dedekind downstream LSP checks. This also
+removes four upstream module-header warnings and an optional rw/assumption hint.
+Current donor provenance records track every changed local hash; historical
+upstream checks and reviews retain their original revisions and paths.
+
+Import-graph audit: 823 local modules before probe cleanup, no missing local
+imports or cycles. Of these, 821 are reached from the two library entry points;
+the published HermitianInnerProduct facade is checked separately, and the remaining
+file is a temporary donor axiom probe. InvariantTheory now has 5 direct modules
+(previously 17), Trivial/Filtration has 11 (previously 17), and Tensor has 14
+(previously 17, including the two retained compatibility facades).
+
+The user requested removal of test Lean files after validation. Temporary
+Typeclasses, HermitianImports and axiom probes will be removed after running;
+the report retains their exact inputs and result logs for reproduction.

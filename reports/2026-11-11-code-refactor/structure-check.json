@@ -1,0 +1,7 @@
+{
+  "modules": 823,
+  "local_imports_valid": true,
+  "acyclic": true,
+  "changed_lean_modules": 72,
+  "changed_and_reverse_consumers": 594
+}

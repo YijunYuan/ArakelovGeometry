@@ -264,8 +264,8 @@ rank; this conclusion does not assert a finite lower bound. -/
 theorem minimalSlope_lt_top (V : AdelicVectorBundle S E)
     (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
     (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hr : 0 < Module.finrank K E) : V.minimalSlope hS hN < ⊤ := by
-  exact (V.minimalSlope_le_slope hS hN hr).trans_lt (EReal.coe_lt_top _)
+    (hr : 0 < Module.finrank K E) : V.minimalSlope hS hN < ⊤ :=
+  (V.minimalSlope_le_slope hS hN hr).trans_lt (EReal.coe_lt_top _)
 
 end AdelicVectorBundle
 

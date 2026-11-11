@@ -42,8 +42,8 @@ theorem maxDirectSum_norm (ω : S.Ω) (z : (S.ϕ ω).Completion ⊗[K] (E × F))
       max (ξ.norm ω ((TensorProduct.prodRight K (S.ϕ ω).Completion
         (S.ϕ ω).Completion E F z).1))
         (η.norm ω ((TensorProduct.prodRight K (S.ϕ ω).Completion
-          (S.ϕ ω).Completion E F z).2)) := by
-  exact NormShape.maxShape_perspective (apply_nonneg _ _) (apply_nonneg _ _)
+          (S.ϕ ω).Completion E F z).2)) :=
+  NormShape.maxShape_perspective (apply_nonneg _ _) (apply_nonneg _ _)
 
 /-- Every admissible profile dominates the coordinate maximum. -/
 theorem maxDirectSum_le_directSum (ψ : S.Ω → NormShape) :

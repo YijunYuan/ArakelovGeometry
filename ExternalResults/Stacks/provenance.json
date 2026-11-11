@@ -11,7 +11,7 @@
     "No completeness or power-series identification.",
     "No assertion that the DVR residue field is finite over or equal to the ground field.",
     "Fraction-field lift yields an action element only for the actual group orbit parameter map.",
-    "Orbit-map hypotheses, invariant separation, primitive initial determinant input and residue-field descent remain downstream. The local actual A2 coordinate-weight consumer is proved in ArakelovGeometry.InvariantTheory.DVRWeights.",
+    "Orbit-map hypotheses, invariant separation, primitive initial determinant input and residue-field descent remain downstream. The local actual A2 coordinate-weight consumer is proved in ArakelovGeometry.InvariantTheory.DVR.Weights.",
     "The Scheme-level diagram still needs compatible ground-field algebra structures and an actual group-point bridge. For affine schemes these can be recovered from constants and diagram commutativity; a general Over theorem is not required."
   ],
   "files": [
@@ -53,12 +53,13 @@
       "original_sha256": "20a4c8bfb584a4886c46eb5128a964a194552fae25e6aaa4adbb8faffc3d5ad5",
       "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
       "local_path": "ExternalResults/Stacks/StacksFrontier/AlgebraicGeometry/Limits/NoetherianValuativeCriterion/DiscreteValuationSpecialization.lean",
-      "local_sha256": "753b0d926baccba1ea6f78ae82b70541a077babacce64e73bf7c5662db9094de",
+      "local_sha256": "a48573bee478031d04eef5938e0bbd4c2646211fdd68a4c5bb26d90ac9631421",
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes.",
-        "Add local adoption and exact downstream-boundary documentation; original text retained."
+        "Add local adoption and exact downstream-boundary documentation; original text retained.",
+        "Update current downstream module references after the directory refactor; proof unchanged."
       ],
-      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
+      "checked_status": "Current documentation refactor validation pending; previous checks retained below."
     },
     {
       "original_path": "StacksFrontier/AlgebraicGeometry/Morphisms/Closure/ImageValuativeDiagram.lean",
@@ -76,44 +77,50 @@
       "original_sha256": "269c8617cbfefca905069d001b655ac74d0a4079893d72522b28fd13ccaef6b0",
       "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
       "local_path": "ExternalResults/Stacks/StacksFrontier/RingTheory/Artinian/Basic.lean",
-      "local_sha256": "12d245f68b1eaee087093753557e720cd3e150ef5dc418b94b116cedf98461b6",
+      "local_sha256": "74a86bcadb10c07592af6e391f5b69d8d7a589056ee589fb00d21aea3cba85ef",
       "edits": [
-        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes.",
+        "Move module docstring before public section; sort/group imports.",
+        "Replace 31 broad Mathlib public imports with HopkinsLevitzki (which publicly exports finite length and prime spectrum results); keep explicit annotation imports."
       ],
-      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
+      "checked_status": "Original proof checked before refactor; current import/header refactor validation pending."
     },
     {
       "original_path": "StacksFrontier/RingTheory/DiscreteValuationRing/Existence.lean",
       "original_sha256": "448fb4af3bb585c5fd8047b5baa8ae784e7fdec485b8248a982707abb62b725e",
       "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
       "local_path": "ExternalResults/Stacks/StacksFrontier/RingTheory/DiscreteValuationRing/Existence.lean",
-      "local_sha256": "4ef4c4e6bbc0de8e6b93a327ed5e7d5155daead0b336091fc05232433797b196",
+      "local_sha256": "9df7e52c675264f424c0a3f5119ece80c8c525353a0da175a7e7d0fe7930842a",
       "edits": [
-        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes.",
+        "Move module docstring before public section; sort/group imports."
       ],
-      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
+      "checked_status": "Original proof checked before refactor; current import/header refactor validation pending."
     },
     {
       "original_path": "StacksFrontier/RingTheory/Ideal/Over/HeightOne.lean",
       "original_sha256": "c3debdbe202757b240e7816da0cfbd24be4d8c91992fbadae0d3d5c11d877417",
       "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
       "local_path": "ExternalResults/Stacks/StacksFrontier/RingTheory/Ideal/Over/HeightOne.lean",
-      "local_sha256": "411403d1bd1ece7431fa730360d6fd146115894d6a583eba924e3102c9e77290",
+      "local_sha256": "f4cc58f13fd7690a3c9bb5d925c12502524a222c96260ef0868450611f8c7738",
       "edits": [
-        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes.",
+        "Move module docstring before public section; sort/group imports."
       ],
-      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
+      "checked_status": "Original proof checked before refactor; current import/header refactor validation pending."
     },
     {
       "original_path": "StacksFrontier/RingTheory/IntegralClosure/DedekindDomain.lean",
       "original_sha256": "cf2752de5c6159e44252e816a93ae0fe87543b9de6e770b2b756dd8fd0d89de7",
       "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
       "local_path": "ExternalResults/Stacks/StacksFrontier/RingTheory/IntegralClosure/DedekindDomain.lean",
-      "local_sha256": "1b6dd696687e61b96fdcf959946624427433b8f288e2eed8240ca3bd20c46591",
+      "local_sha256": "9c5ea867129b57133d78146495f641e9c713d4381e40bcaff4070e29fb04ef35",
       "edits": [
-        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes.",
+        "Move module docstring before public section; sort/group imports.",
+        "Use the suggested rwa proof in place of rw followed by assumption."
       ],
-      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
+      "checked_status": "Original proof checked before refactor; current import/header refactor validation pending."
     },
     {
       "original_path": "StacksFrontier/RingTheory/KrullAkizuki.lean",
@@ -227,5 +234,47 @@
     "reviewer": "independent honesty-reviewer /root/honesty",
     "result": "satisfactory; honest partial progress; exact closure, hashes, license and unchanged proof bodies confirmed",
     "outstanding": "No actual project orbit consumer yet; orbit/ground-field compatibility, primitive initial vector and residue descent remain. The local A2 coordinate-weight bridge is proved separately."
+  },
+  "implementation_refactor_2026_11_11": {
+    "changes": {
+      "ExternalResults/Stacks/StacksFrontier/RingTheory/Artinian/Basic.lean": {
+        "before_sha256": "12d245f68b1eaee087093753557e720cd3e150ef5dc418b94b116cedf98461b6",
+        "after_sha256": "74a86bcadb10c07592af6e391f5b69d8d7a589056ee589fb00d21aea3cba85ef",
+        "edits": [
+          "Move module docstring before public section; sort/group imports.",
+          "Replace 31 broad Mathlib public imports with HopkinsLevitzki (which publicly exports finite length and prime spectrum results); keep explicit annotation imports."
+        ]
+      },
+      "ExternalResults/Stacks/StacksFrontier/RingTheory/Ideal/Over/HeightOne.lean": {
+        "before_sha256": "411403d1bd1ece7431fa730360d6fd146115894d6a583eba924e3102c9e77290",
+        "after_sha256": "f4cc58f13fd7690a3c9bb5d925c12502524a222c96260ef0868450611f8c7738",
+        "edits": [
+          "Move module docstring before public section; sort/group imports."
+        ]
+      },
+      "ExternalResults/Stacks/StacksFrontier/RingTheory/IntegralClosure/DedekindDomain.lean": {
+        "before_sha256": "1b6dd696687e61b96fdcf959946624427433b8f288e2eed8240ca3bd20c46591",
+        "after_sha256": "9c5ea867129b57133d78146495f641e9c713d4381e40bcaff4070e29fb04ef35",
+        "edits": [
+          "Move module docstring before public section; sort/group imports.",
+          "Use the suggested rwa proof in place of rw followed by assumption."
+        ]
+      },
+      "ExternalResults/Stacks/StacksFrontier/RingTheory/DiscreteValuationRing/Existence.lean": {
+        "before_sha256": "4ef4c4e6bbc0de8e6b93a327ed5e7d5155daead0b336091fc05232433797b196",
+        "after_sha256": "9df7e52c675264f424c0a3f5119ece80c8c525353a0da175a7e7d0fe7930842a",
+        "edits": [
+          "Move module docstring before public section; sort/group imports."
+        ]
+      },
+      "ExternalResults/Stacks/StacksFrontier/AlgebraicGeometry/Limits/NoetherianValuativeCriterion/DiscreteValuationSpecialization.lean": {
+        "before_sha256": "753b0d926baccba1ea6f78ae82b70541a077babacce64e73bf7c5662db9094de",
+        "after_sha256": "a48573bee478031d04eef5938e0bbd4c2646211fdd68a4c5bb26d90ac9631421",
+        "edits": [
+          "Update downstream module references; proof unchanged."
+        ]
+      }
+    },
+    "validation": "pending; historical checks below refer to their recorded original revisions"
   }
 }

@@ -63,7 +63,7 @@ closure as source does not supply this lift. Construction of that orbit morphism
 and its hypotheses, invariant separation, the compatible ground-field structures
 and primitive-vector input, and descent from the arbitrary DVR residue field
 remain downstream bridges. The local A2 matrix/coordinate-weight consumer is
-proved separately in `ArakelovGeometry.InvariantTheory.DVRWeights`.
+proved separately in `ArakelovGeometry.InvariantTheory.DVR.Weights`.
 This selected `StacksFrontier` code is not human-reviewed upstream.
 
 ## References
@@ -380,7 +380,7 @@ parameter map, so `toSource` is a genuine fraction-field action element. This is
 sufficient for the specialization input to the binary matrix route; the orbit-map
 hypotheses, compatible ground-field structures, primitive-vector input and
 residue-field descent are still unmet. The local A2 matrix/coordinate-weight
-consumer is proved in `ArakelovGeometry.InvariantTheory.DVRWeights`.
+consumer is proved in `ArakelovGeometry.InvariantTheory.DVR.Weights`.
 There is no completeness, power-series, or finite DVR residue-field assertion. -/
 @[stacks 0CM2]
 theorem nonempty_discreteValuationSpecialization {X Y : Scheme.{u}} (f : X ⟶ Y)

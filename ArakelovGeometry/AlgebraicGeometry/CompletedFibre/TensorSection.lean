@@ -75,8 +75,8 @@ theorem affineSection_square_unit {R S : CommRingCat.{u}} (φ : R ⟶ S)
         (pullbackSection c _ (pullbackSection d M s)) =
       (ModuleCat.extendRestrictScalarsAdj φ.hom).unit.app
         ((moduleSpecΓFunctor (R := R)).obj ((Scheme.Modules.pullback b).obj M))
-        (pullbackSection b M s) := by
-  exact affineSection_square φ b c d h M s
+        (pullbackSection b M s) :=
+  affineSection_square φ b c d h M s
 
 /-- The canonical completed line-fibre isomorphism sends the actual pulled-back
 section value to the literal scalar-extension tensor of its original value. -/

@@ -12,7 +12,7 @@ algebras, and detailed Schur–Weyl decompositions. All imports are narrow;
 no donor dependency or toolchain change is required.
 
 The project consumer is
-ArakelovGeometry.InvariantTheory.TensorPowerSemisimple. Over an algebraically
+ArakelovGeometry.InvariantTheory.TensorPower.Semisimple. Over an algebraically
 closed characteristic-zero field and a nonzero finite-dimensional space, it
 proves semisimplicity of every actual SL tensor power, including degree zero,
 and invariant lifting across equivariant quotients of invariant subspaces.

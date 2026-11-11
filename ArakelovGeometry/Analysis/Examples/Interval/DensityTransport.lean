@@ -51,8 +51,8 @@ theorem mass_pos (hab : a < b) (hf : IntervalIntegrable f volume a b)
 theorem cumulative_left : cumulative f a b a = 0 := by
   simp [cumulative]
 
-theorem cumulative_right (hA : mass f a b ≠ 0) : cumulative f a b b = 1 := by
-  exact div_self hA
+theorem cumulative_right (hA : mass f a b ≠ 0) : cumulative f a b b = 1 :=
+  div_self hA
 
 /-- Strict increase of the actual indefinite integral follows from positive mass
 on every nonempty subinterval. -/

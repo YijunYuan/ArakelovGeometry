@@ -43,8 +43,8 @@ def tensorDualEval (φ : ∀ i, E i →ₗ[L] L) : (⨂[L] i, E i) →ₗ[L] L :
 
 @[simp]
 theorem tensorDualEval_tprod (φ : ∀ i, E i →ₗ[L] L) (x : ∀ i, E i) :
-    tensorDualEval φ (⨂ₜ[L] i, x i) = ∏ i, φ i (x i) := by
-  exact PiTensorProduct.dualDistrib_apply φ x
+    tensorDualEval φ (⨂ₜ[L] i, x i) = ∏ i, φ i (x i) :=
+  PiTensorProduct.dualDistrib_apply φ x
 
 /-- The universal projective bound for a linear map whose values on pure tensors
 are bounded. This form includes trivially normed fields. -/

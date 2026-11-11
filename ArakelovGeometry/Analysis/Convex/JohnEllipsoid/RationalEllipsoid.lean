@@ -51,8 +51,8 @@ variable {n : Type*}
 def rationalMatrix (Q : Matrix n n (ℚ × ℚ)) : Matrix n n L :=
   Q.map (rationalEntry L)
 
-theorem denseRange_rationalMatrix : DenseRange (rationalMatrix (n := n) L) := by
-  exact DenseRange.piMap (fun _ => DenseRange.piMap (fun _ => denseRange_rationalEntry L))
+theorem denseRange_rationalMatrix : DenseRange (rationalMatrix (n := n) L) :=
+  DenseRange.piMap (fun _ => DenseRange.piMap (fun _ => denseRange_rationalEntry L))
 
 variable {L} [Fintype n] [DecidableEq n]
 

@@ -34,7 +34,7 @@ This is the geometric input for the general-DVR matrix route. The orbit morphism
 and its finite-type/quasi-compact hypotheses, invariant separation, compatible
 ground-field structures, a primitive initial determinant vector, and descent from
 the arbitrary DVR residue field are separate unmet consumers. The local
-`ArakelovGeometry.InvariantTheory.DVRWeights` producer now proves the actual A2
+`ArakelovGeometry.InvariantTheory.DVR.Weights` producer now proves the actual A2
 tensor/exterior/dual coordinate-weight implication using general DVR Cartan. This port alone does not prove A8 or a
 Hilbert–Mumford theorem.
 

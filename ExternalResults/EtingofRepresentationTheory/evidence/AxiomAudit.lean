@@ -1,4 +1,4 @@
-import ArakelovGeometry.InvariantTheory.TensorPowerSemisimple
+import ArakelovGeometry.InvariantTheory.TensorPower.Semisimple
 
 #print axioms RepresentationTheory.CentralizerDecomposition.isSemisimpleRing_centralizer
 #print axioms RepresentationTheory.TensorProducts.Auxiliary.span_range_map_eq_top

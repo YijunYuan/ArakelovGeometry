@@ -69,8 +69,8 @@ theorem adaptedCoordinates_basis
       Fin (Module.finrank ℤ (L ⧸ intersection L U))) :
     adaptedCoordinates L U hU
       (((intersectionRealBasis L U hU).prod (quotientRealBasis L U hU)) i) =
-      realAdaptedBasis L U i := by
-  exact Basis.equiv_apply _ i _ (Equiv.refl _)
+      realAdaptedBasis L U i :=
+  Basis.equiv_apply _ i _ (Equiv.refl _)
 
 @[simp]
 theorem adaptedCoordinates_inl_basis

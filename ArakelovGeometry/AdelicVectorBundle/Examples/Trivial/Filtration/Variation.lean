@@ -95,8 +95,8 @@ theorem weights_eq_zero_iff_trivial : (∀ i, a i = 0) ↔
     exact le_antisymm hnonpos hnonneg
 
 omit [FiniteDimensional K E] in
-theorem filtrationNorm_sq : filtrationNorm F ^ 2 = filtrationPairing F F := by
-  exact Real.sq_sqrt (filtrationSelfPairing_nonneg b a hF)
+theorem filtrationNorm_sq : filtrationNorm F ^ 2 = filtrationPairing F F :=
+  Real.sq_sqrt (filtrationSelfPairing_nonneg b a hF)
 
 omit [FiniteDimensional K E] in
 theorem filtrationNorm_eq_zero_iff_trivial (hdim : 0 < finrank K E) :
