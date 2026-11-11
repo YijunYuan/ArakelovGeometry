@@ -19,6 +19,7 @@ using the original sums of weights, including repeated sums.
 @[expose] public section
 
 open scoped TensorProduct
+open Module
 
 namespace Submodule
 
@@ -85,5 +86,79 @@ theorem tensorFiltration_rightLimit_eq_span {ι κ : Type*} (b : ι → E) (c : 
     apply mem_iSup_of_mem ⟨w ij.1 + z ij.2, hij⟩
     rw [tensorFiltration_eq_span b c w z hF hG]
     exact subset_span ⟨ij, show w ij.1 + z ij.2 ≤ w ij.1 + z ij.2 from le_rfl, rfl⟩
+
+section FiniteBases
+
+variable {ι κ : Type*} [Finite ι] [Finite κ] (b : Basis ι K E) (c : Basis κ K V)
+  (w : ι → ℝ) (z : κ → ℝ) {F : ℝ → Submodule K E} {G : ℝ → Submodule K V}
+  (hF : ∀ t, F t = span K (b '' {i | t ≤ w i}))
+  (hG : ∀ u, G u = span K (c '' {j | u ≤ z j}))
+
+include hF hG
+
+omit [Finite ι] [Finite κ] in
+/-- The tensor basis is adapted, with each weight the sum of its two original weights. -/
+theorem tensorFiltration_eq_span_tensorProduct (γ : ℝ) :
+    tensorFiltration F G γ =
+      span K (b.tensorProduct c '' {ij | γ ≤ w ij.1 + z ij.2}) := by
+  simpa only [Basis.tensorProduct_apply'] using tensorFiltration_eq_span b c w z hF hG γ
+
+/-- Only finitely many subspaces occur in the weighted tensor convolution. -/
+theorem finite_range_tensorFiltration : (Set.range (tensorFiltration F G)).Finite := by
+  apply (Set.finite_range (fun s : Set (ι × κ) ↦ span K (b.tensorProduct c '' s))).subset
+  rintro _ ⟨γ, rfl⟩
+  exact ⟨{ij | γ ≤ w ij.1 + z ij.2}, (tensorFiltration_eq_span_tensorProduct b c w z hF hG γ).symm⟩
+
+/-- Finite weighted tensor filtrations attain both extreme subspaces, even for an empty basis. -/
+theorem tensorFiltration_attains_bot_top :
+    (∃ γ, tensorFiltration F G γ = ⊥) ∧ (∃ γ, tensorFiltration F G γ = ⊤) := by
+  have hw := Set.finite_range (fun ij : ι × κ ↦ w ij.1 + z ij.2)
+  obtain ⟨U, hU⟩ := hw.bddAbove
+  obtain ⟨L, hL⟩ := hw.bddBelow
+  constructor
+  · refine ⟨U + 1, ?_⟩
+    rw [tensorFiltration_eq_span_tensorProduct b c w z hF hG]
+    have he : {ij : ι × κ | U + 1 ≤ w ij.1 + z ij.2} = ∅ := by
+      apply Set.eq_empty_iff_forall_notMem.mpr
+      intro ij hij
+      have := hU (Set.mem_range_self ij)
+      change U + 1 ≤ w ij.1 + z ij.2 at hij
+      linarith
+    rw [he, Set.image_empty, span_empty]
+  · refine ⟨L, ?_⟩
+    rw [tensorFiltration_eq_span_tensorProduct b c w z hF hG]
+    have he : {ij : ι × κ | L ≤ w ij.1 + z ij.2} = Set.univ := by
+      exact Set.eq_univ_iff_forall.mpr fun ij ↦ hL (Set.mem_range_self ij)
+    rw [he, Set.image_univ, (b.tensorProduct c).span_eq]
+
+/-- The included threshold is constant on a genuine interval to its left. -/
+theorem tensorFiltration_locallyConstant_left (γ : ℝ) :
+    ∃ ε > 0, ∀ s, γ - ε < s → s ≤ γ → tensorFiltration F G s = tensorFiltration F G γ := by
+  let W := Set.range (fun ij : ι × κ ↦ w ij.1 + z ij.2)
+  let A := W ∩ Set.Iio γ
+  have hA : A.Finite := (Set.finite_range _).subset Set.inter_subset_left
+  have hgap : ∃ ε > 0, ∀ r ∈ W, r < γ → r ≤ γ - ε := by
+    by_cases hn : A.Nonempty
+    · have hm : sSup A ∈ A := hn.csSup_mem hA
+      refine ⟨γ - sSup A, sub_pos.mpr hm.2, ?_⟩
+      intro r hr hrg
+      have := le_csSup hA.bddAbove (show r ∈ A from ⟨hr, hrg⟩)
+      linarith
+    · exact ⟨1, zero_lt_one, fun r hr hrg ↦ (hn ⟨r, hr, hrg⟩).elim⟩
+  obtain ⟨ε, hε, hgap⟩ := hgap
+  refine ⟨ε, hε, fun s hs hsg ↦ ?_⟩
+  rw [tensorFiltration_eq_span_tensorProduct b c w z hF hG,
+    tensorFiltration_eq_span_tensorProduct b c w z hF hG]
+  congr 2
+  ext ij
+  constructor
+  · intro hij
+    by_contra h
+    have := hgap _ (Set.mem_range_self ij) (lt_of_not_ge h)
+    change s ≤ w ij.1 + z ij.2 at hij
+    linarith
+  · exact fun hij ↦ hsg.trans hij
+
+end FiniteBases
 
 end Submodule

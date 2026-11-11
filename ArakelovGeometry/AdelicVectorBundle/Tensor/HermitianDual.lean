@@ -110,4 +110,120 @@ theorem orthogonalTensor_dual_norm_of_infinite
 
 end NormFamily
 
+section BinaryEvaluation
+
+variable {L : Type*} [Field L] {X : Unit ⊕ Unit → Type*}
+  [∀ i, AddCommGroup (X i)] [∀ i, Module L (X i)]
+
+/-- Finite and binary canonical dual evaluations agree on all dual tensors. -/
+theorem piDualDistrib_binary_tprod (z : ⨂[L] i, Module.Dual L (X i)) (x : ∀ i, X i) :
+    PiTensorProduct.dualDistrib z (⨂ₜ[L] i, x i) =
+      dualTensorHom L (X (.inl ())) (Module.Dual L (X (.inr ())))
+        (binaryTensorEquiv L (fun i ↦ Module.Dual L (X i)) z) (x (.inl ())) (x (.inr ())) := by
+  induction z using PiTensorProduct.induction_on with
+  | smul_tprod a f =>
+    simp only [map_smul, LinearMap.smul_apply, PiTensorProduct.dualDistrib_apply,
+      binaryTensorEquiv_tprod, dualTensorHom_apply, Fintype.prod_sum_type, Fintype.prod_unique,
+      smul_eq_mul]
+  | add z t hz ht => simp only [map_add, LinearMap.add_apply, hz, ht]
+
+end BinaryEvaluation
+
+namespace NormFamily
+
+universe u v w
+
+variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+  {E F : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  [AddCommGroup F] [Module K F] [FiniteDimensional K F]
+
+/-- Canonical binary dual distribution is isometric on all completed vectors. -/
+theorem orthogonalTensorPair_dual_norm
+    (ξ : NormFamily S E) (η : NormFamily S F)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω)
+    (z : (S.ϕ ω).Completion ⊗[K] (Module.Dual K E ⊗[K] Module.Dual K F)) :
+    (ξ.orthogonalTensorPair η hN hξ hη).dual.norm ω
+      ((TensorProduct.dualDistrib K E F).baseChange (S.ϕ ω).Completion z) =
+    (ξ.dual.orthogonalTensorPair η.dual hN hξ.dual hη.dual).norm ω z := by
+  by_cases hω : ω ∈ S.Ωinf
+  · let L := (S.ϕ ω).Completion
+    let := hN ω hω
+    let := IsRCLikeNormedField.rclike L
+    let X i := L ⊗[K] BinaryTensorFactors E F i
+    let D i := L ⊗[K] BinaryTensorFactors (Module.Dual K E) (Module.Dual K F) i
+    let : ∀ i, NormedAddCommGroup (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedAddCommGroup ω
+    let : ∀ i, NormedSpace L (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedSpace ω
+    let : ∀ i, InnerProductSpace L (X i) :=
+      fun i ↦ (hξ.tensorPairFactors hη i).fibreInnerProductSpace ω hω
+    let : ∀ i, NormedAddCommGroup (D i) :=
+      fun i ↦ (tensorPairFactors ξ.dual η.dual i).fibreNormedAddCommGroup ω
+    let : ∀ i, NormedSpace L (D i) :=
+      fun i ↦ (tensorPairFactors ξ.dual η.dual i).fibreNormedSpace ω
+    let : ∀ i, InnerProductSpace L (D i) :=
+      fun i ↦ (hξ.dual.tensorPairFactors hη.dual i).fibreInnerProductSpace ω hω
+    let b := fun i ↦ stdOrthonormalBasis L (X i)
+    let c := fun i ↦ stdOrthonormalBasis L (D i)
+    let e : ∀ i, D i ≃ₗ[L] Module.Dual L (X i) := fun i ↦ match i with
+      | .inl _ => dualBaseChangeEquiv K L E
+      | .inr _ => dualBaseChangeEquiv K L F
+    have he : ∀ i x, ‖x‖ = linearMapOperatorSeminorm (e i x) := by
+      rintro (i | i) x <;> rfl
+    let B := binaryTensorEquiv K (BinaryTensorFactors E F)
+    let BD := binaryTensorEquiv K (BinaryTensorFactors (Module.Dual K E) (Module.Dual K F))
+    let A := TensorProduct.AlgebraTensorModule.distribBaseChange K L E F
+    let P := binaryTensorEquiv L X
+    let T := (B.baseChange K L _ _).symm.trans (tensorBaseChangeEquiv K L (BinaryTensorFactors E F))
+    let t := tensorBaseChangeEquiv K L (BinaryTensorFactors (Module.Dual K E) (Module.Dual K F))
+      (BD.symm.toLinearMap.baseChange L z)
+    let q := PiTensorProduct.congr e t
+    let f := dualBaseChangeEquiv K L (E ⊗[K] F) ((TensorProduct.dualDistrib K E F).baseChange L z)
+    have hp : binaryTensorEquiv L D t =
+        TensorProduct.AlgebraTensorModule.distribBaseChange K L
+          (Module.Dual K E) (Module.Dual K F) z := by
+      have h := DFunLike.congr_fun
+        (tensorBaseChangeEquiv_binary K L (Module.Dual K E) (Module.Dual K F))
+        (BD.symm.toLinearMap.baseChange L z)
+      change binaryTensorEquiv L D t =
+        TensorProduct.AlgebraTensorModule.distribBaseChange K L
+          (Module.Dual K E) (Module.Dual K F)
+          ((BD.baseChange K L _ _) ((BD.baseChange K L _ _).symm z)) at h
+      simpa only [LinearEquiv.apply_symm_apply] using h
+    have hp' (x : L ⊗[K] (E ⊗[K] F)) : P (T x) = A x := by
+      have h := DFunLike.congr_fun (tensorBaseChangeEquiv_binary K L E F)
+        ((B.baseChange K L _ _).symm x)
+      change P (T x) = A ((B.baseChange K L _ _) ((B.baseChange K L _ _).symm x)) at h
+      simpa only [LinearEquiv.apply_symm_apply] using h
+    have hev (s : ⨂[L] i, X i) : PiTensorProduct.dualDistrib q s = f (A.symm (P s)) := by
+      induction s using PiTensorProduct.induction_on with
+      | smul_tprod a x =>
+        simp only [map_smul, piDualDistrib_binary_tprod, P, binaryTensorEquiv_tprod]
+        congr 1
+        change dualTensorHom L _ _ (binaryTensorEquiv L _ (PiTensorProduct.congr e t)) _ _ = _
+        rw [binaryTensorEquiv_congr, hp]
+        exact (dualDistrib_baseChange_bilinear_apply K L E F z (x (.inl ())) (x (.inr ()))).symm
+      | add s t hs ht => simp only [map_add, hs, ht]
+    rw [dual_norm_eq_sSup]
+    change _ = (orthogonalTensor (tensorPairFactors ξ.dual η.dual) hN
+      (hξ.dual.tensorPairFactors hη.dual)).norm ω _
+    rw [orthogonalTensor_norm_of_infinite _ _ _ ω hω]
+    change _ = ArakelovGeometry.orthogonalTensorSeminorm c t
+    rw [ArakelovGeometry.orthogonalTensor_dual_eq_sSup b c e he]
+    congr 1
+    rw [← T.surjective.range_comp]
+    congr 1
+    funext x
+    change ‖f x‖ / (ξ.orthogonalTensorPair η hN hξ hη).norm ω x =
+      ‖PiTensorProduct.dualDistrib q (T x)‖ / ArakelovGeometry.orthogonalTensorSeminorm b (T x)
+    rw [hev, hp', LinearEquiv.symm_apply_apply]
+    congr 1
+    exact orthogonalTensor_norm_of_infinite _ _ _ ω hω _
+  · have hfin : ω ∈ S.Ωfin := not_not.mp hω
+    rw [orthogonalTensorPair_norm_of_finite _ _ _ _ _ ω hfin]
+    rw [← mixedTensorPair_dual_norm_eq_injective]
+    simp only [dual_norm_eq_sSup, orthogonalTensorPair_norm_of_finite _ _ _ _ _ ω hfin,
+      mixedTensorPair_norm_of_mem_Ωfin _ _ ω hfin]
+
+end NormFamily
+
 end ArakelovGeometry

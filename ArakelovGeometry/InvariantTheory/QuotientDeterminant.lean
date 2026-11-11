@@ -82,14 +82,16 @@ theorem tensorToExterior_toTensorPower (r : ℕ) :
   apply exteriorPower.linearMap_ext
   have h : (tensorToExterior k W r).compMultilinearMap (PiTensorProduct.tprod k) =
       (exteriorPower.ιMulti k r).toMultilinearMap := by
-    ext x
+    apply MultilinearMap.ext
+    intro x
     exact tensorToExterior_tprod k W r x
-  ext x
-  change tensorToExterior k W r
-      ((PiTensorProduct.tprod k).alternatization x) = _
+  apply AlternatingMap.ext
+  intro x
+  simp only [LinearMap.compAlternatingMap_apply, LinearMap.comp_apply,
+    exteriorPower.toTensorPower, exteriorPower.alternatingMapLinearEquiv_apply_ιMulti]
   rw [← LinearMap.compAlternatingMap_apply,
     ← LinearMap.compMultilinearMap_alternatization, h, AlternatingMap.coe_alternatization]
-  simp
+  simp [Nat.cast_smul_eq_nsmul]
 
 /-- The alternating tensor inclusion is natural for all linear maps. -/
 theorem toTensorPower_map (r : ℕ) (f : W →ₗ[k] Q) :
@@ -98,5 +100,32 @@ theorem toTensorPower_map (r : ℕ) (f : W →ₗ[k] Q) :
   apply exteriorPower.linearMap_ext
   ext x
   simp [Function.comp_def]
+
+/-- Exterior covectors embed into tensor covectors in finite dimension. -/
+theorem exteriorCovector_injective [FiniteDimensional k W] (r : ℕ) :
+    Function.Injective (exteriorCovector (k := k) (W := W) r) := by
+  intro z w h
+  apply (exteriorPower.bijective_pairingDual k W r).injective
+  apply LinearMap.ext
+  intro t
+  obtain ⟨x, rfl⟩ := tensorToExterior_surjective k W r t
+  exact congrArg (fun f : Module.Dual k (⨂[k]^r W) ↦ f x) h
+
+/-- A nonzero dual determinant vector gives a nonzero tensor covector for a quotient. -/
+theorem exteriorCovector_map_dualMap_ne_zero [FiniteDimensional k Q] (r : ℕ)
+    (q : W →ₗ[k] Q) (hq : Function.Surjective q)
+    {z : ⋀[k]^r (Module.Dual k Q)} (hz : z ≠ 0) :
+    exteriorCovector r (exteriorPower.map r q.dualMap z) ≠ 0 := by
+  intro h
+  apply hz
+  apply (exteriorPower.bijective_pairingDual k Q r).injective
+  simp only [map_zero]
+  apply LinearMap.ext
+  intro x
+  obtain ⟨t, rfl⟩ := quotientExterior_surjective r q hq x
+  have ht := congrArg (fun f : Module.Dual k (⨂[k]^r W) ↦ f t)
+    (exteriorCovector_map_dualMap r q z)
+  rw [h] at ht
+  exact ht.symm
 
 end ArakelovGeometry.InvariantTheory

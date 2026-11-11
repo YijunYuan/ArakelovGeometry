@@ -127,7 +127,9 @@ theorem exteriorCovector_equivariant (r : ℕ) (ρ : Representation k G W) (g : 
 /-- Geometric Plücker semistability of a tensor subspace, evaluated over the
 algebraic closure and the full product of special linear groups there. -/
 def IsGeometricallySemistableTensorSubspace {J : Type*} [Finite J] (E : J → Type*)
-    [∀ j, AddCommGroup (E j)] [∀ j, Module k (E j)] [FiniteDimensional k V]
+    [∀ j, AddCommGroup (E j)] [∀ j, Module k (E j)]
+    [∀ j, FiniteDimensional k (E j)] [∀ j, Nontrivial (E j)]
+    [FiniteDimensional k V] [Nontrivial V]
     (i : V →ₗ[k] (⨂[k] j, E j)) : Prop :=
   IsPluckerSemistable
     (tensorSLRepresentation (fun j ↦ AlgebraicClosure k ⊗[k] E j))
@@ -137,7 +139,9 @@ def IsGeometricallySemistableTensorSubspace {J : Type*} [Finite J] (E : J → Ty
 /-- Geometric semistability of a tensor quotient is the Plücker condition on
 the scalar-extended dual inclusion, with the contragredient action. -/
 def IsGeometricallySemistableTensorQuotient {J : Type*} [Finite J] (E : J → Type*)
-    [∀ j, AddCommGroup (E j)] [∀ j, Module k (E j)] [FiniteDimensional k V]
+    [∀ j, AddCommGroup (E j)] [∀ j, Module k (E j)]
+    [∀ j, FiniteDimensional k (E j)] [∀ j, Nontrivial (E j)]
+    [FiniteDimensional k V] [Nontrivial V]
     (q : (⨂[k] j, E j) →ₗ[k] V) : Prop :=
   IsQuotientSemistable
     (tensorSLRepresentation (fun j ↦ AlgebraicClosure k ⊗[k] E j))
