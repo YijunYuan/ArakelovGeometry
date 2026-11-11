@@ -6,8 +6,8 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.ImageHN
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HN.OptimalVariation
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Tensor
-public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HNOptimalVariation
 
 /-!
 # Binary graded tensor images in Bost's degree argument

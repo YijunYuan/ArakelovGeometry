@@ -26,8 +26,8 @@ variable {K : Type*} [Field K] [NumberField K]
 
 /-- Every norm family on the source-standard number-field curve is measurable. -/
 theorem NormFamily.isMeasurable_normalizedNumberField
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) : ξ.IsMeasurable := by
-  exact ξ.isMeasurable_of_discrete
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) : ξ.IsMeasurable :=
+  ξ.isMeasurable_of_discrete
 
 namespace AdelicVectorBundle
 variable [FiniteDimensional K E]

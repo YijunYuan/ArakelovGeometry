@@ -2,8 +2,8 @@ module
 
 public import ArakelovGeometry.InvariantTheory.Semistability
 public import Mathlib.Algebra.MvPolynomial.Funext
-public import Mathlib.RingTheory.MvPolynomial.Basic
 public import Mathlib.RepresentationTheory.Subrepresentation
+public import Mathlib.RingTheory.MvPolynomial.Basic
 
 /-!
 # Actual polynomial actions in finite coordinates

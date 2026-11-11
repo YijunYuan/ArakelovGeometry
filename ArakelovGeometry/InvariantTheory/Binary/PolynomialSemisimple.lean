@@ -1,11 +1,11 @@
 module
 
-public import ArakelovGeometry.InvariantTheory.TensorPowerSemisimple
-public import ArakelovGeometry.InvariantTheory.HomogeneousTensor
-public import Mathlib.RepresentationTheory.Intertwining
+public import ArakelovGeometry.InvariantTheory.Polynomial.HomogeneousTensor
+public import ArakelovGeometry.InvariantTheory.TensorPower.Semisimple
+public import Mathlib.Algebra.Group.Pi.Lemmas
 public import Mathlib.LinearAlgebra.PiTensorProduct.Basis
 public import Mathlib.LinearAlgebra.PiTensorProduct.Finite
-public import Mathlib.Algebra.Group.Pi.Lemmas
+public import Mathlib.RepresentationTheory.Intertwining
 
 /-!
 # Finite binary polynomial semisimplicity

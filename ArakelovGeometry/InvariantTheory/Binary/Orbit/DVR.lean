@@ -5,8 +5,8 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.InvariantTheory.BinaryOrbitCoordinates
-public import ArakelovGeometry.InvariantTheory.DVRWeights
+public import ArakelovGeometry.InvariantTheory.Binary.Orbit.Coordinates
+public import ArakelovGeometry.InvariantTheory.DVR.Weights
 public import ExternalResults.Stacks.StacksFrontier.AlgebraicGeometry.Limits.NoetherianValuativeCriterion.DiscreteValuationSpecialization
 public import Mathlib.AlgebraicGeometry.GammaSpecAdjunction
 public import Mathlib.RingTheory.MvPolynomial.Basic
@@ -36,7 +36,9 @@ variable {k : Type u} [Field k] {ι : Bool → Type u}
 
 /-- The actual affine orbit morphism, parameterized by inverses. Over every extension field its
 point image is exactly the actual dual A2 orbit; see `binaryCovector_inverse_orbit_image`. -/
-def binaryOrbitMorphism (f : Module.Dual k (⨂[k]^r (⨂[k] j, (ι j → k)))) :=
+def binaryOrbitMorphism (f : Module.Dual k (⨂[k]^r (⨂[k] j, (ι j → k)))) :
+    Spec (CommRingCat.of (BinarySLCoordinateAlgebra k ι)) ⟶
+      Spec (CommRingCat.of (MvPolynomial (BinaryTensorIndex ι r) k)) :=
   Spec.map (CommRingCat.ofHom (binaryCovectorOrbitPullback f).toRingHom)
 
 instance binaryOrbitMorphism_locallyOfFiniteType
@@ -132,7 +134,7 @@ theorem nonempty_binaryCovectorDegeneration
   let : IsFractionRing R L := d.isFractionRing
   let ψ : MvPolynomial (BinaryTensorIndex ι r) k →+* R :=
     Spec.homEquivRingHom d.toTarget
-  let χ : binarySLCoordinateAlgebra k ι →+* L := Spec.homEquivRingHom d.toSource
+  let χ : BinarySLCoordinateAlgebra k ι →+* L := Spec.homEquivRingHom d.toSource
   have hcomm : (algebraMap R L).comp ψ = χ.comp (binaryCovectorOrbitPullback f).toRingHom := by
     have hh := congrArg Spec.preimage d.commutes
     change Spec.preimage (Spec.map (CommRingCat.ofHom (algebraMap R L)) ≫ d.toTarget) =
@@ -143,11 +145,11 @@ theorem nonempty_binaryCovectorDegeneration
   let : Algebra k R := (ψ.comp MvPolynomial.C).toAlgebra
   let : Algebra k L := ((algebraMap R L).comp (ψ.comp MvPolynomial.C)).toAlgebra
   let : IsScalarTower k R L := IsScalarTower.of_algebraMap_eq (fun _ ↦ rfl)
-  let χa : binarySLCoordinateAlgebra k ι →ₐ[k] L :=
+  let χa : BinarySLCoordinateAlgebra k ι →ₐ[k] L :=
     { toRingHom := χ
       commutes' := by
         intro c
-        change χ (algebraMap k (binarySLCoordinateAlgebra k ι) c) =
+        change χ (algebraMap k (BinarySLCoordinateAlgebra k ι) c) =
           algebraMap R L (ψ (MvPolynomial.C c))
         have hh := RingHom.congr_fun hcomm (MvPolynomial.C c)
         simpa only [RingHom.comp_apply, AlgHom.toRingHom_eq_coe,

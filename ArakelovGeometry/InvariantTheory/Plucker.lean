@@ -34,8 +34,8 @@ theorem tensorSLRepresentation_baseChange {J : Type*} [Finite J]
     tensorBaseChangeEquiv k L E ((tensorSLRepresentation E g).baseChange L z) =
       tensorSLRepresentation (fun j ↦ L ⊗[k] E j)
         (fun j ↦ SpecialLinearGroup.baseChange (S := L) (g j))
-        (tensorBaseChangeEquiv k L E z) := by
-  exact tensorBaseChangeEquiv_map k L (fun j ↦ (g j).val.toLinearMap) z
+        (tensorBaseChangeEquiv k L E z) :=
+  tensorBaseChangeEquiv_map k L (fun j ↦ (g j).val.toLinearMap) z
 
 /-- The representation on an exterior power, using the canonical exterior map. -/
 def exteriorRepresentation (r : ℕ) (ρ : Representation k G W) :

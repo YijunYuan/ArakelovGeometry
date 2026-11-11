@@ -1,0 +1,284 @@
+[
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/InvariantTheory/Plucker.lean",
+    "status": "deferred",
+    "pre": {
+      "partial": true,
+      "still_elaborating_lines": [
+        [
+          1,
+          267
+        ]
+      ],
+      "success": false,
+      "timed_out": true,
+      "items": [
+        {
+          "severity": "info",
+          "message": "✔ [3610/3621] Built ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian.InnerProduct (8.7s)\n",
+          "line": 1,
+          "column": 1,
+          "category": "diagnostic"
+        }
+      ]
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/NumberTheory/NumberField/TraceDual/Integral.lean",
+    "status": "deferred",
+    "pre": {
+      "partial": true,
+      "still_elaborating_lines": [
+        [
+          1,
+          250
+        ]
+      ],
+      "success": false,
+      "timed_out": true,
+      "items": [
+        {
+          "severity": "info",
+          "message": "✔ [4156/4195] Built ArakelovGeometry.AdelicVectorBundle.Degree.Basic (4.3s)\n",
+          "line": 1,
+          "column": 1,
+          "category": "diagnostic"
+        }
+      ]
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/NumberTheory/NumberField/Minkowski/Radius.lean",
+    "status": "deferred",
+    "pre": {
+      "partial": true,
+      "still_elaborating_lines": [
+        [
+          1,
+          99
+        ]
+      ],
+      "success": false,
+      "timed_out": true,
+      "items": []
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/NumberTheory/NumberField/Covolume/PrincipalScalar.lean",
+    "status": "deferred",
+    "pre": {
+      "partial": true,
+      "still_elaborating_lines": [
+        [
+          1,
+          354
+        ]
+      ],
+      "success": false,
+      "timed_out": true,
+      "items": []
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/NumberTheory/NumberField/Covolume/Integer.lean",
+    "status": "deferred",
+    "pre": {
+      "partial": true,
+      "still_elaborating_lines": [
+        [
+          1,
+          266
+        ]
+      ],
+      "success": false,
+      "timed_out": true,
+      "items": []
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/NumberTheory/NumberField/NormFamily/Measurable.lean",
+    "status": "deferred",
+    "pre": {
+      "partial": true,
+      "still_elaborating_lines": [
+        [
+          1,
+          56
+        ]
+      ],
+      "success": false,
+      "timed_out": true,
+      "items": [
+        {
+          "severity": "info",
+          "message": "✔ [3915/3919] Built ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Bundle (6.1s)\n",
+          "line": 1,
+          "column": 1,
+          "category": "diagnostic"
+        }
+      ]
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/InvariantTheory/Plucker.lean",
+    "count": 1,
+    "status": "passed",
+    "post": {
+      "partial": false,
+      "success": true,
+      "timed_out": false,
+      "items": []
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/NumberTheory/NumberField/TraceDual/Integral.lean",
+    "count": 1,
+    "status": "passed",
+    "post": {
+      "partial": false,
+      "success": true,
+      "timed_out": false,
+      "items": []
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/NumberTheory/NumberField/Minkowski/Radius.lean",
+    "count": 2,
+    "status": "passed",
+    "post": {
+      "partial": false,
+      "success": true,
+      "timed_out": false,
+      "items": []
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/NumberTheory/NumberField/Covolume/PrincipalScalar.lean",
+    "count": 2,
+    "status": "passed",
+    "post": {
+      "partial": false,
+      "success": true,
+      "timed_out": false,
+      "items": []
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/NumberTheory/NumberField/Covolume/Integer.lean",
+    "count": 1,
+    "status": "passed",
+    "post": {
+      "partial": false,
+      "success": true,
+      "timed_out": false,
+      "items": []
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/NumberTheory/NumberField/NormFamily/Measurable.lean",
+    "count": 1,
+    "status": "passed",
+    "post": {
+      "partial": false,
+      "success": true,
+      "timed_out": false,
+      "items": []
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/NumberTheory/NumberField/Model/Sheaf/LocallyFree.lean",
+    "status": "deferred",
+    "pre": {
+      "partial": true,
+      "still_elaborating_lines": [
+        [
+          176,
+          176
+        ],
+        [
+          196,
+          196
+        ],
+        [
+          213,
+          213
+        ],
+        [
+          218,
+          218
+        ]
+      ],
+      "success": false,
+      "timed_out": true,
+      "items": []
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/NumberTheory/NumberField/Local/ValuationModule/Chain.lean",
+    "count": 1,
+    "status": "passed",
+    "post": {
+      "partial": false,
+      "success": true,
+      "timed_out": false,
+      "items": []
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/NumberTheory/NumberField/Local/Prime/PrincipalSupport.lean",
+    "count": 2,
+    "status": "passed",
+    "post": {
+      "partial": false,
+      "success": true,
+      "timed_out": false,
+      "items": []
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/NumberTheory/NumberField/Local/Determinant/PrincipalGauge.lean",
+    "status": "deferred",
+    "pre": {
+      "partial": true,
+      "still_elaborating_lines": [
+        [
+          1,
+          145
+        ]
+      ],
+      "success": false,
+      "timed_out": true,
+      "items": [
+        {
+          "severity": "info",
+          "message": "✔ [4234/4239] Built ArakelovGeometry.AdelicVectorBundle.Determinant.HermitianBasis (11s)\n",
+          "line": 1,
+          "column": 1,
+          "category": "diagnostic"
+        }
+      ]
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/AdelicCurve/Height/Basic.lean",
+    "count": 1,
+    "status": "passed",
+    "post": {
+      "partial": false,
+      "success": true,
+      "timed_out": false,
+      "items": []
+    }
+  },
+  {
+    "path": "/home/yijunyuan/ageo-workspace/ArakelovGeometry/ArakelovGeometry/AdelicCurve/Examples/RationalFunction/Archimedean.lean",
+    "count": 1,
+    "status": "passed",
+    "post": {
+      "partial": false,
+      "success": true,
+      "timed_out": false,
+      "items": []
+    }
+  }
+]

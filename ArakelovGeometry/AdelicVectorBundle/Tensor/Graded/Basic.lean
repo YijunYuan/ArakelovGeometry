@@ -5,10 +5,11 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.LinearAlgebra.Filtration.TensorGraded
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.PairMap
-import Mathlib.Analysis.InnerProductSpace.ProdL2
+public import ArakelovGeometry.LinearAlgebra.Filtration.TensorGraded
+
 import ArakelovGeometry.Analysis.Tensor.Bilinear
+import Mathlib.Analysis.InnerProductSpace.ProdL2
 
 /-!
 # Actual norms and contractions on filtration grades

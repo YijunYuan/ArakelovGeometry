@@ -6,8 +6,8 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Lift
-public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.PositiveDegree
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.Degree
+public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.PositiveDegree
 
 /-!
 # Chosen lifts of the actual quotient HN filtrations

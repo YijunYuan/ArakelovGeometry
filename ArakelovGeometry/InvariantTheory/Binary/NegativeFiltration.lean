@@ -5,11 +5,11 @@ Authors: Yijun Yuan
 -/
 module
 
-public import Mathlib.LinearAlgebra.TensorProduct.Basis
-public import ArakelovGeometry.InvariantTheory.PolynomialSolutionDescent
-public import ArakelovGeometry.InvariantTheory.BinaryOrbitCoordinates
-public import ArakelovGeometry.InvariantTheory.BinaryOrbitDVR
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.QuotientDegree
+public import ArakelovGeometry.InvariantTheory.Binary.Orbit.Coordinates
+public import ArakelovGeometry.InvariantTheory.Binary.Orbit.DVR
+public import ArakelovGeometry.InvariantTheory.Polynomial.SolutionDescent
+public import Mathlib.LinearAlgebra.TensorProduct.Basis
 
 /-!
 # Residue matrix descent and actual negative binary filtrations

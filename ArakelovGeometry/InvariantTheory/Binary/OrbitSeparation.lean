@@ -1,8 +1,8 @@
 module
 
-public import ArakelovGeometry.InvariantTheory.BinaryPolynomialSemisimple
+public import ArakelovGeometry.InvariantTheory.Binary.Orbit.Coordinates
+public import ArakelovGeometry.InvariantTheory.Binary.PolynomialSemisimple
 public import ArakelovGeometry.InvariantTheory.Plucker
-public import ArakelovGeometry.InvariantTheory.BinaryOrbitCoordinates
 
 /-!
 # Actual binary tensor invariant separation

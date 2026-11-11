@@ -5,9 +5,9 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicVectorBundle.Tensor.GradedDegree
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Optimal.Geometric
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.Graded.Degree
 public import ArakelovGeometry.LinearAlgebra.Filtration.RankDrop
-public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.GeometricOptimal
 
 /-!
 # Bost's actual HN variation assembly

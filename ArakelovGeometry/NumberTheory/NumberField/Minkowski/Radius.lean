@@ -38,14 +38,14 @@ def radius (n : ℕ) (D : ℝ) : ℝ :=
   Real.sqrt (n : ℝ) * Real.exp ((-(D / (n : ℝ)) +
     Real.log |(NumberField.discr K : ℝ)| / 2) / (Module.finrank ℚ K : ℝ))
 
-theorem radius_pos {n : ℕ} (hn : 0 < n) (D : ℝ) : 0 < radius K n D := by
-  exact mul_pos (Real.sqrt_pos.mpr (by exact_mod_cast hn)) (Real.exp_pos _)
+theorem radius_pos {n : ℕ} (hn : 0 < n) (D : ℝ) : 0 < radius K n D :=
+  mul_pos (Real.sqrt_pos.mpr (by exact_mod_cast hn)) (Real.exp_pos _)
 
 theorem radius_div_sqrt {n : ℕ} (hn : 0 < n) (D : ℝ) :
     radius K n D / Real.sqrt (n : ℝ) =
       Real.exp ((-(D / (n : ℝ)) + Real.log |(NumberField.discr K : ℝ)| / 2) /
-        (Module.finrank ℚ K : ℝ)) := by
-  exact mul_div_cancel_left₀ _ (Real.sqrt_pos.mpr (by exact_mod_cast hn)).ne'
+        (Module.finrank ℚ K : ℝ)) :=
+  mul_div_cancel_left₀ _ (Real.sqrt_pos.mpr (by exact_mod_cast hn)).ne'
 
 theorem radius_quotient_pow {n : ℕ} (hn : 0 < n) (D : ℝ) :
     (radius K n D / Real.sqrt (n : ℝ)) ^ (Module.finrank ℚ K * n) =

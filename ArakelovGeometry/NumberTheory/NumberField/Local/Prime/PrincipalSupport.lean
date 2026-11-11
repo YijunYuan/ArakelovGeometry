@@ -30,8 +30,8 @@ variable {R : Type*} [CommRing R] [IsDedekindDomain R]
 
 /-- The product of finitely many actual nonzero prime ideals is nonzero. -/
 theorem primeIdealProduct_ne_zero (s : Finset (HeightOneSpectrum R)) :
-    (∏ p ∈ s, p.asIdeal) ≠ 0 := by
-  exact Finset.prod_ne_zero_iff.mpr (fun p _ => p.ne_bot)
+    (∏ p ∈ s, p.asIdeal) ≠ 0 :=
+  Finset.prod_ne_zero_iff.mpr (fun p _ => p.ne_bot)
 
 open Classical in
 /-- Prime ideals occur with multiplicity one in themselves, and zero in other primes. -/
@@ -93,8 +93,8 @@ variable (K : Type*) [Field K] [NumberField K]
 
 /-- The actual prime product in the ring of integers has a principal class-number power. -/
 theorem exists_numberField_principal_prime_support (s : Finset (HeightOneSpectrum (𝓞 K))) :
-    ∃ f : 𝓞 K, f ≠ 0 ∧ Ideal.span {f} = (∏ p ∈ s, p.asIdeal) ^ NumberField.classNumber K := by
-  exact exists_generator_pow_card_classGroup _ (primeIdealProduct_ne_zero s)
+    ∃ f : 𝓞 K, f ≠ 0 ∧ Ideal.span {f} = (∏ p ∈ s, p.asIdeal) ^ NumberField.classNumber K :=
+  exists_generator_pow_card_classGroup _ (primeIdealProduct_ne_zero s)
 
 open Classical in
 /-- The integer order, defined by actual ideal multiplicity, is exactly the class number on

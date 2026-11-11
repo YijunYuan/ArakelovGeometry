@@ -7,6 +7,7 @@ module
 
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.FieldTheory.AlgebraicClosure
+
 import Mathlib.Algebra.AlgebraicCard
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init

@@ -88,8 +88,8 @@ def traceRestriction (M : Submodule (𝓞 K) E) :
 
 @[simp]
 theorem traceRestriction_apply (M : Submodule (𝓞 K) E) (f : integralTraceDual M) (m : M) :
-    (traceRestriction M f m : ℚ) = Algebra.trace ℚ K (f.1 (m : E)) := by
-  exact congrArg Subtype.val (integerRangeEquiv.apply_symm_apply _)
+    (traceRestriction M f m : ℚ) = Algebra.trace ℚ K (f.1 (m : E)) :=
+  congrArg Subtype.val (integerRangeEquiv.apply_symm_apply _)
 
 theorem mem_integralTraceDual_iff_codifferent (M : Submodule (𝓞 K) E)
     (f : Module.Dual K E) :

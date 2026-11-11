@@ -7,7 +7,8 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Determinant.DualBaseChange
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Basic
-import ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianInnerProduct
+
+import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian.InnerProduct
 import ArakelovGeometry.Analysis.Determinant.Pairing
 import Mathlib.Analysis.Normed.Group.Ultra
 import Mathlib.CategoryTheory.Category.Init

@@ -235,8 +235,8 @@ theorem integerCovolume_pos :
     0 < euclideanCovolume (scalarFamily K) (scalarFamily_hermitian K) (integerModule K) :=
   euclideanCovolume_pos _ _ _ (integerModule_fg K) (integerModule_full K)
 
-theorem discriminant_abs_pos : 0 < |(NumberField.discr K : ℝ)| := by
-  exact abs_pos.mpr (Int.cast_ne_zero.mpr (NumberField.discr_ne_zero K))
+theorem discriminant_abs_pos : 0 < |(NumberField.discr K : ℝ)| :=
+  abs_pos.mpr (Int.cast_ne_zero.mpr (NumberField.discr_ne_zero K))
 
 /-- The source exponential normalization, without introducing a replacement for `χ_K`. -/
 theorem integerCovolume_eq_exp :

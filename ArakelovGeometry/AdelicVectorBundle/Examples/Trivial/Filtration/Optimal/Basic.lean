@@ -7,9 +7,9 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.QuotientDegree
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Variation
+public import Mathlib.Algebra.Order.GroupWithZero.Finset
 public import Mathlib.Topology.Order.Compact
 public import Mathlib.Topology.Order.Lattice
-public import Mathlib.Algebra.Order.GroupWithZero.Finset
 
 /-!
 # Conditional minimization for actual tensor quotient filtrations

@@ -41,3 +41,16 @@ pseudometric and distance, not just existence of an arbitrary metric. Its first
 attempt also needed a noncomputable section for the data-valued example; that
 failed attempt is not counted as a successful check. The actual algebraic-closure
 density consumer now uses inferInstance and passed LSP diagnostics.
+
+Layout/naming checkpoint (full integration build still pending): moved 22 modules
+into Polynomial, TensorPower, Binary/Orbit, DVR, Optimal, HN and Tensor/Graded
+subdirectories. Split the 1202-line tensor duality module into 507/260/485-line
+mathematical modules, retaining its 16-line compatibility facade. The previously
+published HermitianInnerProduct path is also preserved. Updated imports and
+current README/todo links; blueprint and hgraph files remain untouched/uncommitted.
+Renamed the coordinate-algebra type to BinarySLCoordinateAlgebra, added explicit
+return types to three type aliases and the orbit morphism, and normalized import
+blocks in 30 touched modules. The final exported theorem names are unchanged.
+Thirteen direct proof terms in ten files passed before/after LSP diagnostics.
+Some initial LSP checks were partial while dependencies rebuilt; they are recorded
+as deferred, not successful checks. No additional hypothesis or axiom was added.

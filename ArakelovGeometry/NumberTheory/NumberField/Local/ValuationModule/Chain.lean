@@ -78,8 +78,8 @@ variable [IsDedekindDomain R]
 /-- Every actual finite positive truncation is finitely generated. -/
 theorem fg_valuationModule_positiveTruncation (b : HeightOneSpectrum R → ℤ)
     (s : Finset (HeightOneSpectrum R)) :
-    (valuationModule (K := K) (positiveTruncation b s)).FG := by
-  exact fg_valuationModule_of_finite_positive (finite_positive_positiveTruncation b s)
+    (valuationModule (K := K) (positiveTruncation b s)).FG :=
+  fg_valuationModule_of_finite_positive (finite_positive_positiveTruncation b s)
 
 /-- Every actual module element belongs to some finite positive truncation. -/
 theorem exists_mem_valuationModule_positiveTruncation {b : HeightOneSpectrum R → ℤ}

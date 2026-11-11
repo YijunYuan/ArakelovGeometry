@@ -5,7 +5,7 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Rationality
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Optimal.Descent
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianDual
 
 /-!

@@ -7,8 +7,9 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Determinant.Basic
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Basis
-public import ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianInnerProduct
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian.InnerProduct
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.WeightedCovolume
+
 import ArakelovGeometry.AdelicCurve.Equiv
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.AdelicVectorBundle.Determinant.HermitianBasis

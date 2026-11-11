@@ -57,7 +57,7 @@ This proves the degree bound needed in Lemma 7.2 after identifying `S` with its
 secondary-weight image filtration, using the explicitly stated smaller-rank tensor
 HN induction hypothesis. The same image-flag argument applied to arbitrary target
 quotients supplies the input for Lemma 7.1. The checked
-[GradedDegree](ArakelovGeometry/AdelicVectorBundle/Tensor/GradedDegree.lean)
+[GradedDegree](ArakelovGeometry/AdelicVectorBundle/Tensor/Graded/Degree.lean)
 consumer now proves `N(epsilon) ≤ N(0) + epsilon delta` eventually for positive
 `epsilon`, with `delta ≤ mu(Q)`, for the same actual HN lifts and common bases
 used by A9. It retains the original quotient norms, including trivial valuations.
@@ -76,7 +76,7 @@ variation argument to rational weights would require additional proofs. Likewise
 a minimum in one fixed basis is insufficient; A9 must minimize over the finite
 collection of support types realized by all actual bases.
 
-The checked [Rationality](ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Rationality.lean)
+The checked [Rationality](ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Optimal/Descent.lean)
 auxiliary now descends an actual centered negative pair for the canonical
 extended binary quotient from an algebraic algebraically closed extension `L/K`
 to the original characteristic-zero field `K`, even when `[L : K]` is infinite.
@@ -90,7 +90,7 @@ probe. This auxiliary alone does not assert descended global optimality or a ful
 geometric-instability equivalence. The checked geometric assembly below supplies
 its initial closed-field negative candidate and then optimizes over `K`.
 
-The checked [Instability](ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Instability.lean)
+The checked [Instability](ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Optimal/Instability.lean)
 proves the Bost page-31 binary instability implication over every characteristic-zero
 field `K`, for nonzero finite-dimensional factors and a surjective positive-rank
 ordinary binary quotient. Its hypothesis is the existing A2 geometric quotient
@@ -107,7 +107,7 @@ independent mathematical, consumer and honesty reviews passed. This supplies the
 geometric input used by A9 below. No arbitrary-group converse, semistability over
 arbitrary further extensions, or rationality of the real weights is asserted.
 
-The checked [HNOptimalVariation](ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/HNOptimalVariation.lean)
+The checked [HNOptimalVariation](ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/HN/OptimalVariation.lean)
 specialization supplies only the page-32 lower bound. For a unit
 negative optimizer, actual HN lifts give `beta ≤ 0`. Centering those lifts yields
 energy `1 + 2 beta epsilon + D epsilon²`, with `D ≥ 0`. Global optimality then
@@ -125,8 +125,8 @@ direct slope composition has been kernel-checked. A8 supplies geometric existenc
 of the negative candidate; the smaller-rank tensor-HN induction
 condition is still explicit in the arithmetic bound.
 
-The checked [GeometricOptimal](ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/GeometricOptimal.lean)
-and [HNVariationAssembly](ArakelovGeometry/AdelicVectorBundle/Tensor/HNVariationAssembly.lean)
+The checked [GeometricOptimal](ArakelovGeometry/AdelicVectorBundle/Examples/Trivial/Filtration/Optimal/Geometric.lean)
+and [HNVariationAssembly](ArakelovGeometry/AdelicVectorBundle/Tensor/Graded/HNVariation.lean)
 prove the binary geometric unstable-case step of Bost pp.31–32, equation (47).
 Actual A2 geometric nonsemistability of the same surjective positive-rank quotient
 yields an actual original-field unit negative global optimizer, comparing all
@@ -161,7 +161,7 @@ semantic/honesty review; see [its provenance record](ExternalResults/Stacks/prov
 The concrete orbit-map/DVR, residue-descent and final original-field instability
 consumers are checked; the latter is described above.
 
-The checked local [DVRWeights](ArakelovGeometry/InvariantTheory/DVRWeights.lean)
+The checked local [DVRWeights](ArakelovGeometry/InvariantTheory/DVR/Weights.lean)
 consumer reuses local PID diagonalization to obtain general DVR Cartan factors
 in integral SL, with integer exponents summing to zero. It specializes the CM
 numerical-equivalence input to the local implication needed on Bost page 31:
@@ -171,7 +171,7 @@ specified integral SL changes has negative original weight sum. The combined
 DVR/Stacks audit checked 21 declarations with only standard axioms. No complete
 DVR, power-series model, or finite/equal residue field is assumed or claimed.
 
-The checked [BinaryOrbitDVR](ArakelovGeometry/InvariantTheory/BinaryOrbitDVR.lean)
+The checked [BinaryOrbitDVR](ArakelovGeometry/InvariantTheory/Binary/Orbit/DVR.lean)
 consumer, including `BinaryOrbitCoordinates`, now proves the actual geometric
 producer required on Bost page 31. From polynomial closure of the actual A2 dual
 tensor-power orbit, its explicit determinant-one coordinate algebra and the
@@ -187,7 +187,7 @@ criterion. Seven final transitive axiom roots, the earlier geometric-core audit,
 and independent source, consumer and honesty reviews passed. `OrbitSeparation`
 supplies its closure hypothesis. Scalar-tower residue comparison and polynomial
 descent are supplied by the checked
-[BinaryNegativeFiltration](ArakelovGeometry/InvariantTheory/BinaryNegativeFiltration.lean).
+[BinaryNegativeFiltration](ArakelovGeometry/InvariantTheory/Binary/NegativeFiltration.lean).
 
 This residue consumer proves the required implication over an algebraically
 closed ground field for the original surjective positive-rank quotient. Its
@@ -209,7 +209,7 @@ The Apache-licensed EtingofRepresentationTheory port was reduced from its survey
 seven-file closure to five proof modules (892 lines), with narrow Mathlib imports.
 It supplies the actual tensor permutation-centralizer, semisimple image-algebra
 and GL-span results. The checked local
-[TensorPowerSemisimple](ArakelovGeometry/InvariantTheory/TensorPowerSemisimple.lean)
+[TensorPowerSemisimple](ArakelovGeometry/InvariantTheory/TensorPower/Semisimple.lean)
 consumer proves that, over an algebraically closed characteristic-zero field,
 each actual tensor power of a positive-rank finite-dimensional space is semisimple
 as an SL group-algebra module, including degree zero. It reuses the existing
@@ -221,7 +221,7 @@ axiom probes use only standard axioms; see
 This specializes the representation input needed in Bost page 31. General
 reductivity and semisimplicity of the infinite group's group algebra are not
 claimed. The checked local
-[OrbitSeparation](ArakelovGeometry/InvariantTheory/OrbitSeparation.lean)
+[OrbitSeparation](ArakelovGeometry/InvariantTheory/Binary/OrbitSeparation.lean)
 consumer now supplies the one-way null-cone separation step for the actual A2
 dual tensor powers of two positive-rank SL factors. An equivariant multiplication
 quotient and fixed-degree tensor semisimplicity give semisimplicity of bounded
@@ -235,6 +235,37 @@ reviews passed. This is the finite-module separation needed on Bost page 31;
 it assumes no general reductivity or invariant-ring finite generation. Actual
 DVR specialization and residue descent are checked separately and consumed by
 the checked original-field A8 assembly above.
+
+## Code organization and instance inference
+
+The invariant-theory implementation separates generic `Polynomial/` operations,
+`TensorPower/` representation theory, `DVR/` weights, and the `Binary/` instability
+argument (with orbit coordinates and degeneration in `Binary/Orbit/`).
+`Examples/Trivial/Filtration/Optimal/` contains minimization, descent and the
+geometric consumer; its `HN/` directory contains lifts and optimal variation.
+Arithmetic graded comparisons live in `Tensor/Graded/`.
+
+The former large `Tensor/HermitianDual.lean` remains a compatibility import.
+Its proofs now live in `Tensor/Hermitian/Dual/Basic.lean`,
+`Tensor/Hermitian/Grouping.lean` and `Tensor/Hermitian/Coherence.lean`.
+The previously published `Tensor/HermitianInnerProduct.lean` import also remains
+available. Mathematical namespaces and the three final Bost foundation entry
+points are preserved. The coordinate-algebra type is named
+`InvariantTheory.BinarySLCoordinateAlgebra`, following mathlib's type naming.
+
+Canonical number-field norm-family separation, metric and finite Archimedean
+mass are exported as instances; completeness is publicly available as well.
+The metric retains the original upper-integral distance and topology.
+Relative algebraic closures of countable subfields inherit `Countable` automatically.
+Norms depending on an explicitly chosen basis, norm family or scalar embedding
+remain named definitions: registering them globally would leave their choices
+undetermined or introduce competing structures on the same carrier.
+
+See [the refactor report](reports/2026-11-11-code-refactor/report.txt),
+[the module map](reports/2026-11-11-code-refactor/module-moves.json), and
+[the preserved commit map](reports/2026-11-11-code-refactor/history-map.json).
+Direct checks use `LEAN_NUM_THREADS=2 lake build ArakelovGeometry ExternalResults`
+and `lake env lean -j2 Tests/Typeclasses.lean`.
 
 ## Current scope
 

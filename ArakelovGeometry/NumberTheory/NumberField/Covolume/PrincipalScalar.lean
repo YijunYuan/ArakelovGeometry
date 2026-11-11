@@ -48,12 +48,12 @@ theorem basisFamily_hermitian :
 
 omit [NumberField K] [Fintype ι] in
 theorem mem_principalModule (x : E) :
-    x ∈ principalModule b ↔ ∀ i, ∃ a : 𝓞 K, (a : K) = b.repr x i := by
-  exact b.mem_span_iff_repr_mem (𝓞 K) x
+    x ∈ principalModule b ↔ ∀ i, ∃ a : 𝓞 K, (a : K) = b.repr x i :=
+  b.mem_span_iff_repr_mem (𝓞 K) x
 
 omit [NumberField K] [Fintype ι] in
-theorem principalModule_fg [Finite ι] : (principalModule b).FG := by
-  exact Submodule.fg_span (Set.finite_range b)
+theorem principalModule_fg [Finite ι] : (principalModule b).FG :=
+  Submodule.fg_span (Set.finite_range b)
 
 omit [NumberField K] [Fintype ι] in
 theorem principalModule_full :

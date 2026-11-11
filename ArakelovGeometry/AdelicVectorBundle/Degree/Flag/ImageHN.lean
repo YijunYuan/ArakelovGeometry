@@ -5,10 +5,11 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicVectorBundle.Tensor.Graded
-public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HNLift
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.Hermitian
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HN.Lift
 public import ArakelovGeometry.AdelicVectorBundle.Slope.LinearMap
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.Graded.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Supermodular
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.Semistability
 

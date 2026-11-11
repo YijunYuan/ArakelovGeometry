@@ -5,8 +5,8 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Instability
-public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Optimal
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Optimal.Basic
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Optimal.Instability
 
 /-!
 # Actual original-field global optimizers from geometric instability

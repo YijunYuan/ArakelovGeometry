@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Density.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Measurability.Density.AlgebraicClosure
 import ArakelovGeometry.Analysis.NormedSpace.LinearMapBound
 import Mathlib.CategoryTheory.Category.Init

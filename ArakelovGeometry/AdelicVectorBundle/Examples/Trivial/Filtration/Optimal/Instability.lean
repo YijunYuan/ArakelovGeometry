@@ -5,8 +5,8 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.InvariantTheory.BinaryInstability
-public import ArakelovGeometry.InvariantTheory.BinaryTensorTransport
+public import ArakelovGeometry.InvariantTheory.Binary.Instability
+public import ArakelovGeometry.InvariantTheory.Binary.TensorTransport
 
 /-!
 # Actual original-field negative filtrations from binary geometric instability

@@ -5,8 +5,9 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianInnerProduct
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian.InnerProduct
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.PairNorm
+
 import ArakelovGeometry.AdelicVectorBundle.Construction.Tensor.Countable
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Subquotient
 import Mathlib.CategoryTheory.Category.Init

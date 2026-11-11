@@ -63,8 +63,8 @@ noncomputable def localHeight (a : ι → K) (ω : AS.Ω) : ℝ :=
   Finset.univ.sup' Finset.univ_nonempty fun i ↦ AS.ϕ ω (a i)
 
 theorem eval_le_localHeight (a : ι → K) (ω : AS.Ω) (i : ι) :
-    AS.ϕ ω (a i) ≤ AS.localHeight a ω := by
-  exact Finset.le_sup' (fun j ↦ AS.ϕ ω (a j)) (Finset.mem_univ i)
+    AS.ϕ ω (a i) ≤ AS.localHeight a ω :=
+  Finset.le_sup' (fun j ↦ AS.ϕ ω (a j)) (Finset.mem_univ i)
 
 theorem localHeight_pos {a : ι → K} (ha : a ≠ 0) (ω : AS.Ω) :
     0 < AS.localHeight a ω := by

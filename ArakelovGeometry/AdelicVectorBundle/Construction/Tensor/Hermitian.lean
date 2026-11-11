@@ -6,7 +6,8 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Tensor.Line
-public import ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianInnerProduct
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian.InnerProduct
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Line
 import ArakelovGeometry.AdelicVectorBundle.Tensor.Line
 import Mathlib.CategoryTheory.Category.Init

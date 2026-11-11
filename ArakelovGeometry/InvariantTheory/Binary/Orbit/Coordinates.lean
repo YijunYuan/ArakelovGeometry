@@ -6,10 +6,10 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.InvariantTheory.Linearization
-public import Mathlib.LinearAlgebra.PiTensorProduct.Basis
 public import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
-public import Mathlib.RingTheory.Ideal.Quotient.Operations
+public import Mathlib.LinearAlgebra.PiTensorProduct.Basis
 public import Mathlib.RingTheory.FiniteType
+public import Mathlib.RingTheory.Ideal.Quotient.Operations
 public import Mathlib.RingTheory.Spectrum.Prime.Topology
 
 /-!
@@ -36,7 +36,7 @@ variable (k : Type*) [CommRing k] (ι : Bool → Type*)
   [∀ j, Fintype (ι j)] [∀ j, DecidableEq (ι j)]
 
 /-- The matrix variables for the two actual SL factors; the row is listed first. -/
-abbrev BinarySLVariables := Σ j, ι j × ι j
+abbrev BinarySLVariables : Type _ := Σ j, ι j × ι j
 
 /-- The two universal matrices before imposing determinant one. -/
 def binarySLUniversalMatrix (j : Bool) :
@@ -49,11 +49,11 @@ def binarySLRelations : Ideal (MvPolynomial (BinarySLVariables ι) k) :=
 
 /-- The coordinate algebra of the actual binary SL group. It is only the finite
 matrix presentation needed for Bost p31, without general group scheme machinery. -/
-abbrev binarySLCoordinateAlgebra :=
+abbrev BinarySLCoordinateAlgebra : Type _ :=
   MvPolynomial (BinarySLVariables ι) k ⧸ binarySLRelations k ι
 
 /-- The entries of the universal determinant-one matrices. -/
-def binarySLCoordinate (j : Bool) (u v : ι j) : binarySLCoordinateAlgebra k ι :=
+def binarySLCoordinate (j : Bool) (u v : ι j) : BinarySLCoordinateAlgebra k ι :=
   Ideal.Quotient.mk _ (X ⟨j, u, v⟩)
 
 @[simp]
@@ -85,7 +85,7 @@ theorem evalBinarySLPolynomial_det (h : ∀ j, Matrix.SpecialLinearGroup (ι j) 
 
 /-- Evaluate the quotient at an actual pair of determinant-one matrices. -/
 def evalBinarySL (h : ∀ j, Matrix.SpecialLinearGroup (ι j) L) :
-    binarySLCoordinateAlgebra k ι →ₐ[k] L :=
+    BinarySLCoordinateAlgebra k ι →ₐ[k] L :=
   Ideal.Quotient.liftₐ _ (evalBinarySLPolynomial h) (by
     change binarySLRelations k ι ≤ RingHom.ker (evalBinarySLPolynomial h).toRingHom
     apply Ideal.span_le.mpr
@@ -101,7 +101,7 @@ theorem evalBinarySL_coordinate (h : ∀ j, Matrix.SpecialLinearGroup (ι j) L)
   exact aeval_X _ _
 
 /-- Every extension-algebra point produces actual determinant-one matrices. -/
-def binarySLOfAlgHom (χ : binarySLCoordinateAlgebra k ι →ₐ[k] L) :
+def binarySLOfAlgHom (χ : BinarySLCoordinateAlgebra k ι →ₐ[k] L) :
     ∀ j, Matrix.SpecialLinearGroup (ι j) L := fun j ↦
   ⟨fun u v ↦ χ (binarySLCoordinate k ι j u v), by
     exact (χ.map_det (fun u v ↦ binarySLCoordinate k ι j u v)).symm.trans
@@ -116,7 +116,7 @@ theorem binarySLOfAlgHom_eval (h : ∀ j, Matrix.SpecialLinearGroup (ι j) L) :
   exact evalBinarySL_coordinate h j u v
 
 @[simp]
-theorem evalBinarySL_ofAlgHom (χ : binarySLCoordinateAlgebra k ι →ₐ[k] L) :
+theorem evalBinarySL_ofAlgHom (χ : BinarySLCoordinateAlgebra k ι →ₐ[k] L) :
     evalBinarySL (binarySLOfAlgHom χ) = χ := by
   apply Ideal.Quotient.algHom_ext k
   ext v
@@ -130,7 +130,7 @@ variable (k : Type*) [Field k] (ι : Bool → Type*)
   [∀ j, Fintype (ι j)] [∀ j, DecidableEq (ι j)] (r : ℕ)
 
 /-- Standard basis indices of the actual binary tensor power. -/
-abbrev BinaryTensorIndex := Fin r → ∀ j, ι j
+abbrev BinaryTensorIndex : Type _ := Fin r → ∀ j, ι j
 
 /-- The standard basis of the actual A2 binary tensor power. -/
 def binaryTensorBasis : Module.Basis (BinaryTensorIndex ι r) k
@@ -198,7 +198,7 @@ representation: output matrix indices are rows. Inversion gives exactly the same
 actual orbit, rather than a weaker set of degeneration tests. -/
 def binaryCovectorOrbitPullback
     (f : Module.Dual k (⨂[k]^r (⨂[k] j, (ι j → k)))) :
-    MvPolynomial (BinaryTensorIndex ι r) k →ₐ[k] binarySLCoordinateAlgebra k ι :=
+    MvPolynomial (BinaryTensorIndex ι r) k →ₐ[k] BinarySLCoordinateAlgebra k ι :=
   aeval fun p ↦ ∑ s, algebraMap k _ (f (binaryTensorBasis k ι r s)) *
     (∏ l, ∏ j, binarySLCoordinate k ι j (s l j) (p l j))
 
@@ -275,7 +275,7 @@ theorem binaryCovector_inverse_orbit_image
     simp only [inv_inv, MulEquiv.apply_symm_apply]
 
 instance binarySLCoordinateAlgebra_finiteType : Algebra.FiniteType k
-    (binarySLCoordinateAlgebra k ι) :=
+    (BinarySLCoordinateAlgebra k ι) :=
   Algebra.FiniteType.of_surjective (Ideal.Quotient.mkₐ k (binarySLRelations k ι))
     (Ideal.Quotient.mkₐ_surjective k _)
 
@@ -286,7 +286,7 @@ theorem binaryCovectorOrbitPullback_finiteType
     (binaryCovectorOrbitPullback f).toRingHom.FiniteType := by
   apply RingHom.FiniteType.of_comp_finiteType (f := MvPolynomial.C)
   have he : (binaryCovectorOrbitPullback f).toRingHom.comp MvPolynomial.C =
-      algebraMap k (binarySLCoordinateAlgebra k ι) := by
+      algebraMap k (BinarySLCoordinateAlgebra k ι) := by
     ext c
     exact (binaryCovectorOrbitPullback f).commutes c
   rw [he, RingHom.finiteType_algebraMap]

@@ -5,9 +5,9 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.InvariantTheory.OrbitSeparation
-public import ArakelovGeometry.InvariantTheory.BinaryNegativeFiltration
-public import ArakelovGeometry.InvariantTheory.BinaryTensorTransport
+public import ArakelovGeometry.InvariantTheory.Binary.NegativeFiltration
+public import ArakelovGeometry.InvariantTheory.Binary.OrbitSeparation
+public import ArakelovGeometry.InvariantTheory.Binary.TensorTransport
 
 /-!
 # Actual binary geometric instability over an algebraically closed field

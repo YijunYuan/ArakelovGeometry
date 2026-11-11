@@ -1,9 +1,9 @@
 module
 
-public import ArakelovGeometry.InvariantTheory.PolynomialAction
 public import ArakelovGeometry.InvariantTheory.Linearization
-public import Mathlib.LinearAlgebra.Dual.Lemmas
+public import ArakelovGeometry.InvariantTheory.Polynomial.Action
 public import Mathlib.Algebra.Group.Pointwise.Set.BigOperators
+public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 /-!
 # Homogeneous polynomials as actual tensor quotients

@@ -38,8 +38,8 @@ theorem circlePoint_eq_exp (t : ℝ) :
     circlePoint t = Complex.exp (((2 * Real.pi * t : ℝ) : ℂ) * Complex.I) := by
   simp [circlePoint, circleMap, mul_comm t]
 
-theorem continuous_circlePoint : Continuous circlePoint := by
-  exact (continuous_circleMap 0 1).comp (continuous_id.mul continuous_const)
+theorem continuous_circlePoint : Continuous circlePoint :=
+  (continuous_circleMap 0 1).comp (continuous_id.mul continuous_const)
 
 /-- The full-measure subset of transcendental unit-circle parameters. -/
 def archimedeanDomain : Set ℝ :=

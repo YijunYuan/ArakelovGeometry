@@ -5,8 +5,8 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.LinearAlgebra.Valuation.CartanDecomposition
 public import ArakelovGeometry.InvariantTheory.Plucker
+public import ArakelovGeometry.LinearAlgebra.Valuation.CartanDecomposition
 public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 
 /-!

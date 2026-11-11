@@ -5,10 +5,10 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HNLift
-public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Optimal
-public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Destabilizing
 public import ArakelovGeometry.AdelicVectorBundle.Degree.ExactSequence.Dual
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HN.Lift
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Optimal.Basic
+public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Destabilizing
 public import ArakelovGeometry.AdelicVectorBundle.Subquotient.Restriction.Functor
 
 /-!

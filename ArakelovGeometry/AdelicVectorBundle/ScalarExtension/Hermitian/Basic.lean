@@ -6,8 +6,9 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Basic
-public import ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianInnerProduct
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian.InnerProduct
 public import ArakelovGeometry.Analysis.ScalarExtension.Hermitian.Basic
+
 import Mathlib.CategoryTheory.Category.Init
 
 /-!

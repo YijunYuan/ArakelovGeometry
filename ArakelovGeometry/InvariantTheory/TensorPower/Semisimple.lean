@@ -1,8 +1,8 @@
 module
 
 public import ArakelovGeometry.InvariantTheory.Linearization
-public import Mathlib.RepresentationTheory.Semisimple
 public import ExternalResults.EtingofRepresentationTheory.PiTensorProduct.MapSpanCentralizer
+public import Mathlib.RepresentationTheory.Semisimple
 
 /-!
 # Semisimplicity of actual special-linear tensor powers

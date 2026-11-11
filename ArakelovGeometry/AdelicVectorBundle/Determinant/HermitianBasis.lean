@@ -6,7 +6,8 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Determinant.Basic
-public import ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianInnerProduct
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian.InnerProduct
+
 import ArakelovGeometry.AdelicVectorBundle.Determinant.DualNorm
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init

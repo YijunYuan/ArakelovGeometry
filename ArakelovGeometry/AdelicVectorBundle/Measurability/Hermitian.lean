@@ -7,7 +7,8 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Density.Basic
-public import ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianInnerProduct
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian.InnerProduct
+
 import ArakelovGeometry.Analysis.Hermitian.ComplexPolarization
 import ArakelovGeometry.MeasureTheory.Function.ComplexEmbedding
 import Mathlib.CategoryTheory.Category.Init

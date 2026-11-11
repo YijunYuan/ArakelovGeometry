@@ -9,9 +9,9 @@ four transitive axiom probes use only standard axioms, and independent semantic
 and honesty reviews passed. [Its provenance record](Stacks/provenance.json)
 contains fixed revisions, hashes, retained warnings and exact consumer boundaries.
 The local concrete orbit-map/DVR and residue-descent consumers are now checked;
-see `InvariantTheory/BinaryOrbitDVR.lean` and `BinaryNegativeFiltration.lean`.
+see `InvariantTheory/Binary/Orbit/DVR.lean` and `BinaryNegativeFiltration.lean`.
 Their final original-field consumer is checked in
-`AdelicVectorBundle/Examples/Trivial/Filtration/Instability.lean`.
+`AdelicVectorBundle/Examples/Trivial/Filtration/Optimal/Instability.lean`.
 Upstream `StacksFrontier` is not asserted to have human review.
 
 The Etingof Schur–Weyl port contains five selected proof modules (892 lines),
@@ -21,7 +21,7 @@ axiom probes and independent review. The explicit degree-zero consumer also
 passed. [Its provenance record](EtingofRepresentationTheory/provenance.json)
 records the pinned Apache-licensed release, omissions, narrow import adaptations,
 hashes and evidence. The local bounded-polynomial and actual orbit-separation
-consumers are now checked in `InvariantTheory/OrbitSeparation.lean`; they use
+consumers are now checked in `InvariantTheory/Binary/OrbitSeparation.lean`; they use
 successive invariant lifting for the two SL factors. This does not claim a general
 reductivity theorem; the local final original-field instability assembly is
 checked separately and consumes this result.

@@ -5,8 +5,8 @@ Authors: Yijun Yuan
 -/
 module
 
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Optimal.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.ScalarExtension
-public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Optimal
 
 /-!
 # Rationality of an actual centered negative binary pair
