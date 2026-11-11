@@ -205,6 +205,66 @@ theorem binaryDeterminantPolynomial_eq_quotient_det
   rw [binaryQuotient_coordinate_tprod b d q]
   simp
 
+omit [∀ j, Fintype (ι j)] [∀ j, DecidableEq (ι j)] in
+/-- The canonical tensor/base-change isomorphism identifies the extended actual
+quotient coefficient array with the image of the original array. This checks the
+original-field model without assuming it of a generic fraction-field quotient. -/
+theorem binaryQuotientCoefficients_baseChange
+    (L : Type*) [Field L] [Algebra k L]
+    (b : ∀ j, Basis (ι j) k (E j)) (d : Basis (Fin r) k Q)
+    (q : (⨂[k] j, E j) →ₗ[k] Q) (t : Fin r) (s : ∀ j, ι j) :
+    binaryQuotientCoefficients (fun j ↦ (b j).baseChange L) (d.baseChange L)
+      ((q.baseChange L).comp (tensorBaseChangeEquiv k L E).symm.toLinearMap) t s =
+      algebraMap k L (binaryQuotientCoefficients b d q t s) := by
+  simp [binaryQuotientCoefficients, tensorBaseChangeEquiv_symm_tprod_tmul,
+    Algebra.smul_def]
+
+/-- Over every extension field the original-k polynomial is exactly the
+actual base-changed quotient determinant after the same matrix basis changes.
+This is the canonical tensor/base-change identity required by Bost p31. -/
+theorem binaryDeterminantPolynomial_eq_baseChange_det
+    (L : Type*) [Field L] [Algebra k L]
+    (b : ∀ j, Basis (ι j) k (E j)) (d : Basis (Fin r) k Q)
+    (q : (⨂[k] j, E j) →ₗ[k] Q)
+    (h : ∀ j, Matrix.SpecialLinearGroup (ι j) L) (p : BinaryTensorIndex ι r) :
+    evalBinarySLPolynomial h (binaryDeterminantPolynomial (binaryQuotientCoefficients b d q) p) =
+      Matrix.det (fun l t ↦ (d.baseChange L).repr
+        (((q.baseChange L).comp (tensorBaseChangeEquiv k L E).symm.toLinearMap)
+          (⨂ₜ[L] j, binaryChangedBasis (fun j ↦ (b j).baseChange L) h j (p l j))) t) := by
+  rw [binaryDeterminantPolynomial_eval]
+  congr 1
+  ext l t
+  rw [binaryQuotient_coordinate_tprod (fun j ↦ (b j).baseChange L) (d.baseChange L)]
+  simp only [binaryQuotientCoefficients_baseChange]
+  apply Finset.sum_congr rfl
+  intro s _
+  congr 1
+  apply Finset.prod_congr rfl
+  intro j _
+  exact (binaryChangedBasis_repr (fun j ↦ (b j).baseChange L) h j (s j) (p l j)).symm
+
+/-- The actual original quotient, canonically extended to the fraction field,
+has exactly the original polynomial value after residue. The matrices are the
+inverse Cartan factors; inverse polynomial variables are unnecessary. -/
+theorem binaryDeterminantPolynomial_residue_of_actual
+    {R L : Type*} [CommRing R] [IsDomain R] [IsLocalRing R]
+    [Field L] [Algebra k R] [Algebra R L] [Algebra k L]
+    [IsScalarTower k R L] [IsFractionRing R L]
+    (b : ∀ j, Basis (ι j) k (E j)) (d : Basis (Fin r) k Q)
+    (q : (⨂[k] j, E j) →ₗ[k] Q)
+    (H : ∀ j, Matrix.SpecialLinearGroup (ι j) R) (p : BinaryTensorIndex ι r) (c : R)
+    (hc : Matrix.det (fun l t ↦ (d.baseChange L).repr
+      (((q.baseChange L).comp (tensorBaseChangeEquiv k L E).symm.toLinearMap)
+        (⨂ₜ[L] j, binaryChangedBasis (fun j ↦ (b j).baseChange L)
+          (fun j ↦ Matrix.SpecialLinearGroup.map (algebraMap R L) ((H j)⁻¹)) j (p l j))) t) =
+      algebraMap R L c) :
+    evalBinarySLPolynomial
+      (fun j ↦ Matrix.SpecialLinearGroup.map (IsLocalRing.residue R) ((H j)⁻¹))
+      (binaryDeterminantPolynomial (binaryQuotientCoefficients b d q) p) =
+      IsLocalRing.residue R c := by
+  apply evalBinarySLPolynomial_residue_of_fraction (L := L) (fun j ↦ (H j)⁻¹)
+  exact (binaryDeterminantPolynomial_eq_baseChange_det L b d q _ p).trans hc
+
 /-- Under the descended equations, every nonzero actual quotient determinant
 has strictly negative original total weight. The conclusion concerns the original
 quotient and actual changed bases, not just polynomial solutions. -/
