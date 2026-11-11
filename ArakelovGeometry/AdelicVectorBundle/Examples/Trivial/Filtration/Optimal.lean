@@ -45,6 +45,19 @@ theorem filtrationWeightEnergy_mul (a : J → ℕ) (w : ∀ j, Fin (a j) → ℝ
     filtrationWeightEnergy a (fun j i ↦ t * w j i) = t ^ 2 * filtrationWeightEnergy a w := by
   simp only [filtrationWeightEnergy, mul_pow, ← Finset.mul_sum, mul_div_assoc]
 
+/-- The strict midpoint identity uses the original reciprocal-rank weights. -/
+theorem filtrationWeightEnergy_midpoint (a : J → ℕ) (x y : ∀ j, Fin (a j) → ℝ) :
+    filtrationWeightEnergy a (fun j i ↦ (x j i + y j i) / 2) =
+      (filtrationWeightEnergy a x + filtrationWeightEnergy a y) / 2 -
+        filtrationWeightEnergy a (fun j i ↦ x j i - y j i) / 4 := by
+  have hpoint (j : J) (i : Fin (a j)) :
+      ((x j i + y j i) / 2) ^ 2 =
+        x j i ^ 2 / 2 + y j i ^ 2 / 2 - (x j i - y j i) ^ 2 / 4 := by ring
+  simp only [filtrationWeightEnergy]
+  simp_rw [hpoint]
+  simp only [Finset.sum_sub_distrib, Finset.sum_add_distrib,
+    ← Finset.sum_div, sub_div, add_div, div_right_comm]
+
 theorem filtrationWeightEnergy_eq_zero_iff (a : J → ℕ) (ha : ∀ j, 0 < a j)
     (w : ∀ j, Fin (a j) → ℝ) :
     filtrationWeightEnergy a w = 0 ↔ ∀ j i, w j i = 0 := by
@@ -188,6 +201,42 @@ theorem filtrationWeightEnergy_pos_of_negative
     (Module.finBasis K Q) q hq] at hneg
   simp [hw] at hneg
 
+/-- The actual quotient expectation is convex at a common-basis midpoint. -/
+theorem filtrationExpectation_piTensor_image_midpoint_le
+    (b : ∀ j, Basis (Fin (finrank K (E j))) K (E j))
+    (q : (⨂[K] j, E j) →ₗ[K] Q) (hq : Function.Surjective q)
+    (x y : ∀ j, Fin (finrank K (E j)) → ℝ) :
+    filtrationExpectation (fun t ↦ (piTensorFiltration
+      (fun j s ↦ span K (b j '' {i | s ≤ (x j i + y j i) / 2})) t).map q) ≤
+      (filtrationExpectation (fun t ↦ (piTensorFiltration
+        (fun j s ↦ span K (b j '' {i | s ≤ x j i})) t).map q) +
+       filtrationExpectation (fun t ↦ (piTensorFiltration
+        (fun j s ↦ span K (b j '' {i | s ≤ y j i})) t).map q)) / 2 := by
+  let S := quotientDeterminantSupport (Basis.piTensorProduct b) (Module.finBasis K Q) q
+  have hs : S.Nonempty := quotientDeterminantSupport_nonempty _ _ _ hq
+  let L (w : ∀ j, Fin (finrank K (E j)) → ℝ) (σ : Fin (finrank K Q) →
+      (∀ j, Fin (finrank K (E j)))) := ∑ k, ∑ j, w j (σ k j)
+  have hm : S.sup' hs (L (fun j i ↦ (x j i + y j i) / 2)) ≤
+      (S.sup' hs (L x) + S.sup' hs (L y)) / 2 := by
+    apply Finset.sup'_le
+    intro σ hσ
+    have hx := Finset.le_sup' (L x) hσ
+    have hy := Finset.le_sup' (L y) hσ
+    have he : L (fun j i ↦ (x j i + y j i) / 2) σ = (L x σ + L y σ) / 2 := by
+      simp only [L, ← Finset.sum_div, Finset.sum_add_distrib]
+    rw [he]
+    linarith
+  rw [filtrationExpectation_piTensor_image_eq_sup' b _ (fun _ _ ↦ rfl)
+      (Module.finBasis K Q) q hq,
+    filtrationExpectation_piTensor_image_eq_sup' b x (fun _ _ ↦ rfl)
+      (Module.finBasis K Q) q hq,
+    filtrationExpectation_piTensor_image_eq_sup' b y (fun _ _ ↦ rfl)
+      (Module.finBasis K Q) q hq]
+  calc
+    _ ≤ ((S.sup' hs (L x) + S.sup' hs (L y)) / 2) / (finrank K Q : ℝ) :=
+      div_le_div_of_nonneg_right hm (Nat.cast_nonneg _)
+    _ = _ := by ring
+
 /-- For every actual family of bases, the quotient expectation attains its
 minimum on the centered weighted unit sphere. -/
 theorem exists_minimum_in_basis
@@ -310,5 +359,155 @@ theorem exists_negative_global_minimum_weights
     exact h.trans_eq (quotient_expectation_normalize q hq b' z)
 
 end NegativeMinimum
+
+section ActualFiltrations
+
+variable [∀ j, FiniteDimensional K (E j)]
+
+set_option quotPrecheck false in
+local notation "Families" => (∀ j, ℝ → Submodule K (E j))
+set_option quotPrecheck false in
+local notation "Admissible" => (fun F : Families ↦ ∀ j,
+  Antitone (F j) ∧ (∃ t, F j t = ⊥) ∧ (∃ t, F j t = ⊤) ∧
+  (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F j s = F j t) ∧
+  filtrationExpectation (F j) = 0)
+set_option quotPrecheck false in
+local notation "Energy" => (fun F : Families ↦ ∑ j, filtrationPairing (F j) (F j))
+
+omit [Fintype J] in
+private theorem exists_centered_coordinates
+    (ha : ∀ j, 0 < finrank K (E j)) (F : Families) (hF : Admissible F) :
+    ∃ (b : ∀ j, Basis (Fin (finrank K (E j))) K (E j))
+      (w : ∀ j, Fin (finrank K (E j)) → ℝ),
+      (∀ j, ∑ i, w j i = 0) ∧
+      F = fun j t ↦ span K (b j '' {i | t ≤ w j i}) := by
+  classical
+  have hex j := exists_common_weighted_basis (hF j).1 (hF j).2.1 (hF j).2.2.1
+    (hF j).2.2.2.1 (hF j).1 (hF j).2.1 (hF j).2.2.1 (hF j).2.2.2.1
+  choose b w z hw hz hcoord hcoord' using hex
+  refine ⟨b, w, ?_, funext fun j ↦ funext (hw j)⟩
+  intro j
+  have he := (hF j).2.2.2.2
+  rw [filtrationExpectation_eq_sum_weights (b j) (w j) (hw j)] at he
+  exact (div_eq_zero_iff.mp he).resolve_right (ne_of_gt (Nat.cast_pos.mpr (ha j)))
+
+omit [Fintype J] in
+private theorem admissible_weightedSpans
+    (b : ∀ j, Basis (Fin (finrank K (E j))) K (E j))
+    (w : ∀ j, Fin (finrank K (E j)) → ℝ) (hc : ∀ j, ∑ i, w j i = 0) :
+    Admissible (fun j t ↦ span K (b j '' {i | t ≤ w j i})) := by
+  intro j
+  obtain ⟨hb, ht⟩ := span_weights_attains_bot_top (b j) (w j)
+  refine ⟨antitone_span_weights (b j) (w j), hb, ht,
+    span_weights_locallyConstant_left (b j) (w j), ?_⟩
+  rw [filtrationExpectation_eq_sum_weights (b j) (w j) (fun _ ↦ rfl), hc j, zero_div]
+
+variable (q : (⨂[K] j, E j) →ₗ[K] Q) (hq : Function.Surjective q)
+
+set_option quotPrecheck false in
+local notation "Value" => (fun F : Families ↦
+  filtrationExpectation (fun t ↦ (piTensorFiltration F t).map q))
+
+include hq
+
+/-- Existence of an actual centered unit global optimizer, conditional only
+on one actual centered negative quotient-filtration candidate. -/
+theorem exists_normalized_quotient_optimizer
+    (ha : ∀ j, 0 < finrank K (E j)) (F₀ : Families)
+    (hF₀ : Admissible F₀) (hneg₀ : Value F₀ < 0) :
+    ∃ P : Families, Admissible P ∧ Energy P = 1 ∧ Value P < 0 ∧
+      ∀ F : Families, Admissible F → 0 < Energy F →
+        Value P ≤ Value F / Real.sqrt (Energy F) := by
+  obtain ⟨b₀, w₀, hc₀, he₀⟩ := exists_centered_coordinates ha F₀ hF₀
+  rw [he₀] at hneg₀
+  obtain ⟨b, w, hw, hneg, hmin⟩ :=
+    exists_negative_global_minimum_weights q hq ha b₀ w₀ hc₀ hneg₀
+  let P : Families := fun j t ↦ span K (b j '' {i | t ≤ w j i})
+  have hP : Admissible P := by
+    intro j
+    obtain ⟨hb, ht⟩ := span_weights_attains_bot_top (b j) (w j)
+    refine ⟨antitone_span_weights (b j) (w j), hb, ht,
+      span_weights_locallyConstant_left (b j) (w j), ?_⟩
+    rw [filtrationExpectation_eq_sum_weights (b j) (w j) (fun _ ↦ rfl), hw.1 j, zero_div]
+  have hE : Energy P = 1 := (filtrationWeightEnergy_eq_pairing b w).symm.trans hw.2
+  refine ⟨P, hP, hE, hneg, ?_⟩
+  intro F hF hpos
+  obtain ⟨b', z, hc, he⟩ := exists_centered_coordinates ha F hF
+  rw [he] at hpos ⊢
+  have henergy := filtrationWeightEnergy_eq_pairing b' z
+  dsimp only at hpos ⊢
+  rw [← henergy] at hpos ⊢
+  exact hmin b' z hc hpos
+
+/-- Two centered unit global minimizers of negative value are equal as actual
+filtration functions. The proof compares their weights in common adapted bases. -/
+theorem normalized_quotient_optimizer_unique
+    (ha : ∀ j, 0 < finrank K (E j)) (P R : Families)
+    (hP : Admissible P) (hR : Admissible R)
+    (hPE : Energy P = 1) (hRE : Energy R = 1) (hneg : Value P < 0)
+    (hPmin : ∀ F : Families, Admissible F → 0 < Energy F →
+      Value P ≤ Value F / Real.sqrt (Energy F))
+    (hRmin : ∀ F : Families, Admissible F → 0 < Energy F →
+      Value R ≤ Value F / Real.sqrt (Energy F)) : P = R := by
+  classical
+  have hval : Value P = Value R := by
+    have hpr := hPmin R hR (by rw [hRE]; norm_num)
+    have hrp := hRmin P hP (by rw [hPE]; norm_num)
+    rw [hRE, Real.sqrt_one, div_one] at hpr
+    rw [hPE, Real.sqrt_one, div_one] at hrp
+    exact le_antisymm hpr hrp
+  have hex j := exists_common_weighted_basis (hP j).1 (hP j).2.1 (hP j).2.2.1
+    (hP j).2.2.2.1 (hR j).1 (hR j).2.1 (hR j).2.2.1 (hR j).2.2.2.1
+  choose b x y hx hy hxc hyc using hex
+  have heP : P = fun j t ↦ span K (b j '' {i | t ≤ x j i}) :=
+    funext fun j ↦ funext (hx j)
+  have heR : R = fun j t ↦ span K (b j '' {i | t ≤ y j i}) :=
+    funext fun j ↦ funext (hy j)
+  have hcx (j : J) : ∑ i, x j i = 0 := by
+    have hh := (hP j).2.2.2.2
+    rw [filtrationExpectation_eq_sum_weights (b j) (x j) (hx j)] at hh
+    exact (div_eq_zero_iff.mp hh).resolve_right (ne_of_gt (Nat.cast_pos.mpr (ha j)))
+  have hcy (j : J) : ∑ i, y j i = 0 := by
+    have hh := (hR j).2.2.2.2
+    rw [filtrationExpectation_eq_sum_weights (b j) (y j) (hy j)] at hh
+    exact (div_eq_zero_iff.mp hh).resolve_right (ne_of_gt (Nat.cast_pos.mpr (ha j)))
+  let z := fun j i ↦ (x j i + y j i) / 2
+  let Z : Families := fun j t ↦ span K (b j '' {i | t ≤ z j i})
+  have hcz (j : J) : ∑ i, z j i = 0 := by
+    simp only [z, ← Finset.sum_div, Finset.sum_add_distrib, hcx, hcy, zero_add, zero_div]
+  have hZ : Admissible Z := admissible_weightedSpans b z hcz
+  have hmid : Value Z ≤ Value P := by
+    have hh := filtrationExpectation_piTensor_image_midpoint_le b q hq x y
+    have hh' : Value Z ≤ (Value P + Value R) / 2 := by
+      simpa only [heP, heR] using hh
+    rw [← hval] at hh'
+    linarith
+  let a := fun j ↦ finrank K (E j)
+  have hpos : 0 < filtrationWeightEnergy a z :=
+    filtrationWeightEnergy_pos_of_negative b q hq ha z (hmid.trans_lt hneg)
+  have heZ : filtrationWeightEnergy a z = Energy Z := filtrationWeightEnergy_eq_pairing b z
+  have heX : filtrationWeightEnergy a x = 1 := by
+    rw [filtrationWeightEnergy_eq_pairing b x]
+    simpa only [heP] using hPE
+  have heY : filtrationWeightEnergy a y = 1 := by
+    rw [filtrationWeightEnergy_eq_pairing b y]
+    simpa only [heR] using hRE
+  have hmin := hPmin Z hZ (heZ ▸ hpos)
+  have hspos : 0 < Real.sqrt (Energy Z) := Real.sqrt_pos.mpr (heZ ▸ hpos)
+  have hmul := (le_div_iff₀ hspos).mp hmin
+  have hnorm : 1 ≤ Real.sqrt (Energy Z) := by nlinarith
+  have hsquare := Real.sq_sqrt (le_of_lt (heZ ▸ hpos))
+  have hge : 1 ≤ Energy Z := by nlinarith
+  have hid := filtrationWeightEnergy_midpoint a x y
+  change filtrationWeightEnergy a z = _ at hid
+  rw [heX, heY, heZ] at hid
+  have hd : filtrationWeightEnergy a (fun j i ↦ x j i - y j i) = 0 := by
+    have hn := filtrationWeightEnergy_nonneg a (fun j i ↦ x j i - y j i)
+    linarith
+  have hxy := (filtrationWeightEnergy_eq_zero_iff a ha _).mp hd
+  have he : x = y := funext fun j ↦ funext fun i ↦ sub_eq_zero.mp (hxy j i)
+  rw [heP, heR, he]
+
+end ActualFiltrations
 
 end Submodule
