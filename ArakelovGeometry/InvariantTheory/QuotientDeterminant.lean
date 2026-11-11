@@ -1,4 +1,6 @@
-import ArakelovGeometry.AdelicVectorBundle.Exterior.BaseChange
+module
+
+public import ArakelovGeometry.AdelicVectorBundle.Exterior.BaseChange
 
 /-!
 # The determinant quotient and its dual Plücker vector
@@ -6,6 +8,8 @@ import ArakelovGeometry.AdelicVectorBundle.Exterior.BaseChange
 The maps here use the canonical exterior-power pairing and tensor-to-exterior
 surjection already present in the project.
 -/
+
+@[expose] public section
 
 noncomputable section
 

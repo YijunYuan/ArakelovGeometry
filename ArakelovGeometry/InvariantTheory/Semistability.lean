@@ -1,6 +1,8 @@
-import Mathlib.RingTheory.MvPolynomial.Homogeneous
-import Mathlib.RepresentationTheory.Basic
-import Mathlib.LinearAlgebra.FiniteDimensional.Basic
+module
+
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
+public import Mathlib.RepresentationTheory.Basic
+public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 
 /-!
 # Polynomial semistability
@@ -8,6 +10,8 @@ import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 Positive-degree homogeneous invariant polynomials, with explicit coordinates.
 The coordinate-change theorem makes the predicate independent of the chosen basis.
 -/
+
+@[expose] public section
 
 noncomputable section
 

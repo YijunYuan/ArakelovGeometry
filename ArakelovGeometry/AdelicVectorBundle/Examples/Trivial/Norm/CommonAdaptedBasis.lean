@@ -179,6 +179,32 @@ theorem exists_common_orthogonal_basis [FiniteDimensional K E]
   exact ⟨b, a, c, hFa, hGc, ξ.norm_eq_sup_of_weighted_coordinates hξ b a hFcoord,
     η.norm_eq_sup_of_weighted_coordinates hη b c hGcoord⟩
 
+/-- The norm realizations of two arbitrary real filtrations share an orthogonal
+basis whose two weights still describe the original threshold submodules. -/
+theorem exists_common_orthogonal_basis_ofTrivialFiltration [FiniteDimensional K E]
+    (F G : ℝ → Submodule K E)
+    (hF : Antitone F) (hFbot : ∃ t, F t = ⊥) (hFtop : ∃ t, F t = ⊤)
+    (hFleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t)
+    (hG : Antitone G) (hGbot : ∃ t, G t = ⊥) (hGtop : ∃ t, G t = ⊤)
+    (hGleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → G s = G t) :
+    ∃ (b : Basis (Fin (finrank K E)) K E) (a c : Fin (finrank K E) → ℝ),
+      (∀ t, F t = Submodule.span K (b '' {i | t ≤ a i})) ∧
+      (∀ t, G t = Submodule.span K (b '' {i | t ≤ c i})) ∧
+      (∀ ω (z : ((singleTrivialPlace K).ϕ ω).Completion ⊗[K] E),
+        (ofTrivialFiltration F hF hFbot hFtop hFleft).norm ω z =
+          (((b.repr (trivialCompletedTensorEquiv K E z)).support.sup fun i ↦
+            ⟨Real.exp (-a i), (Real.exp_pos _).le⟩ : NNReal) : ℝ)) ∧
+      (∀ ω (z : ((singleTrivialPlace K).ϕ ω).Completion ⊗[K] E),
+        (ofTrivialFiltration G hG hGbot hGtop hGleft).norm ω z =
+          (((b.repr (trivialCompletedTensorEquiv K E z)).support.sup fun i ↦
+            ⟨Real.exp (-c i), (Real.exp_pos _).le⟩ : NNReal) : ℝ)) := by
+  simpa only [trivialFiltration_ofTrivialFiltration] using
+    exists_common_orthogonal_basis
+      (ofTrivialFiltration F hF hFbot hFtop hFleft)
+      (ofTrivialFiltration G hG hGbot hGtop hGleft)
+      (ofTrivialFiltration_isUltrametric F hF hFbot hFtop hFleft)
+      (ofTrivialFiltration_isUltrametric G hG hGbot hGtop hGleft)
+
 end
 
 end ArakelovGeometry.NormFamily
