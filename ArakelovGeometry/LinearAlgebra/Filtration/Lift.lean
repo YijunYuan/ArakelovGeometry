@@ -333,4 +333,26 @@ theorem exists_basis_lifting_weighted_quotients :
 
 end WeightedLift
 
+/-- A basis adapted to a flag is also adapted to its decreasing block weights. -/
+theorem iSup_flag_eq_span_weights {n : ℕ} {ι : Fin n → Type*}
+    (U : Fin (n + 1) → Submodule K E) (B : Basis (Σ i, ι i) K E)
+    (hspan : ∀ k : Fin (n + 1), span K (B '' {a | a.1.val < k.val}) = U k)
+    (a : Fin n → ℝ) (ha : Antitone a) (t : ℝ) :
+    (⨆ (i : Fin n) (_ : t ≤ a i), U i.succ) =
+      span K (B '' {j | t ≤ a j.1}) := by
+  apply le_antisymm
+  · refine iSup_le fun i ↦ iSup_le fun hi ↦ ?_
+    rw [← hspan i.succ]
+    apply span_le.mpr
+    rintro _ ⟨j, hj, rfl⟩
+    apply subset_span
+    refine ⟨j, hi.trans (ha ?_), rfl⟩
+    exact Fin.le_iff_val_le_val.mpr (Nat.le_of_lt_succ hj)
+  · apply span_le.mpr
+    rintro _ ⟨j, hj, rfl⟩
+    apply le_iSup_of_le j.1
+    apply le_iSup_of_le hj
+    rw [← hspan j.1.succ]
+    exact subset_span ⟨j, Nat.lt_succ_self _, rfl⟩
+
 end Submodule

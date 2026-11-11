@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian
 public import ArakelovGeometry.Analysis.Tensor.HermitianDual
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.DualNorm
+import ArakelovGeometry.Analysis.ScalarExtension.Hermitian.Tensor
 import Mathlib.Analysis.Normed.Group.Ultra
 
 /-!
@@ -81,6 +82,57 @@ theorem tensorBaseChangeEquiv_reindex {J : Type*} [Finite J] (e : ι ≃ J)
         map_smul]
 
 end Algebra
+
+section GroupingBaseChange
+
+variable (K L : Type*) [Field K] [Field L] [Algebra K L]
+  {I J : Type*} [Finite I] [Finite J] (V : I ⊕ J → Type*)
+  [∀ i, AddCommGroup (V i)] [∀ i, Module K (V i)]
+
+/-- Joining two finite groups commutes with canonical scalar extension. -/
+theorem tensorBaseChangeEquiv_tmulEquivDep
+    (z : L ⊗[K] ((⨂[K] i, V (.inl i)) ⊗[K] (⨂[K] j, V (.inr j)))) :
+    tensorBaseChangeEquiv K L V
+      ((PiTensorProduct.tmulEquivDep K V).toLinearMap.baseChange L z) =
+    PiTensorProduct.tmulEquivDep L (fun i ↦ L ⊗[K] V i)
+      (TensorProduct.congr (tensorBaseChangeEquiv K L (fun i ↦ V (.inl i)))
+        (tensorBaseChangeEquiv K L (fun j ↦ V (.inr j)))
+        (TensorProduct.AlgebraTensorModule.distribBaseChange K L
+          (⨂[K] i, V (.inl i)) (⨂[K] j, V (.inr j)) z)) := by
+  let f := (tensorBaseChangeEquiv K L V).toLinearMap ∘ₗ
+    (PiTensorProduct.tmulEquivDep K V).toLinearMap.baseChange L
+  let g := (PiTensorProduct.tmulEquivDep L (fun i ↦ L ⊗[K] V i)).toLinearMap ∘ₗ
+    (TensorProduct.congr (tensorBaseChangeEquiv K L (fun i ↦ V (.inl i)))
+      (tensorBaseChangeEquiv K L (fun j ↦ V (.inr j)))).toLinearMap ∘ₗ
+    (TensorProduct.AlgebraTensorModule.distribBaseChange K L
+      (⨂[K] i, V (.inl i)) (⨂[K] j, V (.inr j))).toLinearMap
+  have h : f = g := by
+    apply LinearMap.restrictScalars_injective K
+    apply TensorProduct.ext
+    apply LinearMap.ext
+    intro a
+    apply TensorProduct.ext
+    apply PiTensorProduct.ext
+    apply MultilinearMap.ext
+    intro x
+    apply PiTensorProduct.ext
+    apply MultilinearMap.ext
+    intro y
+    change tensorBaseChangeEquiv K L V
+      ((PiTensorProduct.tmulEquivDep K V).toLinearMap.baseChange L
+        (a ⊗ₜ[K] ((⨂ₜ[K] i, x i) ⊗ₜ[K] (⨂ₜ[K] j, y j)))) = _
+    simp only [f, g, LinearMap.comp_apply, LinearMap.restrictScalars_apply,
+      LinearMap.baseChange_tmul, LinearEquiv.coe_coe,
+      PiTensorProduct.tmulEquivDep_apply, tensorBaseChangeEquiv_tmul_tprod,
+      TensorProduct.AlgebraTensorModule.distribBaseChange_tmul,
+      TensorProduct.congr_tmul, map_smul, TensorProduct.smul_tmul,
+      smul_eq_mul, mul_one, one_smul]
+    congr 2
+    funext i
+    cases i <;> rfl
+  exact LinearMap.congr_fun h z
+
+end GroupingBaseChange
 
 namespace NormFamily
 
@@ -239,6 +291,46 @@ universe u v w
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {E F : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
+
+/-- At an infinite place the actual binary norm is Mathlib's Hilbert tensor
+norm after the canonical completed base-change map. -/
+theorem orthogonalTensorPair_norm_eq_hilbert
+    (ξ : NormFamily S E) (η : NormFamily S F)
+    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω) (hω : ω ∈ S.Ωinf)
+    (z : (S.ϕ ω).Completion ⊗[K] (E ⊗[K] F)) :
+    let := hN ω hω
+    let := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
+    let := ξ.fibreNormedAddCommGroup ω
+    let := ξ.fibreNormedSpace ω
+    let := hξ.fibreInnerProductSpace ω hω
+    let := η.fibreNormedAddCommGroup ω
+    let := η.fibreNormedSpace ω
+    let := hη.fibreInnerProductSpace ω hω
+    (ξ.orthogonalTensorPair η hN hξ hη).norm ω z =
+      ‖TensorProduct.AlgebraTensorModule.distribBaseChange K (S.ϕ ω).Completion E F z‖ := by
+  let L := (S.ϕ ω).Completion
+  let := hN ω hω
+  let := IsRCLikeNormedField.rclike L
+  let X i := L ⊗[K] BinaryTensorFactors E F i
+  let : ∀ i, NormedAddCommGroup (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedAddCommGroup ω
+  let : ∀ i, NormedSpace L (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedSpace ω
+  let : ∀ i, InnerProductSpace L (X i) := fun i ↦
+    (hξ.tensorPairFactors hη i).fibreInnerProductSpace ω hω
+  let B := binaryTensorEquiv K (BinaryTensorFactors E F)
+  change (orthogonalTensor (tensorPairFactors ξ η) hN (hξ.tensorPairFactors hη)).norm ω _ = _
+  rw [orthogonalTensor_norm_of_infinite _ _ _ ω hω]
+  change ArakelovGeometry.orthogonalTensorSeminorm
+    (fun i ↦ stdOrthonormalBasis L (X i))
+    (tensorBaseChangeEquiv K L (BinaryTensorFactors E F) (B.symm.toLinearMap.baseChange L z)) = _
+  rw [orthogonalTensorSeminorm_binary]
+  have he := DFunLike.congr_fun (tensorBaseChangeEquiv_binary K L E F)
+    (B.symm.toLinearMap.baseChange L z)
+  change binaryTensorEquiv L X
+    (tensorBaseChangeEquiv K L (BinaryTensorFactors E F) (B.symm.toLinearMap.baseChange L z)) =
+    TensorProduct.AlgebraTensorModule.distribBaseChange K L E F
+      ((B.baseChange K L _ _) ((B.baseChange K L _ _).symm z)) at he
+  simpa only [LinearEquiv.apply_symm_apply] using congrArg norm he
 
 /-- Canonical binary dual distribution is isometric on all completed vectors. -/
 theorem orthogonalTensorPair_dual_norm

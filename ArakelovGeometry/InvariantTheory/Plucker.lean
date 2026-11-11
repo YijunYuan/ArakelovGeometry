@@ -3,6 +3,7 @@ module
 public import ArakelovGeometry.InvariantTheory.Semistability
 public import ArakelovGeometry.InvariantTheory.QuotientDeterminant
 public import ArakelovGeometry.InvariantTheory.Linearization
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.PairMap
 public import Mathlib.LinearAlgebra.SpecialLinearGroup
 public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 
@@ -23,6 +24,18 @@ open scoped TensorProduct
 
 variable {k G V W : Type*} [Field k] [Group G]
   [AddCommGroup V] [Module k V] [AddCommGroup W] [Module k W]
+
+/-- Scalar extension of the tensor action agrees with the actual action of the
+base-changed special linear automorphisms. -/
+theorem tensorSLRepresentation_baseChange {J : Type*} [Finite J]
+    (E : J → Type*) [∀ j, AddCommGroup (E j)] [∀ j, Module k (E j)]
+    [∀ j, FiniteDimensional k (E j)] (L : Type*) [Field L] [Algebra k L]
+    (g : ∀ j, SpecialLinearGroup k (E j)) (z : L ⊗[k] (⨂[k] j, E j)) :
+    tensorBaseChangeEquiv k L E ((tensorSLRepresentation E g).baseChange L z) =
+      tensorSLRepresentation (fun j ↦ L ⊗[k] E j)
+        (fun j ↦ SpecialLinearGroup.baseChange (S := L) (g j))
+        (tensorBaseChangeEquiv k L E z) := by
+  exact tensorBaseChangeEquiv_map k L (fun j ↦ (g j).val.toLinearMap) z
 
 /-- The representation on an exterior power, using the canonical exterior map. -/
 def exteriorRepresentation (r : ℕ) (ρ : Representation k G W) :
