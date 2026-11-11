@@ -244,7 +244,10 @@ theorem binaryNested_factor_semisimple [IsAlgClosed k] [CharZero k]
   intro x _
   have htop : Submodule.span k (Set.range B) = ⊤ := B.span_eq
   have hx : τ.asModuleEquiv x ∈ Submodule.span k (Set.range B) := by rw [htop]; trivial
-  induction hx using Submodule.span_induction with
+  suffices hall : ∀ z ∈ Submodule.span k (Set.range B),
+      τ.asModuleEquiv.symm z ∈ ⨆ p, (f p).range from hall _ hx
+  intro z hz
+  induction hz using Submodule.span_induction with
   | mem v hv =>
     obtain ⟨p, rfl⟩ := hv
     apply Submodule.mem_iSup_of_mem p
