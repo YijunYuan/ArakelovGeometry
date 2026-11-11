@@ -10,6 +10,7 @@ public import ArakelovGeometry.LinearAlgebra.Filtration.Lift
 public import ArakelovGeometry.LinearAlgebra.Filtration.Tensor
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Expectation
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Quotient
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Tensor
 
 /-!
 # The actual quotient filtration as a finite determinant maximum
@@ -91,6 +92,43 @@ theorem filtrationExpectation_image_eq_sup' (b : Basis ι K E) (w : ι → ℝ)
   · exact Finset.sup'_le _ _ hmax
 
 end Submodule
+
+namespace ArakelovGeometry.NormFamily
+
+open AdelicStructure Submodule
+open scoped TensorProduct
+
+variable {K J Q : Type*} [Field K] [Fintype J]
+  {E : J → Type*} [∀ j, AddCommGroup (E j)] [∀ j, Module K (E j)]
+  [∀ j, FiniteDimensional K (E j)]
+  [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
+  {ι : J → Type*} [∀ j, Finite (ι j)]
+
+/-- The actual finite epsilon tensor norm and its actual quotient have exactly
+the determinant maximum of the original prescribed factor weights. -/
+theorem filtrationExpectation_pushforward_injectiveTensor_eq_sup'
+    (ν : ∀ j, NormFamily (singleTrivialPlace K) (E j))
+    (hν : ∀ j, (ν j).IsUltrametric) (b : ∀ j, Basis (ι j) K (E j))
+    (w : ∀ j, ι j → ℝ)
+    (hb : ∀ j t, (ν j).trivialFiltration (hν j) t = span K (b j '' {i | t ≤ w j i}))
+    (c : Basis (Fin (finrank K Q)) K Q) (q : (⨂[K] j, E j) →ₗ[K] Q)
+    (hq : Function.Surjective q) :
+    filtrationExpectation (((injectiveTensor ν).pushforward q hq).trivialFiltration
+      ((injectiveTensor_isUltrametric ν).pushforward q hq)) =
+      (quotientDeterminantSupport (Basis.piTensorProduct b) c q).sup'
+        (quotientDeterminantSupport_nonempty (Basis.piTensorProduct b) c q hq)
+        (fun σ ↦ ∑ k, ∑ j, w j (σ k j)) / finrank K Q := by
+  have he : ((injectiveTensor ν).pushforward q hq).trivialFiltration
+      ((injectiveTensor_isUltrametric ν).pushforward q hq) = fun t ↦
+      (span K (Basis.piTensorProduct b '' {p | t ≤ ∑ j, w j (p j)})).map q := by
+    funext t
+    rw [trivialFiltration_pushforward _ (injectiveTensor_isUltrametric ν),
+      trivialFiltration_injectiveTensor_eq_span_of_weights ν b hν w hb]
+  rw [he]
+  exact filtrationExpectation_image_eq_sup' (Basis.piTensorProduct b)
+    (fun p ↦ ∑ j, w j (p j)) c q hq
+
+end ArakelovGeometry.NormFamily
 
 namespace ArakelovGeometry.NormFamily
 
