@@ -11,7 +11,8 @@
     "No completeness or power-series identification.",
     "No assertion that the DVR residue field is finite over or equal to the ground field.",
     "Fraction-field lift yields an action element only for the actual group orbit parameter map.",
-    "Orbit-map hypotheses, invariant separation, A2 action/weight bridge, residue-field descent remain downstream."
+    "Orbit-map hypotheses, invariant separation, A2 action/weight bridge, residue-field descent remain downstream.",
+    "The Scheme-level diagram still needs compatible ground-field algebra structures and an Over/actual group-point bridge."
   ],
   "files": [
     {
@@ -23,7 +24,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "pending"
+      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
     },
     {
       "original_path": "StacksCore/Tactic/EgaSgaAttribute.lean",
@@ -34,7 +35,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "pending"
+      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
     },
     {
       "original_path": "StacksCore/Tactic/StacksAttribute.lean",
@@ -45,7 +46,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "pending"
+      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
     },
     {
       "original_path": "StacksFrontier/AlgebraicGeometry/Limits/NoetherianValuativeCriterion/DiscreteValuationSpecialization.lean",
@@ -57,7 +58,7 @@
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes.",
         "Add local adoption and exact downstream-boundary documentation; original text retained."
       ],
-      "checked_status": "pending"
+      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
     },
     {
       "original_path": "StacksFrontier/AlgebraicGeometry/Morphisms/Closure/ImageValuativeDiagram.lean",
@@ -68,7 +69,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "pending"
+      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
     },
     {
       "original_path": "StacksFrontier/RingTheory/Artinian/Basic.lean",
@@ -79,7 +80,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "pending"
+      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
     },
     {
       "original_path": "StacksFrontier/RingTheory/DiscreteValuationRing/Existence.lean",
@@ -90,7 +91,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "pending"
+      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
     },
     {
       "original_path": "StacksFrontier/RingTheory/Ideal/Over/HeightOne.lean",
@@ -101,7 +102,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "pending"
+      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
     },
     {
       "original_path": "StacksFrontier/RingTheory/IntegralClosure/DedekindDomain.lean",
@@ -112,7 +113,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "pending"
+      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
     },
     {
       "original_path": "StacksFrontier/RingTheory/KrullAkizuki.lean",
@@ -123,18 +124,19 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "pending"
+      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
     },
     {
       "original_path": "StacksFrontier/RingTheory/KrullAkizuki/DominatingDimOne.lean",
       "original_sha256": "5eca095fe19b0bb2a02857f9acb887164339da07ae42943cd09ef5228d24c7ce",
       "upstream_commit": "c496df0d9beea9deaeabcea8492605f9a0a2313b",
       "local_path": "ExternalResults/Stacks/StacksFrontier/RingTheory/KrullAkizuki/DominatingDimOne.lean",
-      "local_sha256": "a080d507f7b41c164222bdb09631196e0807ebbce28f76ea7beab0c20ab469ec",
+      "local_sha256": "ed910d32ee77f1452b590fcbc7348e93fed1b9c18b8749f36c91c0f75dc0d825",
       "edits": [
-        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
+        "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes.",
+        "Correct informal proof: choose a generator with maximal multiplicative valuation in a dominating valuation ring, not an arbitrary nonzero maximal-ideal element; formal proof unchanged."
       ],
-      "checked_status": "pending"
+      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
     },
     {
       "original_path": "StacksFrontier/RingTheory/KrullAkizuki/IntermediateRingNoetherian.lean",
@@ -145,7 +147,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "pending"
+      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
     },
     {
       "original_path": "StacksFrontier/RingTheory/KrullAkizuki/LengthBound.lean",
@@ -156,7 +158,7 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "pending"
+      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
     },
     {
       "original_path": "StacksFrontier/RingTheory/Spectrum/Prime/Integral.lean",
@@ -167,9 +169,40 @@
       "edits": [
         "Prefix Stacks source imports with ExternalResults.Stacks.; no mathematical namespace or proof changes."
       ],
-      "checked_status": "pending"
+      "checked_status": "kernel checked in narrow target closure; target transitive axiom audits passed"
     }
   ],
-  "checks": [],
-  "semantic_review": "pending"
+  "checks": [
+    {
+      "command": "/home/yijunyuan/.local/bin/horizon --root /home/yijunyuan/ageo-workspace check ExternalResults.Stacks.StacksFrontier.AlgebraicGeometry.Limits.NoetherianValuativeCriterion.DiscreteValuationSpecialization",
+      "result": "passed",
+      "initial_seconds": 96.1,
+      "after_documentation_correction_seconds": 5.3
+    },
+    {
+      "command": "horizon --root /home/yijunyuan/ageo-workspace check --lean <session scratch>/StacksAxioms.lean",
+      "result": "passed",
+      "seconds": 28.6,
+      "declarations": [
+        "AlgebraicGeometry.nonempty_discreteValuationSpecialization",
+        "AlgebraicGeometry.exists_discreteValuationSpecialization_genericPoint_specializes",
+        "AlgebraicGeometry.exists_specializes_of_image_point",
+        "exists_isDiscreteValuationRing_isFractionRing_of_not_isField"
+      ],
+      "transitive_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  ],
+  "semantic_review": {
+    "reviewer": "independent mathematical-correctness-reviewer /root/stacks_semantics",
+    "result": "satisfactory mathematical producer; corrected informal-proof defect; no formal defect found",
+    "limits": "High confidence for target and load-bearing algebraic route, medium for ancillary copied declarations. No claim of upstream human review."
+  },
+  "retained_upstream_warnings": [
+    "Module docstring placement: Artinian/Basic.lean, Ideal/Over/HeightOne.lean, IntegralClosure/DedekindDomain.lean, DiscreteValuationRing/Existence.lean. Preserved upstream layout; no proof warning.",
+    "Optional rwa suggestion in IntegralClosure/DedekindDomain.lean. Preserved proof."
+  ]
 }

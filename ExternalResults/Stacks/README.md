@@ -35,3 +35,15 @@ and its finite-type/quasi-compact hypotheses, invariant separation, the bridge t
 the A2 tensor/exterior/dual action, and descent from the arbitrary DVR residue
 field are separate unmet consumers. This port alone does not prove A8 or a
 Hilbert–Mumford theorem.
+
+Verification: the narrow target passed (96.1 s; 5.3 s after the documentation
+correction); four transitive axiom probes passed (28.6 s), using only
+`propext`, `Classical.choice`, and `Quot.sound`. Independent semantic review
+found no defect in the target or its main algebraic route. It corrected the
+informal proof of dimension-one domination: choose a generator of maximal
+valuation in a dominating valuation ring. The original formal proof already
+made this choice. Four upstream module-header placement warnings and one
+optional tactic suggestion are retained to minimize changes; no proof warnings
+or sorries occur. The API is at the level of `Scheme`; compatibility with the
+ground-field structure and interpretation as a ground-field group functor point
+are additional downstream obligations.

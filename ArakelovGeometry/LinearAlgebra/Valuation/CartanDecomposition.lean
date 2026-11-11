@@ -64,7 +64,7 @@ theorem exists_integral_diagonal (g : GL ι L) :
           (Q : Matrix ι ι R).map (algebraMap R L) := by
   obtain ⟨m, A, hA⟩ := exists_integral_matrix hπ (g : Matrix ι ι L)
   have hx : algebraMap R L π ≠ 0 :=
-    (IsFractionRing.injective R L).ne hπ.ne_zero
+    by simpa only [map_zero] using (IsFractionRing.injective R L).ne hπ.ne_zero
   have hdet : A.det ≠ 0 := by
     intro h
     have h' := congrArg Matrix.det hA
@@ -95,7 +95,7 @@ theorem exists_cartan (g : GL ι L) :
       by simp [diagonal_mul_diagonal], by simp [diagonal_mul_diagonal]⟩
   let φ := algebraMap R L
   let x : L := φ π
-  have hx : x ≠ 0 := (IsFractionRing.injective R L).ne hπ.ne_zero
+  have hx : x ≠ 0 := by simpa only [map_zero] using (IsFractionRing.injective R L).ne hπ.ne_zero
   refine ⟨P * U, Q, fun i ↦ (k i : ℤ) - m, ?_⟩
   apply smul_right_injective (M := Matrix ι ι L) (pow_ne_zero m hx)
   change x ^ m • (g : Matrix ι ι L) = x ^ m •
@@ -116,5 +116,128 @@ theorem exists_cartan (g : GL ι L) :
   dsimp only [x]
   rw [Pi.smul_apply, smul_eq_mul, ← zpow_natCast (φ π) m, ← zpow_add₀ hx]
   simp [x]
+
+omit [IsDomain R] [IsDiscreteValuationRing R] in
+/-- A pure uniformizer power which is an integral unit has exponent zero.
+This extends the Laurent coefficient argument to any DVR, exactly as needed
+for determinant-one weights in Bost p31. The geometric/action bridges remain. -/
+theorem exponent_eq_zero_of_eq_unit (a : ℤ) (u : Rˣ)
+    (h : (algebraMap R L π) ^ a = algebraMap R L (u : R)) : a = 0 := by
+  let φ := algebraMap R L
+  let x : L := φ π
+  have hx : x ≠ 0 := by
+    simpa only [map_zero] using (IsFractionRing.injective R L).ne hπ.ne_zero
+  have hn (n : ℕ) (v : Rˣ) (hv : x ^ n = φ (v : R)) : n = 0 := by
+    have heq : π ^ n = (v : R) := (IsFractionRing.injective R L) (by
+      simpa only [map_pow] using hv)
+    exact (isUnit_pow_iff_of_not_isUnit hπ.not_isUnit).mp (heq.symm ▸ v.isUnit)
+  cases a with
+  | ofNat n =>
+    have hz := hn n u (by simpa using h)
+    simp [hz]
+  | negSucc n =>
+    have hi : x ^ (n + 1) = φ (↑u⁻¹ : R) := by
+      apply mul_left_cancel₀ (u.isUnit.map φ).ne_zero
+      simp only [← map_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one, map_one]
+      change φ (u : R) * x ^ (n + 1) = 1
+      rw [← h]
+      simp [x, φ, zpow_negSucc, pow_ne_zero _ hx]
+    have hz := hn (n + 1) u⁻¹ hi
+    omega
+
+omit [IsDomain R] [IsDiscreteValuationRing R] in
+/-- Every DVR Cartan factorization of a determinant-one matrix has zero total exponent.
+This retains the Laurent producer over an arbitrary DVR and supplies the normalized
+binary weights for Bost p31. Orbit, actual A2 action and residue descent remain. -/
+theorem sum_exponents_eq_zero (P Q : GL ι R) (a : ι → ℤ)
+    (h : ((P : Matrix ι ι R).map (algebraMap R L) *
+      diagonal (fun i ↦ (algebraMap R L π) ^ a i) *
+      (Q : Matrix ι ι R).map (algebraMap R L)).det = 1) :
+    ∑ i, a i = 0 := by
+  let φ := algebraMap R L
+  let x : L := φ π
+  let u := GeneralLinearGroup.det P * GeneralLinearGroup.det Q
+  have hx : x ≠ 0 := by simpa only [map_zero] using (IsFractionRing.injective R L).ne hπ.ne_zero
+  have hprod : φ (u : R) * x ^ (∑ i, a i) = 1 := by
+    rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_diagonal] at h
+    change (φ.mapMatrix (P : Matrix ι ι R)).det * (∏ i, x ^ a i) *
+      (φ.mapMatrix (Q : Matrix ι ι R)).det = 1 at h
+    rw [← φ.map_det, ← φ.map_det] at h
+    have hs (s : Finset ι) : (∏ i ∈ s, x ^ a i) = x ^ (∑ i ∈ s, a i) := by
+      induction s using Finset.induction_on with
+      | empty => simp
+      | @insert i s hi ih => simp [hi, ih, zpow_add₀ hx]
+    rw [hs] at h
+    simpa [u, map_mul, mul_assoc, mul_left_comm, mul_comm] using h
+  apply exponent_eq_zero_of_eq_unit (L := L) hπ (∑ i, a i) u⁻¹
+  apply mul_left_cancel₀ (u.isUnit.map φ).ne_zero
+  rw [hprod, ← map_mul]
+  simp
+
+/-- Determinant-one matrices over a DVR fraction field admit integral special-linear
+outer factors and zero-sum integer exponents, including dimension zero. This extends
+the Laurent statement without completion and suffices for the two matrix factors
+in Bost p31; the orbit-map, actual A2 action/weights and residue descent remain. -/
+theorem exists_specialLinear_cartan (g : GL ι L)
+    (hg : (g : Matrix ι ι L).det = 1) :
+    ∃ (P Q : SpecialLinearGroup ι R) (a : ι → ℤ),
+      (∑ i, a i = 0) ∧ (g : Matrix ι ι L) =
+        (P : Matrix ι ι R).map (algebraMap R L) *
+          diagonal (fun i ↦ (algebraMap R L π) ^ a i) *
+          (Q : Matrix ι ι R).map (algebraMap R L) := by
+  obtain ⟨P, Q, a, h⟩ := exists_cartan hπ g
+  have ha : ∑ i, a i = 0 := sum_exponents_eq_zero hπ P Q a (h ▸ hg)
+  let φ := algebraMap R L
+  let x : L := φ π
+  have hx : x ≠ 0 := by simpa only [map_zero] using (IsFractionRing.injective R L).ne hπ.ne_zero
+  have hD : (diagonal (fun i ↦ x ^ a i)).det = 1 := by
+    rw [det_diagonal]
+    have hs (s : Finset ι) : (∏ i ∈ s, x ^ a i) = x ^ (∑ i ∈ s, a i) := by
+      induction s using Finset.induction_on with
+      | empty => simp
+      | @insert i s hi ih => simp [hi, ih, zpow_add₀ hx]
+    rw [hs, ha, zpow_zero]
+  have hpq : (P : Matrix ι ι R).det * (Q : Matrix ι ι R).det = 1 := by
+    apply IsFractionRing.injective R L
+    have hh := congrArg Matrix.det h
+    rw [hg, det_mul, det_mul, hD, mul_one] at hh
+    simpa only [map_mul, map_one, RingHom.map_det, RingHom.mapMatrix_apply] using hh.symm
+  cases isEmpty_or_nonempty ι with
+  | inl he =>
+    exact ⟨1, 1, a, ha, Subsingleton.elim _ _⟩
+  | inr he =>
+    obtain ⟨i₀⟩ := he
+    let u := GeneralLinearGroup.det P
+    let s : ι → Rˣ := fun i ↦ if i = i₀ then u⁻¹ else 1
+    let S : Matrix ι ι R := diagonal (fun i ↦ (s i : R))
+    let T : Matrix ι ι R := diagonal (fun i ↦ ((s i)⁻¹ : Rˣ))
+    have hS : S.det = (u⁻¹ : Rˣ) := by simp [S, s, apply_ite]
+    have hT : T.det = (u : R) := by simp [T, s, apply_ite]
+    have hp : ((P : Matrix ι ι R) * S).det = 1 := by
+      rw [det_mul, hS]
+      exact u.val_inv
+    have hq : (T * (Q : Matrix ι ι R)).det = 1 := by
+      rw [det_mul, hT]
+      exact hpq
+    refine ⟨⟨(P : Matrix ι ι R) * S, hp⟩,
+      ⟨T * (Q : Matrix ι ι R), hq⟩, a, ha, ?_⟩
+    change (g : Matrix ι ι L) =
+      ((P : Matrix ι ι R) * S).map φ * diagonal (fun i ↦ x ^ a i) *
+        (T * (Q : Matrix ι ι R)).map φ
+    rw [h, Matrix.map_mul, Matrix.map_mul]
+    have hmid : S.map φ * diagonal (fun i ↦ x ^ a i) * T.map φ =
+        diagonal (fun i ↦ x ^ a i) := by
+      dsimp only [S, T]
+      rw [diagonal_map (map_zero φ), diagonal_map (map_zero φ),
+        diagonal_mul_diagonal, diagonal_mul_diagonal]
+      congr 1
+      funext i
+      rw [mul_right_comm, ← map_mul]
+      simp
+    calc
+      _ = (P : Matrix ι ι R).map φ *
+          (S.map φ * diagonal (fun i ↦ x ^ a i) * T.map φ) *
+          (Q : Matrix ι ι R).map φ := by rw [hmid]
+      _ = _ := by simp only [Matrix.mul_assoc]
 
 end ArakelovGeometry.DVRCartan

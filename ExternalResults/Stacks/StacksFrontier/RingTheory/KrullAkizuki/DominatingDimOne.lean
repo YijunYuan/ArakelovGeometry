@@ -198,19 +198,18 @@ ideal `q` of `S`, such that:
 * `q` lies over the maximal ideal of `R`, i.e. the comap of `q` under `R → S` is
   `maximalIdeal R`; this is exactly the domination condition (`q ∩ R = 𝔪`).
 
-**Informal proof.**
-`R` is not a field, so `𝔪 := maximalIdeal R ≠ 0`; pick `0 ≠ x ∈ 𝔪`. Since `R` is
-Noetherian, `𝔪` is finitely generated, say `𝔪 = (g₁,…,gₙ)`. Inside `K` form the
-finite-type `R`-subalgebra
-  `S = R[g₁/x, …, gₙ/x] = Algebra.adjoin R {gᵢ/x}`.
-Because `gᵢ = x·(gᵢ/x) ∈ x·S` and `x ∈ 𝔪 ⊆ S`, we get `𝔪·S = x·S`, the *principal*
-ideal `(x)` of `S`. Here `x` is a nonzero element of the domain `S` (a subring of the
-field `K`), so `x` is a nonzerodivisor; and `x` is not a unit in `S` (if it were,
-`𝔪·S = S`, but `q ∩ R = 𝔪` below shows `x·S` is proper -- concretely `x·S` lies in
-a prime over `𝔪`). By Krull's principal ideal theorem any prime `q` minimal over
-`x·S` has height `≤ 1`, and since `0 ≠ x ∈ q` in a domain, height `= 1`. Finally
-`q ∩ R ⊇ 𝔪·S ∩ R ⊇ 𝔪`, and as `q ∩ R` is a prime of the local ring `R` containing
-`𝔪`, it equals `𝔪`. So `q` lies over `𝔪`. -/
+**Informal proof (local correction to the upstream explanation).**
+Choose a valuation ring of `K` dominating `R`. The nonzero maximal ideal `𝔪` has
+finitely many generators `g₁,…,gₙ`. Choose a nonzero generator `x` with maximal
+multiplicative valuation (equivalently, minimal additive valuation). Then every
+`gᵢ/x` lies in that valuation ring. Hence the finite-type subalgebra
+`S = R[g₁/x, …, gₙ/x]` lies in it, while `x` remains in its maximal ideal and is
+not a unit in `S`. An arbitrary nonzero element of `𝔪` would not suffice here.
+The identities `gᵢ = x·(gᵢ/x)` give `𝔪·S = x·S`. Choose a prime `q` minimal
+over the proper ideal `(x)`. The principal ideal theorem gives height at most
+one; since `x` is nonzero in the domain `S`, the height is one. The contraction
+of `q` contains `𝔪` and is proper, so it equals the maximal ideal `𝔪`.
+This explains the valuation-maximal choice already present in the formal proof. -/
 lemma exists_subring_finiteType_height_one_prime
     (R : Type*) [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianRing R]
     (K : Type*) [Field K] [Algebra R K] [IsFractionRing R K]
