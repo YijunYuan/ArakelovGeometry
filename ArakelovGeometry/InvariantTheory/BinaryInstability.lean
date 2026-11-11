@@ -245,7 +245,7 @@ theorem exists_binary_negative_filtrations_of_not_isQuotientSemistable
   classical
   let ι j := Free.ChooseBasisIndex k (E j)
   let b : ∀ j, Basis (ι j) k (E j) := fun j ↦ Free.chooseBasis k (E j)
-  let d := FiniteDimensional.finBasis k Q
+  let d := Module.finBasis k Q
   let qc := binaryQuotientInCoordinates b q
   have hqc := binaryQuotientInCoordinates_surjective b q hq
   have hnsc := not_isPolynomialSemistable_binaryQuotientInCoordinates b d q hns
