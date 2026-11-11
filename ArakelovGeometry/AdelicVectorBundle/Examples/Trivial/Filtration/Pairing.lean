@@ -121,12 +121,13 @@ theorem degree_filtrationGradedBundle_eq_sum_weights (hF : Antitone F)
 
 /-- The graded degree sum equals the intrinsic pairing; each grade uses the norm from `V`. -/
 theorem filtrationPairing_eq_finsum_graded_degree_of_common_basis (hF : Antitone F)
-    {ι : Type*} [Fintype ι] (b : Basis ι K E) (a c : ι → ℝ)
+    {ι : Type*} [Finite ι] (b : Basis ι K E) (a c : ι → ℝ)
     (hFa : ∀ t, F t = span K (b '' {i | t ≤ a i}))
     (hGc : ∀ t, V.toNormFamily.trivialFiltration hV t = span K (b '' {i | t ≤ c i})) :
     filtrationPairing F (V.toNormFamily.trivialFiltration hV) =
       (∑ᶠ s : ℝ, s * (V.filtrationGradedBundle F s hS).degree hS hN) / finrank K E := by
   classical
+  let : Fintype ι := Fintype.ofFinite ι
   rw [filtrationPairing_eq_sum_weights b a c hFa hGc]
   congr 1
   simp_rw [V.degree_filtrationGradedBundle_eq_sum_weights hS hN hV F hF b a c hFa hGc]

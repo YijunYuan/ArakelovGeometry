@@ -373,7 +373,8 @@ theorem finrank_filtrationGraded_filtrationOnGraded
     (filtrationRightLimit (filtrationOnGraded F G s) t).comap
       (filtrationOnGraded F G s t).subtype) = _
   rw [finrank_quotient,
-    (comapSubtypeEquivOfLe (filtrationRightLimit_le (antitone_filtrationOnGraded F hG s) t)).finrank_eq,
+    (comapSubtypeEquivOfLe
+      (filtrationRightLimit_le (antitone_filtrationOnGraded F hG s) t)).finrank_eq,
     filtrationRightLimit_filtrationOnGraded F hG]
   change finrank K (((G t).comap (F s).subtype).map (filtrationGradedMk F s)) - _ = _
   rw [finrank_map_filtrationGradedMk hF, finrank_map_filtrationGradedMk hF]
@@ -393,5 +394,13 @@ theorem finrank_filtrationGraded_filtrationOnGraded
   have hDC := finrank_mono (inf_le_inf hFs (le_refl (filtrationRightLimit G t)))
   unfold filtrationJointMultiplicity
   omega
+
+omit [Fintype ι] [FiniteDimensional K E] in
+theorem filtrationJointMultiplicity_comm (F G : ℝ → Submodule K E) (s t : ℝ) :
+    filtrationJointMultiplicity F G s t = filtrationJointMultiplicity G F t s := by
+  unfold filtrationJointMultiplicity
+  rw [inf_comm (G t) (F s), inf_comm (filtrationRightLimit G t) (F s),
+    inf_comm (G t) (filtrationRightLimit F s),
+    sup_comm (F s ⊓ filtrationRightLimit G t)]
 
 end Submodule

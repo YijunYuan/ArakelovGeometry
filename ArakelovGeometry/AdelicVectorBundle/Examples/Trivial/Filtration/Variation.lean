@@ -210,6 +210,18 @@ theorem filtrationNorm_eq_zero_iff (F : ℝ → Submodule K E)
   exact filtrationNorm_eq_zero_iff_trivial b a hFa hdim
 
 omit [Finite ι] in
+/-- Vanishing of intrinsic self-pairing detects the trivial filtration in positive dimension. -/
+theorem filtrationPairing_self_eq_zero_iff (F : ℝ → Submodule K E)
+    (hanti : Antitone F) (hbot : ∃ t, F t = ⊥) (htop : ∃ t, F t = ⊤)
+    (hleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t)
+    (hdim : 0 < finrank K E) :
+    filtrationPairing F F = 0 ↔ ∀ t, F t = if t ≤ 0 then ⊤ else ⊥ := by
+  obtain ⟨b, a, _, hFa, _, _, _⟩ := exists_common_weighted_basis
+    hanti hbot htop hleft hanti hbot htop hleft
+  exact (filtrationSelfPairing_eq_zero_iff_weights b a hFa hdim).trans
+    (weights_eq_zero_iff_trivial b a hFa)
+
+omit [Finite ι] in
 /-- Translating by the mean preserves all the real-filtration axioms and has mean zero. -/
 theorem filtrationCenter_properties (F : ℝ → Submodule K E)
     (hanti : Antitone F) (hbot : ∃ t, F t = ⊥) (htop : ∃ t, F t = ⊤)
