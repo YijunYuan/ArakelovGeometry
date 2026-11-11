@@ -12,6 +12,7 @@ public import ArakelovGeometry.Analysis.Tensor.Bilinear
 public import ArakelovGeometry.Analysis.Tensor.InjectiveTensorPure
 import ArakelovGeometry.Analysis.Dual.UltrametricDual
 import ArakelovGeometry.Analysis.Determinant.Basic
+public import ArakelovGeometry.Analysis.ScalarExtension.Hermitian.Tensor
 
 /-!
 # Duality for finite orthogonal tensor products
@@ -217,5 +218,68 @@ theorem injectiveTensor_dual_eq_sSup_of_ultrametric
   · exact csSup_le (Set.range_nonempty _) (by rintro _ ⟨t, rfl⟩; exact hr t)
 
 end UltrametricDual
+
+section OrthogonalGrouping
+
+variable {k I J : Type*} [RCLike k] [Fintype I] [Fintype J]
+  {V : I ⊕ J → Type*} [∀ i, NormedAddCommGroup (V i)]
+  [∀ i, InnerProductSpace k (V i)] {κ : I ⊕ J → Type*}
+  [∀ i, Fintype (κ i)] (b : ∀ i, OrthonormalBasis (κ i) k (V i))
+
+/-- Splitting a finite family into two groups preserves its full inner form. -/
+theorem orthogonalTensorCore_tmulEquivDep_symm (z t : ⨂[k] i, V i) :
+    let := orthogonalTensorNormedAddCommGroup (fun i ↦ b (.inl i))
+    let := orthogonalTensorNormedSpace (fun i ↦ b (.inl i))
+    let := orthogonalTensorInnerProductSpace (fun i ↦ b (.inl i))
+    let := orthogonalTensorNormedAddCommGroup (fun j ↦ b (.inr j))
+    let := orthogonalTensorNormedSpace (fun j ↦ b (.inr j))
+    let := orthogonalTensorInnerProductSpace (fun j ↦ b (.inr j))
+    inner k ((PiTensorProduct.tmulEquivDep k V).symm z)
+      ((PiTensorProduct.tmulEquivDep k V).symm t) = (orthogonalTensorCore b).inner z t := by
+  let := orthogonalTensorNormedAddCommGroup (fun i ↦ b (.inl i))
+  let := orthogonalTensorNormedSpace (fun i ↦ b (.inl i))
+  let := orthogonalTensorInnerProductSpace (fun i ↦ b (.inl i))
+  let := orthogonalTensorNormedAddCommGroup (fun j ↦ b (.inr j))
+  let := orthogonalTensorNormedSpace (fun j ↦ b (.inr j))
+  let := orthogonalTensorInnerProductSpace (fun j ↦ b (.inr j))
+  let := orthogonalTensorCore b
+  induction z using PiTensorProduct.induction_on with
+  | add z u hz hu =>
+    simp only [map_add, inner_add_left, InnerProductSpace.Core.inner_add_left, hz, hu]
+  | smul_tprod a x =>
+    induction t using PiTensorProduct.induction_on with
+    | add t u ht hu =>
+      simp only [map_add, inner_add_right, InnerProductSpace.Core.inner_add_right, ht, hu]
+    | smul_tprod c y =>
+      simp only [map_smul, inner_smul_left, inner_smul_right,
+        InnerProductSpace.Core.inner_smul_left, InnerProductSpace.Core.inner_smul_right]
+      congr 2
+      rw [PiTensorProduct.tmulEquivDep_symm_apply, PiTensorProduct.tmulEquivDep_symm_apply,
+        TensorProduct.inner_tmul]
+      change (orthogonalTensorCore (fun i ↦ b (.inl i))).inner _ _ *
+        (orthogonalTensorCore (fun j ↦ b (.inr j))).inner _ _ = _
+      rw [orthogonalTensorCore_tprod, orthogonalTensorCore_tprod, orthogonalTensorCore_tprod,
+        Fintype.prod_sum_type]
+
+/-- The canonical splitting into two groups preserves the norm of every tensor. -/
+theorem orthogonalTensorSeminorm_tmulEquivDep_symm (z : ⨂[k] i, V i) :
+    let := orthogonalTensorNormedAddCommGroup (fun i ↦ b (.inl i))
+    let := orthogonalTensorNormedSpace (fun i ↦ b (.inl i))
+    let := orthogonalTensorInnerProductSpace (fun i ↦ b (.inl i))
+    let := orthogonalTensorNormedAddCommGroup (fun j ↦ b (.inr j))
+    let := orthogonalTensorNormedSpace (fun j ↦ b (.inr j))
+    let := orthogonalTensorInnerProductSpace (fun j ↦ b (.inr j))
+    ‖(PiTensorProduct.tmulEquivDep k V).symm z‖ = orthogonalTensorSeminorm b z := by
+  let := orthogonalTensorNormedAddCommGroup (fun i ↦ b (.inl i))
+  let := orthogonalTensorNormedSpace (fun i ↦ b (.inl i))
+  let := orthogonalTensorInnerProductSpace (fun i ↦ b (.inl i))
+  let := orthogonalTensorNormedAddCommGroup (fun j ↦ b (.inr j))
+  let := orthogonalTensorNormedSpace (fun j ↦ b (.inr j))
+  let := orthogonalTensorInnerProductSpace (fun j ↦ b (.inr j))
+  apply (sq_eq_sq₀ (norm_nonneg _) (apply_nonneg _ _)).mp
+  rw [norm_sq_eq_re_inner (𝕜 := k), orthogonalTensorCore_tmulEquivDep_symm,
+    orthogonalTensorSeminorm_sq]
+
+end OrthogonalGrouping
 
 end ArakelovGeometry
