@@ -8,8 +8,10 @@ The selected Stacks DVR producer and its 14-module closure are locally checked:
 four transitive axiom probes use only standard axioms, and independent semantic
 and honesty reviews passed. [Its provenance record](Stacks/provenance.json)
 contains fixed revisions, hashes, retained warnings and exact consumer boundaries.
-The concrete orbit-map and residue-descent consumers are still open; upstream
-`StacksFrontier` is not asserted to have human review.
+The local concrete orbit-map/DVR and residue-descent consumers are now checked;
+see `InvariantTheory/BinaryOrbitDVR.lean` and `BinaryNegativeFiltration.lean`.
+Final original-field assembly remains open. Upstream `StacksFrontier` is not
+asserted to have human review.
 
 The Etingof Schur–Weyl port contains five selected proof modules (892 lines),
 reduced from the surveyed seven-file closure. These and the actual local SL
@@ -17,15 +19,16 @@ tensor-power consumer passed narrow builds, twelve standard-only transitive
 axiom probes and independent review. The explicit degree-zero consumer also
 passed. [Its provenance record](EtingofRepresentationTheory/provenance.json)
 records the pinned Apache-licensed release, omissions, narrow import adaptations,
-hashes and evidence. Bounded polynomial invariants and orbit separation remain
-downstream. Presence of a source file alone does not certify its proof or consumer.
+hashes and evidence. The local bounded-polynomial and actual orbit-separation
+consumers are now checked in `InvariantTheory/OrbitSeparation.lean`; they use
+successive invariant lifting for the two SL factors. This does not claim a general
+reductivity theorem or complete the final original-field instability assembly.
+Presence of a source file alone does not certify its proof or consumer.
 
 ## Layout and ownership
 
 - `Stacks/`: selected AxiomMath Stacks modules; preserve the distinction between
   upstream `StacksCore` and `StacksFrontier` paths.
-- `TauCeti/`: selected TauCeti modules, preserving upstream mathematical namespaces
-  unless a documented compatibility change is necessary.
 - `EtingofRepresentationTheory/`: selected tensor-power semisimplicity and GL
   action-span proofs from the official Apache-licensed release, not the draft.
 - Each donor subtree owns its own `provenance.json` and license notices, so parallel

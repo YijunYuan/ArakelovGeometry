@@ -31,7 +31,11 @@
 或经完整证明的替代论证。已完成的较强结果继续复用；额外的一般化不再阻塞验收。
 主定理的可数特征零域、proper adelic curve 和实际 Hermitian 完备范数范围不缩减。
 
-## A. 主定理证明实际需要的缺口
+**状态说明。** 以下初始覆盖分析保留上述基准提交的审计记录，不能当作当前未完成清单。
+各项“完成记录／部分进展”和 [README 的 Bost 对照表](README.md) 记录实施状态及允许的精简。
+目前 A1–A7 的保留范围已完成；A8、A9 的最终原域消费者仍在组合，不提前勾选。
+
+## A. 主定理所需输入与实施状态
 
 主证明的使用链是：§2 的 adelic/HN 基础 → §6 引理 6.1 与定理 6.2 的几何斜率不等式
 → 对偶商形式 (43) → §7 的滤过、分次范数和变分论证 → 定理 1.1。
@@ -54,7 +58,7 @@
 `Ψ_d = j_d^∨ ∘ i^{⊗d} ∘ ι_V`，p.27 的逐处压缩估计 (41)，以及 p.28 从
 `Q^∨ ⊂ W^∨` 推出商版本 (43)。这里需要识别整个张量空间的范数，不能只检验纯张量。
 
-**当前覆盖及缺口。**
+**初始审计覆盖及缺口。**
 [Tensor/DualNorm.lean](ArakelovGeometry/AdelicVectorBundle/Tensor/DualNorm.lean) 的
 `mixedTensorPair_dual_norm_eq_injective`、`mixedTensorPair_dual_pullback`
 处理的是 mixed/projective 与 injective 范数。
@@ -94,7 +98,7 @@ SL 与行列式扭曲 GL 表述的对应。`Projective` 内核检查与 19 项�
 p.28 把商 `W ↠ Q` 的几何半稳定性定义为对偶子空间 `Q^∨ ⊂ W^∨` 的 Plücker
 半稳定性。p.31 随后把这个条件交给书中定理 5.4.3。
 
-**当前覆盖及缺口。**
+**初始审计覆盖及缺口。**
 [HN/Destabilizing.lean](ArakelovGeometry/AdelicVectorBundle/HarderNarasimhan/Destabilizing.lean)
 的 `IsMeanSlopeSemistable` 是算术斜率半稳定性。
 已有的代数扩域斜率比较也属于算术理论，不能代替群作用下的 GIT 半稳定性。
@@ -132,7 +136,7 @@ p.28 把商 `W ↠ Q` 的几何半稳定性定义为对偶子空间 `Q^∨ ⊂ W
 
 **论文实际使用。** p.28 定义滤过配对；pp.29–32 在共同适配基上记录两个权重并作变分。
 
-**当前覆盖及缺口。**
+**初始审计覆盖及缺口。**
 [FiniteFiltration.lean](ArakelovGeometry/LinearAlgebra/FiniteFiltration.lean) 的
 `Submodule.exists_strictMono_flag_and_jumps_of_antitone` 已经从反单调、上下端取到及左局部常值
 提取有限严格旗、跳跃及右极限。
@@ -169,7 +173,7 @@ $$
  \|\mathcal F\|^2=\langle\mathcal F,\mathcal F\rangle.
 $$
 
-**当前覆盖及缺口。** 已有任意滤过到平凡位 adelic bundle 的构造、实际 degree/slope，
+**初始审计覆盖及缺口。** 已有任意滤过到平凡位 adelic bundle 的构造、实际 degree/slope，
 以及 HN 专用的分次对象和加权和；例如
 [Hermitian/Degree.lean](ArakelovGeometry/AdelicVectorBundle/HarderNarasimhan/Hermitian/Degree.lean)
 的 `sum_hermitianHNFactor_rank_mul_slope_eq_degree`。
@@ -223,7 +227,7 @@ $$
    \operatorname{gr}_{\mathcal P_E\otimes\mathcal P_F}^{\gamma}(E\otimes F).
 $$
 
-**当前覆盖及缺口。**
+**初始审计覆盖及缺口。**
 [Degree/Flag/Basic.lean](ArakelovGeometry/AdelicVectorBundle/Degree/Flag/Basic.lean) 的
 `flagQuotientOfMeasurableBase` 和 HN 的 `hermitianHNGradedPiece` 已有实际子商；
 一般滤过已有右极限及重构，范数族已有实际 `pushforward`/quotient。
@@ -250,7 +254,13 @@ mathlib 的 `TensorProduct.quotientTensorQuotientEquiv`
 
 ### A6. 分次张量分量压缩与有限像旗的 HN 度数估计
 
-- [ ] 证明 A5 的二元规范分次分量映射及其商复合逐处压缩，并由有限共同像的 HN 旗推出主证明所需度数界。
+- [x] 证明 A5 的二元规范分次分量映射及其商复合逐处压缩，并由有限共同像的 HN 旗推出主证明所需度数界。
+
+**完成记录（2026-11-11）。** `434d725` 的 `Tensor/Graded`、`Degree/Flag/ImageHN`、
+`Tensor/GradedDegree` 已证明实际完备纤维分量压缩、有限像 HN 度数界，以及同一组 HN 提升／基上的
+`N(ε) ≤ N(0) + εδ` 和 `δ ≤ μ(Q)`。63 项传递公理检查、独立审查及 A6→A9 直接消费者检查通过。
+这一单侧估计足够供 Bost pp.29–32 使用；不额外要求整正交和压缩、精确仿射恒等式或完整 CM (5.13)。
+严格小秩张量 HN 兼容性仍是显式的主定理归纳条件；完整 HN 识别和 Bost 主定理不在本项完成声明中。
 
 **书中出处。** 注记 5.5.6，p.319；其局部依据包括命题 1.1.58、1.1.60、
 1.2.36、1.2.57–1.2.58 的限制/商张量范数比较。
@@ -260,7 +270,7 @@ mathlib 的 `TensorProduct.quotientTensorQuotientEquiv`
 引理 7.1 由此比较度数；引理 7.2，p.30，必须区分来自 `C_γ` 的商范数和来自 `Q`
 的实际子商范数，才能使用式 (45)。
 
-**当前覆盖及缺口。**
+**初始审计覆盖及缺口。**
 [Tensor/PairMap.lean](ArakelovGeometry/AdelicVectorBundle/Tensor/PairMap.lean) 已有
 `orthogonalTensorPair_restrict_map_norm_le`、
 `orthogonalTensorPair_map_norm_le_of_norm_eq`，以及有限族 projective/injective 张量映射的压缩估计。
@@ -276,8 +286,8 @@ mathlib 的 `TensorProduct.quotientTensorQuotientEquiv`
 `S^λ Q = Σ_i f_i(HN(C_i)^λ)`。固定 `λ` 后，各非零源 HN 分次均半稳定且斜率为 `λ`，
 它们诱导压缩映射到 `gr_S^λ Q` 并共同张成；累加像旗使每个非零相邻实际子商的斜率至少为 `λ`。
 两次旗度数加性给出 `deg(Q) ≥ Σ_λ λ dim(gr_S^λ Q)`，即正秩时 `μ(Q) ≥ e(S)`。
-引理 7.2 中由较小秩的张量 HN 归纳假设识别 `S` 为论文的次权重像滤过，再得到精确加权导数界。
-此替代路线已经过两位独立数学审查；其 Lean 实现仍属本项待办。
+引理 7.2 中由较小秩的张量 HN 归纳假设识别 `S` 为论文的次权重像滤过，再得到所需单侧期望上界和斜率界。
+该替代路线的 Lean 实现与消费者已完成；不另要求论文中更强的精确仿射恒等式。
 
 **验收内容。** 使用现有 `NormFamily` 构造的真实限制、商和正交张量范数，
 证明每个规范分次分量映射在每个完备纤维的**所有向量**上满足范数不增，并证明商复合的同样性质。
@@ -312,7 +322,7 @@ $$
    =\sum_i t_i\widehat{\deg}(U_i/U_{i-1}).
 $$
 
-**当前覆盖及缺口。** 已有真实子商、每个子商的 HN 滤过与适配基，以及
+**初始审计覆盖及缺口。** 已有真实子商、每个子商的 HN 滤过与适配基，以及
 [Degree/Flag/Hermitian.lean](ArakelovGeometry/AdelicVectorBundle/Degree/Flag/Hermitian.lean)
 中的 `sum_flagQuotient_degree_eq_of_isHermitian`。
 尚缺把指定的多个分次滤过提升为一个环境滤过，并证明上述兼容性和配对公式。
@@ -328,9 +338,11 @@ $$
 
 - [ ] 补齐数值判据在 A9 中所用的方向：几何不稳定性产生严格负值的归一化滤过。
 
-**部分进展（2026-11-11）。** `LinearAlgebra/LaurentSeries/CartanDecomposition.lean`
-已证明任意域上的 Laurent 级数 Cartan 分解、SL 归一化和标准列表示的一参数退化，含零维情形；
-模块内核检查及 10 项传递公理检查通过。一般表示的退化、不变量分离、轨道曲线提升及有理下降仍需完成，A8 保持未完成。
+**部分进展（2026-11-11）。** Laurent／一般 DVR Cartan、实际商行列式负权重、SL 张量幂半单性、
+二元有界多项式轨道分离、实际轨道到 DVR 群元素、原系数剩余域下降及代数闭域负滤过均已检查。
+`Rationality.lean` 另已证明实际闭域负候选向任意特征零原域的条件性下降，允许无限代数扩张且不预设 Galois 稳定性。
+最后仍需将任意模块坐标运输与同一商的 A2 几何不稳定假设接通，得到原域单位负滤过；A8 保持未完成。
+完整一般表示理论、双向实权重 HM 判据及不变量环有限生成不属于当前验收。
 
 **书中出处。** 定理 5.2.7（Hilbert–Mumford 判据），注记 5.2.9，
 推论 5.2.10，pp.305–309。
@@ -349,7 +361,7 @@ $$
 这里所有 `e` 来自**平凡赋值下的滤过范数**，不是原 adelic bundle 的算术斜率。
 书中假设域 perfect，论文的特征零条件足以满足它。
 
-**当前覆盖及验收。** 当前的斜率游戏、HN 理论及实滤过范数转换没有证明这个 GIT 数值判据。
+**保留的验收范围。** 不能只由斜率游戏、HN 理论或实滤过范数转换宣称这个 GIT 数值判据已证。
 主证明只要求二元 `SL(E) × SL(F)` 的具体张量行列式表示；利用 A2–A5 连接整数权重的一参数子群、
 行列式权重和商期望。整数或有理权重初始负候选已足够，不必另证一般实权重的双向数值判据。
 主证明需要的是不稳定方向：得到一组滤过，使上述不等式严格反向；将各因子权重中心化后仍为负。
@@ -359,6 +371,12 @@ $$
 ### A9. 几何不稳定商的最优归一化滤过
 
 - [ ] 形式化定理 5.4.3 在论文使用范围内的“负的全局最小值取到”结论。
+
+**部分进展（2026-11-11）。** 已检查跨所有实际基支集的条件性有限族全局极小值与唯一性、
+二元直接优化器、实际 HN 提升变分下界，以及 `80769f9` 的严格秩和下降／同组数据算术组合。
+后两项的 4 个传递公理根与独立数学、消费者、诚实性审查通过；完整 CM (5.13) 由所需单侧 HN 方向替代。
+最终必须实际调用 A8 原域输出并公开同一商的几何不稳定→全局最优消费者，故本项尚不勾选。
+算术组合保留真实的小秩 HN 归纳条件，不把该条件或 Bost 主定理称为已证。
 
 **书中出处。** 定理 5.4.3，pp.314–316。
 
@@ -373,7 +391,7 @@ $$
 
 其分母 `L` 严格正，最小值 `c` 严格负。pp.31–32 的变分论证使用的是这个真正的全局极小性。
 
-**当前覆盖及缺口。**
+**初始审计覆盖及缺口。**
 [Order/HarderNarasimhan/Slope.lean](ArakelovGeometry/Order/HarderNarasimhan/Slope.lean) 和
 [HN/Game/Payoff.lean](ArakelovGeometry/AdelicVectorBundle/HarderNarasimhan/Game/Payoff.lean)
 处理子模格上的度数/斜率 payoff 与 HN 旗。
