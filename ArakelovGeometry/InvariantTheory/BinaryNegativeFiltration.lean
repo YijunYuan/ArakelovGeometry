@@ -394,8 +394,91 @@ theorem binaryQuotientDeterminantPolynomial_residue
 
 variable [IsAlgClosed k] [FiniteDimensional k Q]
 
+/-- The actual integral determinant support furnished by A8-DVR gives actual
+centered negative filtrations after descending the inverse residue matrices.
+The support equations refer to the checked coordinate extension of the original
+quotient. This fixed-ring interface is also the consumer of A8-ORBIT's output. -/
+theorem exists_binary_negative_filtrations_of_dvr_support
+    {R L : Type u} [CommRing R] [IsDomain R] [IsLocalRing R]
+    [Field L] [Algebra k R] [Algebra R L] [Algebra k L]
+    [IsScalarTower k R L] [IsFractionRing R L]
+    (q : (⨂[k] j, (ι j → k)) →ₗ[k] Q) (b : Basis (Fin (finrank k Q)) k Q)
+    (hq : Function.Surjective q) (hr : 0 < finrank k Q)
+    (H : ∀ j, Matrix.SpecialLinearGroup (ι j) R)
+    (a : ∀ j, ι j → ℤ) (c : BinaryTensorIndex ι (finrank k Q) → R)
+    (ha : ∀ j, ∑ i, a j i = 0)
+    (he : ∀ p, Matrix.det (Matrix.of fun l t ↦ binaryQuotientCoordinateBaseChange L q b
+      (tensorSLRepresentation (k := L) (fun j ↦ ι j → L)
+        (fun j ↦ (Matrix.SpecialLinearGroup.toLin'_equiv
+          (Matrix.SpecialLinearGroup.map (algebraMap R L) (H j)))⁻¹)
+        (⨂ₜ[L] j, Pi.single (p l j) 1)) t) = algebraMap R L (c p))
+    (hn : ∀ p, IsLocalRing.residue R (c p) ≠ 0 → (∑ l, ∑ j, a j (p l j)) < 0) :
+    ∃ F : ∀ j, ℝ → Submodule k (ι j → k),
+      (∀ j, Antitone (F j) ∧ (∃ t, F j t = ⊥) ∧ (∃ t, F j t = ⊤) ∧
+        (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F j s = F j t) ∧
+        Submodule.filtrationExpectation (F j) = 0) ∧
+      Submodule.filtrationExpectation
+        (fun t ↦ (Submodule.piTensorFiltration F t).map q) < 0 ∧
+      ∃ (a : ∀ j, ι j → ℤ) (b' : ∀ j, Basis (ι j) k (ι j → k)),
+        (∀ j, ∑ i, a j i = 0) ∧
+        ∀ j t, F j t = Submodule.span k (b' j '' {i | t ≤ (a j i : ℝ)}) := by
+  have hz (p : BinaryTensorIndex ι (finrank k Q))
+      (hp : 0 ≤ ∑ l, ∑ j, a j (p l j)) :
+      evalBinarySLPolynomial
+        (fun j ↦ Matrix.SpecialLinearGroup.map (IsLocalRing.residue R) ((H j)⁻¹))
+        (binaryDeterminantPolynomial
+          (binaryQuotientCoefficients (fun j ↦ Pi.basisFun k (ι j)) b q) p) = 0 := by
+    have heq := binaryQuotientDeterminantPolynomial_residue
+      (k := k) (ι := ι) (r := finrank k Q)
+      (R := R) (L := L) q b H p (c p) (he p)
+    apply heq.trans
+    by_contra hne
+    exact (not_lt_of_ge hp) (hn p hne)
+  obtain ⟨F, hF, hneg, b', hb'⟩ := exists_binary_negative_filtrations_of_extension
+    (fun j ↦ Pi.basisFun k (ι j)) b q hq hr a ha
+    (fun j ↦ Matrix.SpecialLinearGroup.map (IsLocalRing.residue R) ((H j)⁻¹)) hz
+  exact ⟨F, hF, hneg, a, b', ha, hb'⟩
+
+
+/-- Eliminate an actual degeneration with integral negative determinant support.
+The determinant equations explicitly identify the coordinate extension of the
+original quotient; no relation to an arbitrary fraction-field quotient is assumed. -/
+private theorem exists_binary_negative_filtrations_of_degeneration_support
+    (q : (⨂[k] j, (ι j → k)) →ₗ[k] Q) (b : Basis (Fin (finrank k Q)) k Q)
+    (hq : Function.Surjective q) (hr : 0 < finrank k Q)
+    (f : Module.Dual k (⨂[k]^(finrank k Q) (⨂[k] j, (ι j → k))))
+    (hd :
+    ∃ d : BinaryCovectorDegeneration f,
+      ∃ (H : ∀ j, Matrix.SpecialLinearGroup (ι j) d.valuationRing)
+        (a : ∀ j, ι j → ℤ) (c : BinaryTensorIndex ι (finrank k Q) → d.valuationRing),
+        (∀ j, ∑ u, a j u = 0) ∧
+        (∀ p, Matrix.det (Matrix.of fun l t ↦
+          binaryQuotientCoordinateBaseChange d.fractionField q b
+            (tensorSLRepresentation (k := d.fractionField) (fun j ↦ ι j → d.fractionField)
+              (fun j ↦ (Matrix.SpecialLinearGroup.toLin'_equiv
+                (Matrix.SpecialLinearGroup.map (algebraMap d.valuationRing d.fractionField)
+                  (H j)))⁻¹)
+              (⨂ₜ[d.fractionField] j, Pi.single (p l j) 1)) t) =
+          algebraMap d.valuationRing d.fractionField (c p)) ∧
+        (∀ p, IsLocalRing.residue d.valuationRing (c p) ≠ 0 →
+          (∑ l, ∑ j, a j (p l j)) < 0) ∧
+        ∃ p, IsLocalRing.residue d.valuationRing (c p) ≠ 0) :
+    ∃ F : ∀ j, ℝ → Submodule k (ι j → k),
+      (∀ j, Antitone (F j) ∧ (∃ t, F j t = ⊥) ∧ (∃ t, F j t = ⊤) ∧
+        (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F j s = F j t) ∧
+        Submodule.filtrationExpectation (F j) = 0) ∧
+      Submodule.filtrationExpectation
+        (fun t ↦ (Submodule.piTensorFiltration F t).map q) < 0 ∧
+      ∃ (a : ∀ j, ι j → ℤ) (b' : ∀ j, Basis (ι j) k (ι j → k)),
+        (∀ j, ∑ i, a j i = 0) ∧
+        ∀ j t, F j t = Submodule.span k (b' j '' {i | t ≤ (a j i : ℝ)}) := by
+  classical
+  obtain ⟨d, H, a, c, ha, he, hn, _⟩ := hd
+  rcases d with @⟨R, L, _, _, _, _, _, _, _, _, _, _, _, _⟩
+  exact exists_binary_negative_filtrations_of_dvr_support
+    (R := R) (L := L) q b hq hr H a c ha he hn
+
 omit [∀ j, DecidableEq (ι j)] in
-set_option maxHeartbeats 20000 in
 /-- Polynomial closure of the actual binary quotient orbit produces genuine
 centered negative filtrations over the original algebraically closed field.
 This is the Bost p31 negative-candidate implication in standard factor coordinates;
@@ -421,34 +504,9 @@ theorem exists_binary_negative_filtrations_of_orbit_closure
         (∀ j, ∑ i, a j i = 0) ∧
         ∀ j t, F j t = Submodule.span k (b' j '' {i | t ≤ (a j i : ℝ)}) := by
   classical
-  obtain ⟨d, H, a, c, ha, he, hn, _⟩ :=
-    exists_binary_quotient_negative_support_of_orbit_closure
-      (k := k) (ι := ι) (r := finrank k Q) q b hq hclosure
-  let : CommRing d.valuationRing := d.commRing
-  let : IsDomain d.valuationRing := d.isDomain
-  let : IsDiscreteValuationRing d.valuationRing := d.isDVR
-  let : Field d.fractionField := d.field
-  let : Algebra k d.valuationRing := d.groundAlgebra
-  let : Algebra d.valuationRing d.fractionField := d.algebra
-  let : Algebra k d.fractionField := d.groundFieldAlgebra
-  let : IsScalarTower k d.valuationRing d.fractionField := d.scalarTower
-  let : IsFractionRing d.valuationRing d.fractionField := d.isFractionRing
-  have hz (p : BinaryTensorIndex ι (finrank k Q))
-      (hp : 0 ≤ ∑ l, ∑ j, a j (p l j)) :
-      evalBinarySLPolynomial
-        (fun j ↦ Matrix.SpecialLinearGroup.map (IsLocalRing.residue d.valuationRing) ((H j)⁻¹))
-        (binaryDeterminantPolynomial
-          (binaryQuotientCoefficients (fun j ↦ Pi.basisFun k (ι j)) b q) p) = 0 := by
-    have heq := binaryQuotientDeterminantPolynomial_residue
-      (k := k) (ι := ι) (r := finrank k Q)
-      (R := d.valuationRing) (L := d.fractionField) q b H p (c p) (he p)
-    apply heq.trans
-    by_contra hne
-    exact (not_lt_of_ge hp) (hn p hne)
-  obtain ⟨F, hF, hneg, b', hb'⟩ := exists_binary_negative_filtrations_of_extension
-    (fun j ↦ Pi.basisFun k (ι j)) b q hq hr a ha
-    (fun j ↦ Matrix.SpecialLinearGroup.map (IsLocalRing.residue d.valuationRing) ((H j)⁻¹)) hz
-  exact ⟨F, hF, hneg, a, b', ha, hb'⟩
+  exact exists_binary_negative_filtrations_of_degeneration_support q b hq hr _
+    (exists_binary_quotient_negative_support_of_orbit_closure
+      (k := k) (ι := ι) (r := finrank k Q) q b hq hclosure)
 
 end OrbitComposition
 
