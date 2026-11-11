@@ -9,9 +9,16 @@ four transitive axiom probes use only standard axioms, and independent semantic
 and honesty reviews passed. [Its provenance record](Stacks/provenance.json)
 contains fixed revisions, hashes, retained warnings and exact consumer boundaries.
 The concrete orbit-map and residue-descent consumers are still open; upstream
-`StacksFrontier` is not asserted to have human review. The Etingof Schur–Weyl
-port is in progress. Presence of a source file alone does not certify its proof
-or consumer, and survey findings are not verification evidence.
+`StacksFrontier` is not asserted to have human review.
+
+The Etingof Schur–Weyl port contains five selected proof modules (892 lines),
+reduced from the surveyed seven-file closure. These and the actual local SL
+tensor-power consumer passed narrow builds, twelve standard-only transitive
+axiom probes and independent review. The explicit degree-zero consumer also
+passed. [Its provenance record](EtingofRepresentationTheory/provenance.json)
+records the pinned Apache-licensed release, omissions, narrow import adaptations,
+hashes and evidence. Bounded polynomial invariants and orbit separation remain
+downstream. Presence of a source file alone does not certify its proof or consumer.
 
 ## Layout and ownership
 

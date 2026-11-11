@@ -78,8 +78,7 @@ affine upper bound and taking arbitrarily small positive `epsilon` proves
 theory or CM (5.13), while supplying exactly the inequality used there. The exact
 affine identity from Lemma 7.2 is stronger than this consumer needs: a proved
 upper bound with the same slope parameter, itself bounded by `mu(Q)`, suffices.
-Its actual
-HN pairing, quotient translation and optimality consumers are being implemented;
+Its actual HN pairing, quotient translation and optimality consumers are being implemented;
 the scalar argument alone is not counted as their proof.
 
 ## Selected external results
@@ -92,21 +91,29 @@ commit, license, exact original statement, local changes, the Bost consumer, and
 build/axiom evidence in each donor's provenance record. The Lean docstrings must
 also disclose any specialization or weakening and explain its sufficiency.
 
-The active selections are the Stacks DVR-specialization closure and the official
-Apache-licensed EtingofRepresentationTheory Schur–Weyl core. The latter's surveyed
-source closure is seven files; this is not a compilation-memory estimate, and its
-broad upstream Mathlib imports must be narrowed locally. The selected Stacks
-DVR producer and its 14-module closure have passed narrow local builds, four
-standard-only transitive axiom audits and independent semantic/honesty review;
-see [its provenance record](ExternalResults/Stacks/provenance.json). The concrete
-orbit-map and residue-descent consumers remain open. The Etingof port is in
-progress. The intended representation
-consumer is semisimplicity of the specific SL tensor powers, followed by bounded
-polynomial subquotients and successive invariant lifts for the two commuting
-factors. This avoids importing a general reductivity library. The existing local
-GL-to-SL scalar decomposition is reused. In particular, a DVR specialization does not by itself prove
-Hilbert–Mumford, and an invariant-lifting theorem with an abstract linear-reductivity
-hypothesis does not establish that hypothesis for the concrete binary SL group.
+The selected Stacks DVR producer and its 14-module closure have passed narrow
+local builds, four standard-only transitive axiom audits and independent
+semantic/honesty review; see [its provenance record](ExternalResults/Stacks/provenance.json).
+The concrete orbit-map and residue-descent consumers remain open.
+
+The Apache-licensed EtingofRepresentationTheory port was reduced from its surveyed
+seven-file closure to five proof modules (892 lines), with narrow Mathlib imports.
+It supplies the actual tensor permutation-centralizer, semisimple image-algebra
+and GL-span results. The checked local
+[TensorPowerSemisimple](ArakelovGeometry/InvariantTheory/TensorPowerSemisimple.lean)
+consumer proves that, over an algebraically closed characteristic-zero field,
+each actual tensor power of a positive-rank finite-dimensional space is semisimple
+as an SL group-algebra module, including degree zero. It reuses the existing
+GL-to-SL scalar decomposition at fixed degree and proves equivariant splitting
+and invariant lifting for quotients of invariant subspaces. Twelve transitive
+axiom probes use only standard axioms; see
+[the provenance and evidence](ExternalResults/EtingofRepresentationTheory/provenance.json).
+
+This specializes the representation input needed in Bost page 31. General
+reductivity and semisimplicity of the infinite group's group algebra are not
+claimed. Bounded-polynomial quotients, the two-factor regrouping and successive
+invariant lifts, and actual orbit-ideal separation remain separate producers.
+Neither this input nor the DVR specialization alone completes A8.
 
 ## Current scope
 
