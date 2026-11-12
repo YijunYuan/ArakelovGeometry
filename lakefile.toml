@@ -26,4 +26,4 @@ rev = "14b3090e1e169b77fe381102a1289f24c2b08a11"
 name = "ArakelovGeometry"
 
 [[lean_lib]]
-name = "ExternalResults"
+name = "ExternalCode"

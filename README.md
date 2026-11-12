@@ -147,7 +147,7 @@ induction/identification.
 
 ## Selected external results
 
-New external transplants belong in [ExternalResults/](ExternalResults/README.md),
+New external transplants belong in [ExternalCode/](ExternalCode/README.md),
 not in a dependency on an entire donor project. Select only a needed theorem and
 its unavoidable source dependencies, first checking whether mathlib or the existing
 HarderNarasimhan dependency already supplies them. Record upstream URL and fixed
@@ -157,7 +157,7 @@ also disclose any specialization or weakening and explain its sufficiency.
 
 The selected Stacks DVR producer and its 14-module closure have passed narrow
 local builds, four standard-only transitive axiom audits and independent
-semantic/honesty review; see [its provenance record](ExternalResults/Stacks/provenance.json).
+semantic/honesty review; see [its provenance record](ExternalCode/Stacks/provenance.json).
 The concrete orbit-map/DVR, residue-descent and final original-field instability
 consumers are checked; the latter is described above.
 
@@ -216,7 +216,7 @@ as an SL group-algebra module, including degree zero. It reuses the existing
 GL-to-SL scalar decomposition at fixed degree and proves equivariant splitting
 and invariant lifting for quotients of invariant subspaces. Twelve transitive
 axiom probes use only standard axioms; see
-[the provenance and evidence](ExternalResults/EtingofRepresentationTheory/provenance.json).
+[the provenance and evidence](ExternalCode/EtingofRepresentationTheory/provenance.json).
 
 This specializes the representation input needed in Bost page 31. General
 reductivity and semisimplicity of the infinite group's group algebra are not
@@ -264,7 +264,7 @@ undetermined or introduce competing structures on the same carrier.
 See [the refactor report](reports/2026-11-11-code-refactor/report.txt),
 [the module map](reports/2026-11-11-code-refactor/module-moves.json), and
 [the preserved commit map](reports/2026-11-11-code-refactor/history-map.json).
-Direct checks use `LEAN_NUM_THREADS=2 lake build ArakelovGeometry ExternalResults`
+Direct checks use `LEAN_NUM_THREADS=2 lake build ArakelovGeometry ExternalCode`
 and an explicit build of
 `ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianInnerProduct` for the old import facade.
 Instance, import-compatibility and axiom-check inputs are preserved in

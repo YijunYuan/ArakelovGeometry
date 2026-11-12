@@ -6,7 +6,7 @@ Authors: ArakelovGeometry contributors
 module
 
 public import ArakelovGeometry.InvariantTheory.Linearization
-public import ExternalResults.EtingofRepresentationTheory.PiTensorProduct.MapSpanCentralizer
+public import ExternalCode.EtingofRepresentationTheory.PiTensorProduct.MapSpanCentralizer
 public import Mathlib.RepresentationTheory.Semisimple
 
 /-!

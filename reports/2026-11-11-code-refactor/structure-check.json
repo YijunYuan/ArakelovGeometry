@@ -1,7 +1,0 @@
-{
-  "modules_after_probe_cleanup": 822,
-  "local_imports_valid": true,
-  "acyclic": true,
-  "full_build_targets_cover_every_production_module": true,
-  "remaining_test_lean_files": []
-}

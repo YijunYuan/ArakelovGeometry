@@ -7,7 +7,7 @@ module
 
 public import ArakelovGeometry.InvariantTheory.Binary.Orbit.Coordinates
 public import ArakelovGeometry.InvariantTheory.DVR.Weights
-public import ExternalResults.Stacks.StacksFrontier.AlgebraicGeometry.Limits.NoetherianValuativeCriterion.DiscreteValuationSpecialization
+public import ExternalCode.Stacks.StacksFrontier.AlgebraicGeometry.Limits.NoetherianValuativeCriterion.DiscreteValuationSpecialization
 public import Mathlib.AlgebraicGeometry.GammaSpecAdjunction
 public import Mathlib.RingTheory.MvPolynomial.Basic
 

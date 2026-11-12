@@ -1,5 +1,0 @@
-module
-
-public import ExternalResults.Stacks.StacksFrontier.RingTheory.KrullAkizuki.IntermediateRingNoetherian
-public import ExternalResults.Stacks.StacksFrontier.RingTheory.KrullAkizuki.DominatingDimOne
-public import ExternalResults.Stacks.StacksFrontier.RingTheory.KrullAkizuki.LengthBound
