@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.VectorDiagonal
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Hermitian
 public import Mathlib.Analysis.InnerProductSpace.OfNorm
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import Mathlib.Topology.Sheaves.Init
 
@@ -110,7 +111,7 @@ def euclideanIsometry (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) 
 @[instance_reducible]
 def euclideanInnerProduct
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
     InnerProductSpace ℝ (CompletedVectorProduct K E) := by
@@ -166,7 +167,7 @@ variable {K E : Type*} [Field K] [NumberField K]
 theorem IsDominated.pure_globalBall_euclidean_discrete (hdom : ξ.IsDominated)
     (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
     letI := euclideanNormedAddCommGroup ξ
-    DiscreteTopology (diagonalLattice (ξ.globalUnitBallModule hξ)) :=
+    DiscreteTopology (diagonalLattice (ξ.globalUnitBallModule)) :=
   euclidean_discrete_diagonalLattice ξ _
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure).1
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure).2.2
@@ -177,7 +178,7 @@ theorem IsDominated.pure_globalBall_euclidean_isZLattice (hdom : ξ.IsDominated)
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
     letI := hdom.pure_globalBall_euclidean_discrete hξ hpure
-    IsZLattice ℝ (diagonalLattice (ξ.globalUnitBallModule hξ)) :=
+    IsZLattice ℝ (diagonalLattice (ξ.globalUnitBallModule)) :=
   euclidean_isZLattice_diagonalLattice ξ _
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure).1
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure).2.2

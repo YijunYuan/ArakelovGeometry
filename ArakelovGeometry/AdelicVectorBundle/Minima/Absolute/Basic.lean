@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Minima.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Discrete.Bundle
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.PositiveAtoms.Algebraic.ScalarBundle
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integral
 import ArakelovGeometry.AdelicVectorBundle.Minima.Basis
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Domination.Basic
@@ -40,40 +41,37 @@ namespace AdelicVectorBundle
 /-- An actual ordinary scalar bundle from the explicit three regularity
 alternatives. Its norm family is always the prescribed ordinary extension. -/
 def ordinaryScalarExtension (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized] :
     AdelicVectorBundle (S.algebraicExtension L) (L ⊗[K] E) where
   toNormFamily := V.toNormFamily.scalarExtension
   isMeasurable := by
-    rcases hreg with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
-    · exact (V.scalarExtension (L := L) h hN).isMeasurable
+    rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
+    · exact (V.scalarExtension (L := L) (hS := h)).isMeasurable
     · let := hc
       let := hd
-      exact (V.scalarExtensionOfCountableDiscreteBase (L := L) hN).isMeasurable
+      exact (V.scalarExtensionOfCountableDiscreteBase (L := L)).isMeasurable
     · let := hm
-      exact (V.toNormFamily.algebraicScalarBundleOfPositiveAtoms V.isDominated hp hf).isMeasurable
+      exact (V.toNormFamily.algebraicScalarBundleOfPositiveAtoms (hpos := ⟨hp⟩)
+          (hS := ⟨hf⟩)).isMeasurable
   dual_isMeasurable := by
-    rcases hreg with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
-    · exact (V.scalarExtension (L := L) h hN).dual_isMeasurable
+    rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
+    · exact (V.scalarExtension (L := L) (hS := h)).dual_isMeasurable
     · let := hc
       let := hd
-      exact (V.scalarExtensionOfCountableDiscreteBase (L := L) hN).dual_isMeasurable
+      exact (V.scalarExtensionOfCountableDiscreteBase (L := L)).dual_isMeasurable
     · let := hm
       exact (V.toNormFamily.algebraicScalarBundleOfPositiveAtoms
-        V.isDominated hp hf).dual_isMeasurable
+        (hpos := ⟨hp⟩) (hS := ⟨hf⟩)).dual_isMeasurable
   isDominated := by
     exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
-      V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike hN)).isDominated
+      V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)).isDominated
 
 @[simp]
 theorem ordinaryScalarExtension_toNormFamily (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.ordinaryScalarExtension (L := L) hreg hN).toNormFamily =
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized] :
+    (V.ordinaryScalarExtension (L := L)).toNormFamily =
       V.toNormFamily.scalarExtension := rfl
 
 end AdelicVectorBundle
@@ -92,11 +90,11 @@ def scalarExtensionNonzeroVector (s : {x : E // x ≠ 0}) :
 /-- The degree comparison for the actual scalar norm family. The target
 regularity hypotheses are exactly those needed to define its vector degree. -/
 theorem vectorDegree_le_scalarExtension (ξ : NormFamily S E)
-    (hd : ξ.IsDominated) (hm : ξ.IsMeasurable)
-    (hdL : (ξ.scalarExtension (L := L)).IsDominated)
-    (hmL : (ξ.scalarExtension (L := L)).IsMeasurable) (s : {x : E // x ≠ 0}) :
-    ξ.vectorDegree hd hm s ≤
-      (ξ.scalarExtension (L := L)).vectorDegree hdL hmL
+    [hd : ξ.IsDominated] [hm : ξ.IsMeasurable]
+    [hdL : (ξ.scalarExtension (L := L)).IsDominated]
+    [hmL : (ξ.scalarExtension (L := L)).IsMeasurable] (s : {x : E // x ≠ 0}) :
+    ξ.vectorDegree s ≤
+      (ξ.scalarExtension (L := L)).vectorDegree
         (scalarExtensionNonzeroVector (L := L) s) := by
   have hi := hd.integrable_logNorm hm s.val
   have hiL := hdL.integrable_logNorm hmL (scalarExtensionNonzeroVector (L := L) s).val
@@ -123,46 +121,38 @@ namespace AdelicVectorBundle
 
 /-- Coherence with the existing common-density ordinary scalar bundle. -/
 theorem ordinaryScalarExtension_eq_common (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hc : S.HasCommonCountableDenseSubfield) :
-    V.ordinaryScalarExtension (L := L) hreg hN = V.scalarExtension hc hN := rfl
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized]
+    [S.HasCommonCountableDenseSubfield] :
+    V.ordinaryScalarExtension (L := L) = V.scalarExtension := rfl
 
 /-- Coherence with the existing countable-discrete ordinary scalar bundle. -/
 theorem ordinaryScalarExtension_eq_discrete [Countable S.Ω] [DiscreteMeasurableSpace S.Ω]
     (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.ordinaryScalarExtension (L := L) hreg hN =
-      V.scalarExtensionOfCountableDiscreteBase hN := rfl
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.ordinaryScalarExtension (L := L) =
+      V.scalarExtensionOfCountableDiscreteBase := rfl
 
 /-- Coherence with the genuine all-finite positive-atomic scalar bundle. -/
 theorem ordinaryScalarExtension_eq_positiveAtoms [MeasurableSingletonClass S.Ω]
     (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hp : ∀ ω, 0 < S.v {ω}) (hf : ∀ ω, ω ∈ S.Ωfin) :
-    V.ordinaryScalarExtension (L := L) hreg hN =
-      V.toNormFamily.algebraicScalarBundleOfPositiveAtoms V.isDominated hp hf := rfl
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized]
+    [S.HasPositiveAtoms] [S.HasOnlyFinitePlaces] :
+    V.ordinaryScalarExtension (L := L) =
+      V.toNormFamily.algebraicScalarBundleOfPositiveAtoms := rfl
 
 /-- Actual rational sections gain degree in every produced regularity branch. -/
 theorem vectorDegree_le_ordinaryScalarExtension (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized]
     (s : {x : E // x ≠ 0}) :
-    V.vectorDegree s ≤ (V.ordinaryScalarExtension (L := L) hreg hN).vectorDegree
+    V.vectorDegree s ≤ (V.ordinaryScalarExtension (L := L)).vectorDegree
       (NormFamily.scalarExtensionNonzeroVector (L := L) s) :=
-  V.toNormFamily.vectorDegree_le_scalarExtension V.isDominated V.isMeasurable
-    (V.ordinaryScalarExtension hreg hN).isDominated
-    (V.ordinaryScalarExtension hreg hN).isMeasurable s
+  V.toNormFamily.vectorDegree_le_scalarExtension
+    (hdL := (V.ordinaryScalarExtension).isDominated)
+    (hmL := (V.ordinaryScalarExtension).isMeasurable) s
 
 omit [FiniteDimensional K E] [Algebra.IsAlgebraic K L] in
 private theorem originalSections_linearIndependent {ι : Type*} {s : ι → E}
@@ -186,137 +176,113 @@ private theorem originalSections_linearIndependent {ι : Type*} {s : ι → E}
 /-- All extended-real minima increase under actual algebraic scalar extension.
 No supremum attainment or finiteness is used. -/
 theorem logarithmicMinimum_le_ordinaryScalarExtension (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized]
     (i : ℕ) :
     V.logarithmicMinimum i ≤
-      (V.ordinaryScalarExtension (L := L) hreg hN).logarithmicMinimum i := by
+      (V.ordinaryScalarExtension (L := L)).logarithmicMinimum i := by
   apply iSup_le
   intro t
   apply iSup_le
   intro ht
   obtain ⟨s, hs, hd⟩ := (V.le_finrank_degreeThresholdSpan_iff i t).mp ht
   apply coe_le_logarithmicMinimum_of_linearIndependent
-    (V.ordinaryScalarExtension (L := L) hreg hN)
+    (V.ordinaryScalarExtension (L := L))
     (fun j => NormFamily.scalarExtensionNonzeroVector (L := L) (s j))
   · exact originalSections_linearIndependent hs
   · intro j
-    exact (hd j).trans (V.vectorDegree_le_ordinaryScalarExtension hreg hN (s j))
+    exact (hd j).trans (V.vectorDegree_le_ordinaryScalarExtension (s j))
 
 
 /-- Source Definition 4.3.69's absolute minimum uses the actual ordinary
 closure bundle. Natural indices outside the source range are auxiliary. -/
 def absoluteLogarithmicMinimum (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized]
     (i : ℕ) : EReal :=
-  (V.ordinaryScalarExtension (L := AlgebraicClosure K) hreg hN).logarithmicMinimum i
+  (V.ordinaryScalarExtension (L := AlgebraicClosure K)).logarithmicMinimum i
 
 /-- The actual first absolute minimum, with value bottom in rank zero. -/
 def absoluteMaximalLogarithmicMinimum (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) : EReal :=
-  V.absoluteLogarithmicMinimum hreg hN 1
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized] : EReal :=
+  V.absoluteLogarithmicMinimum 1
 
 /-- The actual last absolute minimum. Base change preserves its rank index,
 and rank zero has the source value top. -/
 def absoluteMinimalLogarithmicMinimum (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) : EReal :=
-  V.absoluteLogarithmicMinimum hreg hN (Module.finrank K E)
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized] : EReal :=
+  V.absoluteLogarithmicMinimum (Module.finrank K E)
 
 /-- The inequality clause of source Proposition 4.3.71, extended to the
 auxiliary natural indices. Absolute invariance is a separate assertion. -/
 theorem logarithmicMinimum_le_absoluteLogarithmicMinimum (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (i : ℕ) : V.logarithmicMinimum i ≤ V.absoluteLogarithmicMinimum hreg hN i :=
-  V.logarithmicMinimum_le_ordinaryScalarExtension (L := AlgebraicClosure K) hreg hN i
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized]
+    (i : ℕ) : V.logarithmicMinimum i ≤ V.absoluteLogarithmicMinimum i :=
+  V.logarithmicMinimum_le_ordinaryScalarExtension (L := AlgebraicClosure K) i
 
 /-- The actual first ordinary minimum is at most its absolute version. -/
 theorem maximalLogarithmicMinimum_le_absoluteMaximalLogarithmicMinimum
     (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.maximalLogarithmicMinimum ≤ V.absoluteMaximalLogarithmicMinimum hreg hN :=
-  V.logarithmicMinimum_le_absoluteLogarithmicMinimum hreg hN 1
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.maximalLogarithmicMinimum ≤ V.absoluteMaximalLogarithmicMinimum :=
+  V.logarithmicMinimum_le_absoluteLogarithmicMinimum 1
 
 /-- The last comparison retains the source top convention in rank zero. -/
 theorem minimalLogarithmicMinimum_le_absoluteMinimalLogarithmicMinimum
     (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.minimalLogarithmicMinimum ≤ V.absoluteMinimalLogarithmicMinimum hreg hN :=
-  V.logarithmicMinimum_le_absoluteLogarithmicMinimum hreg hN (Module.finrank K E)
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.minimalLogarithmicMinimum ≤ V.absoluteMinimalLogarithmicMinimum :=
+  V.logarithmicMinimum_le_absoluteLogarithmicMinimum (Module.finrank K E)
 
 /-- Extended absolute minima decrease with their index. -/
 theorem absoluteLogarithmicMinimum_antitone (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    Antitone (V.absoluteLogarithmicMinimum hreg hN) :=
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized] :
+    Antitone (V.absoluteLogarithmicMinimum) :=
   logarithmicMinimum_antitone
-    (V.ordinaryScalarExtension (L := AlgebraicClosure K) hreg hN)
+    (V.ordinaryScalarExtension (L := AlgebraicClosure K))
 
 /-- Index zero is an auxiliary empty-family convention, distinct from the
 source's valid positive indices. -/
 theorem absoluteLogarithmicMinimum_zero (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.absoluteLogarithmicMinimum hreg hN 0 = ⊤ :=
-  logarithmicMinimum_zero (V.ordinaryScalarExtension (L := AlgebraicClosure K) hreg hN)
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.absoluteLogarithmicMinimum 0 = ⊤ :=
+  logarithmicMinimum_zero (V.ordinaryScalarExtension (L := AlgebraicClosure K))
 
 /-- Auxiliary indices above original rank have empty threshold cuts. -/
 theorem absoluteLogarithmicMinimum_eq_bot_of_finrank_lt (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized]
     {i : ℕ} (hi : Module.finrank K E < i) :
-    V.absoluteLogarithmicMinimum hreg hN i = ⊥ := by
+    V.absoluteLogarithmicMinimum i = ⊥ := by
   apply logarithmicMinimum_eq_bot_of_finrank_lt
-    (V.ordinaryScalarExtension (L := AlgebraicClosure K) hreg hN)
+    (V.ordinaryScalarExtension (L := AlgebraicClosure K))
   simpa only [Module.finrank_baseChange] using hi
 
 /-- Source absolute first-minimum convention for the actual zero bundle. -/
 theorem absoluteMaximalLogarithmicMinimum_eq_bot_of_finrank_eq_zero
     (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized]
     (hr : Module.finrank K E = 0) :
-    V.absoluteMaximalLogarithmicMinimum hreg hN = ⊥ :=
-  V.absoluteLogarithmicMinimum_eq_bot_of_finrank_lt hreg hN (by omega)
+    V.absoluteMaximalLogarithmicMinimum = ⊥ :=
+  V.absoluteLogarithmicMinimum_eq_bot_of_finrank_lt (by omega)
 
 /-- Source absolute last-minimum convention for the actual zero bundle. -/
 theorem absoluteMinimalLogarithmicMinimum_eq_top_of_finrank_eq_zero
     (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized]
     (hr : Module.finrank K E = 0) :
-    V.absoluteMinimalLogarithmicMinimum hreg hN = ⊤ := by
+    V.absoluteMinimalLogarithmicMinimum = ⊤ := by
   unfold absoluteMinimalLogarithmicMinimum
-  rw [hr, V.absoluteLogarithmicMinimum_zero hreg hN]
+  rw [hr, V.absoluteLogarithmicMinimum_zero]
 
 end AdelicVectorBundle
 end ArakelovGeometry

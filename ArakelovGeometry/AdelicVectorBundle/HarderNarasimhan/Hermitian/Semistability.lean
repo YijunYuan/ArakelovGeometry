@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Destabilizing
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.ExactSequence.Dual
 import ArakelovGeometry.AdelicVectorBundle.Slope.DualUpper
 import ArakelovGeometry.AdelicVectorBundle.Slope.Finite
@@ -37,15 +38,15 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 the opposite restriction degree deficit, including zero ends. -/
 theorem degree_quotient_sub_rank_mul_slope_eq_rank_mul_slope_sub_degree_restrict_of_isHermitian
     (V : AdelicVectorBundle S E) (U : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) :
-    (V.quotientOfMeasurableBase U hS).degree hS hN -
-        (Module.finrank K (E ⧸ U) : ℝ) * V.slope hS hN =
-      (Module.finrank K U : ℝ) * V.slope hS hN -
-        (V.restrictOfMeasurableBase U hS).degree hS hN := by
-  have hd := V.degree_restrict_add_degree_quotient_eq_of_isHermitian U hS hN hV
-  rw [V.degree_eq_rank_mul_slope hS hN] at hd
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] :
+    (V.quotientOfMeasurableBase U).degree -
+        (Module.finrank K (E ⧸ U) : ℝ) * V.slope =
+      (Module.finrank K U : ℝ) * V.slope -
+        (V.restrictOfMeasurableBase U).degree := by
+  have hd := V.degree_restrict_add_degree_quotient_eq_of_isHermitian U
+  rw [V.degree_eq_rank_mul_slope] at hd
   have hr : (Module.finrank K (E ⧸ U) : ℝ) + Module.finrank K U =
       Module.finrank K E := by exact_mod_cast U.finrank_quotient_add_finrank
   rw [← hr, add_mul] at hd
@@ -55,26 +56,26 @@ theorem degree_quotient_sub_rank_mul_slope_eq_rank_mul_slope_sub_degree_restrict
 equivalent to the mean-slope lower bound for every nonzero actual quotient. -/
 theorem isMeanSlopeSemistable_iff_slope_le_quotient_of_isHermitian
     (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) (hr : 0 < Module.finrank K E) :
-    V.IsMeanSlopeSemistable hS hN ↔
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    V.IsMeanSlopeSemistable ↔
       ∀ U : Submodule K E, 0 < Module.finrank K (E ⧸ U) →
-        V.slope hS hN ≤ (V.quotientOfMeasurableBase U hS).slope hS hN := by
+        V.slope ≤ (V.quotientOfMeasurableBase U).slope := by
   constructor
   · intro hs U hQ
-    have hR : (V.restrictOfMeasurableBase U hS).degree hS hN ≤
-        (Module.finrank K U : ℝ) * V.slope hS hN := by
+    have hR : (V.restrictOfMeasurableBase U).degree ≤
+        (Module.finrank K U : ℝ) * V.slope := by
       by_cases hU : 0 < Module.finrank K U
-      · rw [(V.restrictOfMeasurableBase U hS).degree_eq_rank_mul_slope hS hN]
+      · rw [(V.restrictOfMeasurableBase U).degree_eq_rank_mul_slope]
         exact mul_le_mul_of_nonneg_left (hs.2 U hU) (Nat.cast_nonneg _)
       · have hz : Module.finrank K U = 0 := Nat.eq_zero_of_not_pos hU
         rw [hz, Nat.cast_zero, zero_mul,
-          (V.restrictOfMeasurableBase U hS).degree_eq_zero_of_finrank_eq_zero hS hN hz]
+          (V.restrictOfMeasurableBase U).degree_eq_zero_of_finrank_eq_zero hz]
     have hd :=
       V.degree_quotient_sub_rank_mul_slope_eq_rank_mul_slope_sub_degree_restrict_of_isHermitian
-        U hS hN hV
-    rw [(V.quotientOfMeasurableBase U hS).degree_eq_rank_mul_slope hS hN] at hd
+        U
+    rw [(V.quotientOfMeasurableBase U).degree_eq_rank_mul_slope] at hd
     have hp : (0 : ℝ) < Module.finrank K (E ⧸ U) := Nat.cast_pos.mpr hQ
     apply (mul_le_mul_iff_right₀ hp).mp
     nlinarith
@@ -82,48 +83,48 @@ theorem isMeanSlopeSemistable_iff_slope_le_quotient_of_isHermitian
     refine ⟨hr, fun U hU => ?_⟩
     by_contra hR
     obtain ⟨hpos, _, hlt⟩ := V.quotient_rank_and_slope_lt_of_lt_restrict U hU
-      hS hN (V.slope hS hN) le_rfl (lt_of_not_ge hR)
+      (V.slope) le_rfl (lt_of_not_ge hR)
     exact (not_lt_of_ge (hQ U hpos)) hlt
 
 /-- The actual quotient-mean infimum identifies Hermitian semistability
 with equality of the extended-real minimum and real mean. -/
 theorem isMeanSlopeSemistable_iff_minimalSlope_eq_slope_of_isHermitian
     (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) (hr : 0 < Module.finrank K E) :
-    V.IsMeanSlopeSemistable hS hN ↔ V.minimalSlope hS hN = (V.slope hS hN : EReal) := by
-  rw [V.isMeanSlopeSemistable_iff_slope_le_quotient_of_isHermitian hS hN hV hr]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    V.IsMeanSlopeSemistable ↔ V.minimalSlope = (V.slope : EReal) := by
+  rw [V.isMeanSlopeSemistable_iff_slope_le_quotient_of_isHermitian hr]
   constructor
   · intro hQ
-    apply le_antisymm (V.minimalSlope_le_slope hS hN hr)
-    rw [V.minimalSlope_eq_iInf_slope_quotient hS hN]
+    apply le_antisymm (V.minimalSlope_le_slope hr)
+    rw [V.minimalSlope_eq_iInf_slope_quotient]
     exact le_iInf fun U => EReal.coe_le_coe_iff.mpr (hQ U.val U.property)
   · intro he U hU
     exact EReal.coe_le_coe_iff.mp
-      (he ▸ V.minimalSlope_le_slope_quotient U hU hS hN)
+      (he ▸ V.minimalSlope_le_slope_quotient U hU)
 
 /-- The actual Hermitian dual is mean-slope semistable exactly when the
 original positive-rank bundle is. The finite real representatives used in
 the proof come from the accepted extremal-slope finiteness theorem. -/
 theorem isMeanSlopeSemistable_dual_iff_of_isHermitian
     (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) (hr : 0 < Module.finrank K E) :
-    (V.dualOfMeasurableBase hS).IsMeanSlopeSemistable hS hN ↔
-      V.IsMeanSlopeSemistable hS hN := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    (V.dualOfMeasurableBase).IsMeanSlopeSemistable ↔
+      V.IsMeanSlopeSemistable := by
   have hrD : 0 < Module.finrank K (Module.Dual K E) := by
     rwa [Subspace.dual_finrank_eq]
-  have hVD : (V.dualOfMeasurableBase hS).toNormFamily.IsHermitian hN := hV.dual
-  rw [(V.dualOfMeasurableBase hS).isMeanSlopeSemistable_iff_minimalSlope_eq_slope_of_isHermitian
-      hS hN hVD hrD,
-    V.isMeanSlopeSemistable_iff_maximalSlope_eq_slope hS hN hr]
-  obtain ⟨a, ha⟩ := (V.dualOfMeasurableBase hS).exists_minimalSlope_eq_coe hS hN hrD
-  obtain ⟨b, hb⟩ := V.exists_maximalSlope_eq_coe hS hN hr
-  have hext := V.minimalSlope_dual_add_maximalSlope_eq_zero_of_isHermitian hS hN hV hr
+  have hVD : (V.dualOfMeasurableBase).toNormFamily.IsHermitian := hV.dual
+  rw [(V.dualOfMeasurableBase).isMeanSlopeSemistable_iff_minimalSlope_eq_slope_of_isHermitian
+      (hV := hVD) hrD,
+    V.isMeanSlopeSemistable_iff_maximalSlope_eq_slope hr]
+  obtain ⟨a, ha⟩ := (V.dualOfMeasurableBase).exists_minimalSlope_eq_coe hrD
+  obtain ⟨b, hb⟩ := V.exists_maximalSlope_eq_coe hr
+  have hext := V.minimalSlope_dual_add_maximalSlope_eq_zero_of_isHermitian hr
   rw [ha, hb, ← EReal.coe_add, ← EReal.coe_zero, EReal.coe_eq_coe_iff] at hext
-  have hmean := V.slope_add_slope_dual_eq_zero_of_isHermitian hS hN hV
+  have hmean := V.slope_add_slope_dual_eq_zero_of_isHermitian
   rw [ha, hb, EReal.coe_eq_coe_iff, EReal.coe_eq_coe_iff]
   constructor <;> intro he <;> linarith
 

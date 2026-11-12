@@ -10,6 +10,7 @@ public import ArakelovGeometry.NumberTheory.NumberField.Covolume.Degree
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.Norm.Lambda
 public import ArakelovGeometry.NumberTheory.NumberField.Minkowski.ProductBall
 public import ArakelovGeometry.NumberTheory.NumberField.Minkowski.Radius
+
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Full.GlobalBall
 import ArakelovGeometry.NumberTheory.NumberField.Minkowski.ConvexBody
 import Mathlib.Topology.Sheaves.Init
@@ -55,30 +56,30 @@ theorem exists_integral_nonzero_archimedean_bound
     (L : Submodule (𝓞 K) E) (hfg : L.FG)
     (hspan : Submodule.span K (L : Set E) = ⊤)
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hη : η.IsHermitian]
     (hn : 0 < Module.finrank K E) :
     let V := fullLatticeAdelicBundle L hfg hspan η
     ∃ s : {x : E // x ≠ 0}, s.val ∈ L ∧
       V.toNormFamily.archimedeanMaxNorm s.val ≤ NumberFieldMinkowskiRadius.radius K
-        (Module.finrank K E) (V.degree (Or.inl inferInstance)
-          normalizedNumberFieldArchimedeanCompletions) := by
+        (Module.finrank K E) (V.degree
+         ) := by
   let V := fullLatticeAdelicBundle L hfg hspan η
   let ξ := fullLatticeGaugeFamily L hfg hspan η
-  let hξ := fullLatticeGaugeFamily_isHermitian L hfg hspan η hη
-  let D := V.degree (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions
+  let hξ := fullLatticeGaugeFamily_isHermitian L hfg hspan η
+  let D := V.degree
   let R := NumberFieldMinkowskiRadius.radius K (Module.finrank K E) D
   have hR : 0 < R := NumberFieldMinkowskiRadius.radius_pos K hn D
-  have hv : ENNReal.ofReal (euclideanCovolume ξ hξ L) *
+  have hv : ENNReal.ofReal (euclideanCovolume ξ (hξ := hξ) L) *
       2 ^ (Module.finrank ℚ K * Module.finrank K E) ≤
-        euclideanVolume ξ hξ (productBall ξ R) := by
-    change _ ≤ productBallVolume ξ hξ R
-    rw [fullLattice_euclideanCovolume_eq_exp_neg_degree L hfg hspan η hη]
+        euclideanVolume ξ (hξ := hξ) (productBall ξ R) := by
+    change _ ≤ productBallVolume ξ (hξ := hξ) R
+    rw [fullLattice_euclideanCovolume_eq_exp_neg_degree L hfg hspan η]
     have he := NumberFieldMinkowskiRadius.volume_threshold_identity K hn D
     rw [show (2 : ENNReal) ^ (Module.finrank ℚ K * Module.finrank K E) =
       ENNReal.ofReal ((2 : ℝ) ^ (Module.finrank ℚ K * Module.finrank K E)) by
         simp, ← ENNReal.ofReal_mul (Real.exp_pos _).le, ← he]
-    exact productBallVolume_ge_cube ξ hξ hn hR.le
-  obtain ⟨s, hsL, hs0, hsB⟩ := exists_integral_nonzero_of_convex_volume ξ hξ L hfg
+    exact productBallVolume_ge_cube ξ (hξ := hξ) hn hR.le
+  obtain ⟨s, hsL, hs0, hsB⟩ := exists_integral_nonzero_of_convex_volume ξ (hξ := hξ) L hfg
     hspan hn (productBall ξ R) (productBall_isCompact ξ hR.le)
       (convex_productBall ξ R) (fun z hz => by
         rw [← neg_productBall ξ R]
@@ -92,26 +93,26 @@ theorem exists_integral_nonzero_large_degree
     (L : Submodule (𝓞 K) E) (hfg : L.FG)
     (hspan : Submodule.span K (L : Set E) = ⊤)
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hη : η.IsHermitian]
     (hn : 0 < Module.finrank K E) :
     let V := fullLatticeAdelicBundle L hfg hspan η
     ∃ s : {x : E // x ≠ 0}, s.val ∈ L ∧
-      V.slope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions -
+      V.slope -
         (Module.finrank ℚ K : ℝ) / 2 * Real.log (Module.finrank K E : ℝ) -
           Real.log |(NumberField.discr K : ℝ)| / 2 ≤
-            V.toNormFamily.vectorDegree V.isDominated V.isMeasurable s := by
+            V.toNormFamily.vectorDegree s := by
   let V := fullLatticeAdelicBundle L hfg hspan η
-  let D := V.degree (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions
+  let D := V.degree
   let R := NumberFieldMinkowskiRadius.radius K (Module.finrank K E) D
   have hR : 0 < R := NumberFieldMinkowskiRadius.radius_pos K hn D
-  obtain ⟨s, hsL, hsR⟩ := exists_integral_nonzero_archimedean_bound L hfg hspan η hη hn
+  obtain ⟨s, hsL, hsR⟩ := exists_integral_nonzero_archimedean_bound L hfg hspan η hn
   have hsball : s.val ∈ V.toNormFamily.globalUnitBall := by
     change s.val ∈ (fullLatticeGaugeFamily L hfg hspan η).globalUnitBall
     rwa [fullLatticeGaugeFamily_globalUnitBall_eq]
   have hsbound : V.toNormFamily.archimedeanMaxNorm s.val ≤ Real.exp (-(-Real.log R)) := by
     simpa only [neg_neg, Real.exp_log hR] using hsR
   have hd := V.toNormFamily.vectorDegree_ge_of_integral_archimedean_bound
-    V.isDominated V.isMeasurable s hsball hsbound
+    s hsball hsbound
   refine ⟨s, hsL, ?_⟩
   have he := NumberFieldMinkowskiRadius.neg_rank_mul_log_radius K hn D
   change -(Module.finrank ℚ K : ℝ) * Real.log R = _ at he

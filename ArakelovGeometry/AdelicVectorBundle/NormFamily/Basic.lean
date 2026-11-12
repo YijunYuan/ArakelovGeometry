@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicCurve.Defs
 public import Mathlib.Analysis.Normed.Field.Instances
 public import Mathlib.Analysis.Normed.Module.Completion
+
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 import Mathlib.LinearAlgebra.FreeModule.PID
@@ -129,8 +130,21 @@ instance instSubsingleton [Subsingleton E] : Subsingleton (NormFamily S E) where
     rw [norm_eq_zero_of_subsingleton, norm_eq_zero_of_subsingleton]
 
 /-- Ultrametricity is imposed at every non-Archimedean place, as in §4.1.1. -/
-def IsUltrametric : Prop :=
-  ∀ ω ∈ S.Ωfin, ∀ x y, ξ.norm ω (x + y) ≤ max (ξ.norm ω x) (ξ.norm ω y)
+class IsUltrametric : Prop where
+  /-- The defining property. -/
+  norm_add_le_max :
+    ∀ ω ∈ S.Ωfin, ∀ x y, ξ.norm ω (x + y) ≤ max (ξ.norm ω x) (ξ.norm ω y)
+
+instance : CoeFun (ξ.IsUltrametric)
+    (fun _ ↦
+      ∀ ω ∈ S.Ωfin, ∀ x y, ξ.norm ω (x + y) ≤ max (ξ.norm ω x) (ξ.norm ω y)) :=
+  ⟨fun h ↦ h.norm_add_le_max⟩
+
+/-- The defining proposition of `IsUltrametric`. -/
+theorem IsUltrametric.iff :
+    ξ.IsUltrametric ↔
+    ∀ ω ∈ S.Ωfin, ∀ x y, ξ.norm ω (x + y) ≤ max (ξ.norm ω x) (ξ.norm ω y) :=
+  ⟨fun h ↦ h.norm_add_le_max, fun h ↦ ⟨h⟩⟩
 
 noncomputable section
 
@@ -189,6 +203,7 @@ theorem scale_injective (f : S.Ω → ℝ) (hf : ∀ ω, 0 < f ω) :
 /-- Scaling by a positive function preserves the non-Archimedean triangle inequality. -/
 theorem IsUltrametric.scale {ξ : NormFamily S E} (hξ : ξ.IsUltrametric)
     (f : S.Ω → ℝ) (hf : ∀ ω, 0 < f ω) : (ξ.scale f hf).IsUltrametric := by
+  constructor
   intro ω hω x y
   simp only [scale_norm, ← mul_max_of_nonneg _ _ (hf ω).le]
   exact mul_le_mul_of_nonneg_left (hξ ω hω x y) (hf ω).le

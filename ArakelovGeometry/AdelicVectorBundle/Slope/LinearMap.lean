@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Operator.Height
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Map
 import ArakelovGeometry.AdelicVectorBundle.Operator.Measurable
 import ArakelovGeometry.AdelicVectorBundle.Slope.Quotient
@@ -131,21 +132,21 @@ variable [S.IsProper]
 gives the mean-slope estimate, including infinite map height. -/
 theorem slope_le_slope_add_mapHeight (V : AdelicVectorBundle S E)
     (W : AdelicVectorBundle S F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (e : E ≃ₗ[K] F) (hr : 0 < Module.finrank K E) :
-    (V.slope hS hN : EReal) ≤ (W.slope hS hN : EReal) + V.mapHeight W e.toLinearMap := by
+    (V.slope : EReal) ≤ (W.slope : EReal) + V.mapHeight W e.toLinearMap := by
   let : Nontrivial E := Module.nontrivial_of_finrank_pos hr
   have hf : e.toLinearMap ≠ 0 := LinearMap.ne_zero_of_injective e.injective
   by_cases ht : V.mapHeight W e.toLinearMap = ⊤
   · rw [ht, EReal.add_top_of_ne_bot (EReal.coe_ne_bot _)]
     exact le_top
   · have he := EReal.coe_toReal ht (ne_of_gt (V.bot_lt_mapHeight W hf))
-    have hd := V.degree_le_degree_add_rank_mul_mapHeight W hS hN e
+    have hd := V.degree_le_degree_add_rank_mul_mapHeight W e
     rw [← he, ← EReal.coe_natCast, ← EReal.coe_mul, ← EReal.coe_add,
       EReal.coe_le_coe_iff] at hd
-    rw [V.degree_eq_rank_mul_slope hS hN,
-      W.degree_eq_rank_mul_slope hS hN, ← e.finrank_eq] at hd
+    rw [V.degree_eq_rank_mul_slope,
+      W.degree_eq_rank_mul_slope, ← e.finrank_eq] at hd
     rw [← he, ← EReal.coe_add, EReal.coe_le_coe_iff]
     have hp : (0 : ℝ) < Module.finrank K E := Nat.cast_pos.mpr hr
     nlinarith
@@ -173,11 +174,11 @@ omit [S.IsProper] in
 of its ambient map. -/
 theorem mapHeight_restriction_le (V : AdelicVectorBundle S E)
     (W : AdelicVectorBundle S F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    [hS : S.HasMeasurableBase]
     (f : E →ₗ[K] F) (hf : f ≠ 0) (U : Submodule K E) (T : Submodule K F)
     (g : U →ₗ[K] T) (hg : g ≠ 0) (hc : T.subtype.comp g = f.comp U.subtype) :
-    (V.restrictOfMeasurableBase U hS).mapHeight
-      (W.restrictOfMeasurableBase T hS) g ≤ V.mapHeight W f := by
+    (V.restrictOfMeasurableBase U).mapHeight
+      (W.restrictOfMeasurableBase T) g ≤ V.mapHeight W f := by
   apply V.mapHeight_le_of_operatorNorm_le W _ _ f g hf hg
   intro ω
   exact V.toNormFamily.operatorNorm_restriction_le W.toNormFamily f U T g hc ω
@@ -187,12 +188,12 @@ omit [S.IsProper] in
 ambient map height. -/
 theorem mapHeight_quotient_le (V : AdelicVectorBundle S E)
     (W : AdelicVectorBundle S F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    [hS : S.HasMeasurableBase]
     (f : E →ₗ[K] F) (hf : f ≠ 0) (U : Submodule K E) (T : Submodule K F)
     (g : (E ⧸ U) →ₗ[K] (F ⧸ T)) (hg : g ≠ 0)
     (hc : g.comp U.mkQ = T.mkQ.comp f) :
-    (V.quotientOfMeasurableBase U hS).mapHeight
-      (W.quotientOfMeasurableBase T hS) g ≤ V.mapHeight W f := by
+    (V.quotientOfMeasurableBase U).mapHeight
+      (W.quotientOfMeasurableBase T) g ≤ V.mapHeight W f := by
   apply V.mapHeight_le_of_operatorNorm_le W _ _ f g hf hg
   intro ω
   exact V.toNormFamily.operatorNorm_quotient_le W.toNormFamily f hf U T g hc ω
@@ -201,95 +202,95 @@ theorem mapHeight_quotient_le (V : AdelicVectorBundle S E)
 height. Each source subspace is compared with its actual range restriction. -/
 theorem maximalSlope_le_maximalSlope_add_mapHeight_of_injective
     (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (f : E →ₗ[K] F) (hf : Function.Injective f) :
-    V.maximalSlope hS hN ≤ W.maximalSlope hS hN + V.mapHeight W f := by
+    V.maximalSlope ≤ W.maximalSlope + V.mapHeight W f := by
   by_cases hz : f = 0
   · let : Subsingleton E := ⟨fun x y ↦ hf (by simp only [hz, LinearMap.zero_apply])⟩
-    rw [V.maximalSlope_eq_bot_of_finrank_eq_zero hS hN Module.finrank_zero_of_subsingleton]
+    rw [V.maximalSlope_eq_bot_of_finrank_eq_zero Module.finrank_zero_of_subsingleton]
     exact bot_le
-  · apply V.maximalSlope_le hS hN
+  · apply V.maximalSlope_le
     intro U hU
     let e := LinearEquiv.ofInjective (f.comp U.subtype) (hf.comp U.subtype_injective)
     let T := (f.comp U.subtype).range
-    let P := V.restrictOfMeasurableBase U hS
-    let Q := W.restrictOfMeasurableBase T hS
+    let P := V.restrictOfMeasurableBase U
+    let Q := W.restrictOfMeasurableBase T
     let : Nontrivial U := Module.nontrivial_of_finrank_pos hU
     have he : e.toLinearMap ≠ 0 := LinearMap.ne_zero_of_injective e.injective
     have hc : T.subtype.comp e.toLinearMap = f.comp U.subtype := by ext x; rfl
-    have hn := P.slope_le_slope_add_mapHeight Q hS hN e hU
-    have hh := V.mapHeight_restriction_le W hS f hz U T e.toLinearMap he hc
+    have hn := P.slope_le_slope_add_mapHeight Q e hU
+    have hh := V.mapHeight_restriction_le W f hz U T e.toLinearMap he hc
     have hT : 0 < Module.finrank K T := by rwa [← e.finrank_eq]
-    exact hn.trans (add_le_add (W.slope_restrict_le_maximalSlope T hT hS hN) hh)
+    exact hn.trans (add_le_add (W.slope_restrict_le_maximalSlope T hT) hh)
 
 /-- A nonzero surjection compares the source minimal slope with the actual
 target mean slope. Its canonical source quotient norm is constructed here. -/
 theorem minimalSlope_le_slope_add_mapHeight_of_surjective
     (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (f : E →ₗ[K] F) (hs : Function.Surjective f) (hr : 0 < Module.finrank K F) :
-    V.minimalSlope hS hN ≤ (W.slope hS hN : EReal) + V.mapHeight W f := by
+    V.minimalSlope ≤ (W.slope : EReal) + V.mapHeight W f := by
   let : Nontrivial F := Module.nontrivial_of_finrank_pos hr
   have hf : f ≠ 0 := by
     intro hz
     obtain ⟨y, hy⟩ := exists_ne (0 : F)
     obtain ⟨x, hx⟩ := hs y
     exact hy (by simpa only [hz, LinearMap.zero_apply] using hx.symm)
-  let hm := V.isMeasurable.pushforward_of_discrete_or_countable hS f hs
-  let P := V.pushforward f hs hm
-  have hn := P.slope_le_slope_add_mapHeight W hS hN (LinearEquiv.refl K F) hr
+  let hm := V.isMeasurable.pushforward_of_discrete_or_countable f hs
+  let P := V.pushforward f hs (hm := hm)
+  have hn := P.slope_le_slope_add_mapHeight W (LinearEquiv.refl K F) hr
   have hi : (LinearMap.id : F →ₗ[K] F) ≠ 0 := LinearMap.ne_zero_of_injective Function.injective_id
   have hh : P.mapHeight W LinearMap.id ≤ V.mapHeight W f := by
     apply V.mapHeight_le_of_operatorNorm_le W P W f LinearMap.id hf hi
     intro ω
     exact V.toNormFamily.operatorNorm_pushforward_id_le W.toNormFamily f hs hf ω
-  exact (V.minimalSlope_le_slope_pushforward f hs hm hr hS hN).trans
+  exact (V.minimalSlope_le_slope_pushforward f hs (hm := hm) hr).trans
     (hn.trans (add_le_add le_rfl hh))
 
 /-- Source Proposition4.3.31(3), using the nonzero actual range and the
 canonical source quotient. Infinite map heights are retained. -/
 theorem minimalSlope_le_maximalSlope_add_mapHeight_of_ne_zero
     (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (f : E →ₗ[K] F) (hf : f ≠ 0) :
-    V.minimalSlope hS hN ≤ W.maximalSlope hS hN + V.mapHeight W f := by
+    V.minimalSlope ≤ W.maximalSlope + V.mapHeight W f := by
   have hr : 0 < Module.finrank K f.range := Nat.pos_of_ne_zero (fun hz ↦
     hf (LinearMap.range_eq_bot.mp (Submodule.finrank_eq_zero.mp hz)))
-  let Q := W.restrictOfMeasurableBase f.range hS
+  let Q := W.restrictOfMeasurableBase f.range
   have hfr : f.rangeRestrict ≠ 0 := by
     intro hz
     have hc : f.range.subtype.comp f.rangeRestrict = f := by ext x; rfl
     rw [hz, LinearMap.comp_zero] at hc
     exact hf hc.symm
-  have hn := V.minimalSlope_le_slope_add_mapHeight_of_surjective Q hS hN
+  have hn := V.minimalSlope_le_slope_add_mapHeight_of_surjective Q
     f.rangeRestrict f.surjective_rangeRestrict hr
   have hh : V.mapHeight Q f.rangeRestrict ≤ V.mapHeight W f := by
     apply V.mapHeight_le_of_operatorNorm_le W V Q f f.rangeRestrict hf hfr
     intro ω
     exact V.toNormFamily.operatorNorm_rangeRestrict_le W.toNormFamily f ω
-  exact hn.trans (add_le_add (W.slope_restrict_le_maximalSlope f.range hr hS hN) hh)
+  exact hn.trans (add_le_add (W.slope_restrict_le_maximalSlope f.range hr) hh)
 
 /-- The finite-height part of source Proposition4.3.31(2). The explicit
 finite-height premise is used to translate the actual quotient-mean infimum;
 the infinite-height case additionally requires the slope-finiteness producer. -/
 theorem minimalSlope_le_minimalSlope_add_mapHeight_of_surjective_of_ne_top
     (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (f : E →ₗ[K] F) (hs : Function.Surjective f) (hf : f ≠ 0)
     (ht : V.mapHeight W f ≠ ⊤) :
-    V.minimalSlope hS hN ≤ W.minimalSlope hS hN + V.mapHeight W f := by
+    V.minimalSlope ≤ W.minimalSlope + V.mapHeight W f := by
   have he := EReal.coe_toReal ht (ne_of_gt (V.bot_lt_mapHeight W hf))
   rw [← he]
   apply (EReal.sub_le_iff_le_add
     (Or.inl (EReal.coe_ne_bot _)) (Or.inl (EReal.coe_ne_top _))).mp
-  rw [W.minimalSlope_eq_iInf_slope_quotient hS hN]
+  rw [W.minimalSlope_eq_iInf_slope_quotient]
   apply le_iInf
   intro U
-  let Q := W.quotientOfMeasurableBase U.val hS
+  let Q := W.quotientOfMeasurableBase U.val
   let g := U.val.mkQ.comp f
   have hgSurj : Function.Surjective g := U.val.mkQ_surjective.comp hs
   let : Nontrivial (F ⧸ U.val) := Module.nontrivial_of_finrank_pos U.property
@@ -298,7 +299,7 @@ theorem minimalSlope_le_minimalSlope_add_mapHeight_of_surjective_of_ne_top
     obtain ⟨y, hy⟩ := exists_ne (0 : F ⧸ U.val)
     obtain ⟨x, hx⟩ := hgSurj y
     exact hy (by simpa only [hz, LinearMap.zero_apply] using hx.symm)
-  have hn := V.minimalSlope_le_slope_add_mapHeight_of_surjective Q hS hN g hgSurj U.property
+  have hn := V.minimalSlope_le_slope_add_mapHeight_of_surjective Q g hgSurj U.property
   have hh : V.mapHeight Q g ≤ V.mapHeight W f := by
     apply V.mapHeight_le_of_operatorNorm_le W V Q f g hf hg
     intro ω

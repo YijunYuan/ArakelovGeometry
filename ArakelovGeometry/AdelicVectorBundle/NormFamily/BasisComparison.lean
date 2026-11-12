@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
+
 import ArakelovGeometry.AdelicCurve.Basic
 import Mathlib.Analysis.Normed.Group.Ultra
 import Mathlib.CategoryTheory.Category.Init
@@ -35,7 +36,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- For a family ultrametric at finite places, a common bound on the completed
 basis vectors bounds the norm by the source mixed coordinate norm. -/
-theorem norm_le_mul_of_basis_norm_le (hξ : ξ.IsUltrametric) (ω : S.Ω)
+theorem norm_le_mul_of_basis_norm_le [hξ : ξ.IsUltrametric] (ω : S.Ω)
     {C : ℝ} (hC : 0 ≤ C)
     (hb : ∀ i, ξ.norm ω ((b.baseChange (S.ϕ ω).Completion) i) ≤ C)
     (x : (S.ϕ ω).Completion ⊗[K] E) :
@@ -162,7 +163,7 @@ theorem IsDominated.localDist_ofBasisMixed_of_ultrametric (hd : ξ.IsDominated)
     (add_nonneg (add_nonneg (hA0 ω) (hB0 ω)) (hR0 ω))).mpr
   intro x
   constructor
-  · exact (norm_le_mul_of_basis_norm_le b ξ hu ω (Real.exp_pos _).le ha x).trans
+  · exact (norm_le_mul_of_basis_norm_le b ξ ω (Real.exp_pos _).le ha x).trans
       (mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr (by linarith [hB0 ω, hR0 ω]))
         ((ofBasisMixed S E b).norm_nonneg ω x))
   · have hb' : ∀ i, ξ.dual.norm ω
@@ -229,11 +230,11 @@ theorem isStronglyDominated_iff_localDist_ofBasisMixed_of_measure_lt_top
 /-- The base-field basis criterion under the source's usual Archimedean
 normalization, which supplies finite measure of the infinite locus. -/
 theorem isStronglyDominated_iff_localDist_ofBasisMixed
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     ξ.IsStronglyDominated ↔
       HasIntegrableBounds (ξ.localDist (ofBasisMixed S E b)) S.v :=
   isStronglyDominated_iff_localDist_ofBasisMixed_of_measure_lt_top b ξ
-    (S.v_Ωinf_lt_top_of_isRCLike hS)
+    (S.v_Ωinf_lt_top_of_isRCLike)
 
 /-- The mixed family is strongly dominated as soon as the infinite locus
 has finite measure; this also covers non-usual Archimedean norms. -/

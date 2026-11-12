@@ -5,12 +5,12 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.LinearAlgebra.Filtration.Optimization
-public import ArakelovGeometry.LinearAlgebra.Filtration.Lift
-public import ArakelovGeometry.LinearAlgebra.Filtration.Tensor
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Expectation
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Quotient
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Tensor
+public import ArakelovGeometry.LinearAlgebra.Filtration.Lift
+public import ArakelovGeometry.LinearAlgebra.Filtration.Optimization
+public import ArakelovGeometry.LinearAlgebra.Filtration.Tensor
 
 /-!
 # The actual quotient filtration as a finite determinant maximum
@@ -108,22 +108,22 @@ variable {K J Q : Type*} [Field K] [Fintype J]
 the determinant maximum of the original prescribed factor weights. -/
 theorem filtrationExpectation_pushforward_injectiveTensor_eq_sup'
     (ν : ∀ j, NormFamily (singleTrivialPlace K) (E j))
-    (hν : ∀ j, (ν j).IsUltrametric) (b : ∀ j, Basis (ι j) K (E j))
+    [hν : ∀ j, (ν j).IsUltrametric] (b : ∀ j, Basis (ι j) K (E j))
     (w : ∀ j, ι j → ℝ)
-    (hb : ∀ j t, (ν j).trivialFiltration (hν j) t = span K (b j '' {i | t ≤ w j i}))
+    (hb : ∀ j t, (ν j).trivialFiltration (hξ := (hν j)) t = span K (b j '' {i | t ≤ w j i}))
     (c : Basis (Fin (finrank K Q)) K Q) (q : (⨂[K] j, E j) →ₗ[K] Q)
     (hq : Function.Surjective q) :
     filtrationExpectation (((injectiveTensor ν).pushforward q hq).trivialFiltration
-      ((injectiveTensor_isUltrametric ν).pushforward q hq)) =
+      (hξ := ((injectiveTensor_isUltrametric ν).pushforward q hq))) =
       (quotientDeterminantSupport (Basis.piTensorProduct b) c q).sup'
         (quotientDeterminantSupport_nonempty (Basis.piTensorProduct b) c q hq)
         (fun σ ↦ ∑ k, ∑ j, w j (σ k j)) / finrank K Q := by
   have he : ((injectiveTensor ν).pushforward q hq).trivialFiltration
-      ((injectiveTensor_isUltrametric ν).pushforward q hq) = fun t ↦
+      (hξ := ((injectiveTensor_isUltrametric ν).pushforward q hq)) = fun t ↦
       (span K (Basis.piTensorProduct b '' {p | t ≤ ∑ j, w j (p j)})).map q := by
     funext t
-    rw [trivialFiltration_pushforward _ (injectiveTensor_isUltrametric ν),
-      trivialFiltration_injectiveTensor_eq_span_of_weights ν b hν w hb]
+    rw [trivialFiltration_pushforward _ (hξ := (injectiveTensor_isUltrametric ν)),
+      trivialFiltration_injectiveTensor_eq_span_of_weights ν b w hb]
   rw [he]
   exact filtrationExpectation_image_eq_sup' (Basis.piTensorProduct b)
     (fun p ↦ ∑ j, w j (p j)) c q hq
@@ -141,19 +141,19 @@ variable {K E Q ι : Type*} [Field K]
 /-- The determinant maximum computes the literal filtration expectation of
 the actual quotient norm, using any basis adapted to the source norm. -/
 theorem filtrationExpectation_pushforward_eq_sup'
-    (ξ : NormFamily (singleTrivialPlace K) E) (hξ : ξ.IsUltrametric)
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric]
     (b : Basis ι K E) (w : ι → ℝ)
-    (hb : ∀ t, ξ.trivialFiltration hξ t = span K (b '' {i | t ≤ w i}))
+    (hb : ∀ t, ξ.trivialFiltration t = span K (b '' {i | t ≤ w i}))
     (c : Basis (Fin (finrank K Q)) K Q) (q : E →ₗ[K] Q)
     (hq : Function.Surjective q) :
-    filtrationExpectation ((ξ.pushforward q hq).trivialFiltration (hξ.pushforward q hq)) =
+    filtrationExpectation ((ξ.pushforward q hq).trivialFiltration (hξ := (hξ.pushforward q hq))) =
       (quotientDeterminantSupport b c q).sup'
         (quotientDeterminantSupport_nonempty b c q hq) (fun σ ↦ ∑ k, w (σ k)) /
           finrank K Q := by
-  have he : (ξ.pushforward q hq).trivialFiltration (hξ.pushforward q hq) =
+  have he : (ξ.pushforward q hq).trivialFiltration (hξ := (hξ.pushforward q hq)) =
       fun t ↦ (span K (b '' {i | t ≤ w i})).map q := by
     funext t
-    rw [trivialFiltration_pushforward ξ hξ q hq, hb]
+    rw [trivialFiltration_pushforward ξ q hq, hb]
   rw [he]
   exact filtrationExpectation_image_eq_sup' b w c q hq
 
@@ -286,24 +286,25 @@ variable {K Q ι κ : Type*} [Field K] {E V : Type u}
 maximum of the prescribed original factor weights. -/
 theorem filtrationExpectation_pushforward_injectiveTensorPair_eq_sup'
     (ξ : NormFamily (singleTrivialPlace K) E) (η : NormFamily (singleTrivialPlace K) V)
-    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric)
+    [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric]
     (b : Basis ι K E) (c : Basis κ K V) (w : ι → ℝ) (z : κ → ℝ)
-    (hb : ∀ t, ξ.trivialFiltration hξ t = span K (b '' {i | t ≤ w i}))
-    (hc : ∀ t, η.trivialFiltration hη t = span K (c '' {i | t ≤ z i}))
+    (hb : ∀ t, ξ.trivialFiltration t = span K (b '' {i | t ≤ w i}))
+    (hc : ∀ t, η.trivialFiltration t = span K (c '' {i | t ≤ z i}))
     (d : Basis (Fin (finrank K Q)) K Q) (q : E ⊗[K] V →ₗ[K] Q)
     (hq : Function.Surjective q) :
     filtrationExpectation (((ξ.injectiveTensorPair η).pushforward q hq).trivialFiltration
-      ((ξ.injectiveTensorPair_isUltrametric η).pushforward q hq)) =
+      (hξ := ((ξ.injectiveTensorPair_isUltrametric η).pushforward q hq))) =
       (quotientDeterminantSupport (b.tensorProduct c) d q).sup'
         (quotientDeterminantSupport_nonempty (b.tensorProduct c) d q hq)
         (fun σ ↦ ∑ k, (w (σ k).1 + z (σ k).2)) / finrank K Q := by
   have hspan (t : ℝ) :
-      (ξ.injectiveTensorPair η).trivialFiltration (ξ.injectiveTensorPair_isUltrametric η) t =
+      (ξ.injectiveTensorPair η).trivialFiltration
+          (hξ := (ξ.injectiveTensorPair_isUltrametric η)) t =
         span K (b.tensorProduct c '' {ij | t ≤ w ij.1 + z ij.2}) := by
-    rw [trivialFiltration_injectiveTensorPair ξ η hξ hη]
+    rw [trivialFiltration_injectiveTensorPair ξ η]
     exact tensorFiltration_eq_span_tensorProduct b c w z hb hc t
   exact filtrationExpectation_pushforward_eq_sup' (ξ.injectiveTensorPair η)
-    (ξ.injectiveTensorPair_isUltrametric η) (b.tensorProduct c)
+    (hξ := (ξ.injectiveTensorPair_isUltrametric η)) (b.tensorProduct c)
     (fun ij ↦ w ij.1 + z ij.2) hspan d q hq
 
 end ArakelovGeometry.NormFamily

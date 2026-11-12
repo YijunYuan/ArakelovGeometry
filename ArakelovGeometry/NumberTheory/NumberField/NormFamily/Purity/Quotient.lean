@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Purity.Basic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 
 /-! # Actual pure finite-place quotient norms
@@ -104,6 +105,7 @@ theorem IsPureAtFinitePlaces.pushforward
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
     (hξ : ξ.IsPureAtFinitePlaces) (π : E →ₗ[K] G) (hπ : Function.Surjective π) :
     (ξ.pushforward π hπ).IsPureAtFinitePlaces := by
+  constructor
   intro ω hω z hz
   obtain ⟨x, hx, hn⟩ := hξ.exists_pushforward_lift_norm_eq π hπ ω hω z
   have hx0 : x ≠ 0 := by
@@ -137,7 +139,18 @@ theorem IsPureAtFinitePlaces.quotient_globalImpurity_eq_zero
 theorem IsPureAtFinitePlaces.quotient_latticeGaugeFamily_eq
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
     (hξ : ξ.IsPureAtFinitePlaces) (hU : ξ.IsUltrametric) (F : Submodule K E) :
-    (ξ.quotient F).latticeGaugeFamily (hU.quotient F) = ξ.quotient F :=
+    (ξ.quotient F).latticeGaugeFamily (hξ := (hU.quotient F)) = ξ.quotient F :=
   (hξ.quotient F).latticeGaugeFamily_eq (hU.quotient F)
+
+instance instIsPureAtFinitePlacesPushforward
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsPureAtFinitePlaces]
+    (π : E →ₗ[K] G) (hπ : Function.Surjective π) :
+    (ξ.pushforward π hπ).IsPureAtFinitePlaces :=
+  hξ.pushforward π hπ
+
+instance instIsPureAtFinitePlacesQuotient
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsPureAtFinitePlaces]
+    (P : Submodule K E) : (ξ.quotient P).IsPureAtFinitePlaces :=
+  hξ.quotient P
 
 end ArakelovGeometry.NormFamily

@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Algebraic.ClosureApproximation
+
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.AlgebraicClosure.HNInvariants
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.AlgebraicClosure.MaximalSlope
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.AlgebraicClosure.ScalarExtensionDegree
@@ -42,37 +43,37 @@ local instance hermitianOrdinaryAbsoluteProper : (S.algebraicExtension L).IsProp
 /-- The actual ordinary native restriction to an original extended subspace
 preserves genuine degree. This does not require a perfect original field. -/
 theorem degree_restrict_scalarExtension_of_isHermitian_of_isAlgClosed
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) (A : Submodule K E) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] (A : Submodule K E) :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-    let P := V.scalarExtension (L := L) hcount hN
-    (P.restrictOfMeasurableBase (A.baseChange L) hLS).degree hLS hLN =
-      (V.restrictOfMeasurableBase A (Or.inr hcount)).degree (Or.inr hcount) hN := by
+    let P := V.scalarExtension (L := L)
+    (P.restrictOfMeasurableBase (A.baseChange L) (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
+      (V.restrictOfMeasurableBase A).degree := by
   intro hLN hLS P
   apply le_antisymm
   · exact (V.degree_restrict_scalarExtension_le_hermitianScalarExtension_of_isAlgClosed
-      hcount hN hH (A.baseChange L)).trans_eq
-        (V.degree_restrict_hermitianScalarExtension_of_isAlgClosed hcount hN hH A)
-  · exact V.degree_le_restrict_scalarExtension hcount hN A
+       (A.baseChange L)).trans_eq
+        (V.degree_restrict_hermitianScalarExtension_of_isAlgClosed A)
+  · exact V.degree_le_restrict_scalarExtension A
 
 /-- Actual ordinary native original subspaces preserve real mean in every
 rank by genuine degree equality and the canonical tensor subspace rank. -/
 theorem slope_restrict_scalarExtension_of_isHermitian_of_isAlgClosed
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) (A : Submodule K E) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] (A : Submodule K E) :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-    let P := V.scalarExtension (L := L) hcount hN
-    (P.restrictOfMeasurableBase (A.baseChange L) hLS).slope hLS hLN =
-      (V.restrictOfMeasurableBase A (Or.inr hcount)).slope (Or.inr hcount) hN := by
+    let P := V.scalarExtension (L := L)
+    (P.restrictOfMeasurableBase (A.baseChange L) (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
+      (V.restrictOfMeasurableBase A).slope := by
   intro hLN hLS P
   have hr : Module.finrank L (A.baseChange L) = Module.finrank K A :=
     (Submodule.toBaseChange.toLinearEquiv L A).finrank_eq.symm.trans Module.finrank_baseChange
   dsimp only [slope]
-  rw [V.degree_restrict_scalarExtension_of_isHermitian_of_isAlgClosed hcount hN hH A, hr]
+  rw [V.degree_restrict_scalarExtension_of_isHermitian_of_isAlgClosed A, hr]
 
 section PerfectBase
 
@@ -81,56 +82,56 @@ variable [PerfectField K]
 /-- The actual ordinary extension to any algebraic closed field preserves
 canonical positive degree over a perfect common-density original base. -/
 theorem positiveDegree_scalarExtension_of_isHermitian_of_isAlgClosed
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-    let P := V.scalarExtension (L := L) hcount hN
-    P.positiveDegree hLS hLN = V.positiveDegree (Or.inr hcount) hN := by
+    let P := V.scalarExtension (L := L)
+    P.positiveDegree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) = V.positiveDegree := by
   intro hLN hLS P
   exact le_antisymm
     ((V.positiveDegree_scalarExtension_le_hermitianScalarExtension_of_isAlgClosed
-      hcount hN hH).trans_eq
-        (V.positiveDegree_hermitianScalarExtension_of_isAlgClosed hcount hN hH))
-    (V.positiveDegree_le_scalarExtension_of_isAlgClosed hcount hN)
+      ).trans_eq
+        (V.positiveDegree_hermitianScalarExtension_of_isAlgClosed))
+    (V.positiveDegree_le_scalarExtension_of_isAlgClosed)
 
 /-- The actual ordinary closed maximal slope is the original maximum over
 a perfect common-density base, including the empty rank-zero supremum. -/
 theorem maximalSlope_scalarExtension_of_isHermitian_of_isAlgClosed
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-    let P := V.scalarExtension (L := L) hcount hN
-    P.maximalSlope hLS hLN = V.maximalSlope (Or.inr hcount) hN := by
+    let P := V.scalarExtension (L := L)
+    P.maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) = V.maximalSlope := by
   intro hLN hLS P
   exact le_antisymm
     ((V.maximalSlope_scalarExtension_le_hermitianScalarExtension_of_isAlgClosed
-      hcount hN hH).trans_eq
-        (V.maximalSlope_hermitianScalarExtension_of_isAlgClosed hcount hN hH))
-    (V.maximalSlope_le_scalarExtension_of_isAlgClosed hcount hN)
+      ).trans_eq
+        (V.maximalSlope_hermitianScalarExtension_of_isAlgClosed))
+    (V.maximalSlope_le_scalarExtension_of_isAlgClosed)
 
 /-- The canonical actual ordinary absolute positive degree equals original
 positive degree for Hermitian bundles on a perfect common-density base. -/
 theorem absolutePositiveDegree_eq_of_isHermitian
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) :
-    V.absolutePositiveDegree hcount hN = V.positiveDegree (Or.inr hcount) hN :=
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] :
+    V.absolutePositiveDegree = V.positiveDegree :=
   V.positiveDegree_scalarExtension_of_isHermitian_of_isAlgClosed
-    (L := AlgebraicClosure K) hcount hN hH
+    (L := AlgebraicClosure K)
 
 /-- The canonical actual ordinary absolute maximum equals the genuine original
 maximum for Hermitian bundles on a perfect common-density base, in all ranks. -/
 theorem absoluteMaximalSlope_eq_of_isHermitian
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) :
-    V.absoluteMaximalSlope hcount hN = V.maximalSlope (Or.inr hcount) hN :=
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] :
+    V.absoluteMaximalSlope = V.maximalSlope :=
   V.maximalSlope_scalarExtension_of_isHermitian_of_isAlgClosed
-    (L := AlgebraicClosure K) hcount hN hH
+    (L := AlgebraicClosure K)
 
 end PerfectBase
 

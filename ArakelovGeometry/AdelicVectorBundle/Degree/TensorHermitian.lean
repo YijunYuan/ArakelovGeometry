@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Determinant.DualNorm
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Tensor
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Comparison
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Duality
@@ -173,29 +174,29 @@ namespace NormFamily
 orthogonal norm at every place. -/
 theorem orthogonalTensorPair_dual_norm_tmul_le
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] (ω : S.Ω)
     (α : (S.ϕ ω).Completion ⊗[K] Module.Dual K E)
     (β : (S.ϕ ω).Completion ⊗[K] Module.Dual K F) :
-    (ξ.orthogonalTensorPair η hN hξ hη).dual.norm ω
+    (ξ ⊗ʰ η).dual.norm ω
       ((TensorProduct.dualDistrib K E F).baseChange (S.ϕ ω).Completion
         ((TensorProduct.AlgebraTensorModule.distribBaseChange K (S.ϕ ω).Completion
           (Module.Dual K E) (Module.Dual K F)).symm
             (α ⊗ₜ[(S.ϕ ω).Completion] β))) ≤
       ξ.dual.norm ω α * η.dual.norm ω β :=
   ((ξ.injectiveTensorPair η).dual_norm_antitone
-    (ξ.orthogonalTensorPair η hN hξ hη) ω
-    (fun z ↦ (ξ.orthogonalTensorPair_norm_bounds η hN hξ hη ω z).1) _).trans
+    (ξ ⊗ʰ η) ω
+    (fun z ↦ (ξ.orthogonalTensorPair_norm_bounds η ω z).1) _).trans
       (ξ.injectiveTensorPair_dual_norm_tmul_le η ω α β)
 
 /-- The actual tensor-dual map contracts every completed vector of the
 projective product of the actual factor dual norms. -/
 theorem orthogonalTensorPair_dual_norm_le_projective
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K] (Module.Dual K E ⊗[K] Module.Dual K F)) :
-    (ξ.orthogonalTensorPair η hN hξ hη).dual.norm ω
+    (ξ ⊗ʰ η).dual.norm ω
       ((TensorProduct.dualDistrib K E F).baseChange (S.ϕ ω).Completion z) ≤
         (ξ.dual.projectiveTensorPair η.dual).norm ω z := by
   let L := (S.ϕ ω).Completion
@@ -204,7 +205,7 @@ theorem orthogonalTensorPair_dual_norm_le_projective
     fun i ↦ (tensorPairFactors ξ.dual η.dual i).fibreNormedAddCommGroup ω
   let : ∀ i, NormedSpace L (X i) :=
     fun i ↦ (tensorPairFactors ξ.dual η.dual i).fibreNormedSpace ω
-  let σ := (ξ.orthogonalTensorPair η hN hξ hη).dual
+  let σ := (ξ ⊗ʰ η).dual
   let := σ.fibreNormedAddCommGroup ω
   let := σ.fibreNormedSpace ω
   let A := TensorProduct.AlgebraTensorModule.distribBaseChange K L
@@ -230,7 +231,7 @@ theorem orthogonalTensorPair_dual_norm_le_projective
       change (∏ i, (tensorPairFactors ξ.dual η.dual i).norm ω (x i)) = _
       simp only [Fintype.prod_sum_type, Fintype.prod_unique, tensorPairFactors]
     rw [one_mul, hprod]
-    exact ξ.orthogonalTensorPair_dual_norm_tmul_le η hN hξ hη ω
+    exact ξ.orthogonalTensorPair_dual_norm_tmul_le η ω
       (x (.inl ())) (x (.inr ()))
   have h := norm_linearMap_le_projective_of_tprod_le f zero_le_one hf v
   change σ.norm ω (D (A.symm (P v))) ≤ 1 * PiTensorProduct.projectiveSeminorm v at h
@@ -241,11 +242,11 @@ theorem orthogonalTensorPair_dual_norm_le_projective
 bound for the canonical ordered dual wedge, in every rank. -/
 theorem orthogonalTensorPair_dual_determinant_norm_tuple_le
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] (ω : S.Ω)
     (f : Fin (Module.finrank K E) → (S.ϕ ω).Completion ⊗[K] Module.Dual K E)
     (g : Fin (Module.finrank K F) → (S.ϕ ω).Completion ⊗[K] Module.Dual K F) :
-    (ξ.orthogonalTensorPair η hN hξ hη).dual.determinant.norm ω
+    (ξ ⊗ʰ η).dual.determinant.norm ω
       ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion (Module.Dual K (E ⊗[K] F)) _).symm
         (exteriorPower.ιMulti (S.ϕ ω).Completion _
           (completedTensorDualTuple K (S.ϕ ω).Completion E F f g))) ≤
@@ -253,16 +254,16 @@ theorem orthogonalTensorPair_dual_determinant_norm_tuple_le
         (∏ j, η.dual.norm ω (g j)) ^ Module.finrank K E := by
   let e := finProdFinEquiv.trans (finCongr (finrank_mul_eq_tensor K E F))
   let d := finCongr (Subspace.dual_finrank_eq (K := K) (V := E ⊗[K] F))
-  apply ((ξ.orthogonalTensorPair η hN hξ hη).dual.determinant_norm_ιMulti_le ω
+  apply ((ξ ⊗ʰ η).dual.determinant_norm_ιMulti_le ω
     (completedTensorDualTuple K (S.ϕ ω).Completion E F f g)).trans
   calc
     _ ≤ ∏ i : Fin (Module.finrank K (Module.Dual K (E ⊗[K] F))),
         ξ.dual.norm ω (f (e.symm (d i)).1) * η.dual.norm ω (g (e.symm (d i)).2) := by
       apply Finset.prod_le_prod₀
       · intro i hi
-        exact (ξ.orthogonalTensorPair η hN hξ hη).dual.norm_nonneg ω _
+        exact (ξ ⊗ʰ η).dual.norm_nonneg ω _
       · intro i hi
-        exact ξ.orthogonalTensorPair_dual_norm_tmul_le η hN hξ hη ω _ _
+        exact ξ.orthogonalTensorPair_dual_norm_tmul_le η ω _ _
     _ = ∏ i : Fin (Module.finrank K (E ⊗[K] F)),
         ξ.dual.norm ω (f (e.symm i).1) * η.dual.norm ω (g (e.symm i).2) :=
       d.prod_comp (fun i ↦ ξ.dual.norm ω (f (e.symm i).1) * η.dual.norm ω (g (e.symm i).2))
@@ -276,11 +277,11 @@ theorem orthogonalTensorPair_dual_determinant_norm_tuple_le
 /-- Actual completed orthogonal determinant upper bound in every rank. -/
 theorem orthogonalTensorPair_determinant_norm_le
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] (ω : S.Ω)
     (z : ⋀[(S.ϕ ω).Completion]^(Module.finrank K E) ((S.ϕ ω).Completion ⊗[K] E))
     (t : ⋀[(S.ϕ ω).Completion]^(Module.finrank K F) ((S.ϕ ω).Completion ⊗[K] F)) :
-    (ξ.orthogonalTensorPair η hN hξ hη).determinant.norm ω
+    (ξ ⊗ʰ η).determinant.norm ω
       ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion (E ⊗[K] F)
         (Module.finrank K (E ⊗[K] F))).symm
         (determinantTensorEquivCompleted K (S.ϕ ω).Completion E F
@@ -293,7 +294,7 @@ theorem orthogonalTensorPair_determinant_norm_le
         ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion F (Module.finrank K F)).symm t) ^
           Module.finrank K E :=
   (determinant_norm_mono _ _ ω
-    (fun z ↦ (ξ.orthogonalTensorPair_norm_bounds η hN hξ hη ω z).2) _).trans
+    (fun z ↦ (ξ.orthogonalTensorPair_norm_bounds η ω z).2) _).trans
       (ξ.projectiveTensorPair_determinant_norm_le η ω z t)
 
 /-- Products of the actual factor determinant pairings are bounded by
@@ -301,8 +302,8 @@ the actual tensor determinant and the actual factor dual determinants.
 Scalar-weighted dual wedge approximation retains the scalar lines in rank zero. -/
 theorem orthogonalTensorPair_determinant_pairing_bound
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] (ω : S.Ω)
     (α : (S.ϕ ω).Completion ⊗[K]
       (⋀[K]^(Module.finrank K (Module.Dual K E)) (Module.Dual K E)))
     (β : (S.ϕ ω).Completion ⊗[K]
@@ -313,7 +314,7 @@ theorem orthogonalTensorPair_determinant_pairing_bound
       ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion E _).symm z)‖ ^ Module.finrank K F *
     ‖completedDeterminantPairing K (S.ϕ ω).Completion F β
       ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion F _).symm t)‖ ^ Module.finrank K E ≤
-    (ξ.orthogonalTensorPair η hN hξ hη).determinant.norm ω
+    (ξ ⊗ʰ η).determinant.norm ω
       ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion (E ⊗[K] F) _).symm
         (determinantTensorEquivCompleted K (S.ϕ ω).Completion E F
           ((⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K F)), z) ⊗ₜ[(S.ϕ ω).Completion]
@@ -321,7 +322,7 @@ theorem orthogonalTensorPair_determinant_pairing_bound
       (ξ.dual.determinant.norm ω α ^ Module.finrank K F *
        η.dual.determinant.norm ω β ^ Module.finrank K E) := by
   let L := (S.ϕ ω).Completion
-  let σ := ξ.orthogonalTensorPair η hN hξ hη
+  let σ := ξ.orthogonalTensorPair η
   let w := (exteriorBaseChangeEquiv K L (E ⊗[K] F) _).symm
     (determinantTensorEquivCompleted K L E F
       ((⨂ₜ[L] (_ : Fin (Module.finrank K F)), z) ⊗ₜ[L]
@@ -365,7 +366,7 @@ theorem orthogonalTensorPair_determinant_pairing_bound
         (‖a‖ * ∏ i, ξ.dual.norm ω (f₀ i)) ^ Module.finrank K F *
         (‖b‖ * ∏ i, η.dual.norm ω (g₀ i)) ^ Module.finrank K E := by
       rw [σ.dual.determinant.norm_smul]
-      have h := ξ.orthogonalTensorPair_dual_determinant_norm_tuple_le η hN hξ hη ω f g
+      have h := ξ.orthogonalTensorPair_dual_determinant_norm_tuple_le η ω f g
       change σ.dual.determinant.norm ω u ≤ _ at h
       rw [hf, hg] at h
       calc
@@ -377,7 +378,7 @@ theorem orthogonalTensorPair_determinant_pairing_bound
       P = ‖completedDeterminantPairing K L (E ⊗[K] F) (scl • u) w‖ := by
         rw [hp, norm_mul, norm_pow, norm_pow]
       _ ≤ σ.determinant.norm ω w * σ.dual.determinant.norm ω (scl • u) :=
-        (ξ.orthogonalTensorPair_isHermitian η hN hξ hη).norm_completedDeterminantPairing_le
+        (ξ.orthogonalTensorPair_isHermitian η).norm_completedDeterminantPairing_le
           σ ω (scl • u) w
       _ ≤ σ.determinant.norm ω w *
           ((C + ε) ^ Module.finrank K F * (D + ε) ^ Module.finrank K E) := by
@@ -408,11 +409,11 @@ theorem orthogonalTensorPair_determinant_pairing_bound
 Hermitian determinant norm product in every rank and on all determinant vectors. -/
 theorem orthogonalTensorPair_determinant_norm_eq
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] (ω : S.Ω)
     (z : ⋀[(S.ϕ ω).Completion]^(Module.finrank K E) ((S.ϕ ω).Completion ⊗[K] E))
     (t : ⋀[(S.ϕ ω).Completion]^(Module.finrank K F) ((S.ϕ ω).Completion ⊗[K] F)) :
-    (ξ.orthogonalTensorPair η hN hξ hη).determinant.norm ω
+    (ξ ⊗ʰ η).determinant.norm ω
       ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion (E ⊗[K] F)
         (Module.finrank K (E ⊗[K] F))).symm
         (determinantTensorEquivCompleted K (S.ϕ ω).Completion E F
@@ -424,7 +425,7 @@ theorem orthogonalTensorPair_determinant_norm_eq
       η.determinant.norm ω
         ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion F (Module.finrank K F)).symm t) ^
           Module.finrank K E := by
-  apply le_antisymm (ξ.orthogonalTensorPair_determinant_norm_le η hN hξ hη ω z t)
+  apply le_antisymm (ξ.orthogonalTensorPair_determinant_norm_le η ω z t)
   let bE := Module.finBasisOfFinrankEq K
     (⋀[K]^(Module.finrank K (Module.Dual K E)) (Module.Dual K E))
     (determinant_finrank (K := K) (E := Module.Dual K E))
@@ -439,8 +440,8 @@ theorem orthogonalTensorPair_determinant_norm_eq
   let D := η.dual.determinant.norm ω β
   have hC : 0 < C := ξ.dual.determinant.norm_rational_pos ω (bE.ne_zero 0)
   have hD : 0 < D := η.dual.determinant.norm_rational_pos ω (bF.ne_zero 0)
-  have h := ξ.orthogonalTensorPair_determinant_pairing_bound η hN hξ hη ω α β z t
-  let R := (ξ.orthogonalTensorPair η hN hξ hη).determinant.norm ω
+  have h := ξ.orthogonalTensorPair_determinant_pairing_bound η ω α β z t
+  let R := (ξ ⊗ʰ η).determinant.norm ω
     ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion (E ⊗[K] F) _).symm
       (determinantTensorEquivCompleted K (S.ϕ ω).Completion E F
         ((⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K F)), z) ⊗ₜ[(S.ϕ ω).Completion]
@@ -465,16 +466,16 @@ theorem orthogonalTensorPair_determinant_norm_eq
 actual determinant norm powers for Hermitian factors. -/
 theorem orthogonalTensorPair_determinant_norm_rational_eq
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] (ω : S.Ω)
     (s : ⋀[K]^(Module.finrank K E) E) (t : ⋀[K]^(Module.finrank K F) F) :
-    (ξ.orthogonalTensorPair η hN hξ hη).determinant.norm ω
+    (ξ ⊗ʰ η).determinant.norm ω
       ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] determinantTensorEquiv K E F
         ((⨂ₜ[K] (_ : Fin (Module.finrank K F)), s) ⊗ₜ[K]
           (⨂ₜ[K] (_ : Fin (Module.finrank K E)), t))) =
       ξ.determinant.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] s) ^ Module.finrank K F *
         η.determinant.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] t) ^ Module.finrank K E := by
-  have h := ξ.orthogonalTensorPair_determinant_norm_eq η hN hξ hη ω
+  have h := ξ.orthogonalTensorPair_determinant_norm_eq η ω
     (exteriorBaseChangeEquiv K (S.ϕ ω).Completion E (Module.finrank K E)
       ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] s))
     (exteriorBaseChangeEquiv K (S.ϕ ω).Completion F (Module.finrank K F)
@@ -486,11 +487,11 @@ theorem orthogonalTensorPair_determinant_norm_rational_eq
 factor determinant log norms. All ranks, including zero, are retained. -/
 theorem orthogonalTensorPair_determinant_logNorm_eq
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] (ω : S.Ω)
     (s : {x : ⋀[K]^(Module.finrank K E) E // x ≠ 0})
     (t : {x : ⋀[K]^(Module.finrank K F) F // x ≠ 0}) :
-    (ξ.orthogonalTensorPair η hN hξ hη).determinant.logNorm
+    (ξ ⊗ʰ η).determinant.logNorm
       (determinantTensorEquiv K E F
         ((⨂ₜ[K] (_ : Fin (Module.finrank K F)), s.val) ⊗ₜ[K]
           (⨂ₜ[K] (_ : Fin (Module.finrank K E)), t.val))) ω =
@@ -499,7 +500,7 @@ theorem orthogonalTensorPair_determinant_logNorm_eq
   have hs := ξ.determinant.norm_rational_pos ω s.property
   have ht := η.determinant.norm_rational_pos ω t.property
   have h := congrArg Real.log
-    (ξ.orthogonalTensorPair_determinant_norm_rational_eq η hN hξ hη ω s.val t.val)
+    (ξ.orthogonalTensorPair_determinant_norm_rational_eq η ω s.val t.val)
   simpa only [logNorm, Real.log_mul (pow_ne_zero _ hs.ne') (pow_ne_zero _ ht.ne'),
     Real.log_pow] using h
 
@@ -511,17 +512,17 @@ namespace AdelicVectorBundle
 rank-weighted degree sum. All analytic fields are supplied by its constructor. -/
 theorem degree_orthogonalTensorPair [S.IsProper]
     (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.IsHermitian hN) (hW : W.IsHermitian hN) :
-    (V.orthogonalTensorPair W hS hN hV hW).degree hS hN =
-      (Module.finrank K F : ℝ) * V.degree hS hN +
-        (Module.finrank K E : ℝ) * W.degree hS hN := by
-  let DV := V.determinantOfMeasurableBase hS hN
-  let DW := W.determinantOfMeasurableBase hS hN
-  let T := V.orthogonalTensorPair W hS hN hV hW
-  let s := DV.lineGenerator (V.determinantOfMeasurableBase_isLine hS hN)
-  let t := DW.lineGenerator (W.determinantOfMeasurableBase_isLine hS hN)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.IsHermitian] [hW : W.IsHermitian] :
+    (V ⊗ʰ W).degree =
+      (Module.finrank K F : ℝ) * V.degree +
+        (Module.finrank K E : ℝ) * W.degree := by
+  let DV := V.determinantOfMeasurableBase
+  let DW := W.determinantOfMeasurableBase
+  let T := V.orthogonalTensorPair W
+  let s := DV.lineGenerator (hV := (V.determinantOfMeasurableBase_isLine))
+  let t := DW.lineGenerator (hV := (W.determinantOfMeasurableBase_isLine))
   let q := determinantTensorEquiv K E F
     ((⨂ₜ[K] (_ : Fin (Module.finrank K F)), s.val) ⊗ₜ[K]
       (⨂ₜ[K] (_ : Fin (Module.finrank K E)), t.val))
@@ -531,17 +532,17 @@ theorem degree_orthogonalTensorPair [S.IsProper]
   have htI : Integrable (W.toNormFamily.determinant.logNorm t.val) S.v :=
     DW.integrable_logNorm t.val
   calc
-    T.degree hS hN = -(∫ ω, T.toNormFamily.determinant.logNorm q ω ∂S.v) :=
-      T.degree_eq_neg_integral hS hN ⟨q, hq⟩
+    T.degree = -(∫ ω, T.toNormFamily.determinant.logNorm q ω ∂S.v) :=
+      T.degree_eq_neg_integral ⟨q, hq⟩
     _ = -(∫ ω, (Module.finrank K F : ℝ) * V.toNormFamily.determinant.logNorm s.val ω +
         (Module.finrank K E : ℝ) * W.toNormFamily.determinant.logNorm t.val ω ∂S.v) := by
       congr 1
       apply integral_congr_ae
       exact Filter.Eventually.of_forall fun ω ↦
         V.toNormFamily.orthogonalTensorPair_determinant_logNorm_eq W.toNormFamily
-          hN hV hW ω s t
+           ω s t
     _ = _ := by
-      rw [V.degree_eq_neg_integral hS hN s, W.degree_eq_neg_integral hS hN t,
+      rw [V.degree_eq_neg_integral s, W.degree_eq_neg_integral t,
         integral_add (hsI.const_mul _) (htI.const_mul _), integral_const_mul,
         integral_const_mul]
       ring

@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.UnitBall.Global
 public import ArakelovGeometry.NumberTheory.NumberField.Local.ValuationModule.Rounded
+
 import ArakelovGeometry.AdelicCurve.Equiv
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.ProductFormulaComparison
@@ -274,8 +275,8 @@ theorem smul_mem_globalUnitBall_iff_mem_valuationModule
 
 /-- The actual integral scalar coefficients of a vector in the literal global ball. -/
 def scalarGlobalUnitBallModule (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsUltrametric) (x : E) : Submodule (𝓞 K) K :=
-  (ξ.globalUnitBallModule hξ).comap
+    [hξ : ξ.IsUltrametric] (x : E) : Submodule (𝓞 K) K :=
+  (ξ.globalUnitBallModule).comap
     ({
       toFun := fun a => a • x
       map_add' := fun a b => add_smul a b x
@@ -286,8 +287,8 @@ def scalarGlobalUnitBallModule (ξ : NormFamily (normalizedNumberFieldAdelicStru
 
 /-- The actual coefficient comap is exactly the actual rounded valuation module. -/
 theorem scalarGlobalUnitBallModule_eq_valuationModule
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
-    {x : E} (hx : x ≠ 0) : scalarGlobalUnitBallModule ξ hξ x =
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    {x : E} (hx : x ≠ 0) : scalarGlobalUnitBallModule ξ x =
       FiniteValuation.valuationModule (K := K)
         (ξ.roundedPrimeBound x normalizedPrimeParameter normalizedPlaceLogScale) := by
   ext a
@@ -296,38 +297,38 @@ theorem scalarGlobalUnitBallModule_eq_valuationModule
 /-- The actual scalar coefficient module is finitely generated under the explicit
 positive weighted arithmetic gap, by the produced rounded valuation-module theorem. -/
 theorem fg_scalarGlobalUnitBallModule_of_weighted_gap
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
-    (hdom : ξ.IsLowerDominated)
-    (hμ : ∀ ω, 0 < (normalizedNumberFieldAdelicStructure K).v {ω})
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    [hdom : ξ.IsLowerDominated]
+    [hμ : (normalizedNumberFieldAdelicStructure K).HasPositiveAtoms]
     {x : E} (hx : x ≠ 0) {ε : ℝ} (hε : 0 < ε)
     (hgap : ∀ p : HeightOneSpectrum (𝓞 K), ε ≤
       (normalizedNumberFieldAdelicStructure K).v.real {normalizedPrimeParameter p} *
         normalizedPlaceLogScale (normalizedPrimeParameter p)) :
-    (scalarGlobalUnitBallModule ξ hξ x).FG := by
-  rw [scalarGlobalUnitBallModule_eq_valuationModule ξ hξ hx]
-  exact hdom.fg_rounded_valuationModule hμ hx normalizedPrimeParameter
+    (scalarGlobalUnitBallModule ξ x).FG := by
+  rw [scalarGlobalUnitBallModule_eq_valuationModule ξ hx]
+  exact hdom.fg_rounded_valuationModule hx normalizedPrimeParameter
     normalizedPrimeParameter_injective normalizedPlaceLogScale
     (fun p => normalizedPlaceLogScale_pos _) hε hgap
 
 /-- For the actual normalized number-field curve, lower domination produces
 finite generation of every nonzero vector's literal global scalar coefficient module. -/
 theorem fg_scalarGlobalUnitBallModule
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
-    (hdom : ξ.IsLowerDominated) {x : E} (hx : x ≠ 0) :
-    (scalarGlobalUnitBallModule ξ hξ x).FG :=
-  fg_scalarGlobalUnitBallModule_of_weighted_gap ξ hξ hdom normalized_singleton_pos hx
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    [hdom : ξ.IsLowerDominated] {x : E} (hx : x ≠ 0) :
+    (scalarGlobalUnitBallModule ξ x).FG :=
+  fg_scalarGlobalUnitBallModule_of_weighted_gap ξ (hμ := ⟨normalized_singleton_pos⟩) hx
     (Real.log_pos (by norm_num : (1 : ℝ) < 2)) normalized_weighted_prime_log_gap
 
 /-- The actual rank-one literal global integral unit ball is finitely generated
 for every lower-dominated ultrametric norm family, including the zero-module case. -/
 theorem fg_globalUnitBallModule_rank_one
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) K) (hξ : ξ.IsUltrametric)
-    (hdom : ξ.IsLowerDominated) : (ξ.globalUnitBallModule hξ).FG := by
-  have heq : scalarGlobalUnitBallModule ξ hξ (1 : K) = ξ.globalUnitBallModule hξ := by
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) K) [hξ : ξ.IsUltrametric]
+    [hdom : ξ.IsLowerDominated] : (ξ.globalUnitBallModule).FG := by
+  have heq : scalarGlobalUnitBallModule ξ (1 : K) = ξ.globalUnitBallModule := by
     ext a
     change a • (1 : K) ∈ ξ.globalUnitBall ↔ a ∈ ξ.globalUnitBall
     rw [smul_eq_mul, mul_one]
-  exact heq ▸ fg_scalarGlobalUnitBallModule ξ hξ hdom one_ne_zero
+  exact heq ▸ fg_scalarGlobalUnitBallModule ξ one_ne_zero
 
 end ArakelovGeometry.ActualPrimeIndexing
 

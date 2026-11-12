@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Height.Basic
+
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 
@@ -78,8 +79,21 @@ theorem affineHeight_le_logHeight_of_eq_one (a : ι → K) {j : ι} (hj : a j = 
   · exact AS.eval_le_localHeight a ω i
 
 /-- The Northcott property means finite affine height sublevel sets over the base field. -/
-def HasNorthcott : Prop :=
-  ∀ C : ℝ, 0 ≤ C → Set.Finite {a : K | AS.affineHeight a ≤ C}
+class HasNorthcott : Prop where
+  /-- The defining property. -/
+  finite_sublevel :
+    ∀ C : ℝ, 0 ≤ C → Set.Finite {a : K | AS.affineHeight a ≤ C}
+
+instance : CoeFun (AS.HasNorthcott)
+    (fun _ ↦
+      ∀ C : ℝ, 0 ≤ C → Set.Finite {a : K | AS.affineHeight a ≤ C}) :=
+  ⟨fun h ↦ h.finite_sublevel⟩
+
+/-- The defining proposition of `HasNorthcott`. -/
+theorem HasNorthcott.iff :
+    AS.HasNorthcott ↔
+    ∀ C : ℝ, 0 ≤ C → Set.Finite {a : K | AS.affineHeight a ≤ C} :=
+  ⟨fun h ↦ h.finite_sublevel, fun h ↦ ⟨h⟩⟩
 
 /-- Negative bounds give the empty set, so the nonnegative restriction is immaterial. -/
 theorem hasNorthcott_iff : AS.HasNorthcott ↔
@@ -94,7 +108,7 @@ theorem hasNorthcott_iff : AS.HasNorthcott ↔
         exact not_le.mpr ((lt_of_not_ge hC).trans_le (AS.affineHeight_nonneg a))
       rw [he]
       exact Set.finite_empty
-  · exact fun h C _ ↦ h C
+  · exact fun h ↦ ⟨fun C _ ↦ h C⟩
 
 variable [AS.IsProper]
 

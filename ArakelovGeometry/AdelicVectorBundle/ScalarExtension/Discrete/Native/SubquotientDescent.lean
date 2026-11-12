@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Countable
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Determinant.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Discrete.SubspaceQuotient
+
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Discrete.Native.SubquotientDegree
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Subspace.ComplexDescent
 import Mathlib.CategoryTheory.Category.Init
@@ -39,7 +40,7 @@ The degree uses the canonical quotient bundles, with determinant measurability a
 normalization produced from the original adelic curve. -/
 abbrev NativeSubquotientRankDegreeEq
     (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
     [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] [FiniteDimensional K F]
     (P Q : Submodule F (F ⊗[K] E))
@@ -52,19 +53,19 @@ abbrev NativeSubquotientRankDegreeEq
     AdelicStructure.discreteMeasurableSpace_algebraicExtension_of_finiteDimensional
       (S := S) (L := F)
   Module.finrank L (B ⧸ T) = Module.finrank F (Q ⧸ P.comap Q.subtype) ∧
-    (V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase hN B T).degreeOfMeasurableDeterminant
-      (by
+    (V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase B T).degreeOfMeasurableDeterminant
+      (hdet := (by
         exact scalarExtension_restrict_quotient_determinant_isMeasurable_of_countable_discrete
-          V.toNormFamily hN B T)
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) =
-      (((V.scalarExtensionOfCountableDiscreteBase (L := F) hN).restrictOfMeasurableBase
-        Q (Or.inl inferInstance)).quotientOfMeasurableBase
-        (P.comap Q.subtype) (Or.inl inferInstance)).degree (Or.inl inferInstance)
-        (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN)
+          V.toNormFamily B T))
+      (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
+      (((V.scalarExtensionOfCountableDiscreteBase (L := F)).restrictOfMeasurableBase
+        Q).quotientOfMeasurableBase
+        (P.comap Q.subtype)).degree
+        (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩)
 
 private theorem nativeSubquotientRankDegreeEq_of_images
     (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
     [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] [FiniteDimensional K F]
     (P Q : Submodule F (F ⊗[K] E)) (hPQ : P ≤ Q)
@@ -73,8 +74,8 @@ private theorem nativeSubquotientRankDegreeEq_of_images
       (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E).toLinearMap = A)
     (hQ : (Q.baseChange L).map
       (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E).toLinearMap = B)
-    (hd : V.NativeSubquotientDegreeEq (L := L) hN F P Q) :
-    V.NativeSubquotientRankDegreeEq hN F P Q B (A.comap B.subtype) := by
+    (hd : V.NativeSubquotientDegreeEq (L := L) F P Q) :
+    V.NativeSubquotientRankDegreeEq F P Q B (A.comap B.subtype) := by
   subst B
   subst A
   constructor
@@ -87,7 +88,7 @@ stage with literal endpoint images, its actual rank, and its actual degree.
 No target regularity or finite-stage certificate is required. -/
 theorem exists_complexFiniteStage_nativeSubquotient_degree
     (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (B : Submodule L (L ⊗[K] E)) (T : Submodule L B) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     ∃ F : AdelicStructure.FiniteIntermediateField K L, (∃ a : F, a ^ 2 = -1) ∧
@@ -97,7 +98,7 @@ theorem exists_complexFiniteStage_nativeSubquotient_degree
             T.map B.subtype ∧
         (Q.baseChange L).map
           (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E).toLinearMap = B ∧
-        V.NativeSubquotientRankDegreeEq hN F P Q B T := by
+        V.NativeSubquotientRankDegreeEq F P Q B T := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let A := T.map B.subtype
   have hAB : A ≤ B := B.map_subtype_le T
@@ -105,18 +106,18 @@ theorem exists_complexFiniteStage_nativeSubquotient_degree
     change (T.map B.subtype).comap B.subtype = T
     rw [Submodule.comap_map_eq, Submodule.ker_subtype, sup_bot_eq]
   obtain ⟨F, hi, P, Q, hPQ, hP, hQ, _, _, _⟩ :=
-    V.toNormFamily.exists_complexFiniteStage_subquotient_isometry hN A B hAB
+    V.toNormFamily.exists_complexFiniteStage_subquotient_isometry A B hAB
   refine ⟨F, hi, P, Q, hPQ, hP, hQ, ?_⟩
-  have hd := V.degree_nativeSubquotientOfCountableDiscreteBase_finiteStage hN F hi P Q hPQ
-  have h := nativeSubquotientRankDegreeEq_of_images V hN F P Q hPQ A B hP hQ hd
+  have hd := V.degree_nativeSubquotientOfCountableDiscreteBase_finiteStage F hi P Q hPQ
+  have h := nativeSubquotientRankDegreeEq_of_images V F P Q hPQ A B hP hQ hd
   exact Eq.mp (congrArg (fun T' : Submodule L B =>
-    V.NativeSubquotientRankDegreeEq hN F P Q B T') hT) h
+    V.NativeSubquotientRankDegreeEq F P Q B T') hT) h
 
 /-- A single produced complexifying finite stage preserves every actual mixed
 factor degree and rank of a prescribed full strict flag, including length zero. -/
 theorem exists_complexFiniteStage_nativeFlag_factor_degrees
     (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (n : ℕ) (A : Fin (n + 1) → Submodule L (L ⊗[K] E))
     (hA : StrictMono A) (hbot : A 0 = ⊥) (htop : A (Fin.last n) = ⊤) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
@@ -127,7 +128,7 @@ theorem exists_complexFiniteStage_nativeFlag_factor_degrees
         (∀ i, Module.finrank F (C i) = Module.finrank L (A i)) ∧
         StrictMono C ∧ C 0 = ⊥ ∧ C (Fin.last n) = ⊤ ∧
         ∀ i : Fin n,
-          V.NativeSubquotientRankDegreeEq hN F (C i.castSucc) (C i.succ)
+          V.NativeSubquotientRankDegreeEq F (C i.castSucc) (C i.succ)
             (A i.succ) ((A i.castSucc).comap (A i.succ).subtype) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   obtain ⟨F, hi, C, hC, hr, hstrict, hzero, hlast⟩ :=
@@ -135,9 +136,9 @@ theorem exists_complexFiniteStage_nativeFlag_factor_degrees
   refine ⟨F, hi, C, hC, hr, hstrict, hzero, hlast, ?_⟩
   intro i
   have hPQ : C i.castSucc ≤ C i.succ := (hstrict i.castSucc_lt_succ).le
-  exact nativeSubquotientRankDegreeEq_of_images V hN F (C i.castSucc) (C i.succ) hPQ
+  exact nativeSubquotientRankDegreeEq_of_images V F (C i.castSucc) (C i.succ) hPQ
     (A i.castSucc) (A i.succ) (hC i.castSucc) (hC i.succ)
-    (V.degree_nativeSubquotientOfCountableDiscreteBase_finiteStage hN F hi
+    (V.degree_nativeSubquotientOfCountableDiscreteBase_finiteStage F hi
       (C i.castSucc) (C i.succ) hPQ)
 
 end AdelicVectorBundle

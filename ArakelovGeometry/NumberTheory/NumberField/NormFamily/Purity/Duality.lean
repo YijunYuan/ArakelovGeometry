@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Local.Lattice.Completed
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Purity.Basic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 
 /-!
@@ -80,14 +81,14 @@ namespace CompletedPureDuality
 
 variable (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
   (ω : (normalizedNumberFieldAdelicStructure K).Ω)
-  (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) (hUltra : ξ.IsUltrametric)
+  (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hUltra : ξ.IsUltrametric]
 
 local notation "F" =>
   AbsoluteValue.Completion (AdelicStructure.ϕ (normalizedNumberFieldAdelicStructure K) ω)
 local notation "O" =>
   AdelicStructure.completedLocalRing (normalizedNumberFieldAdelicStructure K) ω hω
-local notation "U" => ξ.completedUnitBallModule ω hω hUltra
-local notation "D" => ξ.dual.completedUnitBallModule ω hω ξ.dual_isUltrametric
+local notation "U" => ξ.completedUnitBallModule ω hω
+local notation "D" => ξ.dual.completedUnitBallModule ω hω
 
 /-- Restriction of the actual completed dual ball to the literal primal integral ball. -/
 def integralDualRestriction : D →ₗ[O] Module.Dual O U where
@@ -132,12 +133,12 @@ def integralDualRestriction : D →ₗ[O] Module.Dual O U where
 
 @[simp]
 theorem integralDualRestriction_apply (z : D) (x : U) :
-    (integralDualRestriction ξ ω hω hUltra z x : F) =
+    (integralDualRestriction ξ ω hω z x : F) =
       dualBaseChangeEquiv K F E (z : F ⊗[K] Module.Dual K E) (x : F ⊗[K] E) := rfl
 
 /-- Exact pure rescaling makes the literal integral restriction injective. -/
-theorem integralDualRestriction_injective (hPure : ξ.IsPureAtFinitePlaces) :
-    Function.Injective (integralDualRestriction ξ ω hω hUltra) := by
+theorem integralDualRestriction_injective [hPure : ξ.IsPureAtFinitePlaces] :
+    Function.Injective (integralDualRestriction ξ ω hω) := by
   intro z t h
   apply Subtype.ext
   apply (dualBaseChangeEquiv K F E).injective
@@ -163,19 +164,19 @@ theorem integralDualRestriction_injective (hPure : ξ.IsPureAtFinitePlaces) :
 def integralDualExtension (hnt : ((normalizedNumberFieldAdelicStructure K).ϕ ω).IsNontrivial)
     (g : Module.Dual O U) : Module.Dual F (F ⊗[K] E) :=
   (((Algebra.linearMap O F).comp g).liftBaseChange F).comp
-    (ξ.completedUnitBallGenericFibreEquiv ω hω hnt hUltra).symm.toLinearMap
+    (ξ.completedUnitBallGenericFibreEquiv ω hω hnt).symm.toLinearMap
 
 @[simp]
 theorem integralDualExtension_apply
     (hnt : ((normalizedNumberFieldAdelicStructure K).ϕ ω).IsNontrivial)
     (g : Module.Dual O U) (x : U) :
-    integralDualExtension ξ ω hω hUltra hnt g (x : F ⊗[K] E) = (g x : F) := by
-  let e := ξ.completedUnitBallGenericFibreEquiv ω hω hnt hUltra
+    integralDualExtension ξ ω hω hnt g (x : F ⊗[K] E) = (g x : F) := by
+  let e := ξ.completedUnitBallGenericFibreEquiv ω hω hnt
   have hs : e.symm (x : F ⊗[K] E) = (1 : F) ⊗ₜ[O] x := by
     apply e.injective
     rw [e.apply_symm_apply]
     simpa only [one_smul] using
-      (ξ.completedUnitBallGenericFibreEquiv_tmul ω hω hnt hUltra 1 x).symm
+      (ξ.completedUnitBallGenericFibreEquiv_tmul ω hω hnt 1 x).symm
   change ((Algebra.linearMap O F).comp g).liftBaseChange F
     (e.symm (x : F ⊗[K] E)) = _
   rw [hs, LinearMap.liftBaseChange_tmul, one_smul]
@@ -184,13 +185,13 @@ theorem integralDualExtension_apply
 /-- Pure polar equality puts every extended integral functional in the actual dual ball. -/
 theorem integralDualExtension_norm_le_one
     (hnt : ((normalizedNumberFieldAdelicStructure K).ϕ ω).IsNontrivial)
-    (hPure : ξ.IsPureAtFinitePlaces) (g : Module.Dual O U) :
+    [hPure : ξ.IsPureAtFinitePlaces] (g : Module.Dual O U) :
     ξ.dual.norm ω ((dualBaseChangeEquiv K F E).symm
-      (integralDualExtension ξ ω hω hUltra hnt g)) ≤ 1 := by
+      (integralDualExtension ξ ω hω hnt g)) ≤ 1 := by
   apply (hPure.dual_norm_le_one_iff_unitBall ω hω _).mpr
   intro x hx
   rw [LinearEquiv.apply_symm_apply]
-  have he := integralDualExtension_apply ξ ω hω hUltra hnt g (⟨x, hx⟩ : U)
+  have he := integralDualExtension_apply ξ ω hω hnt g (⟨x, hx⟩ : U)
   rw [he]
   exact ((normalizedNumberFieldAdelicStructure K).mem_completedLocalRing ω hω _).mp
     (g ⟨x, hx⟩).property
@@ -198,13 +199,13 @@ theorem integralDualExtension_norm_le_one
 /-- Every integral functional extends to a member of the actual completed dual ball. -/
 theorem integralDualRestriction_surjective
     (hnt : ((normalizedNumberFieldAdelicStructure K).ϕ ω).IsNontrivial)
-    (hPure : ξ.IsPureAtFinitePlaces) :
-    Function.Surjective (integralDualRestriction ξ ω hω hUltra) := by
+    [hPure : ξ.IsPureAtFinitePlaces] :
+    Function.Surjective (integralDualRestriction ξ ω hω) := by
   intro g
   let z := (dualBaseChangeEquiv K F E).symm
-    (integralDualExtension ξ ω hω hUltra hnt g)
+    (integralDualExtension ξ ω hω hnt g)
   have hz : ξ.dual.norm ω z ≤ 1 :=
-    integralDualExtension_norm_le_one ξ ω hω hUltra hnt hPure g
+    integralDualExtension_norm_le_one ξ ω hω hnt g
   refine ⟨⟨z, hz⟩, ?_⟩
   apply LinearMap.ext
   intro x
@@ -216,26 +217,26 @@ theorem integralDualRestriction_surjective
 /-- The extension and restriction retain every original completed dual vector. -/
 theorem integralDualExtension_restrict
     (hnt : ((normalizedNumberFieldAdelicStructure K).ϕ ω).IsNontrivial) (z : D) :
-    integralDualExtension ξ ω hω hUltra hnt
-      (integralDualRestriction ξ ω hω hUltra z) =
+    integralDualExtension ξ ω hω hnt
+      (integralDualRestriction ξ ω hω z) =
       dualBaseChangeEquiv K F E (z : F ⊗[K] Module.Dual K E) := by
-  apply (ξ.completedLocalUnitBallBasis ω hω hnt hUltra).ext
+  apply (ξ.completedLocalUnitBallBasis ω hω hnt).ext
   intro i
   rw [ξ.completedLocalUnitBallBasis_apply,
-    ← ξ.completedUnitBallBasis_coe ω hω hnt hUltra i,
+    ← ξ.completedUnitBallBasis_coe ω hω hnt i,
     integralDualExtension_apply, integralDualRestriction_apply]
 
 /-- The canonical actual integral-dual isomorphism is the original restriction map. -/
-def integralDualEquiv (hPure : ξ.IsPureAtFinitePlaces) : D ≃ₗ[O] Module.Dual O U :=
-  LinearEquiv.ofBijective (integralDualRestriction ξ ω hω hUltra)
-    ⟨integralDualRestriction_injective ξ ω hω hUltra hPure,
-      integralDualRestriction_surjective ξ ω hω hUltra
+def integralDualEquiv [hPure : ξ.IsPureAtFinitePlaces] : D ≃ₗ[O] Module.Dual O U :=
+  LinearEquiv.ofBijective (integralDualRestriction ξ ω hω)
+    ⟨integralDualRestriction_injective ξ ω hω,
+      integralDualRestriction_surjective ξ ω hω
         (NormalizedNumberFieldPlaces.parameter_isNontrivial
-          (NormalizedNumberFieldPlaces.parameterMeasurableEquivNontrivialPlace.symm ω)) hPure⟩
+          (NormalizedNumberFieldPlaces.parameterMeasurableEquivNontrivialPlace.symm ω))⟩
 
 @[simp]
-theorem integralDualEquiv_apply (hPure : ξ.IsPureAtFinitePlaces) (z : D) (x : U) :
-    (integralDualEquiv ξ ω hω hUltra hPure z x : F) =
+theorem integralDualEquiv_apply [hPure : ξ.IsPureAtFinitePlaces] (z : D) (x : U) :
+    (integralDualEquiv ξ ω hω z x : F) =
       dualBaseChangeEquiv K F E (z : F ⊗[K] Module.Dual K E) (x : F ⊗[K] E) := rfl
 
 end CompletedPureDuality

@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Minima.Absolute.CompatibleTower
+
 import Mathlib.CategoryTheory.Category.Init
 
 /-!
@@ -38,7 +39,9 @@ theorem isMeasurable_compatibleTowerPullback_iff
     (ξ : NormFamily (S.algebraicExtension M) X) :
     (ξ.compatibleTowerPullback (L := L)).IsMeasurable ↔ ξ.IsMeasurable := by
   refine ⟨?_, fun h => h.compatibleTowerPullback⟩
-  intro hξ y
+  intro hξ
+  constructor
+  intro y
   let e := AdelicStructure.Algebraic.compatibleTowerMeasurableEquiv (L := L) (M := M) S
   have hn : (fun x : (S.algebraicExtension M).Ω =>
       ξ.norm x ((1 : x.abv.Completion) ⊗ₜ[M] y)) =
@@ -79,7 +82,7 @@ theorem compatibleTowerPullback_determinant (ξ : NormFamily (S.algebraicExtensi
 
 /-- Direct determinant measurability produces iterated determinant measurability. -/
 theorem determinant_isMeasurable_compatibleTowerPullback
-    (ξ : NormFamily (S.algebraicExtension M) X) (hdet : ξ.determinant.IsMeasurable) :
+    (ξ : NormFamily (S.algebraicExtension M) X) [hdet : ξ.determinant.IsMeasurable] :
     (ξ.compatibleTowerPullback (L := L)).determinant.IsMeasurable := by
   rw [compatibleTowerPullback_determinant]
   exact hdet.compatibleTowerPullback
@@ -102,31 +105,33 @@ variable [FiniteDimensional M X]
 compatible external fields. Target measurability and normalization are produced. -/
 theorem degreeOfMeasurableDeterminant_compatibleTowerPullback [S.IsProper]
     (V : AdelicVectorBundle (S.algebraicExtension M) X)
-    (hdet : V.toNormFamily.determinant.IsMeasurable)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hdet : V.toNormFamily.determinant.IsMeasurable]
+    [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension L) M
     (V.compatibleTowerPullback (L := L)).degreeOfMeasurableDeterminant
-      (V.toNormFamily.determinant_isMeasurable_compatibleTowerPullback hdet)
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M)
-        (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN)) =
-      V.degreeOfMeasurableDeterminant hdet
-        (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M) hN) := by
+      (hdet := (V.toNormFamily.determinant_isMeasurable_compatibleTowerPullback))
+      (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M)
+        (hS := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩))⟩) =
+      V.degreeOfMeasurableDeterminant
+        (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M))⟩) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension L) M
-  let hND := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M) hN
-  let hNT := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M)
-    (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN)
+  let hND := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := M)
+  let hNT := AdelicStructure.isRCLikeNormedField_algebraicExtension
+    (S := S.algebraicExtension L) (L := M)
+    (hS := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩)
   have hdetT : (V.compatibleTowerPullback (L := L)).toNormFamily.determinant.IsMeasurable :=
-    V.toNormFamily.determinant_isMeasurable_compatibleTowerPullback hdet
-  change (V.compatibleTowerPullback (L := L)).degreeOfMeasurableDeterminant hdetT hNT =
-    V.degreeOfMeasurableDeterminant hdet hND
-  let s := (V.determinant hdet hND).lineGenerator (V.determinant_isLine hdet hND)
+    V.toNormFamily.determinant_isMeasurable_compatibleTowerPullback
+  change (V.compatibleTowerPullback (L := L)).degreeOfMeasurableDeterminant (hdet := hdetT)
+      (hN := ⟨hNT⟩) =
+    V.degreeOfMeasurableDeterminant (hN := ⟨hND⟩)
+  let s := (V.determinant (hS := ⟨hND⟩)).lineGenerator (hV := (V.determinant_isLine (hS := ⟨hND⟩)))
   rw [degreeOfMeasurableDeterminant_eq_neg_integral
-      (V.compatibleTowerPullback (L := L)) hdetT hNT s,
-    degreeOfMeasurableDeterminant_eq_neg_integral V hdet hND s]
+      (V.compatibleTowerPullback (L := L)) (hdet := hdetT) (hN := ⟨hNT⟩) s,
+    degreeOfMeasurableDeterminant_eq_neg_integral V (hN := ⟨hND⟩) s]
   exact congrArg (fun t : ℝ => -t)
     (V.toNormFamily.integral_determinant_logNorm_compatibleTowerPullback s.val)
 

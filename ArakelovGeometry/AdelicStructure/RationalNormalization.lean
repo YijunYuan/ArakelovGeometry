@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Examples.RationalFunction.Construction
 public import Mathlib.Analysis.Normed.Field.Instances
+
 import ArakelovGeometry.Analysis.AbsoluteValue.NormalizedCompletion
 import ArakelovGeometry.MeasureTheory.Integral.FiniteSupport
 
@@ -284,5 +285,10 @@ instance rationalAdelicStructure_isProper : rationalAdelicStructure.IsProper := 
     rationalNormalizationIntegralNat, sub_self]
 
 end
+
+/-- The rational adelic curve uses the usual Archimedean norm. -/
+instance rationalAdelicStructure_isArchimedeanNormalized :
+    rationalAdelicStructure.IsArchimedeanNormalized :=
+  ⟨rationalAdelicStructure_isRCLike⟩
 
 end ArakelovGeometry.AdelicStructure

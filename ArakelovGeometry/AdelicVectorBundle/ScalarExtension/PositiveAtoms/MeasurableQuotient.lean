@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import ArakelovGeometry.Analysis.Ultrametric.SelectedMinor
@@ -160,8 +161,9 @@ omit [Fintype n] [DecidableEq n] in
 /-- Actual coordinate quotient norms are measurable on any adelic curve whose
 places are all non-Archimedean, without countability of the field or base. -/
 theorem ofBasis_quotient_isMeasurable_of_all_finite (b : Module.Basis m K E)
-    (F : Submodule K E) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    (F : Submodule K E) [hS : S.HasOnlyFinitePlaces] :
     ((ofBasis S E b).quotient F).IsMeasurable := by
+  constructor
   classical
   let c := Module.finBasis K F
   let A : Matrix m (Fin (Module.finrank K F)) K := fun i j ↦ b.equivFun (c j).val i

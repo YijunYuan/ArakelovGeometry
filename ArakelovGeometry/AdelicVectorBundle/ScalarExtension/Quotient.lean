@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Dual.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Subquotient.Quotient.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Dual.Bidual
 import ArakelovGeometry.AdelicVectorBundle.Dual.Map
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Dual.Basic
@@ -82,7 +83,7 @@ theorem injectiveScalarExtension_pushforward_dual_norm_eq
     ← ξ.injectiveScalarExtension_dual x hnon,
     ← (ξ.pushforward π hπ).injectiveScalarExtension_dual x hnon]
   have he := ξ.dual.injectiveScalarExtensionSeminorm_pullback_eq
-    ξ.dual_isUltrametric π.dualMap (LinearMap.dualMap_injective_of_surjective hπ)
+    (hξ := ξ.dual_isUltrametric) π.dualMap (LinearMap.dualMap_injective_of_surjective hπ)
     x hx d
   change (ξ.dual.injectiveScalarExtension (L := L)).norm x
       ((π.dualMap.baseChange L).baseChange x.abv.Completion d) =

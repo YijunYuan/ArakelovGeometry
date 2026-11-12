@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Determinant.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Comparison
 import ArakelovGeometry.AdelicVectorBundle.Dual.Bidual
 import ArakelovGeometry.AdelicVectorBundle.Dual.Map
@@ -71,7 +72,7 @@ end Tensor
 /-- Canonical bidualization preserves the actual completed determinant family,
 without assuming the original finite-place norms ultrametric. -/
 theorem determinant_dual_dual_pullback (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hN : S.IsArchimedeanNormalized] :
     (ξ.dual.dual.pullback (Module.Dual.eval K E)
       (Module.eval_apply_injective K)).determinant = ξ.determinant := by
   let η := ξ.dual.dual.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K)

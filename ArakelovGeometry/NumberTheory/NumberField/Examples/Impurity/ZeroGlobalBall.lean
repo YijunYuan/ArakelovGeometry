@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Rescaling
 public import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.UnitBall.Global
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Coherence.Criteria
 
@@ -105,6 +106,7 @@ theorem isUltrametric : (bundle K).toNormFamily.IsUltrametric := by
     (normalizedNumberFieldAdelicStructure K)).toNormFamily.scale
     (fun ω => Real.exp (exponent ω)) (fun _ => Real.exp_pos _)).IsUltrametric
   apply NormFamily.IsUltrametric.scale
+  constructor
   intro ω hω x y
   have h := NormFamily.ofBasisMixed_isUltrametric
     (S := normalizedNumberFieldAdelicStructure K) (Module.Basis.singleton (Fin 1) K) ω hω x y
@@ -141,7 +143,7 @@ theorem globalUnitBall_eq_singleton_zero :
     simp
 
 theorem globalUnitBallModule_eq_bot :
-    (bundle K).toNormFamily.globalUnitBallModule isUltrametric = ⊥ := by
+    (bundle K).toNormFamily.globalUnitBallModule (hξ := isUltrametric) = ⊥ := by
   ext a
   change a ∈ (bundle K).toNormFamily.globalUnitBall ↔ a = 0
   rw [globalUnitBall_eq_singleton_zero]
@@ -150,7 +152,7 @@ theorem globalUnitBallModule_eq_bot :
 theorem not_coherent : ¬ (bundle K).toNormFamily.HasFiniteNormExceptions := by
   intro hc
   have h := (NormFamily.hasFiniteNormExceptions_iff_span_normalizedGlobalUnitBall_eq_top
-    (bundle K).toNormFamily isUltrametric).mp hc
+    (bundle K).toNormFamily (hξ := isUltrametric)).mp hc
   simp only [globalUnitBall_eq_singleton_zero, Submodule.span_singleton_eq_bot.mpr rfl] at h
   exact bot_ne_top h
 

@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Algebraic.Basis
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicCurve.Extension.UniformBounds
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.BasisComparison
@@ -109,8 +110,9 @@ theorem ofBasis_norm_le_mul_of_transition_coefficients_le
     (h : ∀ i j, T.ϕ ω (b.equivFun (c i) j) ≤ C)
     (z : (T.ϕ ω).Completion ⊗[L] (L ⊗[K] E)) :
     (ofBasis T (L ⊗[K] E) b).norm ω z ≤ C * (ofBasisMixed T (L ⊗[K] E) c).norm ω z := by
-  apply norm_le_mul_of_basis_norm_le c (ofBasis T (L ⊗[K] E) b) ?_ ω hC ?_ z
-  · intro t ht x y
+  apply norm_le_mul_of_basis_norm_le c (ofBasis T (L ⊗[K] E) b) (hξ := ?_) ω hC ?_ z
+  · constructor
+    intro t ht x y
     simpa only [ofBasisMixed_norm_of_finite b t ht] using
       ofBasisMixed_isUltrametric b t ht x y
   · intro i
@@ -211,11 +213,11 @@ algebraic basis and arbitrary extending-place choices are strongly dominated. -/
 theorem ofChosenAlgebraicBasis_isStronglyDominated
     {κ : Type*} [Fintype κ] (b : Module.Basis κ L (L ⊗[K] E))
     (w : S.Ω → AbsoluteValue L ℝ) (hw : ∀ ω, (w ω).under K = S.ϕ ω)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     (ofChosenAlgebraicBasis b w hw).IsStronglyDominated := by
   let f := Module.finBasis K E
-  exact (isStronglyDominated_iff_localDist_ofBasisMixed f _ hS).mpr
+  exact (isStronglyDominated_iff_localDist_ofBasisMixed f _).mpr
     (ofChosenAlgebraicBasis_localDist_hasIntegrableBounds f b w hw
-      (S.v_Ωinf_lt_top_of_isRCLike hS))
+      (S.v_Ωinf_lt_top_of_isRCLike))
 
 end ArakelovGeometry.NormFamily

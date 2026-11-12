@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Discrete.SubspaceQuotient
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.NativeSubquotientFiniteStage
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.IsometryDual
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Subquotient
 import Mathlib.CategoryTheory.Category.Init
@@ -54,7 +55,7 @@ private theorem nativeSubquotient_dual_norm_eq
 dual norm through its genuine transpose, with no original ultrametricity or
 regularity hypothesis on the norm family. -/
 theorem scalarExtension_subquotient_finiteStage_dual_norm_eq (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
     [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] (hi : ∃ a : F, a ^ 2 = -1)
     (P Q : Submodule F (F ⊗[K] E)) (hPQ : P ≤ Q)
@@ -74,7 +75,7 @@ theorem scalarExtension_subquotient_finiteStage_dual_norm_eq (ξ : NormFamily S 
     ((((ξ.scalarExtension (L := F)).restrict Q).quotient
       (P.comap Q.subtype)).scalarExtension (L := L))
     (((ξ.scalarExtension (L := L)).restrict B).quotient (A.comap B.subtype)) e x
-    (fun t => ξ.scalarExtension_subquotient_finiteStage_norm_eq hN F hi P Q hPQ x t) z
+    (fun t ↦ ξ.scalarExtension_subquotient_finiteStage_norm_eq F hi P Q hPQ x t) z
 
 end NormFamily
 namespace AdelicVectorBundle
@@ -85,14 +86,14 @@ adelic. The original bundle need not be strongly adelic or ultrametric, and no
 regularity of the target place space is assumed. -/
 theorem scalarExtensionSubspaceQuotientOfCountableDiscreteBase_isStronglyAdelic
     (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (B : Submodule L (L ⊗[K] E)) (T : Submodule L B) :
-    (V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase hN B T).IsStronglyAdelic := by
+    (V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase B T).IsStronglyAdelic := by
   change (((V.toNormFamily.scalarExtension (L := L)).restrict B).quotient T).IsStronglyDominated
   have hs : (V.toNormFamily.scalarExtension (L := L)).IsStronglyDominated :=
-    V.scalarExtensionOfCountableDiscreteBase_isStronglyAdelic hN
-  have hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
-  exact (hs.restrict B hLN).quotient T hLN
+    V.scalarExtensionOfCountableDiscreteBase_isStronglyAdelic
+  have hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
+  exact (hs.restrict B (hS := ⟨hLN⟩)).quotient T (hS := ⟨hLN⟩)
 
 end AdelicVectorBundle
 end ArakelovGeometry

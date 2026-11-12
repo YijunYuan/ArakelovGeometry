@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Algebraic.ClosureApproximation
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.HermitianComparison.DeterminantDegree
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Isometry
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.AlgebraicClosure.ScalarExtensionDegree
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Hermitian.Quotient
@@ -38,42 +39,44 @@ local instance hermitianClosedScalarQuotientProper : (S.algebraicExtension L).Is
 via the genuine canonical quotient tensor isometry. -/
 theorem degree_quotient_hermitianScalarExtension_of_isAlgClosed
     (V : AdelicVectorBundle S E)
-    (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) (U : Submodule K E) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] (U : Submodule K E) :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-    let W := V.hermitianScalarExtension (L := L) hcount hN hLN hH
-    (W.quotientOfMeasurableBase (U.baseChange L) hLS).degree hLS hLN =
-      (V.quotientOfMeasurableBase U (Or.inr hcount)).degree (Or.inr hcount) hN := by
+    let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
+    (W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
+      (V.quotientOfMeasurableBase U).degree := by
   intro hLN hLS W
-  let Q := V.quotientOfMeasurableBase U (Or.inr hcount)
-  let Qext := Q.hermitianScalarExtension (L := L) hcount hN hLN (hH.quotient U)
-  have he : Qext.degree hLS hLN =
-      (W.quotientOfMeasurableBase (U.baseChange L) hLS).degree hLS hLN :=
+  let Q := V.quotientOfMeasurableBase U
+  let Qext := Q.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩) (hV := (hH.quotient U))
+  have he : Qext.degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
+      (W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩)
+          (hN := ⟨hLN⟩) :=
     Qext.degree_eq_of_completed_isometry _ (tensorQuotientBaseChangeEquiv (L := L) U)
-      hLS hLN (fun x z => V.toNormFamily.hermitianScalarExtension_quotient_norm_eq
-        hN hLN hH U x z)
+      (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (fun x z =>
+          V.toNormFamily.hermitianScalarExtension_quotient_norm_eq
+            (hLN := ⟨hLN⟩) U x z)
   exact he.symm.trans
-    (Q.degree_hermitianScalarExtension_of_isAlgClosed hcount hN (hH.quotient U))
+    (Q.degree_hermitianScalarExtension_of_isAlgClosed (hH := (hH.quotient U)))
 
 /-- Native quotient means are preserved in every rank by genuine degree
 isometry and the canonical quotient tensor rank. -/
 theorem slope_quotient_hermitianScalarExtension_of_isAlgClosed
     (V : AdelicVectorBundle S E)
-    (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) (U : Submodule K E) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] (U : Submodule K E) :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-    let W := V.hermitianScalarExtension (L := L) hcount hN hLN hH
-    (W.quotientOfMeasurableBase (U.baseChange L) hLS).slope hLS hLN =
-      (V.quotientOfMeasurableBase U (Or.inr hcount)).slope (Or.inr hcount) hN := by
+    let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
+    (W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
+      (V.quotientOfMeasurableBase U).slope := by
   intro hLN hLS W
   have hr : Module.finrank L ((L ⊗[K] E) ⧸ U.baseChange L) =
       Module.finrank K (E ⧸ U) :=
     (tensorQuotientBaseChangeEquiv (L := L) U).finrank_eq.symm.trans Module.finrank_baseChange
   dsimp only [slope]
-  rw [V.degree_quotient_hermitianScalarExtension_of_isAlgClosed hcount hN hH U, hr]
+  rw [V.degree_quotient_hermitianScalarExtension_of_isAlgClosed U, hr]
 
 end ArakelovGeometry.AdelicVectorBundle

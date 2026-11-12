@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Comparison
 public import ArakelovGeometry.MeasureTheory.Integral.Envelope
+
 import ArakelovGeometry.AdelicVectorBundle.Dual.Bidual
 import ArakelovGeometry.AdelicVectorBundle.Dual.Map
 import Mathlib.CategoryTheory.Category.Init
@@ -54,37 +55,65 @@ theorem norm_rational_pos (ξ : NormFamily S E) (ω : S.Ω) {x : E} (hx : x ≠ 
   simpa using h
 
 /-- Each nonzero rational vector has an integrable majorant for its logarithmic norm. -/
-def IsUpperDominated (ξ : NormFamily S E) : Prop :=
-  ∀ x : E, x ≠ 0 → HasIntegrableUpperBound (ξ.logNorm x) S.v
+class IsUpperDominated (ξ : NormFamily S E) : Prop where
+  /-- The defining property. -/
+  logNorm_upperBound :
+    ∀ x : E, x ≠ 0 → HasIntegrableUpperBound (ξ.logNorm x) S.v
+
+instance (ξ : NormFamily S E) : CoeFun (ξ.IsUpperDominated)
+    (fun _ ↦
+      ∀ x : E, x ≠ 0 → HasIntegrableUpperBound (ξ.logNorm x) S.v) :=
+  ⟨fun h ↦ h.logNorm_upperBound⟩
+
+/-- The defining proposition of `IsUpperDominated`. -/
+theorem IsUpperDominated.iff (ξ : NormFamily S E) :
+    ξ.IsUpperDominated ↔
+    ∀ x : E, x ≠ 0 → HasIntegrableUpperBound (ξ.logNorm x) S.v :=
+  ⟨fun h ↦ h.logNorm_upperBound, fun h ↦ ⟨h⟩⟩
 
 /-- Each nonzero rational vector has an integrable minorant for its logarithmic norm. -/
-def IsLowerDominated (ξ : NormFamily S E) : Prop :=
-  ∀ x : E, x ≠ 0 → HasIntegrableLowerBound (ξ.logNorm x) S.v
+class IsLowerDominated (ξ : NormFamily S E) : Prop where
+  /-- The defining property. -/
+  logNorm_lowerBound :
+    ∀ x : E, x ≠ 0 → HasIntegrableLowerBound (ξ.logNorm x) S.v
+
+instance (ξ : NormFamily S E) : CoeFun (ξ.IsLowerDominated)
+    (fun _ ↦
+      ∀ x : E, x ≠ 0 → HasIntegrableLowerBound (ξ.logNorm x) S.v) :=
+  ⟨fun h ↦ h.logNorm_lowerBound⟩
+
+/-- The defining proposition of `IsLowerDominated`. -/
+theorem IsLowerDominated.iff (ξ : NormFamily S E) :
+    ξ.IsLowerDominated ↔
+    ∀ x : E, x ≠ 0 → HasIntegrableLowerBound (ξ.logNorm x) S.v :=
+  ⟨fun h ↦ h.logNorm_lowerBound, fun h ↦ ⟨h⟩⟩
 
 theorem isUpperDominated_iff_upperIntegral (ξ : NormFamily S E) :
     ξ.IsUpperDominated ↔ ∀ x : E, x ≠ 0 →
       upperEnvelopeIntegral (ξ.logNorm x) S.v < ⊤ := by
-  simp only [IsUpperDominated, hasIntegrableUpperBound_iff_upperEnvelopeIntegral_lt_top]
+  simp only [IsUpperDominated.iff, hasIntegrableUpperBound_iff_upperEnvelopeIntegral_lt_top]
 
 theorem isLowerDominated_iff_lowerIntegral (ξ : NormFamily S E) :
     ξ.IsLowerDominated ↔ ∀ x : E, x ≠ 0 →
       ⊥ < lowerEnvelopeIntegral (ξ.logNorm x) S.v := by
-  simp only [IsLowerDominated, hasIntegrableLowerBound_iff_bot_lt_lowerEnvelopeIntegral]
+  simp only [IsLowerDominated.iff, hasIntegrableLowerBound_iff_bot_lt_lowerEnvelopeIntegral]
 
 theorem isUpperDominated_of_subsingleton [Subsingleton E] (ξ : NormFamily S E) :
-    ξ.IsUpperDominated := fun x hx ↦ (hx (Subsingleton.elim x 0)).elim
+    ξ.IsUpperDominated := ⟨fun x hx ↦ (hx (Subsingleton.elim x 0)).elim⟩
 
 theorem isLowerDominated_of_subsingleton [Subsingleton E] (ξ : NormFamily S E) :
-    ξ.IsLowerDominated := fun x hx ↦ (hx (Subsingleton.elim x 0)).elim
+    ξ.IsLowerDominated := ⟨fun x hx ↦ (hx (Subsingleton.elim x 0)).elim⟩
 
 theorem IsUpperDominated.mono {ξ η : NormFamily S E} (hη : η.IsUpperDominated)
     (hξη : ξ ≤ η) : ξ.IsUpperDominated := by
+  constructor
   intro x hx
   apply (hη x hx).mono
   exact Eventually.of_forall fun ω ↦ Real.log_le_log (ξ.norm_rational_pos ω hx) (hξη ω _)
 
 theorem IsLowerDominated.mono {ξ η : NormFamily S E} (hξ : ξ.IsLowerDominated)
     (hξη : ξ ≤ η) : η.IsLowerDominated := by
+  constructor
   intro x hx
   apply (hξ x hx).mono
   exact Eventually.of_forall fun ω ↦ Real.log_le_log (ξ.norm_rational_pos ω hx) (hξη ω _)
@@ -92,8 +121,18 @@ theorem IsLowerDominated.mono {ξ η : NormFamily S E} (hξ : ξ.IsLowerDominate
 variable [FiniteDimensional K E]
 
 /-- Source domination requires upper domination of the family and of its dual. -/
-def IsDominated (ξ : NormFamily S E) : Prop :=
-  ξ.IsUpperDominated ∧ ξ.dual.IsUpperDominated
+class IsDominated (ξ : NormFamily S E) : Prop where
+  /-- Upper domination of the family. -/
+  upper : ξ.IsUpperDominated
+  /-- Upper domination of the completed dual. -/
+  dual_upper : ξ.dual.IsUpperDominated
+
+attribute [instance] IsDominated.upper IsDominated.dual_upper
+
+/-- The two components of domination. -/
+theorem isDominated_iff (ξ : NormFamily S E) :
+    ξ.IsDominated ↔ ξ.IsUpperDominated ∧ ξ.dual.IsUpperDominated :=
+  ⟨fun h ↦ ⟨h.1, h.2⟩, fun h ↦ ⟨h.1, h.2⟩⟩
 
 /-- Evaluation equal to one yields a lower bound on the sum of logarithmic norms. -/
 theorem logNorm_add_dual_logNorm_nonneg (ξ : NormFamily S E) {x : E}
@@ -112,6 +151,7 @@ theorem logNorm_add_dual_logNorm_nonneg (ξ : NormFamily S E) {x : E}
 /-- Upper domination of the dual provides lower envelopes for the original family. -/
 theorem IsUpperDominated.lower_of_dual {ξ : NormFamily S E}
     (h : ξ.dual.IsUpperDominated) : ξ.IsLowerDominated := by
+  constructor
   intro x hx
   obtain ⟨ℓ, hℓ⟩ := Module.Projective.exists_dual_eq_one K hx
   have hne : ℓ ≠ 0 := by rintro rfl; simp at hℓ
@@ -123,6 +163,7 @@ theorem IsUpperDominated.lower_of_dual {ξ : NormFamily S E}
 /-- Upper domination provides lower envelopes for the dual family. -/
 theorem IsUpperDominated.lower_dual {ξ : NormFamily S E}
     (h : ξ.IsUpperDominated) : ξ.dual.IsLowerDominated := by
+  constructor
   intro ℓ hℓ
   obtain ⟨x, hx⟩ : ∃ x, ℓ x ≠ 0 := by
     by_contra hzero
@@ -155,6 +196,7 @@ theorem isDominated_of_subsingleton [Subsingleton E] (ξ : NormFamily S E) :
 /-- The canonical bidual contraction transfers upper envelopes to the bidual. -/
 theorem IsUpperDominated.bidual {ξ : NormFamily S E} (h : ξ.IsUpperDominated) :
     ξ.dual.dual.IsUpperDominated := by
+  constructor
   intro Φ hΦ
   obtain ⟨x, rfl⟩ := (Module.evalEquiv K E).surjective Φ
   have hx : x ≠ 0 := by rintro rfl; simp at hΦ
@@ -175,6 +217,7 @@ omit [FiniteDimensional K E] in
 /-- Pullback of upper domination along an injective rational map. -/
 theorem IsUpperDominated.pullback {ξ : NormFamily S E} (h : ξ.IsUpperDominated)
     (f : F →ₗ[K] E) (hf : Function.Injective f) : (ξ.pullback f hf).IsUpperDominated := by
+  constructor
   intro x hx
   convert h (f x) ((f.map_eq_zero_iff hf).not.mpr hx) using 1
   ext ω
@@ -190,6 +233,7 @@ theorem IsUpperDominated.restrict {ξ : NormFamily S E} (h : ξ.IsUpperDominated
 theorem IsUpperDominated.pushforward {ξ : NormFamily S E} (h : ξ.IsUpperDominated)
     (π : E →ₗ[K] F) (hπ : Function.Surjective π) :
     (ξ.pushforward π hπ).IsUpperDominated := by
+  constructor
   intro y hy
   obtain ⟨x, rfl⟩ := hπ y
   have hx : x ≠ 0 := by rintro rfl; simp at hy
@@ -209,21 +253,22 @@ theorem IsUpperDominated.quotient {ξ : NormFamily S E} (h : ξ.IsUpperDominated
 reflects domination from the dual. -/
 theorem IsDominated.of_dual {ξ : NormFamily S E} (h : ξ.dual.IsDominated)
     (hξ : ξ.IsUltrametric)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     ξ.IsDominated := by
   refine ⟨?_, h.1⟩
   have hb := h.2.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K)
-  rwa [ξ.dual_dual_pullback_eq hξ hS] at hb
+  rwa [ξ.dual_dual_pullback_eq] at hb
 
 /-- Source Remark 4.1.3, with the usual Archimedean normalization explicit. -/
-theorem isDominated_dual_iff {ξ : NormFamily S E} (hξ : ξ.IsUltrametric)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+theorem isDominated_dual_iff {ξ : NormFamily S E} [hξ : ξ.IsUltrametric]
+    [hS : S.IsArchimedeanNormalized] :
     ξ.dual.IsDominated ↔ ξ.IsDominated :=
-  ⟨fun h ↦ h.of_dual hξ hS, IsDominated.dual⟩
+  ⟨fun h ↦ h.of_dual hξ, IsDominated.dual⟩
 
 /-- An upper integrable envelope for the local distance transfers upper domination. -/
 theorem IsUpperDominated.of_localDist {ξ η : NormFamily S E} (hξ : ξ.IsUpperDominated)
     (hd : HasIntegrableUpperBound (ξ.localDist η) S.v) : η.IsUpperDominated := by
+  constructor
   intro x hx
   apply ((hξ x hx).add hd).mono
   apply Eventually.of_forall
@@ -252,7 +297,7 @@ variable [FiniteDimensional K F]
 envelope for its restricted dual norm. -/
 theorem IsDominated.pullback {ξ : NormFamily S E} (h : ξ.IsDominated)
     (f : F →ₗ[K] E) (hf : Function.Injective f) : (ξ.pullback f hf).IsDominated := by
-  refine ⟨h.1.pullback f hf, ?_⟩
+  refine ⟨h.1.pullback f hf, ⟨?_⟩⟩
   intro ℓ hℓ
   obtain ⟨m, rfl⟩ := LinearMap.dualMap_surjective_of_injective hf ℓ
   have hm : m ≠ 0 := by rintro rfl; simp at hℓ
@@ -282,4 +327,37 @@ theorem IsDominated.quotient {ξ : NormFamily S E} (h : ξ.IsDominated)
     (F : Submodule K E) : (ξ.quotient F).IsDominated :=
   h.pushforward F.mkQ F.mkQ_surjective
 
+end ArakelovGeometry.NormFamily
+
+namespace ArakelovGeometry.NormFamily
+
+variable {K : Type*} [Field K] {S : AdelicStructure K}
+  {E F : Type*} [AddCommGroup E] [Module K E] [AddCommGroup F] [Module K F]
+
+variable [FiniteDimensional K E]
+
+instance instIsDominatedDual {ξ : NormFamily S E} [hξ : ξ.IsDominated] :
+    ξ.dual.IsDominated := hξ.dual
+
+instance instIsDominatedRestrict {ξ : NormFamily S E} [hξ : ξ.IsDominated]
+    (P : Submodule K E) : (ξ.restrict P).IsDominated := hξ.restrict P
+
+instance instIsDominatedQuotient {ξ : NormFamily S E} [hξ : ξ.IsDominated]
+    (P : Submodule K E) : (ξ.quotient P).IsDominated := hξ.quotient P
+
+variable [FiniteDimensional K F]
+
+instance instIsDominatedPullback {ξ : NormFamily S E} [hξ : ξ.IsDominated]
+    (f : F →ₗ[K] E) (hf : Function.Injective f) : (ξ.pullback f hf).IsDominated :=
+  hξ.pullback f hf
+
+instance instIsDominatedPushforward {ξ : NormFamily S E} [hξ : ξ.IsDominated]
+    (f : E →ₗ[K] F) (hf : Function.Surjective f) : (ξ.pushforward f hf).IsDominated :=
+  hξ.pushforward f hf
+
+end ArakelovGeometry.NormFamily
+
+namespace ArakelovGeometry.NormFamily
+attribute [instance] isUpperDominated_of_subsingleton isLowerDominated_of_subsingleton
+    isDominated_of_subsingleton
 end ArakelovGeometry.NormFamily

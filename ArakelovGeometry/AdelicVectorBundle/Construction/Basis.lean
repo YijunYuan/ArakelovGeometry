@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Basic
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Basis
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.BasisComparison
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -52,29 +53,29 @@ theorem ofBasisMixed_isStronglyAdelic (hfin : S.v S.Ωinf < ⊤) :
 /-- The Euclidean-infinite, maximum-finite construction defines an actual
 adelic vector bundle. Dual measurability uses its exact dual-basis identity. -/
 def ofBasisHermitian
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) : AdelicVectorBundle S E where
+    [hS : S.IsArchimedeanNormalized] : AdelicVectorBundle S E where
   toNormFamily := NormFamily.ofBasisHermitian S E b
   isMeasurable := NormFamily.ofBasisHermitian_isMeasurable b
-  dual_isMeasurable := NormFamily.ofBasisHermitian_dual_isMeasurable b hS
-  isDominated := NormFamily.ofBasisHermitian_isDominated b hS
+  dual_isMeasurable := NormFamily.ofBasisHermitian_dual_isMeasurable b
+  isDominated := NormFamily.ofBasisHermitian_isDominated b
 
 /-- The Hermitian bundle retains the actual completed Euclidean coordinate norms. -/
 @[simp]
 theorem ofBasisHermitian_toNormFamily
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (ofBasisHermitian S E b hS).toNormFamily = NormFamily.ofBasisHermitian S E b := rfl
+    [hS : S.IsArchimedeanNormalized] :
+    (ofBasisHermitian S E b).toNormFamily = NormFamily.ofBasisHermitian S E b := rfl
 
 /-- The constructed adelic bundle is Hermitian on its original completed scalar action. -/
 theorem ofBasisHermitian_isHermitian
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (ofBasisHermitian S E b hS).IsHermitian hS :=
-  NormFamily.ofBasisHermitian_isHermitian b hS
+    [hS : S.IsArchimedeanNormalized] :
+    (ofBasisHermitian S E b).IsHermitian :=
+  NormFamily.ofBasisHermitian_isHermitian b
 
 /-- The Hermitian basis bundle is strongly adelic. -/
 theorem ofBasisHermitian_isStronglyAdelic
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (ofBasisHermitian S E b hS).IsStronglyAdelic :=
-  (ofBasisHermitian_isHermitian S E b hS).isStronglyAdelic
+    [hS : S.IsArchimedeanNormalized] :
+    (ofBasisHermitian S E b).IsStronglyAdelic :=
+  (ofBasisHermitian_isHermitian S E b).isStronglyAdelic
 
 /-- Every finite-dimensional rational space admits an adelic vector bundle
 under finite Archimedean measure, including the zero-dimensional space. -/
@@ -85,9 +86,9 @@ theorem nonempty_of_measure_lt_top (hfin : S.v S.Ωinf < ⊤) :
 /-- Dominated Hermitian existence produces a genuine adelic bundle, with
 both measurability fields proved, in every finite dimension. -/
 theorem exists_hermitian
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    ∃ V : AdelicVectorBundle S E, V.IsHermitian hS :=
-  ⟨ofBasisHermitian S E (Module.finBasis K E) hS,
-    ofBasisHermitian_isHermitian S E (Module.finBasis K E) hS⟩
+    [hS : S.IsArchimedeanNormalized] :
+    ∃ V : AdelicVectorBundle S E, V.IsHermitian :=
+  ⟨ofBasisHermitian S E (Module.finBasis K E),
+    ofBasisHermitian_isHermitian S E (Module.finBasis K E)⟩
 
 end ArakelovGeometry.AdelicVectorBundle

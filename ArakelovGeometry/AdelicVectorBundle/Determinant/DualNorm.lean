@@ -70,13 +70,13 @@ theorem completedDeterminantPairing_ιMulti
 namespace NormFamily
 
 variable {K E} {S : AdelicStructure K} (ξ : NormFamily S E)
-  {hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
+  [hS : S.IsArchimedeanNormalized]
 
 omit [Field L] [Algebra K L] in
 /-- The actual completed determinant pairing has the product bound on pure
 wedges of a Hermitian norm family. -/
 theorem IsHermitian.norm_completedDeterminantPairing_ιMulti_le
-    (hξ : ξ.IsHermitian hS) (ω : S.Ω)
+    (hξ : ξ.IsHermitian) (ω : S.Ω)
     (f : Fin (Module.finrank K (Module.Dual K E)) →
       (S.ϕ ω).Completion ⊗[K] Module.Dual K E)
     (x : Fin (Module.finrank K E) → (S.ϕ ω).Completion ⊗[K] E) :
@@ -111,7 +111,7 @@ theorem IsHermitian.norm_completedDeterminantPairing_ιMulti_le
     exact h
   · let := hS ω hω
     let := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
-    let := hξ.fibreInnerProductSpace ω hω
+    let := ξ.fiberInnerProductSpace ω hω
     have h := norm_det_pairing_le_of_innerProduct g x Module.finrank_baseChange
     rw [hg] at h
     exact h
@@ -120,7 +120,7 @@ omit [Field L] [Algebra K L] in
 /-- Positive-rank determinant quotients inherit the exact pairing bound by
 arbitrarily close single-wedge presentations. -/
 theorem IsHermitian.norm_completedDeterminantPairing_le_of_pos_rank
-    (hξ : ξ.IsHermitian hS) (hr : 0 < Module.finrank K E) (ω : S.Ω)
+    (hξ : ξ.IsHermitian) (hr : 0 < Module.finrank K E) (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K]
       (⋀[K]^(Module.finrank K (Module.Dual K E)) (Module.Dual K E)))
     (w : (S.ϕ ω).Completion ⊗[K] (⋀[K]^(Module.finrank K E) E)) :
@@ -150,6 +150,7 @@ theorem IsHermitian.norm_completedDeterminantPairing_le_of_pos_rank
   exact hε ε hpos
 
 omit [Field L] [Algebra K L] in
+omit hS in
 /-- In rank zero the completed determinant pairing is multiplication on the
 two scalar unit lines, with its exact product norm. -/
 theorem norm_completedDeterminantPairing_of_finrank_eq_zero
@@ -184,7 +185,7 @@ omit [Field L] [Algebra K L] in
 /-- The canonical completed determinant pairing is contractive for a
 Hermitian family, including the scalar determinant line in rank zero. -/
 theorem IsHermitian.norm_completedDeterminantPairing_le
-    (hξ : ξ.IsHermitian hS) (ω : S.Ω)
+    (hξ : ξ.IsHermitian) (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K]
       (⋀[K]^(Module.finrank K (Module.Dual K E)) (Module.Dual K E)))
     (w : (S.ϕ ω).Completion ⊗[K] (⋀[K]^(Module.finrank K E) E)) :

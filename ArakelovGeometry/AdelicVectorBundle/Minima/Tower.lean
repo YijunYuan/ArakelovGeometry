@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Minima.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Tower.Transport
+
 import Mathlib.CategoryTheory.Category.Init
 
 /-!
@@ -37,10 +38,10 @@ namespace NormFamily
 /-- Actual nonzero-section degree is preserved by the genuine tower place
 map and measure, using produced domination and measurability. -/
 theorem vectorDegree_towerPullback (ξ : NormFamily (S.algebraicExtension L) E)
-    (hd : ξ.IsDominated) (hm : ξ.IsMeasurable) (F : IntermediateField K L)
+    [hd : ξ.IsDominated] [hm : ξ.IsMeasurable] (F : IntermediateField K L)
     (s : {x : E // x ≠ 0}) :
-    (ξ.towerPullback F).vectorDegree (hd.towerPullback F) (hm.towerPullback F) s =
-      ξ.vectorDegree hd hm s := by
+    (ξ.towerPullback F).vectorDegree (hd := (hd.towerPullback F)) (hm := (hm.towerPullback F)) s =
+      ξ.vectorDegree s := by
   rw [vectorDegree_eq_neg_integral, vectorDegree_eq_neg_integral, towerPullback_logNorm]
   exact congrArg (fun t : ℝ => -t)
     ((measurePreserving_scalarExtensionTowerPlace (S := S) F).integral_comp
@@ -54,7 +55,7 @@ curves; intermediate place regularity and properness are not assumptions. -/
 theorem vectorDegree_towerPullback (V : AdelicVectorBundle (S.algebraicExtension L) E)
     (F : IntermediateField K L) (s : {x : E // x ≠ 0}) :
     (V.towerPullback F).vectorDegree s = V.vectorDegree s :=
-  V.toNormFamily.vectorDegree_towerPullback V.isDominated V.isMeasurable F s
+  V.toNormFamily.vectorDegree_towerPullback F s
 
 /-- Actual degree-threshold generators, and hence their actual spans, agree. -/
 theorem degreeThresholdSpan_towerPullback (V : AdelicVectorBundle (S.algebraicExtension L) E)

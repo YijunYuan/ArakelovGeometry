@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Basic
 import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Determinant.Bound
 import ArakelovGeometry.AdelicVectorBundle.Dual.Bidual
@@ -63,14 +64,14 @@ variable [S.IsProper]
 the degree of its actual restricted-space dual norm. -/
 theorem degree_dual_pushforward_restriction_le (V : AdelicVectorBundle S E)
     (U : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hm : ((V.dualOfMeasurableBase hS).toNormFamily.pushforward U.subtype.dualMap
-      (LinearMap.dualMap_surjective_of_injective U.subtype_injective)).IsMeasurable) :
-    ((V.dualOfMeasurableBase hS).pushforward U.subtype.dualMap
-      (LinearMap.dualMap_surjective_of_injective U.subtype_injective) hm).degree hS hN ≤
-        ((V.restrictOfMeasurableBase U hS).dualOfMeasurableBase hS).degree hS hN := by
-  apply degree_antitone _ _ hS hN
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hm : ((V.dualOfMeasurableBase).toNormFamily.pushforward U.subtype.dualMap
+      (LinearMap.dualMap_surjective_of_injective U.subtype_injective)).IsMeasurable] :
+    ((V.dualOfMeasurableBase).pushforward U.subtype.dualMap
+      (LinearMap.dualMap_surjective_of_injective U.subtype_injective)).degree ≤
+        ((V.restrictOfMeasurableBase U).dualOfMeasurableBase).degree := by
+  apply degree_antitone _ _
   intro ω z
   exact V.toNormFamily.restrict_dual_norm_le_dual_pushforward U ω z
 
@@ -78,32 +79,32 @@ theorem degree_dual_pushforward_restriction_le (V : AdelicVectorBundle S E)
 bounds the ambient dual minimum by each nonzero restricted-space dual mean. -/
 theorem minimalSlope_dual_le_slope_dual_restrict (V : AdelicVectorBundle S E)
     (U : Submodule K E) (hU : 0 < Module.finrank K U)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.dualOfMeasurableBase hS).minimalSlope hS hN ≤
-      (((V.restrictOfMeasurableBase U hS).dualOfMeasurableBase hS).slope hS hN : EReal) := by
-  let D := V.dualOfMeasurableBase hS
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    (V.dualOfMeasurableBase).minimalSlope ≤
+      (((V.restrictOfMeasurableBase U).dualOfMeasurableBase).slope : EReal) := by
+  let D := V.dualOfMeasurableBase
   let p := U.subtype.dualMap
   let hp := LinearMap.dualMap_surjective_of_injective U.subtype_injective
-  let hm := D.isMeasurable.pushforward_of_discrete_or_countable hS p hp
+  let hm := D.isMeasurable.pushforward_of_discrete_or_countable p hp
   have hr : 0 < Module.finrank K (Module.Dual K U) := by
     rwa [Subspace.dual_finrank_eq]
-  have hq := D.minimalSlope_le_slope_pushforward p hp hm hr hS hN
+  have hq := D.minimalSlope_le_slope_pushforward p hp (hm := hm) hr
   refine hq.trans (EReal.coe_le_coe_iff.mpr ?_)
-  apply div_le_div_of_nonneg_right (V.degree_dual_pushforward_restriction_le U hS hN hm)
+  apply div_le_div_of_nonneg_right (V.degree_dual_pushforward_restriction_le U (hm := hm))
     (Nat.cast_nonneg (Module.finrank K (Module.Dual K U)))
 
 /-- Dividing the sharp actual determinant degree-duality defect by
 the positive rank gives the sharp source mean-slope bound. -/
 theorem slope_add_slope_dual_le_half_log_rank (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (hr : 0 < Module.finrank K E) :
-    V.slope hS hN + (V.dualOfMeasurableBase hS).slope hS hN ≤
+    V.slope + (V.dualOfMeasurableBase).slope ≤
       (1 / 2 : ℝ) * Real.log (Module.finrank K E) * (S.v S.Ωinf).toReal := by
-  have hd := V.degree_add_degree_dual_le hS hN
-  rw [V.degree_eq_rank_mul_slope hS hN,
-    (V.dualOfMeasurableBase hS).degree_eq_rank_mul_slope hS hN,
+  have hd := V.degree_add_degree_dual_le
+  rw [V.degree_eq_rank_mul_slope,
+    (V.dualOfMeasurableBase).degree_eq_rank_mul_slope,
     Subspace.dual_finrank_eq] at hd
   have hp : (0 : ℝ) < Module.finrank K E := Nat.cast_pos.mpr hr
   apply (mul_le_mul_iff_right₀ hp).mp
@@ -112,34 +113,34 @@ theorem slope_add_slope_dual_le_half_log_rank (V : AdelicVectorBundle S E)
 /-- The vanishing actual Hermitian determinant discrepancy gives exact
 duality of the real mean slopes, including their zero-rank convention. -/
 theorem slope_add_slope_dual_eq_zero_of_isHermitian (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) :
-    V.slope hS hN + (V.dualOfMeasurableBase hS).slope hS hN = 0 := by
-  have hd : V.degree hS hN + (V.dualOfMeasurableBase hS).degree hS hN = 0 := by
-    rw [← V.determinantDiscrepancy_eq_degree_add_degree_dual hS hN]
-    exact V.determinantDiscrepancy_eq_zero_of_isHermitian hN hV
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] :
+    V.slope + (V.dualOfMeasurableBase).slope = 0 := by
+  have hd : V.degree + (V.dualOfMeasurableBase).degree = 0 := by
+    rw [← V.determinantDiscrepancy_eq_degree_add_degree_dual]
+    exact V.determinantDiscrepancy_eq_zero_of_isHermitian
   rw [slope, slope, Subspace.dual_finrank_eq, ← add_div, hd, zero_div]
 
 /-- Source Corollary 4.3.27, equation (4.48), for the actual source
 maximal and minimal slopes. Positive rank is essential to the statement. -/
 theorem minimalSlope_dual_add_maximalSlope_le_half_log_rank (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (hr : 0 < Module.finrank K E) :
-    (V.dualOfMeasurableBase hS).minimalSlope hS hN + V.maximalSlope hS hN ≤
+    (V.dualOfMeasurableBase).minimalSlope + V.maximalSlope ≤
       ((1 / 2 : ℝ) * Real.log (Module.finrank K E) * (S.v S.Ωinf).toReal : EReal) := by
   have hrD : 0 < Module.finrank K (Module.Dual K E) := by
     rwa [Subspace.dual_finrank_eq]
-  obtain ⟨a, ha⟩ := (V.dualOfMeasurableBase hS).exists_minimalSlope_eq_coe hS hN hrD
+  obtain ⟨a, ha⟩ := (V.dualOfMeasurableBase).exists_minimalSlope_eq_coe hrD
   let C := (1 / 2 : ℝ) * Real.log (Module.finrank K E) * (S.v S.Ωinf).toReal
-  have hmax : V.maximalSlope hS hN ≤ ((C - a : ℝ) : EReal) := by
-    apply V.maximalSlope_le hS hN
+  have hmax : V.maximalSlope ≤ ((C - a : ℝ) : EReal) := by
+    apply V.maximalSlope_le
     intro U hU
-    have hm := V.minimalSlope_dual_le_slope_dual_restrict U hU hS hN
+    have hm := V.minimalSlope_dual_le_slope_dual_restrict U hU
     rw [ha, EReal.coe_le_coe_iff] at hm
-    have hd := (V.restrictOfMeasurableBase U hS).slope_add_slope_dual_le_half_log_rank
-      hS hN hU
+    have hd := (V.restrictOfMeasurableBase U).slope_add_slope_dual_le_half_log_rank
+      hU
     have hl : (1 / 2 : ℝ) * Real.log (Module.finrank K U) * (S.v S.Ωinf).toReal ≤ C := by
       have hlog := Real.log_le_log (Nat.cast_pos.mpr hU) (Nat.cast_le.mpr U.finrank_le)
       dsimp only [C]
@@ -150,20 +151,20 @@ theorem minimalSlope_dual_add_maximalSlope_le_half_log_rank (V : AdelicVectorBun
     linarith
   rw [ha]
   calc
-    (a : EReal) + V.maximalSlope hS hN ≤ (a : EReal) + ((C - a : ℝ) : EReal) :=
+    (a : EReal) + V.maximalSlope ≤ (a : EReal) + ((C - a : ℝ) : EReal) :=
       add_le_add le_rfl hmax
     _ = (C : EReal) := by rw [← EReal.coe_add, add_sub_cancel]
 
 /-- Canonical completed biduality for an actual ultrametric norm family
 preserves its maximal slope. In particular this applies to Hermitian bundles. -/
 theorem maximalSlope_dual_dual_eq_of_isUltrametric (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsUltrametric) :
-    ((V.dualOfMeasurableBase hS).dualOfMeasurableBase hS).maximalSlope hS hN =
-      V.maximalSlope hS hN := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsUltrametric] :
+    ((V.dualOfMeasurableBase).dualOfMeasurableBase).maximalSlope =
+      V.maximalSlope := by
   symm
-  apply V.maximalSlope_eq_of_completed_isometry _ (Module.evalEquiv K E) hS hN
+  apply V.maximalSlope_eq_of_completed_isometry _ (Module.evalEquiv K E)
   intro ω x
   simp only [dualOfMeasurableBase_toNormFamily, Module.evalEquiv_toLinearMap]
   by_cases hω : ω ∈ S.Ωfin
@@ -174,32 +175,32 @@ theorem maximalSlope_dual_dual_eq_of_isUltrametric (V : AdelicVectorBundle S E)
 dual minimum and primal maximum have zero sum in positive rank. -/
 theorem minimalSlope_dual_add_maximalSlope_eq_zero_of_isHermitian
     (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) (hr : 0 < Module.finrank K E) :
-    (V.dualOfMeasurableBase hS).minimalSlope hS hN + V.maximalSlope hS hN = 0 := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    (V.dualOfMeasurableBase).minimalSlope + V.maximalSlope = 0 := by
   have hrD : 0 < Module.finrank K (Module.Dual K E) := by
     rwa [Subspace.dual_finrank_eq]
-  obtain ⟨a, ha⟩ := (V.dualOfMeasurableBase hS).exists_minimalSlope_eq_coe hS hN hrD
-  have hmax : V.maximalSlope hS hN ≤ ((-a : ℝ) : EReal) := by
-    apply V.maximalSlope_le hS hN
+  obtain ⟨a, ha⟩ := (V.dualOfMeasurableBase).exists_minimalSlope_eq_coe hrD
+  have hmax : V.maximalSlope ≤ ((-a : ℝ) : EReal) := by
+    apply V.maximalSlope_le
     intro U hU
-    have hm := V.minimalSlope_dual_le_slope_dual_restrict U hU hS hN
+    have hm := V.minimalSlope_dual_le_slope_dual_restrict U hU
     rw [ha, EReal.coe_le_coe_iff] at hm
-    have hd := (V.restrictOfMeasurableBase U hS).slope_add_slope_dual_eq_zero_of_isHermitian
-      hS hN (hV.restrict U)
+    have hd := (V.restrictOfMeasurableBase U).slope_add_slope_dual_eq_zero_of_isHermitian
+      (hV := (hV.restrict U))
     apply EReal.coe_le_coe_iff.mpr
     linarith
-  have hupper : (V.dualOfMeasurableBase hS).minimalSlope hS hN +
-      V.maximalSlope hS hN ≤ 0 := by
+  have hupper : (V.dualOfMeasurableBase).minimalSlope +
+      V.maximalSlope ≤ 0 := by
     rw [ha]
     calc
-      (a : EReal) + V.maximalSlope hS hN ≤ (a : EReal) + ((-a : ℝ) : EReal) :=
+      (a : EReal) + V.maximalSlope ≤ (a : EReal) + ((-a : ℝ) : EReal) :=
         add_le_add le_rfl hmax
       _ = 0 := by rw [← EReal.coe_add, add_neg_cancel, EReal.coe_zero]
-  have hlower := (V.dualOfMeasurableBase hS).minimalSlope_add_maximalSlope_dual_nonneg
-    hS hN hrD
-  rw [V.maximalSlope_dual_dual_eq_of_isUltrametric hS hN hV.1] at hlower
+  have hlower := (V.dualOfMeasurableBase).minimalSlope_add_maximalSlope_dual_nonneg
+    hrD
+  rw [V.maximalSlope_dual_dual_eq_of_isUltrametric] at hlower
   exact le_antisymm hupper hlower
 
 end AdelicVectorBundle

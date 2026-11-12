@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Examples.FunctionFields
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
+
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.PositiveAtoms.AtomicNormComparison
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 
@@ -86,7 +87,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 distance. No countability or sigma-finiteness of the original base is used. -/
 theorem IsDominated.bidual_coordinate_finite_weighted_tail
     [DiscreteMeasurableSpace S.Ω] (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hfin : S.v S.Ωinf < ⊤)
+    [hpos : S.HasPositiveAtoms] (hfin : S.v S.Ωinf < ⊤)
     {ε : ℝ} (hε : 0 < ε) :
     let p := ξ.dual.dual.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K)
     let q := ofBasisMixed S E b
@@ -97,7 +98,7 @@ theorem IsDominated.bidual_coordinate_finite_weighted_tail
   let p := ξ.dual.dual.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K)
   let q := ofBasisMixed S E b
   obtain ⟨hi, hc, _⟩ :=
-    IsDominated.bidual_coordinate_exceptions_of_positive_atoms b ξ hξ hpos hfin
+    IsDominated.bidual_coordinate_exceptions_of_positive_atoms b ξ hξ hfin
   obtain ⟨s, hs, ht⟩ :=
     exists_finset_integral_abs_compl_lt_of_countable_support hi hc hε
   have habs : (fun ω => |p.localDist q ω|) = p.localDist q :=
@@ -127,7 +128,6 @@ theorem IsDominated.functionField_bidual_coordinate_finite_weighted_tail
       (∫ ω, p.localDist q ω ∂S.v) -
         (∑ ω ∈ s, (S.v {ω}).toReal * p.localDist q ω) < ε := by
   apply IsDominated.bidual_coordinate_finite_weighted_tail b ξ hξ
-    AdelicStructure.functionField_singleton_pos
   · rw [AdelicStructure.functionField_Ωinf_eq_empty, measure_empty]
     exact ENNReal.zero_lt_top
   · exact hε

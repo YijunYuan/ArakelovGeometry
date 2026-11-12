@@ -23,7 +23,7 @@ variable {L C : Type*} [Lattice L] [CompleteLinearOrder C]
 
 /-- A semistable interval bounds every interval entering it from below. -/
 theorem IsSemistable.A_le_of_not_le {I : StrictIntvl L}
-    (h : (μ.restrict I).IsSemistable) {u m : L}
+    [h : (μ.restrict I).IsSemistable] {u m : L}
     (hum : u < m) (huA : u ≤ I.left) (hmB : m ≤ I.right) (hmA : ¬ m ≤ I.left) :
     μ.A ⟨u, m, hum⟩ ≤ μ.A I := by
   let J : StrictIntvl L := ⟨u, I.right, hum.trans_le hmB⟩

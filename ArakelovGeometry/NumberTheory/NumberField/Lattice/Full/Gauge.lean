@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.Full.Model
 public import ArakelovGeometry.NumberTheory.NumberField.Local.Lattice.PrincipalFrame
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Coherence.Model
 import Mathlib.Topology.Sheaves.Init
@@ -238,9 +239,10 @@ theorem fullLatticeGaugeFamily_norm_not_finite (L : Submodule (𝓞 K) E) (hfg :
   rw [dite_eq_right hω]
 
 /-- The family is genuinely ultrametric at every finite completed fibre. -/
-theorem fullLatticeGaugeFamily_isUltrametric (L : Submodule (𝓞 K) E) (hfg : L.FG)
+instance fullLatticeGaugeFamily_isUltrametric (L : Submodule (𝓞 K) E) (hfg : L.FG)
     (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (S₀) E) :
     (fullLatticeGaugeFamily L hfg hspan η).IsUltrametric := by
+  constructor
   intro ω hω x y
   let b := rationalLocalGenericBasis L hfg hspan (primeAt ω hω)
   have hn (z) : (fullLatticeGaugeFamily L hfg hspan η).norm ω z =

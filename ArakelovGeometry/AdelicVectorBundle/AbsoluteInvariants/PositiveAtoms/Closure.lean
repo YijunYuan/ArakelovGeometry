@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants.PositiveAtoms.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Isomorphism.DeterminantRational
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.EquivMeasure
 import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Determinant.Basic
 import ArakelovGeometry.AdelicVectorBundle.Determinant.WedgeApproximation
@@ -139,12 +140,12 @@ variable [S.IsProper] [IsAlgClosed L] [IsAlgClosed M]
 /-- Produced native determinant measurability and actual rational integral
 transport preserve the degree on the literal native subspace. -/
 theorem nativeAlgebraicRestrictionDegreeOfPositiveAtoms_algEquiv
-    (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin)
+    (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     (σ : L ≃ₐ[K] M) (A : Submodule L (L ⊗[K] E)) :
-    ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS
+    ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms
       (scalarExtensionSubspaceOrderIso (E := E) σ A) =
-      ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS A := by
+      ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A := by
   let := RingHomInvPair.of_ringEquiv σ.toRingEquiv
   let := RingHomInvPair.of_ringEquiv_symm σ.toRingEquiv
   let t := determinantGenerator (K := L) (E := A)
@@ -152,45 +153,45 @@ theorem nativeAlgebraicRestrictionDegreeOfPositiveAtoms_algEquiv
   let d := scalarExtensionRestrictionDeterminantEquiv σ A
   have hd : d t ≠ 0 := d.map_ne_zero_iff.mpr ht
   rw [ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms_eq_neg_integral
-    hξ hpos hS _ (d t) hd,
+      _ (d t) hd,
     ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms_eq_neg_integral
-      hξ hpos hS A t ht]
+        A t ht]
   exact congrArg (fun a : ℝ => -a)
     (ξ.scalarExtension_restrict_determinant_integral_logNorm_algEquiv σ A t)
 
 /-- Every native subspace is transported, so the entire positive-degree
 supremum is preserved without an attainment assumption. -/
 theorem iSup_nativeAlgebraicRestrictionDegreeOfPositiveAtoms_algEquiv
-    (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin)
+    (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     (σ : L ≃ₐ[K] M) :
     (⨆ B : Submodule M (M ⊗[K] E),
-      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS B : EReal)) =
+      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms B : EReal)) =
     ⨆ A : Submodule L (L ⊗[K] E),
-      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS A : EReal) := by
+      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A : EReal) := by
   apply le_antisymm
   · apply iSup_le
     intro B
-    rw [← ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms_algEquiv hξ hpos hS σ.symm B]
+    rw [← ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms_algEquiv σ.symm B]
     exact le_iSup (fun A : Submodule L (L ⊗[K] E) =>
-      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS A : EReal)) _
+      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A : EReal)) _
   · apply iSup_le
     intro A
-    rw [← ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms_algEquiv hξ hpos hS σ A]
+    rw [← ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms_algEquiv σ A]
     exact le_iSup (fun B : Submodule M (M ⊗[K] E) =>
-      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS B : EReal)) _
+      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms B : EReal)) _
 
 /-- Positive-rank native means are transported in both directions, including
 an empty index set. -/
 theorem iSup_nativeMeanOfPositiveAtoms_algEquiv
-    (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin)
+    (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     (σ : L ≃ₐ[K] M) :
     (⨆ B : {B : Submodule M (M ⊗[K] E) // 0 < Module.finrank M B},
-      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS B.val /
+      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms B.val /
         (Module.finrank M B.val : ℝ) : EReal)) =
     ⨆ A : {A : Submodule L (L ⊗[K] E) // 0 < Module.finrank L A},
-      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS A.val /
+      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A.val /
         (Module.finrank L A.val : ℝ) : EReal) := by
   apply le_antisymm
   · apply iSup_le
@@ -199,11 +200,11 @@ theorem iSup_nativeMeanOfPositiveAtoms_algEquiv
     have hr : Module.finrank L A = Module.finrank M B.val :=
       scalarExtensionSubspaceOrderIso_finrank σ.symm B.val
     have hd := ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms_algEquiv
-      hξ hpos hS σ.symm B.val
+        σ.symm B.val
     have hA : 0 < Module.finrank L A := hr.symm ▸ B.property
     exact (le_of_eq (by rw [← hd, ← hr])).trans
       (le_iSup (fun A : {A : Submodule L (L ⊗[K] E) // 0 < Module.finrank L A} =>
-        (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS A.val /
+        (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A.val /
           (Module.finrank L A.val : ℝ) : EReal)) ⟨A, hA⟩)
   · apply iSup_le
     intro A
@@ -211,36 +212,36 @@ theorem iSup_nativeMeanOfPositiveAtoms_algEquiv
     have hr : Module.finrank M B = Module.finrank L A.val :=
       scalarExtensionSubspaceOrderIso_finrank σ A.val
     have hd := ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms_algEquiv
-      hξ hpos hS σ A.val
+        σ A.val
     have hB : 0 < Module.finrank M B := hr.symm ▸ A.property
     exact (le_of_eq (by rw [← hd, ← hr])).trans
       (le_iSup (fun B : {B : Submodule M (M ⊗[K] E) // 0 < Module.finrank M B} =>
-        (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS B.val /
+        (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms B.val /
           (Module.finrank M B.val : ℝ) : EReal)) ⟨B, hB⟩)
 
 /-- The geometric absolute positive degree is computed over every algebraic
 closure through its actual native restrictions. -/
 theorem absolutePositiveDegreeOfPositiveAtoms_eq_iSup_of_isAlgClosed
-    (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
-    ξ.absolutePositiveDegreeOfPositiveAtoms hξ hpos hS =
+    (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
+    ξ.absolutePositiveDegreeOfPositiveAtoms =
       ⨆ A : Submodule L (L ⊗[K] E),
-        (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS A : EReal) := by
+        (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A : EReal) := by
   let : IsAlgClosure K L := ⟨inferInstance, inferInstance⟩
-  exact (ξ.iSup_nativeAlgebraicRestrictionDegreeOfPositiveAtoms_algEquiv hξ hpos hS
+  exact (ξ.iSup_nativeAlgebraicRestrictionDegreeOfPositiveAtoms_algEquiv
     (IsAlgClosure.equiv K (AlgebraicClosure K) L)).symm
 
 /-- The geometric absolute maximal slope is computed over every algebraic
 closure, with its existing empty-supremum convention. -/
 theorem absoluteMaximalSlopeOfPositiveAtoms_eq_iSup_of_isAlgClosed
-    (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
-    ξ.absoluteMaximalSlopeOfPositiveAtoms hξ hpos hS =
+    (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
+    ξ.absoluteMaximalSlopeOfPositiveAtoms =
       ⨆ A : {A : Submodule L (L ⊗[K] E) // 0 < Module.finrank L A},
-        (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS A.val /
+        (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A.val /
           (Module.finrank L A.val : ℝ) : EReal) := by
   let : IsAlgClosure K L := ⟨inferInstance, inferInstance⟩
-  exact (ξ.iSup_nativeMeanOfPositiveAtoms_algEquiv hξ hpos hS
+  exact (ξ.iSup_nativeMeanOfPositiveAtoms_algEquiv
     (IsAlgClosure.equiv K (AlgebraicClosure K) L)).symm
 
 end NormFamily

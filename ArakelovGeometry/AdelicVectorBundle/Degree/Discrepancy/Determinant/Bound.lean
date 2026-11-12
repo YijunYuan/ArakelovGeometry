@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Determinant.Basic
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Comparison
 import ArakelovGeometry.AdelicVectorBundle.Determinant.PairingLocal
@@ -178,7 +179,7 @@ theorem log_determinantDiscrepancy_le_half_finrank_mul_log_finrank
 /-- Finite places contribute zero; the sharp logarithmic discrepancy is
 bounded by the rank constant supported on the infinite locus. -/
 theorem log_determinantDiscrepancy_le_indicator (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω) :
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω) :
     Real.log (ξ.determinantDiscrepancy ω) ≤
       S.Ωinf.indicator (fun _ ↦
         (Module.finrank K E : ℝ) / 2 * Real.log (Module.finrank K E)) ω := by
@@ -195,7 +196,7 @@ theorem log_determinantDiscrepancy_le_indicator (ξ : NormFamily S E)
 everywhere; finite vector norms need no ultrametric hypothesis. -/
 theorem determinantDiscrepancy_eq_one_of_archimedeanInnerProducts
     (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (hI : ∀ (ω : S.Ω) (hω : ω ∈ S.Ωinf),
       letI := IsRCLikeNormedField.rclike (S.ϕ ω).Completion (h := hN ω hω)
       ∃ c : InnerProductSpace.Core (S.ϕ ω).Completion ((S.ϕ ω).Completion ⊗[K] E),
@@ -217,21 +218,21 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- The sharp upper bound in Proposition4.3.10 follows by integrating the
 actual local determinant discrepancy, in every rank. -/
 theorem degree_add_degree_dual_le [S.IsProper] (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.degree hS hN + (V.dualOfMeasurableBase hS).degree hS hN ≤
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.degree + (V.dualOfMeasurableBase).degree ≤
       (Module.finrank K E : ℝ) / 2 * Real.log (Module.finrank K E) *
         (S.v S.Ωinf).toReal := by
-  rw [V.degree_add_degree_dual_eq_integral_log_determinantDiscrepancy hS hN]
+  rw [V.degree_add_degree_dual_eq_integral_log_determinantDiscrepancy]
   let C := (Module.finrank K E : ℝ) / 2 * Real.log (Module.finrank K E)
   have hR : Integrable (S.Ωinf.indicator (fun _ ↦ C)) S.v :=
     (integrable_indicator_iff S.measurableSet_Ωinf).mpr
-      (integrableOn_const (S.v_Ωinf_lt_top_of_isRCLike hN).ne)
+      (integrableOn_const (S.v_Ωinf_lt_top_of_isRCLike).ne)
   calc
     (∫ ω, Real.log (V.toNormFamily.determinantDiscrepancy ω) ∂S.v) ≤
         ∫ ω, S.Ωinf.indicator (fun _ ↦ C) ω ∂S.v :=
-      integral_mono (V.integrable_log_determinantDiscrepancy hS hN) hR
-        (V.toNormFamily.log_determinantDiscrepancy_le_indicator hN)
+      integral_mono (V.integrable_log_determinantDiscrepancy) hR
+        (V.toNormFamily.log_determinantDiscrepancy_le_indicator)
     _ = _ := by
       rw [integral_indicator_const C S.measurableSet_Ωinf]
       change (S.v S.Ωinf).toReal * C = C * (S.v S.Ωinf).toReal
@@ -241,18 +242,18 @@ theorem degree_add_degree_dual_le [S.IsProper] (V : AdelicVectorBundle S E)
 infinity, allowing arbitrary finite-place vector norms. -/
 theorem degree_add_degree_dual_eq_zero_of_archimedeanInnerProducts [S.IsProper]
     (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (hI : ∀ (ω : S.Ω) (hω : ω ∈ S.Ωinf),
       letI := IsRCLikeNormedField.rclike (S.ϕ ω).Completion (h := hN ω hω)
       ∃ c : InnerProductSpace.Core (S.ϕ ω).Completion ((S.ϕ ω).Completion ⊗[K] E),
         ∀ x, (V.toNormFamily.norm ω x) ^ 2 = RCLike.re (c.inner x x)) :
-    V.degree hS hN + (V.dualOfMeasurableBase hS).degree hS hN = 0 := by
-  rw [V.degree_add_degree_dual_eq_integral_log_determinantDiscrepancy hS hN]
+    V.degree + (V.dualOfMeasurableBase).degree = 0 := by
+  rw [V.degree_add_degree_dual_eq_integral_log_determinantDiscrepancy]
   have he : (fun ω ↦ Real.log (V.toNormFamily.determinantDiscrepancy ω)) =
       (fun _ ↦ (0 : ℝ)) := by
     funext ω
-    rw [V.toNormFamily.determinantDiscrepancy_eq_one_of_archimedeanInnerProducts hN hI ω,
+    rw [V.toNormFamily.determinantDiscrepancy_eq_one_of_archimedeanInnerProducts hI ω,
       Real.log_one]
   rw [he, integral_zero]
 

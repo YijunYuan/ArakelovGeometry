@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basic
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.RingTheory.Valuation.Integers
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import ArakelovGeometry.Analysis.AbsoluteValue.Ostrowski
 
@@ -149,7 +150,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- The literal rational unit ball, with its genuine module structure over the
 actual rational local valuation ring. -/
 def rationalUnitBallModule (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hξ : ξ.IsUltrametric) : Submodule (S.rationalLocalRing ω hω) E where
+    [hξ : ξ.IsUltrametric] : Submodule (S.rationalLocalRing ω hω) E where
   carrier := ξ.rationalUnitBall ω
   zero_mem' := ξ.zero_mem_rationalUnitBall ω
   add_mem' {x y} hx hy := by
@@ -166,16 +167,16 @@ def rationalUnitBallModule (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωf
 
 @[simp]
 theorem coe_rationalUnitBallModule (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hξ : ξ.IsUltrametric) :
-    (ξ.rationalUnitBallModule ω hω hξ : Set E) = ξ.rationalUnitBall ω := rfl
+    [hξ : ξ.IsUltrametric] :
+    (ξ.rationalUnitBallModule ω hω : Set E) = ξ.rationalUnitBall ω := rfl
 
 /-- The inclusion of the actual rational unit ball is a genuine localization
 at the nonzero elements of the actual rational local coefficient ring. -/
 theorem isLocalizedModule_rationalUnitBallModule [NumberField K]
     (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hnt : (S.ϕ ω).IsNontrivial) (hξ : ξ.IsUltrametric) :
+    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
     IsLocalizedModule (nonZeroDivisors (S.rationalLocalRing ω hω))
-      (ξ.rationalUnitBallModule ω hω hξ).subtype := by
+      (ξ.rationalUnitBallModule ω hω).subtype := by
   let R := S.rationalLocalRing ω hω
   let : IsLocalizedModule (nonZeroDivisors R) (LinearMap.id : E →ₗ[R] E) :=
     isLocalizedModule_id (nonZeroDivisors R) E K
@@ -200,22 +201,22 @@ theorem isLocalizedModule_rationalUnitBallModule [NumberField K]
 module to the actual number field recovers the original vector space. -/
 noncomputable def rationalUnitBallGenericFibreEquiv [NumberField K]
     (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hnt : (S.ϕ ω).IsNontrivial) (hξ : ξ.IsUltrametric) :
-    K ⊗[S.rationalLocalRing ω hω] (ξ.rationalUnitBallModule ω hω hξ) ≃ₗ[K] E := by
-  letI := ξ.isLocalizedModule_rationalUnitBallModule ω hω hnt hξ
+    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    K ⊗[S.rationalLocalRing ω hω] (ξ.rationalUnitBallModule ω hω) ≃ₗ[K] E := by
+  letI := ξ.isLocalizedModule_rationalUnitBallModule ω hω hnt
   exact (IsLocalizedModule.isBaseChange (nonZeroDivisors (S.rationalLocalRing ω hω))
-    K (ξ.rationalUnitBallModule ω hω hξ).subtype).equiv
+    K (ξ.rationalUnitBallModule ω hω).subtype).equiv
 
 @[simp]
 theorem rationalUnitBallGenericFibreEquiv_tmul [NumberField K]
     (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hnt : (S.ϕ ω).IsNontrivial) (hξ : ξ.IsUltrametric) (c : K)
-    (x : ξ.rationalUnitBallModule ω hω hξ) :
-    ξ.rationalUnitBallGenericFibreEquiv ω hω hnt hξ
+    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] (c : K)
+    (x : ξ.rationalUnitBallModule ω hω) :
+    ξ.rationalUnitBallGenericFibreEquiv ω hω hnt
       (c ⊗ₜ[S.rationalLocalRing ω hω] x) = c • (x : E) := by
-  let := ξ.isLocalizedModule_rationalUnitBallModule ω hω hnt hξ
+  let := ξ.isLocalizedModule_rationalUnitBallModule ω hω hnt
   exact IsBaseChange.equiv_tmul
     (IsLocalizedModule.isBaseChange (nonZeroDivisors (S.rationalLocalRing ω hω))
-      K (ξ.rationalUnitBallModule ω hω hξ).subtype) c x
+      K (ξ.rationalUnitBallModule ω hω).subtype) c x
 
 end ArakelovGeometry.NormFamily

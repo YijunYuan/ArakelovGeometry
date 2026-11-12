@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.WeightedJacobian
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import Mathlib.Topology.Sheaves.Init
 
@@ -35,10 +36,10 @@ def productBall (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (R 
 
 /-- Canonical ordinary Euclidean volume, on the same original product as its lattice covolume. -/
 def productBallVolume (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) (R : ℝ) : ENNReal := by
+    [hξ : ξ.IsHermitian] (R : ℝ) : ENNReal := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
@@ -126,7 +127,7 @@ theorem productBall_isCompact (ξ : NormFamily (normalizedNumberFieldAdelicStruc
 @[instance_reducible]
 def fibreRealInnerProduct
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) (w : InfinitePlace K) :
+    [hξ : ξ.IsHermitian] (w : InfinitePlace K) :
     letI := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
     letI := fibreRealNormedSpace ξ w
     InnerProductSpace ℝ (CompletedCoefficient w ⊗[K] E) := by
@@ -139,15 +140,15 @@ def fibreRealInnerProduct
 
 /-- A real orthonormal basis of the original completed Hermitian fibre. -/
 def fibreRealBasis (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) (w : InfinitePlace K) :
+    [hξ : ξ.IsHermitian] (w : InfinitePlace K) :
     letI := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
     letI := fibreRealNormedSpace ξ w
-    letI := fibreRealInnerProduct hξ w
+    letI := fibreRealInnerProduct (ξ := ξ) w
     OrthonormalBasis (Fin (Module.finrank ℝ (CompletedCoefficient w ⊗[K] E))) ℝ
       (CompletedCoefficient w ⊗[K] E) := by
   let := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
   let := fibreRealNormedSpace ξ w
-  let := fibreRealInnerProduct hξ w
+  let := fibreRealInnerProduct (ξ := ξ) w
   let : FiniteDimensional ℝ (CompletedCoefficient w ⊗[K] E) := finite_completedFibreReal w
   exact stdOrthonormalBasis ℝ _
 
@@ -157,29 +158,29 @@ abbrev RealCoordinateIndex :=
 
 /-- The actual original-product coordinate equivalence in fibre orthonormal coordinates. -/
 def realCoordinateEquiv (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     CompletedVectorProduct K E ≃ₗ[ℝ] (RealCoordinateIndex (K := K) (E := E) → ℝ) := by
   let : ∀ w : InfinitePlace K, NormedAddCommGroup (CompletedCoefficient w ⊗[K] E) :=
     fun w => ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
   let : ∀ w : InfinitePlace K, NormedSpace ℝ (CompletedCoefficient w ⊗[K] E) :=
     fun w => fibreRealNormedSpace ξ w
   let : ∀ w : InfinitePlace K, InnerProductSpace ℝ (CompletedCoefficient w ⊗[K] E) :=
-    fun w => fibreRealInnerProduct hξ w
-  exact (Pi.basis (fun w => (fibreRealBasis ξ hξ w).toBasis)).equivFun
+    fun w ↦ fibreRealInnerProduct (ξ := ξ) w
+  exact (Pi.basis (fun w ↦ (fibreRealBasis ξ w).toBasis)).equivFun
 
 /-- Parseval's identity for each original completed fibre, with ordinary real coordinates. -/
 theorem fibre_norm_sq_coordinates (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) (w : InfinitePlace K)
+    [hξ : ξ.IsHermitian] (w : InfinitePlace K)
     (z : CompletedVectorProduct K E) :
     (ξ.norm (normalizedInfinitePlacePoint w) (z w)) ^ 2 =
-      ∑ i, (realCoordinateEquiv ξ hξ z ⟨w, i⟩) ^ 2 := by
+      ∑ i, (realCoordinateEquiv ξ z ⟨w, i⟩) ^ 2 := by
   let : ∀ w : InfinitePlace K, NormedAddCommGroup (CompletedCoefficient w ⊗[K] E) :=
     fun w => ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
   let : ∀ w : InfinitePlace K, NormedSpace ℝ (CompletedCoefficient w ⊗[K] E) :=
     fun w => fibreRealNormedSpace ξ w
   let : ∀ w : InfinitePlace K, InnerProductSpace ℝ (CompletedCoefficient w ⊗[K] E) :=
-    fun w => fibreRealInnerProduct hξ w
-  have h := (fibreRealBasis ξ hξ w).repr.norm_map (z w)
+    fun w ↦ fibreRealInnerProduct (ξ := ξ) w
+  have h := (fibreRealBasis ξ w).repr.norm_map (z w)
   change ‖z w‖ ^ 2 = _
   rw [← h, PiLp.norm_sq_eq_of_L2]
   congr 1
@@ -190,44 +191,44 @@ theorem fibre_norm_sq_coordinates (ξ : NormFamily (normalizedNumberFieldAdelicS
 
 /-- The original completed product is isometric to its blockwise ordinary real coordinates. -/
 def realCoordinateIsometry (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
     CompletedVectorProduct K E ≃ₗᵢ[ℝ]
       EuclideanSpace ℝ (RealCoordinateIndex (K := K) (E := E)) := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  refine { (realCoordinateEquiv ξ hξ).trans
+  refine { (realCoordinateEquiv ξ).trans
     (WithLp.linearEquiv 2 ℝ (RealCoordinateIndex (K := K) (E := E) → ℝ)).symm with
       norm_map' := ?_ }
   intro z
-  change ‖WithLp.toLp 2 (realCoordinateEquiv ξ hξ z)‖ = ‖z‖
-  have hsq : ‖WithLp.toLp 2 (realCoordinateEquiv ξ hξ z)‖ ^ 2 = ‖z‖ ^ 2 := by
+  change ‖WithLp.toLp 2 (realCoordinateEquiv ξ z)‖ = ‖z‖
+  have hsq : ‖WithLp.toLp 2 (realCoordinateEquiv ξ z)‖ ^ 2 = ‖z‖ ^ 2 := by
     rw [PiLp.norm_sq_eq_of_L2, euclidean_norm_sq, Fintype.sum_sigma]
     apply Finset.sum_congr rfl
     intro w _
-    simpa only [Real.norm_eq_abs, sq_abs] using (fibre_norm_sq_coordinates ξ hξ w z).symm
+    simpa only [Real.norm_eq_abs, sq_abs] using (fibre_norm_sq_coordinates ξ w z).symm
   exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp hsq
 
 /-- The actual block coordinate equivalence preserves canonical ordinary Euclidean volume. -/
 theorem realCoordinateEquiv_measurePreserving
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
-    letI := euclideanInnerProduct hξ
+    letI := euclideanInnerProduct (ξ := ξ)
     letI : MeasurableSpace (CompletedVectorProduct K E) := borel _
     letI : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
     letI := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
-    MeasurePreserving (realCoordinateEquiv ξ hξ) volume volume := by
+    MeasurePreserving (realCoordinateEquiv ξ) volume volume := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
   exact (PiLp.volume_preserving_ofLp (RealCoordinateIndex (K := K) (E := E))).comp
-    (realCoordinateIsometry ξ hξ).measurePreserving
+    (realCoordinateIsometry ξ).measurePreserving
 
 /-- The ordinary real coordinate box, with a separate dimension-normalized radius in each fibre. -/
 def coordinateCube (R : ℝ) : Set (RealCoordinateIndex (K := K) (E := E) → ℝ) :=
@@ -238,16 +239,16 @@ def coordinateCube (R : ℝ) : Set (RealCoordinateIndex (K := K) (E := E) → �
 /-- The dimension-normalized cube lies in the literal product of original fibre balls. -/
 theorem coordinateCube_preimage_subset_productBall
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (hn : 0 < Module.finrank K E) {R : ℝ} (hR : 0 ≤ R) :
-    (realCoordinateEquiv ξ hξ) ⁻¹' coordinateCube (K := K) (E := E) R ⊆ productBall ξ R := by
+    (realCoordinateEquiv ξ) ⁻¹' coordinateCube (K := K) (E := E) R ⊆ productBall ξ R := by
   intro z hz w
   have hN : 0 < Module.finrank ℝ (CompletedCoefficient w ⊗[K] E) := by
     rw [completedFibre_real_finrank]
     exact Nat.mul_pos InfinitePlace.mult_pos hn
   have hNr : 0 < (Module.finrank ℝ (CompletedCoefficient w ⊗[K] E) : ℝ) := Nat.cast_pos.mpr hN
   have hsq : (ξ.norm (normalizedInfinitePlacePoint w) (z w)) ^ 2 ≤ R ^ 2 := by
-    rw [fibre_norm_sq_coordinates ξ hξ w z]
+    rw [fibre_norm_sq_coordinates ξ w z]
     calc
       _ ≤ ∑ _i : Fin (Module.finrank ℝ (CompletedCoefficient w ⊗[K] E)),
           (R / Real.sqrt (Module.finrank ℝ (CompletedCoefficient w ⊗[K] E) : ℝ)) ^ 2 := by
@@ -266,27 +267,27 @@ theorem coordinateCube_preimage_subset_productBall
 /-- Exact ordinary volume of the actual inverse-image cube, without a volume premise. -/
 theorem volume_coordinateCube_preimage
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) (R : ℝ) :
+    [hξ : ξ.IsHermitian] (R : ℝ) :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
-    letI := euclideanInnerProduct hξ
+    letI := euclideanInnerProduct (ξ := ξ)
     letI : MeasurableSpace (CompletedVectorProduct K E) := borel _
     letI : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
     letI := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
-    volume ((realCoordinateEquiv ξ hξ) ⁻¹' coordinateCube (K := K) (E := E) R) =
+    volume ((realCoordinateEquiv ξ) ⁻¹' coordinateCube (K := K) (E := E) R) =
       ∏ w : InfinitePlace K,
         ENNReal.ofReal (2 * R /
           Real.sqrt (Module.finrank ℝ (CompletedCoefficient w ⊗[K] E) : ℝ)) ^
             Module.finrank ℝ (CompletedCoefficient w ⊗[K] E) := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
   have hm : MeasurableSet (coordinateCube (K := K) (E := E) R) :=
     MeasurableSet.pi Set.countable_univ (fun _ _ => measurableSet_Icc)
-  rw [(realCoordinateEquiv_measurePreserving ξ hξ).measure_preimage hm.nullMeasurableSet,
+  rw [(realCoordinateEquiv_measurePreserving ξ).measure_preimage hm.nullMeasurableSet,
     coordinateCube, volume_pi, Measure.pi_pi, Fintype.prod_sigma]
   apply Finset.prod_congr rfl
   intro w _
@@ -304,20 +305,20 @@ theorem volume_coordinateCube_preimage
 /-- A concrete lower bound for the original body from actual ordinary coordinate cubes. -/
 theorem productBallVolume_ge_coordinateCube
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (hn : 0 < Module.finrank K E) {R : ℝ} (hR : 0 ≤ R) :
     (∏ w : InfinitePlace K,
       ENNReal.ofReal (2 * R /
         Real.sqrt (Module.finrank ℝ (CompletedCoefficient w ⊗[K] E) : ℝ)) ^
-          Module.finrank ℝ (CompletedCoefficient w ⊗[K] E)) ≤ productBallVolume ξ hξ R := by
+          Module.finrank ℝ (CompletedCoefficient w ⊗[K] E)) ≤ productBallVolume ξ R := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
-  rw [← volume_coordinateCube_preimage ξ hξ R]
-  exact measure_mono (coordinateCube_preimage_subset_productBall ξ hξ hn hR)
+  rw [← volume_coordinateCube_preimage ξ R]
+  exact measure_mono (coordinateCube_preimage_subset_productBall ξ hn hR)
 
 omit [NumberField K] in
 private theorem cubeFactor_eq (n : ℕ) (hn : 0 < n) (R : ℝ) (w : InfinitePlace K) :
@@ -367,13 +368,13 @@ theorem coordinateCube_volume_product_eq {R : ℝ} (hR : 0 ≤ R)
 /-- The cube lower bound with the original rational rank and field degree. -/
 theorem productBallVolume_ge_cube
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (hn : 0 < Module.finrank K E) {R : ℝ} (hR : 0 ≤ R) :
     ENNReal.ofReal ((2 : ℝ) ^ (Module.finrank K E * Fintype.card (InfinitePlace K)) *
       (R / Real.sqrt (Module.finrank K E : ℝ)) ^
-        (Module.finrank ℚ K * Module.finrank K E)) ≤ productBallVolume ξ hξ R := by
+        (Module.finrank ℚ K * Module.finrank K E)) ≤ productBallVolume ξ R := by
   rw [← coordinateCube_volume_product_eq hR hn]
-  exact productBallVolume_ge_coordinateCube ξ hξ hn hR
+  exact productBallVolume_ge_coordinateCube ξ hn hR
 
 private theorem div_sqrt_pow_eq_rpow (n N : ℕ) (R : ℝ) :
     (R / Real.sqrt (n : ℝ)) ^ N =
@@ -390,13 +391,13 @@ private theorem div_sqrt_pow_eq_rpow (n N : ℕ) (R : ℝ) :
 /-- The source cube constant for canonical ordinary Euclidean volume on the actual product. -/
 theorem productBallVolume_cube_lower_bound
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (hn : 0 < Module.finrank K E) {R : ℝ} (hR : 0 ≤ R) :
     ENNReal.ofReal ((2 : ℝ) ^ (Module.finrank K E * Fintype.card (InfinitePlace K)) *
       (Module.finrank K E : ℝ) ^
         (-((Module.finrank ℚ K * Module.finrank K E : ℕ) : ℝ) / 2) *
-          R ^ (Module.finrank ℚ K * Module.finrank K E)) ≤ productBallVolume ξ hξ R := by
-  have h := productBallVolume_ge_cube ξ hξ hn hR
+          R ^ (Module.finrank ℚ K * Module.finrank K E)) ≤ productBallVolume ξ R := by
+  have h := productBallVolume_ge_cube ξ hn hR
   rw [div_sqrt_pow_eq_rpow, ← mul_assoc] at h
   exact h
 

@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Model.TraceDual.Projective.Metric
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import Mathlib.Topology.Sheaves.Init
 
@@ -122,10 +123,10 @@ theorem traceTensorGenericPairEquiv_contract
 codifferent tensor, transported through canonical distribution and dual base change. -/
 def originalPrescribedTraceDualFamily
     {η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M)}
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     NormFamily (normalizedNumberFieldAdelicStructure K)
       (K ⊗[𝓞 K] (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M)) :=
-  (prescribedTraceDualFamily hη).pullback (traceTensorGenericPairEquiv M).toLinearMap
+  (prescribedTraceDualFamily (ξ := η)).pullback (traceTensorGenericPairEquiv M).toLinearMap
     (traceTensorGenericPairEquiv M).injective
 
 /-- Completed canonical distribution followed by tensor-unit contraction on the
@@ -144,11 +145,11 @@ def originalTraceTensorProductEquiv :
 with the independent ordinary trace-dual metric under the canonical original map. -/
 def originalPrescribedTraceDualIsometry
     {η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M)}
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     letI := NumberFieldArchimedeanEuclidean.euclideanNormedAddCommGroup
-      (originalPrescribedTraceDualFamily M hη)
+      (originalPrescribedTraceDualFamily M (η := η))
     letI := NumberFieldArchimedeanEuclidean.euclideanNormedSpace
-      (originalPrescribedTraceDualFamily M hη)
+      (originalPrescribedTraceDualFamily M (η := η))
     letI := NumberFieldOrdinaryTraceDualNorm.ordinaryTraceDualNormedAddCommGroup η
     letI := NumberFieldOrdinaryTraceDualNorm.ordinaryTraceDualNormedSpace η
     NumberFieldArchimedeanVectorDiagonal.CompletedVectorProduct K
@@ -156,9 +157,9 @@ def originalPrescribedTraceDualIsometry
       NumberFieldArchimedeanVectorDiagonal.CompletedVectorProduct K
         (Module.Dual K (K ⊗[𝓞 K] M)) := by
   let := NumberFieldArchimedeanEuclidean.euclideanNormedAddCommGroup
-    (originalPrescribedTraceDualFamily M hη)
+    (originalPrescribedTraceDualFamily M (η := η))
   let := NumberFieldArchimedeanEuclidean.euclideanNormedSpace
-    (originalPrescribedTraceDualFamily M hη)
+    (originalPrescribedTraceDualFamily M (η := η))
   let := NumberFieldOrdinaryTraceDualNorm.ordinaryTraceDualNormedAddCommGroup η
   let := NumberFieldOrdinaryTraceDualNorm.ordinaryTraceDualNormedSpace η
   refine { originalTraceTensorProductEquiv M with norm_map' := ?_ }
@@ -173,8 +174,8 @@ def originalPrescribedTraceDualIsometry
   let t := (LinearEquiv.baseChange K
     (NumberFieldArchimedeanVectorDiagonal.CompletedCoefficient w) _ _
       (traceTensorGenericPairEquiv M)) (z w)
-  have h := dualizingTensor_norm_infinite η.dual hη.dual w (e t)
-  change (prescribedTraceDualFamily hη).norm (normalizedInfinitePlacePoint w)
+  have h := dualizingTensor_norm_infinite η.dual (hξ := hη.dual) w (e t)
+  change (prescribedTraceDualFamily (ξ := η)).norm (normalizedInfinitePlacePoint w)
       (e.symm (e t)) =
     (w.mult : ℝ) * η.dual.norm (normalizedInfinitePlacePoint w) (e t) at h
   rw [e.symm_apply_apply] at h
@@ -182,7 +183,7 @@ def originalPrescribedTraceDualIsometry
     ((LinearEquiv.baseChange K (NumberFieldArchimedeanVectorDiagonal.CompletedCoefficient w)
       _ _ ((traceTensorGenericPairEquiv M).trans
         (TensorProduct.rid K (Module.Dual K (K ⊗[𝓞 K] M))))) (z w))) ^ 2 =
-      ((prescribedTraceDualFamily hη).norm (normalizedInfinitePlacePoint w) t) ^ 2
+      ((prescribedTraceDualFamily (ξ := η)).norm (normalizedInfinitePlacePoint w) t) ^ 2
   rw [LinearEquiv.baseChange_trans]
   exact congrArg (fun r : ℝ => r ^ 2) h.symm
 
@@ -209,10 +210,10 @@ theorem originalTraceTensorProductEquiv_diagonal
 times the actual dual norm of its literal original trace representative. -/
 theorem originalPrescribedTraceDualFamily_norm_original
     {η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M)}
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hη : η.IsHermitian]
     (w : InfinitePlace K)
     (z : codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M) :
-    (originalPrescribedTraceDualFamily M hη).norm (normalizedInfinitePlacePoint w)
+    (originalPrescribedTraceDualFamily M (η := η)).norm (normalizedInfinitePlacePoint w)
       ((1 : NumberFieldArchimedeanVectorDiagonal.CompletedCoefficient w) ⊗ₜ[K]
         ((1 : K) ⊗ₜ[𝓞 K] z)) =
       (w.mult : ℝ) * η.dual.norm (normalizedInfinitePlacePoint w)
@@ -223,11 +224,11 @@ theorem originalPrescribedTraceDualFamily_norm_original
         (traceTensorInclusion (K := K) M z) := by
     apply (TensorProduct.rid K (Module.Dual K (K ⊗[𝓞 K] M))).eq_symm_apply.mpr
     simpa only [one_smul] using traceTensorGenericPairEquiv_contract M 1 z
-  change (prescribedTraceDualFamily hη).norm (normalizedInfinitePlacePoint w)
+  change (prescribedTraceDualFamily (ξ := η)).norm (normalizedInfinitePlacePoint w)
     ((1 : NumberFieldArchimedeanVectorDiagonal.CompletedCoefficient w) ⊗ₜ[K]
       traceTensorGenericPairEquiv M ((1 : K) ⊗ₜ[𝓞 K] z)) = _
   rw [hp]
-  exact dualizingTensor_norm_infinite η.dual hη.dual w
+  exact dualizingTensor_norm_infinite η.dual (hξ := hη.dual) w
     ((1 : NumberFieldArchimedeanVectorDiagonal.CompletedCoefficient w) ⊗ₜ[K]
       traceTensorInclusion (K := K) M z)
 
@@ -235,19 +236,19 @@ theorem originalPrescribedTraceDualFamily_norm_original
 functional to the completed ordinary trace pairing on the original module. -/
 theorem originalPrescribedTraceDualIsometry_original
     {η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M)}
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hη : η.IsHermitian]
     (z : codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M) (m : M) :
-    NumberFieldOrdinaryTraceDualNorm.ordinaryTraceDualIsometry hη
-      (originalPrescribedTraceDualIsometry M hη
+    NumberFieldOrdinaryTraceDualNorm.ordinaryTraceDualIsometry (ξ := η)
+      (originalPrescribedTraceDualIsometry M (η := η)
         (NumberFieldArchimedeanVectorDiagonal.vectorDiagonalMap (K := K)
           ((1 : K) ⊗ₜ[𝓞 K] z)))
       (NumberFieldProjectiveGeneric.originalDiagonalMap (K := K) M m) =
         (integerTensorEquiv (K := K) M z m : ℝ) := by
-  change NumberFieldOrdinaryTraceDualNorm.ordinaryTraceDualIsometry hη
+  change NumberFieldOrdinaryTraceDualNorm.ordinaryTraceDualIsometry (ξ := η)
     (originalTraceTensorProductEquiv (K := K) M
       (NumberFieldArchimedeanVectorDiagonal.vectorDiagonalMap (K := K)
         ((1 : K) ⊗ₜ[𝓞 K] z))) _ = _
   rw [originalTraceTensorProductEquiv_diagonal]
-  exact traceTensorDiagonalMap_original (K := K) M η hη z m
+  exact traceTensorDiagonalMap_original (K := K) M η (hη := hη) z m
 
 end ArakelovGeometry.NumberFieldProjectiveTraceDualGeneric

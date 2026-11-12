@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.GeometryOfNumbers.Counting.WeightedEuclideanSumBall
 public import ArakelovGeometry.GeometryOfNumbers.Measure.EuclideanProductMeasure
 public import ArakelovGeometry.NumberTheory.NumberField.Minkowski.Polar
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import Mathlib.Topology.Sheaves.Init
 
@@ -32,45 +33,45 @@ variable {K E : Type u} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 
 /-- Actual original completed fibres in their separate real orthonormal blocks. -/
 def blockCoordinateEquiv (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     CompletedVectorProduct K E ≃ₗ[ℝ]
       (∀ w : InfinitePlace K,
         EuclideanSpace ℝ (Fin (Module.finrank ℝ (CompletedCoefficient w ⊗[K] E)))) :=
-  (realCoordinateEquiv ξ hξ).trans
+  (realCoordinateEquiv ξ).trans
     (EuclideanProductMeasure.blockCoordinates fun w : InfinitePlace K =>
       Fin (Module.finrank ℝ (CompletedCoefficient w ⊗[K] E)))
 
 /-- Every block retains the literal original completed fibre norm. -/
 theorem blockCoordinateEquiv_norm
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (z : CompletedVectorProduct K E) (w : InfinitePlace K) :
-    ‖blockCoordinateEquiv ξ hξ z w‖ = ξ.norm (normalizedInfinitePlacePoint w) (z w) := by
+    ‖blockCoordinateEquiv ξ z w‖ = ξ.norm (normalizedInfinitePlacePoint w) (z w) := by
   apply (sq_eq_sq₀ (norm_nonneg _) (ξ.norm_nonneg _ _)).mp
-  change ‖WithLp.toLp 2 (fun i => realCoordinateEquiv ξ hξ z ⟨w, i⟩)‖ ^ 2 = _
+  change ‖WithLp.toLp 2 (fun i ↦ realCoordinateEquiv ξ z ⟨w, i⟩)‖ ^ 2 = _
   rw [PiLp.norm_sq_eq_of_L2]
-  simpa only [Real.norm_eq_abs, sq_abs] using (fibre_norm_sq_coordinates ξ hξ w z).symm
+  simpa only [Real.norm_eq_abs, sq_abs] using (fibre_norm_sq_coordinates ξ w z).symm
 
 /-- The actual completed L2 canonical volume becomes the actual product of block volumes. -/
 theorem blockCoordinateEquiv_measurePreserving
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
-    letI := euclideanInnerProduct hξ
+    letI := euclideanInnerProduct (ξ := ξ)
     letI : MeasurableSpace (CompletedVectorProduct K E) := borel _
     letI : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
     letI := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
-    MeasurePreserving (blockCoordinateEquiv ξ hξ) volume volume := by
+    MeasurePreserving (blockCoordinateEquiv ξ) volume volume := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
   exact (EuclideanProductMeasure.blockCoordinates_measurePreserving
     (fun w : InfinitePlace K => Fin (Module.finrank ℝ (CompletedCoefficient w ⊗[K] E)))).comp
-      (realCoordinateEquiv_measurePreserving ξ hξ)
+      (realCoordinateEquiv_measurePreserving ξ)
 
 /-- The actual completed sum body, before any coordinate transport. -/
 def sumBall (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) :
@@ -79,10 +80,10 @@ def sumBall (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) :
 
 /-- Canonical ordinary Euclidean volume of the actual completed sum body. -/
 def sumBallVolume (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) : ENNReal := by
+    [hξ : ξ.IsHermitian] : ENNReal := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
@@ -91,32 +92,32 @@ def sumBallVolume (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
 /-- The full factorial volume formula on the original completed fibres and canonical measure. -/
 theorem sumBallVolume_eq
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
-    sumBallVolume ξ hξ = ENNReal.ofReal
+    [hξ : ξ.IsHermitian] :
+    sumBallVolume ξ = ENNReal.ofReal
       ((∏ w : InfinitePlace K,
         euclideanUnitBallVolume (Module.finrank ℝ (CompletedCoefficient w ⊗[K] E)) *
           (Module.finrank ℝ (CompletedCoefficient w ⊗[K] E)).factorial) /
         (∑ w : InfinitePlace K, Module.finrank ℝ (CompletedCoefficient w ⊗[K] E)).factorial) := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
   let m (w : InfinitePlace K) := Module.finrank ℝ (CompletedCoefficient w ⊗[K] E)
-  have hs : sumBall ξ = blockCoordinateEquiv ξ hξ ⁻¹'
+  have hs : sumBall ξ = blockCoordinateEquiv ξ ⁻¹'
       weightedBall (E := fun w : InfinitePlace K => EuclideanSpace ℝ (Fin (m w)))
         (fun _ => 1) := by
     ext z
     change (∑ w : InfinitePlace K, ξ.norm (normalizedInfinitePlacePoint w) (z w)) ≤ 1 ↔
-      (∑ w : InfinitePlace K, 1 * ‖blockCoordinateEquiv ξ hξ z w‖) ≤ 1
+      (∑ w : InfinitePlace K, 1 * ‖blockCoordinateEquiv ξ z w‖) ≤ 1
     simp only [one_mul, blockCoordinateEquiv_norm]
   have hm : MeasurableSet (weightedBall
       (E := fun w : InfinitePlace K => EuclideanSpace ℝ (Fin (m w))) (fun _ => 1)) := by
     unfold weightedBall weightedNorm
     exact measurableSet_le (by fun_prop) measurable_const
   change volume (sumBall ξ) = _
-  rw [hs, (blockCoordinateEquiv_measurePreserving ξ hξ).measure_preimage hm.nullMeasurableSet]
+  rw [hs, (blockCoordinateEquiv_measurePreserving ξ).measure_preimage hm.nullMeasurableSet]
   simpa only [one_pow, div_one] using
     euclidean_volume_weightedBall m (fun _ => zero_lt_one)
 
@@ -128,8 +129,8 @@ def arithmeticPolarNumerator (K : Type*) [Field K] [NumberField K] (n : ℕ) : �
 /-- Actual completed dimensions and real/complex place multiplicities give the source numerator. -/
 theorem sumBallVolume_eq_arithmeticNumerator
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
-    sumBallVolume ξ hξ = ENNReal.ofReal
+    [hξ : ξ.IsHermitian] :
+    sumBallVolume ξ = ENNReal.ofReal
       (arithmeticPolarNumerator K (Module.finrank K E) /
         (Module.finrank K E * Module.finrank ℚ K).factorial) := by
   classical
@@ -145,55 +146,56 @@ theorem sumBallVolume_eq_arithmeticNumerator
   rfl
 
 /-- Hermitianity of the independently prescribed actual dual tensor family. -/
-theorem prescribedTraceDualFamily_isHermitian
+instance prescribedTraceDualFamily_isHermitian
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
-    (prescribedTraceDualFamily hξ).IsHermitian normalizedNumberFieldArchimedeanCompletions := by
+    [hξ : ξ.IsHermitian] :
+    (prescribedTraceDualFamily (ξ := ξ)).IsHermitian := by
   exact NormFamily.orthogonalTensorPair_isHermitian ξ.dual
     (NumberFieldTraceDualizingLine.dualizingLine K).toNormFamily
-    normalizedNumberFieldArchimedeanCompletions hξ.dual
-    (NumberFieldTraceDualizingLine.dualizingLine_isHermitian K)
+    (hξ := hξ.dual)
+    (hη := (NumberFieldTraceDualizingLine.dualizingLine_isHermitian K))
 
 /-- Canonical source Euclidean volume of the native polar preimage under actual trace duality. -/
 def arithmeticPolarVolume
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) : ENNReal := by
+    [hξ : ξ.IsHermitian] : ENNReal := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanNormedAddCommGroup (prescribedTraceDualFamily hξ)
-  let := euclideanNormedSpace (prescribedTraceDualFamily hξ)
-  let := euclideanInnerProduct (prescribedTraceDualFamily_isHermitian hξ)
+  let := euclideanNormedAddCommGroup (prescribedTraceDualFamily (ξ := ξ))
+  let := euclideanNormedSpace (prescribedTraceDualFamily (ξ := ξ))
+  let := euclideanInnerProduct (hξ := (prescribedTraceDualFamily_isHermitian (ξ := ξ)))
   let : MeasurableSpace (CompletedVectorProduct K (Module.Dual K E ⊗[K] K)) := borel _
   let : BorelSpace (CompletedVectorProduct K (Module.Dual K E ⊗[K] K)) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace
     (E := CompletedVectorProduct K (Module.Dual K E ⊗[K] K))
-  exact volume (arithmeticTraceTensorIsometry hξ ⁻¹' StrongDual.polar ℝ (productBall ξ 1))
+  exact volume (arithmeticTraceTensorIsometry (ξ := ξ) ⁻¹' StrongDual.polar ℝ (productBall ξ 1))
 
 /-- The actual native polar preimage is the actual prescribed tensor sum body. -/
 theorem arithmeticPolarVolume_eq_sumBallVolume
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
-    arithmeticPolarVolume hξ =
-      sumBallVolume (prescribedTraceDualFamily hξ) (prescribedTraceDualFamily_isHermitian hξ) := by
+    [hξ : ξ.IsHermitian] :
+    arithmeticPolarVolume (ξ := ξ) =
+      sumBallVolume (prescribedTraceDualFamily (ξ := ξ))
+          (hξ := (prescribedTraceDualFamily_isHermitian (ξ := ξ))) := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanNormedAddCommGroup (prescribedTraceDualFamily hξ)
-  let := euclideanNormedSpace (prescribedTraceDualFamily hξ)
-  let := euclideanInnerProduct (prescribedTraceDualFamily_isHermitian hξ)
+  let := euclideanNormedAddCommGroup (prescribedTraceDualFamily (ξ := ξ))
+  let := euclideanNormedSpace (prescribedTraceDualFamily (ξ := ξ))
+  let := euclideanInnerProduct (hξ := (prescribedTraceDualFamily_isHermitian (ξ := ξ)))
   let : MeasurableSpace (CompletedVectorProduct K (Module.Dual K E ⊗[K] K)) := borel _
   let : BorelSpace (CompletedVectorProduct K (Module.Dual K E ⊗[K] K)) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace
     (E := CompletedVectorProduct K (Module.Dual K E ⊗[K] K))
-  change volume (arithmeticTraceTensorIsometry hξ ⁻¹' StrongDual.polar ℝ (productBall ξ 1)) =
-    volume (sumBall (prescribedTraceDualFamily hξ))
+  change volume (arithmeticTraceTensorIsometry (ξ := ξ) ⁻¹' StrongDual.polar ℝ (productBall ξ 1)) =
+    volume (sumBall (prescribedTraceDualFamily (ξ := ξ)))
   rw [prescribedTraceDual_polar]
   rfl
 
 /-- Full ordinary Euclidean volume of the actual arithmetic polar, including rank zero. -/
 theorem arithmeticPolarVolume_eq
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
-    arithmeticPolarVolume hξ = ENNReal.ofReal
+    [hξ : ξ.IsHermitian] :
+    arithmeticPolarVolume (ξ := ξ) = ENNReal.ofReal
       (arithmeticPolarNumerator K (Module.finrank K E) /
         (Module.finrank K E * Module.finrank ℚ K).factorial) := by
   rw [arithmeticPolarVolume_eq_sumBallVolume, sumBallVolume_eq_arithmeticNumerator]
@@ -203,13 +205,13 @@ theorem arithmeticPolarVolume_eq
 The real-dual inner product is the existing Riesz-compatible structure, kept local. -/
 theorem arithmeticTraceTensorIsometry_measurePreserving
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
-    letI := euclideanInnerProduct hξ
-    letI := euclideanNormedAddCommGroup (prescribedTraceDualFamily hξ)
-    letI := euclideanNormedSpace (prescribedTraceDualFamily hξ)
-    letI := euclideanInnerProduct (prescribedTraceDualFamily_isHermitian hξ)
+    letI := euclideanInnerProduct (ξ := ξ)
+    letI := euclideanNormedAddCommGroup (prescribedTraceDualFamily (ξ := ξ))
+    letI := euclideanNormedSpace (prescribedTraceDualFamily (ξ := ξ))
+    letI := euclideanInnerProduct (hξ := (prescribedTraceDualFamily_isHermitian (ξ := ξ)))
     letI := GeometryOfNumbers.strongDualInnerProduct (E := CompletedVectorProduct K E)
     letI : MeasurableSpace (CompletedVectorProduct K (Module.Dual K E ⊗[K] K)) := borel _
     letI : BorelSpace (CompletedVectorProduct K (Module.Dual K E ⊗[K] K)) := ⟨rfl⟩
@@ -218,13 +220,13 @@ theorem arithmeticTraceTensorIsometry_measurePreserving
     letI : MeasurableSpace (StrongDual ℝ (CompletedVectorProduct K E)) := borel _
     letI : BorelSpace (StrongDual ℝ (CompletedVectorProduct K E)) := ⟨rfl⟩
     letI := measureSpaceOfInnerProductSpace (E := StrongDual ℝ (CompletedVectorProduct K E))
-    MeasurePreserving (arithmeticTraceTensorIsometry hξ) volume volume := by
+    MeasurePreserving (arithmeticTraceTensorIsometry (ξ := ξ)) volume volume := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
-  let := euclideanNormedAddCommGroup (prescribedTraceDualFamily hξ)
-  let := euclideanNormedSpace (prescribedTraceDualFamily hξ)
-  let := euclideanInnerProduct (prescribedTraceDualFamily_isHermitian hξ)
+  let := euclideanInnerProduct (ξ := ξ)
+  let := euclideanNormedAddCommGroup (prescribedTraceDualFamily (ξ := ξ))
+  let := euclideanNormedSpace (prescribedTraceDualFamily (ξ := ξ))
+  let := euclideanInnerProduct (hξ := (prescribedTraceDualFamily_isHermitian (ξ := ξ)))
   let := GeometryOfNumbers.strongDualInnerProduct (E := CompletedVectorProduct K E)
   let : MeasurableSpace (CompletedVectorProduct K (Module.Dual K E ⊗[K] K)) := borel _
   let : BorelSpace (CompletedVectorProduct K (Module.Dual K E ⊗[K] K)) := ⟨rfl⟩
@@ -233,15 +235,15 @@ theorem arithmeticTraceTensorIsometry_measurePreserving
   let : MeasurableSpace (StrongDual ℝ (CompletedVectorProduct K E)) := borel _
   let : BorelSpace (StrongDual ℝ (CompletedVectorProduct K E)) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := StrongDual ℝ (CompletedVectorProduct K E))
-  exact (arithmeticTraceTensorIsometry hξ).measurePreserving
+  exact (arithmeticTraceTensorIsometry (ξ := ξ)).measurePreserving
 
 /-- The literal native real-dual polar has the same canonical ordinary factorial volume. -/
 theorem nativeArithmeticPolar_volume_eq
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
-    letI := euclideanInnerProduct hξ
+    letI := euclideanInnerProduct (ξ := ξ)
     letI := GeometryOfNumbers.strongDualInnerProduct (E := CompletedVectorProduct K E)
     letI : MeasurableSpace (StrongDual ℝ (CompletedVectorProduct K E)) := borel _
     letI : BorelSpace (StrongDual ℝ (CompletedVectorProduct K E)) := ⟨rfl⟩
@@ -251,10 +253,10 @@ theorem nativeArithmeticPolar_volume_eq
         (Module.finrank K E * Module.finrank ℚ K).factorial) := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
-  let := euclideanNormedAddCommGroup (prescribedTraceDualFamily hξ)
-  let := euclideanNormedSpace (prescribedTraceDualFamily hξ)
-  let := euclideanInnerProduct (prescribedTraceDualFamily_isHermitian hξ)
+  let := euclideanInnerProduct (ξ := ξ)
+  let := euclideanNormedAddCommGroup (prescribedTraceDualFamily (ξ := ξ))
+  let := euclideanNormedSpace (prescribedTraceDualFamily (ξ := ξ))
+  let := euclideanInnerProduct (hξ := (prescribedTraceDualFamily_isHermitian (ξ := ξ)))
   let := GeometryOfNumbers.strongDualInnerProduct (E := CompletedVectorProduct K E)
   let : MeasurableSpace (CompletedVectorProduct K (Module.Dual K E ⊗[K] K)) := borel _
   let : BorelSpace (CompletedVectorProduct K (Module.Dual K E ⊗[K] K)) := ⟨rfl⟩
@@ -269,9 +271,9 @@ theorem nativeArithmeticPolar_volume_eq
     simp only [Set.ofPred_forall]
     exact isClosed_iInter fun x => isClosed_iInter fun _ =>
       isClosed_le (by fun_prop) continuous_const
-  have hm := (arithmeticTraceTensorIsometry_measurePreserving hξ).measure_preimage
+  have hm := (arithmeticTraceTensorIsometry_measurePreserving).measure_preimage
     hc.measurableSet.nullMeasurableSet
-  change arithmeticPolarVolume hξ = _ at hm
-  exact hm.symm.trans (arithmeticPolarVolume_eq hξ)
+  change arithmeticPolarVolume (ξ := ξ) = _ at hm
+  exact hm.symm.trans (arithmeticPolarVolume_eq)
 
 end ArakelovGeometry.NumberFieldArithmeticPolarVolume

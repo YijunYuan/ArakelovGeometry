@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Line
 public import ArakelovGeometry.AdelicVectorBundle.Operator.Height
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Line
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -76,7 +77,7 @@ variable [FiniteDimensional K F]
 
 /-- A nonzero map from an adelic line has integrable local height. -/
 theorem integrable_localHeight_of_isLine (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F) (hV : V.IsLine)
+    (W : AdelicVectorBundle S F) [hV : V.IsLine]
     (f : {f : E →ₗ[K] F // f ≠ 0}) :
     Integrable (V.toNormFamily.localHeight W.toNormFamily f) S.v := by
   obtain ⟨x, hx⟩ : ∃ x, f.val x ≠ 0 := by
@@ -86,7 +87,7 @@ theorem integrable_localHeight_of_isLine (V : AdelicVectorBundle S E)
   have he : V.toNormFamily.localHeight W.toNormFamily f =
       fun ω => W.toNormFamily.logNorm (f.val x) ω - V.toNormFamily.logNorm x ω :=
     funext (V.toNormFamily.localHeight_eq_logNorm_sub_of_finrank_one
-      W.toNormFamily hV f hx0 hx)
+      W.toNormFamily hV.rank_eq_one f hx0 hx)
   rw [he]
   exact (W.isDominated.integrable_logNorm W.isMeasurable _).sub
     (V.isDominated.integrable_logNorm V.isMeasurable _)
@@ -94,17 +95,17 @@ theorem integrable_localHeight_of_isLine (V : AdelicVectorBundle S E)
 /-- The height of a nonzero line map is the source degree minus target degree. -/
 theorem mapHeight_eq_lineDegree_sub [S.IsProper]
     (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
-    (hV : V.IsLine) (hW : W.IsLine) {f : E →ₗ[K] F} (hf : f ≠ 0) :
-    V.mapHeight W f = ((V.lineDegree hV - W.lineDegree hW : ℝ) : EReal) := by
+    [hV : V.IsLine] [hW : W.IsLine] {f : E →ₗ[K] F} (hf : f ≠ 0) :
+    V.mapHeight W f = ((V.lineDegree - W.lineDegree : ℝ) : EReal) := by
   obtain ⟨x, hx⟩ : ∃ x, f x ≠ 0 := by
     by_contra! h
     exact hf (LinearMap.ext h)
   have hx0 : x ≠ 0 := fun h => hx (by rw [h, map_zero])
-  rw [V.mapHeight_eq_integral W hf (V.integrable_localHeight_of_isLine W hV ⟨f, hf⟩),
-    V.lineDegree_eq_neg_integral hV ⟨x, hx0⟩,
-    W.lineDegree_eq_neg_integral hW ⟨f x, hx⟩]
+  rw [V.mapHeight_eq_integral W hf (V.integrable_localHeight_of_isLine W ⟨f, hf⟩),
+    V.lineDegree_eq_neg_integral ⟨x, hx0⟩,
+    W.lineDegree_eq_neg_integral ⟨f x, hx⟩]
   simp_rw [V.toNormFamily.localHeight_eq_logNorm_sub_of_finrank_one
-    W.toNormFamily hV ⟨f, hf⟩ hx0 hx]
+    W.toNormFamily hV.rank_eq_one ⟨f, hf⟩ hx0 hx]
   rw [integral_sub (W.isDominated.integrable_logNorm W.isMeasurable _)
     (V.isDominated.integrable_logNorm V.isMeasurable _)]
   congr 1

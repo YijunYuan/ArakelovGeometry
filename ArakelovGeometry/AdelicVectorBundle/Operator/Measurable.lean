@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Density.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Operator.Norm
+
 import ArakelovGeometry.Analysis.NormedSpace.CountableNormEvaluation
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -69,7 +70,7 @@ theorem IsMeasurable.operatorNorm_of_common_countable_dense_subfield
     (hξ : ξ.IsMeasurable) (hη : η.IsMeasurable)
     (hS : S.HasCommonCountableDenseSubfield) (f : E →ₗ[K] F) :
     Measurable (fun ω => ξ.operatorNorm η ω f) := by
-  obtain ⟨K₀, hcount, hdense⟩ := hS
+  obtain ⟨K₀, hcount, hdense⟩ := hS.exists_subfield
   let : Countable K₀ := hcount
   simp_rw [operatorNorm_eq_iSup_basisSubfield ξ η (Module.finBasis K E) K₀ _ (hdense _) f]
   exact Measurable.iSup fun c => (hη _).div (hξ _)
@@ -78,9 +79,9 @@ theorem IsMeasurable.operatorNorm_of_common_countable_dense_subfield
 theorem IsMeasurable.operatorNorm_of_discrete_or_countable
     {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsMeasurable) (hη : η.IsMeasurable)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    [hS : S.HasMeasurableBase]
     (f : E →ₗ[K] F) : Measurable (fun ω => ξ.operatorNorm η ω f) := by
-  rcases hS with hS | hS
+  rcases hS.discrete_or_countable with hS | hS
   · let := hS
     exact Measurable.of_discrete
   · exact hξ.operatorNorm_of_common_countable_dense_subfield hη hS f

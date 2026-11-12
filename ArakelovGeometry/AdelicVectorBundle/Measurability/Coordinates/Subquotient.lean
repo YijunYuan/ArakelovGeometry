@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Dual.Restriction
 import ArakelovGeometry.AdelicVectorBundle.Measurability.Coordinates.Dual
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.PositiveAtoms.MeasurableQuotient
@@ -32,7 +33,7 @@ variable {K E m : Type*} [Field K] {S : AdelicStructure K}
 /-- Every actual coordinate subquotient with ambient nested endpoints is
 measurable on its original completed native quotient fibres. -/
 theorem ofBasis_subquotient_isMeasurable_of_all_finite (b : Module.Basis m K E)
-    (B T : Submodule K E) (hTB : T ≤ B) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    (B T : Submodule K E) (hTB : T ≤ B) [hS : S.HasOnlyFinitePlaces] :
     (((ofBasis S E b).restrict B).quotient (T.comap B.subtype)).IsMeasurable := by
   let g := T.mkQ.comp B.subtype
   have hk : g.ker = T.comap B.subtype := by
@@ -43,13 +44,13 @@ theorem ofBasis_subquotient_isMeasurable_of_all_finite (b : Module.Basis m K E)
     ext ω z
     exact (ofBasis S E b).quotient_restrict_range_norm_eq B T hTB ω z
   rw [← hk, he]
-  exact ((ofBasis_quotient_isMeasurable_of_all_finite b T hS).restrict g.range).pullback
+  exact ((ofBasis_quotient_isMeasurable_of_all_finite b T).restrict g.range).pullback
     g.quotKerEquivRange.toLinearMap g.quotKerEquivRange.injective
 
 /-- Every literal native quotient of every actual coordinate restriction is
 measurable, including arbitrary relative subspaces and equal endpoints. -/
 theorem ofBasis_restrict_quotient_isMeasurable_of_all_finite (b : Module.Basis m K E)
-    (B : Submodule K E) (U : Submodule K B) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    (B : Submodule K E) (U : Submodule K B) [hS : S.HasOnlyFinitePlaces] :
     (((ofBasis S E b).restrict B).quotient U).IsMeasurable := by
   let T := U.map B.subtype
   have hTB : T ≤ B := by
@@ -58,15 +59,15 @@ theorem ofBasis_restrict_quotient_isMeasurable_of_all_finite (b : Module.Basis m
   have hU : T.comap B.subtype = U := by
     rw [Submodule.comap_map_eq, Submodule.ker_subtype, sup_bot_eq]
   rw [← hU]
-  exact ofBasis_subquotient_isMeasurable_of_all_finite b B T hTB hS
+  exact ofBasis_subquotient_isMeasurable_of_all_finite b B T hTB
 
 /-- The actual dual of every literal native coordinate subquotient is
 measurable, without countability or chosen orthonormal basis hypotheses. -/
 theorem ofBasis_restrict_quotient_dual_isMeasurable_of_all_finite (b : Module.Basis m K E)
-    (B : Submodule K E) (U : Submodule K B) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    (B : Submodule K E) (U : Submodule K B) [hS : S.HasOnlyFinitePlaces] :
     (((ofBasis S E b).restrict B).quotient U).dual.IsMeasurable := by
   rw [((ofBasis S E b).restrict B).quotient_dual_annihilator U]
-  exact ((ofBasis_restrict_dual_isMeasurable_of_all_finite b B hS).restrict
+  exact ((ofBasis_restrict_dual_isMeasurable_of_all_finite b B).restrict
     U.dualAnnihilator).pullback
       U.dualQuotEquivDualAnnihilator.toLinearMap U.dualQuotEquivDualAnnihilator.injective
 

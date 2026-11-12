@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Subquotient.Restriction.Basic
+
 import ArakelovGeometry.Analysis.AbsoluteValue.RootBounds
 import ArakelovGeometry.Analysis.ScalarExtension.Subspace
 import Mathlib.Analysis.Normed.Group.Ultra
@@ -109,7 +110,7 @@ theorem injectiveScalarExtensionSeminorm_pullback_le (f : F →ₗ[K] E)
 
 /-- When the original family is ultrametric, actual pullback and injective
 extension commute isometrically on every completed vector at a finite place. -/
-theorem injectiveScalarExtensionSeminorm_pullback_eq (hξ : ξ.IsUltrametric)
+theorem injectiveScalarExtensionSeminorm_pullback_eq [hξ : ξ.IsUltrametric]
     (f : F →ₗ[K] E) (hf : Function.Injective f)
     (x : AdelicStructure.ParameterSpaceExtension S L) (hx : x.base ∈ S.Ωfin)
     (z : x.abv.Completion ⊗[L] (L ⊗[K] F)) :
@@ -159,7 +160,7 @@ theorem scalarExtension_pullback_norm_le (f : F →ₗ[K] E)
 
 /-- Actual ordinary extension preserves every completed pullback norm at
 a non-Archimedean place of an ultrametric family. -/
-theorem scalarExtension_pullback_norm_eq_of_mem_Ωfin (hξ : ξ.IsUltrametric)
+theorem scalarExtension_pullback_norm_eq_of_mem_Ωfin [hξ : ξ.IsUltrametric]
     (f : F →ₗ[K] E) (hf : Function.Injective f)
     (x : AdelicStructure.ParameterSpaceExtension S L) (hx : x.base ∈ S.Ωfin)
     (z : x.abv.Completion ⊗[L] (L ⊗[K] F)) :
@@ -168,7 +169,7 @@ theorem scalarExtension_pullback_norm_eq_of_mem_Ωfin (hξ : ξ.IsUltrametric)
       ((ξ.pullback f hf).scalarExtension (L := L)).norm x z := by
   rw [scalarExtension_norm_of_mem_Ωfin ξ x hx,
     scalarExtension_norm_of_mem_Ωfin (ξ.pullback f hf) x hx]
-  exact ξ.injectiveScalarExtensionSeminorm_pullback_eq hξ f hf x hx z
+  exact ξ.injectiveScalarExtensionSeminorm_pullback_eq f hf x hx z
 
 omit [FiniteDimensional K F] in
 /-- The actual restricted extended norm on the base-changed subspace is
@@ -195,7 +196,7 @@ omit [FiniteDimensional K F] in
 /-- At every finite place, the actual canonical tensor equivalence between
 the extension of a subspace and its base-changed image preserves all
 completed restricted norms of an ultrametric family. -/
-theorem scalarExtension_restrict_norm_eq_of_mem_Ωfin (hξ : ξ.IsUltrametric)
+theorem scalarExtension_restrict_norm_eq_of_mem_Ωfin [hξ : ξ.IsUltrametric]
     (A : Submodule K E) (x : AdelicStructure.ParameterSpaceExtension S L)
     (hx : x.base ∈ S.Ωfin) (z : x.abv.Completion ⊗[L] (L ⊗[K] A)) :
     ((ξ.scalarExtension (L := L)).restrict (A.baseChange L)).norm x
@@ -211,7 +212,7 @@ theorem scalarExtension_restrict_norm_eq_of_mem_Ωfin (hξ : ξ.IsUltrametric)
       A.subtype.baseChange L := rfl
   rw [← LinearMap.comp_apply, ← LinearMap.baseChange_comp, he]
   exact ξ.scalarExtension_pullback_norm_eq_of_mem_Ωfin
-    hξ A.subtype A.subtype_injective x hx z
+     A.subtype A.subtype_injective x hx z
 
 end NormFamily
 

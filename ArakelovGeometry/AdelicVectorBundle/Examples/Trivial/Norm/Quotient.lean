@@ -81,10 +81,10 @@ theorem trivialSeminorm_pushforward_le (x : E) :
 open Classical in
 /-- Every quotient vector has a rational lift attaining its actual quotient
 norm: the nonempty set of lift norms is finite. -/
-theorem exists_trivialSeminorm_pushforward_lift (hξ : ξ.IsUltrametric) (y : Q) :
+theorem exists_trivialSeminorm_pushforward_lift [hξ : ξ.IsUltrametric] (y : Q) :
     ∃ x, q x = y ∧ ξ.trivialSeminorm x = (ξ.pushforward q hq).trivialSeminorm y := by
   let A : Set ℝ := ξ.trivialSeminorm '' {x | q x = y}
-  have hA : A.Finite := (ξ.finite_range_trivialSeminorm hξ).subset
+  have hA : A.Finite := (ξ.finite_range_trivialSeminorm).subset
     (Set.image_subset_range _ _)
   have hn : A.Nonempty := by
     obtain ⟨x, hx⟩ := hq y

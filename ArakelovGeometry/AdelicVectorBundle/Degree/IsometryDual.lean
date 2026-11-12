@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Isometry
 import ArakelovGeometry.AdelicVectorBundle.Dual.Map
 import ArakelovGeometry.AdelicVectorBundle.Subquotient.Restriction.Functor
@@ -68,14 +69,14 @@ namespace AdelicVectorBundle
 /-- Dual degrees agree under the actual contravariant completed isometry. -/
 theorem degree_dual_eq_of_completed_isometry [S.IsProper]
     (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = V.toNormFamily.norm ω x) :
-    (V.dualOfMeasurableBase hS).degree hS hN =
-      (W.dualOfMeasurableBase hS).degree hS hN := by
+    (V.dualOfMeasurableBase).degree =
+      (W.dualOfMeasurableBase).degree := by
   symm
-  apply degree_eq_of_completed_isometry _ _ e.dualMap hS hN
+  apply degree_eq_of_completed_isometry _ _ e.dualMap
   intro ω z
   simp only [dualOfMeasurableBase_toNormFamily]
   exact V.toNormFamily.dualEquiv_norm_eq_of_completed_isometry W.toNormFamily ω e (he ω) z
@@ -84,27 +85,27 @@ theorem degree_dual_eq_of_completed_isometry [S.IsProper]
 discrepancy, without any original finite-place ultrametricity assumption. -/
 theorem determinantDiscrepancy_eq_of_completed_isometry [S.IsProper]
     (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = V.toNormFamily.norm ω x) :
     V.determinantDiscrepancy = W.determinantDiscrepancy := by
-  rw [V.determinantDiscrepancy_eq_degree_add_degree_dual hS hN,
-    W.determinantDiscrepancy_eq_degree_add_degree_dual hS hN,
-    V.degree_eq_of_completed_isometry W e hS hN he,
-    V.degree_dual_eq_of_completed_isometry W e hS hN he]
+  rw [V.determinantDiscrepancy_eq_degree_add_degree_dual,
+    W.determinantDiscrepancy_eq_degree_add_degree_dual,
+    V.degree_eq_of_completed_isometry W e he,
+    V.degree_dual_eq_of_completed_isometry W e he]
 
 /-- Nested restriction preserves the actual global discrepancy under the
 existing canonical rational subspace isomorphism. -/
 theorem determinantDiscrepancy_restrict_restrict [S.IsProper]
     (V : AdelicVectorBundle S E) (U W : Submodule K E) (h : U ≤ W)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    ((V.restrictOfMeasurableBase W hS).restrictOfMeasurableBase
-      (U.comap W.subtype) hS).determinantDiscrepancy =
-      (V.restrictOfMeasurableBase U hS).determinantDiscrepancy := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    ((V.restrictOfMeasurableBase W).restrictOfMeasurableBase
+      (U.comap W.subtype)).determinantDiscrepancy =
+      (V.restrictOfMeasurableBase U).determinantDiscrepancy := by
   apply determinantDiscrepancy_eq_of_completed_isometry _ _
-    (Submodule.comapSubtypeEquivOfLe h) hS hN
+    (Submodule.comapSubtypeEquivOfLe h)
   intro ω z
   simp only [restrictOfMeasurableBase_toNormFamily]
   exact (V.toNormFamily.restrict_restrict_norm_eq U W h ω z).symm
@@ -112,11 +113,11 @@ theorem determinantDiscrepancy_restrict_restrict [S.IsProper]
 /-- The total rational subspace has the actual ambient global discrepancy. -/
 theorem determinantDiscrepancy_restrict_top [S.IsProper]
     (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.restrictOfMeasurableBase ⊤ hS).determinantDiscrepancy =
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    (V.restrictOfMeasurableBase ⊤).determinantDiscrepancy =
       V.determinantDiscrepancy := by
-  apply determinantDiscrepancy_eq_of_completed_isometry _ _ Submodule.topEquiv hS hN
+  apply determinantDiscrepancy_eq_of_completed_isometry _ _ Submodule.topEquiv
   intro ω z
   simp only [restrictOfMeasurableBase_toNormFamily]
   exact (V.toNormFamily.restrict_top_norm_eq ω z).symm

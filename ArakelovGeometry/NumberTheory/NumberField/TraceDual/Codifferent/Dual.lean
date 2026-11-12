@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.TraceDual.Integral
+
 import Mathlib.Topology.Sheaves.Init
 
 /-!
@@ -132,19 +133,21 @@ variable {K E : Type*} [Field K] [NumberField K]
   {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
 
 /-- The actual codifferent-valued dual of the original dominated pure global ball. -/
-def IsDominated.pure_normalizedGlobalUnitBall_codifferentEquiv (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
-    NumberFieldIntegralTraceDual.integralTraceDual (ξ.globalUnitBallModule hξ) ≃ₗ[𝓞 K]
-      ((ξ.globalUnitBallModule hξ) →ₗ[𝓞 K] NumberFieldCodifferentDual.codifferentModule K) :=
-  NumberFieldCodifferentDual.codifferentEquiv (ξ.globalUnitBallModule hξ)
+def normalizedGlobalUnitBallCodifferentEquiv
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
+    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
+    NumberFieldIntegralTraceDual.integralTraceDual (ξ.globalUnitBallModule) ≃ₗ[𝓞 K]
+      ((ξ.globalUnitBallModule) →ₗ[𝓞 K] NumberFieldCodifferentDual.codifferentModule K) :=
+  NumberFieldCodifferentDual.codifferentEquiv (ξ.globalUnitBallModule)
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure).2.2
 
 @[simp]
-theorem IsDominated.pure_normalizedGlobalUnitBall_codifferentEquiv_apply
-    (hdom : ξ.IsDominated) (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces)
-    (f : NumberFieldIntegralTraceDual.integralTraceDual (ξ.globalUnitBallModule hξ))
-    (m : ξ.globalUnitBallModule hξ) :
-    (hdom.pure_normalizedGlobalUnitBall_codifferentEquiv hξ hpure f m : K) = f.1 (m : E) :=
+theorem normalizedGlobalUnitBallCodifferentEquiv_apply
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
+    [ξ.IsDominated] [ξ.IsUltrametric] [ξ.IsPureAtFinitePlaces]
+    (f : NumberFieldIntegralTraceDual.integralTraceDual (ξ.globalUnitBallModule))
+    (m : ξ.globalUnitBallModule) :
+    (ξ.normalizedGlobalUnitBallCodifferentEquiv f m : K) = f.1 (m : E) :=
   NumberFieldCodifferentDual.restriction_apply _ _ _
 
 end ArakelovGeometry.NormFamily

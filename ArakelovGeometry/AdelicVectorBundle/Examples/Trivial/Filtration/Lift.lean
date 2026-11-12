@@ -5,11 +5,11 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.LinearAlgebra.Filtration.Lift
-public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.CommonAdaptedBasis
-public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Quotient
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.Hermitian
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Expectation
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Quotient
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.CommonAdaptedBasis
+public import ArakelovGeometry.LinearAlgebra.Filtration.Lift
 
 /-!
 # Chosen lifts of prescribed quotient filtrations
@@ -86,9 +86,9 @@ variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
 
 /-- Restriction of the actual norm induces the inverse image of each literal ball. -/
 theorem trivialFiltration_restrict (ξ : NormFamily (singleTrivialPlace K) E)
-    (hξ : ξ.IsUltrametric) (U : Submodule K E) (t : ℝ) :
-    (ξ.restrict U).trivialFiltration (hξ.restrict U) t =
-      (ξ.trivialFiltration hξ t).comap U.subtype := by
+    [hξ : ξ.IsUltrametric] (U : Submodule K E) (t : ℝ) :
+    (ξ.restrict U).trivialFiltration (hξ := (hξ.restrict U)) t =
+      (ξ.trivialFiltration t).comap U.subtype := by
   classical
   ext x
   change (ξ.restrict U).trivialSeminorm x ≤ Real.exp (-t) ↔
@@ -104,28 +104,28 @@ theorem trivialFiltration_subquotient_ofTrivialFiltration [FiniteDimensional K E
     (A B : Submodule K E) (t : ℝ) :
     (((ofTrivialFiltration R hR hbot htop hleft).restrict B).quotient
       (A.comap B.subtype)).trivialFiltration
-        (((ofTrivialFiltration_isUltrametric R hR hbot htop hleft).restrict B).quotient
-          (A.comap B.subtype)) t =
+        (hξ := (((ofTrivialFiltration_isUltrametric R hR hbot htop hleft).restrict B).quotient
+          (A.comap B.subtype))) t =
       ((R t).comap B.subtype).map (A.comap B.subtype).mkQ := by
   have he := trivialFiltration_pushforward
     ((ofTrivialFiltration R hR hbot htop hleft).restrict B)
-    ((ofTrivialFiltration_isUltrametric R hR hbot htop hleft).restrict B)
+    (hξ := ((ofTrivialFiltration_isUltrametric R hR hbot htop hleft).restrict B))
     (A.comap B.subtype).mkQ (A.comap B.subtype).mkQ_surjective t
   rw [trivialFiltration_restrict _
-    (ofTrivialFiltration_isUltrametric R hR hbot htop hleft) B t,
+    (hξ := (ofTrivialFiltration_isUltrametric R hR hbot htop hleft)) B t,
     trivialFiltration_ofTrivialFiltration] at he
   exact he
 
 /-- Equality of all literal cuts identifies the original actual norm family. -/
 theorem eq_ofTrivialFiltration_of_cuts [FiniteDimensional K E]
-    (ξ : NormFamily (singleTrivialPlace K) E) (hξ : ξ.IsUltrametric)
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric]
     (F : ℝ → Submodule K E) (hF : Antitone F)
     (hbot : ∃ t, F t = ⊥) (htop : ∃ t, F t = ⊤)
     (hleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t)
-    (hc : ∀ t, ξ.trivialFiltration hξ t = F t) :
+    (hc : ∀ t, ξ.trivialFiltration t = F t) :
     ξ = ofTrivialFiltration F hF hbot htop hleft := by
-  have he : ξ.trivialFiltration hξ = F := funext hc
-  simpa only [he] using (ofTrivialFiltration_trivialFiltration ξ hξ).symm
+  have he : ξ.trivialFiltration = F := funext hc
+  simpa only [he] using (ofTrivialFiltration_trivialFiltration ξ).symm
 
 /-- A lifted filtration realizes each prescribed subquotient norm, as an equality
 of actual norm families on all completed vectors. -/
@@ -140,8 +140,8 @@ theorem subquotient_ofTrivialFiltration_eq [FiniteDimensional K E]
     ((ofTrivialFiltration R hR hRbot hRtop hRleft).restrict B).quotient
         (A.comap B.subtype) = ofTrivialFiltration F hF hFbot hFtop hFleft := by
   apply eq_ofTrivialFiltration_of_cuts _
-    (((ofTrivialFiltration_isUltrametric R hR hRbot hRtop hRleft).restrict B).quotient
-      (A.comap B.subtype)) F hF hFbot hFtop hFleft
+    (hξ := (((ofTrivialFiltration_isUltrametric R hR hRbot hRtop hRleft).restrict B).quotient
+      (A.comap B.subtype))) F hF hFbot hFtop hFleft
   intro t
   exact (trivialFiltration_subquotient_ofTrivialFiltration
     R hR hRbot hRtop hRleft A B t).trans (hc t)
@@ -160,10 +160,8 @@ variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
 of the prescribed quotient filtrations. Compatibility is the threshold equality
 constructed by `Submodule.exists_lift_prescribed_filtrations`. -/
 theorem degree_lift_eq_sum
-    (hS : DiscreteMeasurableSpace (singleTrivialPlace K).Ω ∨
-      (singleTrivialPlace K).HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ (singleTrivialPlace K).Ωinf,
-      IsRCLikeNormedField ((singleTrivialPlace K).ϕ ω).Completion)
+    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     {n : ℕ} (U : Fin (n + 1) → Submodule K E) (hU : Monotone U)
     (hzero : U 0 = ⊥) (htop : U (Fin.last n) = ⊤)
     (F : ∀ i : Fin n, ℝ → Submodule K
@@ -176,36 +174,34 @@ theorem degree_lift_eq_sum
     (hRleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → R s = R t)
     (hc : ∀ i t, ((R t).comap (U i.succ).subtype).map
       ((U i.castSucc).comap (U i.succ).subtype).mkQ = F i t) :
-    (ofTrivialFiltration R hR hRbot hRtop hRleft).degree hS hN =
-      ∑ i, (ofTrivialFiltration (F i) (hF i) (hFbot i) (hFtop i) (hFleft i)).degree hS hN := by
+    (ofTrivialFiltration R hR hRbot hRtop hRleft).degree =
+      ∑ i, (ofTrivialFiltration (F i) (hF i) (hFbot i) (hFtop i) (hFleft i)).degree := by
   let V := ofTrivialFiltration R hR hRbot hRtop hRleft
-  have hV : V.toNormFamily.IsHermitian hN := by
+  have hV : V.toNormFamily.IsHermitian := by
     refine ⟨NormFamily.ofTrivialFiltration_isUltrametric R hR hRbot hRtop hRleft, ?_⟩
     intro ω hω
     simp only [singleTrivialPlace_Ωinf, Set.mem_empty_iff_false] at hω
-  have hq : ∀ i, V.flagQuotientOfMeasurableBase U hS i =
+  have hq : ∀ i, V.flagQuotientOfMeasurableBase U i =
       ofTrivialFiltration (F i) (hF i) (hFbot i) (hFtop i) (hFleft i) := by
     intro i
     apply AdelicVectorBundle.ext
     exact NormFamily.subquotient_ofTrivialFiltration_eq R hR hRbot hRtop hRleft
       (U i.castSucc) (U i.succ) (F i) (hF i) (hFbot i) (hFtop i) (hFleft i) (hc i)
-  exact (V.sum_flagQuotient_degree_eq_of_isHermitian U hU hzero htop hS hN hV).symm.trans
-    (Finset.sum_congr rfl (fun i _ ↦ congrArg (fun W ↦ W.degree hS hN) (hq i)))
+  exact (V.sum_flagQuotient_degree_eq_of_isHermitian U hU hzero htop (hV := hV)).symm.trans
+    (Finset.sum_congr rfl (fun i _ ↦ congrArg (fun W ↦ W.degree) (hq i)))
 
 /-- Adapted weights compute the actual degree of the realized filtration. -/
 theorem degree_ofTrivialFiltration_eq_sum_weights
-    (hS : DiscreteMeasurableSpace (singleTrivialPlace K).Ω ∨
-      (singleTrivialPlace K).HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ (singleTrivialPlace K).Ωinf,
-      IsRCLikeNormedField ((singleTrivialPlace K).ϕ ω).Completion)
+    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     (F : ℝ → Submodule K E) (hF : Antitone F)
     (hbot : ∃ t, F t = ⊥) (htop : ∃ t, F t = ⊤)
     (hleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t)
     {ι : Type*} [Fintype ι] (b : Basis ι K E) (a : ι → ℝ)
     (hb : ∀ t, F t = Submodule.span K (b '' {i | t ≤ a i})) :
-    (ofTrivialFiltration F hF hbot htop hleft).degree hS hN = ∑ i, a i := by
+    (ofTrivialFiltration F hF hbot htop hleft).degree = ∑ i, a i := by
   rw [degree_eq_rank_mul_slope, slope_ofTrivialFiltration_eq_sum_weights
-    hS hN F hF hbot htop hleft b a hb]
+    F hF hbot htop hleft b a hb]
   by_cases hz : finrank K E = 0
   · have hc : Fintype.card ι = 0 := by rw [← finrank_eq_card_basis b, hz]
     let : IsEmpty ι := Fintype.card_eq_zero_iff.mp hc
@@ -214,10 +210,8 @@ theorem degree_ofTrivialFiltration_eq_sum_weights
 
 /-- Expectation is additive with rank multiplicities, including zero-rank quotients. -/
 theorem finrank_mul_expectation_lift_eq_sum
-    (hS : DiscreteMeasurableSpace (singleTrivialPlace K).Ω ∨
-      (singleTrivialPlace K).HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ (singleTrivialPlace K).Ωinf,
-      IsRCLikeNormedField ((singleTrivialPlace K).ϕ ω).Completion)
+    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     {n : ℕ} (U : Fin (n + 1) → Submodule K E) (hU : Monotone U)
     (hzero : U 0 = ⊥) (htop : U (Fin.last n) = ⊤)
     (F : ∀ i : Fin n, ℝ → Submodule K
@@ -233,16 +227,14 @@ theorem finrank_mul_expectation_lift_eq_sum
     (finrank K E : ℝ) * Submodule.filtrationExpectation R =
       ∑ i, (finrank K ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype) : ℝ) *
         Submodule.filtrationExpectation (F i) := by
-  have he := degree_lift_eq_sum hS hN U hU hzero htop F hF hFbot hFtop hFleft
+  have he := degree_lift_eq_sum U hU hzero htop F hF hFbot hFtop hFleft
     R hR hRbot hRtop hRleft hc
   simpa only [degree_eq_rank_mul_slope, slope_ofTrivialFiltration_eq_expectation] using he
 
 /-- Pairing with the original flag groups the unchanged quotient weights by block. -/
 theorem pairing_lift_eq_sum_quotient_degrees
-    (hS : DiscreteMeasurableSpace (singleTrivialPlace K).Ω ∨
-      (singleTrivialPlace K).HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ (singleTrivialPlace K).Ωinf,
-      IsRCLikeNormedField ((singleTrivialPlace K).ϕ ω).Completion)
+    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     {n : ℕ} (U : Fin (n + 1) → Submodule K E)
     {ι : Fin n → Type*}
     (b : ∀ i, Basis (ι i) K ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype))
@@ -260,10 +252,10 @@ theorem pairing_lift_eq_sum_quotient_degrees
     (finrank K E : ℝ) * Submodule.filtrationPairing
       (fun t ↦ ⨆ (i : Fin n) (_ : t ≤ a i), U i.succ) R =
         ∑ i, a i * (ofTrivialFiltration (F i) (hF i) (hFbot i)
-          (hFtop i) (hFleft i)).degree hS hN := by
+          (hFtop i) (hFleft i)).degree := by
   classical
   let : ∀ i, Fintype (ι i) := fun i ↦ FiniteDimensional.fintypeBasisIndex (b i)
-  simp_rw [degree_ofTrivialFiltration_eq_sum_weights hS hN _ _ _ _ _ (b _) (w _) (hb _)]
+  simp_rw [degree_ofTrivialFiltration_eq_sum_weights _ _ _ _ _ (b _) (w _) (hb _)]
   rw [Submodule.filtrationPairing_eq_sum_weights B (fun j ↦ a j.1)
     (fun j ↦ w j.1 j.2) (Submodule.iSup_flag_eq_span_weights U B hspan a ha) hR]
   have hs : (∑ j : Σ i, ι i, a j.1 * w j.1 j.2) = ∑ i, a i * ∑ j, w i j := by

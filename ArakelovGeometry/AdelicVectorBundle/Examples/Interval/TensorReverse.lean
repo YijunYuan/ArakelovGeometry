@@ -9,6 +9,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Construction.Tensor.Pair
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Interval.Determinant
 public import ArakelovGeometry.Analysis.Examples.Interval.TensorDeterminant
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.AdelicVectorBundle.Examples.Interval.Degrees
@@ -32,23 +33,23 @@ open AdelicStructure
 theorem rationalIntervalPlaneBundle_isStronglyAdelic :
     rationalIntervalPlaneBundle.IsStronglyAdelic :=
   (rationalIntervalPlaneFamily.isStronglyDominated_iff_isDominated_of_ultrametric
-    (rationalRealModifiedFamily_isUltrametric 2 intervalSeminorm₂
-      intervalSeminorm₂_eq_zero_iff) rationalAdelicStructure_isRCLike).mpr
+    (hξ := (rationalRealModifiedFamily_isUltrametric 2 intervalSeminorm₂
+      intervalSeminorm₂_eq_zero_iff)) (hS := ⟨rationalAdelicStructure_isRCLike⟩)).mpr
     rationalIntervalPlaneFamily_isDominated
 
 /-- The actual rational interval three-space is strongly adelic. -/
 theorem rationalIntervalThreeBundle_isStronglyAdelic :
     rationalIntervalThreeBundle.IsStronglyAdelic :=
   (rationalIntervalThreeFamily.isStronglyDominated_iff_isDominated_of_ultrametric
-    (rationalRealModifiedFamily_isUltrametric 3 intervalSeminorm₃
-      intervalSeminorm₃_eq_zero_iff) rationalAdelicStructure_isRCLike).mpr
+    (hξ := (rationalRealModifiedFamily_isUltrametric 3 intervalSeminorm₃
+      intervalSeminorm₃_eq_zero_iff)) (hS := ⟨rationalAdelicStructure_isRCLike⟩)).mpr
     rationalIntervalThreeFamily_isDominated
 
 /-- The actual mixed tensor in the three-by-two order of the original example. -/
 def rationalIntervalReverseTensorBundle :
     AdelicVectorBundle rationalAdelicStructure ((Fin 3 → ℚ) ⊗[ℚ] (Fin 2 → ℚ)) :=
   rationalIntervalThreeBundle.mixedTensorPair rationalIntervalPlaneBundle
-    (Or.inl inferInstance) rationalAdelicStructure_isRCLike
+    (hN := ⟨rationalAdelicStructure_isRCLike⟩)
 
 theorem rationalIntervalReverseTensorBundle_toNormFamily :
     rationalIntervalReverseTensorBundle.toNormFamily =
@@ -57,7 +58,7 @@ theorem rationalIntervalReverseTensorBundle_toNormFamily :
 theorem rationalIntervalReverseTensorBundle_isStronglyAdelic :
     rationalIntervalReverseTensorBundle.IsStronglyAdelic :=
   rationalIntervalThreeBundle.mixedTensorPair_isStronglyAdelic rationalIntervalPlaneBundle
-    (Or.inl inferInstance) rationalAdelicStructure_isRCLike
+    (hN := ⟨rationalAdelicStructure_isRCLike⟩)
 
 /-- Exact three-dimensional factors of the displayed original six-tuple. -/
 def rationalIntervalReverseSixTensorLeft (i : Fin 6) : Fin 3 → ℚ :=
@@ -474,15 +475,15 @@ theorem rationalIntervalReverseTensorBundle_determinant_logNorm_le
 /-- The actual three-by-two tensor has native degree at least `log 2`. -/
 theorem rationalIntervalReverseTensorBundle_log_two_le_degree :
     Real.log 2 ≤ rationalIntervalReverseTensorBundle.degree
-      (Or.inl inferInstance) rationalAdelicStructure_isRCLike := by
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) := by
   let hS : DiscreteMeasurableSpace rationalAdelicStructure.Ω ∨
       rationalAdelicStructure.HasCommonCountableDenseSubfield := Or.inl inferInstance
   let D := rationalAdelicStructure.Ωinf.indicator (fun _ => -Real.log 2)
   have hf : Integrable
       (rationalIntervalReverseTensorBundle.toNormFamily.determinant.logNorm
         rationalIntervalReverseTensorDeterminantVector) rationalAdelicStructure.v :=
-    (rationalIntervalReverseTensorBundle.determinantOfMeasurableBase hS
-      rationalAdelicStructure_isRCLike).integrable_logNorm _
+    (rationalIntervalReverseTensorBundle.determinantOfMeasurableBase (hS := ⟨hS⟩)
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩)).integrable_logNorm _
   have hD : Integrable D rationalAdelicStructure.v :=
     (integrable_indicator_iff rationalAdelicStructure.measurableSet_Ωinf).mpr
       (integrableOn_const (by rw [rationalAdelicStructure_v_Ωinf]; exact ENNReal.one_ne_top))
@@ -493,26 +494,26 @@ theorem rationalIntervalReverseTensorBundle_log_two_le_degree :
       ∂rationalAdelicStructure.v at h
   rw [integral_indicator_const _ rationalAdelicStructure.measurableSet_Ωinf,
     Measure.real_def, rationalAdelicStructure_v_Ωinf, ENNReal.toReal_one, one_smul] at h
-  rw [rationalIntervalReverseTensorBundle.degree_eq_neg_integral hS
-    rationalAdelicStructure_isRCLike
+  rw [rationalIntervalReverseTensorBundle.degree_eq_neg_integral (hS := ⟨hS⟩)
+    (hN := ⟨rationalAdelicStructure_isRCLike⟩)
       ⟨rationalIntervalReverseTensorDeterminantVector,
         rationalIntervalReverseTensorDeterminantVector_ne_zero⟩]
   linarith
 
 theorem rationalIntervalReverseTensorBundle_degree_pos :
     0 < rationalIntervalReverseTensorBundle.degree
-      (Or.inl inferInstance) rationalAdelicStructure_isRCLike :=
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) :=
   (Real.log_pos (by norm_num : (1 : ℝ) < 2)).trans_le
     rationalIntervalReverseTensorBundle_log_two_le_degree
 
 /-- The exact reversed strongly adelic factors violate the dimension-weighted equality. -/
 theorem rationalIntervalReverseTensorBundle_degree_strict :
-    2 * rationalIntervalThreeBundle.degree (Or.inl inferInstance)
-      rationalAdelicStructure_isRCLike +
-      3 * rationalIntervalPlaneBundle.degree (Or.inl inferInstance)
-        rationalAdelicStructure_isRCLike <
-    rationalIntervalReverseTensorBundle.degree (Or.inl inferInstance)
-      rationalAdelicStructure_isRCLike := by
+    2 * rationalIntervalThreeBundle.degree
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) +
+      3 * rationalIntervalPlaneBundle.degree
+        (hN := ⟨rationalAdelicStructure_isRCLike⟩) <
+    rationalIntervalReverseTensorBundle.degree
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) := by
   simpa only [rationalIntervalThreeBundle_degree_eq_zero,
     rationalIntervalPlaneBundle_degree_eq_zero, mul_zero, add_zero] using
       rationalIntervalReverseTensorBundle_degree_pos
@@ -521,10 +522,10 @@ theorem rationalIntervalReverseTensorBundle_degree_strict :
 theorem rationalIntervalReverseTensorBundle_counterexample :
     rationalIntervalThreeBundle.IsStronglyAdelic ∧
     rationalIntervalPlaneBundle.IsStronglyAdelic ∧
-    rationalIntervalThreeBundle.degree (Or.inl inferInstance)
-      rationalAdelicStructure_isRCLike = 0 ∧
-    rationalIntervalPlaneBundle.degree (Or.inl inferInstance)
-      rationalAdelicStructure_isRCLike = 0 ∧
+    rationalIntervalThreeBundle.degree
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) = 0 ∧
+    rationalIntervalPlaneBundle.degree
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) = 0 ∧
     (∀ ω : rationalAdelicStructure.Ω,
       rationalIntervalThreeFamily.determinant.norm ω
         ((1 : (rationalAdelicStructure.ϕ ω).Completion) ⊗ₜ[ℚ]
@@ -533,7 +534,7 @@ theorem rationalIntervalReverseTensorBundle_counterexample :
         ((1 : (rationalAdelicStructure.ϕ ω).Completion) ⊗ₜ[ℚ]
           rationalStandardDeterminantVector 2) = 1) ∧
     Real.log 2 ≤ rationalIntervalReverseTensorBundle.degree
-      (Or.inl inferInstance) rationalAdelicStructure_isRCLike :=
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) :=
   ⟨rationalIntervalThreeBundle_isStronglyAdelic, rationalIntervalPlaneBundle_isStronglyAdelic,
     rationalIntervalThreeBundle_degree_eq_zero, rationalIntervalPlaneBundle_degree_eq_zero,
     fun ω => ⟨rationalIntervalThreeFamily_determinant_norm_standard ω,

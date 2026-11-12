@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Dual.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.BaseChange
 public import ArakelovGeometry.Analysis.Tensor.Basic
+
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 import Mathlib.RingTheory.TensorProduct.Finite
@@ -168,6 +169,7 @@ theorem projectiveTensor_norm_tprod_le (ω : S.Ω)
 
 /-- The injective family is ultrametric at every non-Archimedean place. -/
 theorem injectiveTensor_isUltrametric : (injectiveTensor ξ).IsUltrametric := by
+  constructor
   intro ω hω z t
   let : ∀ i, NormedAddCommGroup ((S.ϕ ω).Completion ⊗[K] E i) :=
     fun i ↦ (ξ i).fibreNormedAddCommGroup ω
@@ -212,6 +214,7 @@ theorem mixedTensor_norm_of_not_mem_Ωfin (ω : S.Ω) (hω : ω ∉ S.Ωfin)
 
 /-- The mixed tensor family is ultrametric at all non-Archimedean places. -/
 theorem mixedTensor_isUltrametric : (mixedTensor ξ).IsUltrametric := by
+  constructor
   intro ω hω z t
   simp only [mixedTensor_norm_of_mem_Ωfin ξ ω hω]
   exact injectiveTensor_isUltrametric ξ ω hω z t

@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Determinant.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Tower.Transport
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Determinant.Isometry
 import Mathlib.CategoryTheory.Category.Init
 
@@ -37,7 +38,7 @@ variable [FiniteDimensional L X]
 measurability, without a target measurability certificate. -/
 theorem determinant_isMeasurable_towerPullback
     (ξ : NormFamily (S.algebraicExtension L) X) (F : IntermediateField K L)
-    (hdet : ξ.determinant.IsMeasurable) :
+    [hdet : ξ.determinant.IsMeasurable] :
     (ξ.towerPullback F).determinant.IsMeasurable := by
   rw [towerPullback_determinant]
   exact hdet.towerPullback F
@@ -53,8 +54,8 @@ theorem determinant_isMeasurable_of_tower_completed_isometry
     (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
       (z : x.abv.Completion ⊗[L] X), θ.norm (scalarExtensionTowerPlace x)
         (e.toLinearMap.baseChange x.abv.Completion z) = η.norm x z)
-    (hm : η.determinant.IsMeasurable) : θ.determinant.IsMeasurable := by
-  have ht := η.determinant_isMeasurable_of_completed_isometry (θ.towerPullback F) e he hm
+    [hm : η.determinant.IsMeasurable] : θ.determinant.IsMeasurable := by
+  have ht := η.determinant_isMeasurable_of_completed_isometry (θ.towerPullback F) e he
   rw [towerPullback_determinant] at ht
   exact (θ.determinant.isMeasurable_towerPullback_iff F).mp ht
 
@@ -70,25 +71,23 @@ measurability and Archimedean normalization supplied on both curves. -/
 theorem degreeOfMeasurableDeterminant_towerPullback [S.IsProper]
     {X : Type*} [AddCommGroup X] [Module L X] [FiniteDimensional L X]
     (V : AdelicVectorBundle (S.algebraicExtension L) X) (F : IntermediateField K L)
-    (hdetD : V.toNormFamily.determinant.IsMeasurable)
-    (hdetT : (V.towerPullback F).toNormFamily.determinant.IsMeasurable)
-    (hND : ∀ x ∈ (S.algebraicExtension L).Ωinf,
-      IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion)
-    (hNT : ∀ x ∈ ((S.algebraicExtension F).algebraicExtension L).Ωinf,
-      IsRCLikeNormedField (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion) :
+    [hdetD : V.toNormFamily.determinant.IsMeasurable]
+    [hdetT : (V.towerPullback F).toNormFamily.determinant.IsMeasurable]
+    [hND : (S.algebraicExtension L).IsArchimedeanNormalized]
+    [hNT : ((S.algebraicExtension F).algebraicExtension L).IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
     let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
-    (V.towerPullback F).degreeOfMeasurableDeterminant hdetT hNT =
-      V.degreeOfMeasurableDeterminant hdetD hND := by
+    (V.towerPullback F).degreeOfMeasurableDeterminant =
+      V.degreeOfMeasurableDeterminant := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
   let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
-  change (V.towerPullback F).degreeOfMeasurableDeterminant hdetT hNT =
-    V.degreeOfMeasurableDeterminant hdetD hND
-  let s := (V.determinant hdetD hND).lineGenerator (V.determinant_isLine hdetD hND)
-  rw [degreeOfMeasurableDeterminant_eq_neg_integral _ _ _ s,
-    degreeOfMeasurableDeterminant_eq_neg_integral _ _ _ s]
+  change (V.towerPullback F).degreeOfMeasurableDeterminant =
+    V.degreeOfMeasurableDeterminant
+  let s := (V.determinant).lineGenerator (hV := (V.determinant_isLine))
+  rw [degreeOfMeasurableDeterminant_eq_neg_integral _ s,
+    degreeOfMeasurableDeterminant_eq_neg_integral _ s]
   change -(∫ x, (V.toNormFamily.towerPullback F).determinant.logNorm s.val x
       ∂((S.algebraicExtension F).algebraicExtension L).v) =
     -(∫ x, V.toNormFamily.determinant.logNorm s.val x ∂(S.algebraicExtension L).v)
@@ -104,20 +103,18 @@ theorem degreeOfMeasurableDeterminant_eq_of_tower_isometry [S.IsProper]
     [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
     (W : AdelicVectorBundle ((S.algebraicExtension F).algebraicExtension L) X)
     (R : AdelicVectorBundle (S.algebraicExtension L) Y) (e : X ≃ₗ[L] Y)
-    (hdetW : W.toNormFamily.determinant.IsMeasurable)
-    (hdetR : R.toNormFamily.determinant.IsMeasurable)
-    (hND : ∀ x ∈ (S.algebraicExtension L).Ωinf,
-      IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion)
-    (hNT : ∀ x ∈ ((S.algebraicExtension F).algebraicExtension L).Ωinf,
-      IsRCLikeNormedField (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion)
+    [hdetW : W.toNormFamily.determinant.IsMeasurable]
+    [hdetR : R.toNormFamily.determinant.IsMeasurable]
+    [hND : (S.algebraicExtension L).IsArchimedeanNormalized]
+    [hNT : ((S.algebraicExtension F).algebraicExtension L).IsArchimedeanNormalized]
     (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
       (z : x.abv.Completion ⊗[L] X), R.toNormFamily.norm (scalarExtensionTowerPlace x)
         (e.toLinearMap.baseChange x.abv.Completion z) = W.toNormFamily.norm x z) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
     let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
-    R.degreeOfMeasurableDeterminant hdetR hND =
-      W.degreeOfMeasurableDeterminant hdetW hNT := by
+    R.degreeOfMeasurableDeterminant =
+      W.degreeOfMeasurableDeterminant := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
   let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
@@ -125,9 +122,9 @@ theorem degreeOfMeasurableDeterminant_eq_of_tower_isometry [S.IsProper]
     change (R.toNormFamily.towerPullback F).determinant.IsMeasurable
     rw [NormFamily.towerPullback_determinant]
     exact hdetR.towerPullback F
-  exact (degreeOfMeasurableDeterminant_towerPullback R F hdetR hdetT hND hNT).symm.trans
+  exact (degreeOfMeasurableDeterminant_towerPullback R F (hdetT := hdetT)).symm.trans
     (W.degreeOfMeasurableDeterminant_eq_of_completed_isometry
-      (R.towerPullback F) e hdetW hNT he).symm
+      (R.towerPullback F) e he).symm
 
 end CompletedIsometry
 

@@ -180,12 +180,12 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 at an archimedean place. -/
 theorem orthogonalTensor_dual_norm_of_infinite
     (ξ : ∀ i, NormFamily S (E i))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ∀ i, (ξ i).IsHermitian hN) (ω : S.Ω) (hω : ω ∈ S.Ωinf)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ∀ i, (ξ i).IsHermitian] (ω : S.Ω) (hω : ω ∈ S.Ωinf)
     (z : (S.ϕ ω).Completion ⊗[K] (⨂[K] i, Module.Dual K (E i))) :
-    (orthogonalTensor ξ hN hξ).dual.norm ω
+    (orthogonalTensor ξ).dual.norm ω
       (PiTensorProduct.dualDistrib.baseChange (S.ϕ ω).Completion z) =
-    (orthogonalTensor (fun i ↦ (ξ i).dual) hN (fun i ↦ (hξ i).dual)).norm ω z := by
+    (orthogonalTensor (fun i ↦ (ξ i).dual)).norm ω z := by
   let L := (S.ϕ ω).Completion
   let := hN ω hω
   let := IsRCLikeNormedField.rclike L
@@ -193,35 +193,35 @@ theorem orthogonalTensor_dual_norm_of_infinite
   let D i := L ⊗[K] Module.Dual K (E i)
   let : ∀ i, NormedAddCommGroup (X i) := fun i ↦ (ξ i).fibreNormedAddCommGroup ω
   let : ∀ i, NormedSpace L (X i) := fun i ↦ (ξ i).fibreNormedSpace ω
-  let : ∀ i, InnerProductSpace L (X i) := fun i ↦ (hξ i).fibreInnerProductSpace ω hω
+  let : ∀ i, InnerProductSpace L (X i) := fun i ↦ (ξ i).fiberInnerProductSpace ω hω
   let : ∀ i, NormedAddCommGroup (D i) := fun i ↦ (ξ i).dual.fibreNormedAddCommGroup ω
   let : ∀ i, NormedSpace L (D i) := fun i ↦ (ξ i).dual.fibreNormedSpace ω
-  let : ∀ i, InnerProductSpace L (D i) := fun i ↦ (hξ i).dual.fibreInnerProductSpace ω hω
+  let : ∀ i, InnerProductSpace L (D i) := fun i ↦ (ξ i).dual.fiberInnerProductSpace ω hω
   let b := fun i ↦ stdOrthonormalBasis L (X i)
   let c := fun i ↦ stdOrthonormalBasis L (D i)
   let e := fun i ↦ dualBaseChangeEquiv K L (E i)
   let t := tensorBaseChangeEquiv K L (fun i ↦ Module.Dual K (E i)) z
-  rw [dual_norm_eq_sSup, orthogonalTensor_norm_of_infinite _ _ _ ω hω]
+  rw [dual_norm_eq_sSup, orthogonalTensor_norm_of_infinite _ ω hω]
   change _ = ArakelovGeometry.orthogonalTensorSeminorm c t
   rw [ArakelovGeometry.orthogonalTensor_dual_eq_sSup b c e (fun _ _ ↦ rfl)]
   congr 1
   rw [← (tensorBaseChangeEquiv K L E).surjective.range_comp]
   congr 1
   funext x
-  rw [piDualDistrib_baseChange_apply, orthogonalTensor_norm_of_infinite _ _ _ ω hω]
+  rw [piDualDistrib_baseChange_apply, orthogonalTensor_norm_of_infinite _ ω hω]
   rfl
 
 /-- Finite tensor duality acts on arbitrary vectors of every completed fibre. -/
 theorem orthogonalTensor_dual_norm
     (ξ : ∀ i, NormFamily S (E i))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ∀ i, (ξ i).IsHermitian hN) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ∀ i, (ξ i).IsHermitian] (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K] (⨂[K] i, Module.Dual K (E i))) :
-    (orthogonalTensor ξ hN hξ).dual.norm ω
+    (orthogonalTensor ξ).dual.norm ω
       (PiTensorProduct.dualDistrib.baseChange (S.ϕ ω).Completion z) =
-    (orthogonalTensor (fun i ↦ (ξ i).dual) hN (fun i ↦ (hξ i).dual)).norm ω z := by
+    (orthogonalTensor (fun i ↦ (ξ i).dual)).norm ω z := by
   by_cases hω : ω ∈ S.Ωinf
-  · exact orthogonalTensor_dual_norm_of_infinite ξ hN hξ ω hω z
+  · exact orthogonalTensor_dual_norm_of_infinite ξ ω hω z
   have hfin : ω ∈ S.Ωfin := not_not.mp hω
   let L := (S.ϕ ω).Completion
   let X i := L ⊗[K] E i
@@ -248,7 +248,7 @@ theorem orthogonalTensor_dual_norm
       rw [← UniformSpace.Completion.coe_add, UniformSpace.Completion.norm_coe,
         UniformSpace.Completion.norm_coe, UniformSpace.Completion.norm_coe]
       exact hfin x.ofAbs y.ofAbs
-  rw [dual_norm_eq_sSup, orthogonalTensor_norm_of_finite _ _ _ ω hfin]
+  rw [dual_norm_eq_sSup, orthogonalTensor_norm_of_finite _ ω hfin]
   change _ = ArakelovGeometry.injectiveTensorSeminorm t
   rw [← injectiveTensorSeminorm_congr_linearIsometryEquiv e t,
     injectiveTensor_dual_eq_sSup_of_ultrametric hL]
@@ -256,35 +256,33 @@ theorem orthogonalTensor_dual_norm
   rw [← (tensorBaseChangeEquiv K L E).surjective.range_comp]
   congr 1
   funext x
-  rw [piDualDistrib_baseChange_apply, orthogonalTensor_norm_of_finite _ _ _ ω hfin]
+  rw [piDualDistrib_baseChange_apply, orthogonalTensor_norm_of_finite _ ω hfin]
   rfl
 
 /-- Canonical finite tensor-dual isometry on the prescribed completed fibres. -/
 def orthogonalTensorDualIsometry
     (ξ : ∀ i, NormFamily S (E i))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ∀ i, (ξ i).IsHermitian hN) (ω : S.Ω) :
-    letI := (orthogonalTensor (fun i ↦ (ξ i).dual) hN
-      (fun i ↦ (hξ i).dual)).fibreNormedAddCommGroup ω
-    letI := (orthogonalTensor ξ hN hξ).dual.fibreNormedAddCommGroup ω
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ∀ i, (ξ i).IsHermitian] (ω : S.Ω) :
+    letI := (orthogonalTensor (fun i ↦ (ξ i).dual)).fibreNormedAddCommGroup ω
+    letI := (orthogonalTensor ξ).dual.fibreNormedAddCommGroup ω
     ((S.ϕ ω).Completion ⊗[K] (⨂[K] i, Module.Dual K (E i))) ≃ₗᵢ[(S.ϕ ω).Completion]
       ((S.ϕ ω).Completion ⊗[K] Module.Dual K (⨂[K] i, E i)) := by
-  letI := (orthogonalTensor (fun i ↦ (ξ i).dual) hN
-    (fun i ↦ (hξ i).dual)).fibreNormedAddCommGroup ω
-  letI := (orthogonalTensor ξ hN hξ).dual.fibreNormedAddCommGroup ω
+  letI := (orthogonalTensor (fun i ↦ (ξ i).dual)).fibreNormedAddCommGroup ω
+  letI := (orthogonalTensor ξ).dual.fibreNormedAddCommGroup ω
   exact { (PiTensorProduct.dualDistribEquiv (R := K) (M := E)).baseChange K
       (S.ϕ ω).Completion _ _ with
-    norm_map' := orthogonalTensor_dual_norm ξ hN hξ ω }
+    norm_map' := orthogonalTensor_dual_norm ξ ω }
 
 /-- Every canonical finite permutation preserves the actual norm at every place. -/
 theorem orthogonalTensor_norm_reindex {J : Type*} [Fintype J]
     (ξ : ∀ i, NormFamily S (E i))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ∀ i, (ξ i).IsHermitian hN) (e : ι ≃ J) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ∀ i, (ξ i).IsHermitian] (e : ι ≃ J) (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K] (⨂[K] i, E i)) :
-    (orthogonalTensor (fun j ↦ ξ (e.symm j)) hN (fun j ↦ hξ (e.symm j))).norm ω
+    (orthogonalTensor (fun j ↦ ξ (e.symm j)) (hξ := (fun j ↦ hξ (e.symm j)))).norm ω
       ((PiTensorProduct.reindex K E e).toLinearMap.baseChange (S.ϕ ω).Completion z) =
-      (orthogonalTensor ξ hN hξ).norm ω z := by
+      (orthogonalTensor ξ).norm ω z := by
   let L := (S.ϕ ω).Completion
   let : ∀ i, NormedAddCommGroup (L ⊗[K] E i) := fun i ↦ (ξ i).fibreNormedAddCommGroup ω
   let : ∀ i, NormedSpace L (L ⊗[K] E i) := fun i ↦ (ξ i).fibreNormedSpace ω
@@ -292,9 +290,9 @@ theorem orthogonalTensor_norm_reindex {J : Type*} [Fintype J]
   · let := hN ω hω
     let := IsRCLikeNormedField.rclike L
     let : ∀ i, InnerProductSpace L (L ⊗[K] E i) :=
-      fun i ↦ (hξ i).fibreInnerProductSpace ω hω
-    rw [orthogonalTensor_norm_of_infinite _ _ _ ω hω,
-      orthogonalTensor_norm_of_infinite _ _ _ ω hω]
+      fun i ↦ (ξ i).fiberInnerProductSpace ω hω
+    rw [orthogonalTensor_norm_of_infinite _ ω hω,
+      orthogonalTensor_norm_of_infinite _ ω hω]
     change ArakelovGeometry.orthogonalTensorSeminorm
       (fun j ↦ stdOrthonormalBasis L (L ⊗[K] E (e.symm j)))
       (tensorBaseChangeEquiv K L (fun j ↦ E (e.symm j)) _) =
@@ -304,8 +302,8 @@ theorem orthogonalTensor_norm_reindex {J : Type*} [Fintype J]
     exact ArakelovGeometry.orthogonalTensorSeminorm_reindex
       (fun i ↦ stdOrthonormalBasis L (L ⊗[K] E i)) e (tensorBaseChangeEquiv K L E z)
   · have hfin : ω ∈ S.Ωfin := not_not.mp hω
-    rw [orthogonalTensor_norm_of_finite _ _ _ ω hfin,
-      orthogonalTensor_norm_of_finite _ _ _ ω hfin]
+    rw [orthogonalTensor_norm_of_finite _ ω hfin,
+      orthogonalTensor_norm_of_finite _ ω hfin]
     change ArakelovGeometry.injectiveTensorSeminorm
       (tensorBaseChangeEquiv K L (fun j ↦ E (e.symm j)) _) =
       ArakelovGeometry.injectiveTensorSeminorm (tensorBaseChangeEquiv K L E z)
@@ -346,18 +344,18 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 norm after the canonical completed base-change map. -/
 theorem orthogonalTensorPair_norm_eq_hilbert
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω) (hω : ω ∈ S.Ωinf)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] (ω : S.Ω) (hω : ω ∈ S.Ωinf)
     (z : (S.ϕ ω).Completion ⊗[K] (E ⊗[K] F)) :
     let := hN ω hω
     let := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
     let := ξ.fibreNormedAddCommGroup ω
     let := ξ.fibreNormedSpace ω
-    let := hξ.fibreInnerProductSpace ω hω
+    let := ξ.fiberInnerProductSpace ω hω
     let := η.fibreNormedAddCommGroup ω
     let := η.fibreNormedSpace ω
-    let := hη.fibreInnerProductSpace ω hω
-    (ξ.orthogonalTensorPair η hN hξ hη).norm ω z =
+    let := η.fiberInnerProductSpace ω hω
+    (ξ ⊗ʰ η).norm ω z =
       ‖TensorProduct.AlgebraTensorModule.distribBaseChange K (S.ϕ ω).Completion E F z‖ := by
   let L := (S.ϕ ω).Completion
   let := hN ω hω
@@ -366,10 +364,10 @@ theorem orthogonalTensorPair_norm_eq_hilbert
   let : ∀ i, NormedAddCommGroup (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedAddCommGroup ω
   let : ∀ i, NormedSpace L (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedSpace ω
   let : ∀ i, InnerProductSpace L (X i) := fun i ↦
-    (hξ.tensorPairFactors hη i).fibreInnerProductSpace ω hω
+    (tensorPairFactors ξ η i).fiberInnerProductSpace ω hω
   let B := binaryTensorEquiv K (BinaryTensorFactors E F)
-  change (orthogonalTensor (tensorPairFactors ξ η) hN (hξ.tensorPairFactors hη)).norm ω _ = _
-  rw [orthogonalTensor_norm_of_infinite _ _ _ ω hω]
+  change (orthogonalTensor (tensorPairFactors ξ η)).norm ω _ = _
+  rw [orthogonalTensor_norm_of_infinite _ ω hω]
   change ArakelovGeometry.orthogonalTensorSeminorm
     (fun i ↦ stdOrthonormalBasis L (X i))
     (tensorBaseChangeEquiv K L (BinaryTensorFactors E F) (B.symm.toLinearMap.baseChange L z)) = _
@@ -386,12 +384,12 @@ theorem orthogonalTensorPair_norm_eq_hilbert
 /-- Canonical binary dual distribution is isometric on all completed vectors. -/
 theorem orthogonalTensorPair_dual_norm
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K] (Module.Dual K E ⊗[K] Module.Dual K F)) :
-    (ξ.orthogonalTensorPair η hN hξ hη).dual.norm ω
+    (ξ ⊗ʰ η).dual.norm ω
       ((TensorProduct.dualDistrib K E F).baseChange (S.ϕ ω).Completion z) =
-    (ξ.dual.orthogonalTensorPair η.dual hN hξ.dual hη.dual).norm ω z := by
+    (ξ.dual.orthogonalTensorPair η.dual).norm ω z := by
   by_cases hω : ω ∈ S.Ωinf
   · let L := (S.ϕ ω).Completion
     let := hN ω hω
@@ -402,13 +400,13 @@ theorem orthogonalTensorPair_dual_norm
       fun i ↦ (tensorPairFactors ξ η i).fibreNormedAddCommGroup ω
     let : ∀ i, NormedSpace L (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedSpace ω
     let : ∀ i, InnerProductSpace L (X i) :=
-      fun i ↦ (hξ.tensorPairFactors hη i).fibreInnerProductSpace ω hω
+      fun i ↦ (tensorPairFactors ξ η i).fiberInnerProductSpace ω hω
     let : ∀ i, NormedAddCommGroup (D i) :=
       fun i ↦ (tensorPairFactors ξ.dual η.dual i).fibreNormedAddCommGroup ω
     let : ∀ i, NormedSpace L (D i) :=
       fun i ↦ (tensorPairFactors ξ.dual η.dual i).fibreNormedSpace ω
     let : ∀ i, InnerProductSpace L (D i) :=
-      fun i ↦ (hξ.dual.tensorPairFactors hη.dual i).fibreInnerProductSpace ω hω
+      fun i ↦ (tensorPairFactors ξ.dual η.dual i).fiberInnerProductSpace ω hω
     let b := fun i ↦ stdOrthonormalBasis L (X i)
     let c := fun i ↦ stdOrthonormalBasis L (D i)
     let e : ∀ i, D i ≃ₗ[L] Module.Dual L (X i) := fun i ↦ match i with
@@ -451,57 +449,56 @@ theorem orthogonalTensorPair_dual_norm
         exact (dualDistrib_baseChange_bilinear_apply K L E F z (x (.inl ())) (x (.inr ()))).symm
       | add s t hs ht => simp only [map_add, hs, ht]
     rw [dual_norm_eq_sSup]
-    change _ = (orthogonalTensor (tensorPairFactors ξ.dual η.dual) hN
-      (hξ.dual.tensorPairFactors hη.dual)).norm ω _
-    rw [orthogonalTensor_norm_of_infinite _ _ _ ω hω]
+    change _ = (orthogonalTensor (tensorPairFactors ξ.dual η.dual)).norm ω _
+    rw [orthogonalTensor_norm_of_infinite _ ω hω]
     change _ = ArakelovGeometry.orthogonalTensorSeminorm c t
     rw [ArakelovGeometry.orthogonalTensor_dual_eq_sSup b c e he]
     congr 1
     rw [← T.surjective.range_comp]
     congr 1
     funext x
-    change ‖f x‖ / (ξ.orthogonalTensorPair η hN hξ hη).norm ω x =
+    change ‖f x‖ / (ξ ⊗ʰ η).norm ω x =
       ‖PiTensorProduct.dualDistrib q (T x)‖ / ArakelovGeometry.orthogonalTensorSeminorm b (T x)
     rw [hev, hp', LinearEquiv.symm_apply_apply]
     congr 1
-    exact orthogonalTensor_norm_of_infinite _ _ _ ω hω _
+    exact orthogonalTensor_norm_of_infinite _ ω hω _
   · have hfin : ω ∈ S.Ωfin := not_not.mp hω
-    rw [orthogonalTensorPair_norm_of_finite _ _ _ _ _ ω hfin]
+    rw [orthogonalTensorPair_norm_of_finite _ _ ω hfin]
     rw [← mixedTensorPair_dual_norm_eq_injective]
-    simp only [dual_norm_eq_sSup, orthogonalTensorPair_norm_of_finite _ _ _ _ _ ω hfin,
+    simp only [dual_norm_eq_sSup, orthogonalTensorPair_norm_of_finite _ _ ω hfin,
       mixedTensorPair_norm_of_mem_Ωfin _ _ ω hfin]
 
 /-- Equality of norm families under the canonical algebraic dual isomorphism. -/
 theorem orthogonalTensorPair_dual_pullback
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) :
-    (ξ.orthogonalTensorPair η hN hξ hη).dual.pullback (TensorProduct.dualDistrib K E F)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] :
+    (ξ ⊗ʰ η).dual.pullback (TensorProduct.dualDistrib K E F)
       (by
         simpa only [← TensorProduct.toLinearMap_dualDistribEquiv, LinearEquiv.coe_coe] using
           (TensorProduct.dualDistribEquiv K E F).injective) =
-      ξ.dual.orthogonalTensorPair η.dual hN hξ.dual hη.dual := by
+      ξ.dual.orthogonalTensorPair η.dual := by
   ext ω z
-  exact orthogonalTensorPair_dual_norm ξ η hN hξ hη ω z
+  exact orthogonalTensorPair_dual_norm ξ η ω z
 
 /-- The canonical binary tensor-dual isometry on the actual completed fibres. -/
 def orthogonalTensorPairDualIsometry
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω) :
-    letI := (ξ.dual.orthogonalTensorPair η.dual hN hξ.dual hη.dual).fibreNormedAddCommGroup ω
-    letI := (ξ.orthogonalTensorPair η hN hξ hη).dual.fibreNormedAddCommGroup ω
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] (ω : S.Ω) :
+    letI := (ξ.dual.orthogonalTensorPair η.dual).fibreNormedAddCommGroup ω
+    letI := (ξ ⊗ʰ η).dual.fibreNormedAddCommGroup ω
     ((S.ϕ ω).Completion ⊗[K] (Module.Dual K E ⊗[K] Module.Dual K F)) ≃ₗᵢ[(S.ϕ ω).Completion]
       ((S.ϕ ω).Completion ⊗[K] Module.Dual K (E ⊗[K] F)) := by
-  letI := (ξ.dual.orthogonalTensorPair η.dual hN hξ.dual hη.dual).fibreNormedAddCommGroup ω
-  letI := (ξ.orthogonalTensorPair η hN hξ hη).dual.fibreNormedAddCommGroup ω
+  letI := (ξ.dual.orthogonalTensorPair η.dual).fibreNormedAddCommGroup ω
+  letI := (ξ ⊗ʰ η).dual.fibreNormedAddCommGroup ω
   exact { (TensorProduct.dualDistribEquiv K E F).baseChange K (S.ϕ ω).Completion _ _ with
     norm_map' := fun z ↦ by
-      change (ξ.orthogonalTensorPair η hN hξ hη).dual.norm ω
+      change (ξ ⊗ʰ η).dual.norm ω
         ((TensorProduct.dualDistribEquiv K E F).toLinearMap.baseChange (S.ϕ ω).Completion z) =
-        (ξ.dual.orthogonalTensorPair η.dual hN hξ.dual hη.dual).norm ω z
+        (ξ.dual.orthogonalTensorPair η.dual).norm ω z
       rw [TensorProduct.toLinearMap_dualDistribEquiv]
-      exact orthogonalTensorPair_dual_norm ξ η hN hξ hη ω z }
+      exact orthogonalTensorPair_dual_norm ξ η ω z }
 
 end NormFamily
 

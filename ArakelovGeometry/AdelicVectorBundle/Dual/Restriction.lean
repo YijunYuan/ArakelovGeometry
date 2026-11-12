@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Dual.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Subquotient.Quotient.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Dual.Map
 import ArakelovGeometry.Analysis.Dual.DualRestrictionInfimum
 import Mathlib.Analysis.Normed.Group.Ultra
@@ -165,8 +166,8 @@ theorem pullback_dual_norm_eq_of_isRCLike_or_ultrametric
 
 /-- Under the source local hypotheses, duality turns pullback into
 pushforward along the transpose, as equality of actual norm families. -/
-theorem pullback_dual (hξ : ξ.IsUltrametric)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+theorem pullback_dual [hξ : ξ.IsUltrametric]
+    [hS : S.IsArchimedeanNormalized]
     (f : F →ₗ[K] E) (hf : Function.Injective f) :
     (ξ.pullback f hf).dual =
       ξ.dual.pushforward f.dualMap (LinearMap.dualMap_surjective_of_injective hf) := by
@@ -178,12 +179,12 @@ theorem pullback_dual (hξ : ξ.IsUltrametric)
 
 /-- The actual dual of a subspace restriction has exactly the quotient norm
 along the algebraic restriction of functionals. -/
-theorem restrict_dual (hξ : ξ.IsUltrametric)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+theorem restrict_dual [hξ : ξ.IsUltrametric]
+    [hS : S.IsArchimedeanNormalized]
     (V : Submodule K E) :
     (ξ.restrict V).dual = ξ.dual.pushforward V.subtype.dualMap
       (LinearMap.dualMap_surjective_of_injective V.subtype_injective) :=
-  ξ.pullback_dual hξ hS V.subtype V.subtype_injective
+  ξ.pullback_dual V.subtype V.subtype_injective
 
 /-- Pullback of quotient functionals identifies their actual completed norm
 with the restricted dual norm on the canonical algebraic annihilator. -/
@@ -267,8 +268,8 @@ theorem completed_dual_annihilator_range (V : Submodule K E) (ω : S.Ω) :
 /-- Duality gives the actual completed short exact sequence its induced
 restriction and quotient norms under the source local hypotheses. No rank
 positivity is required for the ambient space or either end. -/
-theorem dual_normed_exact_sequence (hξ : ξ.IsUltrametric)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+theorem dual_normed_exact_sequence [hξ : ξ.IsUltrametric]
+    [hS : S.IsArchimedeanNormalized]
     (V : Submodule K E) :
     (∀ ω : S.Ω,
       Function.Injective (V.mkQ.dualMap.baseChange (S.ϕ ω).Completion) ∧
@@ -280,7 +281,7 @@ theorem dual_normed_exact_sequence (hξ : ξ.IsUltrametric)
       (ξ.restrict V).dual = ξ.dual.pushforward V.subtype.dualMap
         (LinearMap.dualMap_surjective_of_injective V.subtype_injective) := by
   exact ⟨completed_dual_exact_sequence V,
-    ξ.pushforward_dual V.mkQ V.mkQ_surjective, ξ.restrict_dual hξ hS V⟩
+    ξ.pushforward_dual V.mkQ V.mkQ_surjective, ξ.restrict_dual V⟩
 
 /-- The canonical quotient of the dual by the annihilator has the actual
 restricted-space dual norm, under the local extension hypothesis. -/
@@ -330,8 +331,8 @@ theorem dual_quotient_annihilator_norm_eq_of_isRCLike_or_ultrametric
 
 /-- The canonical quotient-by-annihilator norm identity at every adelic
 place under the source ultrametric and usual-Archimedean hypotheses. -/
-theorem dual_quotient_annihilator_norm_eq (hξ : ξ.IsUltrametric)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+theorem dual_quotient_annihilator_norm_eq [hξ : ξ.IsUltrametric]
+    [hS : S.IsArchimedeanNormalized]
     (V : Submodule K E) (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K] (Module.Dual K E ⧸ V.dualAnnihilator)) :
     (ξ.dual.quotient V.dualAnnihilator).norm ω z =
@@ -344,14 +345,14 @@ theorem dual_quotient_annihilator_norm_eq (hξ : ξ.IsUltrametric)
 
 /-- The canonical algebraic quotient-by-annihilator equivalence identifies
 the actual quotient dual family with the actual restricted-space dual family. -/
-theorem dual_quotient_annihilator (hξ : ξ.IsUltrametric)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+theorem dual_quotient_annihilator [hξ : ξ.IsUltrametric]
+    [hS : S.IsArchimedeanNormalized]
     (V : Submodule K E) :
     ξ.dual.quotient V.dualAnnihilator =
       (ξ.restrict V).dual.pullback (Subspace.quotAnnihilatorEquiv V).toLinearMap
         (Subspace.quotAnnihilatorEquiv V).injective := by
   ext ω z
-  exact ξ.dual_quotient_annihilator_norm_eq hξ hS V ω z
+  exact ξ.dual_quotient_annihilator_norm_eq V ω z
 
 /-- The canonical quotient-by-annihilator equivalence is an actual completed
 linear isometry under the local extension hypothesis, including zero ends. -/

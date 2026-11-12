@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Bidual
 import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.Bidual
 import Mathlib.Algebra.Order.Ring.Star
@@ -113,19 +114,17 @@ namespace AdelicVectorBundle
 open AdelicStructure
 
 variable (V : AdelicVectorBundle (singleTrivialPlace K) E)
-  (hS : DiscreteMeasurableSpace (singleTrivialPlace K).Ω ∨
-    (singleTrivialPlace K).HasCommonCountableDenseSubfield)
-  (hN : ∀ ω ∈ (singleTrivialPlace K).Ωinf,
-    IsRCLikeNormedField ((singleTrivialPlace K).ϕ ω).Completion)
+  [hS : (singleTrivialPlace K).HasMeasurableBase]
+  [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
 open Classical in
 /-- The actual source dual-constancy characterization retains the true
 positive-rank semistability scope and allows arbitrary original norms. -/
 theorem isSemistable_iff_exists_trivialSeminorm_dual_eq_const
     (hr : 0 < Module.finrank K E) :
-    V.IsSemistable hS hN ↔ ∃ d : ℝ, 0 < d ∧
+    V.IsSemistable ↔ ∃ d : ℝ, 0 < d ∧
       ∀ ℓ, ℓ ≠ 0 → V.toNormFamily.dual.trivialSeminorm ℓ = d := by
-  rw [V.isSemistable_iff_exists_trivialSeminorm_bidual_eq_const hS hN hr]
+  rw [V.isSemistable_iff_exists_trivialSeminorm_bidual_eq_const hr]
   constructor
   · rintro ⟨c, hc, h⟩
     exact ⟨c⁻¹, inv_pos.mpr hc, fun ℓ hℓ ↦
@@ -138,33 +137,34 @@ open Classical in
 /-- Corrected Remark4.3.62 on every nonzero actual completed functional:
 the source expression requires degree divided by positive rank. -/
 theorem neg_log_dual_norm_eq_neg_degree_div_of_isSemistable
-    (hV : V.IsSemistable hS hN) (ω : (singleTrivialPlace K).Ω)
+    [hV : V.IsSemistable] (ω : (singleTrivialPlace K).Ω)
     (z : ((singleTrivialPlace K).ϕ ω).Completion ⊗[K] Module.Dual K E) (hz : z ≠ 0) :
     -Real.log (V.toNormFamily.dual.norm ω z) =
-      -(V.degree hS hN / (Module.finrank K E : ℝ)) := by
+      -(V.degree / (Module.finrank K E : ℝ)) := by
   obtain ⟨c, hc, h⟩ := (V.isSemistable_iff_exists_trivialSeminorm_bidual_eq_const
-    hS hN hV.1).mp hV
+    hV.1).mp hV
   have hd : ∀ ℓ, ℓ ≠ 0 → V.toNormFamily.dual.trivialSeminorm ℓ = c⁻¹ :=
     fun ℓ hℓ ↦ V.toNormFamily.trivialSeminorm_dual_eq_inv_of_trivialSeminorm_bidual_eq_const
       hc h ℓ hℓ
   rw [V.toNormFamily.dual.norm_eq_const_of_trivialSeminorm_eq_const hd ω z hz,
     Real.log_inv, neg_neg]
-  have hs := (V.slopes_eq_neg_log_of_trivialSeminorm_bidual_eq_const hS hN hc h hV.1).1
-  change Real.log c = -V.slope hS hN
+  have hs := (V.slopes_eq_neg_log_of_trivialSeminorm_bidual_eq_const hc h hV.1).1
+  change Real.log c = -V.slope
   rw [hs, neg_neg]
 
 omit [FiniteDimensional K E] in
 open Classical in
+omit hN in
 /-- A genuine actual rank-two bundle refutes the printed missing-rank
 divisor in Remark4.3.62, over any field including characteristic two. -/
 theorem exists_rank_two_dual_formula_counterexample :
     ∃ V : AdelicVectorBundle (singleTrivialPlace K) (Fin 2 → K),
-      V.IsSemistable (Or.inl inferInstance) (singleTrivialPlace_normalized K) ∧
-      V.degree (Or.inl inferInstance) (singleTrivialPlace_normalized K) = -2 ∧
+      V.IsSemistable (hN := ⟨(singleTrivialPlace_normalized K)⟩) ∧
+      V.degree (hN := ⟨(singleTrivialPlace_normalized K)⟩) = -2 ∧
       ∃ ℓ : Module.Dual K (Fin 2 → K), ℓ ≠ 0 ∧
         -Real.log (V.toNormFamily.dual.trivialSeminorm ℓ) = 1 ∧
         -Real.log (V.toNormFamily.dual.trivialSeminorm ℓ) ≠
-          -V.degree (Or.inl inferInstance) (singleTrivialPlace_normalized K) := by
+          -V.degree (hN := ⟨(singleTrivialPlace_normalized K)⟩) := by
   let p : Seminorm (WithAbs (AbsoluteValue.trivial : AbsoluteValue K ℝ)) (Fin 2 → K) :=
     Seminorm.of (fun x ↦ if x = 0 then 0 else Real.exp 1)
       (by
@@ -206,11 +206,11 @@ theorem exists_rank_two_dual_formula_counterexample :
   have hdim : Module.finrank K (Fin 2 → K) = 2 := by
     rw [Module.finrank_fintype_fun_eq_card, Fintype.card_fin]
   have hV := V.isSemistable_of_trivialSeminorm_eq_const
-    (Or.inl inferInstance) (singleTrivialPlace_normalized K) (Real.exp_pos _) h
+    (hN := ⟨(singleTrivialPlace_normalized K)⟩) (Real.exp_pos _) h
       (by rw [hdim]; norm_num)
-  have hd : V.degree (Or.inl inferInstance) (singleTrivialPlace_normalized K) = -2 := by
+  have hd : V.degree (hN := ⟨(singleTrivialPlace_normalized K)⟩) = -2 := by
     rw [V.degree_eq_neg_finrank_mul_log_of_trivialSeminorm_eq_const
-      (Or.inl inferInstance) (singleTrivialPlace_normalized K) (Real.exp_pos _) h,
+      (hN := ⟨(singleTrivialPlace_normalized K)⟩) (Real.exp_pos _) h,
       hdim, Real.log_exp]
     norm_num
   let ℓ : Module.Dual K (Fin 2 → K) := LinearMap.proj 0

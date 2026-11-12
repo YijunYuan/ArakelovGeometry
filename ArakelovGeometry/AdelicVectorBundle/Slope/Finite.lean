@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Determinant.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Determinant.Bound
 import ArakelovGeometry.AdelicVectorBundle.Dual.Map
@@ -96,7 +97,7 @@ theorem norm_completedDeterminantPairing_eq_discrepancy_mul (ξ : NormFamily S E
 wedge on every completed determinant vector. The finite-place factor is one,
 even when the original vector norm is not ultrametric. -/
 theorem norm_completedDeterminantPairing_dual_wedge_le (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω)
     (f : Fin (Module.finrank K (Module.Dual K E)) →
       (S.ϕ ω).Completion ⊗[K] Module.Dual K E)
     (t : (S.ϕ ω).Completion ⊗[K] (⋀[K]^(Module.finrank K E) E)) :
@@ -110,7 +111,7 @@ theorem norm_completedDeterminantPairing_dual_wedge_le (ξ : NormFamily S E)
       Real.exp (S.Ωinf.indicator (fun _ ↦
         (Module.finrank K E : ℝ) / 2 * Real.log (Module.finrank K E)) ω) := by
     rw [← Real.exp_log (ξ.determinantDiscrepancy_pos ω)]
-    exact Real.exp_le_exp.mpr (ξ.log_determinantDiscrepancy_le_indicator hN ω)
+    exact Real.exp_le_exp.mpr (ξ.log_determinantDiscrepancy_le_indicator ω)
   rw [ξ.norm_completedDeterminantPairing_eq_discrepancy_mul]
   calc
     _ ≤ Real.exp (S.Ωinf.indicator (fun _ ↦
@@ -245,7 +246,7 @@ theorem log_absValue_coordinate_le_logNorm_restrict_determinant (ξ : NormFamily
     (s : Set.powersetCard (Fin (Module.finrank K E)) (Module.finrank K U))
     (t : ⋀[K]^(Module.finrank K U) U) (ht : t ≠ 0)
     (hα : determinantDualEquiv K U (restrictedCoordinateDualWedge b U s) t ≠ 0)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (ω : S.Ω) (A : ℝ)
     (hb : ∀ i, (ξ.restrict U).dual.norm ω
       ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] U.subtype.dualMap (b.coord i)) ≤ Real.exp A) :
@@ -268,7 +269,7 @@ theorem log_absValue_coordinate_le_logNorm_restrict_determinant (ξ : NormFamily
       S.norm_algebraMap_eq_absValue, α]
   have hδ : η.determinantDiscrepancy ω ≤ Real.exp R := by
     rw [← Real.exp_log (η.determinantDiscrepancy_pos ω)]
-    exact Real.exp_le_exp.mpr (η.log_determinantDiscrepancy_le_indicator hN ω)
+    exact Real.exp_le_exp.mpr (η.log_determinantDiscrepancy_le_indicator ω)
   have hprod := mul_le_mul hδ (ξ.restrictedCoordinateDualWedge_norm_le b U s ω A hb)
     (η.dual.determinant.norm_nonneg ω _) (Real.exp_pos R).le
   have hnorm : S.ϕ ω α ≤ Real.exp (R + (Module.finrank K U : ℝ) * A) *
@@ -300,14 +301,14 @@ theorem degree_restrict_le_of_dual_basis_norm_bound (V : AdelicVectorBundle S E)
     (hb : ∀ᵐ ω ∂S.v, ∀ (U : Submodule K E) (i : Fin (Module.finrank K E)),
       (V.toNormFamily.restrict U).dual.norm ω
         ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] U.subtype.dualMap (b.coord i)) ≤ Real.exp (A ω))
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (U : Submodule K E) :
-    (V.restrictOfMeasurableBase U hS).degree hS hN ≤
+    (V.restrictOfMeasurableBase U).degree ≤
       (Module.finrank K U : ℝ) * (∫ ω, A ω ∂S.v) +
         (Module.finrank K U : ℝ) / 2 * Real.log (Module.finrank K U) *
           (S.v S.Ωinf).toReal := by
-  let W := V.restrictOfMeasurableBase U hS
+  let W := V.restrictOfMeasurableBase U
   let t := determinantGenerator (K := K) (E := U)
   have ht : t ≠ 0 := determinantGenerator_ne_zero
   obtain ⟨s, hs⟩ := exists_restrictedCoordinateDualWedge_pairing_ne_zero b U t ht
@@ -317,14 +318,14 @@ theorem degree_restrict_le_of_dual_basis_norm_bound (V : AdelicVectorBundle S E)
     (Module.finrank K U : ℝ) / 2 * Real.log (Module.finrank K U))
   have hR : Integrable R S.v :=
     (integrable_indicator_iff S.measurableSet_Ωinf).mpr
-      (integrableOn_const (S.v_Ωinf_lt_top_of_isRCLike hN).ne)
+      (integrableOn_const (S.v_Ωinf_lt_top_of_isRCLike).ne)
   have hf : Integrable (W.toNormFamily.determinant.logNorm t) S.v :=
-    (W.determinantOfMeasurableBase hS hN).integrable_logNorm t
+    (W.determinantOfMeasurableBase).integrable_logNorm t
   have hlocal : ∀ᵐ ω ∂S.v, Real.log (S.ϕ ω α) ≤
       W.toNormFamily.determinant.logNorm t ω + (Module.finrank K U : ℝ) * A ω + R ω := by
     filter_upwards [hb] with ω hω
     exact V.toNormFamily.log_absValue_coordinate_le_logNorm_restrict_determinant
-      b U s t ht hs hN ω (A ω) (hω U)
+      b U s t ht hs ω (A ω) (hω U)
   have hi := integral_mono_ae (S.integrable_log α hα)
     ((hf.add (hA.const_mul (Module.finrank K U : ℝ))).add hR) hlocal
   simp only [Pi.add_apply] at hi
@@ -332,7 +333,7 @@ theorem degree_restrict_le_of_dual_basis_norm_bound (V : AdelicVectorBundle S E)
   simp only [Pi.add_apply] at hsum
   rw [hsum, integral_add hf (hA.const_mul (Module.finrank K U : ℝ)), integral_const_mul,
     AdelicStructure.IsProper.product_formula α hα] at hi
-  rw [W.degree_eq_neg_integral hS hN ⟨t, ht⟩]
+  rw [W.degree_eq_neg_integral ⟨t, ht⟩]
   dsimp only [R] at hi
   rw [integral_indicator_const _ S.measurableSet_Ωinf] at hi
   change 0 ≤ (∫ ω, W.toNormFamily.determinant.logNorm t ω ∂S.v) +
@@ -345,17 +346,17 @@ theorem degree_restrict_le_of_dual_basis_norm_bound (V : AdelicVectorBundle S E)
 single real upper bound for all restricted mean slopes. Equivalently the
 restricted degrees are bounded by rank times one real constant. -/
 theorem exists_degree_restrict_le_rank_mul (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
     ∃ C : ℝ, ∀ U : Submodule K E,
-      (V.restrictOfMeasurableBase U hS).degree hS hN ≤ (Module.finrank K U : ℝ) * C := by
+      (V.restrictOfMeasurableBase U).degree ≤ (Module.finrank K U : ℝ) * C := by
   let b := Module.finBasis K E
   obtain ⟨A, hA, _, hb⟩ :=
     NormFamily.IsDominated.exists_restricted_dual_basis_norm_bound V.toNormFamily b V.isDominated
   let C := (∫ ω, A ω ∂S.v) + (1 / 2 : ℝ) * Real.log (Module.finrank K E) *
     (S.v S.Ωinf).toReal
   refine ⟨C, fun U ↦ ?_⟩
-  have hdeg := V.degree_restrict_le_of_dual_basis_norm_bound b A hA hb hS hN U
+  have hdeg := V.degree_restrict_le_of_dual_basis_norm_bound b A hA hb U
   by_cases hn : Module.finrank K U = 0
   · simpa only [hn, Nat.cast_zero, zero_mul, zero_div, add_zero] using hdeg
   · have hlog : Real.log (Module.finrank K U : ℝ) ≤ Real.log (Module.finrank K E) :=
@@ -372,16 +373,16 @@ theorem exists_degree_restrict_le_rank_mul (V : AdelicVectorBundle S E)
 /-- Source Proposition 4.3.30: the maximal slope is strictly below `⊤`.
 This also includes rank zero, where the maximal slope is `⊥`. -/
 theorem maximalSlope_lt_top (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.maximalSlope hS hN < ⊤ := by
-  obtain ⟨C, hC⟩ := V.exists_degree_restrict_le_rank_mul hS hN
-  have hmax : V.maximalSlope hS hN ≤ (C : EReal) := by
-    apply V.maximalSlope_le hS hN
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.maximalSlope < ⊤ := by
+  obtain ⟨C, hC⟩ := V.exists_degree_restrict_le_rank_mul
+  have hmax : V.maximalSlope ≤ (C : EReal) := by
+    apply V.maximalSlope_le
     intro U hU
     apply EReal.coe_le_coe_iff.mpr
     have hd := hC U
-    rw [(V.restrictOfMeasurableBase U hS).degree_eq_rank_mul_slope hS hN] at hd
+    rw [(V.restrictOfMeasurableBase U).degree_eq_rank_mul_slope] at hd
     exact (mul_le_mul_iff_right₀ (Nat.cast_pos.mpr hU : (0 : ℝ) < Module.finrank K U)).mp hd
   exact hmax.trans_lt (EReal.coe_lt_top C)
 
@@ -389,43 +390,43 @@ theorem maximalSlope_lt_top (V : AdelicVectorBundle S E)
 `⊥` in positive rank. Maximal-slope finiteness of the actual dual is now
 proved, discharging the explicit premise of Proposition 4.3.25. -/
 theorem bot_lt_minimalSlope (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hr : 0 < Module.finrank K E) : ⊥ < V.minimalSlope hS hN :=
-  V.bot_lt_minimalSlope_of_maximalSlope_dual_lt_top hS hN hr
-    ((V.dualOfMeasurableBase hS).maximalSlope_lt_top hS hN)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    (hr : 0 < Module.finrank K E) : ⊥ < V.minimalSlope :=
+  V.bot_lt_minimalSlope_of_maximalSlope_dual_lt_top hr
+    ((V.dualOfMeasurableBase).maximalSlope_lt_top)
 
 /-- The positive-rank maximal slope is a finite real number, after both
 extended endpoints have been excluded by proved bounds. -/
 theorem exists_maximalSlope_eq_coe (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (hr : 0 < Module.finrank K E) :
-    ∃ c : ℝ, V.maximalSlope hS hN = (c : EReal) := by
-  lift V.maximalSlope hS hN to ℝ using
-    ⟨(V.maximalSlope_lt_top hS hN).ne, (V.bot_lt_maximalSlope hS hN hr).ne'⟩ with c
+    ∃ c : ℝ, V.maximalSlope = (c : EReal) := by
+  lift V.maximalSlope to ℝ using
+    ⟨(V.maximalSlope_lt_top).ne, (V.bot_lt_maximalSlope hr).ne'⟩ with c
   exact ⟨c, rfl⟩
 
 /-- The positive-rank minimal slope is a finite real number. Its upper
 endpoint is excluded by the proved actual quotient-mean formula. -/
 theorem exists_minimalSlope_eq_coe (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (hr : 0 < Module.finrank K E) :
-    ∃ c : ℝ, V.minimalSlope hS hN = (c : EReal) := by
-  lift V.minimalSlope hS hN to ℝ using
-    ⟨(V.minimalSlope_lt_top hS hN hr).ne, (V.bot_lt_minimalSlope hS hN hr).ne'⟩ with c
+    ∃ c : ℝ, V.minimalSlope = (c : EReal) := by
+  lift V.minimalSlope to ℝ using
+    ⟨(V.minimalSlope_lt_top hr).ne, (V.bot_lt_minimalSlope hr).ne'⟩ with c
   exact ⟨c, rfl⟩
 
 /-- The finiteness producer discharges the source's explicit premise in
 Proposition 4.3.25 for every actual positive-rank adelic bundle. -/
 theorem minimalSlope_add_maximalSlope_dual_nonneg (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (hr : 0 < Module.finrank K E) :
-    0 ≤ V.minimalSlope hS hN + (V.dualOfMeasurableBase hS).maximalSlope hS hN :=
-  V.minimalSlope_add_maximalSlope_dual_nonneg_of_lt_top hS hN hr
-    ((V.dualOfMeasurableBase hS).maximalSlope_lt_top hS hN)
+    0 ≤ V.minimalSlope + (V.dualOfMeasurableBase).maximalSlope :=
+  V.minimalSlope_add_maximalSlope_dual_nonneg_of_lt_top hr
+    ((V.dualOfMeasurableBase).maximalSlope_lt_top)
 
 end AdelicVectorBundle
 

@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Covolume.HermitianBasis
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+
 import ArakelovGeometry.NumberTheory.NumberField.Covolume.HermitianLattice
 import Mathlib.Topology.Sheaves.Init
 
@@ -57,19 +58,19 @@ theorem exists_principalModule_le (M : Submodule (𝓞 K) E)
 /-- Every full finitely generated original lattice has the proved actual index formula. -/
 theorem exists_principal_index_covolume
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) :
     ∃ b : Module.Basis (Fin (Module.finrank K E)) K E,
       principalModule b ≤ M ∧
       0 < (principalModule b).toAddSubgroup.relIndex M.toAddSubgroup ∧
-      euclideanCovolume ξ hξ M =
+      euclideanCovolume ξ M =
         (basisDeterminantFactor ξ b *
           (((2⁻¹ : ℝ) ^ InfinitePlace.nrComplexPlaces K *
             Real.sqrt |(NumberField.discr K : ℝ)|) ^ Module.finrank K E)) /
           (principalModule b).toAddSubgroup.relIndex M.toAddSubgroup := by
   obtain ⟨b, hb⟩ := exists_principalModule_le M hspan
-  exact ⟨b, hb, principal_index_pos ξ hξ b M hfg hspan hb,
-    euclideanCovolume_eq_div_principal_index ξ hξ b M hfg hspan hb⟩
+  exact ⟨b, hb, principal_index_pos ξ b M hfg hspan hb,
+    euclideanCovolume_eq_div_principal_index ξ b M hfg hspan hb⟩
 
 end ArakelovGeometry.NumberFieldHermitianLatticeCovolume

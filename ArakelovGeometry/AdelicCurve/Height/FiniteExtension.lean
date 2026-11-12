@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 public import ArakelovGeometry.AdelicCurve.Height.Affine
+
 import ArakelovGeometry.AdelicCurve.Height.Extension
 import ArakelovGeometry.AdelicCurve.Height.Northcott
 import Mathlib.CategoryTheory.Category.Init
@@ -27,10 +28,11 @@ variable {K : Type*} [Field K] (AS : AdelicStructure K)
     (E : Type*) [Field E] [Algebra K E] [FiniteDimensional K E]
 
 /-- Northcott finiteness for the algebraic extension construction at a finite extension. -/
-theorem hasNorthcott_algebraicExtension_of_finite (hS : AS.HasNorthcott) :
+theorem hasNorthcott_algebraicExtension_of_finite [hS : AS.HasNorthcott] :
     (AS.algebraicExtension E).HasNorthcott := by
+  constructor
   intro C _
-  apply (AS.finite_affineHeight_le_degree_le (L := E) hS C
+  apply (AS.finite_affineHeight_le_degree_le (L := E) C
     (Module.finrank K E)).subset
   intro a ha
   refine ⟨ha, ?_⟩
@@ -39,10 +41,11 @@ theorem hasNorthcott_algebraicExtension_of_finite (hS : AS.HasNorthcott) :
 
 /-- Chen–Moriwaki, Corollary 3.5.7: every finite extension preserves the Northcott property.
 The proof includes inseparable extensions and needs no further assumption on the places. -/
-theorem hasNorthcott_finiteExtension (hS : AS.HasNorthcott) :
+theorem hasNorthcott_finiteExtension [hS : AS.HasNorthcott] :
     (AS.finiteExtension E).HasNorthcott := by
+  constructor
   intro C hC
-  apply ((AS.hasNorthcott_algebraicExtension_of_finite E hS) C hC).subset
+  apply ((AS.hasNorthcott_algebraicExtension_of_finite E) C hC).subset
   intro a ha
   have he := AS.affineHeight_comp_finiteEmbedding (AlgHom.id K E) a
   exact he.trans_le ha

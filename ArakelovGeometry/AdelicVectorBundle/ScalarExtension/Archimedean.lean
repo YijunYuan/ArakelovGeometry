@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Subquotient.Restriction.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Subspace.Basic
 import ArakelovGeometry.Analysis.ScalarExtension.ArchimedeanComplexExtension
 import Mathlib.CategoryTheory.Category.Init
@@ -49,7 +50,7 @@ variable {S : AdelicStructure.{u, v} K}
 /-- If the original field contains a square root of minus one, every actual
 Archimedean completed scalar embedding is bijective. -/
 theorem AdelicStructure.completedEmbedding_bijective_of_sqrt_neg_one
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (hi : ∃ a : K, a ^ 2 = -1)
     (x : S.ParameterSpaceExtension L) (hx : x.base ∈ S.Ωinf) :
     letI := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
@@ -72,7 +73,7 @@ omit [FiniteDimensional K E] [FiniteDimensional K F] in
 /-- With a square root of minus one in the base, projective extension
 preserves every actual completed pullback at each Archimedean place. -/
 theorem projectiveScalarExtensionSeminorm_pullback_eq_of_sqrt_neg_one
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (hi : ∃ a : K, a ^ 2 = -1) (f : F →ₗ[K] E) (hf : Function.Injective f)
     (x : S.ParameterSpaceExtension L) (hx : x.base ∈ S.Ωinf)
     (z : x.abv.Completion ⊗[L] (L ⊗[K] F)) :
@@ -103,25 +104,25 @@ variable [Algebra.IsAlgebraic K L]
 
 /-- Ordinary extension over a complexified base preserves the actual
 completed pullback norm at every place of an ultrametric norm family. -/
-theorem scalarExtension_pullback_norm_eq_of_sqrt_neg_one (hξ : ξ.IsUltrametric)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+theorem scalarExtension_pullback_norm_eq_of_sqrt_neg_one [hξ : ξ.IsUltrametric]
+    [hN : S.IsArchimedeanNormalized]
     (hi : ∃ a : K, a ^ 2 = -1) (f : F →ₗ[K] E) (hf : Function.Injective f)
     (x : S.ParameterSpaceExtension L) (z : x.abv.Completion ⊗[L] (L ⊗[K] F)) :
     (ξ.scalarExtension (L := L)).norm x
         ((f.baseChange L).baseChange x.abv.Completion z) =
       ((ξ.pullback f hf).scalarExtension (L := L)).norm x z := by
   by_cases hx : x.base ∈ S.Ωfin
-  · exact ξ.scalarExtension_pullback_norm_eq_of_mem_Ωfin hξ f hf x hx z
+  · exact ξ.scalarExtension_pullback_norm_eq_of_mem_Ωfin f hf x hx z
   · rw [scalarExtension_norm_of_not_mem_Ωfin ξ x hx,
       scalarExtension_norm_of_not_mem_Ωfin (ξ.pullback f hf) x hx]
     exact ξ.projectiveScalarExtensionSeminorm_pullback_eq_of_sqrt_neg_one
-      hN hi f hf x hx z
+      hi f hf x hx z
 
 omit [FiniteDimensional K F] in
 /-- The native base-changed subspace, under the canonical tensor equivalence,
 has exactly the extended original restriction norm on every completed fibre. -/
-theorem scalarExtension_restrict_norm_eq_of_sqrt_neg_one (hξ : ξ.IsUltrametric)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+theorem scalarExtension_restrict_norm_eq_of_sqrt_neg_one [hξ : ξ.IsUltrametric]
+    [hN : S.IsArchimedeanNormalized]
     (hi : ∃ a : K, a ^ 2 = -1) (A : Submodule K E)
     (x : S.ParameterSpaceExtension L) (z : x.abv.Completion ⊗[L] (L ⊗[K] A)) :
     ((ξ.scalarExtension (L := L)).restrict (A.baseChange L)).norm x
@@ -137,7 +138,7 @@ theorem scalarExtension_restrict_norm_eq_of_sqrt_neg_one (hξ : ξ.IsUltrametric
       A.subtype.baseChange L := rfl
   rw [← LinearMap.comp_apply, ← LinearMap.baseChange_comp, he]
   exact ξ.scalarExtension_pullback_norm_eq_of_sqrt_neg_one
-    hξ hN hi A.subtype A.subtype_injective x z
+     hi A.subtype A.subtype_injective x z
 
 end NormFamily
 

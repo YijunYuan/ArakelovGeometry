@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Line
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
@@ -43,11 +44,12 @@ noncomputable def scalarLine : AdelicVectorBundle S K := by
   have hlog : ξ.logNorm 1 = 0 := by
     funext ω
     simp only [NormFamily.logNorm, hnorm, Real.log_one, Pi.zero_apply]
-  exact ofLine ξ (Module.finrank_self K) (by exact NormFamily.ofBasis_isMeasurable b) (by
+  exact ofLine ξ (Module.finrank_self K) (hm := (by exact NormFamily.ofBasis_isMeasurable b))
+      (hd := (by
     apply (ξ.isDominated_iff_logNorm_bounds (Module.finrank_self K) one_ne_zero).2
     apply integrable_hasIntegrableBounds
     rw [hlog]
-    exact integrable_zero _ _ _)
+    exact integrable_zero _ _ _))
 
 /-- The scalar line retains the actual singleton completed-basis norm. -/
 @[simp]
@@ -55,7 +57,7 @@ theorem scalarLine_toNormFamily :
     (scalarLine S).toNormFamily = NormFamily.ofBasis S K (Module.Basis.singleton (Fin 1) K) := rfl
 
 /-- The scalar adelic bundle has rank one. -/
-theorem scalarLine_isLine : (scalarLine S).IsLine := Module.finrank_self K
+instance scalarLine_isLine : (scalarLine S).IsLine := ⟨Module.finrank_self K⟩
 
 /-- The completed norm of a scalar multiple of the scalar generator. -/
 @[simp]

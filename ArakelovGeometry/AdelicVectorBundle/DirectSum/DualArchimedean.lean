@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.DirectSum.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
 public import ArakelovGeometry.Analysis.NormShape.Dual
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.DirectSum.DualFinite
 import ArakelovGeometry.Analysis.NormShape.DualOperator
@@ -131,7 +132,7 @@ variable (ξ : NormFamily S E) (η : NormFamily S F)
 
 /-- The single place-dependent dual profile computes every actual completed dual norm. -/
 theorem directSum_dual_norm (ψ : S.Ω → NormShape)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω)
+    [hS : S.IsArchimedeanNormalized] (ω : S.Ω)
     (f : (S.ϕ ω).Completion ⊗[K] Module.Dual K (E × F)) :
     (ξ.directSum η ψ).dual.norm ω f = (NormShape.adelicDual S ψ ω).perspective
       (ξ.dual.norm ω ((LinearMap.inl K E F).dualMap.baseChange (S.ϕ ω).Completion f))
@@ -147,9 +148,10 @@ theorem directSum_dual_norm (ψ : S.Ω → NormShape)
 
 /-- Actual dual measurability for general measurable profile sums. -/
 theorem directSum_dual_isMeasurable (ψ : S.Ω → NormShape)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.dual.IsMeasurable) (hη : η.dual.IsMeasurable)
+    [hS : S.IsArchimedeanNormalized]
+    [hξ : ξ.dual.IsMeasurable] [hη : η.dual.IsMeasurable]
     (hψ : NormShape.IsMeasurableFamily ψ) : (ξ.directSum η ψ).dual.IsMeasurable := by
+  constructor
   intro ℓ
   have h := (hψ.adelicDual S).perspective
     (hξ (ℓ.comp (LinearMap.inl K E F))) (hη (ℓ.comp (LinearMap.inr K E F)))
@@ -161,6 +163,6 @@ theorem directSum_dual_isMeasurable (ψ : S.Ω → NormShape)
   have h₂ : (LinearMap.inr K E F).dualMap ℓ = ℓ.comp (LinearMap.inr K E F) := by
     ext x; rfl
   simpa only [LinearMap.baseChange_tmul, h₁, h₂] using
-    ξ.directSum_dual_norm η ψ hS ω (1 ⊗ₜ[K] ℓ)
+    ξ.directSum_dual_norm η ψ ω (1 ⊗ₜ[K] ℓ)
 
 end ArakelovGeometry.NormFamily

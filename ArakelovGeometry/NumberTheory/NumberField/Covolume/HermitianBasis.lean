@@ -82,28 +82,28 @@ theorem abs_det_completed_restrictScalars (w : InfinitePlace K)
 /-- The actual completed orthonormal basis, retaining the original completed fibre. -/
 def completedOrthonormalBasis
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) (w : InfinitePlace K) :
+    [hξ : ξ.IsHermitian] (w : InfinitePlace K) :
     Module.Basis (Fin (Module.finrank K E)) (CompletedCoefficient w)
       (CompletedCoefficient w ⊗[K] E) := by
   let := normalizedNumberFieldArchimedeanCompletions _ (normalizedInfinitePlacePoint_mem_inf w)
   let := IsRCLikeNormedField.rclike (CompletedCoefficient w)
   let := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
   let := ξ.fibreNormedSpace (normalizedInfinitePlacePoint w)
-  let := hξ.fibreInnerProductSpace _ (normalizedInfinitePlacePoint_mem_inf w)
+  let := ξ.fiberInnerProductSpace _ (normalizedInfinitePlacePoint_mem_inf w)
   exact ((stdOrthonormalBasis (CompletedCoefficient w) (CompletedCoefficient w ⊗[K] E)).reindex
     (finCongr Module.finrank_baseChange)).toBasis
 
 theorem completedOrthonormalBasis_norm_sq
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) (w : InfinitePlace K)
+    [hξ : ξ.IsHermitian] (w : InfinitePlace K)
     (z : CompletedCoefficient w ⊗[K] E) :
     (ξ.norm (normalizedInfinitePlacePoint w) z) ^ 2 =
-      ∑ i, ‖(completedOrthonormalBasis ξ hξ w).equivFun z i‖ ^ 2 := by
+      ∑ i, ‖(completedOrthonormalBasis ξ w).equivFun z i‖ ^ 2 := by
   let := normalizedNumberFieldArchimedeanCompletions _ (normalizedInfinitePlacePoint_mem_inf w)
   let := IsRCLikeNormedField.rclike (CompletedCoefficient w)
   let := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
   let := ξ.fibreNormedSpace (normalizedInfinitePlacePoint w)
-  let := hξ.fibreInnerProductSpace _ (normalizedInfinitePlacePoint_mem_inf w)
+  let := ξ.fiberInnerProductSpace _ (normalizedInfinitePlacePoint_mem_inf w)
   let o := (stdOrthonormalBasis (CompletedCoefficient w) (CompletedCoefficient w ⊗[K] E)).reindex
     (finCongr Module.finrank_baseChange)
   have h := o.repr.norm_map z
@@ -113,16 +113,16 @@ theorem completedOrthonormalBasis_norm_sq
 
 theorem completedOrthonormalBasis_determinant_norm_one
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) (w : InfinitePlace K) :
+    [hξ : ξ.IsHermitian] (w : InfinitePlace K) :
     ξ.determinant.norm (normalizedInfinitePlacePoint w)
       ((exteriorBaseChangeEquiv K (CompletedCoefficient w) E _).symm
         (_root_.exteriorPower.ιMulti (CompletedCoefficient w) _
-          (completedOrthonormalBasis ξ hξ w))) = 1 := by
+          (completedOrthonormalBasis ξ w))) = 1 := by
   let := normalizedNumberFieldArchimedeanCompletions _ (normalizedInfinitePlacePoint_mem_inf w)
   let := IsRCLikeNormedField.rclike (CompletedCoefficient w)
   let := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
   let := ξ.fibreNormedSpace (normalizedInfinitePlacePoint w)
-  let := hξ.fibreInnerProductSpace _ (normalizedInfinitePlacePoint_mem_inf w)
+  let := ξ.fiberInnerProductSpace _ (normalizedInfinitePlacePoint_mem_inf w)
   exact hξ.determinant_norm_orthonormalBasis ξ _ (normalizedInfinitePlacePoint_mem_inf w)
     ((stdOrthonormalBasis (CompletedCoefficient w) (CompletedCoefficient w ⊗[K] E)).reindex
       (finCongr Module.finrank_baseChange))
@@ -173,45 +173,45 @@ theorem completedBasisDeterminantNorm_coordinate
 
 theorem completedBasisDeterminantNorm_eq
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) (w : InfinitePlace K) :
     completedBasisDeterminantNorm ξ b w =
-      ‖(completedOrthonormalBasis ξ hξ w).det (b.baseChange (CompletedCoefficient w))‖ := by
-  rw [completedBasisDeterminantNorm_coordinate ξ b w (completedOrthonormalBasis ξ hξ w),
-    completedOrthonormalBasis_determinant_norm_one ξ hξ w, mul_one]
+      ‖(completedOrthonormalBasis ξ w).det (b.baseChange (CompletedCoefficient w))‖ := by
+  rw [completedBasisDeterminantNorm_coordinate ξ b w (completedOrthonormalBasis ξ w),
+    completedOrthonormalBasis_determinant_norm_one ξ w, mul_one]
 
 abbrev basisFamily (b : Module.Basis (Fin (Module.finrank K E)) K E) :
     NormFamily (normalizedNumberFieldAdelicStructure K) E := ofBasisHermitian _ _ b
 
 omit [FiniteDimensional K E] in
 theorem basisFamily_hermitian (b : Module.Basis (Fin (Module.finrank K E)) K E) :
-    (basisFamily b).IsHermitian normalizedNumberFieldArchimedeanCompletions :=
-  ofBasisHermitian_isHermitian b normalizedNumberFieldArchimedeanCompletions
+    (basisFamily b).IsHermitian :=
+  ofBasisHermitian_isHermitian b
 
 /-- The actual completed operator sends a ξ-orthonormal basis to the completed rational basis. -/
 def completedBasisOperator
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) (w : InfinitePlace K) :
     (CompletedCoefficient w ⊗[K] E) ≃ₗ[CompletedCoefficient w] (CompletedCoefficient w ⊗[K] E) :=
-  (completedOrthonormalBasis ξ hξ w).equivFun.trans
+  (completedOrthonormalBasis ξ w).equivFun.trans
     (b.baseChange (CompletedCoefficient w)).equivFun.symm
 
 theorem completedBasisOperator_coordinates
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) (w : InfinitePlace K)
     (z : CompletedCoefficient w ⊗[K] E) :
-    (b.baseChange (CompletedCoefficient w)).equivFun (completedBasisOperator ξ hξ b w z) =
-      (completedOrthonormalBasis ξ hξ w).equivFun z :=
+    (b.baseChange (CompletedCoefficient w)).equivFun (completedBasisOperator ξ b w z) =
+      (completedOrthonormalBasis ξ w).equivFun z :=
   (b.baseChange (CompletedCoefficient w)).equivFun.apply_symm_apply _
 
 theorem completedBasisOperator_basis
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) (w : InfinitePlace K)
     (i : Fin (Module.finrank K E)) :
-    completedBasisOperator ξ hξ b w (completedOrthonormalBasis ξ hξ w i) =
+    completedBasisOperator ξ b w (completedOrthonormalBasis ξ w i) =
       (b.baseChange (CompletedCoefficient w)) i := by
   apply (b.baseChange (CompletedCoefficient w)).equivFun.injective
   rw [completedBasisOperator_coordinates]
@@ -219,39 +219,39 @@ theorem completedBasisOperator_basis
 
 theorem det_completedBasisOperator
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) (w : InfinitePlace K) :
-    LinearMap.det (completedBasisOperator ξ hξ b w).toLinearMap =
-      (completedOrthonormalBasis ξ hξ w).det (b.baseChange (CompletedCoefficient w)) := by
-  have hf : (completedBasisOperator ξ hξ b w) ∘ (completedOrthonormalBasis ξ hξ w) =
-      (b.baseChange (CompletedCoefficient w)) := funext (completedBasisOperator_basis ξ hξ b w)
-  have hd := (completedOrthonormalBasis ξ hξ w).det_comp
-    (completedBasisOperator ξ hξ b w).toLinearMap (completedOrthonormalBasis ξ hξ w)
-  change (completedOrthonormalBasis ξ hξ w).det
-    ((completedBasisOperator ξ hξ b w) ∘ (completedOrthonormalBasis ξ hξ w)) = _ at hd
+    LinearMap.det (completedBasisOperator ξ b w).toLinearMap =
+      (completedOrthonormalBasis ξ w).det (b.baseChange (CompletedCoefficient w)) := by
+  have hf : (completedBasisOperator ξ b w) ∘ (completedOrthonormalBasis ξ w) =
+      (b.baseChange (CompletedCoefficient w)) := funext (completedBasisOperator_basis ξ b w)
+  have hd := (completedOrthonormalBasis ξ w).det_comp
+    (completedBasisOperator ξ b w).toLinearMap (completedOrthonormalBasis ξ w)
+  change (completedOrthonormalBasis ξ w).det
+    ((completedBasisOperator ξ b w) ∘ (completedOrthonormalBasis ξ w)) = _ at hd
   rw [hf, Module.Basis.det_self, mul_one] at hd
   exact hd.symm
 
 theorem abs_det_completedBasisOperator
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) (w : InfinitePlace K) :
-    |LinearMap.det ((completedBasisOperator ξ hξ b w).toLinearMap.restrictScalars ℝ)| =
+    |LinearMap.det ((completedBasisOperator ξ b w).toLinearMap.restrictScalars ℝ)| =
       completedBasisDeterminantNorm ξ b w ^ w.mult := by
   rw [abs_det_completed_restrictScalars, det_completedBasisOperator,
-    completedBasisDeterminantNorm_eq ξ hξ b w]
+    completedBasisDeterminantNorm_eq ξ b w]
 
 theorem completedBasisOperator_norm_sq
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) (w : InfinitePlace K)
     (z : CompletedCoefficient w ⊗[K] E) :
     ((basisFamily b).norm (normalizedInfinitePlacePoint w)
-      (completedBasisOperator ξ hξ b w z)) ^ 2 =
+      (completedBasisOperator ξ b w z)) ^ 2 =
       (ξ.norm (normalizedInfinitePlacePoint w) z) ^ 2 := by
   rw [ofBasisHermitian_norm_of_infinite _ _ (normalizedInfinitePlacePoint_mem_inf w)]
   rw [Real.sq_sqrt (Finset.sum_nonneg (fun _ _ => sq_nonneg _))]
-  rw [completedBasisOperator_coordinates, completedOrthonormalBasis_norm_sq ξ hξ w z]
+  rw [completedBasisOperator_coordinates, completedOrthonormalBasis_norm_sq ξ w z]
 
 theorem det_dependentBlockDiagonal {ι : Type*} [Fintype ι] [LinearOrder ι] {κ : ι → Type*}
     [∀ i, Fintype (κ i)] [∀ i, DecidableEq (κ i)] (M : ∀ i, Matrix (κ i) (κ i) ℝ) :
@@ -338,87 +338,87 @@ def basisDeterminantFactor
 
 theorem completedBasisDeterminantNorm_pos
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) (w : InfinitePlace K) :
     0 < completedBasisDeterminantNorm ξ b w := by
-  rw [completedBasisDeterminantNorm_eq ξ hξ b w]
+  rw [completedBasisDeterminantNorm_eq ξ b w]
   exact norm_pos_iff.mpr ((Module.Basis.isUnit_det _ _).ne_zero)
 
 /-- The empty completed basis wedge has norm one in every Hermitian metric. -/
 theorem completedBasisDeterminantNorm_rankZero
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) (hzero : Module.finrank K E = 0)
     (w : InfinitePlace K) :
     completedBasisDeterminantNorm ξ b w = 1 := by
-  rw [completedBasisDeterminantNorm_eq ξ hξ b w, Module.Basis.det_apply,
+  rw [completedBasisDeterminantNorm_eq ξ b w, Module.Basis.det_apply,
     Matrix.det_eq_one_of_card_eq_zero (by simpa using hzero), norm_one]
 
 /-- Changing the Hermitian metric has volume factor one in rank zero. -/
 theorem basisDeterminantFactor_rankZero
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) (hzero : Module.finrank K E = 0) :
     basisDeterminantFactor ξ b = 1 := by
-  simp [basisDeterminantFactor, completedBasisDeterminantNorm_rankZero ξ hξ b hzero]
+  simp [basisDeterminantFactor, completedBasisDeterminantNorm_rankZero ξ b hzero]
 
 theorem basisDeterminantFactor_pos
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) :
     0 < basisDeterminantFactor ξ b :=
-  Finset.prod_pos (fun w _ => pow_pos (completedBasisDeterminantNorm_pos ξ hξ b w) _)
+  Finset.prod_pos (fun w _ => pow_pos (completedBasisDeterminantNorm_pos ξ b w) _)
 
 /-- Product of the actual completed basis operators, restricted to the prescribed real action. -/
 def basisProductEquiv
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) :
     CompletedVectorProduct K E ≃ₗ[ℝ] CompletedVectorProduct K E :=
-  LinearEquiv.piCongrRight (fun w => (completedBasisOperator ξ hξ b w).restrictScalars ℝ)
+  LinearEquiv.piCongrRight (fun w ↦ (completedBasisOperator ξ b w).restrictScalars ℝ)
 
 theorem basisProductEquiv_toLinearMap
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) :
-    (basisProductEquiv ξ hξ b).toLinearMap =
-      productOperator (fun w => (completedBasisOperator ξ hξ b w).toLinearMap) := rfl
+    (basisProductEquiv ξ b).toLinearMap =
+      productOperator (fun w ↦ (completedBasisOperator ξ b w).toLinearMap) := rfl
 
 theorem abs_det_basisProductEquiv
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) :
-    |LinearMap.det (basisProductEquiv ξ hξ b).toLinearMap| = basisDeterminantFactor ξ b := by
+    |LinearMap.det (basisProductEquiv ξ b).toLinearMap| = basisDeterminantFactor ξ b := by
   rw [basisProductEquiv_toLinearMap, abs_det_productOperator]
   apply Finset.prod_congr rfl
   intro w _
-  rw [det_completedBasisOperator, completedBasisDeterminantNorm_eq ξ hξ b w]
+  rw [det_completedBasisOperator, completedBasisDeterminantNorm_eq ξ b w]
 
 theorem basisProductEquiv_norm_sq
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) (z : CompletedVectorProduct K E) :
     (@Norm.norm _ (euclideanNormedAddCommGroup (basisFamily b)).toNorm
-      (basisProductEquiv ξ hξ b z)) ^ 2 =
+      (basisProductEquiv ξ b z)) ^ 2 =
       (@Norm.norm _ (euclideanNormedAddCommGroup ξ).toNorm z) ^ 2 := by
   rw [euclidean_norm_sq, euclidean_norm_sq]
   apply Finset.sum_congr rfl
   intro w _
-  exact completedBasisOperator_norm_sq ξ hξ b w (z w)
+  exact completedBasisOperator_norm_sq ξ b w (z w)
 
 theorem basisProductEquiv_norm
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) (z : CompletedVectorProduct K E) :
     @Norm.norm _ (euclideanNormedAddCommGroup (basisFamily b)).toNorm
-      (basisProductEquiv ξ hξ b z) =
+      (basisProductEquiv ξ b z) =
       @Norm.norm _ (euclideanNormedAddCommGroup ξ).toNorm z := by
-  have hs := basisProductEquiv_norm_sq ξ hξ b z
+  have hs := basisProductEquiv_norm_sq ξ b z
   have hx : 0 ≤ @Norm.norm _ (euclideanNormedAddCommGroup ξ).toNorm z := by
     let := euclideanNormedAddCommGroup ξ
     exact norm_nonneg _
   have hy : 0 ≤ @Norm.norm _ (euclideanNormedAddCommGroup (basisFamily b)).toNorm
-      (basisProductEquiv ξ hξ b z) := by
+      (basisProductEquiv ξ b z) := by
     let := euclideanNormedAddCommGroup (basisFamily b)
     exact norm_nonneg _
   nlinarith
@@ -426,7 +426,7 @@ theorem basisProductEquiv_norm
 /-- Canonical isometry between actual norms on the same original completed product. -/
 def basisProductIsometry
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) :
     @LinearIsometryEquiv ℝ ℝ _ _ (RingHom.id ℝ) (RingHom.id ℝ) _ _
       (CompletedVectorProduct K E) (CompletedVectorProduct K E)
@@ -436,19 +436,19 @@ def basisProductIsometry
     (CompletedVectorProduct K E) (CompletedVectorProduct K E)
     (euclideanNormedAddCommGroup ξ).toSeminormedAddCommGroup
     (euclideanNormedAddCommGroup (basisFamily b)).toSeminormedAddCommGroup _ _
-    (basisProductEquiv ξ hξ b) (basisProductEquiv_norm ξ hξ b)
+    (basisProductEquiv ξ b) (basisProductEquiv_norm ξ b)
 
 theorem euclideanVolume_basis_image
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E)
     (B : Set (CompletedVectorProduct K E)) :
-    euclideanVolume ξ hξ B = euclideanVolume (basisFamily b) (basisFamily_hermitian b)
-      (basisProductEquiv ξ hξ b '' B) := by
+    euclideanVolume ξ B = euclideanVolume (basisFamily b) (hξ := (basisFamily_hermitian b))
+      (basisProductEquiv ξ b '' B) := by
   let n := euclideanNormedAddCommGroup (basisFamily b)
   let ns := euclideanNormedAddCommGroup ξ
-  let i := euclideanInnerProduct (basisFamily_hermitian b)
-  let is := euclideanInnerProduct hξ
+  let i := euclideanInnerProduct (hξ := (basisFamily_hermitian b))
+  let is := euclideanInnerProduct (ξ := ξ)
   let m : MeasurableSpace (CompletedVectorProduct K E) := by letI := n; exact borel _
   let ms : MeasurableSpace (CompletedVectorProduct K E) := by letI := ns; exact borel _
   have hm : letI := n; letI := m; BorelSpace (CompletedVectorProduct K E) := by
@@ -459,60 +459,61 @@ theorem euclideanVolume_basis_image
     let := ns
     let := ms
     exact ⟨rfl⟩
-  let f := basisProductIsometry ξ hξ b
+  let f := basisProductIsometry ξ b
   let e := @LinearIsometryEquiv.toMeasurableEquiv _ _ n i ns is ms hms m hm f
   have h := @LinearIsometryEquiv.measurePreserving _ _ n i ns is ms hms m hm _ _ f
-  have he := @MeasurableEquiv.map_apply _ _ ms m (euclideanVolume ξ hξ) e
-    (basisProductEquiv ξ hξ b '' B)
-  change (@Measure.map _ _ ms m f (euclideanVolume ξ hξ))
-    (basisProductEquiv ξ hξ b '' B) =
-      euclideanVolume ξ hξ (f ⁻¹' (basisProductEquiv ξ hξ b '' B)) at he
-  rw [@MeasurePreserving.map_eq _ _ ms m f (euclideanVolume ξ hξ)
-    (euclideanVolume (basisFamily b) (basisFamily_hermitian b)) h] at he
-  change euclideanVolume (basisFamily b) (basisFamily_hermitian b)
-    (basisProductEquiv ξ hξ b '' B) = euclideanVolume ξ hξ
-      (basisProductEquiv ξ hξ b ⁻¹' (basisProductEquiv ξ hξ b '' B)) at he
-  rw [Set.preimage_image_eq _ (basisProductEquiv ξ hξ b).injective] at he
+  have he := @MeasurableEquiv.map_apply _ _ ms m (euclideanVolume ξ) e
+    (basisProductEquiv ξ b '' B)
+  change (@Measure.map _ _ ms m f (euclideanVolume ξ))
+    (basisProductEquiv ξ b '' B) =
+      euclideanVolume ξ (f ⁻¹' (basisProductEquiv ξ b '' B)) at he
+  rw [@MeasurePreserving.map_eq _ _ ms m f (euclideanVolume ξ)
+    (euclideanVolume (basisFamily b) (hξ := (basisFamily_hermitian b))) h] at he
+  change euclideanVolume (basisFamily b) (hξ := (basisFamily_hermitian b))
+    (basisProductEquiv ξ b '' B) = euclideanVolume ξ
+      (basisProductEquiv ξ b ⁻¹' (basisProductEquiv ξ b '' B)) at he
+  rw [Set.preimage_image_eq _ (basisProductEquiv ξ b).injective] at he
   exact he.symm
 
 theorem euclideanVolume_eq_basisDeterminantFactor_mul
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E)
     (B : Set (CompletedVectorProduct K E)) :
-    euclideanVolume ξ hξ B = ENNReal.ofReal (basisDeterminantFactor ξ b) *
-      euclideanVolume (basisFamily b) (basisFamily_hermitian b) B := by
-  rw [euclideanVolume_basis_image ξ hξ b B]
+    euclideanVolume ξ B = ENNReal.ofReal (basisDeterminantFactor ξ b) *
+      euclideanVolume (basisFamily b) (hξ := (basisFamily_hermitian b)) B := by
+  rw [euclideanVolume_basis_image ξ b B]
   let := euclideanNormedAddCommGroup (basisFamily b)
   let := euclideanNormedSpace (basisFamily b)
-  let := euclideanInnerProduct (basisFamily_hermitian b)
+  let := euclideanInnerProduct (hξ := (basisFamily_hermitian b))
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
-  have h := Measure.addHaar_image_linearMap volume (basisProductEquiv ξ hξ b).toLinearMap B
+  have h := Measure.addHaar_image_linearMap volume (basisProductEquiv ξ b).toLinearMap B
   rw [abs_det_basisProductEquiv] at h
   exact h
 
 theorem euclideanCovolume_eq_basisDeterminantFactor_mul
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E)
     (M : Submodule (𝓞 K) E) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) :
-    euclideanCovolume ξ hξ M = basisDeterminantFactor ξ b *
-      euclideanCovolume (basisFamily b) (basisFamily_hermitian b) M := by
-  rw [euclideanCovolume_eq_fundamentalDomain ξ hξ M hfg hspan,
-    euclideanCovolume_eq_fundamentalDomain (basisFamily b) (basisFamily_hermitian b) M hfg hspan,
-    euclideanVolume_eq_basisDeterminantFactor_mul ξ hξ b,
-    ENNReal.toReal_mul, ENNReal.toReal_ofReal (basisDeterminantFactor_pos ξ hξ b).le]
+    euclideanCovolume ξ M = basisDeterminantFactor ξ b *
+      euclideanCovolume (basisFamily b) (hξ := (basisFamily_hermitian b)) M := by
+  rw [euclideanCovolume_eq_fundamentalDomain ξ M hfg hspan,
+    euclideanCovolume_eq_fundamentalDomain (basisFamily b)
+        (hξ := (basisFamily_hermitian b)) M hfg hspan,
+    euclideanVolume_eq_basisDeterminantFactor_mul ξ b,
+    ENNReal.toReal_mul, ENNReal.toReal_ofReal (basisDeterminantFactor_pos ξ b).le]
 
 theorem principalCovolume_eq_detFactor
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) :
-    euclideanCovolume ξ hξ (principalModule b) = basisDeterminantFactor ξ b *
-      euclideanCovolume (basisFamily b) (basisFamily_hermitian b) (principalModule b) :=
-  euclideanCovolume_eq_basisDeterminantFactor_mul ξ hξ b (principalModule b)
+    euclideanCovolume ξ (principalModule b) = basisDeterminantFactor ξ b *
+      euclideanCovolume (basisFamily b) (hξ := (basisFamily_hermitian b)) (principalModule b) :=
+  euclideanCovolume_eq_basisDeterminantFactor_mul ξ b (principalModule b)
     (principalModule_fg b) (principalModule_full b)
 
 end ArakelovGeometry.NumberFieldHermitianBasisCovolume

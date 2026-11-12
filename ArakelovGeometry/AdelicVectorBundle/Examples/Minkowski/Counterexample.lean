@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Minkowski.Bundle
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Destabilizing
 public import ArakelovGeometry.AdelicVectorBundle.Minkowski.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.LineVector
 import ArakelovGeometry.AdelicVectorBundle.Minima.Basis
 import ArakelovGeometry.AdelicVectorBundle.Minima.Restriction
@@ -54,6 +55,9 @@ theorem countingArchimedeanNormalization :
   have h := AbsoluteValue.isNonarchimedeanPlace_trivialPlace (K := ℚ)
   simp only [AbsoluteValue.IsNonarchimedeanPlace, AbsoluteValue.trivialPlace_out_eq] at h
   exact (ha h).elim
+
+instance countingCurve_isArchimedeanNormalized : countingCurve.IsArchimedeanNormalized :=
+  ⟨countingArchimedeanNormalization⟩
 
 /-- The actual plane has rank two. -/
 theorem finrank_plane : Module.finrank ℚ Plane = 2 := by
@@ -247,10 +251,11 @@ private theorem integral_finite_profile (s : Finset ℚ) (r : ℝ) :
 
 /-- The degree is the actual determinant log integral over all original counting places. -/
 theorem bundle_degree (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1) :
-    (bundle s c hc hc1).degree countingRegularity countingArchimedeanNormalization =
+    (bundle s c hc hc1).degree (hS := ⟨countingRegularity⟩)
+        (hN := ⟨countingArchimedeanNormalization⟩) =
       (s.card : ℝ) * (-Real.log c) := by
-  rw [(bundle s c hc hc1).degree_eq_neg_integral countingRegularity
-    countingArchimedeanNormalization ⟨determinantVector, determinantVector_ne_zero⟩]
+  rw [(bundle s c hc hc1).degree_eq_neg_integral (hS := ⟨countingRegularity⟩)
+    (hN := ⟨countingArchimedeanNormalization⟩) ⟨determinantVector, determinantVector_ne_zero⟩]
   have he : (bundle s c hc hc1).toNormFamily.determinant.logNorm determinantVector =
       fun a ↦ if a ∈ s then Real.log c else 0 := by
     funext a
@@ -361,22 +366,22 @@ theorem bundle_maximalLogarithmicMinimum_empty (c : ℝ) (hc : 0 < c) (hc1 : c �
 theorem bundle_slope_restrict_line (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1)
     (W : Submodule ℚ Plane) (hW : Module.finrank ℚ W = 1)
     (x : {x : W // x ≠ 0}) :
-    ((bundle s c hc hc1).restrictOfMeasurableBase W countingRegularity).slope
-      countingRegularity countingArchimedeanNormalization =
+    ((bundle s c hc hc1).restrictOfMeasurableBase W (hS := ⟨countingRegularity⟩)).slope
+      (hS := ⟨countingRegularity⟩) (hN := ⟨countingArchimedeanNormalization⟩) =
       ((s.filter fun a ↦ x.val.val.2 = a * x.val.val.1).card : ℝ) * (-Real.log c) := by
-  rw [AdelicVectorBundle.slope_eq_degree_of_finrank_one _ _ _ hW,
-    AdelicVectorBundle.degree_eq_vectorDegree_of_finrank_one _ _ _ hW x,
+  rw [AdelicVectorBundle.slope_eq_degree_of_finrank_one _ hW,
+    AdelicVectorBundle.degree_eq_vectorDegree_of_finrank_one _ hW x,
     AdelicVectorBundle.vectorDegree_restrictOfMeasurableBase, bundle_vectorDegree]
 
 private theorem restricted_line_slope_le (s : Finset ℚ) (c : ℝ)
     (hc : 0 < c) (hc1 : c ≤ 1) (W : Submodule ℚ Plane)
     (hW : Module.finrank ℚ W = 1) :
-    ((bundle s c hc hc1).restrictOfMeasurableBase W countingRegularity).slope
-      countingRegularity countingArchimedeanNormalization ≤ -Real.log c := by
+    ((bundle s c hc hc1).restrictOfMeasurableBase W (hS := ⟨countingRegularity⟩)).slope
+      (hS := ⟨countingRegularity⟩) (hN := ⟨countingArchimedeanNormalization⟩) ≤ -Real.log c := by
   have : Nontrivial W := Module.nontrivial_of_finrank_pos (by rw [hW]; norm_num)
   obtain ⟨x, hx⟩ := exists_ne (0 : W)
-  rw [AdelicVectorBundle.slope_eq_degree_of_finrank_one _ _ _ hW,
-    AdelicVectorBundle.degree_eq_vectorDegree_of_finrank_one _ _ _ hW ⟨x,hx⟩,
+  rw [AdelicVectorBundle.slope_eq_degree_of_finrank_one _ hW,
+    AdelicVectorBundle.degree_eq_vectorDegree_of_finrank_one _ hW ⟨x,hx⟩,
     AdelicVectorBundle.vectorDegree_restrictOfMeasurableBase]
   exact bundle_vectorDegree_le s c hc hc1 _
 
@@ -391,7 +396,8 @@ private theorem proper_nonzero_subspace_finrank (W : Submodule ℚ Plane)
 
 /-- The actual mean slope is half the original counting degree. -/
 theorem bundle_slope (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1) :
-    (bundle s c hc hc1).slope countingRegularity countingArchimedeanNormalization =
+    (bundle s c hc hc1).slope (hS := ⟨countingRegularity⟩)
+        (hN := ⟨countingArchimedeanNormalization⟩) =
       (s.card : ℝ) * (-Real.log c) / 2 := by
   rw [AdelicVectorBundle.slope, bundle_degree, finrank_plane]
   norm_num
@@ -399,7 +405,8 @@ theorem bundle_slope (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1) :
 /-- All actual nonzero subspaces, including the whole plane, compute the maximal slope. -/
 theorem bundle_maximalSlope (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1)
     (hs : s.Nonempty) :
-    (bundle s c hc hc1).maximalSlope countingRegularity countingArchimedeanNormalization =
+    (bundle s c hc hc1).maximalSlope (hS := ⟨countingRegularity⟩)
+        (hN := ⟨countingArchimedeanNormalization⟩) =
       ((max (-Real.log c) ((s.card : ℝ) * (-Real.log c) / 2) : ℝ) : EReal) := by
   apply le_antisymm
   · apply AdelicVectorBundle.maximalSlope_le
@@ -410,11 +417,11 @@ theorem bundle_maximalSlope (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (hc1 : c ≤
     · exact EReal.coe_le_coe_iff.mpr ((restricted_line_slope_le s c hc hc1 W
         (proper_nonzero_subspace_finrank W hW ht)).trans (le_max_left _ _))
   · obtain ⟨a, ha⟩ := hs
-    have hl := (bundle s c hc hc1).vectorDegree_le_maximalSlope countingRegularity
-      countingArchimedeanNormalization ⟨(1,a), by simp⟩
+    have hl := (bundle s c hc hc1).vectorDegree_le_maximalSlope (hS := ⟨countingRegularity⟩)
+      (hN := ⟨countingArchimedeanNormalization⟩) ⟨(1,a), by simp⟩
     rw [bundle_vectorDegree_cheap s c hc hc1 a ha] at hl
-    have hm := (bundle s c hc hc1).slope_le_maximalSlope countingRegularity
-      countingArchimedeanNormalization (by rw [finrank_plane]; norm_num)
+    have hm := (bundle s c hc hc1).slope_le_maximalSlope (hS := ⟨countingRegularity⟩)
+      (hN := ⟨countingArchimedeanNormalization⟩) (by rw [finrank_plane]; norm_num)
     rw [bundle_slope] at hm
     rcases le_total (-Real.log c) ((s.card : ℝ) * (-Real.log c) / 2) with h | h
     · rw [max_eq_right h]
@@ -425,9 +432,9 @@ theorem bundle_maximalSlope (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (hc1 : c ≤
 /-- With at least two selected places the actual plane is mean-slope semistable. -/
 theorem bundle_isMeanSlopeSemistable (s : Finset ℚ) (c : ℝ)
     (hc : 0 < c) (hc1 : c ≤ 1) (hs : 2 ≤ s.card) :
-    (bundle s c hc hc1).IsMeanSlopeSemistable countingRegularity
-      countingArchimedeanNormalization := by
-  apply (AdelicVectorBundle.isMeanSlopeSemistable_iff_maximalSlope_eq_slope _ _ _
+    (bundle s c hc hc1).IsMeanSlopeSemistable (hS := ⟨countingRegularity⟩)
+      (hN := ⟨countingArchimedeanNormalization⟩) := by
+  apply (AdelicVectorBundle.isMeanSlopeSemistable_iff_maximalSlope_eq_slope _
     (by rw [finrank_plane]; norm_num)).mpr
   rw [bundle_maximalSlope s c hc hc1 (Finset.card_pos.mp (by omega)), bundle_slope]
   have hk : 0 ≤ -Real.log c := neg_nonneg.mpr (Real.log_nonpos hc.le hc1)
@@ -436,7 +443,8 @@ theorem bundle_isMeanSlopeSemistable (s : Finset ℚ) (c : ℝ)
 
 /-- The empty finite truncation has actual maximal slope zero, not the rank-zero convention. -/
 theorem bundle_maximalSlope_empty (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1) :
-    (bundle ∅ c hc hc1).maximalSlope countingRegularity countingArchimedeanNormalization =
+    (bundle ∅ c hc hc1).maximalSlope (hS := ⟨countingRegularity⟩)
+        (hN := ⟨countingArchimedeanNormalization⟩) =
       (0 : EReal) := by
   apply le_antisymm
   · apply AdelicVectorBundle.maximalSlope_le
@@ -449,8 +457,8 @@ theorem bundle_maximalSlope_empty (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1) :
       obtain ⟨x,hx⟩ := exists_ne (0 : W)
       rw [bundle_slope_restrict_line ∅ c hc hc1 W hr ⟨x,hx⟩]
       simp
-  · have h := (bundle ∅ c hc hc1).slope_le_maximalSlope countingRegularity
-      countingArchimedeanNormalization (by rw [finrank_plane]; norm_num)
+  · have h := (bundle ∅ c hc hc1).slope_le_maximalSlope (hS := ⟨countingRegularity⟩)
+      (hN := ⟨countingArchimedeanNormalization⟩) (by rw [finrank_plane]; norm_num)
     simpa only [bundle_slope, Finset.card_empty, Nat.cast_zero, zero_mul, zero_div,
       EReal.coe_zero] using h
 
@@ -464,13 +472,15 @@ def sourceBundle (s : Finset ℚ) : AdelicVectorBundle countingCurve Plane :=
 
 /-- The source's actual degree is the number of selected counting atoms. -/
 theorem sourceBundle_degree (s : Finset ℚ) :
-    (sourceBundle s).degree countingRegularity countingArchimedeanNormalization = s.card := by
+    (sourceBundle s).degree (hS := ⟨countingRegularity⟩)
+        (hN := ⟨countingArchimedeanNormalization⟩) = s.card := by
   rw [sourceBundle, bundle_degree]
   simp
 
 /-- The actual source mean slope is cardinality divided by two. -/
 theorem sourceBundle_slope (s : Finset ℚ) :
-    (sourceBundle s).slope countingRegularity countingArchimedeanNormalization = s.card / 2 := by
+    (sourceBundle s).slope (hS := ⟨countingRegularity⟩)
+        (hN := ⟨countingArchimedeanNormalization⟩) = s.card / 2 := by
   rw [sourceBundle, bundle_slope]
   simp
 
@@ -482,12 +492,13 @@ theorem sourceBundle_maximalLogarithmicMinimum (s : Finset ℚ) (hs : s.Nonempty
 
 /-- At least two selected places produce genuine semistable maximal slope `n/2`. -/
 theorem sourceBundle_maximalSlope (s : Finset ℚ) (hs : 2 ≤ s.card) :
-    (sourceBundle s).maximalSlope countingRegularity countingArchimedeanNormalization =
+    (sourceBundle s).maximalSlope (hS := ⟨countingRegularity⟩)
+        (hN := ⟨countingArchimedeanNormalization⟩) =
       (((s.card : ℝ) / 2 : ℝ) : EReal) := by
-  have h := (AdelicVectorBundle.isMeanSlopeSemistable_iff_maximalSlope_eq_slope _ _ _
+  have h := (AdelicVectorBundle.isMeanSlopeSemistable_iff_maximalSlope_eq_slope _
     (by rw [finrank_plane]; norm_num)).mp
       (bundle_isMeanSlopeSemistable s (Real.exp (-1)) (Real.exp_pos _) sourceCost_le_one hs)
-  change (sourceBundle s).maximalSlope _ _ = ((sourceBundle s).slope _ _ : EReal) at h
+  change (sourceBundle s).maximalSlope = ((sourceBundle s).slope : EReal) at h
   rw [sourceBundle_slope] at h
   exact h
 
@@ -504,7 +515,8 @@ theorem integerPlaces_card (n : ℕ) : (integerPlaces n).card = n := by
 theorem exists_sourceBundle_violating_level (C : ℝ) :
     ∃ s : Finset ℚ, 2 ≤ s.card ∧
       (sourceBundle s).maximalLogarithmicMinimum + (C * Real.log 2 : ℝ) <
-        (sourceBundle s).maximalSlope countingRegularity countingArchimedeanNormalization := by
+        (sourceBundle s).maximalSlope (hS := ⟨countingRegularity⟩)
+            (hN := ⟨countingArchimedeanNormalization⟩) := by
   obtain ⟨n, hn⟩ := exists_nat_gt (max (2 : ℝ) (2 * (1 + C * Real.log 2)))
   have htwo : 2 ≤ n := by
     have h : (2 : ℝ) < n := (le_max_left _ _).trans_lt hn
@@ -520,12 +532,12 @@ theorem exists_sourceBundle_violating_level (C : ℝ) :
 /-- The actual proper rational counting curve has no finite ordinary Minkowski level. -/
 theorem countingCurve_not_minkowski (C : ℝ) :
     ¬countingCurve.HasMinkowskiPropertyAtLevel.{0,0,0}
-      countingRegularity countingArchimedeanNormalization C := by
+      (hS := ⟨countingRegularity⟩) (hN := ⟨countingArchimedeanNormalization⟩) C := by
   intro h
   obtain ⟨s, hs, hbad⟩ := exists_sourceBundle_violating_level C
   have hbound := h.maximalSlope_le (sourceBundle s)
     (by rw [finrank_plane]; norm_num)
-    (truncatedFamily_isUltrametric s (Real.exp (-1)) (Real.exp_pos _) sourceCost_le_one)
+    (hV := (truncatedFamily_isUltrametric s (Real.exp (-1)) (Real.exp_pos _) sourceCost_le_one))
   rw [finrank_plane, Nat.cast_ofNat] at hbound
   exact (not_lt_of_ge hbound) hbad
 
@@ -535,7 +547,7 @@ universe w
 def liftedSourceBundle (s : Finset ℚ) :
     AdelicVectorBundle countingCurve (ULift.{w} Plane) :=
   (sourceBundle s).pullback ULift.moduleEquiv.toLinearMap ULift.moduleEquiv.injective
-    (by intro ℓ; exact measurable_of_countable _)
+
 
 /-- The universe lift preserves the literal completed norm under canonical base change. -/
 theorem liftedSourceBundle_norm (s : Finset ℚ) (a : countingCurve.Ω)
@@ -582,8 +594,10 @@ theorem liftedSourceBundle_maximalLogarithmicMinimum_le (s : Finset ℚ) :
 
 /-- The actual maximal slope is preserved by the canonical completed universe isometry. -/
 theorem liftedSourceBundle_maximalSlope (s : Finset ℚ) :
-    (liftedSourceBundle.{w} s).maximalSlope countingRegularity countingArchimedeanNormalization =
-      (sourceBundle s).maximalSlope countingRegularity countingArchimedeanNormalization := by
+    (liftedSourceBundle.{w} s).maximalSlope (hS := ⟨countingRegularity⟩)
+        (hN := ⟨countingArchimedeanNormalization⟩) =
+      (sourceBundle s).maximalSlope (hS := ⟨countingRegularity⟩)
+          (hN := ⟨countingArchimedeanNormalization⟩) := by
   apply AdelicVectorBundle.maximalSlope_eq_of_completed_isometry _ _
     (ULift.moduleEquiv : ULift.{w} Plane ≃ₗ[ℚ] Plane)
   intro a z
@@ -592,11 +606,11 @@ theorem liftedSourceBundle_maximalSlope (s : Finset ℚ) :
 /-- Every bundle universe contains an actual rank-two counterexample at every finite level. -/
 theorem countingCurve_not_minkowski_universe (C : ℝ) :
     ¬countingCurve.HasMinkowskiPropertyAtLevel.{0,0,w}
-      countingRegularity countingArchimedeanNormalization C := by
+      (hS := ⟨countingRegularity⟩) (hN := ⟨countingArchimedeanNormalization⟩) C := by
   intro h
   obtain ⟨s, hs, hbad⟩ := exists_sourceBundle_violating_level C
   have hb := h.maximalSlope_le (liftedSourceBundle.{w} s)
-    (by rw [liftedSourceBundle_finrank]; norm_num) (liftedSourceBundle_isUltrametric s)
+    (by rw [liftedSourceBundle_finrank]; norm_num) (hV := (liftedSourceBundle_isUltrametric s))
   rw [liftedSourceBundle_maximalSlope, liftedSourceBundle_finrank, Nat.cast_ofNat] at hb
   have hm : (liftedSourceBundle.{w} s).maximalLogarithmicMinimum ≤
       (sourceBundle s).maximalLogarithmicMinimum := by
@@ -617,7 +631,7 @@ theorem countingCurve_archimedeanMass_eq_zero : countingCurve.v countingCurve.Ω
 /-- The actual counting curve has no finite strong level in any bundle universe. -/
 theorem countingCurve_not_strongMinkowski_universe (C : ℝ) :
     ¬countingCurve.HasStrongMinkowskiPropertyAtLevel.{0,0,w}
-      countingRegularity countingArchimedeanNormalization C := by
+      (hS := ⟨countingRegularity⟩) (hN := ⟨countingArchimedeanNormalization⟩) C := by
   intro h
   exact countingCurve_not_minkowski_universe C
     (h.minkowski_of_archimedeanMass_eq_zero countingCurve_archimedeanMass_eq_zero)

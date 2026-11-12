@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.TracePairing
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.WeightedEuclidean
 public import Mathlib.Analysis.InnerProductSpace.Dual
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import Mathlib.Topology.Sheaves.Init
 
@@ -134,7 +135,7 @@ theorem finite_completedRealFibre (w : InfinitePlace K) :
 @[instance_reducible]
 def localRealInnerProduct
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (w : InfinitePlace K) :
     letI := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
     letI := fibreRealNormedSpace ξ w
@@ -156,39 +157,39 @@ def localRealInnerProduct
 /-- Real Riesz representation for the actual local trace functional. -/
 def localTraceRiesz
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (w : InfinitePlace K) (f : CompletedCoefficient w ⊗[K] Module.Dual K E) :
     CompletedCoefficient w ⊗[K] E := by
   let := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
   let := fibreRealNormedSpace ξ w
-  let := localRealInnerProduct hξ w
+  let := localRealInnerProduct (ξ := ξ) w
   let := finite_completedRealFibre (E := E) w
   exact (InnerProductSpace.toDual ℝ _).symm (localTraceCLM ξ w f)
 
 theorem localTraceRiesz_inner
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (w : InfinitePlace K) (f : CompletedCoefficient w ⊗[K] Module.Dual K E)
     (x : CompletedCoefficient w ⊗[K] E) :
     letI := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
     letI := fibreRealNormedSpace ξ w
-    letI := localRealInnerProduct hξ w
-    inner ℝ (localTraceRiesz hξ w f) x = localTraceDualMap (K := K) (E := E) w f x := by
+    letI := localRealInnerProduct (ξ := ξ) w
+    inner ℝ (localTraceRiesz (ξ := ξ) w f) x = localTraceDualMap (K := K) (E := E) w f x := by
   let := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
   let := fibreRealNormedSpace ξ w
-  let := localRealInnerProduct hξ w
+  let := localRealInnerProduct (ξ := ξ) w
   let := finite_completedRealFibre (E := E) w
   exact InnerProductSpace.toDual_symm_apply
 
 theorem norm_localTraceRiesz
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (w : InfinitePlace K) (f : CompletedCoefficient w ⊗[K] Module.Dual K E) :
-    ξ.norm (normalizedInfinitePlacePoint w) (localTraceRiesz hξ w f) =
+    ξ.norm (normalizedInfinitePlacePoint w) (localTraceRiesz (ξ := ξ) w f) =
       (w.mult : ℝ) * ξ.dual.norm (normalizedInfinitePlacePoint w) f := by
   let := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
   let := fibreRealNormedSpace ξ w
-  let := localRealInnerProduct hξ w
+  let := localRealInnerProduct (ξ := ξ) w
   let := finite_completedRealFibre (E := E) w
   change ‖(InnerProductSpace.toDual ℝ _).symm (localTraceCLM ξ w f)‖ = _
   rw [LinearIsometryEquiv.norm_map, norm_localTraceCLM]
@@ -197,40 +198,40 @@ theorem norm_localTraceRiesz
 /-- The original local real inner product, with its fibre instances made explicit. -/
 def localInner
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (w : InfinitePlace K) (x y : CompletedCoefficient w ⊗[K] E) : ℝ := by
   let := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
   let := fibreRealNormedSpace ξ w
-  let := localRealInnerProduct hξ w
+  let := localRealInnerProduct (ξ := ξ) w
   exact inner ℝ x y
 
 omit [FiniteDimensional K E] in
 theorem localInner_polarization
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (w : InfinitePlace K) (x y : CompletedCoefficient w ⊗[K] E) :
-    localInner hξ w x y =
+    localInner (ξ := ξ) w x y =
       (ξ.norm (normalizedInfinitePlacePoint w) (x + y) ^ 2 -
         ξ.norm (normalizedInfinitePlacePoint w) x ^ 2 -
         ξ.norm (normalizedInfinitePlacePoint w) y ^ 2) / 2 := by
   let := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
   let := fibreRealNormedSpace ξ w
-  let := localRealInnerProduct hξ w
+  let := localRealInnerProduct (ξ := ξ) w
   exact (real_inner_eq_norm_add_mul_self_sub_norm_mul_self_sub_norm_mul_self_div_two
     x y).trans (by simp only [pow_two]; rfl)
 
 omit [FiniteDimensional K E] in
 theorem weightedInner_eq_sum
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (z x : CompletedVectorProduct K E) :
     letI := weightedNormedAddCommGroup ξ
     letI := weightedNormedSpace ξ
-    letI := weightedInnerProduct hξ
-    inner ℝ z x = ∑ w : InfinitePlace K, (w.mult : ℝ) * localInner hξ w (z w) (x w) := by
+    letI := weightedInnerProduct (ξ := ξ)
+    inner ℝ z x = ∑ w : InfinitePlace K, (w.mult : ℝ) * localInner (ξ := ξ) w (z w) (x w) := by
   let := weightedNormedAddCommGroup ξ
   let := weightedNormedSpace ξ
-  let := weightedInnerProduct hξ
+  let := weightedInnerProduct (ξ := ξ)
   rw [real_inner_eq_norm_add_mul_self_sub_norm_mul_self_sub_norm_mul_self_div_two]
   simp only [← pow_two, weighted_norm_sq, localInner_polarization, Pi.add_apply]
   rw [← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib, Finset.sum_div]
@@ -242,52 +243,52 @@ theorem weightedInner_eq_sum
 /-- The Riesz representative of the actual trace pairing in the existing weighted metric. -/
 def weightedTraceRiesz
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) : CompletedVectorProduct K E :=
-  fun w => (w.mult : ℝ)⁻¹ • localTraceRiesz hξ w (f w)
+  fun w ↦ (w.mult : ℝ)⁻¹ • localTraceRiesz (ξ := ξ) w (f w)
 
 theorem norm_weightedTraceRiesz_coordinate
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) (w : InfinitePlace K) :
-    ξ.norm (normalizedInfinitePlacePoint w) (weightedTraceRiesz hξ f w) =
+    ξ.norm (normalizedInfinitePlacePoint w) (weightedTraceRiesz (ξ := ξ) f w) =
       ξ.dual.norm (normalizedInfinitePlacePoint w) (f w) := by
   let := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
   let := fibreRealNormedSpace ξ w
   have hn : 0 < (w.mult : ℝ) := by exact_mod_cast (InfinitePlace.mult_pos (w := w))
-  change ‖(w.mult : ℝ)⁻¹ • localTraceRiesz hξ w (f w)‖ = _
+  change ‖(w.mult : ℝ)⁻¹ • localTraceRiesz (ξ := ξ) w (f w)‖ = _
   rw [_root_.norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hn)]
-  change (w.mult : ℝ)⁻¹ * ξ.norm _ (localTraceRiesz hξ w (f w)) = _
+  change (w.mult : ℝ)⁻¹ * ξ.norm _ (localTraceRiesz (ξ := ξ) w (f w)) = _
   rw [norm_localTraceRiesz, ← mul_assoc, inv_mul_cancel₀ hn.ne', one_mul]
 
 theorem weightedTraceRiesz_inner
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) (x : CompletedVectorProduct K E) :
     letI := weightedNormedAddCommGroup ξ
     letI := weightedNormedSpace ξ
-    letI := weightedInnerProduct hξ
-    inner ℝ (weightedTraceRiesz hξ f) x = tracePairing (K := K) (E := E) f x := by
+    letI := weightedInnerProduct (ξ := ξ)
+    inner ℝ (weightedTraceRiesz (ξ := ξ) f) x = tracePairing (K := K) (E := E) f x := by
   let := weightedNormedAddCommGroup ξ
   let := weightedNormedSpace ξ
-  let := weightedInnerProduct hξ
+  let := weightedInnerProduct (ξ := ξ)
   rw [weightedInner_eq_sum, tracePairing_apply]
   apply Finset.sum_congr rfl
   intro w _
   let := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
   let := fibreRealNormedSpace ξ w
-  let := localRealInnerProduct hξ w
-  change (w.mult : ℝ) * inner ℝ ((w.mult : ℝ)⁻¹ • localTraceRiesz hξ w (f w)) (x w) = _
+  let := localRealInnerProduct (ξ := ξ) w
+  change (w.mult : ℝ) * inner ℝ ((w.mult : ℝ)⁻¹ • localTraceRiesz (ξ := ξ) w (f w)) (x w) = _
   rw [real_inner_smul_left, localTraceRiesz_inner, ← mul_assoc,
     mul_inv_cancel₀ (by exact_mod_cast (InfinitePlace.mult_pos (w := w)).ne'), one_mul]
   rfl
 
 theorem weightedTraceRiesz_norm_sq
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) :
     letI := weightedNormedAddCommGroup ξ
-    ‖weightedTraceRiesz hξ f‖ ^ 2 = ∑ w : InfinitePlace K,
+    ‖weightedTraceRiesz (ξ := ξ) f‖ ^ 2 = ∑ w : InfinitePlace K,
       (w.mult : ℝ) * (ξ.dual.norm (normalizedInfinitePlacePoint w) (f w)) ^ 2 := by
   let := weightedNormedAddCommGroup ξ
   rw [weighted_norm_sq]
@@ -312,7 +313,7 @@ theorem tracePairingCLM_apply
 
 theorem norm_tracePairingCLM_sq
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) :
     letI := weightedNormedAddCommGroup ξ
     letI := weightedNormedSpace ξ
@@ -320,17 +321,17 @@ theorem norm_tracePairingCLM_sq
       (w.mult : ℝ) * (ξ.dual.norm (normalizedInfinitePlacePoint w) (f w)) ^ 2 := by
   let := weightedNormedAddCommGroup ξ
   let := weightedNormedSpace ξ
-  let := weightedInnerProduct hξ
+  let := weightedInnerProduct (ξ := ξ)
   have he : tracePairingCLM ξ f =
-      InnerProductSpace.toDual ℝ _ (weightedTraceRiesz hξ f) := by
+      InnerProductSpace.toDual ℝ _ (weightedTraceRiesz (ξ := ξ) f) := by
     ext x
-    exact (weightedTraceRiesz_inner hξ f x).symm
+    exact (weightedTraceRiesz_inner f x).symm
   rw [he, LinearIsometryEquiv.norm_map]
-  exact weightedTraceRiesz_norm_sq hξ f
+  exact weightedTraceRiesz_norm_sq f
 
 theorem norm_tracePairingCLM
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) :
     letI := weightedNormedAddCommGroup ξ
     letI := weightedNormedSpace ξ
@@ -340,11 +341,11 @@ theorem norm_tracePairingCLM
   let := weightedNormedSpace ξ
   let := weightedNormedAddCommGroup ξ.dual
   apply (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp
-  rw [norm_tracePairingCLM_sq hξ, weighted_norm_sq]
+  rw [norm_tracePairingCLM_sq, weighted_norm_sq]
 
 theorem norm_tracePairingCLM_sqrt
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) :
     letI := weightedNormedAddCommGroup ξ
     letI := weightedNormedSpace ξ
@@ -352,12 +353,12 @@ theorem norm_tracePairingCLM_sqrt
       (w.mult : ℝ) * (ξ.dual.norm (normalizedInfinitePlacePoint w) (f w)) ^ 2) := by
   let := weightedNormedAddCommGroup ξ
   let := weightedNormedSpace ξ
-  rw [← norm_tracePairingCLM_sq hξ, Real.sqrt_sq (norm_nonneg _)]
+  rw [← norm_tracePairingCLM_sq, Real.sqrt_sq (norm_nonneg _)]
 
 /-- Actual trace duality as a real isometry between the independently defined weighted metrics. -/
 def traceDualIsometry
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := weightedNormedAddCommGroup ξ
     letI := weightedNormedSpace ξ
     letI := weightedNormedAddCommGroup ξ.dual
@@ -369,28 +370,28 @@ def traceDualIsometry
   let := weightedNormedAddCommGroup ξ.dual
   let := weightedNormedSpace ξ.dual
   exact { (tracePairingEquiv (K := K) (E := E)).trans LinearMap.toContinuousLinearMap with
-    norm_map' := norm_tracePairingCLM hξ }
+    norm_map' := norm_tracePairingCLM }
 
 @[simp]
 theorem traceDualIsometry_apply
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) (x : CompletedVectorProduct K E) :
-    traceDualIsometry hξ f x = tracePairing (K := K) (E := E) f x := rfl
+    traceDualIsometry (ξ := ξ) f x = tracePairing (K := K) (E := E) f x := rfl
 
 theorem traceDualIsometry_original
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : Module.Dual K E) (x : E) :
-    traceDualIsometry hξ (vectorDiagonalMap (K := K) f) (vectorDiagonalMap (K := K) x) =
+    traceDualIsometry (ξ := ξ) (vectorDiagonalMap (K := K) f) (vectorDiagonalMap (K := K) x) =
       (Algebra.trace ℚ K (f x) : ℝ) := by
   rw [traceDualIsometry_apply, tracePairing_original]
 
 theorem traceDualIsometry_integral
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) (f : NumberFieldIntegralTraceDual.integralTraceDual M) (m : M) :
-    traceDualIsometry hξ (vectorDiagonalMap (K := K) (f : Module.Dual K E))
+    traceDualIsometry (ξ := ξ) (vectorDiagonalMap (K := K) (f : Module.Dual K E))
       (vectorDiagonalMap (K := K) (m : E)) ∈ LinearMap.range (Algebra.linearMap ℤ ℝ) := by
   refine ⟨NumberFieldIntegralTraceDual.traceRestriction M f m, ?_⟩
   change (NumberFieldIntegralTraceDual.traceRestriction M f m : ℝ) = _

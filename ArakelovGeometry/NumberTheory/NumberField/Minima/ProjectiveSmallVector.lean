@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Model.GenericFibre.Projective
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.NumberTheory.NumberField.Minkowski.SmallVector
 import Mathlib.Topology.Sheaves.Init
@@ -33,19 +34,19 @@ norms and the original completed-image gauges at finite places. -/
 theorem exists_original_nonzero_large_degree
     [Module.Finite (𝓞 K) M] [Module.Projective (𝓞 K) M]
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hη : η.IsHermitian]
     (hn : 0 < Module.finrank K (K ⊗[𝓞 K] M)) :
     let V := fullLatticeAdelicBundle (genericImage (K := K) M)
       (genericImage_fg (K := K) M) (genericImage_fullSpan (K := K) M) η
     ∃ m : M, ∃ hm : genericInclusion (K := K) M m ≠ 0, m ≠ 0 ∧
-      V.slope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions -
+      V.slope -
         (Module.finrank ℚ K : ℝ) / 2 * Real.log (Module.finrank K (K ⊗[𝓞 K] M) : ℝ) -
           Real.log |(NumberField.discr K : ℝ)| / 2 ≤
-            V.toNormFamily.vectorDegree V.isDominated V.isMeasurable
+            V.toNormFamily.vectorDegree
               ⟨genericInclusion (K := K) M m, hm⟩ := by
   obtain ⟨s, hs, hd⟩ := NumberFieldArithmeticSmallVector.exists_integral_nonzero_large_degree
     (genericImage (K := K) M) (genericImage_fg (K := K) M)
-    (genericImage_fullSpan (K := K) M) η hη hn
+    (genericImage_fullSpan (K := K) M) η hn
   obtain ⟨m, hm⟩ := (genericImageEquiv (K := K) M).surjective ⟨s.val, hs⟩
   have he : genericInclusion (K := K) M m = s.val :=
     congrArg Subtype.val hm
@@ -62,22 +63,22 @@ theorem exists_original_nonzero_large_degree
 theorem originalDiagonal_covolume_eq_exp_neg_degree_sub_chi
     [Module.Finite (𝓞 K) M] [Module.Projective (𝓞 K) M]
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     let L := genericImage (K := K) M
     let hfg := genericImage_fg (K := K) M
     let hspan := genericImage_fullSpan (K := K) M
     let ξ := NumberFieldFullLattice.fullLatticeGaugeFamily L hfg hspan η
-    let hξ := NumberFieldFullLattice.fullLatticeGaugeFamily_isHermitian L hfg hspan η hη
+    let hξ := NumberFieldFullLattice.fullLatticeGaugeFamily_isHermitian L hfg hspan η
     letI := NumberFieldArchimedeanEuclidean.euclideanNormedAddCommGroup ξ
     letI := NumberFieldArchimedeanEuclidean.euclideanNormedSpace ξ
-    letI := NumberFieldArchimedeanEuclidean.euclideanInnerProduct hξ
+    letI := NumberFieldArchimedeanEuclidean.euclideanInnerProduct (hξ := hξ)
     letI : MeasurableSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := borel _
     letI : BorelSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := ⟨rfl⟩
     letI := measureSpaceOfInnerProductSpace
       (E := CompletedVectorProduct K (K ⊗[𝓞 K] M))
     ZLattice.covolume (originalDiagonalMap (K := K) M).range =
       Real.exp (-(NumberFieldFullLattice.fullLatticeAdelicBundle L hfg hspan η).degree
-        (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions -
+        -
         (Module.finrank K (K ⊗[𝓞 K] M) : ℝ) *
           ((InfinitePlace.nrComplexPlaces K : ℝ) * Real.log 2 -
             Real.log |(NumberField.discr K : ℝ)| / 2)) := by
@@ -85,16 +86,16 @@ theorem originalDiagonal_covolume_eq_exp_neg_degree_sub_chi
   let hfg := genericImage_fg (K := K) M
   let hspan := genericImage_fullSpan (K := K) M
   let ξ := NumberFieldFullLattice.fullLatticeGaugeFamily L hfg hspan η
-  let hξ := NumberFieldFullLattice.fullLatticeGaugeFamily_isHermitian L hfg hspan η hη
+  let hξ := NumberFieldFullLattice.fullLatticeGaugeFamily_isHermitian L hfg hspan η
   let := NumberFieldArchimedeanEuclidean.euclideanNormedAddCommGroup ξ
   let := NumberFieldArchimedeanEuclidean.euclideanNormedSpace ξ
-  let := NumberFieldArchimedeanEuclidean.euclideanInnerProduct hξ
+  let := NumberFieldArchimedeanEuclidean.euclideanInnerProduct (hξ := hξ)
   let : MeasurableSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := borel _
   let : BorelSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace
     (E := CompletedVectorProduct K (K ⊗[𝓞 K] M))
   dsimp only
-  rw [originalDiagonal_covolume_eq_exp_neg_degree (K := K) M η hη,
+  rw [originalDiagonal_covolume_eq_exp_neg_degree (K := K) M η,
     NumberFieldMinkowskiRadius.log_covolume_constant]
   congr 1
   ring

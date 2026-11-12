@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Functor
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -34,11 +35,11 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 completed-fibre norm, including in rank zero. -/
 theorem degree_eq_of_completed_isometry [S.IsProper]
     (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = V.toNormFamily.norm ω x) :
-    V.degree hS hN = W.degree hS hN := by
+    V.degree = W.degree := by
   let D := determinantEquiv K e
   have hr : Module.finrank K (⋀[K]^(Module.finrank K E) E) = 1 :=
     NormFamily.determinant_finrank
@@ -48,8 +49,8 @@ theorem degree_eq_of_completed_isometry [S.IsProper]
   have hDz : D z ≠ 0 := by
     intro h
     exact hz (D.injective (h.trans D.map_zero.symm))
-  rw [V.degree_eq_neg_integral hS hN ⟨z, hz⟩,
-    W.degree_eq_neg_integral hS hN ⟨D z, hDz⟩]
+  rw [V.degree_eq_neg_integral ⟨z, hz⟩,
+    W.degree_eq_neg_integral ⟨D z, hDz⟩]
   congr 1
   apply integral_congr_ae
   apply Filter.Eventually.of_forall

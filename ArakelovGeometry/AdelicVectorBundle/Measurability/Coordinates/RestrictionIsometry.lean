@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Subquotient.Restriction.Basic
 public import Mathlib.Topology.MetricSpace.Ultra.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import ArakelovGeometry.LinearAlgebra.MeasurableMaximalMinor
@@ -142,7 +143,7 @@ theorem ofBasis_restrict_norm_eq_selected_coordinates (b : Module.Basis m K E)
 isometries on all actual completed restrictions, without field countability. -/
 theorem exists_measurable_ofBasis_restrict_selected_coordinates
     (b : Module.Basis m K E) (F : Submodule K E) (c : Module.Basis n K F)
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    [hS : S.HasOnlyFinitePlaces] :
     ∃ I : S.Ω → n → m, (∀ J, MeasurableSet {ω | I ω = J}) ∧
       ∀ ω, Function.Injective (I ω) ∧
         (_root_.Matrix.submatrix (fun i j ↦ b.equivFun (c j).val i) (I ω) id).det ≠ 0 ∧

@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Determinant.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.FiniteStage.RestrictionIsometry
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.QuotientEquiv
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Subspace.ComplexDescent
@@ -41,10 +42,10 @@ variable {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 isometry produce measurability of every prescribed native target determinant. -/
 theorem scalarExtension_restrict_determinant_isMeasurable_of_countable_discrete
     (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] E)) :
     ((ξ.scalarExtension (L := L)).restrict A).determinant.IsMeasurable := by
-  obtain ⟨F, _, B, _, _, he⟩ := ξ.exists_complexFiniteStage_restriction_isometries hN
+  obtain ⟨F, _, B, _, _, he⟩ := ξ.exists_complexFiniteStage_restriction_isometries
     (fun _ : Fin 1 => A)
   obtain ⟨e, he⟩ := he 0
   let : Countable (S.algebraicExtension F).Ω :=
@@ -57,14 +58,15 @@ theorem scalarExtension_restrict_determinant_isMeasurable_of_countable_discrete
   let θ := (ξ.scalarExtension (L := L)).restrict A
   have hm : η.determinant.IsMeasurable :=
     (η₀.isMeasurable_of_discrete.determinant_of_discrete_or_countable
-      (Or.inl inferInstance)).determinant_scalarExtension
-  exact determinant_isMeasurable_of_tower_completed_isometry F.toIntermediateField η θ e he hm
+     ).determinant_scalarExtension
+  exact determinant_isMeasurable_of_tower_completed_isometry F.toIntermediateField η θ e he
+      (hm := hm)
 
 /-- The canonical actual quotient isometry produces determinant measurability
 for every native target quotient, without any extended place-space regularity. -/
 theorem scalarExtension_quotient_determinant_isMeasurable_of_countable_discrete
     (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] E)) :
     ((ξ.scalarExtension (L := L)).quotient A).determinant.IsMeasurable := by
   obtain ⟨F, hi, B, hB, _, _⟩ := exists_complexFiniteStage_subspaces
@@ -83,9 +85,9 @@ theorem scalarExtension_quotient_determinant_isMeasurable_of_countable_discrete
   let θ := (ξ.scalarExtension (L := L)).quotient (((B 0).baseChange L).map c.toLinearMap)
   have hm : η.determinant.IsMeasurable :=
     (η₀.isMeasurable_of_discrete.determinant_of_discrete_or_countable
-      (Or.inl inferInstance)).determinant_scalarExtension
+     ).determinant_scalarExtension
   exact determinant_isMeasurable_of_tower_completed_isometry F.toIntermediateField η θ e
-    (fun x z ↦ ξ.scalarExtension_quotient_finiteStage_equiv_norm_eq hN F hi (B 0) x z) hm
+    (fun x z ↦ ξ.scalarExtension_quotient_finiteStage_equiv_norm_eq F hi (B 0) x z) (hm := hm)
 
 end NormFamily
 end ArakelovGeometry

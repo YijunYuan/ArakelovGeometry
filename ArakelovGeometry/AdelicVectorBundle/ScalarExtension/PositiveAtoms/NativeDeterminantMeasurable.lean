@@ -9,6 +9,7 @@ public import ArakelovGeometry.AdelicCurve.Examples.FunctionFields
 public import ArakelovGeometry.AdelicVectorBundle.Determinant.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Basic
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Comparison
 import ArakelovGeometry.AdelicVectorBundle.Exterior.Domination
@@ -41,8 +42,9 @@ variable {K E : Type*} [Field K] {S : AdelicStructure K}
 to the completed norms. The reference determinant is a proved input. -/
 theorem determinant_isMeasurable_of_countable_localDist_zero
     [MeasurableSingletonClass S.Ω] (ξ η : NormFamily S E)
-    (hη : η.determinant.IsMeasurable) (T : Set S.Ω) (hT : T.Countable)
+    [hη : η.determinant.IsMeasurable] (T : Set S.Ω) (hT : T.Countable)
     (he : ∀ ω ∉ T, ξ.localDist η ω = 0) : ξ.determinant.IsMeasurable := by
+  constructor
   intro z
   apply Measurable.measurable_of_countable_ne (hη z)
   apply hT.mono
@@ -61,27 +63,27 @@ variable {L : Type*} [Field L] [Algebra K L] [FiniteDimensional K L]
 on an all-finite positive atomic curve, for any original dominated family. -/
 theorem IsDominated.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) (hpos : ∀ ω : S.Ω, 0 < S.v {ω})
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) (B : Submodule L (L ⊗[K] E)) :
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
+    [hS : S.HasOnlyFinitePlaces] (B : Submodule L (L ⊗[K] E)) :
     ((ξ.scalarExtension (L := L)).restrict B).determinant.IsMeasurable := by
   let := AdelicStructure.measurableSingletonClass_algebraicExtension_of_finiteDimensional
     (S := S) (L := L)
   let b := Module.finBasis K E
-  have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin hS
+  have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin (S := S)
   obtain ⟨H, _, _, hc, _, hb, _⟩ :=
-    IsDominated.exists_scalarExtension_coordinate_exceptions_of_positive_atoms ξ b hξ hpos hfin
+    IsDominated.exists_scalarExtension_coordinate_exceptions_of_positive_atoms ξ b hξ hfin
   have ht := AdelicStructure.ParameterSpaceExtension.countable_preimage_proj_of_finiteDimensional
     (L := L) (Function.support H) hc
   let q := ofBasisMixed (S.algebraicExtension L) (L ⊗[K] E) (b.baseChange L)
   have hq : q = ofBasis (S.algebraicExtension L) (L ⊗[K] E) (b.baseChange L) := by
     ext x z
     exact ofBasisMixed_norm_of_finite (b.baseChange L) x
-      (AdelicStructure.forall_mem_Ωfin_algebraicExtension hS x) z
+      (AdelicStructure.forall_mem_Ωfin_algebraicExtension x) z
   have hm : (q.restrict B).determinant.IsMeasurable := by
     rw [hq]
     exact ofBasis_restrict_determinant_isMeasurable_of_all_finite
-      (b.baseChange L) B (AdelicStructure.forall_mem_Ωfin_algebraicExtension hS)
-  apply determinant_isMeasurable_of_countable_localDist_zero _ _ hm _ ht
+      (b.baseChange L) B (hfin := ⟨(AdelicStructure.forall_mem_Ωfin_algebraicExtension)⟩)
+  apply determinant_isMeasurable_of_countable_localDist_zero _ _ (hη := hm) _ ht
   intro x hx
   have hd := ((ξ.scalarExtension (L := L)).localDist_restrict_le q B x).trans (hb L x)
   exact le_antisymm (hd.trans_eq (Function.notMem_support.mp hx))
@@ -91,38 +93,38 @@ theorem IsDominated.scalarExtension_restrict_determinant_isMeasurable_of_positiv
 regularity, with no regularity hypothesis on the original family. -/
 theorem IsDominated.scalarExtension_restrict_determinant_dual_isMeasurable_of_positive_atoms
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) (hpos : ∀ ω : S.Ω, 0 < S.v {ω})
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) (B : Submodule L (L ⊗[K] E)) :
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
+    [hS : S.HasOnlyFinitePlaces] (B : Submodule L (L ⊗[K] E)) :
     ((ξ.scalarExtension (L := L)).restrict B).determinant.dual.IsMeasurable :=
   (IsDominated.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms
-    ξ hξ hpos hS B).dual_of_finrank_one (determinant_finrank (K := L) (E := B))
+    ξ hξ B).dual_of_finrank_one (determinant_finrank (K := L) (E := B))
 
 /-- Every literal native relative quotient has a measurable actual determinant.
 The comparison uses the original dominated family on the completed quotient. -/
 theorem IsDominated.scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) (hpos : ∀ ω : S.Ω, 0 < S.v {ω})
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin)
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
+    [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
     (((ξ.scalarExtension (L := L)).restrict B).quotient U).determinant.IsMeasurable := by
   let := AdelicStructure.measurableSingletonClass_algebraicExtension_of_finiteDimensional
     (S := S) (L := L)
   let b := Module.finBasis K E
-  have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin hS
+  have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin (S := S)
   obtain ⟨H, _, _, hc, _, hb, _⟩ :=
-    IsDominated.exists_scalarExtension_coordinate_exceptions_of_positive_atoms ξ b hξ hpos hfin
+    IsDominated.exists_scalarExtension_coordinate_exceptions_of_positive_atoms ξ b hξ hfin
   have ht := AdelicStructure.ParameterSpaceExtension.countable_preimage_proj_of_finiteDimensional
     (L := L) (Function.support H) hc
   let q := ofBasisMixed (S.algebraicExtension L) (L ⊗[K] E) (b.baseChange L)
   have hq : q = ofBasis (S.algebraicExtension L) (L ⊗[K] E) (b.baseChange L) := by
     ext x z
     exact ofBasisMixed_norm_of_finite (b.baseChange L) x
-      (AdelicStructure.forall_mem_Ωfin_algebraicExtension hS x) z
+      (AdelicStructure.forall_mem_Ωfin_algebraicExtension x) z
   have hm : ((q.restrict B).quotient U).determinant.IsMeasurable := by
     rw [hq]
     exact ofBasis_restrict_quotient_determinant_isMeasurable_of_all_finite
-      (b.baseChange L) B U (AdelicStructure.forall_mem_Ωfin_algebraicExtension hS)
-  apply determinant_isMeasurable_of_countable_localDist_zero _ _ hm _ ht
+      (b.baseChange L) B U (hfin := ⟨(AdelicStructure.forall_mem_Ωfin_algebraicExtension)⟩)
+  apply determinant_isMeasurable_of_countable_localDist_zero _ _ (hη := hm) _ ht
   intro x hx
   have hd := (((ξ.scalarExtension (L := L)).restrict B).localDist_quotient_le
     (q.restrict B) U x).trans
@@ -137,12 +139,12 @@ namespace IsDominated
 produced measurability, with the determinant line still rank one at zero rank. -/
 theorem scalarExtension_restrict_quotient_determinant_dual_isMeasurable_of_positive_atoms
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) (hpos : ∀ ω : S.Ω, 0 < S.v {ω})
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin)
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
+    [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
     (((ξ.scalarExtension (L := L)).restrict B).quotient U).determinant.dual.IsMeasurable :=
   (scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms
-    ξ hξ hpos hS B U).dual_of_finrank_one
+    ξ hξ B U).dual_of_finrank_one
       (determinant_finrank (K := L) (E := B ⧸ U))
 
 end IsDominated
@@ -157,12 +159,7 @@ theorem IsDominated.functionField_scalarExtension_restrict_determinant_isMeasura
     (hξ : ξ.IsDominated) (B : Submodule L (L ⊗[RatFunc k] E)) :
     ((ξ.scalarExtension (L := L)).restrict B).determinant.IsMeasurable := by
   apply IsDominated.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms
-    ξ hξ AdelicStructure.functionField_singleton_pos _ B
-  intro ω
-  by_contra h
-  have hω : ω ∈ (AdelicStructure.functionFieldAdelicStructure k).Ωinf := h
-  rw [AdelicStructure.functionField_Ωinf_eq_empty] at hω
-  exact hω
+    ξ hξ B
 
 /-- The actual determinant dual on geometric finite native subspaces is also
 measurable, including the zero native subspace. -/
@@ -186,12 +183,7 @@ theorem IsDominated.functionField_scalarExtension_restrict_quotient_determinant_
     (hξ : ξ.IsDominated) (B : Submodule L (L ⊗[RatFunc k] E)) (U : Submodule L B) :
     (((ξ.scalarExtension (L := L)).restrict B).quotient U).determinant.IsMeasurable := by
   apply IsDominated.scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms
-    ξ hξ AdelicStructure.functionField_singleton_pos _ B U
-  intro ω
-  by_contra h
-  have hω : ω ∈ (AdelicStructure.functionFieldAdelicStructure k).Ωinf := h
-  rw [AdelicStructure.functionField_Ωinf_eq_empty] at hω
-  exact hω
+    ξ hξ B U
 
 /-- Genuine native subquotient determinant duals have measurable rational
 profiles by line duality, including equal relative endpoints. -/
@@ -209,22 +201,18 @@ theorem IsDominated.functionField_scalarExtension_restrict_quotient_determinant_
 quotient is integrable for the actual extension measure. -/
 theorem IsDominated.integrable_native_determinant_logNorm_of_positive_atoms
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) (hpos : ∀ ω : S.Ω, 0 < S.v {ω})
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin)
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
+    [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B)
     (z : ⋀[L]^(Module.finrank L (B ⧸ U)) (B ⧸ U)) :
     Integrable ((((ξ.scalarExtension (L := L)).restrict B).quotient U).determinant.logNorm z)
       (S.algebraicExtension L).v := by
-  have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin hS
-  have hLN : ∀ x ∈ (S.algebraicExtension L).Ωinf,
-      IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion := by
-    intro x hx
-    exact False.elim (hx (AdelicStructure.forall_mem_Ωfin_algebraicExtension hS x))
+  have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin (S := S)
   have hd := (((hξ.scalarExtension_isStronglyDominated ξ hfin).isDominated.restrict B).quotient U
-    ).determinant hLN
+    ).determinant
   exact hd.integrable_logNorm
     (IsDominated.scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms
-      ξ hξ hpos hS B U) z
+      ξ hξ B U) z
 
 /-- The actual geometric projective-line native determinant logarithm is
 integrable over every finite extension and every relative subquotient. -/
@@ -238,11 +226,6 @@ theorem IsDominated.functionField_integrable_native_determinant_logNorm
     Integrable ((((ξ.scalarExtension (L := L)).restrict B).quotient U).determinant.logNorm z)
       ((AdelicStructure.functionFieldAdelicStructure k).algebraicExtension L).v := by
   apply IsDominated.integrable_native_determinant_logNorm_of_positive_atoms
-    ξ hξ AdelicStructure.functionField_singleton_pos _ B U z
-  intro ω
-  by_contra h
-  have hω : ω ∈ (AdelicStructure.functionFieldAdelicStructure k).Ωinf := h
-  rw [AdelicStructure.functionField_Ωinf_eq_empty] at hω
-  exact hω
+    ξ hξ B U z
 
 end ArakelovGeometry.NormFamily

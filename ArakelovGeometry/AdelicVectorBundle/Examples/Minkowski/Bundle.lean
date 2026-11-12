@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Domination.Distance
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Minkowski.Norm
+
 import Mathlib.CategoryTheory.Category.Init
 
 /-!
@@ -55,6 +56,7 @@ theorem truncatedFamily_norm (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (hc1 : c �
 theorem truncatedFamily_isUltrametric (s : Finset ℚ) (c : ℝ)
     (hc : 0 < c) (hc1 : c ≤ 1) :
     (truncatedFamily s c hc hc1).IsUltrametric := by
+  constructor
   classical
   intro a ha x y
   rw [truncatedFamily_norm s c hc hc1 a (x + y),
@@ -148,6 +150,7 @@ theorem truncatedFamily_isDominated (s : Finset ℚ) (c : ℝ)
 theorem truncatedFamily_isMeasurable (s : Finset ℚ) (c : ℝ)
     (hc : 0 < c) (hc1 : c ≤ 1) :
     (truncatedFamily s c hc hc1).IsMeasurable := by
+  constructor
   intro x
   exact measurable_of_countable _
 
@@ -155,6 +158,7 @@ theorem truncatedFamily_isMeasurable (s : Finset ℚ) (c : ℝ)
 theorem truncatedFamily_dual_isMeasurable (s : Finset ℚ) (c : ℝ)
     (hc : 0 < c) (hc1 : c ≤ 1) :
     (truncatedFamily s c hc hc1).dual.IsMeasurable := by
+  constructor
   intro ℓ
   exact measurable_of_countable _
 

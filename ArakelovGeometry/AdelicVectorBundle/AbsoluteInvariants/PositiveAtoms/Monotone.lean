@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants.PositiveAtoms.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Determinant.Contraction
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Subspace.Basic
 import Mathlib.CategoryTheory.Category.Init
@@ -34,78 +35,80 @@ variable {K L E : Type*} [Field K] [Field L] [Algebra K L]
 produced actual determinant degrees, with no extension-place regularity. -/
 theorem degree_restrict_le_nativeAlgebraicRestrictionDegreeOfPositiveAtoms
     (V : AdelicVectorBundle S E)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hgeo : ∀ ω : S.Ω, ω ∈ S.Ωfin)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hpos : S.HasPositiveAtoms] [hgeo : S.HasOnlyFinitePlaces]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule K E) :
-    (V.restrictOfMeasurableBase A hS).degree hS hN ≤
+    (V.restrictOfMeasurableBase A).degree ≤
       V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveAtoms
-        V.isDominated hpos hgeo (A.baseChange L) := by
+        (A.baseChange L) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-  let B := V.restrictOfMeasurableBase A hS
+  let B := V.restrictOfMeasurableBase A
   let W := B.toNormFamily.algebraicScalarBundleOfPositiveAtoms (L := L)
-    B.isDominated hpos hgeo
   let R := V.toNormFamily.nativeAlgebraicRestrictionOfPositiveAtoms
-    V.isDominated hpos hgeo (A.baseChange L)
-  let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
-  let hdetB := B.isMeasurable.determinant_of_discrete_or_countable hS
+    (A.baseChange L)
+  let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
+  let hdetB := B.isMeasurable.determinant_of_discrete_or_countable
   let hdetR :=
     V.isDominated.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
-      V.toNormFamily hpos hgeo (A.baseChange L)
-  have he : W.degreeOfMeasurableDeterminant hdetB.determinant_scalarExtension hLN ≤
-      R.degreeOfMeasurableDeterminant hdetR hLN :=
+      V.toNormFamily (A.baseChange L)
+  let : W.toNormFamily.determinant.IsMeasurable := hdetB.determinant_scalarExtension
+  let : R.toNormFamily.determinant.IsMeasurable := hdetR
+  have he : W.degreeOfMeasurableDeterminant (hdet := hdetB.determinant_scalarExtension)
+      (hN := ⟨hLN⟩) ≤
+      R.degreeOfMeasurableDeterminant (hdet := hdetR) (hN := ⟨hLN⟩) :=
     W.degreeOfMeasurableDeterminant_le_of_completed_contraction R
-      (Submodule.toBaseChange.toLinearEquiv L A) _ _ hLN
+      (Submodule.toBaseChange.toLinearEquiv L A) (hN := ⟨hLN⟩)
       (fun x z => V.toNormFamily.scalarExtension_restrict_norm_le A x z)
-  change B.degreeOfMeasurableDeterminant hdetB hN ≤
-    R.degreeOfMeasurableDeterminant hdetR hLN
+  change B.degreeOfMeasurableDeterminant (hdet := hdetB) ≤
+    R.degreeOfMeasurableDeterminant (hdet := hdetR) (hN := ⟨hLN⟩)
   exact (B.degreeOfMeasurableDeterminant_algebraicScalarBundleOfPositiveAtoms
-    (L := L) hpos hgeo hdetB hN).symm.le.trans he
+    (L := L) (hdet := hdetB)).symm.le.trans he
 
 /-- The actual original and native mean degrees compare through unchanged rank. -/
 theorem slope_restrict_le_nativeMeanOfPositiveAtoms
     (V : AdelicVectorBundle S E)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hgeo : ∀ ω : S.Ω, ω ∈ S.Ωfin)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hpos : S.HasPositiveAtoms] [hgeo : S.HasOnlyFinitePlaces]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule K E) :
-    (V.restrictOfMeasurableBase A hS).slope hS hN ≤
+    (V.restrictOfMeasurableBase A).slope ≤
       V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveAtoms
-        V.isDominated hpos hgeo (A.baseChange L) /
+        (A.baseChange L) /
           (Module.finrank L (A.baseChange L) : ℝ) := by
   have hr : Module.finrank L (A.baseChange L) = Module.finrank K A :=
     (Submodule.toBaseChange.toLinearEquiv L A).finrank_eq.symm.trans Module.finrank_baseChange
   change _ / (Module.finrank K A : ℝ) ≤ _ / _
   rw [hr]
   exact div_le_div_of_nonneg_right
-    (V.degree_restrict_le_nativeAlgebraicRestrictionDegreeOfPositiveAtoms hpos hgeo hS hN A)
+    (V.degree_restrict_le_nativeAlgebraicRestrictionDegreeOfPositiveAtoms A)
     (Nat.cast_nonneg _)
 
 /-- All original restricted degrees feed the actual geometric absolute supremum. -/
 theorem positiveDegree_le_absolutePositiveDegreeOfPositiveAtoms
     (V : AdelicVectorBundle S E)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hgeo : ∀ ω : S.Ω, ω ∈ S.Ωfin)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.positiveDegree hS hN ≤
-      V.toNormFamily.absolutePositiveDegreeOfPositiveAtoms V.isDominated hpos hgeo := by
-  apply V.positiveDegree_le hS hN
+    [hpos : S.HasPositiveAtoms] [hgeo : S.HasOnlyFinitePlaces]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.positiveDegree ≤
+      V.toNormFamily.absolutePositiveDegreeOfPositiveAtoms := by
+  apply V.positiveDegree_le
   intro A
   exact (EReal.coe_le_coe_iff.mpr
     (V.degree_restrict_le_nativeAlgebraicRestrictionDegreeOfPositiveAtoms
-      (L := AlgebraicClosure K) hpos hgeo hS hN A)).trans
+      (L := AlgebraicClosure K) A)).trans
     (V.toNormFamily.nativeRestrictionDegree_le_absolutePositiveDegreeOfPositiveAtoms
-      V.isDominated hpos hgeo (A.baseChange (AlgebraicClosure K)))
+      (A.baseChange (AlgebraicClosure K)))
 
 /-- Positive-rank original subspaces supply actual positive-rank native mean terms. -/
 theorem maximalSlope_le_absoluteMaximalSlopeOfPositiveAtoms
     (V : AdelicVectorBundle S E)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hgeo : ∀ ω : S.Ω, ω ∈ S.Ωfin)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.maximalSlope hS hN ≤
-      V.toNormFamily.absoluteMaximalSlopeOfPositiveAtoms V.isDominated hpos hgeo := by
-  apply V.maximalSlope_le hS hN
+    [hpos : S.HasPositiveAtoms] [hgeo : S.HasOnlyFinitePlaces]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.maximalSlope ≤
+      V.toNormFamily.absoluteMaximalSlopeOfPositiveAtoms := by
+  apply V.maximalSlope_le
   intro A hA
   have hr : Module.finrank (AlgebraicClosure K) (A.baseChange (AlgebraicClosure K)) =
       Module.finrank K A :=
@@ -113,20 +116,20 @@ theorem maximalSlope_le_absoluteMaximalSlopeOfPositiveAtoms
       Module.finrank_baseChange
   exact (EReal.coe_le_coe_iff.mpr
     (V.slope_restrict_le_nativeMeanOfPositiveAtoms
-      (L := AlgebraicClosure K) hpos hgeo hS hN A)).trans
-    (V.toNormFamily.nativeMean_le_absoluteMaximalSlopeOfPositiveAtoms V.isDominated hpos hgeo
+      (L := AlgebraicClosure K) A)).trans
+    (V.toNormFamily.nativeMean_le_absoluteMaximalSlopeOfPositiveAtoms
       (A.baseChange (AlgebraicClosure K)) (hr.symm ▸ hA))
 
 /-- Every actual original restricted degree is bounded by the geometric absolute degree. -/
 theorem degree_restrict_le_absolutePositiveDegreeOfPositiveAtoms
     (V : AdelicVectorBundle S E)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hgeo : ∀ ω : S.Ω, ω ∈ S.Ωfin)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hpos : S.HasPositiveAtoms] [hgeo : S.HasOnlyFinitePlaces]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule K E) :
-    ((V.restrictOfMeasurableBase A hS).degree hS hN : EReal) ≤
-      V.toNormFamily.absolutePositiveDegreeOfPositiveAtoms V.isDominated hpos hgeo :=
-  (V.degree_restrict_le_positiveDegree hS hN A).trans
-    (V.positiveDegree_le_absolutePositiveDegreeOfPositiveAtoms hpos hgeo hS hN)
+    ((V.restrictOfMeasurableBase A).degree : EReal) ≤
+      V.toNormFamily.absolutePositiveDegreeOfPositiveAtoms :=
+  (V.degree_restrict_le_positiveDegree A).trans
+    (V.positiveDegree_le_absolutePositiveDegreeOfPositiveAtoms)
 
 end ArakelovGeometry.AdelicVectorBundle

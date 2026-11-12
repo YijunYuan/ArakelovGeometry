@@ -9,6 +9,7 @@ public import ArakelovGeometry.GeometryOfNumbers.Measure.LatticeNormalizedMeasur
 public import ArakelovGeometry.NumberTheory.NumberField.Minkowski.PolarVolume
 public import ArakelovGeometry.NumberTheory.NumberField.Model.Sections
 public import ArakelovGeometry.NumberTheory.NumberField.Model.TraceDual.Projective.Generic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.GeometryOfNumbers.Polar.LatticePolarCountLower
 import ArakelovGeometry.NumberTheory.NumberField.Minima.ProjectiveSmallVector
@@ -76,10 +77,10 @@ variable (M : Type u) [AddCommGroup M] [Module (𝓞 K) M]
 the original diagonal covolume times the corrected factorial volume. -/
 theorem nativePolar_normalizedMeasure_eq
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     letI := euclideanNormedAddCommGroup η
     letI := euclideanNormedSpace η
-    letI := euclideanInnerProduct hη
+    letI := euclideanInnerProduct (ξ := η)
     letI : MeasurableSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := borel _
     letI : BorelSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := ⟨rfl⟩
     letI := measureSpaceOfInnerProductSpace
@@ -97,7 +98,7 @@ theorem nativePolar_normalizedMeasure_eq
           (Module.finrank K (K ⊗[𝓞 K] M) * Module.finrank ℚ K).factorial) := by
   let := euclideanNormedAddCommGroup η
   let := euclideanNormedSpace η
-  let := euclideanInnerProduct hη
+  let := euclideanInnerProduct (ξ := η)
   let : MeasurableSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := borel _
   let : BorelSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace
@@ -110,12 +111,12 @@ theorem nativePolar_normalizedMeasure_eq
   let hdisc := originalDiagonalMap_range_discrete (K := K) M η
   let hlat := originalDiagonalMap_range_isZLattice (K := K) M η
   rw [latticeNormalizedMeasure, Measure.smul_apply, smul_eq_mul,
-    ENNReal.toReal_mul, ENNReal.toReal_inv, nativeArithmeticPolar_volume_eq hη,
+    ENNReal.toReal_mul, ENNReal.toReal_inv, nativeArithmeticPolar_volume_eq,
     ENNReal.toReal_ofReal (div_nonneg (arithmeticPolarNumerator_pos _).le (by positivity))]
   change (ZLattice.covolume (E := StrongDual ℝ (CompletedVectorProduct K (K ⊗[𝓞 K] M)))
     (integralDual (originalDiagonalMap (K := K) M).range) volume)⁻¹ * _ = _
   have hcov := @integralDual_covolume (CompletedVectorProduct K (K ⊗[𝓞 K] M))
-    (euclideanNormedAddCommGroup η) (euclideanInnerProduct hη) _ _ _
+    (euclideanNormedAddCommGroup η) (euclideanInnerProduct) _ _ _
     (originalDiagonalMap (K := K) M).range hdisc hlat
   erw [hcov, inv_inv]
 
@@ -123,10 +124,10 @@ theorem nativePolar_normalizedMeasure_eq
 trace-dual section injection give an unconditional arithmetic count inequality. -/
 theorem nativePolar_mul_original_count_le_traceDual_count
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     letI := euclideanNormedAddCommGroup η
     letI := euclideanNormedSpace η
-    letI := euclideanInnerProduct hη
+    letI := euclideanInnerProduct (ξ := η)
     letI : MeasurableSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := borel _
     letI : BorelSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := ⟨rfl⟩
     letI := measureSpaceOfInnerProductSpace
@@ -138,10 +139,10 @@ theorem nativePolar_mul_original_count_le_traceDual_count
         (Nat.card (effectiveSections M η) : ℝ) ≤
       6 ^ (Module.finrank ℚ K * Module.finrank K (K ⊗[𝓞 K] M)) *
         (Nat.card (effectiveSections (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M)
-          (originalPrescribedTraceDualFamily M hη)) : ℝ) := by
+          (originalPrescribedTraceDualFamily M (η := η) (hη := hη))) : ℝ) := by
   let := euclideanNormedAddCommGroup η
   let := euclideanNormedSpace η
-  let := euclideanInnerProduct hη
+  let := euclideanInnerProduct (ξ := η)
   let : MeasurableSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := borel _
   let : BorelSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace
@@ -166,12 +167,13 @@ theorem nativePolar_mul_original_count_le_traceDual_count
       x.val ∈ productBall η 1} : ℝ) =
         (Nat.card (effectiveSections M η) : ℝ) := by
     exact_mod_cast (card_effectiveSections_eq_diagonal M η).symm
-  have hvol := nativePolar_normalizedMeasure_eq M η hη
+  have hvol := nativePolar_normalizedMeasure_eq M η
   rw [hvol] at h
   erw [hcount] at h
   rw [vectorDiagonal_dimension] at h
   have hcard :=
-    NumberFieldArithmeticPolarCount.card_nativePolar_le_traceDual_effectiveSections M η hη
+    NumberFieldArithmeticPolarCount.card_nativePolar_le_traceDual_effectiveSections M η
+      (hη := hη)
   apply h.trans
   gcongr
   exact hcard
@@ -180,18 +182,18 @@ theorem nativePolar_mul_original_count_le_traceDual_count
 the one-sided corrected arithmetic duality estimate, including rank zero. -/
 theorem logSectionCount_sub_traceDual_sub_degree_le
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     let L := genericImage (K := K) M
     let hfg := genericImage_fg (K := K) M
     let hspan := genericImage_fullSpan (K := K) M
     let ξ := fullLatticeGaugeFamily L hfg hspan η
-    let hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions :=
-      fullLatticeGaugeFamily_isHermitian L hfg hspan η hη
+    let hξ : ξ.IsHermitian :=
+      fullLatticeGaugeFamily_isHermitian L hfg hspan η
     let V := fullLatticeAdelicBundle L hfg hspan η
     logSectionCount M η -
         logSectionCount (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M)
-          (originalPrescribedTraceDualFamily M hξ) -
-        V.degree (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions -
+          (originalPrescribedTraceDualFamily M (hη := hξ)) -
+        V.degree -
         (Module.finrank K (K ⊗[𝓞 K] M) : ℝ) *
           ((InfinitePlace.nrComplexPlaces K : ℝ) * Real.log 2 -
             Real.log |(NumberField.discr K : ℝ)| / 2) ≤
@@ -204,23 +206,23 @@ theorem logSectionCount_sub_traceDual_sub_degree_le
   let hfg := genericImage_fg (K := K) M
   let hspan := genericImage_fullSpan (K := K) M
   let ξ := fullLatticeGaugeFamily L hfg hspan η
-  let hξ := fullLatticeGaugeFamily_isHermitian L hfg hspan η hη
+  let hξ := fullLatticeGaugeFamily_isHermitian L hfg hspan η
   let V := fullLatticeAdelicBundle L hfg hspan η
-  let D := V.degree (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions
+  let D := V.degree
   let χ := (InfinitePlace.nrComplexPlaces K : ℝ) * Real.log 2 -
     Real.log |(NumberField.discr K : ℝ)| / 2
   let T := codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M
-  let δ := originalPrescribedTraceDualFamily M hξ
+  let δ := originalPrescribedTraceDualFamily M (hη := hξ)
   let Q := arithmeticPolarNumerator K n / (n * d).factorial
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (hξ := hξ)
   let : MeasurableSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := borel _
   let : BorelSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace
     (E := CompletedVectorProduct K (K ⊗[𝓞 K] M))
-  have hcount := nativePolar_mul_original_count_le_traceDual_count M ξ hξ
-  have hcov := originalDiagonal_covolume_eq_exp_neg_degree_sub_chi (K := K) M η hη
+  have hcount := nativePolar_mul_original_count_le_traceDual_count M ξ (hη := hξ)
+  have hcov := originalDiagonal_covolume_eq_exp_neg_degree_sub_chi (K := K) M η
   erw [hcov] at hcount
   have hsections : effectiveSections M ξ = effectiveSections M η :=
     effectiveSections_fullLatticeGaugeFamily M η

@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Line
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -31,8 +32,8 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- Every norm on a line is Hermitian at the source's normalized infinite places. -/
 theorem isHermitian_of_finrank_one (ξ : NormFamily S E) (hr : Module.finrank K E = 1)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    ξ.IsHermitian hS := by
+    [hS : S.IsArchimedeanNormalized] :
+    ξ.IsHermitian := by
   apply isHermitian_iff_parallelogram.mpr
   refine ⟨ξ.isUltrametric_of_finrank_le_one hr.le, fun ω hω x y ↦ ?_⟩
   let := hS ω hω
@@ -52,13 +53,13 @@ theorem isHermitian_of_finrank_one (ξ : NormFamily S E) (hr : Module.finrank K 
 
 /-- The line result includes rank zero with its unique norm family. -/
 theorem isHermitian_of_finrank_le_one (ξ : NormFamily S E) (hr : Module.finrank K E ≤ 1)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    ξ.IsHermitian hS := by
+    [hS : S.IsArchimedeanNormalized] :
+    ξ.IsHermitian := by
   by_cases hz : Module.finrank K E = 0
   · have : Subsingleton E := ⟨fun x y ↦
       ((finrank_zero_iff_forall_zero.mp hz) x).trans
         ((finrank_zero_iff_forall_zero.mp hz) y).symm⟩
     exact isHermitian_of_subsingleton
-  · exact ξ.isHermitian_of_finrank_one (by omega) hS
+  · exact ξ.isHermitian_of_finrank_one (by omega)
 
 end ArakelovGeometry.NormFamily

@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Minima.Absolute.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Minima.Basis
 import Mathlib.CategoryTheory.Category.Init
 
@@ -91,19 +92,17 @@ theorem minimalLogarithmicMinimum_eq_iSup_basis_iInf_vectorDegree
 ordinary algebraic-closure scalar bundle, with original regularity only. -/
 theorem absoluteMinimalLogarithmicMinimum_eq_iSup_basis_iInf_vectorDegree
     (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.absoluteMinimalLogarithmicMinimum hreg hN =
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.absoluteMinimalLogarithmicMinimum =
       ⨆ b : Module.Basis
         (Fin (Module.finrank (AlgebraicClosure K) (AlgebraicClosure K ⊗[K] E)))
         (AlgebraicClosure K) (AlgebraicClosure K ⊗[K] E),
-        ⨅ i, ((V.ordinaryScalarExtension (L := AlgebraicClosure K) hreg hN).vectorDegree
+        ⨅ i, ((V.ordinaryScalarExtension (L := AlgebraicClosure K)).vectorDegree
           ⟨b i, b.ne_zero i⟩ : EReal) := by
   simpa only [minimalLogarithmicMinimum, Module.finrank_baseChange,
     absoluteMinimalLogarithmicMinimum, absoluteLogarithmicMinimum] using
     minimalLogarithmicMinimum_eq_iSup_basis_iInf_vectorDegree
-      (V.ordinaryScalarExtension (L := AlgebraicClosure K) hreg hN)
+      (V.ordinaryScalarExtension (L := AlgebraicClosure K))
 
 end ArakelovGeometry.AdelicVectorBundle

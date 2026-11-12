@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Minima.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Examples.Minkowski.Basic
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.InfiniteMass
 import ArakelovGeometry.NumberTheory.NumberField.Examples.Minkowski.Arithmetic
@@ -180,15 +181,16 @@ theorem bundle_vectorDegree_le (p : Nat.Primes) (a : ℤ)
   have he : (bundle p a).vectorDegree v =
       (bundle p a).vectorDegree
         ⟨(![x, y] : Plane), primitive_integer_vector_ne_zero x y hxy⟩ := by
-    change (family p a).vectorDegree (family_coherent_and_dominated p a).2
-      (family_isMeasurable p a) v =
-      (family p a).vectorDegree (family_coherent_and_dominated p a).2
-        (family_isMeasurable p a) ⟨(![x, y] : Plane), primitive_integer_vector_ne_zero x y hxy⟩
+    change (family p a).vectorDegree (hd := (family_coherent_and_dominated p a).2)
+      (hm := (family_isMeasurable p a)) v =
+      (family p a).vectorDegree (hd := (family_coherent_and_dominated p a).2)
+        (hm := (family_isMeasurable p a)) ⟨(![x, y] : Plane),
+            primitive_integer_vector_ne_zero x y hxy⟩
     have hv' : v = ⟨(c : ℚ) • (![x, y] : Plane),
         smul_ne_zero c.ne_zero (primitive_integer_vector_ne_zero x y hxy)⟩ := Subtype.ext hv
     rw [hv']
-    exact (family p a).vectorDegree_smul_of_proper (family_coherent_and_dominated p a).2
-      (family_isMeasurable p a) c
+    exact (family p a).vectorDegree_smul_of_proper (hd := (family_coherent_and_dominated p a).2)
+      (hm := (family_isMeasurable p a)) c
       ⟨(![x, y] : Plane), primitive_integer_vector_ne_zero x y hxy⟩
   rw [he]
   exact bundle_primitive_vectorDegree_le p a x y ha hxy

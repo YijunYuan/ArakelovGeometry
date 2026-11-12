@@ -38,11 +38,11 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {L : Type w} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (ξ : NormFamily S E)
-  (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-  (hL : ∀ x ∈ (S.algebraicExtension L).Ωinf,
-    IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion)
-  (hξ : ξ.IsHermitian hS)
+  [hS : S.IsArchimedeanNormalized]
+  [hL : (S.algebraicExtension L).IsArchimedeanNormalized]
+  [hξ : ξ.IsHermitian]
 
+omit hS hL in
 /-- An extending infinite place lies above an infinite base place. -/
 theorem scalarExtension_mem_Ωinf_iff (x : S.ParameterSpaceExtension L) :
     x ∈ (S.algebraicExtension L).Ωinf ↔ x.base ∈ S.Ωinf :=
@@ -61,7 +61,7 @@ def hermitianScalarExtensionArchSeminorm (x : S.ParameterSpaceExtension L)
     AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
   letI := ξ.fibreNormedAddCommGroup x.base
   letI := ξ.fibreNormedSpace x.base
-  letI := hξ.fibreInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
+  letI := ξ.fiberInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
   exact (ArakelovGeometry.hermitianScalarExtensionSeminorm
     (L := x.abv.Completion)
     (stdOrthonormalBasis (S.ϕ x.base).Completion ((S.ϕ x.base).Completion ⊗[K] E))).comp
@@ -71,7 +71,7 @@ def hermitianScalarExtensionArchSeminorm (x : S.ParameterSpaceExtension L)
 theorem hermitianScalarExtensionArchSeminorm_eq_zero_iff (x : S.ParameterSpaceExtension L)
     (hx : x ∈ (S.algebraicExtension L).Ωinf)
     (z : x.abv.Completion ⊗[L] (L ⊗[K] E)) :
-    hermitianScalarExtensionArchSeminorm ξ hS hL hξ x hx z = 0 ↔ z = 0 := by
+    hermitianScalarExtensionArchSeminorm ξ x hx z = 0 ↔ z = 0 := by
   let := hS x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
   let := IsRCLikeNormedField.rclike (S.ϕ x.base).Completion
   let : IsRCLikeNormedField x.abv.Completion := hL x hx
@@ -80,7 +80,7 @@ theorem hermitianScalarExtensionArchSeminorm_eq_zero_iff (x : S.ParameterSpaceEx
     AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
   let := ξ.fibreNormedAddCommGroup x.base
   let := ξ.fibreNormedSpace x.base
-  let := hξ.fibreInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
+  let := ξ.fiberInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
   change ArakelovGeometry.hermitianScalarExtensionSeminorm _
     (completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq z) = 0 ↔ _
   rw [ArakelovGeometry.hermitianScalarExtensionSeminorm_eq_zero_iff,
@@ -92,17 +92,17 @@ def hermitianScalarExtension : NormFamily (S.algebraicExtension L) (L ⊗[K] E) 
   classical
   exact
     { norm := fun x => if hx : x ∈ (S.algebraicExtension L).Ωinf then
-        hermitianScalarExtensionArchSeminorm ξ hS hL hξ x hx
+        hermitianScalarExtensionArchSeminorm ξ x hx
       else (ξ.injectiveScalarExtension (L := L)).norm x
       norm_eq_zero_iff := fun x z => by
         change S.ParameterSpaceExtension L at x
         change x.abv.Completion ⊗[L] (L ⊗[K] E) at z
         change (if hx : x ∈ (S.algebraicExtension L).Ωinf then
-          hermitianScalarExtensionArchSeminorm ξ hS hL hξ x hx
+          hermitianScalarExtensionArchSeminorm ξ x hx
           else ξ.injectiveScalarExtensionSeminorm x) z = 0 ↔ z = 0
         by_cases hx : x ∈ (S.algebraicExtension L).Ωinf
         · rw [dite_eq_left hx]
-          exact hermitianScalarExtensionArchSeminorm_eq_zero_iff ξ hS hL hξ x hx z
+          exact hermitianScalarExtensionArchSeminorm_eq_zero_iff ξ x hx z
         · rw [dite_eq_right hx]
           exact ξ.injectiveScalarExtensionSeminorm_eq_zero_iff x z }
 
@@ -110,11 +110,11 @@ def hermitianScalarExtension : NormFamily (S.algebraicExtension L) (L ⊗[K] E) 
 theorem hermitianScalarExtension_norm_of_finite (x : S.ParameterSpaceExtension L)
     (hx : x ∈ (S.algebraicExtension L).Ωfin)
     (z : x.abv.Completion ⊗[L] (L ⊗[K] E)) :
-    (hermitianScalarExtension ξ hS hL hξ).norm x z =
+    (hermitianScalarExtension ξ).norm x z =
       (ξ.injectiveScalarExtension (L := L)).norm x z := by
   classical
   change (if hx : x ∈ (S.algebraicExtension L).Ωinf then
-    hermitianScalarExtensionArchSeminorm ξ hS hL hξ x hx
+    hermitianScalarExtensionArchSeminorm ξ x hx
     else ξ.injectiveScalarExtensionSeminorm x) z = ξ.injectiveScalarExtensionSeminorm x z
   simp only [dite_eq_right (show x ∉ (S.algebraicExtension L).Ωinf
     from fun hi => hi hx)]
@@ -124,32 +124,33 @@ norm at infinite places. -/
 theorem hermitianScalarExtension_norm_of_infinite (x : S.ParameterSpaceExtension L)
     (hx : x ∈ (S.algebraicExtension L).Ωinf)
     (z : x.abv.Completion ⊗[L] (L ⊗[K] E)) :
-    (hermitianScalarExtension ξ hS hL hξ).norm x z =
-      hermitianScalarExtensionArchSeminorm ξ hS hL hξ x hx z := by
+    (hermitianScalarExtension ξ).norm x z =
+      hermitianScalarExtensionArchSeminorm ξ x hx z := by
   classical
   change (if hx : x ∈ (S.algebraicExtension L).Ωinf then
-    hermitianScalarExtensionArchSeminorm ξ hS hL hξ x hx
+    hermitianScalarExtensionArchSeminorm ξ x hx
     else ξ.injectiveScalarExtensionSeminorm x) z = _
   simp only [dite_eq_left hx]
 
 /-- The Hermitian extension is ultrametric at all finite extending places. -/
 theorem hermitianScalarExtension_isUltrametric :
-    (hermitianScalarExtension ξ hS hL hξ).IsUltrametric := by
+    (hermitianScalarExtension (L := L) ξ).IsUltrametric := by
+  constructor
   intro x hx z t
   change S.ParameterSpaceExtension L at x
   change x.abv.Completion ⊗[L] (L ⊗[K] E) at z t
-  change (hermitianScalarExtension ξ hS hL hξ).norm x (z + t) ≤
-    max ((hermitianScalarExtension ξ hS hL hξ).norm x z)
-      ((hermitianScalarExtension ξ hS hL hξ).norm x t)
-  simp only [hermitianScalarExtension_norm_of_finite ξ hS hL hξ x hx]
+  change (hermitianScalarExtension ξ).norm x (z + t) ≤
+    max ((hermitianScalarExtension ξ).norm x z)
+      ((hermitianScalarExtension ξ).norm x t)
+  simp only [hermitianScalarExtension_norm_of_finite ξ x hx]
   exact ξ.injectiveScalarExtension_isUltrametric x hx z t
 
 /-- The scalar-extended family is Hermitian for its actual completed
 norms and the given usual Archimedean normalizations. -/
 theorem hermitianScalarExtension_isHermitian :
-    (hermitianScalarExtension ξ hS hL hξ).IsHermitian hL := by
+    (hermitianScalarExtension (L := L) ξ).IsHermitian := by
   classical
-  refine ⟨hermitianScalarExtension_isUltrametric ξ hS hL hξ, fun x hx => ?_⟩
+  refine ⟨hermitianScalarExtension_isUltrametric ξ, fun x hx => ?_⟩
   change S.ParameterSpaceExtension L at x
   let := hS x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
   let := IsRCLikeNormedField.rclike (S.ϕ x.base).Completion
@@ -159,11 +160,11 @@ theorem hermitianScalarExtension_isHermitian :
     AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
   let := ξ.fibreNormedAddCommGroup x.base
   let := ξ.fibreNormedSpace x.base
-  let := hξ.fibreInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
+  let := ξ.fiberInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
   let : NormedAddCommGroup (x.abv.Completion ⊗[L] (L ⊗[K] E)) :=
-    (hermitianScalarExtension ξ hS hL hξ).fibreNormedAddCommGroup x
+    (hermitianScalarExtension ξ).fibreNormedAddCommGroup x
   let : NormedSpace x.abv.Completion (x.abv.Completion ⊗[L] (L ⊗[K] E)) :=
-    (hermitianScalarExtension ξ hS hL hξ).fibreNormedSpace x
+    (hermitianScalarExtension ξ).fibreNormedSpace x
   let b := stdOrthonormalBasis (S.ϕ x.base).Completion ((S.ϕ x.base).Completion ⊗[K] E)
   let f := (completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq).trans
     (ArakelovGeometry.hermitianScalarExtensionCoordinates b)
@@ -172,8 +173,8 @@ theorem hermitianScalarExtension_isHermitian :
   apply exists_innerProductCore_iff_innerProductSpaceable.mpr
   apply innerProductSpaceable_of_norm_preserving_addMonoidHom f.toAddMonoidHom
   intro z
-  change ‖f z‖ = (hermitianScalarExtension ξ hS hL hξ).norm x z
-  rw [hermitianScalarExtension_norm_of_infinite ξ hS hL hξ x hx z]
+  change ‖f z‖ = (hermitianScalarExtension ξ).norm x z
+  rw [hermitianScalarExtension_norm_of_infinite ξ x hx z]
   rfl
 
 /-- On every pure scalar tensor in an infinite completed fibre, the
@@ -182,7 +183,7 @@ theorem hermitianScalarExtension_norm_tmul_of_infinite (x : S.ParameterSpaceExte
     (hx : x ∈ (S.algebraicExtension L).Ωinf)
     (a : x.abv.Completion) (y : (S.ϕ x.base).Completion ⊗[K] E) :
     let := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
-    (hermitianScalarExtension ξ hS hL hξ).norm x
+    (hermitianScalarExtension ξ).norm x
       ((completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq).symm
         (a ⊗ₜ[(S.ϕ x.base).Completion] y)) = ‖a‖ * ξ.norm x.base y := by
   let := hS x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
@@ -193,8 +194,8 @@ theorem hermitianScalarExtension_norm_tmul_of_infinite (x : S.ParameterSpaceExte
     AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
   let := ξ.fibreNormedAddCommGroup x.base
   let := ξ.fibreNormedSpace x.base
-  let := hξ.fibreInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
-  rw [hermitianScalarExtension_norm_of_infinite ξ hS hL hξ x hx]
+  let := ξ.fiberInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
+  rw [hermitianScalarExtension_norm_of_infinite ξ x hx]
   change ArakelovGeometry.hermitianScalarExtensionSeminorm _
     (completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq
       ((completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq).symm

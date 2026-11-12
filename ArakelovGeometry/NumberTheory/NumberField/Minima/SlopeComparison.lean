@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Minima.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Hermitian
+
 import ArakelovGeometry.AdelicVectorBundle.Minima.Basis
 import ArakelovGeometry.AdelicVectorBundle.Slope.Rescaling
 import Mathlib.Algebra.Order.Star.Real
@@ -115,27 +116,27 @@ uses determinant-degree monotonicity on every genuine completed restriction. -/
 theorem maximalSlope_antitone_norm
     (P Q : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
     (h : P.toNormFamily ≤ Q.toNormFamily) :
-    Q.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions ≤
-      P.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions := by
-  apply Q.maximalSlope_le (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions
+    Q.maximalSlope ≤
+      P.maximalSlope := by
+  apply Q.maximalSlope_le
   intro F hF
   have hrestrict :
-      (P.restrictOfMeasurableBase F (Or.inl inferInstance)).toNormFamily ≤
-        (Q.restrictOfMeasurableBase F (Or.inl inferInstance)).toNormFamily := by
+      (P.restrictOfMeasurableBase F).toNormFamily ≤
+        (Q.restrictOfMeasurableBase F).toNormFamily := by
     intro ω z
     exact h ω (F.subtype.baseChange _ z)
   have hd := AdelicVectorBundle.degree_antitone
-    (P.restrictOfMeasurableBase F (Or.inl inferInstance))
-    (Q.restrictOfMeasurableBase F (Or.inl inferInstance))
-    (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions hrestrict
+    (P.restrictOfMeasurableBase F)
+    (Q.restrictOfMeasurableBase F)
+    hrestrict
   have hs :
-      (Q.restrictOfMeasurableBase F (Or.inl inferInstance)).slope (Or.inl inferInstance)
-          normalizedNumberFieldArchimedeanCompletions ≤
-        (P.restrictOfMeasurableBase F (Or.inl inferInstance)).slope (Or.inl inferInstance)
-          normalizedNumberFieldArchimedeanCompletions :=
+      (Q.restrictOfMeasurableBase F).slope
+          ≤
+        (P.restrictOfMeasurableBase F).slope
+          :=
     div_le_div_of_nonneg_right hd (Nat.cast_pos.mpr hF).le
   exact (EReal.coe_le_coe hs).trans (P.slope_restrict_le_maximalSlope F hF
-    (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions)
+   )
 
 /-- Actual exponential rescaling and norm antitonicity give the maximal-slope shift from
 an upper completed-norm bound, including the zero-space convention. -/
@@ -144,13 +145,13 @@ theorem maximalSlope_sub_integral_le
     (b : (normalizedNumberFieldAdelicStructure K).Ω → ℝ)
     (hb : Integrable b (normalizedNumberFieldAdelicStructure K).v)
     (h : ∀ ω z, Q.toNormFamily.norm ω z ≤ Real.exp (b ω) * P.toNormFamily.norm ω z) :
-    P.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions -
+    P.maximalSlope -
       ((∫ ω, b ω ∂(normalizedNumberFieldAdelicStructure K).v : ℝ) : EReal) ≤
-        Q.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions := by
+        Q.maximalSlope := by
   have he := maximalSlope_antitone_norm Q (P.scaleExp b Measurable.of_discrete hb)
     (by intro ω z; exact h ω z)
-  rwa [P.maximalSlope_scaleExp b Measurable.of_discrete hb (Or.inl inferInstance)
-    normalizedNumberFieldArchimedeanCompletions] at he
+  rwa [P.maximalSlope_scaleExp b Measurable.of_discrete hb
+   ] at he
 
 /-- The source two-sided actual maximal-slope comparison, derived from the completed-norm
 inequalities and the integrable exponents alone. -/
@@ -161,17 +162,17 @@ theorem maximalSlope_comparison
     (hb : Integrable b (normalizedNumberFieldAdelicStructure K).v)
     (hlower : ∀ ω z, Real.exp (a ω) * P.toNormFamily.norm ω z ≤ Q.toNormFamily.norm ω z)
     (hupper : ∀ ω z, Q.toNormFamily.norm ω z ≤ Real.exp (b ω) * P.toNormFamily.norm ω z) :
-    P.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions -
+    P.maximalSlope -
         ((∫ ω, b ω ∂(normalizedNumberFieldAdelicStructure K).v : ℝ) : EReal) ≤
-      Q.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions ∧
-    Q.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions ≤
-      P.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions -
+      Q.maximalSlope ∧
+    Q.maximalSlope ≤
+      P.maximalSlope -
         ((∫ ω, a ω ∂(normalizedNumberFieldAdelicStructure K).v : ℝ) : EReal) := by
   refine ⟨maximalSlope_sub_integral_le P Q b hb hupper, ?_⟩
   have he := maximalSlope_antitone_norm (P.scaleExp a Measurable.of_discrete ha) Q
     (by intro ω z; exact hlower ω z)
-  rwa [P.maximalSlope_scaleExp a Measurable.of_discrete ha (Or.inl inferInstance)
-    normalizedNumberFieldArchimedeanCompletions] at he
+  rwa [P.maximalSlope_scaleExp a Measurable.of_discrete ha
+   ] at he
 
 /-- The actual integrable completed-fibre distance bounds all ordinary minima and the
 actual maximal slope by the given real integral bound. -/
@@ -183,11 +184,11 @@ theorem minima_and_maximalSlope_of_integral_localDist_le
       ∂(normalizedNumberFieldAdelicStructure K).v) ≤ ε) :
     (∀ i : ℕ, P.logarithmicMinimum i - (ε : EReal) ≤ Q.logarithmicMinimum i ∧
       Q.logarithmicMinimum i ≤ P.logarithmicMinimum i + (ε : EReal)) ∧
-    P.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions -
+    P.maximalSlope -
         (ε : EReal) ≤
-      Q.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions ∧
-    Q.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions ≤
-      P.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions +
+      Q.maximalSlope ∧
+    Q.maximalSlope ≤
+      P.maximalSlope +
         (ε : EReal) := by
   let δ := P.toNormFamily.localDist Q.toNormFamily
   have hnorm (ω : (normalizedNumberFieldAdelicStructure K).Ω) (z) :

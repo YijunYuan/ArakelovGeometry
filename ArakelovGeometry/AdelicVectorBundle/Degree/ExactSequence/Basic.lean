@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Countable
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Determinant.ExactSequence
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Determinant.Basic
 import ArakelovGeometry.AdelicVectorBundle.Determinant.ExactSequence.Operator
 import ArakelovGeometry.AdelicVectorBundle.Tensor.Line
@@ -84,8 +85,8 @@ namespace AdelicVectorBundle
 comparison for a two-step exact sequence. -/
 theorem integral_determinantSequence_logNorm_le (V : AdelicVectorBundle S E)
     (W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     {z : ⋀[K]^(Module.finrank K W) W}
     {q : ⋀[K]^(Module.finrank K (E ⧸ W)) (E ⧸ W)}
     (hz : z ≠ 0) (hq : q ≠ 0) :
@@ -96,15 +97,15 @@ theorem integral_determinantSequence_logNorm_le (V : AdelicVectorBundle S E)
   have iz : Integrable ((V.toNormFamily.restrict W).determinant.logNorm z) S.v := by
     simpa only [determinantOfMeasurableBase_toNormFamily,
       restrictOfMeasurableBase_toNormFamily] using
-      ((V.restrictOfMeasurableBase W hS).determinantOfMeasurableBase hS hN).integrable_logNorm z
+      ((V.restrictOfMeasurableBase W).determinantOfMeasurableBase).integrable_logNorm z
   have iq : Integrable ((V.toNormFamily.quotient W).determinant.logNorm q) S.v := by
     simpa only [determinantOfMeasurableBase_toNormFamily,
       quotientOfMeasurableBase_toNormFamily] using
-      ((V.quotientOfMeasurableBase W hS).determinantOfMeasurableBase hS hN).integrable_logNorm q
+      ((V.quotientOfMeasurableBase W).determinantOfMeasurableBase).integrable_logNorm q
   have ie : Integrable (V.toNormFamily.determinant.logNorm
       (determinantSequenceEquiv W (z ⊗ₜ[K] q))) S.v := by
     simpa only [determinantOfMeasurableBase_toNormFamily] using
-      (V.determinantOfMeasurableBase hS hN).integrable_logNorm
+      (V.determinantOfMeasurableBase).integrable_logNorm
         (determinantSequenceEquiv W (z ⊗ₜ[K] q))
   have h := integral_mono ie (iz.add iq)
     (fun ω ↦ V.toNormFamily.determinantSequence_logNorm_tmul_le W hz hq ω)
@@ -118,44 +119,44 @@ theorem integral_determinantSequence_logNorm_le (V : AdelicVectorBundle S E)
 using exactly the actual restricted norm family. -/
 theorem degree_restrict_eq_neg_integral [S.IsProper] (V : AdelicVectorBundle S E)
     (W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (z : {z : ⋀[K]^(Module.finrank K W) W // z ≠ 0}) :
-    (V.restrictOfMeasurableBase W hS).degree hS hN =
+    (V.restrictOfMeasurableBase W).degree =
       -(∫ ω, (V.toNormFamily.restrict W).determinant.logNorm z.val ω ∂S.v) := by
   simpa only [restrictOfMeasurableBase_toNormFamily] using
-    (V.restrictOfMeasurableBase W hS).degree_eq_neg_integral hS hN z
+    (V.restrictOfMeasurableBase W).degree_eq_neg_integral z
 
 /-- A nonzero determinant vector computes the quotient bundle degree
 using exactly the actual quotient norm family. -/
 theorem degree_quotient_eq_neg_integral [S.IsProper] (V : AdelicVectorBundle S E)
     (W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (q : {q : ⋀[K]^(Module.finrank K (E ⧸ W)) (E ⧸ W) // q ≠ 0}) :
-    (V.quotientOfMeasurableBase W hS).degree hS hN =
+    (V.quotientOfMeasurableBase W).degree =
       -(∫ ω, (V.toNormFamily.quotient W).determinant.logNorm q.val ω ∂S.v) := by
   simpa only [quotientOfMeasurableBase_toNormFamily] using
-    (V.quotientOfMeasurableBase W hS).degree_eq_neg_integral hS hN q
+    (V.quotientOfMeasurableBase W).degree_eq_neg_integral q
 
 /-- Degrees are superadditive for the actual restricted and quotient bundles,
 the two-step lower inequality of Proposition 4.3.13. -/
 theorem degree_restrict_add_degree_quotient_le [S.IsProper] (V : AdelicVectorBundle S E)
     (W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.restrictOfMeasurableBase W hS).degree hS hN +
-        (V.quotientOfMeasurableBase W hS).degree hS hN ≤ V.degree hS hN := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    (V.restrictOfMeasurableBase W).degree +
+        (V.quotientOfMeasurableBase W).degree ≤ V.degree := by
   let z : {z : ⋀[K]^(Module.finrank K W) W // z ≠ 0} :=
     ⟨determinantGenerator, determinantGenerator_ne_zero⟩
   let q : {q : ⋀[K]^(Module.finrank K (E ⧸ W)) (E ⧸ W) // q ≠ 0} :=
     ⟨determinantGenerator, determinantGenerator_ne_zero⟩
   let e := determinantSequenceEquiv W (z.val ⊗ₜ[K] q.val)
   have he : e ≠ 0 := determinantSequence_tmul_ne_zero W z.property q.property
-  have hR := V.degree_restrict_eq_neg_integral W hS hN z
-  have hQ := V.degree_quotient_eq_neg_integral W hS hN q
-  have hE := V.degree_eq_neg_integral hS hN ⟨e, he⟩
-  have h := V.integral_determinantSequence_logNorm_le W hS hN z.property q.property
+  have hR := V.degree_restrict_eq_neg_integral W z
+  have hQ := V.degree_quotient_eq_neg_integral W q
+  have hE := V.degree_eq_neg_integral ⟨e, he⟩
+  have h := V.integral_determinantSequence_logNorm_le W z.property q.property
   calc
     _ = -(∫ ω, (V.toNormFamily.restrict W).determinant.logNorm z.val ω ∂S.v) +
         -(∫ ω, (V.toNormFamily.quotient W).determinant.logNorm q.val ω ∂S.v) :=
@@ -164,7 +165,7 @@ theorem degree_restrict_add_degree_quotient_le [S.IsProper] (V : AdelicVectorBun
         (∫ ω, (V.toNormFamily.quotient W).determinant.logNorm q.val ω ∂S.v)) :=
       (neg_add _ _).symm
     _ ≤ -(∫ ω, V.toNormFamily.determinant.logNorm e ω ∂S.v) := neg_le_neg h
-    _ = V.degree hS hN := hE.symm
+    _ = V.degree := hE.symm
 
 
 end AdelicVectorBundle

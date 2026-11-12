@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Dual.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Dual.Bidual
 import ArakelovGeometry.Analysis.ScalarExtension.Identity
 import Mathlib.CategoryTheory.Category.Init
@@ -173,7 +174,7 @@ theorem injectiveScalarExtension_self (ω : S.Ω)
 /-- Under the source's usual Archimedean normalization, identity scalar
 extension equals the bidual norm at every actual completed fibre. -/
 theorem scalarExtension_self
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω)
+    [hS : S.IsArchimedeanNormalized] (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K] (K ⊗[K] E)) :
     (ξ.scalarExtension (L := K)).norm (scalarExtensionIdentityPlace S ω) z =
       ξ.dual.dual.norm ω ((Module.Dual.eval K E).baseChange (S.ϕ ω).Completion
@@ -188,12 +189,12 @@ theorem scalarExtension_self
 
 /-- An ultrametric norm family is unchanged by the identity scalar
 extension, with the actual usual Archimedean normalization explicit. -/
-theorem scalarExtension_self_of_isUltrametric (hξ : ξ.IsUltrametric)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω)
+theorem scalarExtension_self_of_isUltrametric [hξ : ξ.IsUltrametric]
+    [hS : S.IsArchimedeanNormalized] (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K] (K ⊗[K] E)) :
     (ξ.scalarExtension (L := K)).norm (scalarExtensionIdentityPlace S ω) z =
       ξ.norm ω ((TensorProduct.lid K E).toLinearMap.baseChange (S.ϕ ω).Completion z) := by
-  rw [ξ.scalarExtension_self hS ω z]
+  rw [ξ.scalarExtension_self ω z]
   by_cases hω : ω ∈ S.Ωfin
   · exact hξ.dual_dual_norm_eval ω hω _
   · exact ξ.dual_dual_norm_eval_eq_of_isRCLike ω (hS ω hω) _

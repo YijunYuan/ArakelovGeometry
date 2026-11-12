@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Rescaling
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Model.Sections
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.AdelicVectorBundle.Slope.Rescaling
@@ -67,8 +68,8 @@ def twistFamily (η : NormFamily (normalizedNumberFieldAdelicStructure K) E) (t 
 
 theorem twistFamily_isHermitian
     {η : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) (t : ℝ) :
-    (twistFamily η t).IsHermitian normalizedNumberFieldArchimedeanCompletions :=
+    [hη : η.IsHermitian] (t : ℝ) :
+    (twistFamily η t).IsHermitian :=
   hη.scale _ _
 
 /-- The actual canonical arithmetic model commutes with the Archimedean twist. -/
@@ -104,9 +105,9 @@ theorem degree_twistFamily [FiniteDimensional K E]
     (hspan : Submodule.span K (L : Set E) = ⊤)
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) E) (t : ℝ) :
     (fullLatticeAdelicBundle L hfg hspan (twistFamily η t)).degree
-        (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions =
+        =
       (fullLatticeAdelicBundle L hfg hspan η).degree
-        (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions +
+        +
           (Module.finrank K E : ℝ) * t := by
   rw [fullLatticeAdelicBundle_twistFamily, AdelicVectorBundle.degree_scaleExp,
     integral_twistExponent]
@@ -118,9 +119,9 @@ theorem minimalSlope_twistFamily [FiniteDimensional K E]
     (hspan : Submodule.span K (L : Set E) = ⊤)
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) E) (t : ℝ) :
     (fullLatticeAdelicBundle L hfg hspan (twistFamily η t)).minimalSlope
-        (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions =
+        =
       (fullLatticeAdelicBundle L hfg hspan η).minimalSlope
-        (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions + (t : EReal) := by
+        + (t : EReal) := by
   rw [fullLatticeAdelicBundle_twistFamily, AdelicVectorBundle.minimalSlope_scaleExp,
     integral_twistExponent]
   simp only [EReal.coe_neg, sub_eq_add_neg, neg_neg]

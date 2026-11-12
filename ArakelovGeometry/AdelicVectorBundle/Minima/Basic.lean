@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Vector
+
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 
@@ -33,7 +34,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- The canonical actual vector degree, using the bundle's proved analytic fields. -/
 abbrev vectorDegree (V : AdelicVectorBundle S E) (s : {x : E // x ≠ 0}) : ℝ :=
-  V.toNormFamily.vectorDegree V.isDominated V.isMeasurable s
+  V.toNormFamily.vectorDegree s
 
 /-- The span of actual nonzero rational vectors of degree at least the threshold. -/
 def degreeThresholdSpan (V : AdelicVectorBundle S E) (t : ℝ) : Submodule K E :=

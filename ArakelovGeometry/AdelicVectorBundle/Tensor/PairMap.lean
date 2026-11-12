@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian
+
 import ArakelovGeometry.Analysis.Determinant.Basic
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -252,14 +253,14 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 every place, preserving the full orthogonal norm at infinite places. -/
 theorem orthogonalTensor_map_norm_le_of_norm_eq
     (ξ : ∀ i, NormFamily S (X i)) (η : ∀ i, NormFamily S (Y i))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ∀ i, (ξ i).IsHermitian hN) (hη : ∀ i, (η i).IsHermitian hN)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ∀ i, (ξ i).IsHermitian] [hη : ∀ i, (η i).IsHermitian]
     (f : ∀ i, X i →ₗ[K] Y i) (ω : S.Ω)
     (hf : ∀ i x, (η i).norm ω ((f i).baseChange (S.ϕ ω).Completion x) = (ξ i).norm ω x)
     (z : (S.ϕ ω).Completion ⊗[K] (⨂[K] i, X i)) :
-    (orthogonalTensor η hN hη).norm ω
+    (orthogonalTensor η).norm ω
         ((PiTensorProduct.map f).baseChange (S.ϕ ω).Completion z) ≤
-      (orthogonalTensor ξ hN hξ).norm ω z := by
+      (orthogonalTensor ξ).norm ω z := by
   by_cases hω : ω ∈ S.Ωinf
   · let L := (S.ϕ ω).Completion
     let := hN ω hω
@@ -268,8 +269,8 @@ theorem orthogonalTensor_map_norm_le_of_norm_eq
     let : ∀ i, NormedSpace L (L ⊗[K] X i) := fun i ↦ (ξ i).fibreNormedSpace ω
     let : ∀ i, NormedAddCommGroup (L ⊗[K] Y i) := fun i ↦ (η i).fibreNormedAddCommGroup ω
     let : ∀ i, NormedSpace L (L ⊗[K] Y i) := fun i ↦ (η i).fibreNormedSpace ω
-    let : ∀ i, InnerProductSpace L (L ⊗[K] X i) := fun i ↦ (hξ i).fibreInnerProductSpace ω hω
-    let : ∀ i, InnerProductSpace L (L ⊗[K] Y i) := fun i ↦ (hη i).fibreInnerProductSpace ω hω
+    let : ∀ i, InnerProductSpace L (L ⊗[K] X i) := fun i ↦ (ξ i).fiberInnerProductSpace ω hω
+    let : ∀ i, InnerProductSpace L (L ⊗[K] Y i) := fun i ↦ (η i).fiberInnerProductSpace ω hω
     let g : ∀ i, (L ⊗[K] X i) →ₗᵢ[L] (L ⊗[K] Y i) :=
       fun i ↦ { toLinearMap := (f i).baseChange L, norm_map' := hf i }
     rw [orthogonalTensor_norm_of_infinite, orthogonalTensor_norm_of_infinite]
@@ -281,8 +282,8 @@ theorem orthogonalTensor_map_norm_le_of_norm_eq
     exact (orthogonalTensorSeminorm_map_eq
       (fun i ↦ stdOrthonormalBasis L (L ⊗[K] X i))
       (fun i ↦ stdOrthonormalBasis L (L ⊗[K] Y i)) g _).le
-  · rw [orthogonalTensor_norm_of_finite _ _ _ ω (not_not.mp hω),
-      orthogonalTensor_norm_of_finite _ _ _ ω (not_not.mp hω)]
+  · rw [orthogonalTensor_norm_of_finite _ ω (not_not.mp hω),
+      orthogonalTensor_norm_of_finite _ ω (not_not.mp hω)]
     exact injectiveTensor_map_norm_le ξ η f ω (fun i x ↦ (hf i x).le) z
 
 end NormFamily
@@ -350,16 +351,16 @@ theorem mixedTensorPair_restrict_map_norm_le (ξ : NormFamily S E) (η : NormFam
 are isometries on their completed fibres. -/
 theorem orthogonalTensorPair_map_norm_le_of_norm_eq
     (ξ : NormFamily S E) (η : NormFamily S F) (ζ : NormFamily S G) (θ : NormFamily S H)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN)
-    (hζ : ζ.IsHermitian hN) (hθ : θ.IsHermitian hN)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian]
+    [hζ : ζ.IsHermitian] [hθ : θ.IsHermitian]
     (f : E →ₗ[K] G) (g : F →ₗ[K] H) (ω : S.Ω)
     (hf : ∀ x, ζ.norm ω (f.baseChange (S.ϕ ω).Completion x) = ξ.norm ω x)
     (hg : ∀ y, θ.norm ω (g.baseChange (S.ϕ ω).Completion y) = η.norm ω y)
     (z : (S.ϕ ω).Completion ⊗[K] (E ⊗[K] F)) :
-    (ζ.orthogonalTensorPair θ hN hζ hθ).norm ω
+    (ζ ⊗ʰ θ).norm ω
         ((TensorProduct.map f g).baseChange (S.ϕ ω).Completion z) ≤
-      (ξ.orthogonalTensorPair η hN hξ hη).norm ω z := by
+      (ξ ⊗ʰ η).norm ω z := by
   let L := (S.ϕ ω).Completion
   let ff : ∀ i, BinaryTensorFactors E F i →ₗ[K] BinaryTensorFactors G H i :=
     fun i ↦ match i with | .inl _ => f | .inr _ => g
@@ -375,13 +376,13 @@ theorem orthogonalTensorPair_map_norm_le_of_norm_eq
       LinearEquiv.coe_coe, LinearEquiv.symm_apply_apply] using h.symm
   have hz := DFunLike.congr_fun (congrArg (fun h ↦ h.baseChange L) hc) z
   simp only [LinearMap.baseChange_comp, LinearMap.comp_apply] at hz
-  change (orthogonalTensor (tensorPairFactors ζ θ) hN (hζ.tensorPairFactors hθ)).norm ω
+  change (orthogonalTensor (tensorPairFactors ζ θ)).norm ω
       (B₂.symm.toLinearMap.baseChange L ((TensorProduct.map f g).baseChange L z)) ≤
-    (orthogonalTensor (tensorPairFactors ξ η) hN (hξ.tensorPairFactors hη)).norm ω
+    (orthogonalTensor (tensorPairFactors ξ η)).norm ω
       (B₁.symm.toLinearMap.baseChange L z)
   rw [hz]
   apply orthogonalTensor_map_norm_le_of_norm_eq (tensorPairFactors ξ η)
-    (tensorPairFactors ζ θ) hN (hξ.tensorPairFactors hη) (hζ.tensorPairFactors hθ) ff ω
+    (tensorPairFactors ζ θ) ff ω
   rintro (i | i) x
   · exact hf x
   · exact hg x
@@ -390,16 +391,15 @@ theorem orthogonalTensorPair_map_norm_le_of_norm_eq
 contracts their full completed orthogonal tensor norm. -/
 theorem orthogonalTensorPair_restrict_map_norm_le
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian]
     (U : Submodule K E) (T : Submodule K F) (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K] (U ⊗[K] T)) :
-    (ξ.orthogonalTensorPair η hN hξ hη).norm ω
+    (ξ ⊗ʰ η).norm ω
         ((TensorProduct.map U.subtype T.subtype).baseChange (S.ϕ ω).Completion z) ≤
-      ((ξ.restrict U).orthogonalTensorPair (η.restrict T) hN (hξ.restrict U)
-        (hη.restrict T)).norm ω z := by
+      ((ξ.restrict U).orthogonalTensorPair (η.restrict T)).norm ω z := by
   apply orthogonalTensorPair_map_norm_le_of_norm_eq (ξ.restrict U) (η.restrict T) ξ η
-    hN (hξ.restrict U) (hη.restrict T) hξ hη U.subtype T.subtype ω _ _ z
+    U.subtype T.subtype ω _ _ z
   · intro x
     rfl
   · intro y

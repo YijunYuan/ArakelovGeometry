@@ -85,8 +85,8 @@ variable {K : Type u₁} [Field K] {S : AdelicStructure.{u₁, v₁} K}
 to every completed vector, with the same constant. -/
 theorem norm_linearMap_le_orthogonalTensorPair_of_finite
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] (ω : S.Ω) (hω : ω ∈ S.Ωfin)
     {W : Type*} [SeminormedAddCommGroup W] [NormedSpace (S.ϕ ω).Completion W]
     (f : ((S.ϕ ω).Completion ⊗[K] (E ⊗[K] F)) →ₗ[(S.ϕ ω).Completion] W)
     (hW : ∀ x y : W, ‖x + y‖ ≤ max ‖x‖ ‖y‖) {C : ℝ} (hC : 0 ≤ C)
@@ -94,7 +94,7 @@ theorem norm_linearMap_le_orthogonalTensorPair_of_finite
       (S.ϕ ω).Completion E F).symm (x ⊗ₜ[(S.ϕ ω).Completion] y))‖ ≤
       C * (ξ.norm ω x * η.norm ω y))
     (z : (S.ϕ ω).Completion ⊗[K] (E ⊗[K] F)) :
-    ‖f z‖ ≤ C * (ξ.orthogonalTensorPair η hN hξ hη).norm ω z := by
+    ‖f z‖ ≤ C * (ξ ⊗ʰ η).norm ω z := by
   let L := (S.ϕ ω).Completion
   let X i := L ⊗[K] BinaryTensorFactors E F i
   let : ∀ i, NormedAddCommGroup (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedAddCommGroup ω
@@ -117,23 +117,23 @@ theorem norm_linearMap_le_orthogonalTensorPair_of_finite
   have h := norm_linearMap_le_mul_injective_of_ultrametric_factors g hW hC hg t
   change ‖f (A.symm (P t))‖ ≤ C * ArakelovGeometry.injectiveTensorSeminorm t at h
   rw [hp, LinearEquiv.symm_apply_apply] at h
-  rw [orthogonalTensorPair_norm_of_finite _ _ _ _ _ ω hω]
+  rw [orthogonalTensorPair_norm_of_finite _ _ ω hω]
   exact h
 
 /-- Binary symmetry contracts the actual completed norm at a finite place. -/
 theorem orthogonalTensorPair_comm_norm_le_of_finite
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] (ω : S.Ω) (hω : ω ∈ S.Ωfin)
     (z : (S.ϕ ω).Completion ⊗[K] (E ⊗[K] F)) :
-    (η.orthogonalTensorPair ξ hN hη hξ).norm ω
+    (η ⊗ʰ ξ).norm ω
       ((TensorProduct.comm K E F).toLinearMap.baseChange (S.ϕ ω).Completion z) ≤
-    (ξ.orthogonalTensorPair η hN hξ hη).norm ω z := by
+    (ξ ⊗ʰ η).norm ω z := by
   let L := (S.ϕ ω).Completion
-  let τ := η.orthogonalTensorPair ξ hN hη hξ
+  let τ := η.orthogonalTensorPair ξ
   let := τ.fibreNormedAddCommGroup ω
   let := τ.fibreNormedSpace ω
-  have hτ := orthogonalTensorPair_isHermitian η ξ hN hη hξ
+  have hτ := orthogonalTensorPair_isHermitian η ξ
   have hp (x : L ⊗[K] E) (y : L ⊗[K] F) :
       (TensorProduct.comm K E F).toLinearMap.baseChange L
         ((TensorProduct.AlgebraTensorModule.distribBaseChange K L E F).symm (x ⊗ₜ[L] y)) =
@@ -141,7 +141,7 @@ theorem orthogonalTensorPair_comm_norm_le_of_finite
     apply (TensorProduct.AlgebraTensorModule.distribBaseChange K L F E).injective
     rw [tensorBaseChangeEquiv_comm, LinearEquiv.apply_symm_apply,
       LinearEquiv.apply_symm_apply, TensorProduct.comm_tmul]
-  have h := norm_linearMap_le_orthogonalTensorPair_of_finite ξ η hN hξ hη ω hω
+  have h := norm_linearMap_le_orthogonalTensorPair_of_finite ξ η ω hω
     ((TensorProduct.comm K E F).toLinearMap.baseChange L) (hτ.1 ω hω)
     (C := 1) zero_le_one (fun x y ↦ by
       change τ.norm ω _ ≤ _
@@ -152,30 +152,30 @@ theorem orthogonalTensorPair_comm_norm_le_of_finite
 /-- The canonical binary commutor preserves the norm of every completed vector. -/
 theorem orthogonalTensorPair_norm_comm
     (ξ : NormFamily S E) (η : NormFamily S F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K] (E ⊗[K] F)) :
-    (η.orthogonalTensorPair ξ hN hη hξ).norm ω
+    (η ⊗ʰ ξ).norm ω
       ((TensorProduct.comm K E F).toLinearMap.baseChange (S.ϕ ω).Completion z) =
-    (ξ.orthogonalTensorPair η hN hξ hη).norm ω z := by
+    (ξ ⊗ʰ η).norm ω z := by
   by_cases hω : ω ∈ S.Ωinf
   · let L := (S.ϕ ω).Completion
     let := hN ω hω
     let := IsRCLikeNormedField.rclike L
     let := ξ.fibreNormedAddCommGroup ω
     let := ξ.fibreNormedSpace ω
-    let := hξ.fibreInnerProductSpace ω hω
+    let := ξ.fiberInnerProductSpace ω hω
     let := η.fibreNormedAddCommGroup ω
     let := η.fibreNormedSpace ω
-    let := hη.fibreInnerProductSpace ω hω
-    rw [orthogonalTensorPair_norm_eq_hilbert _ _ _ _ _ ω hω,
-      orthogonalTensorPair_norm_eq_hilbert _ _ _ _ _ ω hω, tensorBaseChangeEquiv_comm]
+    let := η.fiberInnerProductSpace ω hω
+    rw [orthogonalTensorPair_norm_eq_hilbert _ _ ω hω,
+      orthogonalTensorPair_norm_eq_hilbert _ _ ω hω, tensorBaseChangeEquiv_comm]
     exact TensorProduct.norm_comm _
   · have hfin : ω ∈ S.Ωfin := not_not.mp hω
-    apply le_antisymm (orthogonalTensorPair_comm_norm_le_of_finite ξ η hN hξ hη ω hfin z)
+    apply le_antisymm (orthogonalTensorPair_comm_norm_le_of_finite ξ η ω hfin z)
     let C := (TensorProduct.comm K E F).baseChange K (S.ϕ ω).Completion _ _
-    have h := orthogonalTensorPair_comm_norm_le_of_finite η ξ hN hη hξ ω hfin (C z)
-    change (ξ.orthogonalTensorPair η hN hξ hη).norm ω (C.symm (C z)) ≤ _ at h
+    have h := orthogonalTensorPair_comm_norm_le_of_finite η ξ ω hfin (C z)
+    change (ξ ⊗ʰ η).norm ω (C.symm (C z)) ≤ _ at h
     rw [LinearEquiv.symm_apply_apply] at h
     exact h
 
@@ -185,8 +185,8 @@ variable {G : Type w₁} [AddCommGroup G] [Module K G] [FiniteDimensional K G]
 vectors at a finite place. -/
 theorem norm_linearMap_le_orthogonalTensorPair_left_of_finite
     (ξ : NormFamily S E) (η : NormFamily S F) (ζ : NormFamily S G)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (hζ : ζ.IsHermitian hN)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] [hζ : ζ.IsHermitian]
     (ω : S.Ω) (hω : ω ∈ S.Ωfin)
     {W : Type*} [SeminormedAddCommGroup W] [NormedSpace (S.ϕ ω).Completion W]
     (f : ((S.ϕ ω).Completion ⊗[K] ((E ⊗[K] F) ⊗[K] G)) →ₗ[(S.ϕ ω).Completion] W)
@@ -197,16 +197,15 @@ theorem norm_linearMap_le_orthogonalTensorPair_left_of_finite
         (x ⊗ₜ[(S.ϕ ω).Completion] y) ⊗ₜ[(S.ϕ ω).Completion] z))‖ ≤
       ξ.norm ω x * η.norm ω y * ζ.norm ω z)
     (t : (S.ϕ ω).Completion ⊗[K] ((E ⊗[K] F) ⊗[K] G)) :
-    ‖f t‖ ≤ ((ξ.orthogonalTensorPair η hN hξ hη).orthogonalTensorPair ζ hN
-      (orthogonalTensorPair_isHermitian _ _ _ _ _) hζ).norm ω t := by
+    ‖f t‖ ≤ ((ξ ⊗ʰ η).orthogonalTensorPair ζ).norm ω t := by
   let L := (S.ϕ ω).Completion
   let A := TensorProduct.AlgebraTensorModule.distribBaseChange K L (E ⊗[K] F) G
   have h := norm_linearMap_le_orthogonalTensorPair_of_finite
-    (ξ.orthogonalTensorPair η hN hξ hη) ζ hN (orthogonalTensorPair_isHermitian _ _ _ _ _)
-    hζ ω hω f hW (C := 1) zero_le_one (fun u z ↦ by
+    (ξ ⊗ʰ η) ζ
+     ω hω f hW (C := 1) zero_le_one (fun u z ↦ by
       let g := f ∘ₗ A.symm.toLinearMap ∘ₗ
         (TensorProduct.mk L (L ⊗[K] (E ⊗[K] F)) (L ⊗[K] G)).flip z
-      have h := norm_linearMap_le_orthogonalTensorPair_of_finite ξ η hN hξ hη ω hω g hW
+      have h := norm_linearMap_le_orthogonalTensorPair_of_finite ξ η ω hω g hW
         (ζ.norm_nonneg ω z) (fun x y ↦ by
           change ‖f (A.symm (_ ⊗ₜ[L] z))‖ ≤ _
           simpa only [mul_comm (ζ.norm ω z)] using hf x y z) u
@@ -219,8 +218,8 @@ theorem norm_linearMap_le_orthogonalTensorPair_left_of_finite
 vectors at a finite place. -/
 theorem norm_linearMap_le_orthogonalTensorPair_right_of_finite
     (ξ : NormFamily S E) (η : NormFamily S F) (ζ : NormFamily S G)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (hζ : ζ.IsHermitian hN)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] [hζ : ζ.IsHermitian]
     (ω : S.Ω) (hω : ω ∈ S.Ωfin)
     {W : Type*} [SeminormedAddCommGroup W] [NormedSpace (S.ϕ ω).Completion W]
     (f : ((S.ϕ ω).Completion ⊗[K] (E ⊗[K] (F ⊗[K] G))) →ₗ[(S.ϕ ω).Completion] W)
@@ -231,16 +230,15 @@ theorem norm_linearMap_le_orthogonalTensorPair_right_of_finite
         (TensorProduct.AlgebraTensorModule.distribBaseChange K (S.ϕ ω).Completion F G).symm
           (y ⊗ₜ[(S.ϕ ω).Completion] z)))‖ ≤ ξ.norm ω x * (η.norm ω y * ζ.norm ω z))
     (t : (S.ϕ ω).Completion ⊗[K] (E ⊗[K] (F ⊗[K] G))) :
-    ‖f t‖ ≤ (ξ.orthogonalTensorPair (η.orthogonalTensorPair ζ hN hη hζ) hN hξ
-      (orthogonalTensorPair_isHermitian _ _ _ _ _)).norm ω t := by
+    ‖f t‖ ≤ (ξ.orthogonalTensorPair (η ⊗ʰ ζ)).norm ω t := by
   let L := (S.ϕ ω).Completion
   let A := TensorProduct.AlgebraTensorModule.distribBaseChange K L E (F ⊗[K] G)
   have h := norm_linearMap_le_orthogonalTensorPair_of_finite
-    ξ (η.orthogonalTensorPair ζ hN hη hζ) hN hξ (orthogonalTensorPair_isHermitian _ _ _ _ _)
+    ξ (η ⊗ʰ ζ)
     ω hω f hW (C := 1) zero_le_one (fun x u ↦ by
       let g := f ∘ₗ A.symm.toLinearMap ∘ₗ
         TensorProduct.mk L (L ⊗[K] E) (L ⊗[K] (F ⊗[K] G)) x
-      have h := norm_linearMap_le_orthogonalTensorPair_of_finite η ζ hN hη hζ ω hω g hW
+      have h := norm_linearMap_le_orthogonalTensorPair_of_finite η ζ ω hω g hW
         (ξ.norm_nonneg ω x) (fun y z ↦ hf x y z) u
       rw [one_mul]
       exact h) t
@@ -249,38 +247,32 @@ theorem norm_linearMap_le_orthogonalTensorPair_right_of_finite
 /-- The actual completed associator is isometric at every finite place. -/
 theorem orthogonalTensorPair_norm_assoc_of_finite
     (ξ : NormFamily S E) (η : NormFamily S F) (ζ : NormFamily S G)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (hζ : ζ.IsHermitian hN)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] [hζ : ζ.IsHermitian]
     (ω : S.Ω) (hω : ω ∈ S.Ωfin)
     (t : (S.ϕ ω).Completion ⊗[K] ((E ⊗[K] F) ⊗[K] G)) :
-    (ξ.orthogonalTensorPair (η.orthogonalTensorPair ζ hN hη hζ) hN hξ
-      (orthogonalTensorPair_isHermitian _ _ _ _ _)).norm ω
+    (ξ.orthogonalTensorPair (η ⊗ʰ ζ)).norm ω
       ((TensorProduct.assoc K E F G).toLinearMap.baseChange (S.ϕ ω).Completion t) =
-    ((ξ.orthogonalTensorPair η hN hξ hη).orthogonalTensorPair ζ hN
-      (orthogonalTensorPair_isHermitian _ _ _ _ _) hζ).norm ω t := by
+    ((ξ ⊗ʰ η).orthogonalTensorPair ζ).norm ω t := by
   let L := (S.ϕ ω).Completion
-  let σ := (ξ.orthogonalTensorPair η hN hξ hη).orthogonalTensorPair ζ hN
-    (orthogonalTensorPair_isHermitian _ _ _ _ _) hζ
-  let τ := ξ.orthogonalTensorPair (η.orthogonalTensorPair ζ hN hη hζ) hN hξ
-    (orthogonalTensorPair_isHermitian _ _ _ _ _)
+  let σ := (ξ ⊗ʰ η).orthogonalTensorPair ζ
+  let τ := ξ.orthogonalTensorPair (η ⊗ʰ ζ)
   let := σ.fibreNormedAddCommGroup ω
   let := σ.fibreNormedSpace ω
   let := τ.fibreNormedAddCommGroup ω
   let := τ.fibreNormedSpace ω
   let C := (TensorProduct.assoc K E F G).baseChange K L _ _
-  have hσ := orthogonalTensorPair_isHermitian (ξ.orthogonalTensorPair η hN hξ hη) ζ hN
-    (orthogonalTensorPair_isHermitian _ _ _ _ _) hζ
-  have hτ := orthogonalTensorPair_isHermitian ξ (η.orthogonalTensorPair ζ hN hη hζ) hN
-    hξ (orthogonalTensorPair_isHermitian _ _ _ _ _)
+  have hσ := orthogonalTensorPair_isHermitian (ξ ⊗ʰ η) ζ
+  have hτ := orthogonalTensorPair_isHermitian ξ (η ⊗ʰ ζ)
   change τ.norm ω (C t) = σ.norm ω t
   apply le_antisymm
-  · apply norm_linearMap_le_orthogonalTensorPair_left_of_finite ξ η ζ hN hξ hη hζ ω hω
+  · apply norm_linearMap_le_orthogonalTensorPair_left_of_finite ξ η ζ ω hω
       C.toLinearMap (hτ.1 ω hω) _ t
     intro x y z
     change τ.norm ω ((TensorProduct.assoc K E F G).toLinearMap.baseChange L _) ≤ _
     rw [tensorBaseChangeEquiv_assoc_symm_tmul, orthogonalTensorPair_norm_tmul_completed,
       orthogonalTensorPair_norm_tmul_completed, mul_assoc]
-  · have h := norm_linearMap_le_orthogonalTensorPair_right_of_finite ξ η ζ hN hξ hη hζ ω hω
+  · have h := norm_linearMap_le_orthogonalTensorPair_right_of_finite ξ η ζ ω hω
       C.symm.toLinearMap (hσ.1 ω hω) (fun x y z ↦ by
         have he := tensorBaseChangeEquiv_assoc_symm_tmul K L E F G x y z
         change C _ = _ at he
@@ -294,48 +286,46 @@ theorem orthogonalTensorPair_norm_assoc_of_finite
 /-- The canonical binary associator preserves the norm of every completed vector. -/
 theorem orthogonalTensorPair_norm_assoc
     (ξ : NormFamily S E) (η : NormFamily S F) (ζ : NormFamily S G)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hξ : ξ.IsHermitian hN) (hη : η.IsHermitian hN) (hζ : ζ.IsHermitian hN) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] [hζ : ζ.IsHermitian] (ω : S.Ω)
     (t : (S.ϕ ω).Completion ⊗[K] ((E ⊗[K] F) ⊗[K] G)) :
-    (ξ.orthogonalTensorPair (η.orthogonalTensorPair ζ hN hη hζ) hN hξ
-      (orthogonalTensorPair_isHermitian _ _ _ _ _)).norm ω
+    (ξ.orthogonalTensorPair (η ⊗ʰ ζ)).norm ω
       ((TensorProduct.assoc K E F G).toLinearMap.baseChange (S.ϕ ω).Completion t) =
-    ((ξ.orthogonalTensorPair η hN hξ hη).orthogonalTensorPair ζ hN
-      (orthogonalTensorPair_isHermitian _ _ _ _ _) hζ).norm ω t := by
+    ((ξ ⊗ʰ η).orthogonalTensorPair ζ).norm ω t := by
   by_cases hω : ω ∈ S.Ωinf
   · let L := (S.ϕ ω).Completion
     let := hN ω hω
     let := IsRCLikeNormedField.rclike L
     let := ξ.fibreNormedAddCommGroup ω
     let := ξ.fibreNormedSpace ω
-    let := hξ.fibreInnerProductSpace ω hω
+    let := ξ.fiberInnerProductSpace ω hω
     let := η.fibreNormedAddCommGroup ω
     let := η.fibreNormedSpace ω
-    let := hη.fibreInnerProductSpace ω hω
+    let := η.fiberInnerProductSpace ω hω
     let := ζ.fibreNormedAddCommGroup ω
     let := ζ.fibreNormedSpace ω
-    let := hζ.fibreInnerProductSpace ω hω
-    let ξη := ξ.orthogonalTensorPair η hN hξ hη
-    let ηζ := η.orthogonalTensorPair ζ hN hη hζ
-    let hξη := orthogonalTensorPair_isHermitian ξ η hN hξ hη
-    let hηζ := orthogonalTensorPair_isHermitian η ζ hN hη hζ
+    let := ζ.fiberInnerProductSpace ω hω
+    let ξη := ξ.orthogonalTensorPair η
+    let ηζ := η.orthogonalTensorPair ζ
+    let hξη := orthogonalTensorPair_isHermitian ξ η
+    let hηζ := orthogonalTensorPair_isHermitian η ζ
     let := ξη.fibreNormedAddCommGroup ω
     let := ξη.fibreNormedSpace ω
-    let := hξη.fibreInnerProductSpace ω hω
+    let := ξη.fiberInnerProductSpace ω hω
     let := ηζ.fibreNormedAddCommGroup ω
     let := ηζ.fibreNormedSpace ω
-    let := hηζ.fibreInnerProductSpace ω hω
+    let := ηζ.fiberInnerProductSpace ω hω
     let eEF : (L ⊗[K] (E ⊗[K] F)) ≃ₗᵢ[L] ((L ⊗[K] E) ⊗[L] (L ⊗[K] F)) :=
       { toLinearEquiv := TensorProduct.AlgebraTensorModule.distribBaseChange K L E F
-        norm_map' := fun x ↦ (orthogonalTensorPair_norm_eq_hilbert ξ η hN hξ hη ω hω x).symm }
+        norm_map' := fun x ↦ (orthogonalTensorPair_norm_eq_hilbert ξ η ω hω x).symm }
     let eFG : (L ⊗[K] (F ⊗[K] G)) ≃ₗᵢ[L] ((L ⊗[K] F) ⊗[L] (L ⊗[K] G)) :=
       { toLinearEquiv := TensorProduct.AlgebraTensorModule.distribBaseChange K L F G
-        norm_map' := fun x ↦ (orthogonalTensorPair_norm_eq_hilbert η ζ hN hη hζ ω hω x).symm }
+        norm_map' := fun x ↦ (orthogonalTensorPair_norm_eq_hilbert η ζ ω hω x).symm }
     let A := TensorProduct.AlgebraTensorModule.distribBaseChange K L (E ⊗[K] F) G
     let B := TensorProduct.AlgebraTensorModule.distribBaseChange K L E (F ⊗[K] G)
     let C := (TensorProduct.assoc K E F G).toLinearMap.baseChange L
-    rw [orthogonalTensorPair_norm_eq_hilbert _ _ _ _ _ ω hω,
-      orthogonalTensorPair_norm_eq_hilbert _ _ _ _ _ ω hω]
+    rw [orthogonalTensorPair_norm_eq_hilbert _ _ ω hω,
+      orthogonalTensorPair_norm_eq_hilbert _ _ ω hω]
     change ‖B (C t)‖ = ‖A t‖
     rw [← (TensorProduct.congrIsometry (LinearIsometryEquiv.refl L (L ⊗[K] E)) eFG).norm_map,
       ← (TensorProduct.congrIsometry eEF (LinearIsometryEquiv.refl L (L ⊗[K] G))).norm_map (A t)]
@@ -345,7 +335,7 @@ theorem orthogonalTensorPair_norm_assoc
         LinearMap.id (A t)‖
     rw [tensorBaseChangeEquiv_assoc]
     exact TensorProduct.norm_assoc _
-  · exact orthogonalTensorPair_norm_assoc_of_finite ξ η ζ hN hξ hη hζ ω (not_not.mp hω) t
+  · exact orthogonalTensorPair_norm_assoc_of_finite ξ η ζ ω (not_not.mp hω) t
 
 end BinaryCoherence
 

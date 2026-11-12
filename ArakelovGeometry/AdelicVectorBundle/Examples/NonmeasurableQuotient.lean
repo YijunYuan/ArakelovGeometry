@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicStructure.TrivialPlace
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
 public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
+
 import Mathlib.Analysis.Real.Cardinality
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -178,6 +179,7 @@ theorem rawNorm_add_le_max (B : Set ℝ) (t : ℝ) (x y : Plane) :
 
 /-- Actual completed fibres inherit the ultrametric inequality. -/
 theorem normFamily_isUltrametric (B : Set ℝ) : (normFamily B).IsUltrametric := by
+  constructor
   intro t _ z y
   change rawNorm B t (trivialCompletedTensorEquiv ℝ Plane (z + y)) ≤
     max (rawNorm B t (trivialCompletedTensorEquiv ℝ Plane z))
@@ -188,6 +190,7 @@ theorem normFamily_isUltrametric (B : Set ℝ) : (normFamily B).IsUltrametric :=
 /-- Each fixed rational vector has a Borel evaluation, despite the arbitrary
 choice of parameter set: its norm can vary at only one parameter. -/
 theorem normFamily_isMeasurable (B : Set ℝ) : (normFamily B).IsMeasurable := by
+  constructor
   classical
   intro x
   change Measurable (fun t : ℝ => rawNorm B t

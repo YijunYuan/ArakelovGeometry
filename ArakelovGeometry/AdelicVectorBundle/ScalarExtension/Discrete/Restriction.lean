@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Discrete.Bundle
+
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Dual.Descent
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.FiniteStage.RestrictionIsometry
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Tower.Transport
@@ -40,10 +41,10 @@ variable {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 measurable over the algebraic closure, without any target base hypothesis. -/
 theorem scalarExtension_restrict_dual_isMeasurable_of_countable_discrete
     (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] E)) :
     ((ξ.scalarExtension (L := L)).restrict A).dual.IsMeasurable := by
-  obtain ⟨F, _, B, _, _, he⟩ := ξ.exists_complexFiniteStage_restriction_isometries hN
+  obtain ⟨F, _, B, _, _, he⟩ := ξ.exists_complexFiniteStage_restriction_isometries
     (fun _ : Fin 1 => A)
   obtain ⟨e, he⟩ := he 0
   let : Countable (S.algebraicExtension F).Ω :=
@@ -68,17 +69,17 @@ variable {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 primal and produced dual measurability; target discreteness is unnecessary. -/
 def scalarExtensionRestrictionOfCountableDiscreteBase
     (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] E)) : AdelicVectorBundle (S.algebraicExtension L) A :=
-  (V.scalarExtensionOfCountableDiscreteBase (L := L) hN).restrict A
-    (V.toNormFamily.scalarExtension_restrict_dual_isMeasurable_of_countable_discrete hN A)
+  (V.scalarExtensionOfCountableDiscreteBase (L := L)).restrict A
+    (hm := (V.toNormFamily.scalarExtension_restrict_dual_isMeasurable_of_countable_discrete A))
 
 @[simp]
 theorem scalarExtensionRestrictionOfCountableDiscreteBase_toNormFamily
     (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] E)) :
-    (V.scalarExtensionRestrictionOfCountableDiscreteBase (L := L) hN A).toNormFamily =
+    (V.scalarExtensionRestrictionOfCountableDiscreteBase (L := L) A).toNormFamily =
       (V.toNormFamily.scalarExtension (L := L)).restrict A := rfl
 
 end AdelicVectorBundle

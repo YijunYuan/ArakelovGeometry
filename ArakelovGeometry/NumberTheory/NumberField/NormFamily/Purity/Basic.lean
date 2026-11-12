@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.Norm.Gauge
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Impurity.Basic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 
 /-!
@@ -37,14 +38,30 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- All nonzero completed finite-fibre norms lie in the value group of
 the actual completed scalar field. -/
-def IsPureAtFinitePlaces (ξ : NormFamily S E) : Prop :=
-  ∀ ω ∈ S.Ωfin, ∀ z : (S.ϕ ω).Completion ⊗[K] E, z ≠ 0 →
-    ∃ a : (S.ϕ ω).Completion, a ≠ 0 ∧ ξ.norm ω z = ‖a‖
+class IsPureAtFinitePlaces (ξ : NormFamily S E) : Prop where
+  /-- The defining property. -/
+  norm_mem_valueGroup :
+    ∀ ω ∈ S.Ωfin, ∀ z : (S.ϕ ω).Completion ⊗[K] E, z ≠ 0 →
+      ∃ a : (S.ϕ ω).Completion, a ≠ 0 ∧ ξ.norm ω z = ‖a‖
+
+instance (ξ : NormFamily S E) : CoeFun (ξ.IsPureAtFinitePlaces)
+    (fun _ ↦
+      ∀ ω ∈ S.Ωfin, ∀ z : (S.ϕ ω).Completion ⊗[K] E, z ≠ 0 →
+        ∃ a : (S.ϕ ω).Completion, a ≠ 0 ∧ ξ.norm ω z = ‖a‖) :=
+  ⟨fun h ↦ h.norm_mem_valueGroup⟩
+
+/-- The defining proposition of `IsPureAtFinitePlaces`. -/
+theorem IsPureAtFinitePlaces.iff (ξ : NormFamily S E) :
+    ξ.IsPureAtFinitePlaces ↔
+    ∀ ω ∈ S.Ωfin, ∀ z : (S.ϕ ω).Completion ⊗[K] E, z ≠ 0 →
+      ∃ a : (S.ϕ ω).Completion, a ≠ 0 ∧ ξ.norm ω z = ‖a‖ :=
+  ⟨fun h ↦ h.norm_mem_valueGroup, fun h ↦ ⟨h⟩⟩
 
 /-- An injective completed pullback retains each nonzero original norm value. -/
 theorem IsPureAtFinitePlaces.pullback {ξ : NormFamily S E}
     (hξ : ξ.IsPureAtFinitePlaces) (f : F →ₗ[K] E) (hf : Function.Injective f) :
     (ξ.pullback f hf).IsPureAtFinitePlaces := by
+  constructor
   intro ω hω z hz
   have hi : Function.Injective (f.baseChange (S.ϕ ω).Completion) :=
     Module.Flat.lTensor_preserves_injective_linearMap f hf
@@ -61,8 +78,9 @@ theorem IsPureAtFinitePlaces.restrict {ξ : NormFamily S E}
 
 /-- A finite coordinate maximum is attained by an actual nonzero completed
 scalar coordinate, including when the original basis may be empty. -/
-theorem ofBasis_isPureAtFinitePlaces {ι : Type*} [Fintype ι]
+instance ofBasis_isPureAtFinitePlaces {ι : Type*} [Fintype ι]
     (b : Module.Basis ι K E) : (ofBasis S E b).IsPureAtFinitePlaces := by
+  constructor
   classical
   intro ω _ z hz
   let c := (b.baseChange (S.ϕ ω).Completion).equivFun z
@@ -79,11 +97,21 @@ theorem ofBasis_isPureAtFinitePlaces {ι : Type*} [Fintype ι]
   exact hp.ne' (hj.symm.trans (by simp [h]))
 
 /-- The mixed basis family uses the same coordinate maximum at finite places. -/
-theorem ofBasisMixed_isPureAtFinitePlaces {ι : Type*} [Fintype ι]
+instance ofBasisMixed_isPureAtFinitePlaces {ι : Type*} [Fintype ι]
     (b : Module.Basis ι K E) : (ofBasisMixed S E b).IsPureAtFinitePlaces := by
+  constructor
   intro ω hω z hz
   simpa only [ofBasisMixed_norm_of_finite b ω hω] using
     ofBasis_isPureAtFinitePlaces b ω hω z hz
+
+instance instIsPureAtFinitePlacesPullback (ξ : NormFamily S E) [hξ : ξ.IsPureAtFinitePlaces]
+    (f : F →ₗ[K] E) (hf : Function.Injective f) :
+    (ξ.pullback f hf).IsPureAtFinitePlaces :=
+  hξ.pullback f hf
+
+instance instIsPureAtFinitePlacesRestrict (ξ : NormFamily S E) [hξ : ξ.IsPureAtFinitePlaces]
+    (P : Submodule K E) : (ξ.restrict P).IsPureAtFinitePlaces :=
+  hξ.restrict P
 
 end AdelicCurve
 
@@ -141,7 +169,9 @@ theorem isPureAtFinitePlaces_iff_globalImpurity_eq_zero :
         simp), ξ.norm_zero]
     · exact (ξ.completedUnitBallGauge_eq_norm_iff_norm_mem_valueGroup ω hω hz).mpr
         (h ω hω z hz)
-  · intro h ω hω z hz
+  · intro h
+    constructor
+    intro ω hω z hz
     exact (ξ.completedUnitBallGauge_eq_norm_iff_norm_mem_valueGroup ω hω hz).mp (h ω hω z)
 
 theorem IsPureAtFinitePlaces.globalImpurity_eq_zero {ξ :
@@ -157,8 +187,9 @@ theorem globalImpurity_eq_zero_restrict (hσ : ξ.globalImpurity = 0)
 variable [FiniteDimensional K E]
 
 /-- The actual produced completed unit-ball gauge family is pure. -/
-theorem latticeGaugeFamily_isPureAtFinitePlaces (hξ : ξ.IsUltrametric) :
-    (ξ.latticeGaugeFamily hξ).IsPureAtFinitePlaces := by
+instance latticeGaugeFamily_isPureAtFinitePlaces [hξ : ξ.IsUltrametric] :
+    (ξ.latticeGaugeFamily).IsPureAtFinitePlaces := by
+  constructor
   intro ω hω z hz
   obtain ⟨p, rfl⟩ := exists_normalizedPrimeParameter_eq ω hω
   obtain ⟨n, _, _, hn⟩ := completedUnitBallGauge_rounding ξ p hz
@@ -167,7 +198,7 @@ theorem latticeGaugeFamily_isPureAtFinitePlaces (hξ : ξ.IsUltrametric) :
   have ha : a ≠ 0 :=
     (map_ne_zero_iff _ (algebraMap K _).injective).mpr (primeUniformizer_ne_zero p)
   refine ⟨a ^ n, zpow_ne_zero _ ha, ?_⟩
-  rw [ξ.latticeGaugeFamily_norm_finite hξ _ (normalizedPrimeParameter_mem_fin p), norm_zpow]
+  rw [ξ.latticeGaugeFamily_norm_finite _ (normalizedPrimeParameter_mem_fin p), norm_zpow]
   exact hn
 
 /-- Pure finite norms are unchanged by lattice replacement; infinity is
@@ -175,12 +206,12 @@ retained by its original construction. -/
 theorem IsPureAtFinitePlaces.latticeGaugeFamily_eq {ξ :
     NormFamily (normalizedNumberFieldAdelicStructure K) E}
     (hξ : ξ.IsPureAtFinitePlaces) (hu : ξ.IsUltrametric) :
-    ξ.latticeGaugeFamily hu = ξ := by
+    ξ.latticeGaugeFamily = ξ := by
   ext ω z
   by_cases hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin
-  · rw [ξ.latticeGaugeFamily_norm_finite hu ω hω]
+  · rw [ξ.latticeGaugeFamily_norm_finite ω hω]
     exact ξ.globalImpurity_eq_zero_iff.mp hξ.globalImpurity_eq_zero ω hω z
-  · rw [ξ.latticeGaugeFamily_norm_not_finite hu ω hω]
+  · rw [ξ.latticeGaugeFamily_norm_not_finite ω hω]
 
 end NumberField
 

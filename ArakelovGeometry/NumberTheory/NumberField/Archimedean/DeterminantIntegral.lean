@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Covolume.HermitianBasis
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.MeasureTheory.Integral.FiniteSupport
 import ArakelovGeometry.NumberTheory.NumberField.Covolume.HermitianLattice
@@ -87,23 +88,23 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E]
 /-- The actual Archimedean part of the determinant logarithmic norm is the metric Jacobian. -/
 theorem log_basisDeterminantFactor_eq_integral
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E) :
     Real.log (basisDeterminantFactor ξ b) =
       ∫ ω in (normalizedNumberFieldAdelicStructure K).Ωinf,
         ξ.determinant.logNorm (exteriorPower.ιMulti K _ b) ω
           ∂(normalizedNumberFieldAdelicStructure K).v := by
-  rw [log_basisDeterminantFactor ξ hξ b, normalized_infinite_integral_eq_sum]
+  rw [log_basisDeterminantFactor ξ b, normalized_infinite_integral_eq_sum]
   rfl
 
 /-- The actual covolume logarithm expressed using the original determinant norm integral. -/
 theorem log_euclideanCovolume_eq_integral
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (b : Module.Basis (Fin (Module.finrank K E)) K E)
     (M : Submodule (𝓞 K) E) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) (hbM : principalModule b ≤ M) :
-    Real.log (euclideanCovolume ξ hξ M) =
+    Real.log (euclideanCovolume ξ M) =
       (∫ ω in (normalizedNumberFieldAdelicStructure K).Ωinf,
         ξ.determinant.logNorm (exteriorPower.ιMulti K _ b) ω
           ∂(normalizedNumberFieldAdelicStructure K).v) +
@@ -111,7 +112,7 @@ theorem log_euclideanCovolume_eq_integral
         ((2⁻¹ : ℝ) ^ InfinitePlace.nrComplexPlaces K *
           Real.sqrt |(NumberField.discr K : ℝ)|) -
       Real.log ((principalModule b).toAddSubgroup.relIndex M.toAddSubgroup : ℝ) := by
-  rw [log_euclideanCovolume ξ hξ b M hfg hspan hbM,
-    ← log_basisDeterminantFactor_eq_integral ξ hξ b, log_basisDeterminantFactor ξ hξ b]
+  rw [log_euclideanCovolume ξ b M hfg hspan hbM,
+    ← log_basisDeterminantFactor_eq_integral ξ b, log_basisDeterminantFactor ξ b]
 
 end ArakelovGeometry.NumberFieldHermitianLatticeCovolume

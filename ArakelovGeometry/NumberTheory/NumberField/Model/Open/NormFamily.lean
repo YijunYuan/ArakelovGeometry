@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Strong
 public import ArakelovGeometry.NumberTheory.NumberField.Model.Open.Lattice
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Coherence.Model
 import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Hermitian
@@ -193,7 +194,7 @@ theorem coherent_and_dominated_of_open_model [Module.Projective (regularFunction
 /-- Actual normalized Archimedean completions upgrade the original finite-ultrametric
 model conclusion to strong domination without an extra normalization hypothesis. -/
 theorem coherent_and_stronglyDominated_of_open_model [Module.Projective (regularFunctions U) M]
-    (ξ : NormFamily (N) E) (hξ : ξ.IsUltrametric) :
+    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametric] :
     letI := coefficientFieldAlgebra U hU
     letI := coefficientModule U hU E
     letI := coefficientGenericScalarTower U hU E
@@ -206,8 +207,8 @@ theorem coherent_and_stronglyDominated_of_open_model [Module.Projective (regular
   let := coefficientGenericScalarTower U hU E
   intro e hmodel
   obtain ⟨hc, hd⟩ := coherent_and_dominated_of_open_model U hU E M ξ e hmodel
-  exact ⟨hc, hd, (ξ.isStronglyDominated_iff_isDominated_of_ultrametric hξ
-    normalizedNumberFieldArchimedeanCompletions).mpr hd⟩
+  exact ⟨hc, hd, (ξ.isStronglyDominated_iff_isDominated_of_ultrametric
+   ).mpr hd⟩
 
 /-- The source's actual locally free finite regular-function module implies the
 coherence and domination conclusions; projectivity is produced from actual local freeness. -/
@@ -233,7 +234,7 @@ coherence, domination, and strong domination of the original finite-ultrametric 
 theorem coherent_and_stronglyDominated_of_locallyFree_open_model
     (hfree : ∀ (I : Ideal (regularFunctions U)) (_hI : I.IsMaximal),
       Module.Free (Localization.AtPrime I) (LocalizedModule I.primeCompl M))
-    (ξ : NormFamily (N) E) (hξ : ξ.IsUltrametric) :
+    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametric] :
     letI := coefficientFieldAlgebra U hU
     letI := coefficientModule U hU E
     letI := coefficientGenericScalarTower U hU E
@@ -245,7 +246,7 @@ theorem coherent_and_stronglyDominated_of_locallyFree_open_model
   let := coefficientModule U hU E
   let := coefficientGenericScalarTower U hU E
   let := openModule_projective_of_localizations_free U hU M hfree
-  exact coherent_and_stronglyDominated_of_open_model U hU E M ξ hξ
+  exact coherent_and_stronglyDominated_of_open_model U hU E M ξ
 
 end NormConclusions
 

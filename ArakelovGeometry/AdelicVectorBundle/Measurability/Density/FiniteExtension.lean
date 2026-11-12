@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Density.Basic
+
 import ArakelovGeometry.Analysis.NormedSpace.LinearMapBound
 import ArakelovGeometry.Analysis.Tensor.CountableTensorFormula
 import Mathlib.CategoryTheory.Category.Init
@@ -129,7 +130,8 @@ subfield, with no restriction on the places or their valuations. -/
 theorem AdelicStructure.HasCommonCountableDenseSubfield.algebraicExtension_of_finiteDimensional
     [FiniteDimensional K L] (hS : S.HasCommonCountableDenseSubfield) :
     (S.algebraicExtension L).HasCommonCountableDenseSubfield := by
-  obtain ⟨K₀, hc, hd⟩ := hS
+  constructor
+  obtain ⟨K₀, hc, hd⟩ := hS.exists_subfield
   let : Countable K₀ := hc
   let b := Module.finBasis K L
   refine ⟨finiteExtensionDenseSubfield b K₀, countable_finiteExtensionDenseSubfield b K₀, ?_⟩
@@ -138,3 +140,13 @@ theorem AdelicStructure.HasCommonCountableDenseSubfield.algebraicExtension_of_fi
   exact AdelicStructure.isDenseSubfieldAt_finiteExtensionDenseSubfield b K₀ x (hd x.base)
 
 end ArakelovGeometry
+
+namespace ArakelovGeometry.AdelicStructure
+
+instance hasCommonCountableDenseSubfield_algebraicExtension_finite
+    {K L : Type*} [Field K] [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
+    (S : AdelicStructure K) [hS : S.HasCommonCountableDenseSubfield] [FiniteDimensional K L] :
+    (S.algebraicExtension L).HasCommonCountableDenseSubfield :=
+  hS.algebraicExtension_of_finiteDimensional
+
+end ArakelovGeometry.AdelicStructure

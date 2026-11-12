@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Density.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Operator.Norm
+
 import ArakelovGeometry.AdelicVectorBundle.Operator.Measurable
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -51,9 +52,9 @@ theorem exp_localHeight (ξ : NormFamily S E) (η : NormFamily S F)
 theorem IsMeasurable.localHeight_of_discrete_or_countable
     {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsMeasurable) (hη : η.IsMeasurable)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    [hS : S.HasMeasurableBase]
     (f : {f : E →ₗ[K] F // f ≠ 0}) : Measurable (ξ.localHeight η f) :=
-  (hξ.operatorNorm_of_discrete_or_countable hη hS f.val).log
+  (hξ.operatorNorm_of_discrete_or_countable hη f.val).log
 
 /-- Any rational vector with nonzero image gives a pointwise lower bound. -/
 theorem logNorm_sub_le_localHeight (ξ : NormFamily S E) (η : NormFamily S F)

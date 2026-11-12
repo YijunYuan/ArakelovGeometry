@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Domination
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.IntegralComparison
 import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Dual
@@ -33,17 +34,17 @@ variable {K : Type*} [Field K] [NumberField K]
   {E : Type*} [AddCommGroup E] [Module K E]
 
 variable (ξ η : NormFamily (numberFieldAdelicStructure K) E)
-  (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric)
+  [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric]
 
 /-- Logarithmic norms transport on the whole actual completed fibre, including zero. -/
 theorem numberFieldNormalize_log_norm_map
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (y : (placeRep ω.val).Completion ⊗[K] E) :
-    Real.log ((ξ.numberFieldNormalize hξ).norm ω (normalizedNormFamilyTensorEquiv ω y)) =
+    Real.log ((ξ.numberFieldNormalize).norm ω (normalizedNormFamilyTensorEquiv ω y)) =
       numberFieldNormalizationExponent ω * Real.log (ξ.norm ω.val y) := by
   by_cases hy : y = 0
   · simp only [hy, map_zero]
-    erw [(ξ.numberFieldNormalize hξ).norm_zero ω, ξ.norm_zero ω.val]
+    erw [(ξ.numberFieldNormalize).norm_zero ω, ξ.norm_zero ω.val]
     simp only [Real.log_zero, mul_zero]
   · erw [numberFieldNormalize_norm_map, Real.log_rpow (ξ.norm_pos ω.val hy)]
 
@@ -51,8 +52,8 @@ theorem numberFieldNormalize_log_norm_map
 theorem numberFieldNormalize_log_discrepancy_map
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (y : (placeRep ω.val).Completion ⊗[K] E) :
-    |Real.log ((ξ.numberFieldNormalize hξ).norm ω (normalizedNormFamilyTensorEquiv ω y)) -
-      Real.log ((η.numberFieldNormalize hη).norm ω (normalizedNormFamilyTensorEquiv ω y))| =
+    |Real.log ((ξ.numberFieldNormalize).norm ω (normalizedNormFamilyTensorEquiv ω y)) -
+      Real.log ((η.numberFieldNormalize).norm ω (normalizedNormFamilyTensorEquiv ω y))| =
       numberFieldNormalizationExponent ω *
         |Real.log (ξ.norm ω.val y) - Real.log (η.norm ω.val y)| := by
   erw [numberFieldNormalize_log_norm_map, numberFieldNormalize_log_norm_map,
@@ -63,7 +64,7 @@ variable [FiniteDimensional K E]
 /-- The actual supremum distance scales by the normalization exponent. -/
 theorem numberFieldNormalize_localDist
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K}) :
-    (ξ.numberFieldNormalize hξ).localDist (η.numberFieldNormalize hη) ω =
+    (ξ.numberFieldNormalize).localDist (η.numberFieldNormalize) ω =
       numberFieldNormalizationExponent ω * ξ.localDist η ω.val := by
   let θ := numberFieldNormalizationExponent ω
   have hθ : 0 < θ := numberFieldNormalizationExponent_pos ω
@@ -74,12 +75,12 @@ theorem numberFieldNormalize_localDist
     erw [numberFieldNormalize_log_discrepancy_map]
     exact mul_le_mul_of_nonneg_left (ξ.log_norm_sub_le_localDist η ω.val y) hθ.le
   · have hbound : ξ.localDist η ω.val ≤
-        (ξ.numberFieldNormalize hξ).localDist (η.numberFieldNormalize hη) ω / θ := by
+        (ξ.numberFieldNormalize).localDist (η.numberFieldNormalize) ω / θ := by
       apply localDist_le
       intro y
       apply (le_div_iff₀ hθ).mpr
-      have hd := (ξ.numberFieldNormalize hξ).log_norm_sub_le_localDist
-        (η.numberFieldNormalize hη) ω (normalizedNormFamilyTensorEquiv ω y)
+      have hd := (ξ.numberFieldNormalize).log_norm_sub_le_localDist
+        (η.numberFieldNormalize) ω (normalizedNormFamilyTensorEquiv ω y)
       erw [numberFieldNormalize_log_discrepancy_map] at hd
       simpa only [θ, mul_comm] using hd
     have hm := mul_le_mul_of_nonneg_left hbound hθ.le
@@ -87,33 +88,33 @@ theorem numberFieldNormalize_localDist
 
 /-- Actual local distance integrability is reflected as well as preserved. -/
 theorem numberFieldNormalize_localDist_integrable_iff :
-    Integrable ((ξ.numberFieldNormalize hξ).localDist (η.numberFieldNormalize hη))
+    Integrable ((ξ.numberFieldNormalize).localDist (η.numberFieldNormalize))
       (normalizedNumberFieldAdelicStructure K).v ↔
       Integrable (ξ.localDist η) (numberFieldAdelicStructure K).v := by
-  have heq : (ξ.numberFieldNormalize hξ).localDist (η.numberFieldNormalize hη) =
+  have heq : (ξ.numberFieldNormalize).localDist (η.numberFieldNormalize) =
       fun ω => numberFieldNormalizationExponent ω * ξ.localDist η ω.val := by
     funext ω
-    exact ξ.numberFieldNormalize_localDist η hξ hη ω
+    exact ξ.numberFieldNormalize_localDist η ω
   rw [heq]
   exact integrable_numberFieldNormalizationExponent_mul_iff (ξ.localDist η)
 
 /-- Integrable global distance is preserved by the actual degree-weighted curve. -/
 theorem numberFieldNormalize_integral_localDist
     (h : Integrable (ξ.localDist η) (numberFieldAdelicStructure K).v) :
-    (∫ ω, (ξ.numberFieldNormalize hξ).localDist (η.numberFieldNormalize hη) ω
+    (∫ ω, (ξ.numberFieldNormalize).localDist (η.numberFieldNormalize) ω
       ∂(normalizedNumberFieldAdelicStructure K).v) =
       ∫ ω, ξ.localDist η ω ∂(numberFieldAdelicStructure K).v := by
-  have heq : (ξ.numberFieldNormalize hξ).localDist (η.numberFieldNormalize hη) =
+  have heq : (ξ.numberFieldNormalize).localDist (η.numberFieldNormalize) =
       fun ω => numberFieldNormalizationExponent ω * ξ.localDist η ω.val := by
     funext ω
-    exact ξ.numberFieldNormalize_localDist η hξ hη ω
+    exact ξ.numberFieldNormalize_localDist η ω
   rw [heq]
   exact integral_numberFieldNormalizationExponent_mul (ξ.localDist η) h
 
 /-- Extended nonnegative distance integrals agree even when they are infinite. -/
 theorem numberFieldNormalize_lintegral_localDist :
     (∫⁻ ω, ENNReal.ofReal
-      ((ξ.numberFieldNormalize hξ).localDist (η.numberFieldNormalize hη) ω)
+      ((ξ.numberFieldNormalize).localDist (η.numberFieldNormalize) ω)
       ∂(normalizedNumberFieldAdelicStructure K).v) =
       ∫⁻ ω, ENNReal.ofReal (ξ.localDist η ω) ∂(numberFieldAdelicStructure K).v := by
   calc

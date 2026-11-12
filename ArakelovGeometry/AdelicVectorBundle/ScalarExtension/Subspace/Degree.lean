@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Countable
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Algebraic.ClosureApproximation
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Bundle
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Isometry
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Archimedean
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.DegreeDeterminant
@@ -42,56 +43,58 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- The usual vector degree of the actual ordinary extension to an algebraic
 closure equals the original degree; target common density is proved. -/
 theorem degree_scalarExtension_of_isAlgClosed [S.IsProper]
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    (V.scalarExtension (L := L) hcount hN).degree
-      (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) =
-    V.degree (Or.inr hcount) hN := by
+    (V.scalarExtension (L := L)).degree
+      (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
+      (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
+    V.degree := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   exact (degreeOfMeasurableDeterminant_eq_degree _
-    (V.scalarExtension_determinant_isMeasurable hcount hN)
-    (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))
-    (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN)).symm.trans
-      (V.degreeOfMeasurableDeterminant_scalarExtension hcount hN)
+    (hdet := (V.scalarExtension_determinant_isMeasurable))
+    (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩)).symm.trans
+      (V.degreeOfMeasurableDeterminant_scalarExtension)
 
 /-- Native restriction after ordinary scalar extension has the original
 restricted degree under the actual completed tensor equivalence. -/
 theorem degree_restrict_scalarExtension_of_sqrt_neg_one [S.IsProper]
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsUltrametric) (hi : ∃ a : K, a ^ 2 = -1)
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsUltrametric] (hi : ∃ a : K, a ^ 2 = -1)
     (A : Submodule K E) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    ((V.scalarExtension (L := L) hcount hN).restrictOfMeasurableBase
-      (A.baseChange L) (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))).degree
-      (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) =
-    (V.restrictOfMeasurableBase A (Or.inr hcount)).degree (Or.inr hcount) hN := by
+    ((V.scalarExtension (L := L)).restrictOfMeasurableBase
+      (A.baseChange L) (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed
+          (L := L)))⟩)).degree
+      (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
+      (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
+    (V.restrictOfMeasurableBase A).degree := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let hL : DiscreteMeasurableSpace (S.algebraicExtension L).Ω ∨
       (S.algebraicExtension L).HasCommonCountableDenseSubfield :=
     Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-  let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
-  let W := (V.restrictOfMeasurableBase A (Or.inr hcount)).scalarExtension (L := L) hcount hN
-  let R := (V.scalarExtension (L := L) hcount hN).restrictOfMeasurableBase (A.baseChange L) hL
-  have he : W.degree hL hLN = R.degree hL hLN :=
+  let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
+  let W := (V.restrictOfMeasurableBase A).scalarExtension (L := L)
+  let R := (V.scalarExtension (L := L)).restrictOfMeasurableBase (A.baseChange L) (hS := ⟨hL⟩)
+  have he : W.degree (hS := ⟨hL⟩) (hN := ⟨hLN⟩) = R.degree (hS := ⟨hL⟩) (hN := ⟨hLN⟩) :=
     W.degree_eq_of_completed_isometry R (Submodule.toBaseChange.toLinearEquiv L A)
-      hL hLN (fun x z => V.toNormFamily.scalarExtension_restrict_norm_eq_of_sqrt_neg_one
-        hV hN hi A x z)
+      (hS := ⟨hL⟩) (hN := ⟨hLN⟩) (fun x z =>
+          V.toNormFamily.scalarExtension_restrict_norm_eq_of_sqrt_neg_one
+         hi A x z)
   exact he.symm.trans
-    ((V.restrictOfMeasurableBase A (Or.inr hcount)).degree_scalarExtension_of_isAlgClosed
-      hcount hN)
+    ((V.restrictOfMeasurableBase A).degree_scalarExtension_of_isAlgClosed
+      )
 
 /-- The native base-changed subbundle has precisely the original restricted
 rank, through the same canonical tensor equivalence, including rank zero. -/
 theorem rank_restrict_scalarExtension
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (A : Submodule K E) :
-    ((V.scalarExtension (L := L) hcount hN).restrictOfMeasurableBase
-      (A.baseChange L) (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))).rank =
-    (V.restrictOfMeasurableBase A (Or.inr hcount)).rank := by
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized] (A : Submodule K E) :
+    ((V.scalarExtension (L := L)).restrictOfMeasurableBase
+      (A.baseChange L) (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed
+          (L := L)))⟩)).rank =
+    (V.restrictOfMeasurableBase A).rank := by
   change Module.finrank L (A.baseChange L) = Module.finrank K A
   exact (Submodule.toBaseChange.toLinearEquiv L A).finrank_eq.symm.trans
     Module.finrank_baseChange

@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Determinant.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Functor
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -37,6 +38,7 @@ theorem IsMeasurable.of_completed_isometry (ξ : NormFamily S E) (η : NormFamil
     (e : E ≃ₗ[K] F)
     (he : ∀ ω z, η.norm ω (e.toLinearMap.baseChange (S.ϕ ω).Completion z) = ξ.norm ω z)
     (hξ : ξ.IsMeasurable) : η.IsMeasurable := by
+  constructor
   intro y
   have hn (ω : S.Ω) :
       η.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] y) =
@@ -53,7 +55,7 @@ from the source's actual determinant measurability, including rank zero. -/
 theorem determinant_isMeasurable_of_completed_isometry
     (ξ : NormFamily S E) (η : NormFamily S F) (e : E ≃ₗ[K] F)
     (he : ∀ ω z, η.norm ω (e.toLinearMap.baseChange (S.ϕ ω).Completion z) = ξ.norm ω z)
-    (hdet : ξ.determinant.IsMeasurable) : η.determinant.IsMeasurable := by
+    [hdet : ξ.determinant.IsMeasurable] : η.determinant.IsMeasurable := by
   apply IsMeasurable.of_completed_isometry ξ.determinant η.determinant
     (determinantEquiv K e) _ hdet
   intro ω z
@@ -67,19 +69,19 @@ namespace AdelicVectorBundle
 completed isometry. Target determinant measurability is produced, not assumed. -/
 theorem degreeOfMeasurableDeterminant_eq_of_completed_isometry [S.IsProper]
     (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
-    (hdet : V.toNormFamily.determinant.IsMeasurable)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hdet : V.toNormFamily.determinant.IsMeasurable]
+    [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω z, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion z) = V.toNormFamily.norm ω z) :
-    V.degreeOfMeasurableDeterminant hdet hN =
+    V.degreeOfMeasurableDeterminant =
       W.degreeOfMeasurableDeterminant
-        (V.toNormFamily.determinant_isMeasurable_of_completed_isometry
-          W.toNormFamily e he hdet) hN := by
+        (hdet := (V.toNormFamily.determinant_isMeasurable_of_completed_isometry
+          W.toNormFamily e he)) := by
   let hW := V.toNormFamily.determinant_isMeasurable_of_completed_isometry
-    W.toNormFamily e he hdet
+    W.toNormFamily e he
   apply lineDegree_eq_of_norm_rational_eq
-    (V.determinant hdet hN) (W.determinant hW hN)
-    (V.determinant_isLine hdet hN) (W.determinant_isLine hW hN) (determinantEquiv K e)
+    (V.determinant) (W.determinant (hm := hW))
+    (hV := (V.determinant_isLine)) (hW := (W.determinant_isLine (hm := hW))) (determinantEquiv K e)
   intro ω z
   have h := V.toNormFamily.determinantEquiv_norm_eq W.toNormFamily ω e (he ω)
     ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] z)

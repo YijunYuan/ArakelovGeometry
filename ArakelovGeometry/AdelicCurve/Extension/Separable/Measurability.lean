@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Separable.FibreIntegral
+
 import ArakelovGeometry.AdelicCurve.Extension.Separable.Embeddings
 import ArakelovGeometry.Analysis.AbsoluteValue.Extension
 import ArakelovGeometry.Analysis.AbsoluteValue.FiniteExtension
@@ -124,7 +125,7 @@ theorem fibreLIntegral_tsum (f : ℕ → ParameterSpaceExtension AS L → ℝ≥
 sends measurable real-valued functions on `Ω_L` to measurable real-valued functions on `Ω_K`. -/
 theorem measurable_fibreIntegral {f : ParameterSpaceExtension AS L → ℝ} (hf : Measurable f) :
     Measurable (fibreIntegral AS L f) := by
- classical
+      classical
   let H : Submodule ℝ (ParameterSpaceExtension AS L → ℝ) := {
     carrier := {f | Measurable (fibreIntegral AS L f)}
     zero_mem' := by

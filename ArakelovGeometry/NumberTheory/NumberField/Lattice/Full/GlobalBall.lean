@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.Full.Gauge
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import Mathlib.Topology.Sheaves.Init
 
@@ -172,8 +173,8 @@ theorem fullLatticeGaugeFamily_globalUnitBall_eq (L : Submodule (𝓞 K) E) (hfg
 theorem fullLatticeGaugeFamily_globalUnitBallModule_eq
     (L : Submodule (𝓞 K) E) (hfg : L.FG)
     (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (N) E)
-    (hξ : (fullLatticeGaugeFamily L hfg hspan η).IsUltrametric) :
-    (fullLatticeGaugeFamily L hfg hspan η).globalUnitBallModule hξ = L := by
+    [hξ : (fullLatticeGaugeFamily L hfg hspan η).IsUltrametric] :
+    (fullLatticeGaugeFamily L hfg hspan η).globalUnitBallModule = L := by
   apply SetLike.coe_injective
   exact fullLatticeGaugeFamily_globalUnitBall_eq L hfg hspan η
 

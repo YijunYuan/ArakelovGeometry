@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.Full.Gauge
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Purity.Basic
+
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Full.GlobalBall
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Index.BoundedElement
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Line.Index
@@ -77,6 +78,7 @@ theorem fullLatticeGaugeFamily_isPureAtFinitePlaces (L : Submodule (𝓞 K) E) (
     (hspan : Submodule.span K (L : Set E) = ⊤)
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) E) :
     (fullLatticeGaugeFamily L hfg hspan η).IsPureAtFinitePlaces := by
+  constructor
   intro ω hω z hz
   obtain ⟨p, rfl⟩ := exists_normalizedPrimeParameter_eq ω hω
   rw [fullLatticeGaugeFamily_norm_prime, scalarLatticeGauge_eq_localBasisNorm]
@@ -129,15 +131,16 @@ theorem line_completedGauge_finite_log_index (L : Submodule (𝓞 K) E) (hfg : L
   let η := NormFamily.ofBasis (normalizedNumberFieldAdelicStructure K) E (Module.finBasis K E)
   let ξ := fullLatticeGaugeFamily L hfg hspan η
   have hU : ξ.IsUltrametric := fullLatticeGaugeFamily_isUltrametric L hfg hspan η
-  have hL : ξ.globalUnitBallModule hU = L :=
-    fullLatticeGaugeFamily_globalUnitBallModule_eq L hfg hspan η hU
-  let e : ξ.globalUnitBallModule hU ≃ₗ[𝓞 K] L := LinearEquiv.ofEq _ _ hL
+  have hL : ξ.globalUnitBallModule (hξ := hU) = L :=
+    fullLatticeGaugeFamily_globalUnitBallModule_eq L hfg hspan η (hξ := hU)
+  let e : ξ.globalUnitBallModule (hξ := hU) ≃ₗ[𝓞 K] L := LinearEquiv.ofEq _ _ hL
   let y := e.symm x
   have hy : y ≠ 0 := fun h => hx (e.symm.injective (h.trans (map_zero e.symm).symm))
-  have hfgξ : (ξ.globalUnitBallModule hU).FG := hL.symm ▸ hfg
+  have hfgξ : (ξ.globalUnitBallModule (hξ := hU)).FG := hL.symm ▸ hfg
   have hfinite := (fullLatticeGaugeFamily_coherent_and_dominated L hfg hspan η).1
   have hσ := fullLatticeGaugeFamily_globalImpurity_eq_zero L hfg hspan η
-  have h := ξ.normalizedLineGlobalUnitBall_finite_log_index hU hfinite hfgξ hσ hrank y hy
+  have h := ξ.normalizedLineGlobalUnitBall_finite_log_index (hξ := hU)
+      (hfinite := hfinite) hfgξ hσ hrank y hy
   rw [NumberFieldBoundedIndex.cyclicQuotient_card_eq e y, e.apply_symm_apply] at h
   convert h using 1
   apply tsum_congr
@@ -160,13 +163,13 @@ theorem line_completedGauge_log_support_finite (L : Submodule (𝓞 K) E) (hfg :
   let η := NormFamily.ofBasis (normalizedNumberFieldAdelicStructure K) E (Module.finBasis K E)
   let ξ := fullLatticeGaugeFamily L hfg hspan η
   have hU : ξ.IsUltrametric := fullLatticeGaugeFamily_isUltrametric L hfg hspan η
-  have hL : ξ.globalUnitBallModule hU = L :=
-    fullLatticeGaugeFamily_globalUnitBallModule_eq L hfg hspan η hU
-  have hfgξ : (ξ.globalUnitBallModule hU).FG := hL.symm ▸ hfg
+  have hL : ξ.globalUnitBallModule (hξ := hU) = L :=
+    fullLatticeGaugeFamily_globalUnitBallModule_eq L hfg hspan η (hξ := hU)
+  have hfgξ : (ξ.globalUnitBallModule (hξ := hU)).FG := hL.symm ▸ hfg
   have hfinite := (fullLatticeGaugeFamily_coherent_and_dominated L hfg hspan η).1
   have hσ := fullLatticeGaugeFamily_globalImpurity_eq_zero L hfg hspan η
   let e : K ≃ₗ[K] E := (Module.nonempty_linearEquiv_of_finrank_eq_one hrank).some
-  let J := ξ.normalizedLineCoordinateIdeal hU hfgξ e
+  let J := ξ.normalizedLineCoordinateIdeal (hξ := hU) hfgξ e
   let P := FractionalIdeal.spanSingleton (𝓞 K)⁰ (e.symm (x : E))
   have hxE : (x : E) ≠ 0 := fun h => hx (Subtype.ext h)
   have ha : e.symm (x : E) ≠ 0 :=
@@ -184,7 +187,7 @@ theorem line_completedGauge_log_support_finite (L : Submodule (𝓞 K) E) (hfg :
   have hprincipal := fractionalIdeal_count_spanSingleton p ha
   change FractionalIdeal.count K p P = _ at hprincipal
   have hlog : ξ.logNorm (x : E) (normalizedPrimeParameter p) = 0 := by
-    rw [ξ.normalizedLineCoordinateIdeal_logNorm hU hfinite hfgξ hσ e p hxE]
+    rw [ξ.normalizedLineCoordinateIdeal_logNorm (hξ := hU) (hfinite := hfinite) hfgξ hσ e p hxE]
     change normalizedPrimeLogScale p *
       (((p.valuation K (e.symm (x : E))).log : ℝ) + FractionalIdeal.count K p J) = 0
     rw [hcJ]

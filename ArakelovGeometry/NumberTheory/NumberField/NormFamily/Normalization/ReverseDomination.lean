@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Domination
+
 import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.IntegralComparison
 import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Dual
 
@@ -96,14 +97,15 @@ variable {K : Type*} [Field K] [NumberField K]
 /-- Upper domination of the actual normalization reflects to the fixed old family. -/
 theorem IsUpperDominated.of_numberFieldNormalize
     {ξ : NormFamily (numberFieldAdelicStructure K) E} {hξ : ξ.IsUltrametric}
-    (hupper : (ξ.numberFieldNormalize hξ).IsUpperDominated) : ξ.IsUpperDominated := by
+    (hupper : (ξ.numberFieldNormalize).IsUpperDominated) : ξ.IsUpperDominated := by
+  constructor
   intro x hx
   obtain ⟨A, hAi, hA⟩ := hupper x hx
   refine ⟨numberFieldNormalizationPullback A, integrable_numberFieldNormalizationPullback A hAi, ?_⟩
   apply numberField_ae_of_forall_nontrivial
   intro ω
   have hb := forall_nontrivial_of_normalizedNumberField_ae _ hA ω
-  have hlog := ξ.numberFieldNormalize_logNorm hξ x ω
+  have hlog := ξ.numberFieldNormalize_logNorm x ω
   have hback := normalizationExponent_mul_pullback A ω
   exact (mul_le_mul_iff_right₀ (numberFieldNormalizationExponent_pos ω)).mp
     ((hlog.symm.trans_le hb).trans_eq hback.symm)
@@ -111,29 +113,30 @@ theorem IsUpperDominated.of_numberFieldNormalize
 /-- Lower domination of the actual normalization reflects to the fixed old family. -/
 theorem IsLowerDominated.of_numberFieldNormalize
     {ξ : NormFamily (numberFieldAdelicStructure K) E} {hξ : ξ.IsUltrametric}
-    (hlower : (ξ.numberFieldNormalize hξ).IsLowerDominated) : ξ.IsLowerDominated := by
+    (hlower : (ξ.numberFieldNormalize).IsLowerDominated) : ξ.IsLowerDominated := by
+  constructor
   intro x hx
   obtain ⟨A, hAi, hA⟩ := hlower x hx
   refine ⟨numberFieldNormalizationPullback A, integrable_numberFieldNormalizationPullback A hAi, ?_⟩
   apply numberField_ae_of_forall_nontrivial
   intro ω
   have hb := forall_nontrivial_of_normalizedNumberField_ae _ hA ω
-  have hlog := ξ.numberFieldNormalize_logNorm hξ x ω
+  have hlog := ξ.numberFieldNormalize_logNorm x ω
   have hback := normalizationExponent_mul_pullback A ω
   exact (mul_le_mul_iff_right₀ (numberFieldNormalizationExponent_pos ω)).mp
     (hback.trans_le (hb.trans_eq hlog))
 
 /-- Actual upper domination is unchanged for every fixed old ultrametric family. -/
 theorem numberFieldNormalize_isUpperDominated_iff
-    (ξ : NormFamily (numberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric) :
-    (ξ.numberFieldNormalize hξ).IsUpperDominated ↔ ξ.IsUpperDominated :=
+    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric] :
+    (ξ.numberFieldNormalize).IsUpperDominated ↔ ξ.IsUpperDominated :=
   ⟨IsUpperDominated.of_numberFieldNormalize,
     fun h => h.numberFieldNormalize hξ⟩
 
 /-- Actual lower domination is unchanged for every fixed old ultrametric family. -/
 theorem numberFieldNormalize_isLowerDominated_iff
-    (ξ : NormFamily (numberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric) :
-    (ξ.numberFieldNormalize hξ).IsLowerDominated ↔ ξ.IsLowerDominated :=
+    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric] :
+    (ξ.numberFieldNormalize).IsLowerDominated ↔ ξ.IsLowerDominated :=
   ⟨IsLowerDominated.of_numberFieldNormalize,
     fun h => h.numberFieldNormalize hξ⟩
 
@@ -142,13 +145,13 @@ variable [FiniteDimensional K E]
 /-- Full domination is preserved and reflected using the actual completed dual
 normalization equality, independently of the discarded zero-mass trivial norm. -/
 theorem numberFieldNormalize_isDominated_iff
-    (ξ : NormFamily (numberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric) :
-    (ξ.numberFieldNormalize hξ).IsDominated ↔ ξ.IsDominated := by
+    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric] :
+    (ξ.numberFieldNormalize).IsDominated ↔ ξ.IsDominated := by
   constructor
   · intro h
     refine ⟨h.1.of_numberFieldNormalize, ?_⟩
     have hdual := h.2
-    erw [ξ.numberFieldNormalize_dual hξ] at hdual
+    erw [ξ.numberFieldNormalize_dual] at hdual
     exact hdual.of_numberFieldNormalize
   · intro h
     exact h.numberFieldNormalize hξ

@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.DirectSum.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Dual.Map
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 import Mathlib.CategoryTheory.Category.Init
@@ -105,7 +106,7 @@ theorem directSum_dual_norm_rational_eq_max_of_finite (ψ : S.Ω → NormShape)
 
 /-- On the finite locus the dual sum is measurable without any profile measurability assumption. -/
 theorem measurable_directSum_dual_norm_on_finite (ψ : S.Ω → NormShape)
-    (hξ : ξ.dual.IsMeasurable) (hη : η.dual.IsMeasurable) (ℓ : Module.Dual K (E × F)) :
+    [hξ : ξ.dual.IsMeasurable] [hη : η.dual.IsMeasurable] (ℓ : Module.Dual K (E × F)) :
     Measurable (fun ω : S.Ωfin ↦
       (ξ.directSum η ψ).dual.norm ω.val ((1 : (S.ϕ ω.val).Completion) ⊗ₜ[K] ℓ)) := by
   have h := ((hξ (ℓ.comp (LinearMap.inl K E F))).max

@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basic
 public import ArakelovGeometry.Analysis.ScalarExtension.Basic
+
 import Mathlib.CategoryTheory.Category.Init
 
 /-!
@@ -217,6 +218,7 @@ theorem scalarExtension_norm_of_not_mem_Ωfin (x : AdelicStructure.ParameterSpac
 places, regardless of ultrametricity of the original family. -/
 theorem injectiveScalarExtension_isUltrametric :
     (ξ.injectiveScalarExtension (L := L)).IsUltrametric := by
+  constructor
   intro x hx z t
   change AdelicStructure.ParameterSpaceExtension S L at x
   change x.abv.Completion ⊗[L] (L ⊗[K] E) at z t
@@ -241,6 +243,7 @@ theorem injectiveScalarExtension_isUltrametric :
 /-- The source's scalar extension is always ultrametric at finite places. -/
 theorem scalarExtension_isUltrametric :
     (ξ.scalarExtension (L := L)).IsUltrametric := by
+  constructor
   intro x hx z t
   change AdelicStructure.ParameterSpaceExtension S L at x
   change x.abv.Completion ⊗[L] (L ⊗[K] E) at z t

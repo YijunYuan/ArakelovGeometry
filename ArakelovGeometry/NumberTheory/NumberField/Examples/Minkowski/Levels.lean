@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Minkowski.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Examples.Minkowski.Determinant
+
 import ArakelovGeometry.NumberTheory.NumberField.Examples.Minkowski.Arithmetic
 import ArakelovGeometry.NumberTheory.NumberField.Examples.Minkowski.MinimaSlopes
 
@@ -41,8 +42,8 @@ theorem exists_prime_gap_gt (C : ℝ) :
 theorem bundle_violates_ordinary_level (p : Nat.Primes) (a : ℤ)
     (ha : (p.val : ℤ) ∣ a ^ 2 + 1) (C : ℝ)
     (hgap : C * Real.log 2 < Real.log (p.val : ℝ) / 4) :
-    ¬ (bundle p a).maximalSlope rationalCurveRegularity
-      (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) -
+    ¬ (bundle p a).maximalSlope (hS := ⟨rationalCurveRegularity⟩)
+      (hN := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) -
       (C * Real.log (Module.finrank ℚ Plane) : ℝ) ≤
         (bundle p a).maximalLogarithmicMinimum := by
   rw [bundle_maximalSlope p a ha, bundle_maximalLogarithmicMinimum p a ha,
@@ -52,8 +53,8 @@ theorem bundle_violates_ordinary_level (p : Nat.Primes) (a : ℤ)
 theorem bundle_violates_strong_level (p : Nat.Primes) (a : ℤ)
     (ha : (p.val : ℤ) ∣ a ^ 2 + 1) (C : ℝ)
     (hgap : C * Real.log 2 < Real.log (p.val : ℝ) / 4) :
-    ¬ (bundle p a).minimalSlope rationalCurveRegularity
-      (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) -
+    ¬ (bundle p a).minimalSlope (hS := ⟨rationalCurveRegularity⟩)
+      (hN := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) -
       (C * Real.log (Module.finrank ℚ Plane) : ℝ) ≤
         (bundle p a).minimalLogarithmicMinimum := by
   rw [bundle_minimalSlope p a ha, bundle_minimalLogarithmicMinimum p a ha,
@@ -61,16 +62,14 @@ theorem bundle_violates_strong_level (p : Nat.Primes) (a : ℤ)
   linarith
 
 theorem rationalCurve_not_minkowski (C : ℝ) :
-    ¬ S.HasMinkowskiPropertyAtLevel.{0,0,0} rationalCurveRegularity
-      (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) C := by
+    ¬ S.HasMinkowskiPropertyAtLevel.{0,0,0} C := by
   intro h
   obtain ⟨p, a, _, ha, hgap⟩ := exists_prime_gap_gt C
   exact bundle_violates_ordinary_level p a ha C hgap
     (h.2 Plane (bundle p a) (by rw [finrank_plane]; norm_num) (family_isUltrametric p a))
 
 theorem rationalCurve_not_strongMinkowski (C : ℝ) :
-    ¬ S.HasStrongMinkowskiPropertyAtLevel.{0,0,0} rationalCurveRegularity
-      (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) C := by
+    ¬ S.HasStrongMinkowskiPropertyAtLevel.{0,0,0} C := by
   intro h
   obtain ⟨p, a, _, ha, hgap⟩ := exists_prime_gap_gt C
   exact bundle_violates_strong_level p a ha C hgap
@@ -91,15 +90,15 @@ theorem worked_gap_gt_half_log_two :
   linarith
 
 theorem worked_violates_ordinary_half :
-    ¬ (bundle workedPrime 10).maximalSlope rationalCurveRegularity
-      (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) -
+    ¬ (bundle workedPrime 10).maximalSlope (hS := ⟨rationalCurveRegularity⟩)
+      (hN := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) -
       ((1 / 2 : ℝ) * Real.log (Module.finrank ℚ Plane) : ℝ) ≤
         (bundle workedPrime 10).maximalLogarithmicMinimum :=
   bundle_violates_ordinary_level workedPrime 10 workedRoot (1 / 2) worked_gap_gt_half_log_two
 
 theorem worked_violates_strong_half :
-    ¬ (bundle workedPrime 10).minimalSlope rationalCurveRegularity
-      (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) -
+    ¬ (bundle workedPrime 10).minimalSlope (hS := ⟨rationalCurveRegularity⟩)
+      (hN := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) -
       ((1 / 2 : ℝ) * Real.log (Module.finrank ℚ Plane) : ℝ) ≤
         (bundle workedPrime 10).minimalLogarithmicMinimum :=
   bundle_violates_strong_level workedPrime 10 workedRoot (1 / 2) worked_gap_gt_half_log_two

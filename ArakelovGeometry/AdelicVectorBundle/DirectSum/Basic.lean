@@ -10,6 +10,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Subquotient.Restriction.Basic
 public import ArakelovGeometry.Analysis.NormShape.Basic
 public import Mathlib.LinearAlgebra.TensorProduct.Prod
 public import Mathlib.RingTheory.Finiteness.Prod
+
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 
@@ -246,6 +247,7 @@ theorem IsUltrametric.directSum_of_profile_eq_max
     (hψ : ∀ ω ∈ S.Ωfin,
       Set.EqOn (ψ ω).toFun NormShape.maxShape.toFun (Set.Icc (0 : ℝ) 1)) :
     (ξ.directSum η ψ).IsUltrametric := by
+  constructor
   intro ω hω z t
   have hshape {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
       (ψ ω).perspective a b = max a b :=

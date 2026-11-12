@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Determinant.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Degree
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Domination.Basic
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.PositiveAtoms.Algebraic.ScalarExtensionMeasurable
@@ -35,32 +36,32 @@ namespace NormFamily
 
 /-- The existing adelic bundle on the genuine ordinary algebraic scalar
 family, with both regularities produced from original domination alone. -/
-def algebraicScalarBundleOfPositiveAtoms (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+def algebraicScalarBundleOfPositiveAtoms (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
     AdelicVectorBundle (S.algebraicExtension L) (L ⊗[K] E) where
   toNormFamily := ξ.scalarExtension (L := L)
   isMeasurable := by
-    exact hξ.scalarExtension_isMeasurable_of_positive_atoms_of_isAlgebraic ξ hpos hS
+    exact hξ.scalarExtension_isMeasurable_of_positive_atoms_of_isAlgebraic ξ
   dual_isMeasurable := by
-    exact hξ.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlgebraic ξ hpos hS
+    exact hξ.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlgebraic ξ
   isDominated := by
     exact (hξ.scalarExtension_isStronglyDominated ξ
-      (AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin hS)).isDominated
+      (AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin)).isDominated
 
 @[simp]
 theorem algebraicScalarBundleOfPositiveAtoms_toNormFamily
-    (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
-    (ξ.algebraicScalarBundleOfPositiveAtoms (L := L) hξ hpos hS).toNormFamily =
+    (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
+    (ξ.algebraicScalarBundleOfPositiveAtoms (L := L)).toNormFamily =
       ξ.scalarExtension (L := L) := rfl
 
 /-- Ordinary algebraic scalar extension is strongly adelic on the actual
 completed fibres, independently of original strong domination or regularity. -/
 theorem algebraicScalarBundleOfPositiveAtoms_isStronglyAdelic
-    (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
-    (ξ.algebraicScalarBundleOfPositiveAtoms (L := L) hξ hpos hS).IsStronglyAdelic :=
-  hξ.scalarExtension_isStronglyDominated ξ (AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin hS)
+    (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
+    (ξ.algebraicScalarBundleOfPositiveAtoms (L := L)).IsStronglyAdelic :=
+  hξ.scalarExtension_isStronglyDominated ξ (AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin)
 
 end NormFamily
 namespace AdelicVectorBundle
@@ -69,27 +70,26 @@ namespace AdelicVectorBundle
 measurable-determinant degree, without density or discreteness assumptions. -/
 theorem degreeOfMeasurableDeterminant_algebraicScalarBundleOfPositiveAtoms [S.IsProper]
     (V : AdelicVectorBundle S E)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin)
-    (hdet : V.toNormFamily.determinant.IsMeasurable)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hdet : V.toNormFamily.determinant.IsMeasurable]
+    [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     (V.toNormFamily.algebraicScalarBundleOfPositiveAtoms (L := L)
-      V.isDominated hpos hS).degreeOfMeasurableDeterminant hdet.determinant_scalarExtension
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) =
-    V.degreeOfMeasurableDeterminant hdet hN := by
+     ).degreeOfMeasurableDeterminant (hdet := hdet.determinant_scalarExtension)
+      (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
+    V.degreeOfMeasurableDeterminant := by
   intro hp
   let := hp
-  let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
-  let D := V.determinant hdet hN
-  let hD := V.determinant_isLine hdet hN
-  let W := D.scalarExtensionLine (L := L) hD
-  let hW := D.scalarExtensionLine_isLine (L := L) hD
+  let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
+  let D := V.determinant
+  let hD := V.determinant_isLine
+  let W := D.scalarExtensionLine (L := L) (hV := hD)
+  let hW := D.scalarExtensionLine_isLine (L := L) (hV := hD)
   let B := V.toNormFamily.algebraicScalarBundleOfPositiveAtoms (L := L)
-    V.isDominated hpos hS
-  let U := B.determinant hdet.determinant_scalarExtension hLN
-  let hU := B.determinant_isLine hdet.determinant_scalarExtension hLN
-  have hd : W.lineDegree hW = U.lineDegree hU := by
-    apply lineDegree_eq_of_norm_rational_eq W U hW hU
+  let U := B.determinant (hm := hdet.determinant_scalarExtension) (hS := ⟨hLN⟩)
+  let hU := B.determinant_isLine (hm := hdet.determinant_scalarExtension) (hS := ⟨hLN⟩)
+  have hd : W.lineDegree (hV := hW) = U.lineDegree (hV := hU) := by
+    apply lineDegree_eq_of_norm_rational_eq W U (hV := hW) (hW := hU)
       (determinantScalarExtensionEquiv K L E)
     intro x s
     change S.ParameterSpaceExtension L at x
@@ -109,8 +109,8 @@ theorem degreeOfMeasurableDeterminant_algebraicScalarBundleOfPositiveAtoms [S.Is
         ((determinantScalarExtensionEquiv K L E).symm_apply_apply s)
     exact (h.trans (congrArg
       ((V.toNormFamily.determinant.scalarExtension (L := L)).norm x) he)).symm
-  change U.lineDegree hU = D.lineDegree hD
-  exact hd.symm.trans (D.lineDegree_scalarExtensionLine hD)
+  change U.lineDegree (hV := hU) = D.lineDegree (hV := hD)
+  exact hd.symm.trans (D.lineDegree_scalarExtensionLine (hV := hD))
 
 end AdelicVectorBundle
 end ArakelovGeometry

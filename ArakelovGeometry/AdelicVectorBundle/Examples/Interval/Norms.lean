@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicStructure.RationalNormalization
 public import ArakelovGeometry.AdelicVectorBundle.Basic
 public import ArakelovGeometry.Analysis.Examples.Interval.Polytope
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.Degree.Height
 
@@ -178,6 +179,7 @@ theorem rationalRealModifiedFamily_norm_infinite (n : ℕ) (p : Seminorm ℝ (Fi
 /-- Every finite completed fiber is the original ultrametric coordinate norm. -/
 theorem rationalRealModifiedFamily_isUltrametric (n : ℕ) (p : Seminorm ℝ (Fin n → ℝ))
     (hp : ∀ x, p x = 0 ↔ x = 0) : (rationalRealModifiedFamily n p hp).IsUltrametric := by
+  constructor
   intro ω hω x y
   cases ω with
   | inl q =>

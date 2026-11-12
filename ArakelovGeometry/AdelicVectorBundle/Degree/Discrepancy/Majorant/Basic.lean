@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Determinant.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Determinant.Bound
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Comparison
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Approximation
@@ -36,7 +37,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- The elementary norm condition at one actual completed fibre. -/
 def IsElementaryAt (η : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω) : Prop :=
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω) : Prop :=
   (ω ∈ S.Ωfin → ∀ x y, η.norm ω (x + y) ≤ max (η.norm ω x) (η.norm ω y)) ∧
     ∀ hω : ω ∈ S.Ωinf,
       letI := hN ω hω
@@ -46,14 +47,14 @@ def IsElementaryAt (η : NormFamily S E)
 
 omit [FiniteDimensional K E] in
 theorem IsHermitian.isElementaryAt {η : NormFamily S E}
-    {hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
-    (hη : η.IsHermitian hN) (ω : S.Ω) : η.IsElementaryAt hN ω :=
+    [hN : S.IsArchimedeanNormalized]
+    (hη : η.IsHermitian) (ω : S.Ω) : η.IsElementaryAt ω :=
   ⟨hη.1 ω, hη.2 ω⟩
 
 /-- The actual local majorant ratios; only the chosen fibre is constrained. -/
 def majorantRatios (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω) : Set ℝ :=
-  {a | ∃ η : NormFamily S E, η.IsElementaryAt hN ω ∧
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω) : Set ℝ :=
+  {a | ∃ η : NormFamily S E, η.IsElementaryAt ω ∧
     (∀ x, ξ.norm ω x ≤ η.norm ω x) ∧
     a = η.determinant.norm ω (1 ⊗ₜ[K] ArakelovGeometry.determinantGenerator
       (K := K) (E := E)) /
@@ -63,8 +64,8 @@ def majorantRatios (ξ : NormFamily S E)
 /-- A local elementary majorant exists on every actual completed fibre,
 including rank zero. -/
 theorem exists_elementaryMajorant (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω) :
-    ∃ η : NormFamily S E, η.IsElementaryAt hN ω ∧ ∀ x, ξ.norm ω x ≤ η.norm ω x := by
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω) :
+    ∃ η : NormFamily S E, η.IsElementaryAt ω ∧ ∀ x, ξ.norm ω x ≤ η.norm ω x := by
   by_cases hω : ω ∈ S.Ωinf
   · let := hN ω hω
     let := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
@@ -90,9 +91,9 @@ theorem exists_elementaryMajorant (ξ : NormFamily S E)
     simpa only [localDist_comm] using β.norm_le_exp_localDist_mul ξ ω x
 
 theorem majorantRatios_nonempty (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω) :
-    (ξ.majorantRatios hN ω).Nonempty := by
-  obtain ⟨η, he, hl⟩ := ξ.exists_elementaryMajorant hN ω
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω) :
+    (ξ.majorantRatios ω).Nonempty := by
+  obtain ⟨η, he, hl⟩ := ξ.exists_elementaryMajorant ω
   exact ⟨_, η, he, hl, rfl⟩
 
 theorem one_le_majorantRatio (ξ η : NormFamily S E) (ω : S.Ω)
@@ -106,8 +107,8 @@ theorem one_le_majorantRatio (ξ η : NormFamily S E) (ω : S.Ω)
   simpa only [one_mul] using ξ.determinant_norm_mono η ω hl _
 
 theorem majorantRatios_bddBelow (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω) :
-    BddBelow (ξ.majorantRatios hN ω) := by
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω) :
+    BddBelow (ξ.majorantRatios ω) := by
   refine ⟨1, ?_⟩
   rintro a ⟨η, _, hl, rfl⟩
   exact ξ.one_le_majorantRatio η ω hl
@@ -115,42 +116,42 @@ theorem majorantRatios_bddBelow (ξ : NormFamily S E)
 /-- The source infimum of actual local elementary majorant determinant ratios,
 with its explicit empty-rank convention. -/
 def majorantDiscrepancy (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω) : ℝ :=
-  if Module.finrank K E = 0 then 1 else sInf (ξ.majorantRatios hN ω)
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω) : ℝ :=
+  if Module.finrank K E = 0 then 1 else sInf (ξ.majorantRatios ω)
 
 theorem majorantDiscrepancy_eq_one_of_finrank_eq_zero (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hr : Module.finrank K E = 0) (ω : S.Ω) : ξ.majorantDiscrepancy hN ω = 1 := by
+    [hN : S.IsArchimedeanNormalized]
+    (hr : Module.finrank K E = 0) (ω : S.Ω) : ξ.majorantDiscrepancy ω = 1 := by
   simp only [majorantDiscrepancy, hr, ↓reduceIte]
 
 theorem one_le_majorantDiscrepancy (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω) :
-    1 ≤ ξ.majorantDiscrepancy hN ω := by
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω) :
+    1 ≤ ξ.majorantDiscrepancy ω := by
   by_cases hr : Module.finrank K E = 0
-  · rw [ξ.majorantDiscrepancy_eq_one_of_finrank_eq_zero hN hr]
+  · rw [ξ.majorantDiscrepancy_eq_one_of_finrank_eq_zero hr]
   · rw [majorantDiscrepancy, ite_eq_right hr]
-    apply le_csInf (ξ.majorantRatios_nonempty hN ω)
+    apply le_csInf (ξ.majorantRatios_nonempty ω)
     rintro a ⟨η, _, hl, rfl⟩
     exact ξ.one_le_majorantRatio η ω hl
 
 theorem majorantDiscrepancy_le_ratio (ξ η : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω)
-    (he : η.IsElementaryAt hN ω) (hl : ∀ x, ξ.norm ω x ≤ η.norm ω x) :
-    ξ.majorantDiscrepancy hN ω ≤ η.determinant.norm ω
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω)
+    (he : η.IsElementaryAt ω) (hl : ∀ x, ξ.norm ω x ≤ η.norm ω x) :
+    ξ.majorantDiscrepancy ω ≤ η.determinant.norm ω
       (1 ⊗ₜ[K] ArakelovGeometry.determinantGenerator (K := K) (E := E)) /
       ξ.determinant.norm ω
         (1 ⊗ₜ[K] ArakelovGeometry.determinantGenerator (K := K) (E := E)) := by
   by_cases hr : Module.finrank K E = 0
-  · rw [ξ.majorantDiscrepancy_eq_one_of_finrank_eq_zero hN hr]
+  · rw [ξ.majorantDiscrepancy_eq_one_of_finrank_eq_zero hr]
     exact ξ.one_le_majorantRatio η ω hl
   · rw [majorantDiscrepancy, ite_eq_right hr]
-    exact csInf_le (ξ.majorantRatios_bddBelow hN ω) ⟨η, he, hl, rfl⟩
+    exact csInf_le (ξ.majorantRatios_bddBelow ω) ⟨η, he, hl, rfl⟩
 
 theorem majorantDiscrepancy_eq_one_of_elementary (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω)
-    (he : ξ.IsElementaryAt hN ω) : ξ.majorantDiscrepancy hN ω = 1 := by
-  apply le_antisymm _ (ξ.one_le_majorantDiscrepancy hN ω)
-  have h := ξ.majorantDiscrepancy_le_ratio ξ hN ω he (fun _ ↦ le_rfl)
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω)
+    (he : ξ.IsElementaryAt ω) : ξ.majorantDiscrepancy ω = 1 := by
+  apply le_antisymm _ (ξ.one_le_majorantDiscrepancy ω)
+  have h := ξ.majorantDiscrepancy_le_ratio ξ ω he (fun _ ↦ le_rfl)
   simpa only [div_self (ξ.determinant.norm_rational_pos ω
     ArakelovGeometry.determinantGenerator_ne_zero).ne'] using h
 
@@ -182,9 +183,9 @@ theorem determinantRatio_eq_of_nonzero (ξ η : NormFamily S E) (ω : S.Ω)
 /-- The entire candidate set is independent of the chosen nonzero completed
 determinant generator, so the infimum is the intrinsic source object. -/
 theorem majorantRatios_eq_using_generator (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω)
     (w : (S.ϕ ω).Completion ⊗[K] (⋀[K]^(Module.finrank K E) E)) (hw : w ≠ 0) :
-    ξ.majorantRatios hN ω = {a | ∃ η : NormFamily S E, η.IsElementaryAt hN ω ∧
+    ξ.majorantRatios ω = {a | ∃ η : NormFamily S E, η.IsElementaryAt ω ∧
       (∀ x, ξ.norm ω x ≤ η.norm ω x) ∧
       a = η.determinant.norm ω w / ξ.determinant.norm ω w} := by
   ext a
@@ -195,19 +196,19 @@ theorem majorantRatios_eq_using_generator (ξ : NormFamily S E)
     exact ⟨η, he, hl, ξ.determinantRatio_eq_of_nonzero η ω w hw⟩
 
 theorem majorantDiscrepancy_pos (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω) :
-    0 < ξ.majorantDiscrepancy hN ω :=
-  lt_of_lt_of_le zero_lt_one (ξ.one_le_majorantDiscrepancy hN ω)
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω) :
+    0 < ξ.majorantDiscrepancy ω :=
+  lt_of_lt_of_le zero_lt_one (ξ.one_le_majorantDiscrepancy ω)
 
 theorem log_majorantDiscrepancy_nonneg (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω) :
-    0 ≤ Real.log (ξ.majorantDiscrepancy hN ω) :=
-  Real.log_nonneg (ξ.one_le_majorantDiscrepancy hN ω)
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω) :
+    0 ≤ Real.log (ξ.majorantDiscrepancy ω) :=
+  Real.log_nonneg (ξ.one_le_majorantDiscrepancy ω)
 
 theorem IsHermitian.majorantDiscrepancy_eq_one {ξ : NormFamily S E}
-    {hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
-    (hξ : ξ.IsHermitian hN) (ω : S.Ω) : ξ.majorantDiscrepancy hN ω = 1 :=
-  ξ.majorantDiscrepancy_eq_one_of_elementary hN ω (hξ.isElementaryAt ω)
+    [hN : S.IsArchimedeanNormalized]
+    (hξ : ξ.IsHermitian) (ω : S.Ω) : ξ.majorantDiscrepancy ω = 1 :=
+  ξ.majorantDiscrepancy_eq_one_of_elementary ω (hξ.isElementaryAt ω)
 
 end
 

@@ -26,8 +26,8 @@ universe u v w
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (V : AdelicVectorBundle S E)
-  (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-  (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+  [hS : S.HasMeasurableBase]
+  [hN : S.IsArchimedeanNormalized]
 
 
 /-- Produce the actual strict general HN flag with semistable actual factors,
@@ -36,18 +36,18 @@ No flag, factor semistability, or completed norm identity is assumed. -/
 theorem exists_generalHNFlag_semistable_factors :
     ∃ (n : ℕ) (U : Fin (n + 1) → Submodule K E) (b : Fin n → ℝ),
     StrictMono U ∧ U 0 = ⊥ ∧ U (Fin.last n) = ⊤ ∧ StrictAnti b ∧
-      (∀ t, V.generalHNFiltration hS hN t = ⨆ (i : Fin n) (_ : t ≤ b i), U i.succ) ∧
-      (∀ i : Fin n, (V.flagQuotientOfMeasurableBase U hS i).IsSemistable hS hN ∧
-        (V.flagQuotientOfMeasurableBase U hS i).minimalSlope hS hN = (b i : EReal) ∧
-        (V.flagQuotientOfMeasurableBase U hS i).modifiedSlope hS hN = b i) := by
-  obtain ⟨⟨n, U⟩, ⟨hU, hz, ht, hsemi, hb⟩, _⟩ := V.existsUnique_generalHNFlag hS hN
-  refine ⟨n, U, (fun i ↦ (V.flagQuotientOfMeasurableBase U hS i).modifiedSlope hS hN),
+      (∀ t, V.generalHNFiltration t = ⨆ (i : Fin n) (_ : t ≤ b i), U i.succ) ∧
+      (∀ i : Fin n, (V.flagQuotientOfMeasurableBase U i).IsSemistable ∧
+        (V.flagQuotientOfMeasurableBase U i).minimalSlope = (b i : EReal) ∧
+        (V.flagQuotientOfMeasurableBase U i).modifiedSlope = b i) := by
+  obtain ⟨⟨n, U⟩, ⟨hU, hz, ht, hsemi, hb⟩, _⟩ := V.existsUnique_generalHNFlag
+  refine ⟨n, U, (fun i ↦ (V.flagQuotientOfMeasurableBase U i).modifiedSlope),
     hU, hz, ht, hb, ?_, ?_⟩
-  · exact fun t ↦ V.generalHNFiltration_eq_of_semistableFlag hS hN U hU hz ht hsemi hb t
+  · exact fun t ↦ V.generalHNFiltration_eq_of_semistableFlag U hU hz ht (hsemi := hsemi) hb t
   · intro i
     exact ⟨hsemi i,
-      ((V.flagQuotientOfMeasurableBase U hS i).isSemistable_iff_modifiedSlope_eq_minimalSlope
-        hS hN (hsemi i).1).mp (hsemi i) |>.symm, rfl⟩
+      ((V.flagQuotientOfMeasurableBase U i).isSemistable_iff_modifiedSlope_eq_minimalSlope
+        (hsemi i).1).mp (hsemi i) |>.symm, rfl⟩
 
 end
 

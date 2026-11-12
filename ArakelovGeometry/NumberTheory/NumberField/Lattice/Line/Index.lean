@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Vector
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Impurity.Basic
 public import Mathlib.RingTheory.FractionalIdeal.Norm
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
@@ -420,7 +421,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 /-- An actual pure finite norm of a nonzero rational vector is attained
 by the actual normalized absolute value of a rational scalar. -/
 theorem exists_normalized_scalar_norm_eq_of_globalImpurity_eq_zero
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
     (hσ : ξ.globalImpurity = 0) (p : HeightOneSpectrum (𝓞 K)) {x : E} (hx : x ≠ 0) :
     ∃ a : K, a ≠ 0 ∧ ξ.norm (normalizedPrimeParameter p) (1 ⊗ₜ[K] x) =
       (normalizedNumberFieldAdelicStructure K).ϕ (normalizedPrimeParameter p) a := by
@@ -430,10 +431,10 @@ theorem exists_normalized_scalar_norm_eq_of_globalImpurity_eq_zero
   have hf := normalizedPrimeParameter_mem_fin p
   let b := ξ.rationalLocalUnitBallGenericBasis ω hf
     (NormalizedNumberFieldPlaces.parameter_isNontrivial
-      (NormalizedNumberFieldPlaces.parameterMeasurableEquivNontrivialPlace.symm ω)) hξ
+      (NormalizedNumberFieldPlaces.parameterMeasurableEquivNontrivialPlace.symm ω))
   have hn : ξ.norm ω (1 ⊗ₜ[K] x) = ‖fun i => S.ϕ ω (b.equivFun x i)‖ := by
     rw [← (ξ.globalImpurity_eq_zero_iff.mp hσ) ω hf,
-      ξ.completedUnitBallGauge_eq_basisNorm ω hf _ hξ]
+      ξ.completedUnitBallGauge_eq_basisNorm ω hf _]
     exact ofBasis_norm_rational b ω x
   have hi : ∃ i, b.equivFun x i ≠ 0 := by
     by_contra! h
@@ -443,7 +444,7 @@ theorem exists_normalized_scalar_norm_eq_of_globalImpurity_eq_zero
     simp only [h i, map_zero, Pi.zero_apply]
   obtain ⟨i, _⟩ := hi
   let : Nonempty (Fin (Module.finrank (S.rationalLocalRing ω hf)
-      (ξ.rationalUnitBallModule ω hf hξ))) := ⟨i⟩
+      (ξ.rationalUnitBallModule ω hf))) := ⟨i⟩
   obtain ⟨j, hj⟩ := (IsGreatest.pi_norm (fun i => S.ϕ ω (b.equivFun x i))).1
   have hj' : S.ϕ ω (b.equivFun x j) = ξ.norm ω (1 ⊗ₜ[K] x) := by
     simpa only [Real.norm_eq_abs, abs_of_nonneg (apply_nonneg _ _), ← hn] using hj
@@ -456,18 +457,18 @@ theorem exists_normalized_scalar_norm_eq_of_globalImpurity_eq_zero
 /-- The actual coordinate fractional ideal of the literal global ball
 under a field-linear coordinate of the actual line. -/
 def normalizedLineCoordinateIdeal
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
-    (hfg : (ξ.globalUnitBallModule hξ).FG) (e : K ≃ₗ[K] E) :
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (hfg : (ξ.globalUnitBallModule).FG) (e : K ≃ₗ[K] E) :
     FractionalIdeal (𝓞 K)⁰ K :=
-  ⟨(ξ.globalUnitBallModule hξ).map (e.symm.toLinearMap.restrictScalars (𝓞 K)),
+  ⟨(ξ.globalUnitBallModule).map (e.symm.toLinearMap.restrictScalars (𝓞 K)),
     FractionalIdeal.isFractional_of_fg (hfg.map _)⟩
 
 omit [FiniteDimensional K E] in
 theorem mem_normalizedLineCoordinateIdeal
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
-    (hfg : (ξ.globalUnitBallModule hξ).FG) (e : K ≃ₗ[K] E) (a : K) :
-    a ∈ ξ.normalizedLineCoordinateIdeal hξ hfg e ↔ e a ∈ ξ.globalUnitBall := by
-  change a ∈ (ξ.globalUnitBallModule hξ).map
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (hfg : (ξ.globalUnitBallModule).FG) (e : K ≃ₗ[K] E) (a : K) :
+    a ∈ ξ.normalizedLineCoordinateIdeal hfg e ↔ e a ∈ ξ.globalUnitBall := by
+  change a ∈ (ξ.globalUnitBallModule).map
     (e.symm.toLinearMap.restrictScalars (𝓞 K)) ↔ _
   constructor
   · rintro ⟨x, hx, ha⟩
@@ -478,13 +479,13 @@ theorem mem_normalizedLineCoordinateIdeal
 
 omit [FiniteDimensional K E] in
 theorem normalizedLineCoordinateIdeal_ne_zero
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
-    (hfinite : ξ.HasFiniteNormExceptions) (hfg : (ξ.globalUnitBallModule hξ).FG)
-    (e : K ≃ₗ[K] E) : ξ.normalizedLineCoordinateIdeal hξ hfg e ≠ 0 := by
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    [hfinite : ξ.HasFiniteNormExceptions] (hfg : (ξ.globalUnitBallModule).FG)
+    (e : K ≃ₗ[K] E) : ξ.normalizedLineCoordinateIdeal hfg e ≠ 0 := by
   obtain ⟨a, ha, hax⟩ := hfinite.exists_integral_smul_mem_globalUnitBall
     (fun ω _ => NormalizedNumberFieldPlaces.parameter_isNontrivial
       (NormalizedNumberFieldPlaces.parameterMeasurableEquivNontrivialPlace.symm ω)) (e 1)
-  have hmem : algebraMap (𝓞 K) K a ∈ ξ.normalizedLineCoordinateIdeal hξ hfg e := by
+  have hmem : algebraMap (𝓞 K) K a ∈ ξ.normalizedLineCoordinateIdeal hfg e := by
     rw [ξ.mem_normalizedLineCoordinateIdeal]
     simpa only [← e.map_smul, smul_eq_mul, mul_one] using hax
   intro h
@@ -495,21 +496,21 @@ theorem normalizedLineCoordinateIdeal_ne_zero
 /-- Pure finite norms and genuine coherence recover the prime order of
 the actual coordinate ideal of the literal global ball. -/
 theorem normalizedLineCoordinateIdeal_logNorm_one
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
-    (hfinite : ξ.HasFiniteNormExceptions) (hfg : (ξ.globalUnitBallModule hξ).FG)
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    [hfinite : ξ.HasFiniteNormExceptions] (hfg : (ξ.globalUnitBallModule).FG)
     (hσ : ξ.globalImpurity = 0) (e : K ≃ₗ[K] E) (p : HeightOneSpectrum (𝓞 K)) :
     ξ.logNorm (e 1) (normalizedPrimeParameter p) =
       normalizedPrimeLogScale p * FractionalIdeal.count K p
-        (ξ.normalizedLineCoordinateIdeal hξ hfg e) := by
-  let J := ξ.normalizedLineCoordinateIdeal hξ hfg e
-  have hJ : J ≠ 0 := ξ.normalizedLineCoordinateIdeal_ne_zero hξ hfinite hfg e
+        (ξ.normalizedLineCoordinateIdeal hfg e) := by
+  let J := ξ.normalizedLineCoordinateIdeal hfg e
+  have hJ : J ≠ 0 := ξ.normalizedLineCoordinateIdeal_ne_zero hfg e
   have he1 : e 1 ≠ 0 := by
     intro h
     exact one_ne_zero (e.injective (h.trans (map_zero e).symm))
   have hγ := normalizedPrimeLogScale_pos p
   obtain ⟨a, ha, ha0, hva⟩ := exists_fractionalIdeal_member_attaining_valuation J hJ p
   have hamem : a • e 1 ∈ ξ.globalUnitBall := by
-    have h := (ξ.mem_normalizedLineCoordinateIdeal hξ hfg e a).mp ha
+    have h := (ξ.mem_normalizedLineCoordinateIdeal hfg e a).mp ha
     simpa only [← e.map_smul, smul_eq_mul, mul_one] using h
   have hlogle : ξ.logNorm (a • e 1) (normalizedPrimeParameter p) ≤ 0 := by
     exact Real.log_nonpos (ξ.norm_nonneg _ _)
@@ -517,7 +518,7 @@ theorem normalizedLineCoordinateIdeal_logNorm_one
   rw [ξ.logNorm_smul ha0 he1, normalizedPrime_log_value p ha0,
     hva, WithZero.log_exp, Int.cast_neg] at hlogle
   obtain ⟨b, hb, hbnorm⟩ :=
-    ξ.exists_normalized_scalar_norm_eq_of_globalImpurity_eq_zero hξ hσ p he1
+    ξ.exists_normalized_scalar_norm_eq_of_globalImpurity_eq_zero hσ p he1
   have hlocal : b⁻¹ • e 1 ∈ ξ.rationalUnitBall (normalizedPrimeParameter p) := by
     change ξ.norm _ (1 ⊗ₜ[K] (b⁻¹ • e 1)) ≤ 1
     rw [ξ.norm_rational_smul, hbnorm, map_inv₀, inv_mul_cancel₀
@@ -544,40 +545,40 @@ theorem normalizedLineCoordinateIdeal_logNorm_one
 /-- On a genuine pure coherent line, the finite logarithmic norm of an
 actual nonzero vector reads the actual coordinate-ideal prime order. -/
 theorem normalizedLineCoordinateIdeal_logNorm
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
-    (hfinite : ξ.HasFiniteNormExceptions) (hfg : (ξ.globalUnitBallModule hξ).FG)
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    [hfinite : ξ.HasFiniteNormExceptions] (hfg : (ξ.globalUnitBallModule).FG)
     (hσ : ξ.globalImpurity = 0) (e : K ≃ₗ[K] E) (p : HeightOneSpectrum (𝓞 K))
     {x : E} (hx : x ≠ 0) :
     ξ.logNorm x (normalizedPrimeParameter p) = normalizedPrimeLogScale p *
       (((p.valuation K (e.symm x)).log : ℝ) +
-        FractionalIdeal.count K p (ξ.normalizedLineCoordinateIdeal hξ hfg e)) := by
+        FractionalIdeal.count K p (ξ.normalizedLineCoordinateIdeal hfg e)) := by
   have ha : e.symm x ≠ 0 := fun h => hx (e.symm.injective (h.trans (map_zero e.symm).symm))
   have he1 : e 1 ≠ 0 := fun h => one_ne_zero (e.injective (h.trans (map_zero e).symm))
   have hx' : x = e.symm x • e 1 := by
     rw [← e.map_smul, smul_eq_mul, mul_one, e.apply_symm_apply]
   conv_lhs => rw [hx']
   rw [ξ.logNorm_smul ha he1, normalizedPrime_log_value p ha,
-    ξ.normalizedLineCoordinateIdeal_logNorm_one hξ hfinite hfg hσ e p]
+    ξ.normalizedLineCoordinateIdeal_logNorm_one hfg hσ e p]
   ring
 
 /-- The actual normalized finite-place sum of minus log norms equals
 the logarithm of the literal global-ball cyclic quotient index. -/
 theorem normalizedLineGlobalUnitBall_finite_log_index
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
-    (hfinite : ξ.HasFiniteNormExceptions) (hfg : (ξ.globalUnitBallModule hξ).FG)
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    [hfinite : ξ.HasFiniteNormExceptions] (hfg : (ξ.globalUnitBallModule).FG)
     (hσ : ξ.globalImpurity = 0) (hrank : Module.finrank K E = 1)
-    (x : ξ.globalUnitBallModule hξ) (hx : x ≠ 0) :
+    (x : ξ.globalUnitBallModule) (hx : x ≠ 0) :
     (∑' p : HeightOneSpectrum (𝓞 K),
       (normalizedNumberFieldAdelicStructure K).v.real {normalizedPrimeParameter p} *
         (-ξ.logNorm (x : E) (normalizedPrimeParameter p))) =
-      Real.log (Nat.card ((ξ.globalUnitBallModule hξ) ⧸ Submodule.span (𝓞 K) {x})) := by
+      Real.log (Nat.card ((ξ.globalUnitBallModule) ⧸ Submodule.span (𝓞 K) {x})) := by
   classical
   let e : K ≃ₗ[K] E := (Module.nonempty_linearEquiv_of_finrank_eq_one hrank).some
-  let J := ξ.normalizedLineCoordinateIdeal hξ hfg e
-  let g : (ξ.globalUnitBallModule hξ) ≃ₗ[𝓞 K] J.val :=
+  let J := ξ.normalizedLineCoordinateIdeal hfg e
+  let g : (ξ.globalUnitBallModule) ≃ₗ[𝓞 K] J.val :=
     Submodule.equivMapOfInjective (e.symm.toLinearMap.restrictScalars (𝓞 K))
-      e.symm.injective (ξ.globalUnitBallModule hξ)
-  have hJ : J ≠ 0 := ξ.normalizedLineCoordinateIdeal_ne_zero hξ hfinite hfg e
+      e.symm.injective (ξ.globalUnitBallModule)
+  have hJ : J ≠ 0 := ξ.normalizedLineCoordinateIdeal_ne_zero hfg e
   have hgx : g x ≠ 0 := fun h => hx (g.injective (h.trans (map_zero g).symm))
   have hxE : (x : E) ≠ 0 := fun h => hx (Subtype.ext h)
   have ha : e.symm (x : E) ≠ 0 :=
@@ -588,7 +589,7 @@ theorem normalizedLineGlobalUnitBall_finite_log_index
   intro p
   have hg : (g x : K) = e.symm (x : E) := rfl
   rw [hg, fractionalIdeal_count_spanSingleton p ha,
-    ξ.normalizedLineCoordinateIdeal_logNorm hξ hfinite hfg hσ e p hxE,
+    ξ.normalizedLineCoordinateIdeal_logNorm hfg hσ e p hxE,
     normalizedPlaceLogScale_prime]
   push_cast
   ring
@@ -596,13 +597,13 @@ theorem normalizedLineGlobalUnitBall_finite_log_index
 /-- The finite-locus integral of the actual completed logarithmic norms
 is the literal cyclic quotient index; purity is used only at finite places. -/
 theorem normalizedLineGlobalUnitBall_finite_integral_log_index
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
-    (hfinite : ξ.HasFiniteNormExceptions) (hdom : ξ.IsDominated) (hm : ξ.IsMeasurable)
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    [hfinite : ξ.HasFiniteNormExceptions] [hdom : ξ.IsDominated] [hm : ξ.IsMeasurable]
     (hσ : ξ.globalImpurity = 0) (hrank : Module.finrank K E = 1)
-    (x : ξ.globalUnitBallModule hξ) (hx : x ≠ 0) :
+    (x : ξ.globalUnitBallModule) (hx : x ≠ 0) :
     (∫ ω in (normalizedNumberFieldAdelicStructure K).Ωfin,
       -ξ.logNorm (x : E) ω ∂(normalizedNumberFieldAdelicStructure K).v) =
-      Real.log (Nat.card ((ξ.globalUnitBallModule hξ) ⧸ Submodule.span (𝓞 K) {x})) := by
+      Real.log (Nat.card ((ξ.globalUnitBallModule) ⧸ Submodule.span (𝓞 K) {x})) := by
   classical
   let S := normalizedNumberFieldAdelicStructure K
   let : Countable S.Ω := inferInstanceAs
@@ -630,25 +631,25 @@ theorem normalizedLineGlobalUnitBall_finite_integral_log_index
       S.Ωfin.indicator (fun ω => -ξ.logNorm (x : E) ω) (normalizedPrimeParameter p) = _
     rw [Set.indicator_of_mem (normalizedPrimeParameter_mem_fin p)]
   simp_rw [heq]
-  exact ξ.normalizedLineGlobalUnitBall_finite_log_index hξ hfinite
+  exact ξ.normalizedLineGlobalUnitBall_finite_log_index
     (hdom.fg_normalizedGlobalUnitBallModule hξ) hσ hrank x hx
 
 /-- The genuine vector degree on an actual pure coherent line separates
 into the actual finite cyclic index and the actual infinite-locus integral. -/
 theorem normalizedLineGlobalUnitBall_vectorDegree
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
-    (hfinite : ξ.HasFiniteNormExceptions) (hdom : ξ.IsDominated) (hm : ξ.IsMeasurable)
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    [hfinite : ξ.HasFiniteNormExceptions] [hdom : ξ.IsDominated] [hm : ξ.IsMeasurable]
     (hσ : ξ.globalImpurity = 0) (hrank : Module.finrank K E = 1)
-    (x : ξ.globalUnitBallModule hξ) (hx : x ≠ 0) :
-    ξ.vectorDegree hdom hm ⟨(x : E), fun h => hx (Subtype.ext h)⟩ =
-      Real.log (Nat.card ((ξ.globalUnitBallModule hξ) ⧸ Submodule.span (𝓞 K) {x})) -
+    (x : ξ.globalUnitBallModule) (hx : x ≠ 0) :
+    ξ.vectorDegree ⟨(x : E), fun h ↦ hx (Subtype.ext h)⟩ =
+      Real.log (Nat.card ((ξ.globalUnitBallModule) ⧸ Submodule.span (𝓞 K) {x})) -
         ∫ ω in (normalizedNumberFieldAdelicStructure K).Ωinf,
           ξ.logNorm (x : E) ω ∂(normalizedNumberFieldAdelicStructure K).v := by
   let S := normalizedNumberFieldAdelicStructure K
   have hsplit := integral_add_compl S.measurableSet_Ωinf
     (hdom.integrable_logNorm hm (x : E))
   have hfin := ξ.normalizedLineGlobalUnitBall_finite_integral_log_index
-    hξ hfinite hdom hm hσ hrank x hx
+     hσ hrank x hx
   rw [integral_neg] at hfin
   have hcompl : S.Ωinfᶜ = S.Ωfin := by simp only [Ωinf, Ωfin, Set.compl_ofPred, not_not]
   rw [hcompl] at hsplit

@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Basic
 public import Mathlib.LinearAlgebra.PiTensorProduct.Finite
+
 import ArakelovGeometry.AdelicVectorBundle.Tensor.Line
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -37,45 +38,49 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- Finite tensor products of adelic lines, on their actual rational tensor space. -/
 noncomputable def tensorLines (V : ∀ i, AdelicVectorBundle S (E i))
-    (hV : ∀ i, (V i).IsLine) : AdelicVectorBundle S (⨂[K] i, E i) :=
+    [hV : ∀ i, (V i).IsLine] : AdelicVectorBundle S (⨂[K] i, E i) :=
   ofLine (NormFamily.mixedTensor (fun i ↦ (V i).toNormFamily))
-    (by exact NormFamily.tensor_finrank_one hV)
-    (by exact NormFamily.IsMeasurable.mixedTensor_of_finrank_one (fun i ↦ (V i).isMeasurable) hV)
-    (by exact NormFamily.IsDominated.mixedTensor_of_finrank_one (fun i ↦ (V i).isDominated) hV)
+    (by exact NormFamily.tensor_finrank_one (fun i ↦ (hV i).rank_eq_one))
+    (hm := by
+      exact NormFamily.IsMeasurable.mixedTensor_of_finrank_one
+        (fun i ↦ (V i).isMeasurable) (fun i ↦ (hV i).rank_eq_one))
+    (hd := by
+      exact NormFamily.IsDominated.mixedTensor_of_finrank_one
+        (fun i ↦ (V i).isDominated) (fun i ↦ (hV i).rank_eq_one))
 
 @[simp]
 theorem tensorLines_toNormFamily (V : ∀ i, AdelicVectorBundle S (E i))
-    (hV : ∀ i, (V i).IsLine) :
-    (tensorLines V hV).toNormFamily = NormFamily.mixedTensor (fun i ↦ (V i).toNormFamily) := rfl
+    [hV : ∀ i, (V i).IsLine] :
+    (tensorLines V).toNormFamily = NormFamily.mixedTensor (fun i ↦ (V i).toNormFamily) := rfl
 
 /-- The output has rank one, including for the empty tensor family. -/
-theorem tensorLines_isLine (V : ∀ i, AdelicVectorBundle S (E i))
-    (hV : ∀ i, (V i).IsLine) : (tensorLines V hV).IsLine :=
-  NormFamily.tensor_finrank_one hV
+instance tensorLines_isLine (V : ∀ i, AdelicVectorBundle S (E i))
+    [hV : ∀ i, (V i).IsLine] : (tensorLines V).IsLine :=
+  ⟨NormFamily.tensor_finrank_one (fun i ↦ (hV i).rank_eq_one)⟩
 
 /-- The tensor line satisfies the actual strong-domination predicate. -/
 theorem tensorLines_isStronglyAdelic (V : ∀ i, AdelicVectorBundle S (E i))
-    (hV : ∀ i, (V i).IsLine) : (tensorLines V hV).IsStronglyAdelic :=
-  (tensorLines_isLine V hV).isStronglyAdelic
+    [hV : ∀ i, (V i).IsLine] : (tensorLines V).IsStronglyAdelic :=
+  (tensorLines_isLine V).isStronglyAdelic
 
 /-- Every tensor line is Hermitian under the usual Archimedean normalization. -/
 theorem tensorLines_isHermitian (V : ∀ i, AdelicVectorBundle S (E i))
-    (hV : ∀ i, (V i).IsLine)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (tensorLines V hV).IsHermitian hS := (tensorLines_isLine V hV).isHermitian hS
+    [hV : ∀ i, (V i).IsLine]
+    [hS : S.IsArchimedeanNormalized] :
+    (tensorLines V).IsHermitian := (tensorLines_isLine V).isHermitian
 
 /-- The same bundle carries the actual projective tensor norm. -/
 theorem tensorLines_toNormFamily_eq_projectiveTensor
-    (V : ∀ i, AdelicVectorBundle S (E i)) (hV : ∀ i, (V i).IsLine) :
-    (tensorLines V hV).toNormFamily = NormFamily.projectiveTensor (fun i ↦ (V i).toNormFamily) := by
+    (V : ∀ i, AdelicVectorBundle S (E i)) [hV : ∀ i, (V i).IsLine] :
+    (tensorLines V).toNormFamily = NormFamily.projectiveTensor (fun i ↦ (V i).toNormFamily) := by
   rw [tensorLines_toNormFamily,
-    NormFamily.projectiveTensor_eq_injectiveTensor_of_finrank_one _ hV,
-    NormFamily.mixedTensor_eq_injectiveTensor_of_finrank_one _ hV]
+    NormFamily.projectiveTensor_eq_injectiveTensor_of_finrank_one _ (fun i ↦ (hV i).rank_eq_one),
+    NormFamily.mixedTensor_eq_injectiveTensor_of_finrank_one _ (fun i ↦ (hV i).rank_eq_one)]
 
 /-- The same bundle carries the actual injective tensor norm. -/
 theorem tensorLines_toNormFamily_eq_injectiveTensor
-    (V : ∀ i, AdelicVectorBundle S (E i)) (hV : ∀ i, (V i).IsLine) :
-    (tensorLines V hV).toNormFamily = NormFamily.injectiveTensor (fun i ↦ (V i).toNormFamily) :=
-  NormFamily.mixedTensor_eq_injectiveTensor_of_finrank_one _ hV
+    (V : ∀ i, AdelicVectorBundle S (E i)) [hV : ∀ i, (V i).IsLine] :
+    (tensorLines V).toNormFamily = NormFamily.injectiveTensor (fun i ↦ (V i).toNormFamily) :=
+  NormFamily.mixedTensor_eq_injectiveTensor_of_finrank_one _ (fun i ↦ (hV i).rank_eq_one)
 
 end ArakelovGeometry.AdelicVectorBundle

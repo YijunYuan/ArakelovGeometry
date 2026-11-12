@@ -33,11 +33,11 @@ noncomputable section
 variable {K : Type*} [Field K] {S : AdelicStructure K}
   {E : Type*} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (ξ : NormFamily S E)
-  {hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
+  [hS : S.IsArchimedeanNormalized]
 
 /-- A completed basis and its coordinate duals, both bounded by one, have
 actual determinant volume one for a Hermitian family. The empty basis is included. -/
-theorem IsHermitian.determinant_norm_completedBasis_eq_one (hξ : ξ.IsHermitian hS)
+theorem IsHermitian.determinant_norm_completedBasis_eq_one (hξ : ξ.IsHermitian)
     (ω : S.Ω)
     (b : Module.Basis (Fin (Module.finrank K E)) (S.ϕ ω).Completion
       ((S.ϕ ω).Completion ⊗[K] E))
@@ -85,13 +85,13 @@ theorem IsHermitian.determinant_norm_completedBasis_eq_one (hξ : ξ.IsHermitian
 /-- An orthonormal basis of the actual completed fibre has determinant
 volume one at an infinite place. Its coordinate-dual bounds are produced
 from Cauchy–Schwarz; no determinant equality is assumed. -/
-theorem IsHermitian.determinant_norm_orthonormalBasis (hξ : ξ.IsHermitian hS)
+theorem IsHermitian.determinant_norm_orthonormalBasis (hξ : ξ.IsHermitian)
     (ω : S.Ω) (hω : ω ∈ S.Ωinf) :
     letI := hS ω hω
     letI := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
     letI := ξ.fibreNormedAddCommGroup ω
     letI := ξ.fibreNormedSpace ω
-    letI := hξ.fibreInnerProductSpace ω hω
+    letI := ξ.fiberInnerProductSpace ω hω
     ∀ b : OrthonormalBasis (Fin (Module.finrank K E)) (S.ϕ ω).Completion
       ((S.ϕ ω).Completion ⊗[K] E),
       ξ.determinant.norm ω
@@ -101,7 +101,7 @@ theorem IsHermitian.determinant_norm_orthonormalBasis (hξ : ξ.IsHermitian hS)
   let := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
   let := ξ.fibreNormedAddCommGroup ω
   let := ξ.fibreNormedSpace ω
-  let := hξ.fibreInnerProductSpace ω hω
+  let := ξ.fiberInnerProductSpace ω hω
   intro b
   apply hξ.determinant_norm_completedBasis_eq_one ξ ω b.toBasis
   · intro i
@@ -118,12 +118,12 @@ theorem IsHermitian.determinant_norm_orthonormalBasis (hξ : ξ.IsHermitian hS)
 /-- The normalized completed determinant generator is produced by an actual
 orthonormal basis. This also produces the empty basis in rank zero. -/
 theorem IsHermitian.exists_completedOrthonormalBasis_determinant_norm_eq_one
-    (hξ : ξ.IsHermitian hS) (ω : S.Ω) (hω : ω ∈ S.Ωinf) :
+    (hξ : ξ.IsHermitian) (ω : S.Ω) (hω : ω ∈ S.Ωinf) :
     letI := hS ω hω
     letI := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
     letI := ξ.fibreNormedAddCommGroup ω
     letI := ξ.fibreNormedSpace ω
-    letI := hξ.fibreInnerProductSpace ω hω
+    letI := ξ.fiberInnerProductSpace ω hω
     ∃ b : OrthonormalBasis (Fin (Module.finrank K E)) (S.ϕ ω).Completion
       ((S.ϕ ω).Completion ⊗[K] E),
       ξ.determinant.norm ω
@@ -133,7 +133,7 @@ theorem IsHermitian.exists_completedOrthonormalBasis_determinant_norm_eq_one
   let := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
   let := ξ.fibreNormedAddCommGroup ω
   let := ξ.fibreNormedSpace ω
-  let := hξ.fibreInnerProductSpace ω hω
+  let := ξ.fiberInnerProductSpace ω hω
   let b := (stdOrthonormalBasis (S.ϕ ω).Completion
     ((S.ϕ ω).Completion ⊗[K] E)).reindex (finCongr Module.finrank_baseChange)
   exact ⟨b, hξ.determinant_norm_orthonormalBasis ξ ω hω b⟩

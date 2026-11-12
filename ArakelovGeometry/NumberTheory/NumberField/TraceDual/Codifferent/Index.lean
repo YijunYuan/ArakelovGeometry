@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.TraceDual.DualizingLine.Basic
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.Degree.LineVector
 import ArakelovGeometry.NumberTheory.NumberField.Archimedean.DeterminantIntegral
@@ -122,8 +123,8 @@ theorem codifferentQuotient_log_card :
     Real.log (Nat.card
       (codifferentModule K ⧸ Submodule.span (𝓞 K) {codifferentOne K})) =
       Real.log |(NumberField.discr K : ℝ)| := by
-  have hd := (dualizingLine K).degree_eq_vectorDegree_of_finrank_one (Or.inl inferInstance)
-    normalizedNumberFieldArchimedeanCompletions (Module.finrank_self K) ⟨1, one_ne_zero⟩
+  have hd := (dualizingLine K).degree_eq_vectorDegree_of_finrank_one
+    (Module.finrank_self K) ⟨1, one_ne_zero⟩
   rw [AdelicVectorBundle.vectorDegree, NormFamily.vectorDegree_eq_neg_integral,
     dualizingLine_degree] at hd
   have hs := integral_add_compl (normalizedNumberFieldAdelicStructure K).measurableSet_Ωinf

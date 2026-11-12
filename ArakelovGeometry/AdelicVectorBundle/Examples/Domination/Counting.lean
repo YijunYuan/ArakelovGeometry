@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicStructure.TrivialPlace
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Basic
 public import Mathlib.NumberTheory.NumberField.Basic
+
 import Mathlib.CategoryTheory.Category.Init
 
 /-!
@@ -201,12 +202,14 @@ theorem integrable_logNorm {x : Plane} (hx : x ≠ 0) :
 /-- The primal norm family is upper dominated by its actual logarithmic
 norm itself, whose integrability is produced for every nonzero vector. -/
 theorem isUpperDominated : normFamily.IsUpperDominated := by
+  constructor
   intro x hx
   exact ⟨normFamily.logNorm x, integrable_logNorm hx,
     Filter.Eventually.of_forall fun _ ↦ le_rfl⟩
 
 /-- The same produced logarithmic norm gives lower domination. -/
 theorem isLowerDominated : normFamily.IsLowerDominated := by
+  constructor
   intro x hx
   exact ⟨normFamily.logNorm x, integrable_logNorm hx,
     Filter.Eventually.of_forall fun _ ↦ le_rfl⟩

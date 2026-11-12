@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.Diagonal
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import Mathlib.Topology.Sheaves.Init
 /-! # Archimedean vector diagonals in the actual completed fibres
@@ -366,20 +367,22 @@ variable {K E : Type*} [Field K] [NumberField K]
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
 
-def IsDominated.pure_globalBall_diagonalBasis (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
-    Module.Basis (Fin (Module.finrank ℤ (ξ.globalUnitBallModule hξ))) ℝ
+/-- The real basis induced by the diagonal embedding of the pure global unit-ball lattice. -/
+def globalUnitBallDiagonalBasis
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
+    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
+    Module.Basis (Fin (Module.finrank ℤ (ξ.globalUnitBallModule))) ℝ
       (CompletedVectorProduct K E) := by
   have hm := hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure
-  have hspan : Submodule.span K ((ξ.globalUnitBallModule hξ) : Set E) = ⊤ := hm.2.2
-  exact diagonalLatticeBasis (ξ.globalUnitBallModule hξ) hm.1 hspan
+  have hspan : Submodule.span K ((ξ.globalUnitBallModule) : Set E) = ⊤ := hm.2.2
+  exact diagonalLatticeBasis (ξ.globalUnitBallModule) hm.1 hspan
 
 theorem IsDominated.pure_globalBall_diagonal_discrete (hdom : ξ.IsDominated)
     (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
     letI := completedProductNormedAddCommGroup ξ
-    DiscreteTopology (diagonalLattice (ξ.globalUnitBallModule hξ)) := by
+    DiscreteTopology (diagonalLattice (ξ.globalUnitBallModule)) := by
   have hm := hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure
-  exact discrete_diagonalLattice ξ (ξ.globalUnitBallModule hξ) hm.1 hm.2.2
+  exact discrete_diagonalLattice ξ (ξ.globalUnitBallModule) hm.1 hm.2.2
 
 open scoped Classical in
 theorem IsDominated.pure_globalBall_diagonal_isZLattice (hdom : ξ.IsDominated)
@@ -387,8 +390,8 @@ theorem IsDominated.pure_globalBall_diagonal_isZLattice (hdom : ξ.IsDominated)
     letI := completedProductNormedAddCommGroup ξ
     letI := completedProductNormedSpace ξ
     letI := hdom.pure_globalBall_diagonal_discrete hξ hpure
-    IsZLattice ℝ (diagonalLattice (ξ.globalUnitBallModule hξ)) := by
+    IsZLattice ℝ (diagonalLattice (ξ.globalUnitBallModule)) := by
   have hm := hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure
-  exact isZLattice_diagonalLattice ξ (ξ.globalUnitBallModule hξ) hm.1 hm.2.2
+  exact isZLattice_diagonalLattice ξ (ξ.globalUnitBallModule) hm.1 hm.2.2
 
 end ArakelovGeometry.NormFamily

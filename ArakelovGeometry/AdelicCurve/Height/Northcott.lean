@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 public import ArakelovGeometry.AdelicCurve.Height.Affine
+
 import ArakelovGeometry.AdelicCurve.Height.MinimalPolynomial
 import Mathlib.CategoryTheory.Category.Init
 
@@ -29,7 +30,7 @@ variable {K L : Type*} [Field K] [Field L] [Algebra K L] (AS : AdelicStructure K
 
 /-- Northcott finiteness of coefficients gives finitely many roots of bounded-degree
 nonzero polynomials in any extension field. -/
-theorem finite_roots_of_coeff_height_le (hS : AS.HasNorthcott) (B : ℝ) (D : ℕ) :
+theorem finite_roots_of_coeff_height_le [hS : AS.HasNorthcott] (B : ℝ) (D : ℕ) :
     Set.Finite {a : L | ∃ f : K[X], f ≠ 0 ∧ f.natDegree ≤ D ∧
       (∀ j : ℕ, AS.affineHeight (f.coeff j) ≤ B) ∧ Polynomial.aeval a f = 0} := by
   classical
@@ -48,11 +49,11 @@ variable [Algebra.IsAlgebraic K L]
 
 /-- Bounded affine height and bounded minimal-polynomial degree give finitely many
 elements of an algebraic extension. No sign restriction on the height bound is needed. -/
-theorem finite_affineHeight_le_minpoly_natDegree_le (hS : AS.HasNorthcott)
+theorem finite_affineHeight_le_minpoly_natDegree_le [hS : AS.HasNorthcott]
     (C : ℝ) (D : ℕ) :
     Set.Finite {a : L | (AS.algebraicExtension L).affineHeight a ≤ C ∧
       (minpoly K a).natDegree ≤ D} := by
-  have hroots := AS.finite_roots_of_coeff_height_le (L := L) hS
+  have hroots := AS.finite_roots_of_coeff_height_le (L := L)
     ((D : ℝ) * C + (D - 1 : ℕ) * Real.log 2 * AS.heightArchimedeanConstant) D
   apply hroots.subset
   rintro a ⟨ha, hD⟩
@@ -69,10 +70,10 @@ theorem finite_affineHeight_le_minpoly_natDegree_le (hS : AS.HasNorthcott)
 
 /-- Chen–Moriwaki, Claim 3.5.6: bounded height and bounded degree give finitely many
 algebraic elements. This holds in any algebraic extension, with arbitrary real bounds. -/
-theorem finite_affineHeight_le_degree_le (hS : AS.HasNorthcott) (C δ : ℝ) :
+theorem finite_affineHeight_le_degree_le [hS : AS.HasNorthcott] (C δ : ℝ) :
     Set.Finite {a : L | (AS.algebraicExtension L).affineHeight a ≤ C ∧
       (Module.finrank K (IntermediateField.adjoin K {a}) : ℝ) ≤ δ} := by
-  apply (AS.finite_affineHeight_le_minpoly_natDegree_le (L := L) hS C ⌊δ⌋₊).subset
+  apply (AS.finite_affineHeight_le_minpoly_natDegree_le (L := L) C ⌊δ⌋₊).subset
   rintro a ⟨ha, hd⟩
   refine ⟨ha, Nat.le_floor ?_⟩
   simpa only [IntermediateField.adjoin.finrank (Algebra.IsIntegral.isIntegral a)] using hd

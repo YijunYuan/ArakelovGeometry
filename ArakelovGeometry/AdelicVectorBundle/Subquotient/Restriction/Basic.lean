@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basic
+
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
@@ -78,6 +79,7 @@ theorem scale_pullback (a : S.Ω → ℝ) (ha : ∀ ω, 0 < a ω)
 /-- Pullback preserves the ultrametric inequality at every non-Archimedean place. -/
 theorem IsUltrametric.pullback {ξ : NormFamily S E} (hξ : ξ.IsUltrametric)
     (f : F →ₗ[K] E) (hf : Function.Injective f) : (ξ.pullback f hf).IsUltrametric := by
+  constructor
   intro ω hω x y
   simpa only [pullback_norm, map_add] using
     hξ ω hω (f.baseChange (S.ϕ ω).Completion x) (f.baseChange (S.ϕ ω).Completion y)
@@ -112,5 +114,19 @@ theorem restrict_bot_norm (ω : S.Ω)
     (x : (S.ϕ ω).Completion ⊗[K] (⊥ : Submodule K E)) :
     (ξ.restrict ⊥).norm ω x = 0 :=
   (ξ.restrict ⊥).norm_eq_zero_of_subsingleton ω x
+
+end ArakelovGeometry.NormFamily
+
+namespace ArakelovGeometry.NormFamily
+
+variable {K : Type*} [Field K] {S : AdelicStructure K}
+  {E F : Type*} [AddCommGroup E] [Module K E] [AddCommGroup F] [Module K F]
+
+instance instIsUltrametricPullback {ξ : NormFamily S E} [hξ : ξ.IsUltrametric]
+    (f : F →ₗ[K] E) (hf : Function.Injective f) : (ξ.pullback f hf).IsUltrametric :=
+  hξ.pullback f hf
+
+instance instIsUltrametricRestrict {ξ : NormFamily S E} [hξ : ξ.IsUltrametric]
+    (P : Submodule K E) : (ξ.restrict P).IsUltrametric := hξ.restrict P
 
 end ArakelovGeometry.NormFamily

@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Majorant.Basic
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Determinant.Bound
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Bidual
@@ -42,21 +43,21 @@ namespace NormFamily
 /-- The logarithm of determinant discrepancy has integrable envelopes solely
 from the sharp finite-support bound, without measurability of the family. -/
 theorem log_determinantDiscrepancy_hasIntegrableBounds (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hN : S.IsArchimedeanNormalized] :
     HasIntegrableBounds (fun ω ↦ Real.log (ξ.determinantDiscrepancy ω)) S.v := by
   refine ⟨⟨S.Ωinf.indicator (fun _ ↦ (Module.finrank K E : ℝ) / 2 *
     Real.log (Module.finrank K E)), ?_,
-    Filter.Eventually.of_forall (ξ.log_determinantDiscrepancy_le_indicator hN)⟩,
+    Filter.Eventually.of_forall (ξ.log_determinantDiscrepancy_le_indicator)⟩,
     ⟨0, integrable_zero _ _ _,
       Filter.Eventually.of_forall (ξ.log_determinantDiscrepancy_nonneg)⟩⟩
   exact (integrable_indicator_iff S.measurableSet_Ωinf).mpr
-    (integrableOn_const (S.v_Ωinf_lt_top_of_isRCLike hN).ne)
+    (integrableOn_const (S.v_Ωinf_lt_top_of_isRCLike).ne)
 
 /-- The local elementary condition gives the exact unit discrepancy used in
 comparing the determinant discrepancy with each majorant ratio. -/
 theorem IsElementaryAt.determinantDiscrepancy_eq_one {η : NormFamily S E}
-    {hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion} {ω : S.Ω}
-    (he : η.IsElementaryAt hN ω) : η.determinantDiscrepancy ω = 1 := by
+    [hN : S.IsArchimedeanNormalized] {ω : S.Ω}
+    (he : η.IsElementaryAt ω) : η.determinantDiscrepancy ω = 1 := by
   by_cases hω : ω ∈ S.Ωinf
   · let := hN ω hω
     obtain ⟨c, hc⟩ := he.2 hω
@@ -67,8 +68,8 @@ theorem IsElementaryAt.determinantDiscrepancy_eq_one {η : NormFamily S E}
 every eligible actual majorant determinant ratio. -/
 theorem determinantDiscrepancy_le_ratio_of_elementaryMajorant
     (ξ η : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω)
-    (he : η.IsElementaryAt hN ω) (hl : ∀ x, ξ.norm ω x ≤ η.norm ω x) :
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω)
+    (he : η.IsElementaryAt ω) (hl : ∀ x, ξ.norm ω x ≤ η.norm ω x) :
     ξ.determinantDiscrepancy ω ≤
       η.determinant.norm ω (1 ⊗ₜ[K] determinantGenerator (K := K) (E := E)) /
       ξ.determinant.norm ω (1 ⊗ₜ[K] determinantGenerator (K := K) (E := E)) := by
@@ -92,25 +93,25 @@ theorem determinantDiscrepancy_le_ratio_of_elementaryMajorant
 
 /-- Taking the actual nonempty infimum gives the source comparison δ≤Δ. -/
 theorem determinantDiscrepancy_le_majorantDiscrepancy (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω) :
-    ξ.determinantDiscrepancy ω ≤ ξ.majorantDiscrepancy hN ω := by
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω) :
+    ξ.determinantDiscrepancy ω ≤ ξ.majorantDiscrepancy ω := by
   by_cases hr : Module.finrank K E = 0
   · rw [ξ.determinantDiscrepancy_eq_one_of_finrank_eq_zero hr,
-      ξ.majorantDiscrepancy_eq_one_of_finrank_eq_zero hN hr]
+      ξ.majorantDiscrepancy_eq_one_of_finrank_eq_zero hr]
   · rw [majorantDiscrepancy, ite_eq_right hr]
-    apply le_csInf (ξ.majorantRatios_nonempty hN ω)
+    apply le_csInf (ξ.majorantRatios_nonempty ω)
     rintro a ⟨η, he, hl, rfl⟩
-    exact ξ.determinantDiscrepancy_le_ratio_of_elementaryMajorant η hN ω he hl
+    exact ξ.determinantDiscrepancy_le_ratio_of_elementaryMajorant η ω he hl
 
 /-- The actual John core gives the sharp majorant-discrepancy bound at every
 normalized infinite place, including rank zero. -/
 theorem majorantDiscrepancy_le_sqrt_finrank_pow (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (ω : S.Ω) (hω : ω ∈ S.Ωinf) :
-    ξ.majorantDiscrepancy hN ω ≤
+    ξ.majorantDiscrepancy ω ≤
       Real.sqrt (Module.finrank K E) ^ Module.finrank K E := by
   by_cases hr : Module.finrank K E = 0
-  · rw [ξ.majorantDiscrepancy_eq_one_of_finrank_eq_zero hN hr, hr, pow_zero]
+  · rw [ξ.majorantDiscrepancy_eq_one_of_finrank_eq_zero hr, hr, pow_zero]
   let := hN ω hω
   let := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
   obtain ⟨c, hc⟩ := ξ.exists_archimedean_john_innerProductCore ω
@@ -119,10 +120,10 @@ theorem majorantDiscrepancy_le_sqrt_finrank_pow (ξ : NormFamily S E)
   have hn (x : (S.ϕ ω).Completion ⊗[K] E) :
       η.norm ω x = Real.sqrt (RCLike.re (c.inner x x)) :=
     ξ.withFibreNorm_norm ω p _ x
-  have he : η.IsElementaryAt hN ω := by
+  have he : η.IsElementaryAt ω := by
     refine ⟨fun hf ↦ False.elim (hω hf), fun _ ↦ ?_⟩
     exact ⟨c, fun x ↦ by rw [hn]; exact Real.sq_sqrt (c.re_inner_nonneg x)⟩
-  have h := ξ.majorantDiscrepancy_le_ratio η hN ω he
+  have h := ξ.majorantDiscrepancy_le_ratio η ω he
     (fun x ↦ by rw [hn]; exact (hc x).1)
   apply h.trans
   apply (div_le_iff₀ (ξ.determinant.norm_rational_pos ω determinantGenerator_ne_zero)).mpr
@@ -134,9 +135,9 @@ theorem majorantDiscrepancy_le_sqrt_finrank_pow (ξ : NormFamily S E)
 exponential distance provides an ultrametric majorant of the original norm.
 Determinant bidual equality makes its ratio exactly the rank power. -/
 theorem majorantDiscrepancy_le_exp_bidual_localDist_pow_finite (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (ω : S.Ω) (hω : ω ∈ S.Ωfin) :
-    ξ.majorantDiscrepancy hN ω ≤
+    ξ.majorantDiscrepancy ω ≤
       Real.exp (ξ.localDist (ξ.dual.dual.pullback (Module.Dual.eval K E)
         (Module.eval_apply_injective K)) ω) ^ Module.finrank K E := by
   let β := ξ.dual.dual.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K)
@@ -145,19 +146,19 @@ theorem majorantDiscrepancy_le_exp_bidual_localDist_pow_finite (ξ : NormFamily 
   let η := β.scale a ha
   have hu : η.IsUltrametric :=
     (ξ.dual.dual_isUltrametric.pullback _ _).scale a ha
-  have he : η.IsElementaryAt hN ω :=
+  have he : η.IsElementaryAt ω :=
     ⟨hu ω, fun hi ↦ False.elim (hi hω)⟩
   have hl (x : (S.ϕ ω).Completion ⊗[K] E) : ξ.norm ω x ≤ η.norm ω x := by
     change ξ.norm ω x ≤ a ω * β.norm ω x
     simpa only [localDist_comm] using β.norm_le_exp_localDist_mul ξ ω x
-  have h := ξ.majorantDiscrepancy_le_ratio η hN ω he hl
+  have h := ξ.majorantDiscrepancy_le_ratio η ω he hl
   have hd : β.determinant.norm ω
       (1 ⊗ₜ[K] determinantGenerator (K := K) (E := E)) =
       ξ.determinant.norm ω (1 ⊗ₜ[K] determinantGenerator (K := K) (E := E)) :=
     congrArg (fun θ ↦ θ.norm ω
       (1 ⊗ₜ[K] determinantGenerator (K := K) (E := E)))
-      (ξ.determinant_dual_dual_pullback hN)
-  change ξ.majorantDiscrepancy hN ω ≤ (β.scale a ha).determinant.norm ω
+      (ξ.determinant_dual_dual_pullback)
+  change ξ.majorantDiscrepancy ω ≤ (β.scale a ha).determinant.norm ω
     (1 ⊗ₜ[K] determinantGenerator (K := K) (E := E)) /
       ξ.determinant.norm ω (1 ⊗ₜ[K] determinantGenerator (K := K) (E := E)) at h
   rw [β.determinant_scale_norm a ha, hd, mul_div_assoc,
@@ -167,32 +168,32 @@ theorem majorantDiscrepancy_le_exp_bidual_localDist_pow_finite (ξ : NormFamily 
 
 /-- The sharp logarithmic bound at infinity. -/
 theorem log_majorantDiscrepancy_le_half_finrank_mul_log_finrank (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (ω : S.Ω) (hω : ω ∈ S.Ωinf) :
-    Real.log (ξ.majorantDiscrepancy hN ω) ≤
+    Real.log (ξ.majorantDiscrepancy ω) ≤
       (Module.finrank K E : ℝ) / 2 * Real.log (Module.finrank K E) := by
-  have h := Real.log_le_log (ξ.majorantDiscrepancy_pos hN ω)
-    (ξ.majorantDiscrepancy_le_sqrt_finrank_pow hN ω hω)
+  have h := Real.log_le_log (ξ.majorantDiscrepancy_pos ω)
+    (ξ.majorantDiscrepancy_le_sqrt_finrank_pow ω hω)
   rw [Real.log_pow, Real.log_sqrt (Nat.cast_nonneg _)] at h
   convert h using 1; ring
 
 /-- The finite-place logarithmic bound retains the necessary rank factor. -/
 theorem log_majorantDiscrepancy_le_finrank_mul_bidual_localDist_finite
     (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (ω : S.Ω) (hω : ω ∈ S.Ωfin) :
-    Real.log (ξ.majorantDiscrepancy hN ω) ≤ (Module.finrank K E : ℝ) *
+    Real.log (ξ.majorantDiscrepancy ω) ≤ (Module.finrank K E : ℝ) *
       ξ.localDist (ξ.dual.dual.pullback (Module.Dual.eval K E)
         (Module.eval_apply_injective K)) ω := by
-  have h := Real.log_le_log (ξ.majorantDiscrepancy_pos hN ω)
-    (ξ.majorantDiscrepancy_le_exp_bidual_localDist_pow_finite hN ω hω)
+  have h := Real.log_le_log (ξ.majorantDiscrepancy_pos ω)
+    (ξ.majorantDiscrepancy_le_exp_bidual_localDist_pow_finite ω hω)
   simpa only [Real.log_pow, Real.log_exp] using h
 
 /-- A source-corrected pointwise bound combining the two local majorants. -/
 theorem log_majorantDiscrepancy_le_finrank_mul_bidual_localDist_add_indicator
     (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω) :
-    Real.log (ξ.majorantDiscrepancy hN ω) ≤ (Module.finrank K E : ℝ) *
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω) :
+    Real.log (ξ.majorantDiscrepancy ω) ≤ (Module.finrank K E : ℝ) *
       ξ.localDist (ξ.dual.dual.pullback (Module.Dual.eval K E)
         (Module.eval_apply_injective K)) ω +
       S.Ωinf.indicator (fun _ ↦ (Module.finrank K E : ℝ) / 2 *
@@ -200,35 +201,35 @@ theorem log_majorantDiscrepancy_le_finrank_mul_bidual_localDist_add_indicator
   classical
   by_cases hω : ω ∈ S.Ωinf
   · rw [Set.indicator_of_mem hω]
-    apply (ξ.log_majorantDiscrepancy_le_half_finrank_mul_log_finrank hN ω hω).trans
+    apply (ξ.log_majorantDiscrepancy_le_half_finrank_mul_log_finrank ω hω).trans
     have h := mul_nonneg (Nat.cast_nonneg (Module.finrank K E))
       (ξ.localDist_nonneg (ξ.dual.dual.pullback (Module.Dual.eval K E)
         (Module.eval_apply_injective K)) ω)
     linarith
   · rw [Set.indicator_of_notMem hω, add_zero]
-    exact ξ.log_majorantDiscrepancy_le_finrank_mul_bidual_localDist_finite hN ω
+    exact ξ.log_majorantDiscrepancy_le_finrank_mul_bidual_localDist_finite ω
       (not_not.mp hω)
 
 /-- Strong domination supplies actual integrable upper and lower envelopes
 for the logarithm of the actual infimum; no measurability is assumed for Δ. -/
 theorem IsStronglyDominated.log_majorantDiscrepancy_hasIntegrableBounds
     {ξ : NormFamily S E} (hξ : ξ.IsStronglyDominated)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    HasIntegrableBounds (fun ω ↦ Real.log (ξ.majorantDiscrepancy hN ω)) S.v := by
+    [hN : S.IsArchimedeanNormalized] :
+    HasIntegrableBounds (fun ω ↦ Real.log (ξ.majorantDiscrepancy ω)) S.v := by
   obtain ⟨A, hA, hb⟩ := hξ.2.1
   let R := S.Ωinf.indicator (fun _ ↦ (Module.finrank K E : ℝ) / 2 *
     Real.log (Module.finrank K E))
   have hR : Integrable R S.v :=
     (integrable_indicator_iff S.measurableSet_Ωinf).mpr
-      (integrableOn_const (S.v_Ωinf_lt_top_of_isRCLike hN).ne)
+      (integrableOn_const (S.v_Ωinf_lt_top_of_isRCLike).ne)
   refine ⟨⟨fun ω ↦ (Module.finrank K E : ℝ) * A ω + R ω,
     (hA.const_mul _).add hR, ?_⟩,
     ⟨0, integrable_zero _ _ _, Filter.Eventually.of_forall ?_⟩⟩
   · filter_upwards [hb] with ω hω
     exact (ξ.log_majorantDiscrepancy_le_finrank_mul_bidual_localDist_add_indicator
-      hN ω).trans (add_le_add
+      ω).trans (add_le_add
       (mul_le_mul_of_nonneg_left hω (Nat.cast_nonneg (Module.finrank K E))) le_rfl)
-  · exact ξ.log_majorantDiscrepancy_nonneg hN
+  · exact ξ.log_majorantDiscrepancy_nonneg
 
 end NormFamily
 
@@ -238,9 +239,9 @@ namespace AdelicVectorBundle
 adelic bundle, including rank zero. -/
 theorem IsStronglyAdelic.log_majorantDiscrepancy_hasIntegrableBounds
     {V : AdelicVectorBundle S E} (hV : V.IsStronglyAdelic)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    HasIntegrableBounds (fun ω ↦ Real.log (V.toNormFamily.majorantDiscrepancy hN ω)) S.v :=
-  NormFamily.IsStronglyDominated.log_majorantDiscrepancy_hasIntegrableBounds hV hN
+    [hN : S.IsArchimedeanNormalized] :
+    HasIntegrableBounds (fun ω ↦ Real.log (V.toNormFamily.majorantDiscrepancy ω)) S.v :=
+  NormFamily.IsStronglyDominated.log_majorantDiscrepancy_hasIntegrableBounds hV
 
 end AdelicVectorBundle
 

@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Exterior.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Density.Basic
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.Measurability.Countable
 import ArakelovGeometry.AdelicVectorBundle.Measurability.Tensor
@@ -180,7 +181,8 @@ family measurable whenever its factors are measurable. -/
 theorem IsMeasurable.injectiveTensor_of_common_countable_dense_subfield
     (hξ : ∀ i, (ξ i).IsMeasurable) (hS : S.HasCommonCountableDenseSubfield) :
     (injectiveTensor ξ).IsMeasurable := by
-  obtain ⟨K₀, hcount, hdense⟩ := hS
+  constructor
+  obtain ⟨K₀, hcount, hdense⟩ := hS.exists_subfield
   let : Countable K₀ := hcount
   let b := fun i => Module.finBasis K (Module.Dual K (E i))
   have hdual (i : ι) := (hξ i).dual_of_countable_dense_subfield K₀ hdense
@@ -194,6 +196,7 @@ locus gives measurability of the source's mixed tensor family. -/
 theorem IsMeasurable.mixedTensor_of_common_countable_dense_subfield
     (hξ : ∀ i, (ξ i).IsMeasurable) (hS : S.HasCommonCountableDenseSubfield) :
     (mixedTensor ξ).IsMeasurable := by
+  constructor
   classical
   have hε := IsMeasurable.injectiveTensor_of_common_countable_dense_subfield ξ hξ hS
   have hπ := IsMeasurable.projectiveTensor_of_common_countable_dense_subfield ξ hξ hS

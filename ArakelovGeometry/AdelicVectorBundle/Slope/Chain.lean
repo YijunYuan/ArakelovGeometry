@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Operator.Height
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Slope.Extension
 import ArakelovGeometry.AdelicVectorBundle.Slope.LinearMap
 import Mathlib.CategoryTheory.Category.Init
@@ -130,13 +131,13 @@ variable [S.IsProper] {E₁ : Type w} {E₂ : Type w'}
 /-- A nonzero induced quotient map bounds the source quotient's minimal
 slope using the height of the original map. -/
 theorem minimalSlope_cokernel_sub_mapHeight_le_quotient_maximalSlope
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (U : Submodule K E₁) (T : Submodule K E₂) (f : E₁ →ₗ[K] E₂)
     (g : (E₁ ⧸ U) →ₗ[K] (E₂ ⧸ T)) (hg : g ≠ 0)
     (hc : g.comp U.mkQ = T.mkQ.comp f) :
-    (V₁.quotientOfMeasurableBase U hS).minimalSlope hS hN - V₁.mapHeight V₂ f ≤
-      (V₂.quotientOfMeasurableBase T hS).maximalSlope hS hN := by
+    (V₁.quotientOfMeasurableBase U).minimalSlope - V₁.mapHeight V₂ f ≤
+      (V₂.quotientOfMeasurableBase T).maximalSlope := by
   have hf : f ≠ 0 := by
     intro hz
     apply hg
@@ -145,9 +146,9 @@ theorem minimalSlope_cokernel_sub_mapHeight_le_quotient_maximalSlope
     obtain ⟨x, rfl⟩ := U.mkQ_surjective y
     have hx := DFunLike.congr_fun hc x
     simpa only [hz, LinearMap.comp_zero, LinearMap.zero_apply, LinearMap.comp_apply] using hx
-  have hh := V₁.mapHeight_quotient_le V₂ hS f hf U T g hg hc
+  have hh := V₁.mapHeight_quotient_le V₂ f hf U T g hg hc
   have hs := minimalSlope_sub_mapHeight_le_maximalSlope_of_ne_zero
-    (V₁.quotientOfMeasurableBase U hS) (V₂.quotientOfMeasurableBase T hS) hS hN g hg
+    (V₁.quotientOfMeasurableBase U) (V₂.quotientOfMeasurableBase T) g hg
   exact (EReal.sub_le_sub le_rfl hh).trans hs
 
 end QuotientComparison
@@ -160,14 +161,14 @@ variable [S.IsProper] {n : ℕ} (E : Fin (n + 1) → Type w)
 /-- Every nonzero actual quotient of the endpoint is bounded by a term
 coming from a positive-rank actual cokernel in the chain. -/
 theorem exists_cokernel_term_le_quotient_maximalSlope
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (h0 : Module.finrank K (E 0) = 0) (U : Submodule K (E (Fin.last n)))
     (hU : 0 < Module.finrank K (E (Fin.last n) ⧸ U)) :
     ∃ i : Fin n, 0 < Module.finrank K (E i.succ ⧸ (α i).range) ∧
-      ((V i.succ).quotientOfMeasurableBase (α i).range hS).minimalSlope hS hN -
+      ((V i.succ).quotientOfMeasurableBase (α i).range).minimalSlope -
         (V i.succ).mapHeight (V (Fin.last n)) (linearChainTailMap E α i.succ) ≤
-      ((V (Fin.last n)).quotientOfMeasurableBase U hS).maximalSlope hS hN := by
+      ((V (Fin.last n)).quotientOfMeasurableBase U).maximalSlope := by
   classical
   let : Subsingleton (E 0) := Module.finrank_zero_iff.mp h0
   let : Nontrivial (E (Fin.last n) ⧸ U) := Module.nontrivial_of_finrank_pos hU
@@ -181,7 +182,7 @@ theorem exists_cokernel_term_le_quotient_maximalSlope
     hg (LinearMap.range_eq_bot.mp (Submodule.finrank_eq_zero.mp hz)))
   refine ⟨i, hr.trans_le g.finrank_range_le, ?_⟩
   exact minimalSlope_cokernel_sub_mapHeight_le_quotient_maximalSlope
-    (V i.succ) (V (Fin.last n)) hS hN (α i).range U
+    (V i.succ) (V (Fin.last n)) (α i).range U
       (linearChainTailMap E α i.succ) g hg hc
 
 /-- Source Proposition 4.3.33 for genuine finite chains of varying spaces
@@ -189,25 +190,25 @@ and given maps. In fact injectivity is unnecessary for this inequality.
 Only nonzero actual cokernels contribute; an empty infimum is `⊤`.
 All heights are those of the actual tail composites. -/
 theorem minimalSlope_linearChain_lowerBound
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (h0 : Module.finrank K (E 0) = 0) :
     (⨅ i : {i : Fin n // 0 < Module.finrank K (E i.succ ⧸ (α i).range)},
-      ((V i.val.succ).quotientOfMeasurableBase (α i.val).range hS).minimalSlope hS hN -
+      ((V i.val.succ).quotientOfMeasurableBase (α i.val).range).minimalSlope -
         (V i.val.succ).mapHeight (V (Fin.last n)) (linearChainTailMap E α i.val.succ)) ≤
-      (V (Fin.last n)).minimalSlope hS hN := by
-  apply (V (Fin.last n)).le_minimalSlope hS hN
+      (V (Fin.last n)).minimalSlope := by
+  apply (V (Fin.last n)).le_minimalSlope
   intro U hU
   obtain ⟨i, hi, hs⟩ :=
-    exists_cokernel_term_le_quotient_maximalSlope E V α hS hN h0 U hU
+    exists_cokernel_term_le_quotient_maximalSlope E V α h0 U hU
   have hb :
       (⨅ j : {j : Fin n // 0 < Module.finrank K (E j.succ ⧸ (α j).range)},
-        ((V j.val.succ).quotientOfMeasurableBase (α j.val).range hS).minimalSlope hS hN -
+        ((V j.val.succ).quotientOfMeasurableBase (α j.val).range).minimalSlope -
           (V j.val.succ).mapHeight (V (Fin.last n)) (linearChainTailMap E α j.val.succ)) ≤
-      ((V i.succ).quotientOfMeasurableBase (α i).range hS).minimalSlope hS hN -
+      ((V i.succ).quotientOfMeasurableBase (α i).range).minimalSlope -
         (V i.succ).mapHeight (V (Fin.last n)) (linearChainTailMap E α i.succ) :=
     iInf_le (fun j : {j : Fin n // 0 < Module.finrank K (E j.succ ⧸ (α j).range)} ↦
-      ((V j.val.succ).quotientOfMeasurableBase (α j.val).range hS).minimalSlope hS hN -
+      ((V j.val.succ).quotientOfMeasurableBase (α j.val).range).minimalSlope -
         (V j.val.succ).mapHeight (V (Fin.last n)) (linearChainTailMap E α j.val.succ)) ⟨i, hi⟩
   exact hb.trans hs
 

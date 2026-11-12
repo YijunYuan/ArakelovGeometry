@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Countable
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Determinant.Basic
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Comparison
 import Mathlib.CategoryTheory.Category.Init
@@ -51,6 +52,7 @@ new measurability premise on the norm family or exponent. -/
 theorem IsUpperDominated.scale_exp {ξ : NormFamily S E} (hξ : ξ.IsUpperDominated)
     {φ : S.Ω → ℝ} (hφ : Integrable φ S.v) :
     (ξ.scale (fun ω ↦ Real.exp (φ ω)) (fun _ ↦ Real.exp_pos _)).IsUpperDominated := by
+  constructor
   intro x hx
   have h := (integrable_hasIntegrableBounds hφ).1.add (hξ x hx)
   apply h.congr
@@ -101,9 +103,9 @@ theorem scaleExp_toNormFamily (V : AdelicVectorBundle S E) (φ : S.Ω → ℝ)
 /-- Integrating the exact actual determinant rescaling gives its degree shift. -/
 theorem degree_scaleExp [S.IsProper] (V : AdelicVectorBundle S E) (φ : S.Ω → ℝ)
     (hm : Measurable φ) (hi : Integrable φ S.v)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.scaleExp φ hm hi).degree hS hN = V.degree hS hN -
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    (V.scaleExp φ hm hi).degree = V.degree -
       (Module.finrank K E : ℝ) * (∫ ω, φ ω ∂S.v) := by
   let z := determinantGenerator (K := K) (E := E)
   have hz : z ≠ 0 := determinantGenerator_ne_zero
@@ -112,9 +114,9 @@ theorem degree_scaleExp [S.IsProper] (V : AdelicVectorBundle S E) (φ : S.Ω →
     funext ω
     exact V.toNormFamily.determinant_logNorm_scale_exp φ z hz ω
   have hbase : Integrable (V.toNormFamily.determinant.logNorm z) S.v :=
-    (V.determinantOfMeasurableBase hS hN).integrable_logNorm z
-  rw [(V.scaleExp φ hm hi).degree_eq_neg_integral hS hN ⟨z, hz⟩,
-    V.degree_eq_neg_integral hS hN ⟨z, hz⟩, hlog]
+    (V.determinantOfMeasurableBase).integrable_logNorm z
+  rw [(V.scaleExp φ hm hi).degree_eq_neg_integral ⟨z, hz⟩,
+    V.degree_eq_neg_integral ⟨z, hz⟩, hlog]
   simp only [Pi.add_apply]
   rw [integral_add (hi.const_mul (Module.finrank K E : ℝ)) hbase, integral_const_mul]
   ring
@@ -123,10 +125,10 @@ theorem degree_scaleExp [S.IsProper] (V : AdelicVectorBundle S E) (φ : S.Ω →
 The structure equality follows from equality of their canonical norm families. -/
 theorem restrict_scaleExp (V : AdelicVectorBundle S E) (φ : S.Ω → ℝ)
     (hm : Measurable φ) (hi : Integrable φ S.v)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    [hS : S.HasMeasurableBase]
     (U : Submodule K E) :
-    (V.scaleExp φ hm hi).restrictOfMeasurableBase U hS =
-      (V.restrictOfMeasurableBase U hS).scaleExp φ hm hi := by
+    (V.scaleExp φ hm hi).restrictOfMeasurableBase U =
+      (V.restrictOfMeasurableBase U).scaleExp φ hm hi := by
   apply AdelicVectorBundle.ext
   ext ω z
   rfl
@@ -134,14 +136,14 @@ theorem restrict_scaleExp (V : AdelicVectorBundle S E) (φ : S.Ω → ℝ)
 /-- Every actual restricted degree has its own exact rank shift. -/
 theorem degree_restrict_scaleExp [S.IsProper] (V : AdelicVectorBundle S E)
     (φ : S.Ω → ℝ) (hm : Measurable φ) (hi : Integrable φ S.v)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (U : Submodule K E) :
-    ((V.scaleExp φ hm hi).restrictOfMeasurableBase U hS).degree hS hN =
-      (V.restrictOfMeasurableBase U hS).degree hS hN -
+    ((V.scaleExp φ hm hi).restrictOfMeasurableBase U).degree =
+      (V.restrictOfMeasurableBase U).degree -
         (Module.finrank K U : ℝ) * (∫ ω, φ ω ∂S.v) := by
-  rw [V.restrict_scaleExp φ hm hi hS U]
-  exact degree_scaleExp _ φ hm hi hS hN
+  rw [V.restrict_scaleExp φ hm hi U]
+  exact degree_scaleExp _ φ hm hi
 
 end AdelicVectorBundle
 

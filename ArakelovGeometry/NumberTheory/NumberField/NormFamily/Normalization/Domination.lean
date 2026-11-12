@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Basic
+
 import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.PrimeIndexing
 
 /-!
@@ -173,23 +174,23 @@ variable {E : Type*} [AddCommGroup E] [Module K E]
 
 /-- The actual normalization scales every rational logarithmic norm, including at zero. -/
 theorem numberFieldNormalize_logNorm
-    (ξ : NormFamily (numberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric) (x : E)
+    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric] (x : E)
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K}) :
-    (ξ.numberFieldNormalize hξ).logNorm x ω =
+    (ξ.numberFieldNormalize).logNorm x ω =
       numberFieldNormalizationExponent ω * ξ.logNorm x ω.val := by
   by_cases hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin
   · have hd : (0 : ℝ) < ((normalizedPlaceValue ω).localDegree ℚ : ℝ) :=
       inv_pos.mp (normalizedFiniteExponent_pos ω hω)
-    have h := ξ.numberFieldNormalize_weighted_log_norm_map_fin hξ ω hω (1 ⊗ₜ[K] x)
+    have h := ξ.numberFieldNormalize_weighted_log_norm_map_fin ω hω (1 ⊗ₜ[K] x)
     have ht := congrArg (fun z => ((normalizedPlaceValue ω).localDegree ℚ : ℝ) *
-      Real.log ((ξ.numberFieldNormalize hξ).norm ω z))
+      Real.log ((ξ.numberFieldNormalize).norm ω z))
       (normalizedNormFamilyTensorEquiv_one_tmul ω x)
     have hw : ((normalizedPlaceValue ω).localDegree ℚ : ℝ) *
-        (ξ.numberFieldNormalize hξ).logNorm x ω = ξ.logNorm x ω.val := ht.symm.trans h
+        (ξ.numberFieldNormalize).logNorm x ω = ξ.logNorm x ω.val := ht.symm.trans h
     calc
       _ = ((normalizedPlaceValue ω).localDegree ℚ : ℝ)⁻¹ *
           (((normalizedPlaceValue ω).localDegree ℚ : ℝ) *
-            (ξ.numberFieldNormalize hξ).logNorm x ω) := by
+            (ξ.numberFieldNormalize).logNorm x ω) := by
         erw [← mul_assoc, inv_mul_cancel₀ hd.ne', one_mul]
       _ = ((normalizedPlaceValue ω).localDegree ℚ : ℝ)⁻¹ * ξ.logNorm x ω.val :=
         congrArg (fun r : ℝ => ((normalizedPlaceValue ω).localDegree ℚ : ℝ)⁻¹ * r) hw
@@ -197,21 +198,22 @@ theorem numberFieldNormalize_logNorm
         (numberFieldNormalizationExponent_of_fin ω hω).symm
   · calc
       _ = ξ.logNorm x ω.val :=
-        congrArg Real.log (ξ.numberFieldNormalize_norm_tmul_inf hξ ω hω x)
+        congrArg Real.log (ξ.numberFieldNormalize_norm_tmul_inf ω hω x)
       _ = _ := by erw [numberFieldNormalizationExponent_of_inf ω hω, one_mul]
 
 /-- Actual upper domination transports along the produced norm-family normalization. -/
 theorem IsUpperDominated.numberFieldNormalize
     {ξ : NormFamily (numberFieldAdelicStructure K) E}
     (hupper : ξ.IsUpperDominated) (hξ : ξ.IsUltrametric) :
-    (ξ.numberFieldNormalize hξ).IsUpperDominated := by
+    (ξ.numberFieldNormalize).IsUpperDominated := by
+  constructor
   intro x hx
   obtain ⟨A, hA, hbound⟩ := hupper x hx
   refine ⟨fun ω => numberFieldNormalizationExponent ω * A ω.val,
     integrable_numberFieldNormalizationExponent_mul A hA, ?_⟩
   apply Eventually.of_forall
   intro ω
-  exact (ξ.numberFieldNormalize_logNorm hξ x ω).trans_le
+  exact (ξ.numberFieldNormalize_logNorm x ω).trans_le
     (mul_le_mul_of_nonneg_left
       (forall_nontrivial_of_numberField_ae _ hbound ω)
       (numberFieldNormalizationExponent_pos ω).le)
@@ -220,7 +222,8 @@ theorem IsUpperDominated.numberFieldNormalize
 theorem IsLowerDominated.numberFieldNormalize
     {ξ : NormFamily (numberFieldAdelicStructure K) E}
     (hlower : ξ.IsLowerDominated) (hξ : ξ.IsUltrametric) :
-    (ξ.numberFieldNormalize hξ).IsLowerDominated := by
+    (ξ.numberFieldNormalize).IsLowerDominated := by
+  constructor
   intro x hx
   obtain ⟨A, hA, hbound⟩ := hlower x hx
   refine ⟨fun ω => numberFieldNormalizationExponent ω * A ω.val,
@@ -230,6 +233,6 @@ theorem IsLowerDominated.numberFieldNormalize
   exact (mul_le_mul_of_nonneg_left
       (forall_nontrivial_of_numberField_ae _ hbound ω)
       (numberFieldNormalizationExponent_pos ω).le).trans
-    (ξ.numberFieldNormalize_logNorm hξ x ω).symm.le
+    (ξ.numberFieldNormalize_logNorm x ω).symm.le
 
 end ArakelovGeometry.NormFamily

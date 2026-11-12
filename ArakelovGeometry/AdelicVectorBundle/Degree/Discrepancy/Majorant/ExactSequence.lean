@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Majorant.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Determinant.ExactSequence
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Pair
+
 import ArakelovGeometry.AdelicVectorBundle.Determinant.ExactSequence.Dual
 import ArakelovGeometry.AdelicVectorBundle.Determinant.ExactSequence.Operator
 import ArakelovGeometry.AdelicVectorBundle.Operator.Measurable
@@ -97,18 +98,18 @@ theorem determinantRatio_eq_one_of_finrank_eq_zero (ξ η : NormFamily S E)
 /-- A lower bound for every actual elementary majorant ratio bounds the
 intrinsic infimum, with its exact rank-zero convention. -/
 theorem le_majorantDiscrepancy_of_forall_majorant (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω) (a : ℝ)
-    (ha : ∀ η : NormFamily S E, η.IsElementaryAt hN ω →
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω) (a : ℝ)
+    (ha : ∀ η : NormFamily S E, η.IsElementaryAt ω →
       (∀ x, ξ.norm ω x ≤ η.norm ω x) →
       a ≤ η.determinant.norm ω (1 ⊗ₜ[K] determinantGenerator (K := K) (E := E)) /
         ξ.determinant.norm ω (1 ⊗ₜ[K] determinantGenerator (K := K) (E := E))) :
-    a ≤ ξ.majorantDiscrepancy hN ω := by
+    a ≤ ξ.majorantDiscrepancy ω := by
   by_cases hr : Module.finrank K E = 0
-  · rw [ξ.majorantDiscrepancy_eq_one_of_finrank_eq_zero hN hr]
-    obtain ⟨η, he, hl⟩ := ξ.exists_elementaryMajorant hN ω
+  · rw [ξ.majorantDiscrepancy_eq_one_of_finrank_eq_zero hr]
+    obtain ⟨η, he, hl⟩ := ξ.exists_elementaryMajorant ω
     simpa only [ξ.determinantRatio_eq_one_of_finrank_eq_zero η ω hr] using ha η he hl
   · rw [majorantDiscrepancy, ite_eq_right hr]
-    apply le_csInf (ξ.majorantRatios_nonempty hN ω)
+    apply le_csInf (ξ.majorantRatios_nonempty ω)
     rintro b ⟨η, he, hl, rfl⟩
     exact ha η he hl
 
@@ -141,11 +142,11 @@ theorem determinantSequence_operatorNorm_pos_of_equiv (ξ : NormFamily S E)
 product bound through its actual end norms and determinant isometry. -/
 theorem majorantDiscrepancy_restrict_mul_quotient_div_le_majorantRatio
     (ξ η : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (W : Submodule K E) (ω : S.Ω)
-    (he : η.IsElementaryAt hN ω) (hl : ∀ x, ξ.norm ω x ≤ η.norm ω x) :
-    (ξ.restrict W).majorantDiscrepancy hN ω *
-        (ξ.quotient W).majorantDiscrepancy hN ω /
+    (he : η.IsElementaryAt ω) (hl : ∀ x, ξ.norm ω x ≤ η.norm ω x) :
+    (ξ.restrict W).majorantDiscrepancy ω *
+        (ξ.quotient W).majorantDiscrepancy ω /
         ((ξ.restrict W).determinant.injectiveTensorPair
           (ξ.quotient W).determinant).operatorNorm
           ξ.determinant ω (determinantSequenceEquiv W).toLinearMap ≤
@@ -194,12 +195,12 @@ theorem majorantDiscrepancy_restrict_mul_quotient_div_le_majorantRatio
   have horderQ (x : (S.ϕ ω).Completion ⊗[K] (E ⧸ W)) :
       (ξ.quotient W).norm ω x ≤ (η.quotient W).norm ω x :=
     ξ.pushforward_norm_mono η W.mkQ W.mkQ_surjective ω hl x
-  have hW := (ξ.restrict W).majorantDiscrepancy_le_ratio (η.restrict W) hN ω
+  have hW := (ξ.restrict W).majorantDiscrepancy_le_ratio (η.restrict W) ω
     (he.restrict W) horderW
-  have hQ := (ξ.quotient W).majorantDiscrepancy_le_ratio (η.quotient W) hN ω
+  have hQ := (ξ.quotient W).majorantDiscrepancy_le_ratio (η.quotient W) ω
     (he.quotient W) horderQ
-  change (ξ.restrict W).majorantDiscrepancy hN ω ≤ mW / pW at hW
-  change (ξ.quotient W).majorantDiscrepancy hN ω ≤ mQ / pQ at hQ
+  change (ξ.restrict W).majorantDiscrepancy ω ≤ mW / pW at hW
+  change (ξ.quotient W).majorantDiscrepancy ω ≤ mQ / pQ at hQ
   have hi := he.determinantSequence_norm_eq W (1 ⊗ₜ[K] (w ⊗ₜ[K] q))
   rw [LinearMap.baseChange_tmul,
     (η.restrict W).determinant.injectiveTensorPair_norm_rational_generators
@@ -210,7 +211,7 @@ theorem majorantDiscrepancy_restrict_mul_quotient_div_le_majorantRatio
   rw [LinearMap.baseChange_tmul, hn] at hb
   change pE ≤ a * (pW * pQ) at hb
   have hprod := mul_le_mul hW hQ
-    ((ξ.quotient W).majorantDiscrepancy_pos hN ω).le
+    ((ξ.quotient W).majorantDiscrepancy_pos ω).le
     (div_nonneg ((η.restrict W).determinant.norm_nonneg ω _) hpW.le)
   calc
     _ ≤ (mW / pW) * (mQ / pQ) / a := (div_le_div_iff_of_pos_right ha0).2 hprod
@@ -225,10 +226,10 @@ theorem majorantDiscrepancy_restrict_mul_quotient_div_le_majorantRatio
 bound for arbitrary original norms, including rank zero. -/
 theorem majorantDiscrepancy_restrict_mul_quotient_div_le_operatorNorm
     (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (W : Submodule K E) (ω : S.Ω) :
-    (ξ.restrict W).majorantDiscrepancy hN ω *
-        (ξ.quotient W).majorantDiscrepancy hN ω / ξ.majorantDiscrepancy hN ω ≤
+    (ξ.restrict W).majorantDiscrepancy ω *
+        (ξ.quotient W).majorantDiscrepancy ω / ξ.majorantDiscrepancy ω ≤
       ((ξ.restrict W).determinant.injectiveTensorPair
         (ξ.quotient W).determinant).operatorNorm
         ξ.determinant ω (determinantSequenceEquiv W).toLinearMap := by
@@ -236,50 +237,50 @@ theorem majorantDiscrepancy_restrict_mul_quotient_div_le_operatorNorm
     (ξ.quotient W).determinant).operatorNorm
     ξ.determinant ω (determinantSequenceEquiv W).toLinearMap
   have ha : 0 < a := ξ.determinantSequence_operatorNorm_pos_of_equiv W ω
-  have h := ξ.le_majorantDiscrepancy_of_forall_majorant hN ω
-    ((ξ.restrict W).majorantDiscrepancy hN ω *
-      (ξ.quotient W).majorantDiscrepancy hN ω / a)
+  have h := ξ.le_majorantDiscrepancy_of_forall_majorant ω
+    ((ξ.restrict W).majorantDiscrepancy ω *
+      (ξ.quotient W).majorantDiscrepancy ω / a)
     (fun η he hl =>
-      ξ.majorantDiscrepancy_restrict_mul_quotient_div_le_majorantRatio η hN W ω he hl)
-  apply (div_le_iff₀ (ξ.majorantDiscrepancy_pos hN ω)).2
-  exact ((div_le_iff₀ ha).1 h).trans_eq (mul_comm (ξ.majorantDiscrepancy hN ω) a)
+      ξ.majorantDiscrepancy_restrict_mul_quotient_div_le_majorantRatio η W ω he hl)
+  apply (div_le_iff₀ (ξ.majorantDiscrepancy_pos ω)).2
+  exact ((div_le_iff₀ ha).1 h).trans_eq (mul_comm (ξ.majorantDiscrepancy ω) a)
 
 /-- End-space capital discrepancies multiply to at most the middle one
 for arbitrary original fibre norms. -/
 theorem majorantDiscrepancy_restrict_mul_quotient_le (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (W : Submodule K E) (ω : S.Ω) :
-    (ξ.restrict W).majorantDiscrepancy hN ω *
-      (ξ.quotient W).majorantDiscrepancy hN ω ≤ ξ.majorantDiscrepancy hN ω :=
-  (div_le_one (ξ.majorantDiscrepancy_pos hN ω)).1
-    ((ξ.majorantDiscrepancy_restrict_mul_quotient_div_le_operatorNorm hN W ω).trans
+    (ξ.restrict W).majorantDiscrepancy ω *
+      (ξ.quotient W).majorantDiscrepancy ω ≤ ξ.majorantDiscrepancy ω :=
+  (div_le_one (ξ.majorantDiscrepancy_pos ω)).1
+    ((ξ.majorantDiscrepancy_restrict_mul_quotient_div_le_operatorNorm W ω).trans
       (ξ.determinantSequence_operatorNorm_le_one W ω))
 
 theorem majorantDiscrepancy_restrict_le (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (W : Submodule K E) (ω : S.Ω) :
-    (ξ.restrict W).majorantDiscrepancy hN ω ≤ ξ.majorantDiscrepancy hN ω := by
+    (ξ.restrict W).majorantDiscrepancy ω ≤ ξ.majorantDiscrepancy ω := by
   calc
-    _ = (ξ.restrict W).majorantDiscrepancy hN ω * 1 := (mul_one _).symm
-    _ ≤ (ξ.restrict W).majorantDiscrepancy hN ω *
-        (ξ.quotient W).majorantDiscrepancy hN ω :=
-      mul_le_mul_of_nonneg_left ((ξ.quotient W).one_le_majorantDiscrepancy hN ω)
-        ((ξ.restrict W).majorantDiscrepancy_pos hN ω).le
-    _ ≤ ξ.majorantDiscrepancy hN ω :=
-      ξ.majorantDiscrepancy_restrict_mul_quotient_le hN W ω
+    _ = (ξ.restrict W).majorantDiscrepancy ω * 1 := (mul_one _).symm
+    _ ≤ (ξ.restrict W).majorantDiscrepancy ω *
+        (ξ.quotient W).majorantDiscrepancy ω :=
+      mul_le_mul_of_nonneg_left ((ξ.quotient W).one_le_majorantDiscrepancy ω)
+        ((ξ.restrict W).majorantDiscrepancy_pos ω).le
+    _ ≤ ξ.majorantDiscrepancy ω :=
+      ξ.majorantDiscrepancy_restrict_mul_quotient_le W ω
 
 theorem majorantDiscrepancy_quotient_le (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (W : Submodule K E) (ω : S.Ω) :
-    (ξ.quotient W).majorantDiscrepancy hN ω ≤ ξ.majorantDiscrepancy hN ω := by
+    (ξ.quotient W).majorantDiscrepancy ω ≤ ξ.majorantDiscrepancy ω := by
   calc
-    _ = 1 * (ξ.quotient W).majorantDiscrepancy hN ω := (one_mul _).symm
-    _ ≤ (ξ.restrict W).majorantDiscrepancy hN ω *
-        (ξ.quotient W).majorantDiscrepancy hN ω :=
-      mul_le_mul_of_nonneg_right ((ξ.restrict W).one_le_majorantDiscrepancy hN ω)
-        ((ξ.quotient W).majorantDiscrepancy_pos hN ω).le
-    _ ≤ ξ.majorantDiscrepancy hN ω :=
-      ξ.majorantDiscrepancy_restrict_mul_quotient_le hN W ω
+    _ = 1 * (ξ.quotient W).majorantDiscrepancy ω := (one_mul _).symm
+    _ ≤ (ξ.restrict W).majorantDiscrepancy ω *
+        (ξ.quotient W).majorantDiscrepancy ω :=
+      mul_le_mul_of_nonneg_right ((ξ.restrict W).one_le_majorantDiscrepancy ω)
+        ((ξ.quotient W).majorantDiscrepancy_pos ω).le
+    _ ≤ ξ.majorantDiscrepancy ω :=
+      ξ.majorantDiscrepancy_restrict_mul_quotient_le W ω
 
 end
 

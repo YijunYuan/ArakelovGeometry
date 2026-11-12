@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Positive.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.ExactSequence
 import ArakelovGeometry.AdelicVectorBundle.Degree.ExactSequence.Dual
 import ArakelovGeometry.AdelicVectorBundle.Degree.ExactSequence.Majorant
@@ -44,30 +45,30 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 image, so its degree is bounded by ambient quotient positive degree. -/
 theorem degree_quotient_restrict_le_positiveDegree_quotient (V : AdelicVectorBundle S E)
     (U W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (((V.restrictOfMeasurableBase U hS).quotientOfMeasurableBase
-      (W.mkQ.comp U.subtype).ker hS).degree hS hN : EReal) ≤
-      (V.quotientOfMeasurableBase W hS).positiveDegree hS hN := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    (((V.restrictOfMeasurableBase U).quotientOfMeasurableBase
+      (W.mkQ.comp U.subtype).ker).degree : EReal) ≤
+      (V.quotientOfMeasurableBase W).positiveDegree := by
   let g : U →ₗ[K] E ⧸ W := W.mkQ.comp U.subtype
   have hd := degree_le_of_completed_contraction
-    ((V.restrictOfMeasurableBase U hS).quotientOfMeasurableBase g.ker hS)
-    ((V.quotientOfMeasurableBase W hS).restrictOfMeasurableBase g.range hS)
-    g.quotKerEquivRange hS hN
+    ((V.restrictOfMeasurableBase U).quotientOfMeasurableBase g.ker)
+    ((V.quotientOfMeasurableBase W).restrictOfMeasurableBase g.range)
+    g.quotKerEquivRange
     (V.toNormFamily.quotient_restrict_range_norm_le U W)
   exact (EReal.coe_le_coe_iff.mpr hd).trans
-    ((V.quotientOfMeasurableBase W hS).degree_restrict_le_positiveDegree hS hN g.range)
+    ((V.quotientOfMeasurableBase W).degree_restrict_le_positiveDegree g.range)
 
 /-- The intersection degree is a genuine restricted degree inside `W`. -/
 theorem degree_restrict_inf_le_positiveDegree_restrict (V : AdelicVectorBundle S E)
     (U W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    ((V.restrictOfMeasurableBase (U ⊓ W) hS).degree hS hN : EReal) ≤
-      (V.restrictOfMeasurableBase W hS).positiveDegree hS hN := by
-  have h := (V.restrictOfMeasurableBase W hS).degree_restrict_le_positiveDegree
-    hS hN ((U ⊓ W).comap W.subtype)
-  rw [V.degree_restrict_restrict (U ⊓ W) W inf_le_right hS hN] at h
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    ((V.restrictOfMeasurableBase (U ⊓ W)).degree : EReal) ≤
+      (V.restrictOfMeasurableBase W).positiveDegree := by
+  have h := (V.restrictOfMeasurableBase W).degree_restrict_le_positiveDegree
+    ((U ⊓ W).comap W.subtype)
+  rw [V.degree_restrict_restrict (U ⊓ W) W inf_le_right] at h
   exact h
 
 omit [S.IsProper] in
@@ -75,13 +76,13 @@ omit [S.IsProper] in
 original norms are ultrametric outside infinity. -/
 theorem determinantDiscrepancy_restrict_le (V : AdelicVectorBundle S E)
     (U : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsUltrametric) :
-    (V.restrictOfMeasurableBase U hS).determinantDiscrepancy ≤ V.determinantDiscrepancy := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsUltrametric] :
+    (V.restrictOfMeasurableBase U).determinantDiscrepancy ≤ V.determinantDiscrepancy := by
   apply integral_mono
-    ((V.restrictOfMeasurableBase U hS).integrable_log_determinantDiscrepancy hS hN)
-    (V.integrable_log_determinantDiscrepancy hS hN)
+    ((V.restrictOfMeasurableBase U).integrable_log_determinantDiscrepancy)
+    (V.integrable_log_determinantDiscrepancy)
   intro ω
   apply Real.log_le_log ((V.toNormFamily.restrict U).determinantDiscrepancy_pos ω)
   apply V.toNormFamily.determinantDiscrepancy_restrict_le U ω
@@ -95,89 +96,89 @@ The two real end degrees make the extended subtraction-to-addition step valid
 even if one of the genuine capital discrepancies is positive infinity. -/
 theorem degree_restrict_le_positiveDegree_restrict_add_quotient_add_majorantDiscrepancy
     (V : AdelicVectorBundle S E) (U W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    ((V.restrictOfMeasurableBase U hS).degree hS hN : EReal) ≤
-      (V.restrictOfMeasurableBase W hS).positiveDegree hS hN +
-        (V.quotientOfMeasurableBase W hS).positiveDegree hS hN +
-          V.majorantDiscrepancy hN := by
-  let P := V.restrictOfMeasurableBase U hS
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    ((V.restrictOfMeasurableBase U).degree : EReal) ≤
+      (V.restrictOfMeasurableBase W).positiveDegree +
+        (V.quotientOfMeasurableBase W).positiveDegree +
+          V.majorantDiscrepancy := by
+  let P := V.restrictOfMeasurableBase U
   let I := (W.mkQ.comp U.subtype).ker
-  let R := P.restrictOfMeasurableBase I hS
-  let Q := P.quotientOfMeasurableBase I hS
+  let R := P.restrictOfMeasurableBase I
+  let Q := P.quotientOfMeasurableBase I
   have hI : (U ⊓ W).comap U.subtype = I := by
     simp only [I, LinearMap.ker_comp, Submodule.ker_mkQ, Submodule.comap_inf]
     simp
-  have hR : (R.degree hS hN : EReal) ≤
-      (V.restrictOfMeasurableBase W hS).positiveDegree hS hN := by
-    have hd := V.degree_restrict_restrict (U ⊓ W) U inf_le_left hS hN
+  have hR : (R.degree : EReal) ≤
+      (V.restrictOfMeasurableBase W).positiveDegree := by
+    have hd := V.degree_restrict_restrict (U ⊓ W) U inf_le_left
     rw [hI] at hd
-    change R.degree hS hN = _ at hd
+    change R.degree = _ at hd
     rw [hd]
-    exact V.degree_restrict_inf_le_positiveDegree_restrict U W hS hN
-  have hQ : (Q.degree hS hN : EReal) ≤
-      (V.quotientOfMeasurableBase W hS).positiveDegree hS hN :=
-    V.degree_quotient_restrict_le_positiveDegree_quotient U W hS hN
-  have hRs : (R.degree hS hN : EReal) - R.majorantDiscrepancy hN ≤ R.degree hS hN := by
-    simpa only [sub_zero] using EReal.sub_le_sub (le_refl (R.degree hS hN : EReal))
-      (R.majorantDiscrepancy_nonneg hN)
-  have hQs : (Q.degree hS hN : EReal) - Q.majorantDiscrepancy hN ≤ Q.degree hS hN := by
-    simpa only [sub_zero] using EReal.sub_le_sub (le_refl (Q.degree hS hN : EReal))
-      (Q.majorantDiscrepancy_nonneg hN)
-  have hb := (P.degree_sub_majorantDiscrepancy_le_restrict_add_quotient I hS hN).trans
+    exact V.degree_restrict_inf_le_positiveDegree_restrict U W
+  have hQ : (Q.degree : EReal) ≤
+      (V.quotientOfMeasurableBase W).positiveDegree :=
+    V.degree_quotient_restrict_le_positiveDegree_quotient U W
+  have hRs : (R.degree : EReal) - R.majorantDiscrepancy ≤ R.degree := by
+    simpa only [sub_zero] using EReal.sub_le_sub (le_refl (R.degree : EReal))
+      (R.majorantDiscrepancy_nonneg)
+  have hQs : (Q.degree : EReal) - Q.majorantDiscrepancy ≤ Q.degree := by
+    simpa only [sub_zero] using EReal.sub_le_sub (le_refl (Q.degree : EReal))
+      (Q.majorantDiscrepancy_nonneg)
+  have hb := (P.degree_sub_majorantDiscrepancy_le_restrict_add_quotient I).trans
     (add_le_add hRs hQs)
   rw [← EReal.coe_add] at hb
   have hc := (EReal.sub_le_iff_le_add
-    (Or.inr (EReal.coe_ne_top (R.degree hS hN + Q.degree hS hN)))
-    (Or.inr (EReal.coe_ne_bot (R.degree hS hN + Q.degree hS hN)))).mp hb
+    (Or.inr (EReal.coe_ne_top (R.degree + Q.degree)))
+    (Or.inr (EReal.coe_ne_bot (R.degree + Q.degree)))).mp hb
   rw [EReal.coe_add] at hc
-  exact hc.trans (add_le_add (add_le_add hR hQ) (V.majorantDiscrepancy_restrict_le U hS hN))
+  exact hc.trans (add_le_add (add_le_add hR hQ) (V.majorantDiscrepancy_restrict_le U))
 
 /-- Source (4.36) for the actual restriction-quotient sequence, with all
 ambient subspaces and infinite capital discrepancy retained. -/
 theorem positiveDegree_le_restrict_add_quotient_add_majorantDiscrepancy
     (V : AdelicVectorBundle S E) (W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.positiveDegree hS hN ≤ (V.restrictOfMeasurableBase W hS).positiveDegree hS hN +
-      (V.quotientOfMeasurableBase W hS).positiveDegree hS hN + V.majorantDiscrepancy hN := by
-  apply V.positiveDegree_le hS hN
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.positiveDegree ≤ (V.restrictOfMeasurableBase W).positiveDegree +
+      (V.quotientOfMeasurableBase W).positiveDegree + V.majorantDiscrepancy := by
+  apply V.positiveDegree_le
   intro U
   exact V.degree_restrict_le_positiveDegree_restrict_add_quotient_add_majorantDiscrepancy
-    U W hS hN
+    U W
 
 /-- The finite determinant-discrepancy variant controls each actual
 restricted degree under the source ultrametric-outside-infinity hypothesis. -/
 theorem degree_restrict_le_positiveDegree_restrict_add_quotient_add_determinantDiscrepancy
     (V : AdelicVectorBundle S E) (U W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsUltrametric) :
-    ((V.restrictOfMeasurableBase U hS).degree hS hN : EReal) ≤
-      (V.restrictOfMeasurableBase W hS).positiveDegree hS hN +
-        (V.quotientOfMeasurableBase W hS).positiveDegree hS hN +
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsUltrametric] :
+    ((V.restrictOfMeasurableBase U).degree : EReal) ≤
+      (V.restrictOfMeasurableBase W).positiveDegree +
+        (V.quotientOfMeasurableBase W).positiveDegree +
           (V.determinantDiscrepancy : EReal) := by
-  let P := V.restrictOfMeasurableBase U hS
+  let P := V.restrictOfMeasurableBase U
   let I := (W.mkQ.comp U.subtype).ker
-  let R := P.restrictOfMeasurableBase I hS
-  let Q := P.quotientOfMeasurableBase I hS
+  let R := P.restrictOfMeasurableBase I
+  let Q := P.quotientOfMeasurableBase I
   have hI : (U ⊓ W).comap U.subtype = I := by
     simp only [I, LinearMap.ker_comp, Submodule.ker_mkQ, Submodule.comap_inf]
     simp
-  have hR : (R.degree hS hN : EReal) ≤
-      (V.restrictOfMeasurableBase W hS).positiveDegree hS hN := by
-    have hd := V.degree_restrict_restrict (U ⊓ W) U inf_le_left hS hN
+  have hR : (R.degree : EReal) ≤
+      (V.restrictOfMeasurableBase W).positiveDegree := by
+    have hd := V.degree_restrict_restrict (U ⊓ W) U inf_le_left
     rw [hI] at hd
-    change R.degree hS hN = _ at hd
+    change R.degree = _ at hd
     rw [hd]
-    exact V.degree_restrict_inf_le_positiveDegree_restrict U W hS hN
-  have hQ : (Q.degree hS hN : EReal) ≤
-      (V.quotientOfMeasurableBase W hS).positiveDegree hS hN :=
-    V.degree_quotient_restrict_le_positiveDegree_quotient U W hS hN
-  have hs := P.degree_sub_determinantDiscrepancy_le_restrict_add_quotient I hS hN
-    (hV.restrict U)
-  have hP := V.determinantDiscrepancy_restrict_le U hS hN hV
-  have hd : P.degree hS hN ≤ R.degree hS hN + Q.degree hS hN +
+    exact V.degree_restrict_inf_le_positiveDegree_restrict U W
+  have hQ : (Q.degree : EReal) ≤
+      (V.quotientOfMeasurableBase W).positiveDegree :=
+    V.degree_quotient_restrict_le_positiveDegree_quotient U W
+  have hs := P.degree_sub_determinantDiscrepancy_le_restrict_add_quotient I
+    (hV := (hV.restrict U))
+  have hP := V.determinantDiscrepancy_restrict_le U
+  have hd : P.degree ≤ R.degree + Q.degree +
       V.determinantDiscrepancy := by
     have hRd := R.determinantDiscrepancy_nonneg
     have hQd := Q.determinantDiscrepancy_nonneg
@@ -190,28 +191,28 @@ theorem degree_restrict_le_positiveDegree_restrict_add_quotient_add_determinantD
 positive-degree supremum as a premise. -/
 theorem positiveDegree_le_restrict_add_quotient_add_determinantDiscrepancy
     (V : AdelicVectorBundle S E) (W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsUltrametric) :
-    V.positiveDegree hS hN ≤ (V.restrictOfMeasurableBase W hS).positiveDegree hS hN +
-      (V.quotientOfMeasurableBase W hS).positiveDegree hS hN +
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsUltrametric] :
+    V.positiveDegree ≤ (V.restrictOfMeasurableBase W).positiveDegree +
+      (V.quotientOfMeasurableBase W).positiveDegree +
         (V.determinantDiscrepancy : EReal) := by
-  apply V.positiveDegree_le hS hN
+  apply V.positiveDegree_le
   intro U
   exact V.degree_restrict_le_positiveDegree_restrict_add_quotient_add_determinantDiscrepancy
-    U W hS hN hV
+    U W
 
 /-- Hermitian vanishing of the actual discrepancy removes the exact-sequence
 error term in the positive-degree bound. -/
 theorem positiveDegree_le_restrict_add_quotient_of_isHermitian
     (V : AdelicVectorBundle S E) (W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) :
-    V.positiveDegree hS hN ≤ (V.restrictOfMeasurableBase W hS).positiveDegree hS hN +
-      (V.quotientOfMeasurableBase W hS).positiveDegree hS hN := by
-  have h := V.positiveDegree_le_restrict_add_quotient_add_determinantDiscrepancy W hS hN hV.1
-  simpa only [V.determinantDiscrepancy_eq_zero_of_isHermitian hN hV,
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] :
+    V.positiveDegree ≤ (V.restrictOfMeasurableBase W).positiveDegree +
+      (V.quotientOfMeasurableBase W).positiveDegree := by
+  have h := V.positiveDegree_le_restrict_add_quotient_add_determinantDiscrepancy W (hV := hV.1)
+  simpa only [V.determinantDiscrepancy_eq_zero_of_isHermitian,
     EReal.coe_zero, add_zero] using h
 
 end

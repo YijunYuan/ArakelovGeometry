@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Ordered
 public import ArakelovGeometry.AdelicVectorBundle.Minkowski.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Minima.FiltrationRank
 import ArakelovGeometry.AdelicVectorBundle.Minima.SubspaceFiltration
 import Mathlib.CategoryTheory.Category.Init
@@ -35,15 +36,15 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 bundle and compare its produced rank with the original rank. Finite-place
 ultrametricity is required, as in the predicate, and the zero cut is allowed. -/
 theorem coe_sub_log_rank_le_minimalLogarithmicMinimum_restrict_generalHNFiltration
-    (V : AdelicVectorBundle S E) (hV : V.toNormFamily.IsUltrametric)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} hS hN C) (t : ℝ) :
+    (V : AdelicVectorBundle S E) [hV : V.toNormFamily.IsUltrametric]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} C) (t : ℝ) :
     ((t - C * Real.log (Module.finrank K E) : ℝ) : EReal) ≤
       minimalLogarithmicMinimum
-        (V.restrictOfMeasurableBase (V.generalHNFiltration hS hN t) hS) := by
-  let U := V.generalHNFiltration hS hN t
-  let R := V.restrictOfMeasurableBase U hS
+        (V.restrictOfMeasurableBase (V.generalHNFiltration t)) := by
+  let U := V.generalHNFiltration t
+  let R := V.restrictOfMeasurableBase U
   by_cases hU : U = ⊥
   · have hr : Module.finrank K U = 0 := by rw [hU, finrank_bot]
     rw [R.minimalLogarithmicMinimum_eq_top_of_finrank_eq_zero hr]
@@ -55,25 +56,25 @@ theorem coe_sub_log_rank_le_minimalLogarithmicMinimum_restrict_generalHNFiltrati
       (Nat.cast_le.mpr U.finrank_le)
     have hc := mul_le_mul_of_nonneg_left hlog hM.1
     rw [EReal.coe_sub]
-    exact (EReal.sub_le_sub (V.le_minimalSlope_restrict_generalHNFiltration hS hN t)
+    exact (EReal.sub_le_sub (V.le_minimalSlope_restrict_generalHNFiltration t)
       (EReal.coe_le_coe hc)).trans hstrong
 
 /-- Corrected source Proposition4.3.80's actual filtration shift. Its finite
 place admissibility is visible, and the universal property produces the
 restricted last-minimum bound rather than assuming target containment. -/
 theorem generalHNFiltration_le_minimaFiltration_sub_log_rank
-    (V : AdelicVectorBundle S E) (hV : V.toNormFamily.IsUltrametric)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} hS hN C) (t : ℝ) :
-    V.generalHNFiltration hS hN t ≤
+    (V : AdelicVectorBundle S E) [hV : V.toNormFamily.IsUltrametric]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} C) (t : ℝ) :
+    V.generalHNFiltration t ≤
       V.minimaFiltration (t - C * Real.log (Module.finrank K E)) := by
-  let U := V.generalHNFiltration hS hN t
-  let R := V.restrictOfMeasurableBase U hS
+  let U := V.generalHNFiltration t
+  let R := V.restrictOfMeasurableBase U
   let a := t - C * Real.log (Module.finrank K E)
   have htop : R.minimaFiltration a = ⊤ := (R.minimaFiltration_eq_top_iff a).mpr
-    (V.coe_sub_log_rank_le_minimalLogarithmicMinimum_restrict_generalHNFiltration hV hS hN hM t)
-  have hm := V.minimaFiltration_restrict_map_le U hS a
+    (V.coe_sub_log_rank_le_minimalLogarithmicMinimum_restrict_generalHNFiltration hM t)
+  have hm := V.minimaFiltration_restrict_map_le U a
   rw [htop, Submodule.map_subtype_top] at hm
   exact hm
 
@@ -81,16 +82,16 @@ theorem generalHNFiltration_le_minimaFiltration_sub_log_rank
 Actual HN rank-cut attainment and the produced filtration shift give the
 converse bound, without assuming logarithmic-minimum attainment or finiteness. -/
 theorem generalHNOrderedSlope_le_logarithmicMinimum_add_log_rank
-    (V : AdelicVectorBundle S E) (hV : V.toNormFamily.IsUltrametric)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} hS hN C)
+    (V : AdelicVectorBundle S E) [hV : V.toNormFamily.IsUltrametric]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} C)
     (j : Fin (Module.finrank K E)) :
-    (V.generalHNOrderedSlope hS hN j : EReal) ≤ V.logarithmicMinimum (j.val + 1) +
+    (V.generalHNOrderedSlope j : EReal) ≤ V.logarithmicMinimum (j.val + 1) +
       (C * Real.log (Module.finrank K E) : ℝ) := by
-  let t := V.generalHNOrderedSlope hS hN j
-  have hr := (V.lt_finrank_generalHNFiltration_orderedSlope hS hN j).trans_le
-    (Submodule.finrank_mono (V.generalHNFiltration_le_minimaFiltration_sub_log_rank hV hS hN hM t))
+  let t := V.generalHNOrderedSlope j
+  have hr := (V.lt_finrank_generalHNFiltration_orderedSlope j).trans_le
+    (Submodule.finrank_mono (V.generalHNFiltration_le_minimaFiltration_sub_log_rank hM t))
   have hm := (V.le_finrank_minimaFiltration_iff (j.val + 1)
     (t - C * Real.log (Module.finrank K E))).mp (Nat.succ_le_of_lt hr)
   rw [EReal.coe_sub] at hm

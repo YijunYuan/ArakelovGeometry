@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.TraceDual.Codifferent.Dual
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import Mathlib.Topology.Sheaves.Init
 
@@ -119,52 +120,58 @@ variable {K E : Type*} [Field K] [NumberField K]
   {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
 
 /-- Tensor–Hom duality on the actual dominated pure global ball. -/
-def IsDominated.pure_globalBall_tensorCodifferentEquiv (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
-    codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) (ξ.globalUnitBallModule hξ) ≃ₗ[𝓞 K]
-      ((ξ.globalUnitBallModule hξ) →ₗ[𝓞 K] codifferentModule K) :=
-  tensorCodifferentEquiv (ξ.globalUnitBallModule hξ)
+def globalUnitBallTensorCodifferentEquiv
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
+    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
+    codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) (ξ.globalUnitBallModule) ≃ₗ[𝓞 K]
+      ((ξ.globalUnitBallModule) →ₗ[𝓞 K] codifferentModule K) :=
+  tensorCodifferentEquiv (ξ.globalUnitBallModule)
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure).1
 
 @[simp]
-theorem IsDominated.pure_globalBall_tensorCodifferentEquiv_tmul_apply
-    (hdom : ξ.IsDominated) (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces)
-    (a : codifferentModule K) (φ : Module.Dual (𝓞 K) (ξ.globalUnitBallModule hξ))
-    (m : ξ.globalUnitBallModule hξ) :
-    hdom.pure_globalBall_tensorCodifferentEquiv hξ hpure (a ⊗ₜ[𝓞 K] φ) m = φ m • a :=
+theorem globalUnitBallTensorCodifferentEquiv_tmul_apply
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
+    [ξ.IsDominated] [ξ.IsUltrametric] [ξ.IsPureAtFinitePlaces]
+    (a : codifferentModule K) (φ : Module.Dual (𝓞 K) (ξ.globalUnitBallModule))
+    (m : ξ.globalUnitBallModule) :
+    ξ.globalUnitBallTensorCodifferentEquiv (a ⊗ₜ[𝓞 K] φ) m = φ m • a :=
   tensorCodifferentEquiv_tmul_apply _ _ a φ m
 
 /-- The original trace-integral dual of the pure global ball as an actual tensor. -/
-def IsDominated.pure_globalBall_traceTensorEquiv (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
-    codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) (ξ.globalUnitBallModule hξ) ≃ₗ[𝓞 K]
-      integralTraceDual (ξ.globalUnitBallModule hξ) :=
+def globalUnitBallTraceTensorEquiv
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
+    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
+    codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) (ξ.globalUnitBallModule) ≃ₗ[𝓞 K]
+      integralTraceDual (ξ.globalUnitBallModule) :=
   let hm := hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure
-  traceTensorEquiv (ξ.globalUnitBallModule hξ) hm.1 hm.2.2
+  traceTensorEquiv (ξ.globalUnitBallModule) hm.1 hm.2.2
 
 @[simp]
-theorem IsDominated.pure_globalBall_traceTensorEquiv_tmul_apply
-    (hdom : ξ.IsDominated) (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces)
-    (a : codifferentModule K) (φ : Module.Dual (𝓞 K) (ξ.globalUnitBallModule hξ))
-    (m : ξ.globalUnitBallModule hξ) :
-    (hdom.pure_globalBall_traceTensorEquiv hξ hpure (a ⊗ₜ[𝓞 K] φ)).1 (m : E) =
+theorem globalUnitBallTraceTensorEquiv_tmul_apply
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
+    [ξ.IsDominated] [ξ.IsUltrametric] [ξ.IsPureAtFinitePlaces]
+    (a : codifferentModule K) (φ : Module.Dual (𝓞 K) (ξ.globalUnitBallModule))
+    (m : ξ.globalUnitBallModule) :
+    (ξ.globalUnitBallTraceTensorEquiv (a ⊗ₜ[𝓞 K] φ)).1 (m : E) =
       algebraMap (𝓞 K) K (φ m) * (a : K) :=
   traceTensorEquiv_tmul_apply _ _ _ a φ m
 
 /-- The actual integer trace dual of the original pure global ball. -/
-def IsDominated.pure_globalBall_integerTensorEquiv (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
-    codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) (ξ.globalUnitBallModule hξ) ≃ₗ[ℤ]
-      Module.Dual ℤ (ξ.globalUnitBallModule hξ) :=
+def globalUnitBallIntegerTensorEquiv
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
+    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
+    codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) (ξ.globalUnitBallModule) ≃ₗ[ℤ]
+      Module.Dual ℤ (ξ.globalUnitBallModule) :=
   let hm := hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure
-  integerTensorEquiv (ξ.globalUnitBallModule hξ) hm.1 hm.2.2
+  integerTensorEquiv (ξ.globalUnitBallModule) hm.1 hm.2.2
 
 @[simp]
-theorem IsDominated.pure_globalBall_integerTensorEquiv_tmul_apply
-    (hdom : ξ.IsDominated) (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces)
-    (a : codifferentModule K) (φ : Module.Dual (𝓞 K) (ξ.globalUnitBallModule hξ))
-    (m : ξ.globalUnitBallModule hξ) :
-    (hdom.pure_globalBall_integerTensorEquiv hξ hpure (a ⊗ₜ[𝓞 K] φ) m : ℚ) =
+theorem globalUnitBallIntegerTensorEquiv_tmul_apply
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
+    [ξ.IsDominated] [ξ.IsUltrametric] [ξ.IsPureAtFinitePlaces]
+    (a : codifferentModule K) (φ : Module.Dual (𝓞 K) (ξ.globalUnitBallModule))
+    (m : ξ.globalUnitBallModule) :
+    (ξ.globalUnitBallIntegerTensorEquiv (a ⊗ₜ[𝓞 K] φ) m : ℚ) =
       Algebra.trace ℚ K (algebraMap (𝓞 K) K (φ m) * (a : K)) :=
   integerTensorEquiv_tmul_apply _ _ _ a φ m
 

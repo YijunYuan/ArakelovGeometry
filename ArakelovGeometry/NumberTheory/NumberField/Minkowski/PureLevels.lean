@@ -10,6 +10,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Hermitian
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Purity.Basic
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.LineVector
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.Semistability
 import ArakelovGeometry.NumberTheory.NumberField.Minima.HermitianFirst
@@ -79,40 +80,42 @@ theorem rank_one_invariants
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
     (hr : Module.finrank K E = 1) :
     V.maximalLogarithmicMinimum =
-        (V.degree (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions : EReal) ∧
-      V.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions =
-        (V.degree (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions : EReal) ∧
-      V.minimalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions =
-        (V.degree (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions : EReal) := by
+        (V.degree : EReal) ∧
+      V.maximalSlope =
+        (V.degree : EReal) ∧
+      V.minimalSlope =
+        (V.degree : EReal) := by
   let hS : DiscreteMeasurableSpace (normalizedNumberFieldAdelicStructure K).Ω ∨
       (normalizedNumberFieldAdelicStructure K).HasCommonCountableDenseSubfield :=
     Or.inl inferInstance
   let hN := normalizedNumberFieldArchimedeanCompletions (K := K)
-  have hline : V.IsLine := hr
+  have hline : V.IsLine := ⟨hr⟩
   have hp : 0 < Module.finrank K E := by omega
-  have hsemi := V.isMeanSlopeSemistable_of_finrank_eq_one hS hN hr
-  have hmax := (V.isMeanSlopeSemistable_iff_maximalSlope_eq_slope hS hN hp).mp hsemi
+  have hsemi := V.isMeanSlopeSemistable_of_finrank_eq_one (hS := ⟨hS⟩) (hN := ⟨hN⟩) hr
+  have hmax := (V.isMeanSlopeSemistable_iff_maximalSlope_eq_slope (hS := ⟨hS⟩)
+      (hN := ⟨hN⟩) hp).mp hsemi
   have hmin := (V.isMeanSlopeSemistable_iff_minimalSlope_eq_slope_of_isHermitian
-    hS hN (hline.isHermitian hN) hp).mp hsemi
-  rw [V.slope_eq_degree_of_finrank_one hS hN hr] at hmax hmin
+    (hS := ⟨hS⟩) (hN := ⟨hN⟩) (hV := (hline.isHermitian (hS := ⟨hN⟩))) hp).mp hsemi
+  rw [V.slope_eq_degree_of_finrank_one (hS := ⟨hS⟩) (hN := ⟨hN⟩) hr] at hmax hmin
   refine ⟨?_, hmax, hmin⟩
-  rw [V.maximalLogarithmicMinimum_eq_lineDegree hline, V.degree_eq_lineDegree hS hN hline]
+  rw [V.maximalLogarithmicMinimum_eq_lineDegree (hV := hline), V.degree_eq_lineDegree (hS := ⟨hS⟩)
+      (hN := ⟨hN⟩) (hV := hline)]
 
 /-- The explicit ordinary Minkowski bound on the pure Hermitian subclass.
 This does not assert the unrestricted number-field Minkowski property. -/
 theorem hermitian_maximalSlope_sub_level_mul_log_le_firstMinimum
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
-    (hV : V.toNormFamily.IsHermitian normalizedNumberFieldArchimedeanCompletions)
-    (hpure : V.toNormFamily.IsPureAtFinitePlaces) :
-    V.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions -
+    [hV : V.toNormFamily.IsHermitian]
+    [hpure : V.toNormFamily.IsPureAtFinitePlaces] :
+    V.maximalSlope -
       ((((Module.finrank ℚ K : ℝ) / 2 +
           Real.log |(NumberField.discr K : ℝ)| / (2 * Real.log 2)) *
         Real.log (Module.finrank K E : ℝ) : ℝ) : EReal) ≤
           V.maximalLogarithmicMinimum := by
   by_cases hz : Module.finrank K E = 0
   · simp only [hz, Nat.cast_zero, Real.log_zero, mul_zero, EReal.coe_zero, sub_zero]
-    rw [V.maximalSlope_eq_bot_of_finrank_eq_zero (Or.inl inferInstance)
-      normalizedNumberFieldArchimedeanCompletions hz]
+    rw [V.maximalSlope_eq_bot_of_finrank_eq_zero
+      hz]
     exact bot_le
   have hn : 0 < Module.finrank K E := Nat.pos_of_ne_zero hz
   by_cases hr : Module.finrank K E = 1
@@ -121,7 +124,7 @@ theorem hermitian_maximalSlope_sub_level_mul_log_le_firstMinimum
     exact hmax.trans hfirst.symm |>.le
   · have htwo : 2 ≤ Module.finrank K E := by omega
     have h := NumberFieldHermitianFirstMinimum.maximalSlope_sub_error_le_firstMinimum
-      V hV hpure hn
+      V hn
     have hc := error_le_level_mul_log K htwo ((Module.finrank ℚ K : ℝ) / 2)
     exact (EReal.sub_le_sub le_rfl (EReal.coe_le_coe hc)).trans h
 
@@ -129,16 +132,16 @@ theorem hermitian_maximalSlope_sub_level_mul_log_le_firstMinimum
 norms; finite-place ultrametricity remains separate from value-group purity. -/
 theorem maximalSlope_sub_level_mul_log_le_firstMinimum
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
-    (hU : V.toNormFamily.IsUltrametric) (hpure : V.toNormFamily.IsPureAtFinitePlaces) :
-    V.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions -
+    [hU : V.toNormFamily.IsUltrametric] [hpure : V.toNormFamily.IsPureAtFinitePlaces] :
+    V.maximalSlope -
       ((((Module.finrank ℚ K : ℝ) +
           Real.log |(NumberField.discr K : ℝ)| / (2 * Real.log 2)) *
         Real.log (Module.finrank K E : ℝ) : ℝ) : EReal) ≤
           V.maximalLogarithmicMinimum := by
   by_cases hz : Module.finrank K E = 0
   · simp only [hz, Nat.cast_zero, Real.log_zero, mul_zero, EReal.coe_zero, sub_zero]
-    rw [V.maximalSlope_eq_bot_of_finrank_eq_zero (Or.inl inferInstance)
-      normalizedNumberFieldArchimedeanCompletions hz]
+    rw [V.maximalSlope_eq_bot_of_finrank_eq_zero
+      hz]
     exact bot_le
   have hn : 0 < Module.finrank K E := Nat.pos_of_ne_zero hz
   by_cases hr : Module.finrank K E = 1
@@ -147,7 +150,7 @@ theorem maximalSlope_sub_level_mul_log_le_firstMinimum
     exact hmax.trans hfirst.symm |>.le
   · have htwo : 2 ≤ Module.finrank K E := by omega
     have h := NumberFieldPureFirstMinimum.maximalSlope_sub_error_le_firstMinimum
-      V hU hpure hn
+      V hn
     have hc := error_le_level_mul_log K htwo (Module.finrank ℚ K : ℝ)
     exact (EReal.sub_le_sub le_rfl (EReal.coe_le_coe hc)).trans h
 

@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.TraceDualNorm
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import Mathlib.Topology.Sheaves.Init
 
@@ -85,15 +86,15 @@ omit [FiniteDimensional K E] in
 /-- The ordinary primal product inner product is the unweighted sum of fibre products. -/
 theorem ordinaryInner_eq_sum
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (z x : CompletedVectorProduct K E) :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
-    letI := euclideanInnerProduct hξ
-    inner ℝ z x = ∑ w : InfinitePlace K, localInner hξ w (z w) (x w) := by
+    letI := euclideanInnerProduct (ξ := ξ)
+    inner ℝ z x = ∑ w : InfinitePlace K, localInner (ξ := ξ) w (z w) (x w) := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   rw [real_inner_eq_norm_add_mul_self_sub_norm_mul_self_sub_norm_mul_self_div_two]
   simp only [← pow_two, euclidean_norm_sq, localInner_polarization, Pi.add_apply]
   rw [← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib, Finset.sum_div]
@@ -101,32 +102,32 @@ theorem ordinaryInner_eq_sum
 /-- The local trace Riesz representatives in the ordinary, unweighted primal product. -/
 def ordinaryTraceRiesz
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) : CompletedVectorProduct K E :=
-  fun w => localTraceRiesz hξ w (f w)
+  fun w ↦ localTraceRiesz (ξ := ξ) w (f w)
 
 theorem ordinaryTraceRiesz_inner
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) (x : CompletedVectorProduct K E) :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
-    letI := euclideanInnerProduct hξ
-    inner ℝ (ordinaryTraceRiesz hξ f) x = tracePairing (K := K) (E := E) f x := by
+    letI := euclideanInnerProduct (ξ := ξ)
+    inner ℝ (ordinaryTraceRiesz (ξ := ξ) f) x = tracePairing (K := K) (E := E) f x := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   rw [ordinaryInner_eq_sum, tracePairing_apply]
   apply Finset.sum_congr rfl
   intro w _
-  exact localTraceRiesz_inner hξ w (f w) (x w)
+  exact localTraceRiesz_inner w (f w) (x w)
 
 theorem ordinaryTraceRiesz_norm_sq
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) :
     letI := euclideanNormedAddCommGroup ξ
-    ‖ordinaryTraceRiesz hξ f‖ ^ 2 = ∑ w : InfinitePlace K,
+    ‖ordinaryTraceRiesz (ξ := ξ) f‖ ^ 2 = ∑ w : InfinitePlace K,
       ((w.mult : ℝ) * ξ.dual.norm (normalizedInfinitePlacePoint w) (f w)) ^ 2 := by
   let := euclideanNormedAddCommGroup ξ
   rw [euclidean_norm_sq]
@@ -151,7 +152,7 @@ theorem ordinaryTracePairingCLM_apply
 
 theorem ordinaryTracePairingCLM_norm_sq
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
@@ -159,17 +160,17 @@ theorem ordinaryTracePairingCLM_norm_sq
       ((w.mult : ℝ) * ξ.dual.norm (normalizedInfinitePlacePoint w) (f w)) ^ 2 := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   have he : ordinaryTracePairingCLM ξ f =
-      InnerProductSpace.toDual ℝ _ (ordinaryTraceRiesz hξ f) := by
+      InnerProductSpace.toDual ℝ _ (ordinaryTraceRiesz (ξ := ξ) f) := by
     ext x
-    exact (ordinaryTraceRiesz_inner hξ f x).symm
+    exact (ordinaryTraceRiesz_inner f x).symm
   rw [he, LinearIsometryEquiv.norm_map]
-  exact ordinaryTraceRiesz_norm_sq hξ f
+  exact ordinaryTraceRiesz_norm_sq f
 
 theorem ordinaryTracePairingCLM_norm
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
@@ -179,13 +180,13 @@ theorem ordinaryTracePairingCLM_norm
   let := euclideanNormedSpace ξ
   let := ordinaryTraceDualNormedAddCommGroup ξ
   apply (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp
-  rw [ordinaryTracePairingCLM_norm_sq hξ, ordinaryTraceDual_norm_sq]
+  rw [ordinaryTracePairingCLM_norm_sq, ordinaryTraceDual_norm_sq]
 
 /-- The original trace pairing, isometrically to the ordinary real continuous dual.
 The domain metric has local factors `w.mult`, including factor two at complex places. -/
 def ordinaryTraceDualIsometry
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
     letI := ordinaryTraceDualNormedAddCommGroup ξ
@@ -197,28 +198,28 @@ def ordinaryTraceDualIsometry
   let := ordinaryTraceDualNormedAddCommGroup ξ
   let := ordinaryTraceDualNormedSpace ξ
   exact { (tracePairingEquiv (K := K) (E := E)).trans LinearMap.toContinuousLinearMap with
-    norm_map' := ordinaryTracePairingCLM_norm hξ }
+    norm_map' := ordinaryTracePairingCLM_norm }
 
 @[simp]
 theorem ordinaryTraceDualIsometry_apply
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) (x : CompletedVectorProduct K E) :
-    ordinaryTraceDualIsometry hξ f x = tracePairing (K := K) (E := E) f x := rfl
+    ordinaryTraceDualIsometry (ξ := ξ) f x = tracePairing (K := K) (E := E) f x := rfl
 
 theorem ordinaryTraceDualIsometry_original
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : Module.Dual K E) (x : E) :
-    ordinaryTraceDualIsometry hξ (vectorDiagonalMap (K := K) f)
+    ordinaryTraceDualIsometry (ξ := ξ) (vectorDiagonalMap (K := K) f)
       (vectorDiagonalMap (K := K) x) = (Algebra.trace ℚ K (f x) : ℝ) := by
   rw [ordinaryTraceDualIsometry_apply, tracePairing_original]
 
 theorem ordinaryTraceDualIsometry_integral
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) (f : NumberFieldIntegralTraceDual.integralTraceDual M) (m : M) :
-    ordinaryTraceDualIsometry hξ (vectorDiagonalMap (K := K) (f : Module.Dual K E))
+    ordinaryTraceDualIsometry (ξ := ξ) (vectorDiagonalMap (K := K) (f : Module.Dual K E))
       (vectorDiagonalMap (K := K) (m : E)) ∈ LinearMap.range (Algebra.linearMap ℤ ℝ) := by
   refine ⟨NumberFieldIntegralTraceDual.traceRestriction M f m, ?_⟩
   change (NumberFieldIntegralTraceDual.traceRestriction M f m : ℝ) = _
@@ -229,7 +230,7 @@ theorem ordinaryTraceDualIsometry_integral
 real dual image under the ordinary trace isometry, through the canonical continuous dual. -/
 theorem ordinaryTraceDualIsometry_integral_image
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) :
     letI := euclideanNormedAddCommGroup ξ
@@ -237,7 +238,7 @@ theorem ordinaryTraceDualIsometry_integral_image
     letI := ordinaryTraceDualNormedAddCommGroup ξ
     letI := ordinaryTraceDualNormedSpace ξ
     (diagonalLattice (NumberFieldIntegralTraceDual.integralTraceDual M)).map
-      ((ordinaryTraceDualIsometry hξ).toLinearEquiv.toLinearMap.restrictScalars ℤ) =
+      ((ordinaryTraceDualIsometry (ξ := ξ)).toLinearEquiv.toLinearMap.restrictScalars ℤ) =
         (integralRealDual M).map
           ((LinearMap.toContinuousLinearMap :
             Module.Dual ℝ (CompletedVectorProduct K E) ≃ₗ[ℝ]
@@ -246,7 +247,7 @@ theorem ordinaryTraceDualIsometry_integral_image
   let := euclideanNormedSpace ξ
   let := ordinaryTraceDualNormedAddCommGroup ξ
   let := ordinaryTraceDualNormedSpace ξ
-  have he : (ordinaryTraceDualIsometry hξ).toLinearEquiv.toLinearMap.restrictScalars ℤ =
+  have he : (ordinaryTraceDualIsometry (ξ := ξ)).toLinearEquiv.toLinearMap.restrictScalars ℤ =
       ((LinearMap.toContinuousLinearMap :
         Module.Dual ℝ (CompletedVectorProduct K E) ≃ₗ[ℝ]
           StrongDual ℝ (CompletedVectorProduct K E)).toLinearMap.restrictScalars ℤ).comp

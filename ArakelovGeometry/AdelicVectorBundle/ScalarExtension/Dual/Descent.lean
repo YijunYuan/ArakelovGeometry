@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Basic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Discrete.Basic
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Dual.FiniteStage
@@ -103,6 +104,7 @@ countable discrete original base by actual finite-coordinate descent. -/
 theorem scalarExtension_dual_isMeasurable_of_countable_discrete
     [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] :
     (ξ.scalarExtension (L := L)).dual.IsMeasurable := by
+  constructor
   intro ℓ
   obtain ⟨F, y, hy⟩ := exists_finiteStage_tensor_lift
     ((dualBaseChangeEquiv K L E).symm ℓ)

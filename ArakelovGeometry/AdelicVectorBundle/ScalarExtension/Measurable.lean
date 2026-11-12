@@ -10,6 +10,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Measurability.Density.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Basic
 public import Mathlib.RingTheory.PiTensorProduct
 public import Mathlib.RingTheory.TensorProduct.Free
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.Dual.Bidual
 import ArakelovGeometry.AdelicVectorBundle.Measurability.Countable
@@ -494,6 +495,7 @@ theorem IsMeasurable.injectiveScalarExtension_of_countable_dense_subfield
     {ξ : NormFamily S E} (hξ : ξ.IsMeasurable) (K₀ : Subfield K) [Countable K₀]
     (hK₀ : ∀ ω, S.IsDenseSubfieldAt K₀ ω) :
     (ξ.injectiveScalarExtension (L := L)).IsMeasurable := by
+  constructor
   intro z
   let b := Module.finBasis K (Module.Dual K E)
   have hd := hξ.dual_of_countable_dense_subfield K₀ hK₀
@@ -519,7 +521,7 @@ injective scalar-extension measurability, including rank zero. -/
 theorem IsMeasurable.injectiveScalarExtension_of_common_countable_dense_subfield
     {ξ : NormFamily S E} (hξ : ξ.IsMeasurable) (hS : S.HasCommonCountableDenseSubfield) :
     (ξ.injectiveScalarExtension (L := L)).IsMeasurable := by
-  obtain ⟨K₀, hc, hd⟩ := hS
+  obtain ⟨K₀, hc, hd⟩ := hS.exists_subfield
   let : Countable K₀ := hc
   exact hξ.injectiveScalarExtension_of_countable_dense_subfield K₀ hd
 
@@ -548,6 +550,7 @@ extension is measurable under the source's common-density assumption. -/
 theorem IsMeasurable.scalarExtension_of_empty_infinity
     {ξ : NormFamily S E} (hξ : ξ.IsMeasurable) (hS : S.HasCommonCountableDenseSubfield)
     (hinf : S.Ωinf = ∅) : (ξ.scalarExtension (L := L)).IsMeasurable := by
+  constructor
   classical
   intro z
   have he : (fun x : (S.algebraicExtension L).Ω =>
@@ -686,6 +689,7 @@ theorem IsMeasurable.projectiveScalarExtension_dual_of_countable_dense_subfield
     {ξ : NormFamily S E} (hξ : ξ.IsMeasurable) (K₀ : Subfield K) [Countable K₀]
     (hK₀ : ∀ ω, S.IsDenseSubfieldAt K₀ ω) :
     (ξ.projectiveScalarExtension (L := L)).dual.IsMeasurable := by
+  constructor
   intro ℓ
   let b := Module.finBasis K E
   have he : (fun x : S.ParameterSpaceExtension L =>
@@ -710,7 +714,7 @@ projective-dual family, including rank zero. -/
 theorem IsMeasurable.projectiveScalarExtension_dual_of_common_countable_dense_subfield
     {ξ : NormFamily S E} (hξ : ξ.IsMeasurable) (hS : S.HasCommonCountableDenseSubfield) :
     (ξ.projectiveScalarExtension (L := L)).dual.IsMeasurable := by
-  obtain ⟨K₀, hc, hd⟩ := hS
+  obtain ⟨K₀, hc, hd⟩ := hS.exists_subfield
   let : Countable K₀ := hc
   exact hξ.projectiveScalarExtension_dual_of_countable_dense_subfield K₀ hd
 
@@ -729,9 +733,9 @@ Archimedean completed fields have the usual real or complex norm. -/
 theorem IsMeasurable.scalarExtension_of_finiteDimensional
     [FiniteDimensional K L] {ξ : NormFamily S E} (hξ : ξ.IsMeasurable)
     (hS : S.HasCommonCountableDenseSubfield)
-    (hL : ∀ ω ∈ (S.algebraicExtension L).Ωinf,
-      IsRCLikeNormedField (((S.algebraicExtension L).ϕ ω).Completion)) :
+    [hL : (S.algebraicExtension L).IsArchimedeanNormalized] :
     (ξ.scalarExtension (L := L)).IsMeasurable := by
+  constructor
   classical
   let η := ξ.projectiveScalarExtension (L := L)
   let ζ := η.dual.dual.pullback (Module.Dual.eval L (L ⊗[K] E))
@@ -840,6 +844,7 @@ theorem IsMeasurable.projectiveScalarExtension_of_countable_dense_subfields
     (hK₀ : ∀ ω, S.IsDenseSubfieldAt K₀ ω)
     (hL₀ : ∀ x, (S.algebraicExtension L).IsDenseSubfieldAt L₀ x) :
     (ξ.projectiveScalarExtension (L := L)).IsMeasurable := by
+  constructor
   classical
   intro z
   let b := Module.finBasis K E
@@ -882,7 +887,7 @@ theorem IsMeasurable.projectiveScalarExtension_of_finiteDimensional
     [FiniteDimensional K L] {ξ : NormFamily S E} (hξ : ξ.IsMeasurable)
     (hS : S.HasCommonCountableDenseSubfield) :
     (ξ.projectiveScalarExtension (L := L)).IsMeasurable := by
-  obtain ⟨K₀, hc, hd⟩ := hS
+  obtain ⟨K₀, hc, hd⟩ := hS.exists_subfield
   let : Countable K₀ := hc
   let b := Module.finBasis K L
   let L₀ := finiteExtensionDenseSubfield b K₀
@@ -901,6 +906,7 @@ theorem IsMeasurable.scalarExtension_of_injective_projective
     (hi : (ξ.injectiveScalarExtension (L := L)).IsMeasurable)
     (hp : (ξ.projectiveScalarExtension (L := L)).IsMeasurable) :
     (ξ.scalarExtension (L := L)).IsMeasurable := by
+  constructor
   classical
   have hfin : MeasurableSet (S.algebraicExtension L).Ωfin := by
     have he : (S.algebraicExtension L).Ωfin = ((S.algebraicExtension L).Ωinf)ᶜ := by

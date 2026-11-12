@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.Coherence.GenericFibre
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Purity.Model
+
 import Mathlib.Topology.Sheaves.Init
 
 /-! # Integer bases of actual full number-field lattices
@@ -150,34 +151,39 @@ variable {K E : Type*} [Field K] [NumberField K]
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
 
-def IsDominated.pure_normalizedGlobalUnitBall_integerBasis (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
+/-- An integral basis of the pure global unit-ball lattice, indexed by its rational rank. -/
+def normalizedGlobalUnitBallIntegerBasis
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
+    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
     Module.Basis (Fin (Module.finrank ℚ K * Module.finrank K E)) ℤ
-      (ξ.globalUnitBallModule hξ) :=
+      (ξ.globalUnitBallModule) :=
   let hm := hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure
-  NumberFieldFullLattice.integralBasis (ξ.globalUnitBallModule hξ) hm.1 hm.2.2
+  NumberFieldFullLattice.integralBasis (ξ.globalUnitBallModule) hm.1 hm.2.2
 
 theorem IsDominated.pure_normalizedGlobalUnitBall_integerRank (hdom : ξ.IsDominated)
     (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
-    Module.finrank ℤ (ξ.globalUnitBallModule hξ) =
+    Module.finrank ℤ (ξ.globalUnitBallModule) =
       Module.finrank ℚ K * Module.finrank K E := by
   have hm := hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure
-  exact NumberFieldFullLattice.finrank_integer (ξ.globalUnitBallModule hξ) hm.1 hm.2.2
+  exact NumberFieldFullLattice.finrank_integer (ξ.globalUnitBallModule) hm.1 hm.2.2
 
-def IsDominated.pure_normalizedGlobalUnitBall_rationalBasis (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
+/-- The rational basis induced by an integral basis of the pure global unit-ball lattice. -/
+def normalizedGlobalUnitBallRationalBasis
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
+    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
     letI : Module ℚ E := Module.compHom E (algebraMap ℚ K)
     Module.Basis (Fin (Module.finrank ℚ K * Module.finrank K E)) ℚ E := by
   letI : Module ℚ E := Module.compHom E (algebraMap ℚ K)
   have hm := hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure
-  exact NumberFieldFullLattice.integralRationalBasis (ξ.globalUnitBallModule hξ) hm.1 hm.2.2
+  exact NumberFieldFullLattice.integralRationalBasis (ξ.globalUnitBallModule) hm.1 hm.2.2
 
 @[simp]
-theorem IsDominated.pure_normalizedGlobalUnitBall_rationalBasis_coe (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces)
+theorem normalizedGlobalUnitBallRationalBasis_coe
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [ξ.IsDominated]
+    [ξ.IsUltrametric] [ξ.IsPureAtFinitePlaces]
     (i : Fin (Module.finrank ℚ K * Module.finrank K E)) :
-    hdom.pure_normalizedGlobalUnitBall_rationalBasis hξ hpure i =
-      (hdom.pure_normalizedGlobalUnitBall_integerBasis hξ hpure i : E) := by
+    ξ.normalizedGlobalUnitBallRationalBasis i =
+      (ξ.normalizedGlobalUnitBallIntegerBasis i : E) := by
   let : Module ℚ E := Module.compHom E (algebraMap ℚ K)
   exact NumberFieldFullLattice.integralRationalBasis_coe _ _ _ i
 

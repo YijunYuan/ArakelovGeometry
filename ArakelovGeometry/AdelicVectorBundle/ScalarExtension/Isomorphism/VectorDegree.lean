@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Minima.Absolute.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Isomorphism.Subspace
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.EquivMeasure
 import ArakelovGeometry.AdelicVectorBundle.Minima.Basis
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Algebraic.CommonClosure
@@ -68,14 +69,14 @@ theorem scalarExtension_integral_logNorm_algEquiv (ξ : NormFamily S E) (σ : L 
 /-- Equality of actual vector degrees whenever their genuine vector divisors
 are defined; the norm and measure identities are proved, not assumed. -/
 theorem scalarExtension_vectorDegree_algEquiv (ξ : NormFamily S E) (σ : L ≃ₐ[K] M)
-    (hdL : (ξ.scalarExtension (L := L)).IsDominated)
-    (hmL : (ξ.scalarExtension (L := L)).IsMeasurable)
-    (hdM : (ξ.scalarExtension (L := M)).IsDominated)
-    (hmM : (ξ.scalarExtension (L := M)).IsMeasurable)
+    [hdL : (ξ.scalarExtension (L := L)).IsDominated]
+    [hmL : (ξ.scalarExtension (L := L)).IsMeasurable]
+    [hdM : (ξ.scalarExtension (L := M)).IsDominated]
+    [hmM : (ξ.scalarExtension (L := M)).IsMeasurable]
     (s : {x : L ⊗[K] E // x ≠ 0}) :
-    (ξ.scalarExtension (L := M)).vectorDegree hdM hmM
+    (ξ.scalarExtension (L := M)).vectorDegree
       (scalarExtensionIsomorphismNonzeroVector σ s) =
-      (ξ.scalarExtension (L := L)).vectorDegree hdL hmL s := by
+      (ξ.scalarExtension (L := L)).vectorDegree s := by
   rw [vectorDegree_eq_neg_integral, vectorDegree_eq_neg_integral]
   exact congrArg (fun a : ℝ => -a) (ξ.scalarExtension_integral_logNorm_algEquiv σ s.val)
 
@@ -112,31 +113,29 @@ theorem scalarExtension_linearIndependent_algEquiv (σ : L ≃ₐ[K] M)
 
 namespace AdelicVectorBundle
 variable (V : AdelicVectorBundle S E)
-  (hreg : S.HasCommonCountableDenseSubfield ∨
-    (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-    (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-  (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+  [hreg : S.HasRegularBase]
+  [hN : S.IsArchimedeanNormalized]
   (σ : L ≃ₐ[K] M)
 
 /-- Original-produced genuine scalar bundles have equal actual section degrees
 under coefficient transport, with no regularity premise on S_L or S_M. -/
 theorem ordinaryScalarExtension_vectorDegree_algEquiv
     (s : {x : L ⊗[K] E // x ≠ 0}) :
-    (V.ordinaryScalarExtension (L := M) hreg hN).vectorDegree
+    (V.ordinaryScalarExtension (L := M)).vectorDegree
       (NormFamily.scalarExtensionIsomorphismNonzeroVector σ s) =
-      (V.ordinaryScalarExtension (L := L) hreg hN).vectorDegree s :=
+      (V.ordinaryScalarExtension (L := L)).vectorDegree s :=
   V.toNormFamily.scalarExtension_vectorDegree_algEquiv σ
-    (V.ordinaryScalarExtension hreg hN).isDominated
-    (V.ordinaryScalarExtension hreg hN).isMeasurable
-    (V.ordinaryScalarExtension hreg hN).isDominated
-    (V.ordinaryScalarExtension hreg hN).isMeasurable s
+    (hdL := (V.ordinaryScalarExtension).isDominated)
+    (hmL := (V.ordinaryScalarExtension).isMeasurable)
+    (hdM := (V.ordinaryScalarExtension).isDominated)
+    (hmM := (V.ordinaryScalarExtension).isMeasurable) s
 
 /-- The actual semilinear subspace map sends each genuine degree-threshold
 span exactly onto its counterpart over the transported coefficient field. -/
 theorem ordinaryScalarExtension_degreeThresholdSpan_algEquiv (t : ℝ) :
     scalarExtensionSubspaceOrderIso (E := E) σ
-      ((V.ordinaryScalarExtension (L := L) hreg hN).degreeThresholdSpan t) =
-      (V.ordinaryScalarExtension (L := M) hreg hN).degreeThresholdSpan t := by
+      ((V.ordinaryScalarExtension (L := L)).degreeThresholdSpan t) =
+      (V.ordinaryScalarExtension (L := M)).degreeThresholdSpan t := by
   let := RingHomInvPair.of_ringEquiv σ.toRingEquiv
   let := RingHomInvPair.of_ringEquiv_symm σ.toRingEquiv
   let c := scalarExtensionSemilinearEquiv (E := E) σ
@@ -148,16 +147,16 @@ theorem ordinaryScalarExtension_degreeThresholdSpan_algEquiv (t : ℝ) :
   constructor
   · rintro ⟨x, ⟨hx, hd⟩, rfl⟩
     refine ⟨c.map_eq_zero_iff.not.mpr hx, ?_⟩
-    change t ≤ (V.ordinaryScalarExtension (L := M) hreg hN).vectorDegree
+    change t ≤ (V.ordinaryScalarExtension (L := M)).vectorDegree
       (NormFamily.scalarExtensionIsomorphismNonzeroVector σ ⟨x, hx⟩)
-    rw [V.ordinaryScalarExtension_vectorDegree_algEquiv hreg hN σ]
+    rw [V.ordinaryScalarExtension_vectorDegree_algEquiv σ]
     exact hd
   · rintro ⟨hy, hd⟩
     let s : {x : L ⊗[K] E // x ≠ 0} :=
       ⟨c.symm y, c.symm.map_eq_zero_iff.not.mpr hy⟩
     refine ⟨s.val, ⟨s.property, ?_⟩, c.apply_symm_apply y⟩
-    change t ≤ (V.ordinaryScalarExtension (L := L) hreg hN).vectorDegree s
-    rw [← V.ordinaryScalarExtension_vectorDegree_algEquiv hreg hN σ s]
+    change t ≤ (V.ordinaryScalarExtension (L := L)).vectorDegree s
+    rw [← V.ordinaryScalarExtension_vectorDegree_algEquiv σ s]
     have hs : NormFamily.scalarExtensionIsomorphismNonzeroVector σ s = ⟨y, hy⟩ :=
       Subtype.ext (c.apply_symm_apply y)
     rw [hs]
@@ -170,51 +169,51 @@ supremum attainment is not assumed or concluded. -/
 theorem ordinaryScalarExtension_independent_degree_ge_algEquiv (i : ℕ) (t : ℝ) :
     (∃ s : Fin i → {x : M ⊗[K] E // x ≠ 0},
       LinearIndependent M (fun j => (s j).val) ∧
-        ∀ j, t ≤ (V.ordinaryScalarExtension (L := M) hreg hN).vectorDegree (s j)) ↔
+        ∀ j, t ≤ (V.ordinaryScalarExtension (L := M)).vectorDegree (s j)) ↔
     (∃ s : Fin i → {x : L ⊗[K] E // x ≠ 0},
       LinearIndependent L (fun j => (s j).val) ∧
-        ∀ j, t ≤ (V.ordinaryScalarExtension (L := L) hreg hN).vectorDegree (s j)) := by
+        ∀ j, t ≤ (V.ordinaryScalarExtension (L := L)).vectorDegree (s j)) := by
   rw [← le_finrank_degreeThresholdSpan_iff, ← le_finrank_degreeThresholdSpan_iff]
   have hr := scalarExtensionSubspaceOrderIso_finrank σ
-    ((V.ordinaryScalarExtension (L := L) hreg hN).degreeThresholdSpan t)
-  rw [V.ordinaryScalarExtension_degreeThresholdSpan_algEquiv hreg hN σ t] at hr
+    ((V.ordinaryScalarExtension (L := L)).degreeThresholdSpan t)
+  rw [V.ordinaryScalarExtension_degreeThresholdSpan_algEquiv σ t] at hr
   rw [hr]
 
 /-- Equality of all extended logarithmic minima through the genuine field
 isomorphism, retaining empty and unbounded cuts. -/
 theorem ordinaryScalarExtension_logarithmicMinimum_algEquiv (i : ℕ) :
-    (V.ordinaryScalarExtension (L := M) hreg hN).logarithmicMinimum i =
-      (V.ordinaryScalarExtension (L := L) hreg hN).logarithmicMinimum i := by
+    (V.ordinaryScalarExtension (L := M)).logarithmicMinimum i =
+      (V.ordinaryScalarExtension (L := L)).logarithmicMinimum i := by
   unfold logarithmicMinimum
   apply iSup_congr
   intro t
   have hr := scalarExtensionSubspaceOrderIso_finrank σ
-    ((V.ordinaryScalarExtension (L := L) hreg hN).degreeThresholdSpan t)
-  rw [V.ordinaryScalarExtension_degreeThresholdSpan_algEquiv hreg hN σ t] at hr
+    ((V.ordinaryScalarExtension (L := L)).degreeThresholdSpan t)
+  rw [V.ordinaryScalarExtension_degreeThresholdSpan_algEquiv σ t] at hr
   rw [hr]
 
 /-- The first ordinary minimum agrees, including the rank-zero bottom convention. -/
 theorem ordinaryScalarExtension_maximalLogarithmicMinimum_algEquiv :
-    (V.ordinaryScalarExtension (L := M) hreg hN).maximalLogarithmicMinimum =
-      (V.ordinaryScalarExtension (L := L) hreg hN).maximalLogarithmicMinimum :=
-  V.ordinaryScalarExtension_logarithmicMinimum_algEquiv hreg hN σ 1
+    (V.ordinaryScalarExtension (L := M)).maximalLogarithmicMinimum =
+      (V.ordinaryScalarExtension (L := L)).maximalLogarithmicMinimum :=
+  V.ordinaryScalarExtension_logarithmicMinimum_algEquiv σ 1
 
 /-- The last ordinary minimum agrees because both actual scalar ranks equal
 the original rank, including the rank-zero top convention. -/
 theorem ordinaryScalarExtension_minimalLogarithmicMinimum_algEquiv :
-    (V.ordinaryScalarExtension (L := M) hreg hN).minimalLogarithmicMinimum =
-      (V.ordinaryScalarExtension (L := L) hreg hN).minimalLogarithmicMinimum := by
+    (V.ordinaryScalarExtension (L := M)).minimalLogarithmicMinimum =
+      (V.ordinaryScalarExtension (L := L)).minimalLogarithmicMinimum := by
   unfold minimalLogarithmicMinimum
-  rw [V.ordinaryScalarExtension_logarithmicMinimum_algEquiv hreg hN σ]
+  rw [V.ordinaryScalarExtension_logarithmicMinimum_algEquiv σ]
   simp only [Module.finrank_baseChange]
 
 omit σ [Algebra K M] [Algebra.IsAlgebraic K M] in
 /-- The actual absolute minimum may be evaluated in the compatible canonical
 closure of any algebraic L/K via a direct genuine K-scalar bundle. -/
 theorem absoluteLogarithmicMinimum_eq_commonClosure (i : ℕ) :
-    V.absoluteLogarithmicMinimum hreg hN i =
-      (V.ordinaryScalarExtension (L := AlgebraicClosure L) hreg hN).logarithmicMinimum i :=
-  (V.ordinaryScalarExtension_logarithmicMinimum_algEquiv hreg hN
+    V.absoluteLogarithmicMinimum i =
+      (V.ordinaryScalarExtension (L := AlgebraicClosure L)).logarithmicMinimum i :=
+  (V.ordinaryScalarExtension_logarithmicMinimum_algEquiv
     (commonAlgebraicClosureEquiv K L) i).symm
 
 end AdelicVectorBundle

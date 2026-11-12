@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.Basic
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Destabilizing
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.Hermitian
 import ArakelovGeometry.AdelicVectorBundle.Degree.Supermodular
 import ArakelovGeometry.AdelicVectorBundle.Subquotient.Quotient.Restriction
@@ -195,18 +196,18 @@ subquotient. The image carries its restriction norm, and zero image rank is
 handled by degree zero rather than a division by rank. -/
 theorem degree_intersection_quotient_le_rank_mul_slope (V : AdelicVectorBundle S E)
     (U A B : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hsemi : ((V.restrictOfMeasurableBase B hS).quotientOfMeasurableBase
-      (A.comap B.subtype) hS).IsMeanSlopeSemistable hS hN) :
-    ((V.restrictOfMeasurableBase (U ⊓ B) hS).quotientOfMeasurableBase
-        ((U ⊓ A).comap (U ⊓ B).subtype) hS).degree hS hN ≤
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hsemi : ((V.restrictOfMeasurableBase B).quotientOfMeasurableBase
+      (A.comap B.subtype)).IsMeanSlopeSemistable] :
+    ((V.restrictOfMeasurableBase (U ⊓ B)).quotientOfMeasurableBase
+        ((U ⊓ A).comap (U ⊓ B).subtype)).degree ≤
       (Module.finrank K (↥(U ⊓ B) ⧸ ((U ⊓ A).comap (U ⊓ B).subtype)) : ℝ) *
-        ((V.restrictOfMeasurableBase B hS).quotientOfMeasurableBase
-          (A.comap B.subtype) hS).slope hS hN := by
+        ((V.restrictOfMeasurableBase B).quotientOfMeasurableBase
+          (A.comap B.subtype)).slope := by
   let g := intersectionToSubquotientLinearMap U A B
-  let Q := (V.restrictOfMeasurableBase B hS).quotientOfMeasurableBase
-    (A.comap B.subtype) hS
+  let Q := (V.restrictOfMeasurableBase B).quotientOfMeasurableBase
+    (A.comap B.subtype)
   have hk : g.ker = (U ⊓ A).comap (U ⊓ B).subtype :=
     ker_intersectionToSubquotientLinearMap U A B
   have hr : Module.finrank K (↥(U ⊓ B) ⧸ ((U ⊓ A).comap (U ⊓ B).subtype)) =
@@ -214,12 +215,12 @@ theorem degree_intersection_quotient_le_rank_mul_slope (V : AdelicVectorBundle S
     rw [← hk]
     exact g.quotKerEquivRange.finrank_eq
   by_cases hz : Module.finrank K (↥(U ⊓ B) ⧸ ((U ⊓ A).comap (U ⊓ B).subtype)) = 0
-  · rw [degree_eq_zero_of_finrank_eq_zero _ hS hN hz, hz]
+  · rw [degree_eq_zero_of_finrank_eq_zero _ hz, hz]
     simp
   · have hp : 0 < Module.finrank K g.range := by rw [← hr]; exact Nat.pos_of_ne_zero hz
     have hd := degree_le_of_completed_contraction
-      ((V.restrictOfMeasurableBase (U ⊓ B) hS).quotientOfMeasurableBase g.ker hS)
-      (Q.restrictOfMeasurableBase g.range hS) g.quotKerEquivRange hS hN
+      ((V.restrictOfMeasurableBase (U ⊓ B)).quotientOfMeasurableBase g.ker)
+      (Q.restrictOfMeasurableBase g.range) g.quotKerEquivRange
       (V.toNormFamily.intersectionQuotient_range_norm_le U A B)
     rw [hk] at hd
     apply hd.trans
@@ -230,15 +231,16 @@ theorem degree_intersection_quotient_le_rank_mul_slope (V : AdelicVectorBundle S
 bound for the corresponding actual flag factor. -/
 theorem degree_intersection_flagQuotient_le (V : AdelicVectorBundle S E)
     {n : ℕ} (F : Fin (n + 1) → Submodule K E) (U : Submodule K E) (i : Fin n)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hsemi : (V.flagQuotientOfMeasurableBase F hS i).IsMeanSlopeSemistable hS hN) :
-    (V.flagQuotientOfMeasurableBase (fun j ↦ U ⊓ F j) hS i).degree hS hN ≤
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hsemi : (V.flagQuotientOfMeasurableBase F i).IsMeanSlopeSemistable] :
+    (V.flagQuotientOfMeasurableBase (fun j ↦ U ⊓ F j) i).degree ≤
       (Module.finrank K (↥(U ⊓ F i.succ) ⧸
         ((U ⊓ F i.castSucc).comap (U ⊓ F i.succ).subtype)) : ℝ) *
-          (V.flagQuotientOfMeasurableBase F hS i).slope hS hN :=
+          (V.flagQuotientOfMeasurableBase F i).slope :=
   V.degree_intersection_quotient_le_rank_mul_slope U (F i.castSucc) (F i.succ)
-    hS hN hsemi
+    (hsemi := hsemi)
+
 
 /-- The source-facing subspace degree bound from a complete semistable flag.
 The intersection flag may have repeated terms. Slopes need not be ordered
@@ -246,25 +248,25 @@ for this inequality; ordering is an additional uniqueness hypothesis later. -/
 theorem degree_restrict_le_sum_intersection_rank_mul_slope_of_semistableFlag
     (V : AdelicVectorBundle S E) {n : ℕ} (F : Fin (n + 1) → Submodule K E)
     (hF : Monotone F) (hzero : F 0 = ⊥) (htop : F (Fin.last n) = ⊤)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN)
-    (hsemi : ∀ i, (V.flagQuotientOfMeasurableBase F hS i).IsMeanSlopeSemistable hS hN)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian]
+    [hsemi : ∀ i, (V.flagQuotientOfMeasurableBase F i).IsMeanSlopeSemistable]
     (U : Submodule K E) :
-    (V.restrictOfMeasurableBase U hS).degree hS hN ≤
+    (V.restrictOfMeasurableBase U).degree ≤
       ∑ i : Fin n, (Module.finrank K (U ⊓ F i.succ : Submodule K E) -
         Module.finrank K (U ⊓ F i.castSucc : Submodule K E) : ℕ) *
-          (V.flagQuotientOfMeasurableBase F hS i).slope hS hN := by
+          (V.flagQuotientOfMeasurableBase F i).slope := by
   let G : Fin (n + 1) → Submodule K E := fun i ↦ U ⊓ F i
   have hG : Monotone G := fun i j hij ↦ inf_le_inf_left U (hF hij)
   have hzG : G 0 = ⊥ := by simp only [G, hzero, inf_bot_eq]
   have hlG : G (Fin.last n) = U := by simp only [G, htop, inf_top_eq]
-  have hsum := V.sum_flagQuotient_degree_eq_restrict_of_isHermitian G hG hzG hS hN hV
+  have hsum := V.sum_flagQuotient_degree_eq_restrict_of_isHermitian G hG hzG
   rw [hlG] at hsum
   rw [← hsum]
   apply Finset.sum_le_sum
   intro i _
-  have h := V.degree_intersection_flagQuotient_le F U i hS hN (hsemi i)
+  have h := V.degree_intersection_flagQuotient_le F U i (hsemi := (hsemi i))
   rw [finrank_intersection_quotient_eq_sub U (F i.castSucc) (F i.succ)
     (hF i.castSucc_le_succ)] at h
   exact h

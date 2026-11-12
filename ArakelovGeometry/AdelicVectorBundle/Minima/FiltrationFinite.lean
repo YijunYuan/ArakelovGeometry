@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Density.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Minima.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Minima.Basis
 import ArakelovGeometry.AdelicVectorBundle.Minima.FiltrationRank
 import ArakelovGeometry.AdelicVectorBundle.Minima.Finite
@@ -90,10 +91,8 @@ variable [S.IsProper]
 /-- With produced original finite minima, membership in the finite jump set
 is exactly equality to an actual valid source minimum. -/
 theorem mem_logarithmicMinimaJumpSet_iff (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (c : ℝ) :
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized] (c : ℝ) :
     c ∈ V.logarithmicMinimaJumpSet ↔
       ∃ i : ℕ, 1 ≤ i ∧ i ≤ Module.finrank K E ∧ V.logarithmicMinimum i = (c : EReal) := by
   classical
@@ -101,7 +100,7 @@ theorem mem_logarithmicMinimaJumpSet_iff (V : AdelicVectorBundle S E)
   constructor
   · rintro ⟨i, hi, hc⟩
     obtain ⟨hi, hr⟩ := Finset.mem_Icc.mp hi
-    have hm := EReal.coe_toReal (V.logarithmicMinimum_ne_top hreg hN hi)
+    have hm := EReal.coe_toReal (V.logarithmicMinimum_ne_top hi)
       (V.logarithmicMinimum_ne_bot hr)
     exact ⟨i, hi, hr, hm.symm.trans (congrArg (fun x : ℝ => (x : EReal)) hc)⟩
   · rintro ⟨i, hi, hr, hc⟩
@@ -110,22 +109,20 @@ theorem mem_logarithmicMinimaJumpSet_iff (V : AdelicVectorBundle S E)
 /-- The actual filtration is constant across an interval containing none of
 the produced valid real minima. The controlling interval is `[a,b)`. -/
 theorem minimaFiltration_eq_of_disjoint_jump_interval (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized]
     {a b : ℝ} (hab : a ≤ b)
     (hJ : Disjoint (V.logarithmicMinimaJumpSet : Set ℝ) (Set.Ico a b)) :
     V.minimaFiltration a = V.minimaFiltration b := by
   apply V.minimaFiltration_eq_of_minimum_profile
   intro i hi hr
-  obtain ⟨c, hc⟩ := V.exists_logarithmicMinimum_eq_coe hreg hN hi hr
+  obtain ⟨c, hc⟩ := V.exists_logarithmicMinimum_eq_coe hi hr
   rw [hc]
   simp only [EReal.coe_le_coe_iff]
   constructor
   · intro hac
     by_contra hbc
-    have hcJ := (V.mem_logarithmicMinimaJumpSet_iff hreg hN c).mpr ⟨i, hi, hr, hc⟩
+    have hcJ := (V.mem_logarithmicMinimaJumpSet_iff c).mpr ⟨i, hi, hr, hc⟩
     exact Set.disjoint_left.mp hJ hcJ ⟨hac, lt_of_not_ge hbc⟩
   · exact hab.trans
 

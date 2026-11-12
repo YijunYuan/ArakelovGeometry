@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.GeometryOfNumbers.Measure.IntegralDualCovolume
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.Covolume
 public import ArakelovGeometry.NumberTheory.NumberField.TraceDual.OrdinaryNorm
+
 import Mathlib.Topology.Sheaves.Init
 
 /-! # Reciprocal ordinary covolume of the actual integral trace dual -/
@@ -31,7 +32,7 @@ norm. The original norm and real module are retained, and no global instance is 
 @[instance_reducible]
 def ordinaryTraceDualInnerProduct
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
     letI := ordinaryTraceDualNormedAddCommGroup ξ
@@ -39,32 +40,32 @@ def ordinaryTraceDualInnerProduct
     InnerProductSpace ℝ (CompletedVectorProduct K (Module.Dual K E)) := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let := ordinaryTraceDualNormedAddCommGroup ξ
   let := ordinaryTraceDualNormedSpace ξ
   let := strongDualInnerProduct (E := CompletedVectorProduct K E)
   apply InnerProductSpace.ofNorm ℝ
   intro f g
   have h := parallelogram_law_with_norm ℝ
-    (ordinaryTraceDualIsometry hξ f) (ordinaryTraceDualIsometry hξ g)
+    (ordinaryTraceDualIsometry (ξ := ξ) f) (ordinaryTraceDualIsometry (ξ := ξ) g)
   simpa only [← map_add, ← map_sub, LinearIsometryEquiv.norm_map, pow_two] using h
 
 /-- The original integer-valued algebraic real dual and the actual continuous integral
 dual are literally equal after the canonical algebraic-to-continuous equivalence. -/
 theorem integralRealDual_eq_integralDual
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
-    letI := euclideanInnerProduct hξ
+    letI := euclideanInnerProduct (ξ := ξ)
     (integralRealDual M).map
       ((LinearMap.toContinuousLinearMap : Module.Dual ℝ (CompletedVectorProduct K E) ≃ₗ[ℝ]
         StrongDual ℝ (CompletedVectorProduct K E)).toLinearMap.restrictScalars ℤ) =
       integralDual (diagonalLattice M) := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   ext f
   constructor
   · rintro ⟨g, hg, rfl⟩ x hx
@@ -81,36 +82,36 @@ theorem integralRealDual_eq_integralDual
 canonical integer dual of the original diagonal lattice. -/
 theorem ordinaryTraceDualIsometry_integralDual_image
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
-    letI := euclideanInnerProduct hξ
+    letI := euclideanInnerProduct (ξ := ξ)
     letI := ordinaryTraceDualNormedAddCommGroup ξ
     letI := ordinaryTraceDualNormedSpace ξ
     (diagonalLattice (NumberFieldIntegralTraceDual.integralTraceDual M)).map
-      ((ordinaryTraceDualIsometry hξ).toLinearEquiv.toLinearMap.restrictScalars ℤ) =
+      ((ordinaryTraceDualIsometry (ξ := ξ)).toLinearEquiv.toLinearMap.restrictScalars ℤ) =
         integralDual (diagonalLattice M) := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let := ordinaryTraceDualNormedAddCommGroup ξ
   let := ordinaryTraceDualNormedSpace ξ
-  rw [ordinaryTraceDualIsometry_integral_image hξ M hfg hspan,
-    integralRealDual_eq_integralDual hξ M]
+  rw [ordinaryTraceDualIsometry_integral_image M hfg hspan,
+    integralRealDual_eq_integralDual M]
 
 /-- Actual ordinary covolume of the literal integral trace-dual diagonal, using the
 canonical volume of its independently defined trace-dual norm. -/
 def ordinaryTraceDualCovolume
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) : ℝ := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
   let := ordinaryTraceDualNormedAddCommGroup ξ
   let := ordinaryTraceDualNormedSpace ξ
-  let := ordinaryTraceDualInnerProduct hξ
+  let := ordinaryTraceDualInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K (Module.Dual K E)) := borel _
   let : BorelSpace (CompletedVectorProduct K (Module.Dual K E)) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K (Module.Dual K E))
@@ -120,20 +121,20 @@ def ordinaryTraceDualCovolume
 canonical measures of the independently defined ordinary primal and trace-dual norms. -/
 theorem ordinaryTraceDualCovolume_eq_inv
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) :
-    ordinaryTraceDualCovolume ξ hξ M =
-      (NumberFieldArchimedeanCovolume.euclideanCovolume ξ hξ M)⁻¹ := by
+    ordinaryTraceDualCovolume ξ M =
+      (NumberFieldArchimedeanCovolume.euclideanCovolume ξ M)⁻¹ := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
   let := ordinaryTraceDualNormedAddCommGroup ξ
   let := ordinaryTraceDualNormedSpace ξ
-  let := ordinaryTraceDualInnerProduct hξ
+  let := ordinaryTraceDualInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K (Module.Dual K E)) := borel _
   let : BorelSpace (CompletedVectorProduct K (Module.Dual K E)) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K (Module.Dual K E))
@@ -145,8 +146,8 @@ theorem ordinaryTraceDualCovolume_eq_inv
   let := euclidean_isZLattice_diagonalLattice ξ M hfg hspan
   let := integralDual_discrete (diagonalLattice M)
   let := integralDual_isZLattice (diagonalLattice M)
-  let e := ordinaryTraceDualIsometry hξ
-  have hmap := ordinaryTraceDualIsometry_integralDual_image hξ M hfg hspan
+  let e := ordinaryTraceDualIsometry (ξ := ξ)
+  have hmap := ordinaryTraceDualIsometry_integralDual_image (ξ := ξ) M hfg hspan
   have hcomap : ZLattice.comap ℝ (integralDual (diagonalLattice M))
       e.toLinearEquiv.toLinearMap =
         diagonalLattice (NumberFieldIntegralTraceDual.integralTraceDual M) := by

@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.HermitianComparison.DeterminantDegree
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Galois.Destabilizing
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Hermitian.Restriction
 import Mathlib.CategoryTheory.Category.Init
@@ -36,50 +37,52 @@ local instance hermitianGaloisMaximalSlopeProper : (S.algebraicExtension L).IsPr
 every rank, using the produced destabilizer descent and genuine restriction. -/
 theorem maximalSlope_hermitianScalarExtension_of_finiteGalois
     [FiniteDimensional K L] [IsGalois K L] (V : AdelicVectorBundle S E)
-    (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
-    let W := V.hermitianScalarExtension (L := L) hcount hN hLN hH
-    W.maximalSlope hLS hLN = V.maximalSlope (Or.inr hcount) hN := by
+    let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
+    W.maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) = V.maximalSlope := by
   intro hLN hLS W
   have hdim (U : Submodule K E) :
       Module.finrank L (U.baseChange L) = Module.finrank K U :=
     (Submodule.toBaseChange.toLinearEquiv L U).finrank_eq.symm.trans Module.finrank_baseChange
   apply le_antisymm
   · by_cases hz : Module.finrank K E = 0
-    · rw [W.maximalSlope_eq_bot_of_finrank_eq_zero hLS hLN
+    · rw [W.maximalSlope_eq_bot_of_finrank_eq_zero (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
         (Module.finrank_baseChange.trans hz)]
       exact bot_le
     · have hr : 0 < Module.finrank K E := Nat.pos_of_ne_zero hz
       have hrL : 0 < Module.finrank L (L ⊗[K] E) := by
         rwa [Module.finrank_baseChange]
-      let hLH := V.hermitianScalarExtension_isHermitian hcount hN hLN hH
-      let D := W.destabilizingSubspace hLS hLN hLH hrL
+      let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
+      let D := W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL
       obtain ⟨U, hU, _⟩ :=
         V.existsUnique_baseChange_destabilizingSubspace_hermitianScalarExtension
-          (L := L) hcount hN hH hr
+          (L := L) hr
       change U.baseChange L = D at hU
       have hpD : 0 < Module.finrank L D :=
-        W.destabilizingSubspace_finrank_pos hLS hLN hLH hrL
+        W.destabilizingSubspace_finrank_pos (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL
       have hpU : 0 < Module.finrank K U := by
         rw [← hU, hdim] at hpD
         exact hpD
       calc
-        W.maximalSlope hLS hLN =
-            ((W.restrictOfMeasurableBase D hLS).slope hLS hLN : EReal) :=
-          (W.slope_destabilizingSubspace_eq_maximalSlope hLS hLN hLH hrL).symm
-        _ = ((V.restrictOfMeasurableBase U (Or.inr hcount)).slope
-            (Or.inr hcount) hN : EReal) := by
+        W.maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
+            ((W.restrictOfMeasurableBase D (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩)
+                (hN := ⟨hLN⟩) : EReal) :=
+          (W.slope_destabilizingSubspace_eq_maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
+              (hV := hLH) hrL).symm
+        _ = ((V.restrictOfMeasurableBase U).slope
+            : EReal) := by
           rw [← hU, V.slope_restrict_hermitianScalarExtension_of_finiteDimensional
-            hcount hN hH U]
-        _ ≤ V.maximalSlope (Or.inr hcount) hN :=
-          V.slope_restrict_le_maximalSlope U hpU (Or.inr hcount) hN
-  · apply V.maximalSlope_le (Or.inr hcount) hN
+             U]
+        _ ≤ V.maximalSlope :=
+          V.slope_restrict_le_maximalSlope U hpU
+  · apply V.maximalSlope_le
     intro U hU
     have hp : 0 < Module.finrank L (U.baseChange L) := (hdim U).symm ▸ hU
-    have h := W.slope_restrict_le_maximalSlope (U.baseChange L) hp hLS hLN
-    rwa [V.slope_restrict_hermitianScalarExtension_of_finiteDimensional hcount hN hH U] at h
+    have h := W.slope_restrict_le_maximalSlope (U.baseChange L) hp (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
+    rwa [V.slope_restrict_hermitianScalarExtension_of_finiteDimensional U] at h
 
 end ArakelovGeometry.AdelicVectorBundle

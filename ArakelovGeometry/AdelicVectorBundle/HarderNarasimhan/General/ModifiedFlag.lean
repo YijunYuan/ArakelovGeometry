@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.Basic
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Modified
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.Dual
 import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.Majorant
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Upper
@@ -44,46 +45,46 @@ private theorem modifiedFlag_coe_sum {n : ℕ} (f : Fin n → ℝ) :
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (V : AdelicVectorBundle S E)
-  (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-  (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+  [hS : S.HasMeasurableBase]
+  [hN : S.IsArchimedeanNormalized]
   {n : ℕ} (F : Fin (n + 1) → Submodule K E)
 
 /-- Genuine modified factor degrees are bounded by the ambient ordinary degree. -/
 theorem sum_flagQuotient_modifiedDegree_le
     (hF : Monotone F) (hzero : F 0 = ⊥) (htop : F (Fin.last n) = ⊤) :
-    (∑ i : Fin n, (V.flagQuotientOfMeasurableBase F hS i).modifiedDegree hS hN) ≤
-    V.degree hS hN := by
-  apply le_trans _ (V.sum_flagQuotient_degree_le F hF hzero htop hS hN)
+    (∑ i : Fin n, (V.flagQuotientOfMeasurableBase F i).modifiedDegree) ≤
+    V.degree := by
+  apply le_trans _ (V.sum_flagQuotient_degree_le F hF hzero htop)
   exact Finset.sum_le_sum (fun i _ ↦ modifiedDegree_le_degree
-    (V.flagQuotientOfMeasurableBase F hS i) hS hN)
+    (V.flagQuotientOfMeasurableBase F i))
 
 /-- Actual capital discrepancy bounds the sum of genuine modified factor degrees. -/
 theorem degree_sub_majorantDiscrepancy_le_sum_flagQuotient_modifiedDegree
     (hF : Monotone F) (hzero : F 0 = ⊥) (htop : F (Fin.last n) = ⊤) :
-    (V.degree hS hN : EReal) - V.majorantDiscrepancy hN ≤
-    ((∑ i : Fin n, (V.flagQuotientOfMeasurableBase F hS i).modifiedDegree hS hN : ℝ) : EReal) := by
+    (V.degree : EReal) - V.majorantDiscrepancy ≤
+    ((∑ i : Fin n, (V.flagQuotientOfMeasurableBase F i).modifiedDegree : ℝ) : EReal) := by
   rw [modifiedFlag_coe_sum]
-  apply (V.degree_sub_majorantDiscrepancy_le_sum_flagQuotient F hF hzero htop hS hN).trans
+  apply (V.degree_sub_majorantDiscrepancy_le_sum_flagQuotient F hF hzero htop).trans
   apply Finset.sum_le_sum
   intro i _
   exact degree_sub_majorantDiscrepancy_le_sum_generalHNOrderedSlope
-    (V.flagQuotientOfMeasurableBase F hS i) hS hN
+    (V.flagQuotientOfMeasurableBase F i)
 
 /-- The actual determinant-discrepancy version under finite-place ultrametricity. -/
 theorem degree_sub_determinantDiscrepancy_le_sum_flagQuotient_modifiedDegree
     (hF : Monotone F) (hzero : F 0 = ⊥) (htop : F (Fin.last n) = ⊤)
-    (hV : V.IsUltrametric) : V.degree hS hN - V.determinantDiscrepancy ≤
-    ∑ i : Fin n, (V.flagQuotientOfMeasurableBase F hS i).modifiedDegree hS hN := by
+    [hV : V.IsUltrametric] : V.degree - V.determinantDiscrepancy ≤
+    ∑ i : Fin n, (V.flagQuotientOfMeasurableBase F i).modifiedDegree := by
   apply (V.degree_sub_determinantDiscrepancy_le_sum_flagQuotient
-    F hF hzero htop hS hN hV).trans
+    F hF hzero htop).trans
   apply Finset.sum_le_sum
   intro i _
-  have hQ : (V.flagQuotientOfMeasurableBase F hS i).IsUltrametric := by
+  have hQ : (V.flagQuotientOfMeasurableBase F i).IsUltrametric := by
     simpa only [flagQuotientOfMeasurableBase, quotientOfMeasurableBase_toNormFamily,
       restrictOfMeasurableBase_toNormFamily] using
       (hV.restrict (F i.succ)).quotient ((F i.castSucc).comap (F i.succ).subtype)
   exact degree_sub_determinantDiscrepancy_le_sum_generalHNOrderedSlope
-    (V.flagQuotientOfMeasurableBase F hS i) hS hN hQ
+    (V.flagQuotientOfMeasurableBase F i) (hV := hQ)
 
 end
 

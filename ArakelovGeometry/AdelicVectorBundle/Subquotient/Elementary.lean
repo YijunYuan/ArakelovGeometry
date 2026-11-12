@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Majorant.Basic
+
 import ArakelovGeometry.Analysis.NormedSpace.FiniteDimensional
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.InnerProductSpace.ProdL2
@@ -37,13 +38,13 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {E : Type w} [AddCommGroup E] [Module K E]
   {F : Type w'} [AddCommGroup F] [Module K F]
   {η : NormFamily S E}
-  {hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion} {ω : S.Ω}
+  [hN : S.IsArchimedeanNormalized] {ω : S.Ω}
 
 /-- Injective pullback preserves the elementary condition at the chosen
 actual fibre, without imposing conditions at other places. -/
-theorem IsElementaryAt.pullback (he : η.IsElementaryAt hN ω)
+theorem IsElementaryAt.pullback (he : η.IsElementaryAt ω)
     (f : F →ₗ[K] E) (hf : Function.Injective f) :
-    (η.pullback f hf).IsElementaryAt hN ω := by
+    (η.pullback f hf).IsElementaryAt ω := by
   refine ⟨fun hω x y => ?_, fun hω => ?_⟩
   · simpa only [pullback_norm, map_add] using
       he.1 hω (f.baseChange (S.ϕ ω).Completion x) (f.baseChange (S.ϕ ω).Completion y)
@@ -61,12 +62,13 @@ theorem IsElementaryAt.pullback (he : η.IsElementaryAt hN ω)
 
 /-- Every actual completed subspace inherits the chosen-fibre elementary
 condition, including the zero and whole subspaces. -/
-theorem IsElementaryAt.restrict (he : η.IsElementaryAt hN ω) (W : Submodule K E) :
-    (η.restrict W).IsElementaryAt hN ω :=
+theorem IsElementaryAt.restrict (he : η.IsElementaryAt ω) (W : Submodule K E) :
+    (η.restrict W).IsElementaryAt ω :=
   he.pullback W.subtype W.subtype_injective
 
 variable [FiniteDimensional K E]
 
+omit hN in
 /-- A local ultrametric inequality passes to the actual completed quotient
 norm by nearly optimal lifts. No global ultrametric hypothesis is required. -/
 theorem pushforward_norm_add_le_max_of_norm_add_le_max (ξ : NormFamily S E)
@@ -95,9 +97,9 @@ theorem pushforward_norm_add_le_max_of_norm_add_le_max (ξ : NormFamily S E)
 /-- Surjective pushforward preserves the elementary condition at the chosen
 fibre. At infinity, the inner product is inherited from the actual
 completed-kernel quotient with its prescribed quotient norm. -/
-theorem IsElementaryAt.pushforward (he : η.IsElementaryAt hN ω)
+theorem IsElementaryAt.pushforward (he : η.IsElementaryAt ω)
     (π : E →ₗ[K] F) (hπ : Function.Surjective π) :
-    (η.pushforward π hπ).IsElementaryAt hN ω := by
+    (η.pushforward π hπ).IsElementaryAt ω := by
   refine ⟨fun hω x y =>
     η.pushforward_norm_add_le_max_of_norm_add_le_max π hπ ω (he.1 hω) x y,
     fun hω => ?_⟩
@@ -122,8 +124,8 @@ theorem IsElementaryAt.pushforward (he : η.IsElementaryAt hN ω)
 
 /-- Quotient by any actual subspace preserves the chosen-fibre elementary
 condition, including both zero-dimensional ends. -/
-theorem IsElementaryAt.quotient (he : η.IsElementaryAt hN ω) (W : Submodule K E) :
-    (η.quotient W).IsElementaryAt hN ω :=
+theorem IsElementaryAt.quotient (he : η.IsElementaryAt ω) (W : Submodule K E) :
+    (η.quotient W).IsElementaryAt ω :=
   he.pushforward W.mkQ W.mkQ_surjective
 
 end

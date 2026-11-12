@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants.Ordinary.Closure
+
 import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants.Closure
 import Mathlib.CategoryTheory.Category.Init
 
@@ -33,55 +34,53 @@ variable {K L M : Type*} [Field K] [Field L] [Field M]
 subspace with the same actual degree; neither supremum needs attainment. -/
 theorem iSup_nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase_eq_direct
     (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hreg : S.HasOrdinaryBase]
+    [hN : S.IsArchimedeanNormalized] :
     (⨆ A : Submodule M (M ⊗[L] (L ⊗[K] E)),
-      (V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase hreg hN A : EReal)) =
+      (V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase A : EReal)) =
     ⨆ B : Submodule M (M ⊗[K] E),
-      (V.nativeRestrictionDegreeOfOrdinaryBase hreg hN B : EReal) := by
+      (V.nativeRestrictionDegreeOfOrdinaryBase B : EReal) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
   let o := Submodule.orderIsoMapComap c
   have hd (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
-      V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase hreg hN A =
-        V.nativeRestrictionDegreeOfOrdinaryBase hreg hN (A.map c.toLinearMap) :=
-    V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase_eq_direct hreg hN A
+      V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase A =
+        V.nativeRestrictionDegreeOfOrdinaryBase (A.map c.toLinearMap) :=
+    V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase_eq_direct A
   apply le_antisymm
   · apply iSup_le
     intro A
     rw [hd A]
     exact le_iSup (fun B : Submodule M (M ⊗[K] E) =>
-      (V.nativeRestrictionDegreeOfOrdinaryBase hreg hN B : EReal)) _
+      (V.nativeRestrictionDegreeOfOrdinaryBase B : EReal)) _
   · apply iSup_le
     intro B
     obtain ⟨A, rfl⟩ := o.surjective B
-    change (V.nativeRestrictionDegreeOfOrdinaryBase hreg hN
+    change (V.nativeRestrictionDegreeOfOrdinaryBase
       (A.map c.toLinearMap) : EReal) ≤ _
     rw [← hd A]
     exact le_iSup (fun A : Submodule M (M ⊗[L] (L ⊗[K] E)) =>
-      (V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase hreg hN A : EReal)) A
+      (V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase A : EReal)) A
 
 /-- The genuine associator preserves every positive native rank and mean,
 including the source's empty maximal-slope index set. -/
 theorem iSup_nativeCompatibleTowerMeanOfOrdinaryBase_eq_direct
     (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hreg : S.HasOrdinaryBase]
+    [hN : S.IsArchimedeanNormalized] :
     (⨆ A : {A : Submodule M (M ⊗[L] (L ⊗[K] E)) // 0 < Module.finrank M A},
-      (V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase hreg hN A.val /
+      (V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase A.val /
         (Module.finrank M A.val : ℝ) : EReal)) =
     ⨆ B : {B : Submodule M (M ⊗[K] E) // 0 < Module.finrank M B},
-      (V.nativeRestrictionDegreeOfOrdinaryBase hreg hN B.val /
+      (V.nativeRestrictionDegreeOfOrdinaryBase B.val /
         (Module.finrank M B.val : ℝ) : EReal) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
   let o := Submodule.orderIsoMapComap c
   have hd (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
-      V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase hreg hN A =
-        V.nativeRestrictionDegreeOfOrdinaryBase hreg hN (A.map c.toLinearMap) :=
-    V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase_eq_direct hreg hN A
+      V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase A =
+        V.nativeRestrictionDegreeOfOrdinaryBase (A.map c.toLinearMap) :=
+    V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase_eq_direct A
   apply le_antisymm
   · apply iSup_le
     intro A
@@ -89,7 +88,7 @@ theorem iSup_nativeCompatibleTowerMeanOfOrdinaryBase_eq_direct
     have hB : 0 < Module.finrank M (A.val.map c.toLinearMap) := hr ▸ A.property
     rw [hd A.val, hr]
     exact le_iSup (fun B : {B : Submodule M (M ⊗[K] E) // 0 < Module.finrank M B} =>
-      (V.nativeRestrictionDegreeOfOrdinaryBase hreg hN B.val /
+      (V.nativeRestrictionDegreeOfOrdinaryBase B.val /
         (Module.finrank M B.val : ℝ) : EReal)) ⟨A.val.map c.toLinearMap, hB⟩
   · apply iSup_le
     intro B
@@ -104,67 +103,68 @@ theorem iSup_nativeCompatibleTowerMeanOfOrdinaryBase_eq_direct
     rw [ho] at hdegree
     exact (le_of_eq (by rw [← hdegree, ← hr])).trans
       (le_iSup (fun A : {A : Submodule M (M ⊗[L] (L ⊗[K] E)) // 0 < Module.finrank M A} =>
-        (V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase hreg hN A.val /
+        (V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase A.val /
           (Module.finrank M A.val : ℝ) : EReal)) ⟨A, hA⟩)
 
 /-- The existing common-density absolute positive degree is the canonical
 degree supremum of every literal nested native restriction. -/
 theorem absolutePositiveDegree_eq_iSup_compatibleTower_of_common_density
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.absolutePositiveDegree hcount hN =
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized] :
+    V.absolutePositiveDegree =
       ⨆ A : Submodule M (M ⊗[L] (L ⊗[K] E)),
-        (V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase (Or.inl hcount) hN A : EReal) :=
+        (V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase
+            (hreg := ⟨(Or.inl hcount)⟩) A : EReal) :=
     by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
-  rw [V.absolutePositiveDegree_eq_scalarExtension_of_isAlgClosed (L := M) hcount hN]
+  rw [V.absolutePositiveDegree_eq_scalarExtension_of_isAlgClosed (L := M)]
   change (⨆ B : Submodule M (M ⊗[K] E),
-    (V.nativeRestrictionDegreeOfOrdinaryBase (Or.inl hcount) hN B : EReal)) = _
+    (V.nativeRestrictionDegreeOfOrdinaryBase (hreg := ⟨(Or.inl hcount)⟩) B : EReal)) = _
   exact (V.iSup_nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase_eq_direct
-    (L := L) (Or.inl hcount) hN).symm
+    (L := L) (hreg := ⟨(Or.inl hcount)⟩)).symm
 
 /-- Every actual positive-rank nested mean computes the existing
 common-density absolute maximal-slope supremum. -/
 theorem absoluteMaximalSlope_eq_iSup_compatibleTower_of_common_density
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.absoluteMaximalSlope hcount hN =
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized] :
+    V.absoluteMaximalSlope =
       ⨆ A : {A : Submodule M (M ⊗[L] (L ⊗[K] E)) // 0 < Module.finrank M A},
-        (V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase (Or.inl hcount) hN A.val /
+        (V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase (hreg := ⟨(Or.inl hcount)⟩) A.val /
           (Module.finrank M A.val : ℝ) : EReal) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
-  rw [V.absoluteMaximalSlope_eq_scalarExtension_of_isAlgClosed (L := M) hcount hN]
+  rw [V.absoluteMaximalSlope_eq_scalarExtension_of_isAlgClosed (L := M)]
   change (⨆ B : {B : Submodule M (M ⊗[K] E) // 0 < Module.finrank M B},
-    (V.nativeRestrictionDegreeOfOrdinaryBase (Or.inl hcount) hN B.val /
+    (V.nativeRestrictionDegreeOfOrdinaryBase (hreg := ⟨(Or.inl hcount)⟩) B.val /
       (Module.finrank M B.val : ℝ) : EReal)) = _
   exact (V.iSup_nativeCompatibleTowerMeanOfOrdinaryBase_eq_direct
-    (L := L) (Or.inl hcount) hN).symm
+    (L := L) (hreg := ⟨(Or.inl hcount)⟩)).symm
 
 /-- The original discrete absolute positive degree is evaluated on ALL actual
 nested native subspaces, without intermediate or target regularity. -/
 theorem absolutePositiveDegreeOfCountableDiscreteBase_eq_iSup_compatibleTower
     [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.absolutePositiveDegreeOfCountableDiscreteBase hN =
+    [hN : S.IsArchimedeanNormalized] :
+    V.absolutePositiveDegreeOfCountableDiscreteBase =
       ⨆ A : Submodule M (M ⊗[L] (L ⊗[K] E)),
         (V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase
-          (Or.inr ⟨inferInstance, inferInstance⟩) hN A : EReal) := by
-  rw [V.absolutePositiveDegreeOfCountableDiscreteBase_eq_iSup_of_isAlgClosed (M := M) hN]
+          (hreg := ⟨(Or.inr ⟨inferInstance, inferInstance⟩)⟩) A : EReal) := by
+  rw [V.absolutePositiveDegreeOfCountableDiscreteBase_eq_iSup_of_isAlgClosed (M := M)]
   exact (V.iSup_nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase_eq_direct
-    (L := L) (Or.inr ⟨inferInstance, inferInstance⟩) hN).symm
+    (L := L) (hreg := ⟨(Or.inr ⟨inferInstance, inferInstance⟩)⟩)).symm
 
 /-- The original discrete absolute maximal slope is evaluated on ALL actual
 positive-rank nested means, retaining the empty-supremum convention. -/
 theorem absoluteMaximalSlopeOfCountableDiscreteBase_eq_iSup_compatibleTower
     [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.absoluteMaximalSlopeOfCountableDiscreteBase hN =
+    [hN : S.IsArchimedeanNormalized] :
+    V.absoluteMaximalSlopeOfCountableDiscreteBase =
       ⨆ A : {A : Submodule M (M ⊗[L] (L ⊗[K] E)) // 0 < Module.finrank M A},
         (V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase
-          (Or.inr ⟨inferInstance, inferInstance⟩) hN A.val /
+          (hreg := ⟨(Or.inr ⟨inferInstance, inferInstance⟩)⟩) A.val /
           (Module.finrank M A.val : ℝ) : EReal) := by
-  rw [V.absoluteMaximalSlopeOfCountableDiscreteBase_eq_iSup_of_isAlgClosed (M := M) hN]
+  rw [V.absoluteMaximalSlopeOfCountableDiscreteBase_eq_iSup_of_isAlgClosed (M := M)]
   exact (V.iSup_nativeCompatibleTowerMeanOfOrdinaryBase_eq_direct
-    (L := L) (Or.inr ⟨inferInstance, inferInstance⟩) hN).symm
+    (L := L) (hreg := ⟨(Or.inr ⟨inferInstance, inferInstance⟩)⟩)).symm
 
 end ArakelovGeometry.AdelicVectorBundle

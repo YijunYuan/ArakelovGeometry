@@ -9,6 +9,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Determinant.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Density.Basic
 public import ArakelovGeometry.Analysis.Tensor.CountableTensorFormula
+
 import ArakelovGeometry.AdelicVectorBundle.Measurability.Countable
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import ArakelovGeometry.AdelicVectorBundle.Tensor.Domination
@@ -47,10 +48,10 @@ theorem exists_countable_dense_subfield_tensor_coordinates
     [∀ i, AddCommGroup (E i)] [∀ i, Module K (E i)]
     {κ : ι → Type wκ} [∀ i, Finite (κ i)]
     (b : ∀ i, Module.Basis (κ i) K (E i)) (z : ⨂[K] i, E i)
-    (hS : S.HasCommonCountableDenseSubfield) :
+    [hS : S.HasCommonCountableDenseSubfield] :
     ∃ K₁ : Subfield K, Countable K₁ ∧ (∀ ω, S.IsDenseSubfieldAt K₁ ω) ∧
       ∀ j, (Basis.piTensorProduct b).equivFun z j ∈ K₁ := by
-  obtain ⟨K₀, hcount, hK₀⟩ := hS
+  obtain ⟨K₀, hcount, hK₀⟩ := hS.exists_subfield
   let : Countable K₀ := hcount
   obtain ⟨K₁, hcount₁, hle, hcoord⟩ :=
     exists_countable_subfield_ge_range K₀ ((Basis.piTensorProduct b).equivFun z)
@@ -123,11 +124,12 @@ one countable rational subfield is dense in every completed ground field. -/
 theorem IsMeasurable.projectiveTensor_of_common_countable_dense_subfield
     (hξ : ∀ i, (ξ i).IsMeasurable) (hS : S.HasCommonCountableDenseSubfield) :
     (projectiveTensor ξ).IsMeasurable := by
+  constructor
   classical
   intro z
   let b := fun i => Module.finBasis K (E i)
   obtain ⟨K₁, hcount, hdense, hcoord⟩ :=
-    exists_countable_dense_subfield_tensor_coordinates b z hS
+    exists_countable_dense_subfield_tensor_coordinates (S := S) b z
   let : Countable K₁ := hcount
   let c : (∀ i, Fin (Module.finrank K (E i))) → K₁ :=
     fun j => ⟨(Basis.piTensorProduct b).equivFun z j, hcoord j⟩

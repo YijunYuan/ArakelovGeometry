@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.DirectSum.Basic
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Strong
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Subquotient
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Basis
@@ -99,6 +100,7 @@ theorem IsUpperDominated.exists_norm_exp_bound {ξ : NormFamily S E}
 theorem IsUpperDominated.maxDirectSum {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsUpperDominated) (hη : η.IsUpperDominated) :
     (ξ.maxDirectSum η).IsUpperDominated := by
+  constructor
   rintro ⟨x, y⟩ hxy
   obtain ⟨A, hA, hA0, hx⟩ := hξ.exists_norm_exp_bound x
   obtain ⟨B, hB, hB0, hy⟩ := hη.exists_norm_exp_bound y
@@ -193,8 +195,9 @@ theorem localDist_maxDirectSum_directSum_hasIntegrableBounds (ψ : S.Ω → Norm
 /-- The dual upper-domination bound is independent of the profile. Its
 only measure correction is the finite measure of the infinite places. -/
 theorem directSum_dual_isUpperDominated (ψ : S.Ω → NormShape)
-    (hξ : ξ.dual.IsUpperDominated) (hη : η.dual.IsUpperDominated)
+    [hξ : ξ.dual.IsUpperDominated] [hη : η.dual.IsUpperDominated]
     (hfin : S.v S.Ωinf < ⊤) : (ξ.directSum η ψ).dual.IsUpperDominated := by
+  constructor
   intro ℓ hℓ
   obtain ⟨A, hA, hA0, hℓ₁⟩ := hξ.exists_norm_exp_bound (ℓ.comp (LinearMap.inl K E F))
   obtain ⟨B, hB, hB0, hℓ₂⟩ := hη.exists_norm_exp_bound (ℓ.comp (LinearMap.inr K E F))
@@ -223,7 +226,8 @@ theorem IsDominated.maxDirectSum {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsDominated) (hη : η.IsDominated) (hfin : S.v S.Ωinf < ⊤) :
     (ξ.maxDirectSum η).IsDominated :=
   ⟨hξ.1.maxDirectSum hη.1,
-    ξ.directSum_dual_isUpperDominated η (fun _ => NormShape.maxShape) hξ.2 hη.2 hfin⟩
+    ξ.directSum_dual_isUpperDominated η (fun _ ↦ NormShape.maxShape) (hξ := hξ.2)
+        (hη := hη.2) hfin⟩
 
 /-- Domination for arbitrary profiles with finite exceptional support.
 The infinite-place and profile corrections are separate integrable terms. -/
@@ -241,9 +245,9 @@ theorem IsDominated.directSum {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsDominated) (hη : η.IsDominated) (ψ : S.Ω → NormShape)
     (U : Set S.Ω) (hU : MeasurableSet U) (hfinU : S.v U < ⊤)
     (hψ : ∀ ω ∉ U, Set.EqOn (ψ ω).toFun NormShape.maxShape.toFun (Set.Icc (0 : ℝ) 1))
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     (ξ.directSum η ψ).IsDominated :=
-  hξ.directSum_of_measure_lt_top hη ψ U hU hfinU hψ (S.v_Ωinf_lt_top_of_isRCLike hS)
+  hξ.directSum_of_measure_lt_top hη ψ U hU hfinU hψ (S.v_Ωinf_lt_top_of_isRCLike)
 
 /-- Componentwise norm comparison controls the actual maximum sum. -/
 theorem maxDirectSum_norm_le_exp_localDist_mul (ξ' : NormFamily S E) (η' : NormFamily S F)
@@ -276,21 +280,21 @@ theorem localDist_maxDirectSum_le (ξ' : NormFamily S E) (η' : NormFamily S F) 
 actual dominated ultrametric-at-finite-place Hermitian basis norms. -/
 theorem IsStronglyDominated.maxDirectSum {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsStronglyDominated) (hη : η.IsStronglyDominated)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     (ξ.maxDirectSum η).IsStronglyDominated := by
   let b := Module.finBasis K E
   let c := Module.finBasis K F
   let ξ₀ := ofBasisHermitian S E b
   let η₀ := ofBasisHermitian S F c
-  have hfin := S.v_Ωinf_lt_top_of_isRCLike hS
+  have hfin := S.v_Ωinf_lt_top_of_isRCLike
   have hξ₀ : ξ₀.IsStronglyDominated :=
     ofBasisHermitian_isStronglyDominated_of_measure_lt_top b hfin
   have hη₀ : η₀.IsStronglyDominated :=
     ofBasisHermitian_isStronglyDominated_of_measure_lt_top c hfin
   have hmax : (ξ₀.maxDirectSum η₀).IsStronglyDominated :=
     ((ξ₀.maxDirectSum η₀).isStronglyDominated_iff_isDominated_of_ultrametric
-      ((ofBasisHermitian_isUltrametric b).maxDirectSum (ofBasisHermitian_isUltrametric c))
-      hS).mpr (hξ₀.isDominated.maxDirectSum hη₀.isDominated hfin)
+      (hξ := ((ofBasisHermitian_isUltrametric b).maxDirectSum (ofBasisHermitian_isUltrametric c)))
+).mpr (hξ₀.isDominated.maxDirectSum hη₀.isDominated hfin)
   have hdistξ := hξ₀.localDist hξ hfin
   have hdistη := hη₀.localDist hη hfin
   apply hmax.of_localDist
@@ -303,9 +307,9 @@ theorem IsStronglyDominated.directSum {ξ : NormFamily S E} {η : NormFamily S F
     (hξ : ξ.IsStronglyDominated) (hη : η.IsStronglyDominated) (ψ : S.Ω → NormShape)
     (U : Set S.Ω) (hU : MeasurableSet U) (hfinU : S.v U < ⊤)
     (hψ : ∀ ω ∉ U, Set.EqOn (ψ ω).toFun NormShape.maxShape.toFun (Set.Icc (0 : ℝ) 1))
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     (ξ.directSum η ψ).IsStronglyDominated :=
-  (hξ.maxDirectSum hη hS).of_localDist
+  (hξ.maxDirectSum hη).of_localDist
     (ξ.localDist_maxDirectSum_directSum_hasIntegrableBounds η ψ U hU hfinU hψ).1
 
 end ArakelovGeometry.NormFamily

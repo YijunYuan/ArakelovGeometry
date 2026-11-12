@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Interval.TensorGlobalDegree
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.AdelicVectorBundle.Examples.Interval.Degrees
 
@@ -28,20 +29,20 @@ open AdelicStructure Module
 
 /-- The actual rational interval plane has mean slope zero. -/
 theorem rationalIntervalPlaneBundle_slope_eq_zero :
-    rationalIntervalPlaneBundle.slope (Or.inl inferInstance)
-      rationalAdelicStructure_isRCLike = 0 := by
+    rationalIntervalPlaneBundle.slope
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) = 0 := by
   simp only [AdelicVectorBundle.slope, rationalIntervalPlaneBundle_degree_eq_zero, zero_div]
 
 /-- The actual rational interval three-space has mean slope zero. -/
 theorem rationalIntervalThreeBundle_slope_eq_zero :
-    rationalIntervalThreeBundle.slope (Or.inl inferInstance)
-      rationalAdelicStructure_isRCLike = 0 := by
+    rationalIntervalThreeBundle.slope
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) = 0 := by
   simp only [AdelicVectorBundle.slope, rationalIntervalThreeBundle_degree_eq_zero, zero_div]
 
 /-- The native tensor degree bound gives the concrete rank-six mean-slope bound. -/
 theorem rationalIntervalTensorBundle_log_two_div_six_le_slope :
-    Real.log 2 / 6 ≤ rationalIntervalTensorBundle.slope (Or.inl inferInstance)
-      rationalAdelicStructure_isRCLike := by
+    Real.log 2 / 6 ≤ rationalIntervalTensorBundle.slope
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) := by
   have hr : Module.finrank ℚ ((Fin 2 → ℚ) ⊗[ℚ] (Fin 3 → ℚ)) = 6 := by
     rw [← finrank_mul_eq_tensor]
     simp
@@ -51,31 +52,31 @@ theorem rationalIntervalTensorBundle_log_two_div_six_le_slope :
 
 /-- The actual mixed tensor has strictly positive mean slope. -/
 theorem rationalIntervalTensorBundle_slope_pos :
-    0 < rationalIntervalTensorBundle.slope (Or.inl inferInstance)
-      rationalAdelicStructure_isRCLike :=
+    0 < rationalIntervalTensorBundle.slope
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) :=
   (div_pos (Real.log_pos (by norm_num : (1 : ℝ) < 2)) (by norm_num)).trans_le
     rationalIntervalTensorBundle_log_two_div_six_le_slope
 
 /-- The mixed tensor mean strictly exceeds the sum of its two actual factor means. -/
 theorem rationalIntervalTensorBundle_slope_strict :
-    rationalIntervalPlaneBundle.slope (Or.inl inferInstance)
-        rationalAdelicStructure_isRCLike +
-      rationalIntervalThreeBundle.slope (Or.inl inferInstance)
-        rationalAdelicStructure_isRCLike <
-    rationalIntervalTensorBundle.slope (Or.inl inferInstance)
-      rationalAdelicStructure_isRCLike := by
+    rationalIntervalPlaneBundle.slope
+        (hN := ⟨rationalAdelicStructure_isRCLike⟩) +
+      rationalIntervalThreeBundle.slope
+        (hN := ⟨rationalAdelicStructure_isRCLike⟩) <
+    rationalIntervalTensorBundle.slope
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) := by
   simpa only [rationalIntervalPlaneBundle_slope_eq_zero,
     rationalIntervalThreeBundle_slope_eq_zero, zero_add] using
       rationalIntervalTensorBundle_slope_pos
 
 /-- The unrestricted printed tensor mean-slope equality fails for these actual bundles. -/
 theorem rationalIntervalTensorBundle_slope_ne_factor_sum :
-    rationalIntervalTensorBundle.slope (Or.inl inferInstance)
-        rationalAdelicStructure_isRCLike ≠
-      rationalIntervalPlaneBundle.slope (Or.inl inferInstance)
-        rationalAdelicStructure_isRCLike +
-      rationalIntervalThreeBundle.slope (Or.inl inferInstance)
-        rationalAdelicStructure_isRCLike :=
+    rationalIntervalTensorBundle.slope
+        (hN := ⟨rationalAdelicStructure_isRCLike⟩) ≠
+      rationalIntervalPlaneBundle.slope
+        (hN := ⟨rationalAdelicStructure_isRCLike⟩) +
+      rationalIntervalThreeBundle.slope
+        (hN := ⟨rationalAdelicStructure_isRCLike⟩) :=
   ne_of_gt rationalIntervalTensorBundle_slope_strict
 
 end ArakelovGeometry

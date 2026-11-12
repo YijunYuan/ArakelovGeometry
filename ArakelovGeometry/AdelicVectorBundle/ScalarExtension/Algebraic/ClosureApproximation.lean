@@ -144,7 +144,8 @@ at every actual place of the algebraic-closure extension. -/
 theorem AdelicStructure.HasCommonCountableDenseSubfield.algebraicExtension_of_isAlgClosed
     (hS : S.HasCommonCountableDenseSubfield) :
     (S.algebraicExtension L).HasCommonCountableDenseSubfield := by
-  obtain ⟨K₀, hc, hd⟩ := hS
+  constructor
+  obtain ⟨K₀, hc, hd⟩ := hS.exists_subfield
   let : Countable K₀ := hc
   refine ⟨(algebraicClosure K₀ L).toSubfield, inferInstance, ?_⟩
   intro x
@@ -156,3 +157,13 @@ theorem AdelicStructure.HasCommonCountableDenseSubfield.algebraicExtension_of_is
   exact denseRange_algebraicClosure_subfield K₀ x.abv hb
 
 end ArakelovGeometry
+
+namespace ArakelovGeometry.AdelicStructure
+
+instance hasCommonCountableDenseSubfield_algebraicExtension_closed
+    {K L : Type*} [Field K] [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
+    (S : AdelicStructure K) [hS : S.HasCommonCountableDenseSubfield] [IsAlgClosed L] :
+    (S.algebraicExtension L).HasCommonCountableDenseSubfield :=
+  hS.algebraicExtension_of_isAlgClosed
+
+end ArakelovGeometry.AdelicStructure

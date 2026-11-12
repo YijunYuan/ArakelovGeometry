@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicCurve.Examples.Trivial
 public import Mathlib.Analysis.Normed.Field.Instances
 public import Mathlib.Analysis.Normed.Module.Completion
+
 import ArakelovGeometry.Analysis.AbsoluteValue.Basic
 import ArakelovGeometry.Analysis.AbsoluteValue.Place
 import Mathlib.CategoryTheory.Category.Init
@@ -74,6 +75,9 @@ theorem singleTrivialPlace_normalized :
     ∀ ω ∈ (singleTrivialPlace K).Ωinf,
       IsRCLikeNormedField ((singleTrivialPlace K).ϕ ω).Completion := by
   simp only [singleTrivialPlace_Ωinf, Set.mem_empty_iff_false, false_implies, implies_true]
+
+instance singleTrivialPlace_hasOnlyFinitePlaces : (singleTrivialPlace K).HasOnlyFinitePlaces :=
+  ⟨fun ω ↦ by rw [singleTrivialPlace_Ωfin]; exact Set.mem_univ ω⟩
 
 @[simp]
 theorem integral_singleTrivialPlace (f : (singleTrivialPlace K).Ω → ℝ) :

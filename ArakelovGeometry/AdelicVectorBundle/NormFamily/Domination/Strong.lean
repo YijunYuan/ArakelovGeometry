@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Dual.Bidual
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -38,10 +39,22 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- Strong domination, using the bidual-distance criterion from the source.
 The bidual is pulled back by canonical evaluation on the original space. -/
-def IsStronglyDominated (ξ : NormFamily S E) : Prop :=
-  ξ.IsDominated ∧ HasIntegrableBounds
+class IsStronglyDominated (ξ : NormFamily S E) : Prop where
+  /-- Domination of the norm family. -/
+  dominated : ξ.IsDominated
+  /-- Integrable bounds on the distance to the completed bidual. -/
+  bidual_bounds : HasIntegrableBounds
     (ξ.localDist (ξ.dual.dual.pullback (Module.Dual.eval K E)
       (Module.eval_apply_injective K))) S.v
+
+attribute [instance] IsStronglyDominated.dominated
+
+/-- The two components of strong domination. -/
+theorem isStronglyDominated_iff (ξ : NormFamily S E) :
+    ξ.IsStronglyDominated ↔ ξ.IsDominated ∧ HasIntegrableBounds
+      (ξ.localDist (ξ.dual.dual.pullback (Module.Dual.eval K E)
+        (Module.eval_apply_injective K))) S.v :=
+  ⟨fun h ↦ ⟨h.1, h.2⟩, fun h ↦ ⟨h.1, h.2⟩⟩
 
 /-- The bidual distance is nonnegative, so its lower integrable envelope is automatic.
 Strong domination therefore only requires an upper envelope in addition to domination. -/
@@ -49,6 +62,7 @@ theorem isStronglyDominated_iff_hasIntegrableUpperBound (ξ : NormFamily S E) :
     ξ.IsStronglyDominated ↔ ξ.IsDominated ∧ HasIntegrableUpperBound
       (ξ.localDist (ξ.dual.dual.pullback (Module.Dual.eval K E)
         (Module.eval_apply_injective K))) S.v := by
+  rw [isStronglyDominated_iff]
   refine and_congr_right fun _ ↦ ?_
   exact ⟨And.left, fun h ↦ ⟨h, 0, integrable_zero S.Ω ℝ S.v,
     Filter.Eventually.of_forall fun ω ↦ ξ.localDist_nonneg _ ω⟩⟩
@@ -75,10 +89,10 @@ theorem IsDominated.strong_dual {ξ : NormFamily S E} (hξ : ξ.IsDominated) :
 /-- Under the source's usual Archimedean normalization, an ultrametric family
 is strongly dominated exactly when it is dominated. -/
 theorem isStronglyDominated_iff_isDominated_of_ultrametric (ξ : NormFamily S E)
-    (hξ : ξ.IsUltrametric)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hξ : ξ.IsUltrametric]
+    [hS : S.IsArchimedeanNormalized] :
     ξ.IsStronglyDominated ↔ ξ.IsDominated :=
-  ⟨fun h ↦ h.1, fun h ↦ h.strong_of_bidual_eq (ξ.dual_dual_pullback_eq hξ hS)⟩
+  ⟨fun h ↦ h.1, fun h ↦ h.strong_of_bidual_eq (ξ.dual_dual_pullback_eq)⟩
 
 /-- In dimensions zero and one, no Archimedean normalization is needed. -/
 theorem isStronglyDominated_iff_isDominated_of_finrank_le_one (ξ : NormFamily S E)
@@ -121,4 +135,12 @@ theorem IsStronglyDominated.of_localDist {ξ η : NormFamily S E}
   change ξbb.localDist ηbb ω ≤ ξ.localDist η ω at h₃
   linarith
 
+instance instIsStronglyDominatedDual (ξ : NormFamily S E) [ξ.IsDominated] :
+    ξ.dual.IsStronglyDominated :=
+  IsDominated.strong_dual inferInstance
+
+end ArakelovGeometry.NormFamily
+
+namespace ArakelovGeometry.NormFamily
+attribute [instance] isStronglyDominated_of_subsingleton
 end ArakelovGeometry.NormFamily

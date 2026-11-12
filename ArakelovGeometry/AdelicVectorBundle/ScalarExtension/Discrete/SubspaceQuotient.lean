@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Subquotient
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Discrete.Restriction
+
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Discrete.Quotient
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.FiniteStage.RestrictionIsometry
 import Mathlib.CategoryTheory.Category.Init
@@ -71,6 +72,7 @@ private theorem discreteSubquotient_isMeasurable
         (e.toLinearMap.baseChange x.abv.Completion t) = η.norm x t)
     (hm : (η.quotient P).IsMeasurable) :
     (θ.quotient (P.map e.toLinearMap)).IsMeasurable := by
+  constructor
   let Q := P.map e.toLinearMap
   let q := Submodule.Quotient.equiv P Q e rfl
   intro y
@@ -123,8 +125,7 @@ private theorem discreteSubquotient_isMeasurable_of_scalarExtension
     [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
     (η : NormFamily (S.algebraicExtension F) X)
     (θ : NormFamily (S.algebraicExtension L) Y) (e : (L ⊗[F] X) ≃ₗ[L] Y)
-    (hN : ∀ ω ∈ (S.algebraicExtension F).Ωinf,
-      IsRCLikeNormedField ((S.algebraicExtension F).ϕ ω).Completion)
+    [hN : (S.algebraicExtension F).IsArchimedeanNormalized]
     (T : Submodule L Y)
     (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
       (t : x.abv.Completion ⊗[L] (L ⊗[F] X)), θ.norm (scalarExtensionTowerPlace x)
@@ -132,7 +133,7 @@ private theorem discreteSubquotient_isMeasurable_of_scalarExtension
           (η.scalarExtension (L := L)).norm x t) :
     (θ.quotient T).IsMeasurable := by
   exact discreteSubquotient_isMeasurable_of_preimage F (η.scalarExtension (L := L)) θ e T
-    he (η.scalarExtension_quotient_isMeasurable_of_countable_discrete hN
+    he (η.scalarExtension_quotient_isMeasurable_of_countable_discrete
       (T.comap e.toLinearMap))
 
 /-- Every actual quotient of a native restricted scalar family has produced
@@ -141,10 +142,10 @@ dense subfield; neither source measurability nor original ultrametricity is
 assumed for the norm family. -/
 theorem scalarExtension_restrict_quotient_isMeasurable_of_countable_discrete
     (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] E)) (T : Submodule L A) :
     (((ξ.scalarExtension (L := L)).restrict A).quotient T).IsMeasurable := by
-  obtain ⟨F, _, B, _, _, he⟩ := ξ.exists_complexFiniteStage_restriction_isometries hN
+  obtain ⟨F, _, B, _, _, he⟩ := ξ.exists_complexFiniteStage_restriction_isometries
     (fun _ : Fin 1 => A)
   obtain ⟨e, he⟩ := he 0
   let : Countable (S.algebraicExtension F).Ω :=
@@ -154,7 +155,7 @@ theorem scalarExtension_restrict_quotient_isMeasurable_of_countable_discrete
       (S := S) (L := F)
   exact discreteSubquotient_isMeasurable_of_scalarExtension F
     ((ξ.scalarExtension (L := F)).restrict (B 0)) ((ξ.scalarExtension (L := L)).restrict A)
-    e (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN) T he
+    e T he
 
 end NormFamily
 namespace AdelicVectorBundle
@@ -163,18 +164,19 @@ namespace AdelicVectorBundle
 closure, with primal measurability produced from a countable discrete base. -/
 def scalarExtensionSubspaceQuotientOfCountableDiscreteBase
     (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] E)) (T : Submodule L A) :
     AdelicVectorBundle (S.algebraicExtension L) (A ⧸ T) :=
-  (V.scalarExtensionRestrictionOfCountableDiscreteBase (L := L) hN A).quotient T
-    (V.toNormFamily.scalarExtension_restrict_quotient_isMeasurable_of_countable_discrete hN A T)
+  (V.scalarExtensionRestrictionOfCountableDiscreteBase (L := L) A).quotient T
+    (hm := (V.toNormFamily.scalarExtension_restrict_quotient_isMeasurable_of_countable_discrete A
+        T))
 
 @[simp]
 theorem scalarExtensionSubspaceQuotientOfCountableDiscreteBase_toNormFamily
     (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] E)) (T : Submodule L A) :
-    (V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase (L := L) hN A T).toNormFamily =
+    (V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase (L := L) A T).toNormFamily =
       ((V.toNormFamily.scalarExtension (L := L)).restrict A).quotient T := rfl
 
 end AdelicVectorBundle

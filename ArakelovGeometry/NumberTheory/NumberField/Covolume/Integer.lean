@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Basis
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.WeightedCovolume
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 import Mathlib.Topology.Sheaves.Init
@@ -43,8 +44,8 @@ abbrev scalarFamily : NormFamily (normalizedNumberFieldAdelicStructure K) K :=
   ofBasisHermitian _ _ (scalarBasis K)
 
 theorem scalarFamily_hermitian :
-    (scalarFamily K).IsHermitian normalizedNumberFieldArchimedeanCompletions :=
-  ofBasisHermitian_isHermitian (scalarBasis K) normalizedNumberFieldArchimedeanCompletions
+    (scalarFamily K).IsHermitian :=
+  ofBasisHermitian_isHermitian (scalarBasis K)
 
 /-- Actual scalar coordinates in the original completed tensor fibres. -/
 def scalarCoordinates : CompletedVectorProduct K K ≃ₗ[ℝ] CompletedScalarProduct K :=
@@ -152,14 +153,14 @@ open scoped Classical in
 theorem scalarMixed_measurePreserving :
     letI := euclideanNormedAddCommGroup (scalarFamily K)
     letI := euclideanNormedSpace (scalarFamily K)
-    letI := euclideanInnerProduct (scalarFamily_hermitian K)
+    letI := euclideanInnerProduct (hξ := (scalarFamily_hermitian K))
     letI : MeasurableSpace (CompletedVectorProduct K K) := borel _
     letI : BorelSpace (CompletedVectorProduct K K) := ⟨rfl⟩
     letI := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K K)
     MeasurePreserving (scalarMixedContinuousEquiv K) volume volume := by
   let := euclideanNormedAddCommGroup (scalarFamily K)
   let := euclideanNormedSpace (scalarFamily K)
-  let := euclideanInnerProduct (scalarFamily_hermitian K)
+  let := euclideanInnerProduct (hξ := (scalarFamily_hermitian K))
   let : MeasurableSpace (CompletedVectorProduct K K) := borel _
   let : BorelSpace (CompletedVectorProduct K K) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K K)
@@ -213,11 +214,11 @@ theorem integerLattice_comap :
 
 open scoped Classical in
 theorem integerCovolume_eq_mixed :
-    euclideanCovolume (scalarFamily K) (scalarFamily_hermitian K) (integerModule K) =
+    euclideanCovolume (scalarFamily K) (hξ := (scalarFamily_hermitian K)) (integerModule K) =
       ZLattice.covolume (mixedEmbedding.integerLattice K) volume := by
   let := euclideanNormedAddCommGroup (scalarFamily K)
   let := euclideanNormedSpace (scalarFamily K)
-  let := euclideanInnerProduct (scalarFamily_hermitian K)
+  let := euclideanInnerProduct (hξ := (scalarFamily_hermitian K))
   let : MeasurableSpace (CompletedVectorProduct K K) := borel _
   let : BorelSpace (CompletedVectorProduct K K) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K K)
@@ -227,20 +228,20 @@ theorem integerCovolume_eq_mixed :
   exact h
 
 theorem integerCovolume :
-    euclideanCovolume (scalarFamily K) (scalarFamily_hermitian K) (integerModule K) =
+    euclideanCovolume (scalarFamily K) (hξ := (scalarFamily_hermitian K)) (integerModule K) =
       (2⁻¹ : ℝ) ^ InfinitePlace.nrComplexPlaces K * Real.sqrt |(NumberField.discr K : ℝ)| := by
   rw [integerCovolume_eq_mixed, mixedEmbedding.covolume_integerLattice]
 
 theorem integerCovolume_pos :
-    0 < euclideanCovolume (scalarFamily K) (scalarFamily_hermitian K) (integerModule K) :=
-  euclideanCovolume_pos _ _ _ (integerModule_fg K) (integerModule_full K)
+    0 < euclideanCovolume (scalarFamily K) (hξ := (scalarFamily_hermitian K)) (integerModule K) :=
+  euclideanCovolume_pos _ _ (integerModule_fg K) (integerModule_full K)
 
 theorem discriminant_abs_pos : 0 < |(NumberField.discr K : ℝ)| :=
   abs_pos.mpr (Int.cast_ne_zero.mpr (NumberField.discr_ne_zero K))
 
 /-- The source exponential normalization, without introducing a replacement for `χ_K`. -/
 theorem integerCovolume_eq_exp :
-    euclideanCovolume (scalarFamily K) (scalarFamily_hermitian K) (integerModule K) =
+    euclideanCovolume (scalarFamily K) (hξ := (scalarFamily_hermitian K)) (integerModule K) =
       Real.exp (-(InfinitePlace.nrComplexPlaces K * Real.log 2 -
         Real.log |(NumberField.discr K : ℝ)| / 2)) := by
   have hd := discriminant_abs_pos K
@@ -253,12 +254,12 @@ theorem integerCovolume_eq_exp :
   ring
 
 theorem weightedIntegerCovolume :
-    weightedCovolume (scalarFamily K) (scalarFamily_hermitian K) (integerModule K) =
+    weightedCovolume (scalarFamily K) (hξ := (scalarFamily_hermitian K)) (integerModule K) =
       Real.sqrt |(NumberField.discr K : ℝ)| := by
-  rw [weightedCovolume_eq_mul _ _ _ (integerModule_fg K) (integerModule_full K)]
+  rw [weightedCovolume_eq_mul _ _ (integerModule_fg K) (integerModule_full K)]
   simp only [Module.finrank_self, mul_one]
   change (2 : ℝ) ^ InfinitePlace.nrComplexPlaces K *
-    euclideanCovolume (scalarFamily K) (scalarFamily_hermitian K) (integerModule K) = _
+    euclideanCovolume (scalarFamily K) (hξ := (scalarFamily_hermitian K)) (integerModule K) = _
   rw [integerCovolume, ← mul_assoc, ← mul_pow]
   norm_num
 

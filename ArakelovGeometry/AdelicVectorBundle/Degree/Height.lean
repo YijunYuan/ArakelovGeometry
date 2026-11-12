@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicCurve.Height.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Vector
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
+
 import ArakelovGeometry.AdelicCurve.Basic
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -49,9 +50,9 @@ theorem ofBasis_isDominated_of_measure_lt_top (b : Module.Basis ι K E)
 
 /-- The source Archimedean normalization supplies the required finite measure. -/
 theorem ofBasis_isDominated (b : Module.Basis ι K E)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     (ofBasis S E b).IsDominated :=
-  ofBasis_isDominated_of_measure_lt_top b (S.v_Ωinf_lt_top_of_isRCLike hS)
+  ofBasis_isDominated_of_measure_lt_top b (S.v_Ωinf_lt_top_of_isRCLike)
 
 variable [Nonempty ι]
 
@@ -82,7 +83,8 @@ theorem logHeight_eq_neg_vectorDegree (hfin : S.v S.Ωinf < ⊤)
     (s : {x : ι → K // x ≠ 0}) :
     S.logHeight s.val =
       -(ofBasis S (ι → K) (Pi.basisFun K ι)).vectorDegree
-        (ofBasis_isDominated_of_measure_lt_top _ hfin) (ofBasis_isMeasurable _) s := by
+        (hd := (ofBasis_isDominated_of_measure_lt_top _ hfin))
+            (hm := (ofBasis_isMeasurable _)) s := by
   rw [vectorDegree_eq_neg_integral, neg_neg]
   unfold AdelicStructure.logHeight
   apply integral_congr_ae

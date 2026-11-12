@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.NumberTheory.NumberField.Model.GenericFibre.Projective
 public import ArakelovGeometry.NumberTheory.NumberField.TraceDual.Codifferent.TensorDual
 public import ArakelovGeometry.NumberTheory.NumberField.TraceDual.Covolume
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import Mathlib.Topology.Sheaves.Init
 
@@ -144,12 +145,12 @@ theorem traceTensorDiagonalMap_range :
 the actual original integer functional. -/
 theorem traceTensorDiagonalMap_original
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hη : η.IsHermitian]
     (z : codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M) (m : M) :
-    ordinaryTraceDualIsometry hη (traceTensorDiagonalMap (K := K) M z)
+    ordinaryTraceDualIsometry (ξ := η) (traceTensorDiagonalMap (K := K) M z)
       (NumberFieldProjectiveGeneric.originalDiagonalMap (K := K) M m) =
         (integerTensorEquiv (K := K) M z m : ℝ) := by
-  change ordinaryTraceDualIsometry hη
+  change ordinaryTraceDualIsometry (ξ := η)
     (vectorDiagonalMap (K := K) (traceTensorInclusion (K := K) M z))
     (vectorDiagonalMap (K := K) (NumberFieldInvertibleGeneric.genericInclusion (K := K) M m)) = _
   rw [ordinaryTraceDualIsometry_original]
@@ -157,35 +158,35 @@ theorem traceTensorDiagonalMap_original
 
 theorem traceTensorDiagonalMap_integral
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hη : η.IsHermitian]
     (z : codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M) (m : M) :
-    ordinaryTraceDualIsometry hη (traceTensorDiagonalMap (K := K) M z)
+    ordinaryTraceDualIsometry (ξ := η) (traceTensorDiagonalMap (K := K) M z)
       (NumberFieldProjectiveGeneric.originalDiagonalMap (K := K) M m) ∈
         LinearMap.range (Algebra.linearMap ℤ ℝ) := by
   exact ⟨integerTensorEquiv (K := K) M z m,
-    (traceTensorDiagonalMap_original (K := K) M η hη z m).symm⟩
+    (traceTensorDiagonalMap_original (K := K) M η z m).symm⟩
 
 /-- The ordinary trace isometry maps the original projective tensor diagonal onto
 the actual continuous integer dual of the original projective module diagonal. -/
 theorem traceTensorDiagonalMap_integralDual_image
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     letI := NumberFieldArchimedeanEuclidean.euclideanNormedAddCommGroup η
     letI := NumberFieldArchimedeanEuclidean.euclideanNormedSpace η
-    letI := NumberFieldArchimedeanEuclidean.euclideanInnerProduct hη
+    letI := NumberFieldArchimedeanEuclidean.euclideanInnerProduct (ξ := η)
     letI := ordinaryTraceDualNormedAddCommGroup η
     letI := ordinaryTraceDualNormedSpace η
     (traceTensorDiagonalMap (K := K) M).range.map
-      ((ordinaryTraceDualIsometry hη).toLinearEquiv.toLinearMap.restrictScalars ℤ) =
+      ((ordinaryTraceDualIsometry (ξ := η)).toLinearEquiv.toLinearMap.restrictScalars ℤ) =
         GeometryOfNumbers.integralDual
           (NumberFieldProjectiveGeneric.originalDiagonalMap (K := K) M).range := by
   let := NumberFieldArchimedeanEuclidean.euclideanNormedAddCommGroup η
   let := NumberFieldArchimedeanEuclidean.euclideanNormedSpace η
-  let := NumberFieldArchimedeanEuclidean.euclideanInnerProduct hη
+  let := NumberFieldArchimedeanEuclidean.euclideanInnerProduct (ξ := η)
   let := ordinaryTraceDualNormedAddCommGroup η
   let := ordinaryTraceDualNormedSpace η
   rw [traceTensorDiagonalMap_range, NumberFieldProjectiveGeneric.originalDiagonalMap_range]
-  exact NumberFieldTraceDualCovolume.ordinaryTraceDualIsometry_integralDual_image hη _
+  exact NumberFieldTraceDualCovolume.ordinaryTraceDualIsometry_integralDual_image _
     (NumberFieldProjectiveGeneric.genericImage_fg (K := K) M)
     (NumberFieldInvertibleGeneric.genericImage_fullSpan (K := K) M)
 
@@ -193,12 +194,12 @@ theorem traceTensorDiagonalMap_integralDual_image
 completed metric here is the independently defined ordinary trace-dual metric. -/
 theorem traceTensorDiagonalMap_covolume
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     letI := NumberFieldArchimedeanEuclidean.euclideanNormedAddCommGroup η
     letI := NumberFieldArchimedeanEuclidean.euclideanNormedSpace η
     letI := ordinaryTraceDualNormedAddCommGroup η
     letI := ordinaryTraceDualNormedSpace η
-    letI := NumberFieldTraceDualCovolume.ordinaryTraceDualInnerProduct hη
+    letI := NumberFieldTraceDualCovolume.ordinaryTraceDualInnerProduct (ξ := η)
     letI : MeasurableSpace
       (CompletedVectorProduct K (Module.Dual K (K ⊗[𝓞 K] M))) := borel _
     letI : BorelSpace
@@ -206,13 +207,13 @@ theorem traceTensorDiagonalMap_covolume
     letI := measureSpaceOfInnerProductSpace
       (E := CompletedVectorProduct K (Module.Dual K (K ⊗[𝓞 K] M)))
     ZLattice.covolume (traceTensorDiagonalMap (K := K) M).range =
-      (NumberFieldArchimedeanCovolume.euclideanCovolume η hη
+      (NumberFieldArchimedeanCovolume.euclideanCovolume η
         (NumberFieldInvertibleGeneric.genericImage (K := K) M))⁻¹ := by
   let := NumberFieldArchimedeanEuclidean.euclideanNormedAddCommGroup η
   let := NumberFieldArchimedeanEuclidean.euclideanNormedSpace η
   let := ordinaryTraceDualNormedAddCommGroup η
   let := ordinaryTraceDualNormedSpace η
-  let := NumberFieldTraceDualCovolume.ordinaryTraceDualInnerProduct hη
+  let := NumberFieldTraceDualCovolume.ordinaryTraceDualInnerProduct (ξ := η)
   let : MeasurableSpace
     (CompletedVectorProduct K (Module.Dual K (K ⊗[𝓞 K] M))) := borel _
   let : BorelSpace
@@ -220,7 +221,7 @@ theorem traceTensorDiagonalMap_covolume
   let := measureSpaceOfInnerProductSpace
     (E := CompletedVectorProduct K (Module.Dual K (K ⊗[𝓞 K] M)))
   rw [traceTensorDiagonalMap_range]
-  exact NumberFieldTraceDualCovolume.ordinaryTraceDualCovolume_eq_inv η hη _
+  exact NumberFieldTraceDualCovolume.ordinaryTraceDualCovolume_eq_inv η _
     (NumberFieldProjectiveGeneric.genericImage_fg (K := K) M)
     (NumberFieldInvertibleGeneric.genericImage_fullSpan (K := K) M)
 

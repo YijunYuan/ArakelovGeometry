@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Bidual
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Bidual
 import ArakelovGeometry.AdelicVectorBundle.Dual.Bidual
 import ArakelovGeometry.AdelicVectorBundle.Dual.Restriction
@@ -39,7 +40,7 @@ namespace NormFamily
 /-- Canonical evaluation and the genuine completed quotient norm commute
 under the usual infinite-place normalization, without original ultrametricity. -/
 theorem dual_dual_pullback_quotient (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (U : Submodule K E) :
+    [hN : S.IsArchimedeanNormalized] (U : Submodule K E) :
     (ξ.quotient U).dual.dual.pullback (Module.Dual.eval K (E ⧸ U))
       (Module.eval_apply_injective K) =
       (ξ.dual.dual.pullback (Module.Dual.eval K E)
@@ -52,35 +53,35 @@ theorem dual_dual_pullback_quotient (ξ : NormFamily S E)
   have hu : (β.quotient U).IsUltrametric :=
     (ξ.dual.dual_isUltrametric.pullback _ _).quotient U
   rw [← hd]
-  exact (β.quotient U).dual_dual_pullback_eq hu hN
+  exact (β.quotient U).dual_dual_pullback_eq (hξ := hu)
 
 end NormFamily
 
 namespace AdelicVectorBundle
 
 variable (V : AdelicVectorBundle S E)
-  (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-  (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+  [hS : S.HasMeasurableBase]
+  [hN : S.IsArchimedeanNormalized]
 
 include hN
 
 /-- The actual adelic constructors commute because their completed norm
 families agree, rather than through a supplied quotient-isometry certificate. -/
 theorem quotient_bidualOfMeasurableBase (U : Submodule K E) :
-    (V.bidualOfMeasurableBase hS).quotientOfMeasurableBase U hS =
-      (V.quotientOfMeasurableBase U hS).bidualOfMeasurableBase hS := by
+    (V.bidualOfMeasurableBase).quotientOfMeasurableBase U =
+      (V.quotientOfMeasurableBase U).bidualOfMeasurableBase := by
   apply ext
-  exact (V.toNormFamily.dual_dual_pullback_quotient hN U).symm
+  exact (V.toNormFamily.dual_dual_pullback_quotient U).symm
 
 /-- Bidualization preserves the actual infimum of nonzero quotient means,
 including the infinite minimum convention of the zero bundle. -/
 theorem minimalSlope_bidualOfMeasurableBase [S.IsProper] :
-    (V.bidualOfMeasurableBase hS).minimalSlope hS hN = V.minimalSlope hS hN := by
-  rw [(V.bidualOfMeasurableBase hS).minimalSlope_eq_iInf_slope_quotient hS hN,
-    V.minimalSlope_eq_iInf_slope_quotient hS hN]
+    (V.bidualOfMeasurableBase).minimalSlope = V.minimalSlope := by
+  rw [(V.bidualOfMeasurableBase).minimalSlope_eq_iInf_slope_quotient,
+    V.minimalSlope_eq_iInf_slope_quotient]
   apply iInf_congr
   intro U
-  rw [V.quotient_bidualOfMeasurableBase hS hN U.val]
+  rw [V.quotient_bidualOfMeasurableBase U.val]
   simp only [slope, degree_bidualOfMeasurableBase]
 
 end AdelicVectorBundle

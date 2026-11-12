@@ -5,13 +5,13 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.LinearAlgebra.Filtration.TensorGraded
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Quotient
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.AdaptedBasis
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.BidualHN
-public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Quotient
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.Domination
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Dual
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.PairNorm
-public import ArakelovGeometry.AdelicVectorBundle.Tensor.Domination
+public import ArakelovGeometry.LinearAlgebra.Filtration.TensorGraded
 
 /-!
 # Actual epsilon tensor norms and trivial-place filtrations
@@ -52,6 +52,7 @@ variable {K : Type u} [Field K] {E V : Type v}
 
 /-- The actual binary epsilon norm is ultrametric at the trivial place. -/
 theorem injectiveTensorPair_isUltrametric : (ξ.injectiveTensorPair η).IsUltrametric := by
+  constructor
   intro ω hω x y
   change (injectiveTensor (tensorPairFactors ξ η)).norm ω
       ((binaryTensorEquiv K (BinaryTensorFactors E V)).symm.toLinearMap.baseChange _ (x + y)) ≤ _
@@ -97,9 +98,9 @@ variable {ι κ : Type*} (b : Basis ι K E) (c : Basis κ K V)
 
 omit η [FiniteDimensional K E] in
 /-- A single ball-adapted basis bounds each nonzero coordinate's basis radius. -/
-theorem trivialSeminorm_basis_le_of_adapted (hξ : ξ.IsUltrametric)
-    (hb : ∀ t x, x ∈ ξ.trivialFiltration hξ t ↔
-      ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration hξ t)
+theorem trivialSeminorm_basis_le_of_adapted [hξ : ξ.IsUltrametric]
+    (hb : ∀ t x, x ∈ ξ.trivialFiltration t ↔
+      ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration t)
     (x : E) (i : ι) (hi : b.repr x i ≠ 0) :
     ξ.trivialSeminorm (b i) ≤ ξ.trivialSeminorm x := by
   classical
@@ -108,24 +109,24 @@ theorem trivialSeminorm_basis_le_of_adapted (hξ : ξ.IsUltrametric)
     rw [trivialSeminorm_apply]
     exact ξ.norm_rational_pos PUnit.unit hx
   have hm := (hb (-Real.log (ξ.trivialSeminorm x)) x).mp
-    ((ξ.mem_trivialFiltration_iff_le_neg_log hξ _ x hx).mpr le_rfl) i hi
+    ((ξ.mem_trivialFiltration_iff_le_neg_log _ x hx).mpr le_rfl) i hi
   simpa only [mem_trivialFiltration, neg_neg, Real.exp_log hp] using hm
 
 omit η [FiniteDimensional K E] in
 /-- The original logarithmic basis weights describe every factor step exactly. -/
-theorem trivialFiltration_eq_span_neg_log_of_adapted (hξ : ξ.IsUltrametric)
-    (hb : ∀ t x, x ∈ ξ.trivialFiltration hξ t ↔
-      ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration hξ t) (t : ℝ) :
-    ξ.trivialFiltration hξ t = Submodule.span K
+theorem trivialFiltration_eq_span_neg_log_of_adapted [hξ : ξ.IsUltrametric]
+    (hb : ∀ t x, x ∈ ξ.trivialFiltration t ↔
+      ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration t) (t : ℝ) :
+    ξ.trivialFiltration t = Submodule.span K
       (b '' {i | t ≤ -Real.log (ξ.trivialSeminorm (b i))}) := by
   ext x
   rw [b.mem_span_image, hb]
   constructor
   · intro hx i hi
-    exact (ξ.mem_trivialFiltration_iff_le_neg_log hξ t (b i) (b.ne_zero i)).mp
+    exact (ξ.mem_trivialFiltration_iff_le_neg_log t (b i) (b.ne_zero i)).mp
       (hx i (Finsupp.mem_support_iff.mp hi))
   · intro hx i hi
-    exact (ξ.mem_trivialFiltration_iff_le_neg_log hξ t (b i) (b.ne_zero i)).mpr
+    exact (ξ.mem_trivialFiltration_iff_le_neg_log t (b i) (b.ne_zero i)).mpr
       (hx (Finsupp.mem_support_iff.mpr hi))
 
 /-- Nonzero tensor coordinates give the sharp lower bound for the actual epsilon norm. -/
@@ -174,9 +175,10 @@ theorem trivialSeminorm_injectiveTensorPair_coordinate_le
 
 /-- The intrinsic convolution is contained in the actual epsilon ball at each threshold. -/
 theorem tensorFiltration_le_trivialFiltration_injectiveTensorPair
-    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric) (γ : ℝ) :
-    Submodule.tensorFiltration (ξ.trivialFiltration hξ) (η.trivialFiltration hη) γ ≤
-      (ξ.injectiveTensorPair η).trivialFiltration (ξ.injectiveTensorPair_isUltrametric η) γ := by
+    [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric] (γ : ℝ) :
+    Submodule.tensorFiltration (ξ.trivialFiltration) (η.trivialFiltration) γ ≤
+      (ξ.injectiveTensorPair η).trivialFiltration
+          (hξ := (ξ.injectiveTensorPair_isUltrametric η)) γ := by
   apply iSup_le
   intro t
   apply iSup_le
@@ -198,24 +200,24 @@ theorem tensorFiltration_le_trivialFiltration_injectiveTensorPair
 
 /-- Arbitrary given factor filtrations from actual norms have exactly the epsilon tensor balls. -/
 theorem trivialFiltration_injectiveTensorPair
-    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric) (γ : ℝ) :
-    (ξ.injectiveTensorPair η).trivialFiltration (ξ.injectiveTensorPair_isUltrametric η) γ =
-      Submodule.tensorFiltration (ξ.trivialFiltration hξ) (η.trivialFiltration hη) γ := by
+    [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric] (γ : ℝ) :
+    (ξ.injectiveTensorPair η).trivialFiltration (hξ := (ξ.injectiveTensorPair_isUltrametric η)) γ =
+      Submodule.tensorFiltration (ξ.trivialFiltration) (η.trivialFiltration) γ := by
   classical
   apply le_antisymm
-  · obtain ⟨b, hb⟩ := ξ.exists_basis_adapted_trivialFiltration hξ
-    obtain ⟨c, hc⟩ := η.exists_basis_adapted_trivialFiltration hη
+  · obtain ⟨b, hb⟩ := ξ.exists_basis_adapted_trivialFiltration
+    obtain ⟨c, hc⟩ := η.exists_basis_adapted_trivialFiltration
     let w := fun i ↦ -Real.log (ξ.trivialSeminorm (b i))
     let z := fun j ↦ -Real.log (η.trivialSeminorm (c j))
-    have hF := ξ.trivialFiltration_eq_span_neg_log_of_adapted b hξ hb
-    have hG := η.trivialFiltration_eq_span_neg_log_of_adapted c hη hc
+    have hF := ξ.trivialFiltration_eq_span_neg_log_of_adapted b hb
+    have hG := η.trivialFiltration_eq_span_neg_log_of_adapted c hc
     rw [Submodule.tensorFiltration_eq_span_tensorProduct b c w z hF hG]
     intro x hx
     apply (b.tensorProduct c).mem_span_image.mpr
     intro ij hij
     have hcoord := ξ.trivialSeminorm_injectiveTensorPair_coordinate_le η b c
-      (ξ.trivialSeminorm_basis_le_of_adapted b hξ hb)
-      (η.trivialSeminorm_basis_le_of_adapted c hη hc) x ij.1 ij.2
+      (ξ.trivialSeminorm_basis_le_of_adapted b hb)
+      (η.trivialSeminorm_basis_le_of_adapted c hc) x ij.1 ij.2
       (Finsupp.mem_support_iff.mp hij)
     have hbi : 0 < ξ.trivialSeminorm (b ij.1) := by
       rw [trivialSeminorm_apply]
@@ -229,31 +231,31 @@ theorem trivialFiltration_injectiveTensorPair
     have hlog := Real.log_le_log (mul_pos hbi hcj) hbound
     rw [Real.log_mul hbi.ne' hcj.ne', Real.log_exp] at hlog
     linarith
-  · exact ξ.tensorFiltration_le_trivialFiltration_injectiveTensorPair η hξ hη γ
+  · exact ξ.tensorFiltration_le_trivialFiltration_injectiveTensorPair η γ
 
 /-- The tensor basis retains the sums of the two original logarithmic weights. -/
 theorem trivialFiltration_injectiveTensorPair_eq_span
-    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric)
-    (hb : ∀ t x, x ∈ ξ.trivialFiltration hξ t ↔
-      ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration hξ t)
-    (hc : ∀ t y, y ∈ η.trivialFiltration hη t ↔
-      ∀ j, c.repr y j ≠ 0 → c j ∈ η.trivialFiltration hη t) (γ : ℝ) :
-    (ξ.injectiveTensorPair η).trivialFiltration (ξ.injectiveTensorPair_isUltrametric η) γ =
+    [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric]
+    (hb : ∀ t x, x ∈ ξ.trivialFiltration t ↔
+      ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration t)
+    (hc : ∀ t y, y ∈ η.trivialFiltration t ↔
+      ∀ j, c.repr y j ≠ 0 → c j ∈ η.trivialFiltration t) (γ : ℝ) :
+    (ξ.injectiveTensorPair η).trivialFiltration (hξ := (ξ.injectiveTensorPair_isUltrametric η)) γ =
       Submodule.span K ((b.tensorProduct c) '' {ij |
         γ ≤ -Real.log (ξ.trivialSeminorm (b ij.1)) +
           -Real.log (η.trivialSeminorm (c ij.2))}) := by
-  rw [ξ.trivialFiltration_injectiveTensorPair η hξ hη]
+  rw [ξ.trivialFiltration_injectiveTensorPair η]
   exact Submodule.tensorFiltration_eq_span_tensorProduct b c _ _
-    (ξ.trivialFiltration_eq_span_neg_log_of_adapted b hξ hb)
-    (η.trivialFiltration_eq_span_neg_log_of_adapted c hη hc) γ
+    (ξ.trivialFiltration_eq_span_neg_log_of_adapted b hb)
+    (η.trivialFiltration_eq_span_neg_log_of_adapted c hc) γ
 
 /-- The actual epsilon norm is the coordinate maximum of the products of the original radii. -/
 theorem trivialSeminorm_injectiveTensorPair_eq_sup
-    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric)
-    (hb : ∀ t x, x ∈ ξ.trivialFiltration hξ t ↔
-      ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration hξ t)
-    (hc : ∀ t y, y ∈ η.trivialFiltration hη t ↔
-      ∀ j, c.repr y j ≠ 0 → c j ∈ η.trivialFiltration hη t) (x : E ⊗[K] V) :
+    [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric]
+    (hb : ∀ t x, x ∈ ξ.trivialFiltration t ↔
+      ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration t)
+    (hc : ∀ t y, y ∈ η.trivialFiltration t ↔
+      ∀ j, c.repr y j ≠ 0 → c j ∈ η.trivialFiltration t) (x : E ⊗[K] V) :
     (ξ.injectiveTensorPair η).trivialSeminorm x =
       ((((b.tensorProduct c).repr x).support.sup fun ij ↦
         ⟨ξ.trivialSeminorm (b ij.1) * η.trivialSeminorm (c ij.2),
@@ -269,8 +271,8 @@ theorem trivialSeminorm_injectiveTensorPair_eq_sup
     apply Finset.sup_le
     intro ij hij
     exact ξ.trivialSeminorm_injectiveTensorPair_coordinate_le η b c
-      (ξ.trivialSeminorm_basis_le_of_adapted b hξ hb)
-      (η.trivialSeminorm_basis_le_of_adapted c hη hc) x ij.1 ij.2
+      (ξ.trivialSeminorm_basis_le_of_adapted b hb)
+      (η.trivialSeminorm_basis_le_of_adapted c hc) x ij.1 ij.2
       (Finsupp.mem_support_iff.mp hij)
   apply le_antisymm _ (show (M : ℝ) ≤ (ξ.injectiveTensorPair η).trivialSeminorm x from hl)
   by_cases hx : x = 0
@@ -289,7 +291,7 @@ theorem trivialSeminorm_injectiveTensorPair_eq_sup
   have hM : 0 < (M : ℝ) := (mul_pos hbi hcj).trans_le
     (show (f ij : ℝ) ≤ (M : ℝ) from Finset.le_sup (f := f) hij)
   have hxball : x ∈ (ξ.injectiveTensorPair η).trivialFiltration
-      (ξ.injectiveTensorPair_isUltrametric η) (-Real.log M) := by
+      (hξ := (ξ.injectiveTensorPair_isUltrametric η)) (-Real.log M) := by
     apply (Submodule.span_le.mpr ?_) ((b.tensorProduct c).mem_span_repr_support x)
     rintro _ ⟨ij, hij, rfl⟩
     change (ξ.injectiveTensorPair η).trivialSeminorm ((b.tensorProduct c) ij) ≤
@@ -302,46 +304,46 @@ theorem trivialSeminorm_injectiveTensorPair_eq_sup
 /-- The actual quotient of the epsilon norm has the image of the original tensor filtration. -/
 theorem trivialFiltration_pushforward_injectiveTensorPair
     {Q : Type*} [AddCommGroup Q] [Module K Q]
-    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric)
+    [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric]
     (q : E ⊗[K] V →ₗ[K] Q) (hq : Function.Surjective q) (γ : ℝ) :
     ((ξ.injectiveTensorPair η).pushforward q hq).trivialFiltration
-      ((ξ.injectiveTensorPair_isUltrametric η).pushforward q hq) γ =
-      (Submodule.tensorFiltration (ξ.trivialFiltration hξ) (η.trivialFiltration hη) γ).map q := by
-  rw [trivialFiltration_pushforward _ (ξ.injectiveTensorPair_isUltrametric η),
-    trivialFiltration_injectiveTensorPair ξ η hξ hη]
+      (hξ := ((ξ.injectiveTensorPair_isUltrametric η).pushforward q hq)) γ =
+      (Submodule.tensorFiltration (ξ.trivialFiltration) (η.trivialFiltration) γ).map q := by
+  rw [trivialFiltration_pushforward _ (hξ := (ξ.injectiveTensorPair_isUltrametric η)),
+    trivialFiltration_injectiveTensorPair ξ η]
 
 /-- The canonical map from all pair grades to the grade of the actual quotient epsilon norm. -/
 noncomputable def trivialTensorQuotientGradedMap
     {Q : Type*} [AddCommGroup Q] [Module K Q]
-    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric)
+    [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric]
     (q : E ⊗[K] V →ₗ[K] Q) (hq : Function.Surjective q) (γ : ℝ) :
     (⨁ p : {p : ℝ × ℝ // p.1 + p.2 = γ},
-      Submodule.FiltrationGraded (ξ.trivialFiltration hξ) p.val.1 ⊗[K]
-        Submodule.FiltrationGraded (η.trivialFiltration hη) p.val.2) →ₗ[K]
+      Submodule.FiltrationGraded (ξ.trivialFiltration) p.val.1 ⊗[K]
+        Submodule.FiltrationGraded (η.trivialFiltration) p.val.2) →ₗ[K]
       Submodule.FiltrationGraded
         (((ξ.injectiveTensorPair η).pushforward q hq).trivialFiltration
-          ((ξ.injectiveTensorPair_isUltrametric η).pushforward q hq)) γ :=
+          (hξ := (ξ.injectiveTensorPair_isUltrametric η).pushforward q hq)) γ :=
   (Submodule.filtrationGradedMap q (fun t ↦ by
-    rw [ξ.trivialFiltration_pushforward_injectiveTensorPair η hξ hη q hq t]
+    rw [ξ.trivialFiltration_pushforward_injectiveTensorPair η q hq t]
     exact Submodule.le_comap_map _ _) γ).comp
-      (Submodule.tensorFiltrationGradedSum (ξ.antitone_trivialFiltration hξ)
-        (η.antitone_trivialFiltration hη) γ)
+      (Submodule.tensorFiltrationGradedSum (ξ.antitone_trivialFiltration)
+        (η.antitone_trivialFiltration) γ)
 
 /-- The canonical map to an actual quotient-norm grade is surjective without removing collisions. -/
 theorem trivialTensorQuotientGradedMap_surjective
     {Q : Type*} [AddCommGroup Q] [Module K Q]
-    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric)
+    [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric]
     (q : E ⊗[K] V →ₗ[K] Q) (hq : Function.Surjective q) (γ : ℝ) :
-    Function.Surjective (ξ.trivialTensorQuotientGradedMap η hξ hη q hq γ) := by
-  obtain ⟨b, hb⟩ := ξ.exists_basis_adapted_trivialFiltration hξ
-  obtain ⟨c, hc⟩ := η.exists_basis_adapted_trivialFiltration hη
+    Function.Surjective (ξ.trivialTensorQuotientGradedMap η q hq γ) := by
+  obtain ⟨b, hb⟩ := ξ.exists_basis_adapted_trivialFiltration
+  obtain ⟨c, hc⟩ := η.exists_basis_adapted_trivialFiltration
   apply Function.Surjective.comp
     (Submodule.filtrationGradedMap_surjective q _ γ
-      (ξ.trivialFiltration_pushforward_injectiveTensorPair η hξ hη q hq γ).symm)
+      (ξ.trivialFiltration_pushforward_injectiveTensorPair η q hq γ).symm)
   exact Submodule.tensorFiltrationGradedSum_surjective b c _ _
-    (ξ.antitone_trivialFiltration hξ) (η.antitone_trivialFiltration hη)
-    (ξ.trivialFiltration_eq_span_neg_log_of_adapted b hξ hb)
-    (η.trivialFiltration_eq_span_neg_log_of_adapted c hη hc) γ
+    (ξ.antitone_trivialFiltration) (η.antitone_trivialFiltration)
+    (ξ.trivialFiltration_eq_span_neg_log_of_adapted b hb)
+    (η.trivialFiltration_eq_span_neg_log_of_adapted c hc) γ
 
 end
 
@@ -397,10 +399,10 @@ theorem trivialSeminorm_injectiveTensor_coordinate_le
 
 /-- Finite-family epsilon balls are tensor-basis spans with the original sums of weights. -/
 theorem trivialFiltration_injectiveTensor_eq_span
-    (hν : ∀ j, (ν j).IsUltrametric)
-    (hb : ∀ j t x, x ∈ (ν j).trivialFiltration (hν j) t ↔
-      ∀ i, (b j).repr x i ≠ 0 → b j i ∈ (ν j).trivialFiltration (hν j) t) (γ : ℝ) :
-    (injectiveTensor ν).trivialFiltration (injectiveTensor_isUltrametric ν) γ =
+    [hν : ∀ j, (ν j).IsUltrametric]
+    (hb : ∀ j t x, x ∈ (ν j).trivialFiltration (hξ := (hν j)) t ↔
+      ∀ i, (b j).repr x i ≠ 0 → b j i ∈ (ν j).trivialFiltration (hξ := (hν j)) t) (γ : ℝ) :
+    (injectiveTensor ν).trivialFiltration (hξ := (injectiveTensor_isUltrametric ν)) γ =
       Submodule.span K (Basis.piTensorProduct b ''
         {p | γ ≤ ∑ j, -Real.log ((ν j).trivialSeminorm (b j (p j)))}) := by
   classical
@@ -418,7 +420,7 @@ theorem trivialFiltration_injectiveTensor_eq_span
     apply (Basis.piTensorProduct b).mem_span_image.mpr
     intro p hp
     have hl := trivialSeminorm_injectiveTensor_coordinate_le ν b
-      (fun j ↦ (ν j).trivialSeminorm_basis_le_of_adapted (b j) (hν j) (hb j))
+      (fun j ↦ (ν j).trivialSeminorm_basis_le_of_adapted (b j) (hξ := (hν j)) (hb j))
       x p (Finsupp.mem_support_iff.mp hp)
     rw [← hrad] at hl
     exact neg_le_neg_iff.mp (Real.exp_le_exp.mp (hl.trans hx))
@@ -432,40 +434,40 @@ theorem trivialFiltration_injectiveTensor_eq_span
 
 /-- The existing finite-family epsilon norm realizes the intrinsic convolution on all tuples. -/
 theorem trivialFiltration_injectiveTensor
-    (hν : ∀ j, (ν j).IsUltrametric) (γ : ℝ) :
-    (injectiveTensor ν).trivialFiltration (injectiveTensor_isUltrametric ν) γ =
-      Submodule.piTensorFiltration (fun j ↦ (ν j).trivialFiltration (hν j)) γ := by
+    [hν : ∀ j, (ν j).IsUltrametric] (γ : ℝ) :
+    (injectiveTensor ν).trivialFiltration (hξ := (injectiveTensor_isUltrametric ν)) γ =
+      Submodule.piTensorFiltration (fun j ↦ (ν j).trivialFiltration (hξ := (hν j))) γ := by
   classical
-  choose b hb using fun j ↦ (ν j).exists_basis_adapted_trivialFiltration (hν j)
-  rw [trivialFiltration_injectiveTensor_eq_span ν b hν hb]
+  choose b hb using fun j ↦ (ν j).exists_basis_adapted_trivialFiltration (hξ := (hν j))
+  rw [trivialFiltration_injectiveTensor_eq_span ν b hb]
   exact (Submodule.piTensorFiltration_eq_span b _
-    (fun j ↦ (ν j).trivialFiltration_eq_span_neg_log_of_adapted (b j) (hν j) (hb j)) γ).symm
+    (fun j ↦ (ν j).trivialFiltration_eq_span_neg_log_of_adapted (b j) (hξ := (hν j)) (hb j)) γ).symm
 
 omit [∀ j, Finite (κ j)] in
 /-- Any prescribed adapted factor weights give the same original sums in the actual epsilon ball. -/
 theorem trivialFiltration_injectiveTensor_eq_span_of_weights
-    (hν : ∀ j, (ν j).IsUltrametric) (w : ∀ j, κ j → ℝ)
-    (hF : ∀ j t, (ν j).trivialFiltration (hν j) t =
+    [hν : ∀ j, (ν j).IsUltrametric] (w : ∀ j, κ j → ℝ)
+    (hF : ∀ j t, (ν j).trivialFiltration (hξ := (hν j)) t =
       Submodule.span K (b j '' {i | t ≤ w j i})) (γ : ℝ) :
-    (injectiveTensor ν).trivialFiltration (injectiveTensor_isUltrametric ν) γ =
+    (injectiveTensor ν).trivialFiltration (hξ := (injectiveTensor_isUltrametric ν)) γ =
       Submodule.span K (Basis.piTensorProduct b '' {p | γ ≤ ∑ j, w j (p j)}) := by
-  rw [trivialFiltration_injectiveTensor ν hν]
+  rw [trivialFiltration_injectiveTensor ν]
   exact Submodule.piTensorFiltration_eq_span b w hF γ
 
 omit [∀ j, Finite (κ j)] in
 /-- Actual quotient epsilon balls retain tuple weights and allow their images to vanish. -/
 theorem trivialFiltration_pushforward_injectiveTensor_eq_span_of_weights
     {Q : Type*} [AddCommGroup Q] [Module K Q]
-    (hν : ∀ j, (ν j).IsUltrametric) (w : ∀ j, κ j → ℝ)
-    (hF : ∀ j t, (ν j).trivialFiltration (hν j) t =
+    [hν : ∀ j, (ν j).IsUltrametric] (w : ∀ j, κ j → ℝ)
+    (hF : ∀ j t, (ν j).trivialFiltration (hξ := (hν j)) t =
       Submodule.span K (b j '' {i | t ≤ w j i}))
     (q : (⨂[K] j, M j) →ₗ[K] Q) (hq : Function.Surjective q) (γ : ℝ) :
     ((injectiveTensor ν).pushforward q hq).trivialFiltration
-      ((injectiveTensor_isUltrametric ν).pushforward q hq) γ =
+      (hξ := ((injectiveTensor_isUltrametric ν).pushforward q hq)) γ =
       Submodule.span K ((fun p ↦ q (Basis.piTensorProduct b p)) ''
         {p | γ ≤ ∑ j, w j (p j)}) := by
-  rw [trivialFiltration_pushforward _ (injectiveTensor_isUltrametric ν),
-    trivialFiltration_injectiveTensor_eq_span_of_weights ν b hν w hF,
+  rw [trivialFiltration_pushforward _ (hξ := (injectiveTensor_isUltrametric ν)),
+    trivialFiltration_injectiveTensor_eq_span_of_weights ν b w hF,
     Submodule.map_span, Set.image_image]
 
 end FiniteFamily

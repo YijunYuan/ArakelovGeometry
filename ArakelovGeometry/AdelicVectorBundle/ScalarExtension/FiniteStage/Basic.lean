@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Density.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Basic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
 import ArakelovGeometry.AdelicVectorBundle.Dual.Bidual
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Domination.Descent
@@ -71,8 +72,8 @@ variable {S : AdelicStructure.{u, v} K} (ξ : NormFamily S E)
 /-- Ultrametricity at finite places and usual Archimedean normalization make
 the canonical embedding of every completed base vector isometric. -/
 theorem scalarExtension_norm_completed_one_tmul_eq_of_ultrametric
-    (hξ : ξ.IsUltrametric)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hξ : ξ.IsUltrametric]
+    [hS : S.IsArchimedeanNormalized]
     (x : S.ParameterSpaceExtension L) (y : (S.ϕ x.base).Completion ⊗[K] E) :
     let := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
     (ξ.scalarExtension (L := L)).norm x
@@ -81,7 +82,7 @@ theorem scalarExtension_norm_completed_one_tmul_eq_of_ultrametric
       ξ.norm x.base y := by
   intro aVW
   let := aVW
-  apply (ξ.scalarExtension_norm_completed_one_tmul hS x y).trans
+  apply (ξ.scalarExtension_norm_completed_one_tmul x y).trans
   by_cases hx : x.base ∈ S.Ωfin
   · exact hξ.dual_dual_norm_eval x.base hx y
   · exact ξ.dual_dual_norm_eval_eq_of_isRCLike x.base (hS x.base hx) y
@@ -90,8 +91,7 @@ theorem scalarExtension_norm_completed_one_tmul_eq_of_ultrametric
 finite-stage norm at the restricted place. -/
 theorem scalarExtension_norm_finiteStage
     (F : AdelicStructure.FiniteIntermediateField K L)
-    (hF : ∀ ω ∈ (S.algebraicExtension F).Ωinf,
-      IsRCLikeNormedField ((S.algebraicExtension F).ϕ ω).Completion)
+    [hF : (S.algebraicExtension F).IsArchimedeanNormalized]
     (x : S.ParameterSpaceExtension L) (z : F ⊗[K] E) :
     (ξ.scalarExtension (L := L)).norm x
       ((1 : x.abv.Completion) ⊗ₜ[L]
@@ -104,7 +104,7 @@ theorem scalarExtension_norm_finiteStage
   let := AbsoluteValue.normedAlgebraCompletionOfEq
     ((S.algebraicExtension F).ϕ xT.base) xT.abv xT.restrict_eq
   have he := (ξ.scalarExtension (L := F)).scalarExtension_norm_completed_one_tmul_eq_of_ultrametric
-    ξ.scalarExtension_isUltrametric hF xT
+    (hξ := ξ.scalarExtension_isUltrametric) xT
       ((1 : ((S.algebraicExtension F).ϕ xT.base).Completion) ⊗ₜ[F] z)
   simp only [completedScalarExtensionEquiv_symm_tmul, map_one, mul_one] at he
   have ht := ξ.scalarExtension_trans xT
@@ -118,10 +118,10 @@ vector is pulled back from its finite coordinate field. -/
 theorem IsMeasurable.scalarExtension_of_finiteStage_normalization
     {ξ : NormFamily S E} (hξ : ξ.IsMeasurable)
     (hS : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ F : AdelicStructure.FiniteIntermediateField K L,
-      ∀ ω ∈ (S.algebraicExtension F).Ωinf,
-        IsRCLikeNormedField ((S.algebraicExtension F).ϕ ω).Completion) :
+    [hN : ∀ F : AdelicStructure.FiniteIntermediateField K L,
+      (S.algebraicExtension F).IsArchimedeanNormalized] :
     (ξ.scalarExtension (L := L)).IsMeasurable := by
+  constructor
   intro z
   obtain ⟨F, y, hy⟩ := exists_finiteStage_tensor_lift z
   have hm := hξ.scalarExtension_of_finiteDimensional_of_common_countable_dense_subfield
@@ -144,7 +144,7 @@ theorem IsMeasurable.scalarExtension_of_finiteStage_normalization
           ((1 : (x.abv.under F).Completion) ⊗ₜ[F] y)) := by
     funext x
     rw [← hy]
-    exact ξ.scalarExtension_norm_finiteStage F (hN F) x y
+    exact ξ.scalarExtension_norm_finiteStage F x y
   rw [he]
   exact (hm y).comp hr
 
@@ -154,10 +154,9 @@ normalization. No normalization of intermediate completions is assumed. -/
 theorem IsMeasurable.scalarExtension_of_common_countable_dense_subfield
     {ξ : NormFamily S E} (hξ : ξ.IsMeasurable)
     (hS : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hN : S.IsArchimedeanNormalized] :
     (ξ.scalarExtension (L := L)).IsMeasurable :=
   hξ.scalarExtension_of_finiteStage_normalization hS
-    (fun F => AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN)
 
 end NormFamily
 

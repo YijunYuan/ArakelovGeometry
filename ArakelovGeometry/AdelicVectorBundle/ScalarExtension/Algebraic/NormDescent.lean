@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.BasisComparison
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Domination.Basic
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Domination.Descent
@@ -112,6 +113,7 @@ omit [FiniteDimensional K E] in
 algebraic fibre integral under completed-fibre compatibility. -/
 theorem IsUpperDominated.of_completed_restriction (hη : η.IsUpperDominated) :
     ξ.IsUpperDominated := by
+  constructor
   intro e he
   have heL : (1 : L) ⊗ₜ[K] e ≠ 0 := by
     intro hz
@@ -132,6 +134,7 @@ agreeing with the original family on all completed base fibres. No original
 ultrametricity or Archimedean normalization is required. -/
 theorem IsDominated.of_completed_restriction (hη : η.IsDominated) : ξ.IsDominated := by
   refine ⟨IsUpperDominated.of_completed_restriction ξ η hcompat hη.1, ?_⟩
+  constructor
   intro f hf
   have hfL : Module.Dual.baseChange L f ≠ 0 := by
     intro hz

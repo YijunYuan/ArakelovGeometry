@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Determinant.Basic
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Strong
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Subquotient
 import ArakelovGeometry.AdelicVectorBundle.Tensor.Domination
@@ -33,27 +34,27 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- Every actual exterior-power family of a dominated family is strongly dominated. -/
 theorem IsDominated.strong_exteriorPower (hξ : ξ.IsDominated) (n : ℕ)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     (ξ.exteriorPower n).IsStronglyDominated :=
   (IsDominated.strong_mixedTensor (fun _ : Fin n ↦ ξ) (fun _ ↦ hξ)
-    (S.v_Ωinf_lt_top_of_isRCLike hS)).pushforward
-      (tensorToExterior K E n) (tensorToExterior_surjective K E n) hS
+    (S.v_Ωinf_lt_top_of_isRCLike)).pushforward
+      (tensorToExterior K E n) (tensorToExterior_surjective K E n)
 
 /-- Exterior-power domination, for arbitrary nonnegative degree. -/
 theorem IsDominated.exteriorPower (hξ : ξ.IsDominated) (n : ℕ)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (ξ.exteriorPower n).IsDominated := (hξ.strong_exteriorPower n hS).isDominated
+    [hS : S.IsArchimedeanNormalized] :
+    (ξ.exteriorPower n).IsDominated := (hξ.strong_exteriorPower n).isDominated
 
 /-- The actual projective determinant quotient is strongly dominated, also in rank zero. -/
 theorem IsDominated.strong_determinant (hξ : ξ.IsDominated)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     ξ.determinant.IsStronglyDominated := by
   rw [ξ.determinant_eq_exteriorPower]
-  exact hξ.strong_exteriorPower (Module.finrank K E) hS
+  exact hξ.strong_exteriorPower (Module.finrank K E)
 
 /-- Domination of the genuine determinant line norm family. -/
 theorem IsDominated.determinant (hξ : ξ.IsDominated)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    ξ.determinant.IsDominated := (hξ.strong_determinant hS).isDominated
+    [hS : S.IsArchimedeanNormalized] :
+    ξ.determinant.IsDominated := (hξ.strong_determinant).isDominated
 
 end ArakelovGeometry.NormFamily

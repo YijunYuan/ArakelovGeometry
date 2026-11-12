@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Construction.ScalarLine
 public import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.PrimeIndexing
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.LocalDegree
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Coherence.Criteria
@@ -117,6 +118,7 @@ theorem norm_tmul_one_of_prime_base (P : HeightOneSpectrum (𝓞 K)) (p : Nat.Pr
 /-- Every actual finite completed norm is ultrametric. -/
 theorem isUltrametric : (normFamily b).IsUltrametric := by
   apply NormFamily.IsUltrametric.scale
+  constructor
   intro ω hω x y
   have h := NormFamily.ofBasisMixed_isUltrametric
     (S := normalizedNumberFieldAdelicStructure K) (Module.Basis.singleton (Fin 1) K) ω hω x y
@@ -140,12 +142,12 @@ theorem roundedPrimeBound_eq (P : HeightOneSpectrum (𝓞 K)) :
 
 /-- The literal completed finite global ball is the actual arbitrary-bound valuation module. -/
 theorem globalUnitBallModule_eq_valuationModule :
-    (normFamily b).globalUnitBallModule (isUltrametric b) =
+    (normFamily b).globalUnitBallModule (hξ := (isUltrametric b)) =
       FiniteValuation.valuationModule (K := K) (fun P => b (normalizedPrimeEquivFinite P)) := by
-  have hc := scalarGlobalUnitBallModule_eq_valuationModule (normFamily b) (isUltrametric b)
+  have hc := scalarGlobalUnitBallModule_eq_valuationModule (normFamily b) (hξ := (isUltrametric b))
     (x := (1 : K)) one_ne_zero
-  have hid : scalarGlobalUnitBallModule (normFamily b) (isUltrametric b) (1 : K) =
-      (normFamily b).globalUnitBallModule (isUltrametric b) := by
+  have hid : scalarGlobalUnitBallModule (normFamily b) (hξ := (isUltrametric b)) (1 : K) =
+      (normFamily b).globalUnitBallModule (hξ := (isUltrametric b)) := by
     ext a
     change a • (1 : K) ∈ (normFamily b).globalUnitBall ↔ a ∈ (normFamily b).globalUnitBall
     rw [smul_eq_mul, mul_one]
@@ -158,21 +160,21 @@ theorem globalUnitBallModule_eq_valuationModule :
 
 /-- The source's exact finite-generation criterion for the literal weighted global ball. -/
 theorem globalUnitBallModule_fg_iff :
-    ((normFamily b).globalUnitBallModule (isUltrametric b)).FG ↔
+    ((normFamily b).globalUnitBallModule (hξ := (isUltrametric b))).FG ↔
       {ω | 0 < b ω}.Finite ∨ {ω | b ω < 0}.Infinite := by
   rw [globalUnitBallModule_eq_valuationModule]
   exact FiniteValuation.fg_normalizedFinitePlace_valuationModule_iff b
 
 /-- Infinitely many negative weights give the actual zero global ball. -/
 theorem globalUnitBallModule_eq_bot_of_infinite_negative (hneg : {ω | b ω < 0}.Infinite) :
-    (normFamily b).globalUnitBallModule (isUltrametric b) = ⊥ := by
+    (normFamily b).globalUnitBallModule (hξ := (isUltrametric b)) = ⊥ := by
   rw [globalUnitBallModule_eq_valuationModule]
   exact FiniteValuation.normalizedFinitePlace_valuationModule_eq_bot_of_infinite_negative b hneg
 
 /-- Nonnegative weights put the original rational generator in the actual finite global ball. -/
 theorem one_mem_globalUnitBall_of_nonnegative (hb : ∀ ω, 0 ≤ b ω) :
     (1 : K) ∈ (normFamily b).globalUnitBall := by
-  change (1 : K) ∈ (normFamily b).globalUnitBallModule (isUltrametric b)
+  change (1 : K) ∈ (normFamily b).globalUnitBallModule (hξ := (isUltrametric b))
   rw [globalUnitBallModule_eq_valuationModule]
   intro P
   simpa only [map_one, ← WithZero.exp_zero, WithZero.exp_le_exp] using
@@ -182,7 +184,7 @@ theorem one_mem_globalUnitBall_of_nonnegative (hb : ∀ ω, 0 ≤ b ω) :
 theorem hasFiniteNormExceptions_of_nonnegative (hb : ∀ ω, 0 ≤ b ω) :
     (normFamily b).HasFiniteNormExceptions := by
   apply NormFamily.hasFiniteNormExceptions_of_span_normalizedGlobalUnitBall_eq_top
-    (normFamily b) (isUltrametric b)
+    (normFamily b) (hξ := (isUltrametric b))
   apply top_unique
   intro a _
   have h1 := Submodule.subset_span (R := K) (one_mem_globalUnitBall_of_nonnegative b hb)
@@ -191,7 +193,7 @@ theorem hasFiniteNormExceptions_of_nonnegative (hb : ∀ ω, 0 ≤ b ω) :
 
 /-- The all-one source example has a global ball which is not finitely generated. -/
 theorem allOne_globalUnitBallModule_not_fg :
-    ¬ ((normFamily (K := K) (fun _ => 1)).globalUnitBallModule (isUltrametric _)).FG := by
+    ¬ ((normFamily (K := K) (fun _ ↦ 1)).globalUnitBallModule (hξ := (isUltrametric _))).FG := by
   let : Infinite (normalizedNumberFieldAdelicStructure K).Ωfin :=
     (normalizedPrimeEquivFinite (K := K)).infinite_iff.mp inferInstance
   rw [globalUnitBallModule_fg_iff]
@@ -204,7 +206,7 @@ theorem allOne_not_lowerDominated :
     ¬ (normFamily (K := K) (fun _ => 1)).IsLowerDominated := by
   intro hdom
   exact allOne_globalUnitBallModule_not_fg
-    (fg_globalUnitBallModule_rank_one (normFamily _) (isUltrametric _) hdom)
+    (fg_globalUnitBallModule_rank_one (normFamily _) (hξ := (isUltrametric _)) (hdom := hdom))
 
 /-- The all-one source example is not dominated. -/
 theorem allOne_not_dominated : ¬ (normFamily (K := K) (fun _ => 1)).IsDominated := by

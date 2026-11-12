@@ -9,6 +9,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Majorant.Ba
 public import ArakelovGeometry.AdelicVectorBundle.Determinant.ExactSequence
 public import ArakelovGeometry.AdelicVectorBundle.Determinant.Functor
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Pair
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Majorant.Bound
 import ArakelovGeometry.AdelicVectorBundle.Determinant.ExactSequence.Operator
 import ArakelovGeometry.AdelicVectorBundle.Dual.Restriction
@@ -846,8 +847,8 @@ theorem determinantSequence_norm_eq_of_discrepancy_eq_one
 /-- At an elementary fibre the canonical determinant exact-sequence map is
 an isometry of the actual completed determinant tensor line. -/
 theorem IsElementaryAt.determinantSequence_norm_eq {η : NormFamily S E}
-    {hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion} {ω : S.Ω}
-    (he : η.IsElementaryAt hN ω) (W : Submodule K E)
+    [hN : S.IsArchimedeanNormalized] {ω : S.Ω}
+    (he : η.IsElementaryAt ω) (W : Submodule K E)
     (z : (S.ϕ ω).Completion ⊗[K]
       ((⋀[K]^(Module.finrank K W) W) ⊗[K]
         (⋀[K]^(Module.finrank K (E ⧸ W)) (E ⧸ W)))) :

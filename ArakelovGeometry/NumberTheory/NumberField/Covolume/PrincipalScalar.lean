@@ -9,6 +9,7 @@ public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Basis
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.WeightedCovolume
 public import ArakelovGeometry.NumberTheory.NumberField.Covolume.PrincipalProduct
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+
 import ArakelovGeometry.NumberTheory.NumberField.Covolume.Integer
 import Mathlib.Topology.Sheaves.Init
 
@@ -43,8 +44,8 @@ abbrev basisFamily : NormFamily (normalizedNumberFieldAdelicStructure K) E :=
   ofBasisHermitian _ _ b
 
 theorem basisFamily_hermitian :
-    (basisFamily b).IsHermitian normalizedNumberFieldArchimedeanCompletions :=
-  ofBasisHermitian_isHermitian b normalizedNumberFieldArchimedeanCompletions
+    (basisFamily b).IsHermitian :=
+  ofBasisHermitian_isHermitian b
 
 omit [NumberField K] [Fintype ι] in
 theorem mem_principalModule (x : E) :
@@ -296,14 +297,14 @@ open scoped Classical in
 theorem basisReal_measurePreserving :
     letI := euclideanNormedAddCommGroup (basisFamily b)
     letI := euclideanNormedSpace (basisFamily b)
-    letI := euclideanInnerProduct (basisFamily_hermitian b)
+    letI := euclideanInnerProduct (hξ := (basisFamily_hermitian b))
     letI : MeasurableSpace (CompletedVectorProduct K E) := borel _
     letI : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
     letI := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
     MeasurePreserving (basisRealContinuousEquiv b) volume volume := by
   let := euclideanNormedAddCommGroup (basisFamily b)
   let := euclideanNormedSpace (basisFamily b)
-  let := euclideanInnerProduct (basisFamily_hermitian b)
+  let := euclideanInnerProduct (hξ := (basisFamily_hermitian b))
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
@@ -311,13 +312,13 @@ theorem basisReal_measurePreserving :
     (basisRealIsometry b).measurePreserving
 
 theorem basisEuclideanCovolume :
-    euclideanCovolume (basisFamily b) (basisFamily_hermitian b) (principalModule b) =
+    euclideanCovolume (basisFamily b) (hξ := (basisFamily_hermitian b)) (principalModule b) =
       ((2⁻¹ : ℝ) ^ InfinitePlace.nrComplexPlaces K * Real.sqrt |(NumberField.discr K : ℝ)|) ^
         Fintype.card ι := by
   classical
   let := euclideanNormedAddCommGroup (basisFamily b)
   let := euclideanNormedSpace (basisFamily b)
-  let := euclideanInnerProduct (basisFamily_hermitian b)
+  let := euclideanInnerProduct (hξ := (basisFamily_hermitian b))
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
@@ -337,15 +338,16 @@ theorem basisEuclideanCovolume :
     (NumberFieldPrincipalBasisProductCovolume.productLattice (ι := ι) (scalarRealLatticeBasis K))
     volume volume (basisReal_measurePreserving b)
   rw [principalLattice_comap] at h
-  change euclideanCovolume (basisFamily b) (basisFamily_hermitian b) (principalModule b) = _ at h
+  change euclideanCovolume (basisFamily b)
+      (hξ := (basisFamily_hermitian b)) (principalModule b) = _ at h
   rw [h, NumberFieldPrincipalBasisProductCovolume.productCovolume,
     scalarRealLatticeBasis_span, scalarRealLattice_covolume]
 
 theorem basisWeightedCovolume :
-    weightedCovolume (basisFamily b) (basisFamily_hermitian b) (principalModule b) =
+    weightedCovolume (basisFamily b) (hξ := (basisFamily_hermitian b)) (principalModule b) =
       Real.sqrt |(NumberField.discr K : ℝ)| ^ Fintype.card ι := by
   classical
-  rw [weightedCovolume_eq_mul _ _ _ (principalModule_fg b) (principalModule_full b),
+  rw [weightedCovolume_eq_mul _ _ (principalModule_fg b) (principalModule_full b),
     basisEuclideanCovolume, Module.finrank_eq_card_basis b, pow_mul, ← mul_pow,
     ← mul_assoc, ← mul_pow]
   norm_num

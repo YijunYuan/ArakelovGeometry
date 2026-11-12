@@ -9,6 +9,7 @@ public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Isomorphism.De
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Bundle
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Domination
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Hermitian
+
 import ArakelovGeometry.AdelicVectorBundle.Determinant.WedgeApproximation
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Line
 import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.IntegralComparison
@@ -284,14 +285,14 @@ theorem normalizedCompletedDeterminantEquiv_eq_tensor
 
 namespace NormFamily
 
-variable (ξ : NormFamily (numberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
+variable (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
 
 /-- The actual completed determinant quotient transports by the same positive
 normalization power as its actual completed vector norm. -/
 theorem numberFieldNormalize_determinant_norm_map
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (z : (placeRep ω.val).Completion ⊗[K] (⋀[K]^(Module.finrank K E) E)) :
-    (ξ.numberFieldNormalize hξ).determinant.norm ω
+    (ξ.numberFieldNormalize).determinant.norm ω
         (normalizedNormFamilyTensorEquiv ω z) =
       ξ.determinant.norm ω.val z ^ numberFieldNormalizationExponent ω := by
   have hτ (a : (placeRep ω.val).Completion) :
@@ -309,26 +310,26 @@ theorem numberFieldNormalize_determinant_norm_map
   have H := completedDeterminantSeminorm_norm_rpow
     (normalizedCompletedFieldRingEquiv ω)
     (ξ.norm ω.val) (ξ.determinant.norm ω.val)
-    ((ξ.numberFieldNormalize hξ).norm ω) ((ξ.numberFieldNormalize hξ).determinant.norm ω)
+    ((ξ.numberFieldNormalize).norm ω) ((ξ.numberFieldNormalize).determinant.norm ω)
     (normalizedNormFamilyTensorSemilinearEquiv ω)
     (numberFieldNormalizationExponent ω) (numberFieldNormalizationExponent_pos ω)
-    hτ (ξ.numberFieldNormalize_norm_map hξ ω)
+    hτ (ξ.numberFieldNormalize_norm_map ω)
     (fun z ε hε => ξ.exists_smul_determinant_ιMulti_norm_lt ω.val z hε)
-    (fun z ε hε => (ξ.numberFieldNormalize hξ).exists_smul_determinant_ιMulti_norm_lt ω z hε)
+    (fun z ε hε => (ξ.numberFieldNormalize).exists_smul_determinant_ιMulti_norm_lt ω z hε)
     (ξ.determinant_norm_ιMulti_le ω.val)
-    ((ξ.numberFieldNormalize hξ).determinant_norm_ιMulti_le ω) z
-  exact (congrArg ((ξ.numberFieldNormalize hξ).determinant.norm ω)
+    ((ξ.numberFieldNormalize).determinant_norm_ιMulti_le ω) z
+  exact (congrArg ((ξ.numberFieldNormalize).determinant.norm ω)
     (normalizedCompletedDeterminantEquiv_eq_tensor ω z)).symm.trans H
 
 omit hξ in
 /-- Every actual determinant family is a line, so its finite norms are ultrametric. -/
-theorem numberField_determinant_isUltrametric : ξ.determinant.IsUltrametric :=
+instance numberField_determinant_isUltrametric : ξ.determinant.IsUltrametric :=
   ξ.determinant.isUltrametric_of_finrank_le_one determinant_finrank.le
 
 /-- Normalization commutes with the genuine completed determinant norm family. -/
 theorem numberFieldNormalize_determinant :
-    (ξ.numberFieldNormalize hξ).determinant =
-      ξ.determinant.numberFieldNormalize ξ.numberField_determinant_isUltrametric := by
+    (ξ.numberFieldNormalize).determinant =
+      ξ.determinant.numberFieldNormalize (hξ := ξ.numberField_determinant_isUltrametric) := by
   ext ω z
   obtain ⟨y, rfl⟩ := (normalizedNormFamilyTensorEquiv ω).surjective z
   erw [numberFieldNormalize_determinant_norm_map, numberFieldNormalize_norm_map]
@@ -338,30 +339,30 @@ including the totalized logarithm of the zero determinant vector. -/
 theorem numberFieldNormalize_determinant_logNorm
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (x : ⋀[K]^(Module.finrank K E) E) :
-    (ξ.numberFieldNormalize hξ).determinant.logNorm x ω =
+    (ξ.numberFieldNormalize).determinant.logNorm x ω =
       numberFieldNormalizationExponent ω * ξ.determinant.logNorm x ω.val := by
-  rw [ξ.numberFieldNormalize_determinant hξ]
-  exact ξ.determinant.numberFieldNormalize_logNorm ξ.numberField_determinant_isUltrametric x ω
+  rw [ξ.numberFieldNormalize_determinant]
+  exact ξ.determinant.numberFieldNormalize_logNorm x ω
 
 /-- The actual extended determinant log norm integral is preserved even when infinite. -/
 theorem numberFieldNormalize_determinant_lintegral_enorm_logNorm
     (x : ⋀[K]^(Module.finrank K E) E) :
-    (∫⁻ ω, ‖(ξ.numberFieldNormalize hξ).determinant.logNorm x ω‖ₑ
+    (∫⁻ ω, ‖(ξ.numberFieldNormalize).determinant.logNorm x ω‖ₑ
       ∂(normalizedNumberFieldAdelicStructure K).v) =
       ∫⁻ ω, ‖ξ.determinant.logNorm x ω‖ₑ ∂(numberFieldAdelicStructure K).v := by
   exact (lintegral_congr (fun ω => congrArg (fun r : ℝ => ‖r‖ₑ)
-    (ξ.numberFieldNormalize_determinant_logNorm hξ ω x))).trans
+    (ξ.numberFieldNormalize_determinant_logNorm ω x))).trans
       (lintegral_enorm_numberFieldNormalizationExponent_mul (ξ.determinant.logNorm x))
 
 /-- Integrability of the actual determinant log norm is unchanged by normalization. -/
 theorem numberFieldNormalize_determinant_integrable_logNorm_iff
     (x : ⋀[K]^(Module.finrank K E) E) :
-    Integrable ((ξ.numberFieldNormalize hξ).determinant.logNorm x)
+    Integrable ((ξ.numberFieldNormalize).determinant.logNorm x)
         (normalizedNumberFieldAdelicStructure K).v ↔
       Integrable (ξ.determinant.logNorm x) (numberFieldAdelicStructure K).v := by
-  have H : (ξ.numberFieldNormalize hξ).determinant.logNorm x =
+  have H : (ξ.numberFieldNormalize).determinant.logNorm x =
       fun ω => numberFieldNormalizationExponent ω * ξ.determinant.logNorm x ω.val :=
-    funext (fun ω => ξ.numberFieldNormalize_determinant_logNorm hξ ω x)
+    funext (fun ω ↦ ξ.numberFieldNormalize_determinant_logNorm ω x)
   rw [H]
   exact integrable_numberFieldNormalizationExponent_mul_iff (ξ.determinant.logNorm x)
 
@@ -369,65 +370,68 @@ theorem numberFieldNormalize_determinant_integrable_logNorm_iff
 theorem numberFieldNormalize_determinant_integral_logNorm
     (x : ⋀[K]^(Module.finrank K E) E)
     (hx : Integrable (ξ.determinant.logNorm x) (numberFieldAdelicStructure K).v) :
-    (∫ ω, (ξ.numberFieldNormalize hξ).determinant.logNorm x ω
+    (∫ ω, (ξ.numberFieldNormalize).determinant.logNorm x ω
       ∂(normalizedNumberFieldAdelicStructure K).v) =
       ∫ ω, ξ.determinant.logNorm x ω ∂(numberFieldAdelicStructure K).v := by
-  rw [ξ.numberFieldNormalize_determinant hξ]
+  rw [ξ.numberFieldNormalize_determinant]
   exact ξ.determinant.numberFieldNormalize_integral_logNorm
-    ξ.numberField_determinant_isUltrametric x hx
+    x hx
 
 /-- Exact absolute integration of the genuine actual determinant log norm. -/
 theorem numberFieldNormalize_determinant_integral_abs_logNorm
     (x : ⋀[K]^(Module.finrank K E) E)
     (hx : Integrable (ξ.determinant.logNorm x) (numberFieldAdelicStructure K).v) :
-    (∫ ω, |(ξ.numberFieldNormalize hξ).determinant.logNorm x ω|
+    (∫ ω, |(ξ.numberFieldNormalize).determinant.logNorm x ω|
       ∂(normalizedNumberFieldAdelicStructure K).v) =
       ∫ ω, |ξ.determinant.logNorm x ω| ∂(numberFieldAdelicStructure K).v := by
-  rw [ξ.numberFieldNormalize_determinant hξ]
+  rw [ξ.numberFieldNormalize_determinant]
   exact ξ.determinant.numberFieldNormalize_integral_abs_logNorm
-    ξ.numberField_determinant_isUltrametric x hx
+    x hx
 
 end NormFamily
 
 namespace AdelicVectorBundle
 
 variable (V : AdelicVectorBundle (numberFieldAdelicStructure K) E)
-  (hV : V.toNormFamily.IsUltrametric)
+  [hV : V.toNormFamily.IsUltrametric]
 
 /-- The native actual normalized determinant degree equals the old native degree;
 all properness, Archimedean and discrete-base properties are supplied by the curves. -/
 theorem numberFieldNormalize_degree :
     let _oldMeasurable : MeasurableSpace (AbsoluteValue.Place K) := ⊤
-    (V.numberFieldNormalize hV).degree
-        (Or.inl (inferInstanceAs (DiscreteMeasurableSpace
-          {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})))
-        normalizedNumberFieldArchimedeanCompletions =
-      V.degree (Or.inl (inferInstanceAs (DiscreteMeasurableSpace (AbsoluteValue.Place K))))
-        numberFieldArchimedeanCompletions := by
+    (V.numberFieldNormalize).degree
+        (hS := ⟨(Or.inl (inferInstanceAs (DiscreteMeasurableSpace
+          {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})))⟩)
+        =
+      V.degree (hS := ⟨(Or.inl (inferInstanceAs (DiscreteMeasurableSpace (AbsoluteValue.Place
+          K))))⟩)
+        (hN := ⟨numberFieldArchimedeanCompletions⟩) := by
   let _oldMeasurable : MeasurableSpace (AbsoluteValue.Place K) := ⊤
   let hS : DiscreteMeasurableSpace (numberFieldAdelicStructure K).Ω ∨
       (numberFieldAdelicStructure K).HasCommonCountableDenseSubfield :=
     Or.inl (inferInstanceAs (DiscreteMeasurableSpace (AbsoluteValue.Place K)))
-  let D := V.determinantOfMeasurableBase hS numberFieldArchimedeanCompletions
-  let s := D.lineGenerator (V.determinantOfMeasurableBase_isLine hS
-    numberFieldArchimedeanCompletions)
-  rw [(V.numberFieldNormalize hV).degree_eq_neg_integral (Or.inl inferInstance)
-    normalizedNumberFieldArchimedeanCompletions s,
-    V.degree_eq_neg_integral hS numberFieldArchimedeanCompletions s]
+  let D := V.determinantOfMeasurableBase (hS := ⟨hS⟩) (hN := ⟨numberFieldArchimedeanCompletions⟩)
+  let s := D.lineGenerator (hV := (V.determinantOfMeasurableBase_isLine (hS := ⟨hS⟩)
+    (hN := ⟨numberFieldArchimedeanCompletions⟩)))
+  rw [(V.numberFieldNormalize).degree_eq_neg_integral
+    s,
+    V.degree_eq_neg_integral (hS := ⟨hS⟩) (hN := ⟨numberFieldArchimedeanCompletions⟩) s]
   exact congrArg (fun r : ℝ => -r)
-    (V.toNormFamily.numberFieldNormalize_determinant_integral_logNorm hV s.val
+    (V.toNormFamily.numberFieldNormalize_determinant_integral_logNorm s.val
       (D.integrable_logNorm s.val))
 
 /-- The actual normalized rank-zero bundle retains its native degree zero. -/
 theorem numberFieldNormalize_degree_eq_zero_of_finrank_eq_zero
     (hr : Module.finrank K E = 0) :
-    (V.numberFieldNormalize hV).degree
-        (Or.inl (inferInstanceAs (DiscreteMeasurableSpace
-          {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})))
-        normalizedNumberFieldArchimedeanCompletions = 0 := by
+    (V.numberFieldNormalize).degree
+        (hS := ⟨(Or.inl (inferInstanceAs (DiscreteMeasurableSpace
+          {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})))⟩)
+        = 0 := by
   let _oldMeasurable : MeasurableSpace (AbsoluteValue.Place K) := ⊤
-  rw [V.numberFieldNormalize_degree hV]
-  exact V.degree_eq_zero_of_finrank_eq_zero _ numberFieldArchimedeanCompletions hr
+  let : DiscreteMeasurableSpace (numberFieldAdelicStructure K).Ω :=
+    inferInstanceAs (DiscreteMeasurableSpace (AbsoluteValue.Place K))
+  rw [V.numberFieldNormalize_degree]
+  exact V.degree_eq_zero_of_finrank_eq_zero (hN := ⟨numberFieldArchimedeanCompletions⟩) hr
 
 end AdelicVectorBundle
 

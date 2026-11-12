@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Destabilizing
 public import ArakelovGeometry.AdelicVectorBundle.Minima.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Examples.Minkowski.Determinant
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.LineVector
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.Semistability
 import ArakelovGeometry.AdelicVectorBundle.Minima.Restriction
@@ -89,16 +90,17 @@ theorem bundle_minimalLogarithmicMinimum (p : Nat.Primes) (a : ℤ)
   exact bundle_logarithmicMinimum p a ha 2 (by norm_num) le_rfl
 
 theorem bundle_slope (p : Nat.Primes) (a : ℤ) :
-    (bundle p a).slope rationalCurveRegularity
-      (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) = -Real.log (p.val : ℝ) / 4 := by
+    (bundle p a).slope (hS := ⟨rationalCurveRegularity⟩)
+      (hN := ⟨(normalizedNumberFieldArchimedeanCompletions
+          (K := ℚ))⟩) = -Real.log (p.val : ℝ) / 4 := by
   rw [AdelicVectorBundle.slope, bundle_degree, finrank_plane]
   norm_num
   ring
 
 theorem bundle_isMeanSlopeSemistable (p : Nat.Primes) (a : ℤ)
     (ha : (p.val : ℤ) ∣ a ^ 2 + 1) :
-    (bundle p a).IsMeanSlopeSemistable rationalCurveRegularity
-      (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) := by
+    (bundle p a).IsMeanSlopeSemistable (hS := ⟨rationalCurveRegularity⟩)
+      (hN := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) := by
   refine ⟨by rw [finrank_plane]; norm_num, fun F hF => ?_⟩
   by_cases he : F = ⊤
   · subst F
@@ -108,15 +110,17 @@ theorem bundle_isMeanSlopeSemistable (p : Nat.Primes) (a : ℤ)
       intro h
       exact he (Submodule.eq_top_of_finrank_eq (h.trans finrank_plane.symm))
     have hF1 : Module.finrank ℚ F = 1 := by omega
-    let R := (bundle p a).restrictOfMeasurableBase F rationalCurveRegularity
-    let s := R.lineGenerator hF1
-    have hb : R.slope rationalCurveRegularity
-        (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) ≤ -Real.log (p.val : ℝ) / 2 := by
-      rw [R.slope_eq_degree_of_finrank_one rationalCurveRegularity
-        (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) hF1,
-        R.degree_eq_vectorDegree_of_finrank_one rationalCurveRegularity
-          (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) hF1 s]
-      change ((bundle p a).restrictOfMeasurableBase F rationalCurveRegularity).vectorDegree s ≤ _
+    let R := (bundle p a).restrictOfMeasurableBase F (hS := ⟨rationalCurveRegularity⟩)
+    let s := R.lineGenerator (hV := ⟨hF1⟩)
+    have hb : R.slope (hS := ⟨rationalCurveRegularity⟩)
+        (hN := ⟨(normalizedNumberFieldArchimedeanCompletions
+            (K := ℚ))⟩) ≤ -Real.log (p.val : ℝ) / 2 := by
+      rw [R.slope_eq_degree_of_finrank_one (hS := ⟨rationalCurveRegularity⟩)
+        (hN := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) hF1,
+        R.degree_eq_vectorDegree_of_finrank_one (hS := ⟨rationalCurveRegularity⟩)
+          (hN := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) hF1 s]
+      change ((bundle p a).restrictOfMeasurableBase F
+          (hS := ⟨rationalCurveRegularity⟩)).vectorDegree s ≤ _
       rw [(bundle p a).vectorDegree_restrictOfMeasurableBase]
       exact bundle_vectorDegree_le p a ha _
     rw [bundle_slope]
@@ -126,29 +130,31 @@ theorem bundle_isMeanSlopeSemistable (p : Nat.Primes) (a : ℤ)
 
 theorem bundle_maximalSlope (p : Nat.Primes) (a : ℤ)
     (ha : (p.val : ℤ) ∣ a ^ 2 + 1) :
-    (bundle p a).maximalSlope rationalCurveRegularity
-      (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) =
+    (bundle p a).maximalSlope (hS := ⟨rationalCurveRegularity⟩)
+      (hN := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) =
       (-Real.log (p.val : ℝ) / 4 : ℝ) := by
   have h := ((bundle p a).isMeanSlopeSemistable_iff_maximalSlope_eq_slope
-    rationalCurveRegularity (normalizedNumberFieldArchimedeanCompletions (K := ℚ))
+    (hS := ⟨rationalCurveRegularity⟩) (hN := ⟨(normalizedNumberFieldArchimedeanCompletions
+        (K := ℚ))⟩)
     (by rw [finrank_plane]; norm_num)).mp (bundle_isMeanSlopeSemistable p a ha)
   simpa only [bundle_slope] using h
 
 theorem bundle_minimalSlope (p : Nat.Primes) (a : ℤ)
     (ha : (p.val : ℤ) ∣ a ^ 2 + 1) :
-    (bundle p a).minimalSlope rationalCurveRegularity
-      (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) =
+    (bundle p a).minimalSlope (hS := ⟨rationalCurveRegularity⟩)
+      (hN := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) =
       (-Real.log (p.val : ℝ) / 4 : ℝ) := by
   have h := ((bundle p a).isMeanSlopeSemistable_iff_minimalSlope_eq_slope_of_isHermitian
-    rationalCurveRegularity (normalizedNumberFieldArchimedeanCompletions (K := ℚ))
-    (family_isHermitian p a) (by rw [finrank_plane]; norm_num)).mp
+    (hS := ⟨rationalCurveRegularity⟩) (hN := ⟨(normalizedNumberFieldArchimedeanCompletions
+        (K := ℚ))⟩)
+    (hV := (family_isHermitian p a)) (by rw [finrank_plane]; norm_num)).mp
       (bundle_isMeanSlopeSemistable p a ha)
   simpa only [bundle_slope] using h
 
 theorem bundle_maximalSlope_sub_maximalLogarithmicMinimum (p : Nat.Primes) (a : ℤ)
     (ha : (p.val : ℤ) ∣ a ^ 2 + 1) :
-    (bundle p a).maximalSlope rationalCurveRegularity
-      (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) -
+    (bundle p a).maximalSlope (hS := ⟨rationalCurveRegularity⟩)
+      (hN := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) -
       (bundle p a).maximalLogarithmicMinimum = (Real.log (p.val : ℝ) / 4 : ℝ) := by
   rw [bundle_maximalSlope p a ha, bundle_maximalLogarithmicMinimum p a ha, ← EReal.coe_sub]
   congr 1
@@ -156,8 +162,8 @@ theorem bundle_maximalSlope_sub_maximalLogarithmicMinimum (p : Nat.Primes) (a : 
 
 theorem bundle_minimalSlope_sub_minimalLogarithmicMinimum (p : Nat.Primes) (a : ℤ)
     (ha : (p.val : ℤ) ∣ a ^ 2 + 1) :
-    (bundle p a).minimalSlope rationalCurveRegularity
-      (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) -
+    (bundle p a).minimalSlope (hS := ⟨rationalCurveRegularity⟩)
+      (hN := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) -
       (bundle p a).minimalLogarithmicMinimum = (Real.log (p.val : ℝ) / 4 : ℝ) := by
   rw [bundle_minimalSlope p a ha, bundle_minimalLogarithmicMinimum p a ha, ← EReal.coe_sub]
   congr 1

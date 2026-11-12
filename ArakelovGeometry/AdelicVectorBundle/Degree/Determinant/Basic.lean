@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
+
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 
@@ -34,27 +35,27 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- Vector degree is the degree of the canonical actual determinant line
 whenever its actual norm family is measurable. -/
 def degreeOfMeasurableDeterminant [S.IsProper] (V : AdelicVectorBundle S E)
-    (hdet : V.toNormFamily.determinant.IsMeasurable)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) : ℝ :=
-  (V.determinant hdet hN).lineDegree (V.determinant_isLine hdet hN)
+    [hdet : V.toNormFamily.determinant.IsMeasurable]
+    [hN : S.IsArchimedeanNormalized] : ℝ :=
+  (V.determinant).lineDegree (hV := (V.determinant_isLine))
 
 /-- The usual degree context produces determinant measurability and the
 same degree; the canonical determinant adelic line is unchanged. -/
 theorem degreeOfMeasurableDeterminant_eq_degree [S.IsProper]
-    (V : AdelicVectorBundle S E) (hdet : V.toNormFamily.determinant.IsMeasurable)
-    (hbase : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.degreeOfMeasurableDeterminant hdet hN = V.degree hbase hN := rfl
+    (V : AdelicVectorBundle S E) [hdet : V.toNormFamily.determinant.IsMeasurable]
+    [S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.degreeOfMeasurableDeterminant = V.degree := rfl
 
 /-- Every nonzero actual rational determinant generator computes the
 degree from the integral of its actual determinant log norm. -/
 theorem degreeOfMeasurableDeterminant_eq_neg_integral [S.IsProper]
-    (V : AdelicVectorBundle S E) (hdet : V.toNormFamily.determinant.IsMeasurable)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (V : AdelicVectorBundle S E) [hdet : V.toNormFamily.determinant.IsMeasurable]
+    [hN : S.IsArchimedeanNormalized]
     (s : {x : ⋀[K]^(Module.finrank K E) E // x ≠ 0}) :
-    V.degreeOfMeasurableDeterminant hdet hN =
+    V.degreeOfMeasurableDeterminant =
       -(∫ ω, V.toNormFamily.determinant.logNorm s.val ω ∂S.v) :=
-  lineDegree_eq_neg_integral _ _ s
+  lineDegree_eq_neg_integral _ s
 
 end
 

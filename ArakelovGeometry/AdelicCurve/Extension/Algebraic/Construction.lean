@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Measure
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integral
 import ArakelovGeometry.Analysis.AbsoluteValue.NormalizedCompletion
@@ -105,13 +106,13 @@ theorem mem_Ωfin_algebraicExtension_iff (x : ParameterSpaceExtension S L) :
   exact AbsoluteValue.isNonarchimedean_restriction_iff x.abv |>.symm
 
 /-- Algebraic extension preserves the absence of archimedean places. -/
-theorem forall_mem_Ωfin_algebraicExtension (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+theorem forall_mem_Ωfin_algebraicExtension [hS : S.HasOnlyFinitePlaces] :
     ∀ x : (S.algebraicExtension L).Ω, x ∈ (S.algebraicExtension L).Ωfin :=
   fun x ↦ (mem_Ωfin_algebraicExtension_iff x).mpr (hS x.base)
 
 /-- Usual archimedean normalization propagates to every completed extension field. -/
 theorem isRCLikeNormedField_algebraicExtension
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     ∀ x ∈ (S.algebraicExtension L).Ωinf,
       IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion := by
   intro x hx
@@ -122,12 +123,20 @@ theorem isRCLikeNormedField_algebraicExtension
     exact hS x.base hb
   exact isRCLikeNormedField_of_normedAlgebra (x.abv.under K).Completion x.abv.Completion
 
+instance isArchimedeanNormalized_algebraicExtension [S.IsArchimedeanNormalized] :
+    (S.algebraicExtension L).IsArchimedeanNormalized :=
+  ⟨isRCLikeNormedField_algebraicExtension⟩
+
+instance hasOnlyFinitePlaces_algebraicExtension [S.HasOnlyFinitePlaces] :
+    (S.algebraicExtension L).HasOnlyFinitePlaces :=
+  ⟨forall_mem_Ωfin_algebraicExtension⟩
+
 /-- Algebraic extensions of a structure with only finite places are automatically normalized. -/
 theorem isRCLikeNormedField_algebraicExtension_of_forall_mem_Ωfin
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    [hS : S.HasOnlyFinitePlaces] :
     ∀ x ∈ (S.algebraicExtension L).Ωinf,
       IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion :=
-  isRCLikeNormedField_algebraicExtension (isRCLikeNormedField_of_forall_mem_Ωfin hS)
+  isRCLikeNormedField_algebraicExtension
 
 open Lean PrettyPrinter.Delaborator SubExpr in
 /-- Display the implicit base field in tensor notation when the scope is open. -/

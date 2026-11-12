@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.UnitBall.Global
 public import ArakelovGeometry.NumberTheory.NumberField.Local.Lattice.CompletedUnitBall
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Basic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 
 /-!
@@ -94,18 +95,18 @@ theorem normalizedCompletedLocalRingEquiv_coe
 
 namespace NormFamily
 
-variable (ξ : NormFamily (numberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
+variable (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
 
 /-- The canonical actual tensor map preserves and reflects the completed unit ball. -/
 theorem numberFieldNormalize_mem_completedUnitBall_map_iff
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin)
     (z : (placeRep ω.val).Completion ⊗[K] E) :
-    normalizedNormFamilyTensorEquiv ω z ∈ (ξ.numberFieldNormalize hξ).completedUnitBall ω ↔
+    normalizedNormFamilyTensorEquiv ω z ∈ (ξ.numberFieldNormalize).completedUnitBall ω ↔
       z ∈ ξ.completedUnitBall ω.val := by
-  change (ξ.numberFieldNormalize hξ).norm ω (normalizedNormFamilyTensorEquiv ω z) ≤ 1 ↔
+  change (ξ.numberFieldNormalize).norm ω (normalizedNormFamilyTensorEquiv ω z) ≤ 1 ↔
     ξ.norm ω.val z ≤ 1
-  erw [ξ.numberFieldNormalize_norm_map_fin hξ ω hω z]
+  erw [ξ.numberFieldNormalize_norm_map_fin ω hω z]
   simpa only [Real.one_rpow] using
     Real.rpow_le_rpow_iff (ξ.norm_nonneg ω.val z) zero_le_one
       (normalizedFiniteExponent_pos ω hω)
@@ -114,10 +115,10 @@ theorem numberFieldNormalize_mem_completedUnitBall_map_iff
 theorem numberFieldNormalize_mem_rationalUnitBall_iff
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) (x : E) :
-    x ∈ (ξ.numberFieldNormalize hξ).rationalUnitBall ω ↔ x ∈ ξ.rationalUnitBall ω.val := by
-  change (ξ.numberFieldNormalize hξ).norm ω (1 ⊗ₜ[K] x) ≤ 1 ↔
+    x ∈ (ξ.numberFieldNormalize).rationalUnitBall ω ↔ x ∈ ξ.rationalUnitBall ω.val := by
+  change (ξ.numberFieldNormalize).norm ω (1 ⊗ₜ[K] x) ≤ 1 ↔
     ξ.norm ω.val (1 ⊗ₜ[K] x) ≤ 1
-  erw [ξ.numberFieldNormalize_norm_tmul_fin hξ ω hω x]
+  erw [ξ.numberFieldNormalize_norm_tmul_fin ω hω x]
   simpa only [Real.one_rpow] using
     Real.rpow_le_rpow_iff (ξ.norm_nonneg ω.val (1 ⊗ₜ[K] x)) zero_le_one
       (normalizedFiniteExponent_pos ω hω)
@@ -126,26 +127,26 @@ theorem numberFieldNormalize_mem_rationalUnitBall_iff
 def numberFieldNormalizeCompletedUnitBallEquiv
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) :
-    ξ.completedUnitBallModule ω.val (normalizedPlace_mem_old_fin ω hω) hξ ≃+
-      (ξ.numberFieldNormalize hξ).completedUnitBallModule ω hω
-        (ξ.numberFieldNormalize_isUltrametric hξ) := by
+    ξ.completedUnitBallModule ω.val (normalizedPlace_mem_old_fin ω hω) ≃+
+      (ξ.numberFieldNormalize).completedUnitBallModule ω hω
+        (hξ := (ξ.numberFieldNormalize_isUltrametric)) := by
   let T := normalizedNormFamilyTensorEquiv (E := E) ω
   refine
     { toFun := fun z => ⟨T z.val,
-        (ξ.numberFieldNormalize_mem_completedUnitBall_map_iff hξ ω hω z.val).mpr z.property⟩
+        (ξ.numberFieldNormalize_mem_completedUnitBall_map_iff ω hω z.val).mpr z.property⟩
       invFun := fun z => ⟨T.symm z.val, ?_⟩
       left_inv := fun z => Subtype.ext (T.symm_apply_apply z.val)
       right_inv := fun z => Subtype.ext (T.apply_symm_apply z.val)
       map_add' := fun x y => Subtype.ext (T.map_add x.val y.val) }
-  exact (ξ.numberFieldNormalize_mem_completedUnitBall_map_iff hξ ω hω (T.symm z.val)).mp
+  exact (ξ.numberFieldNormalize_mem_completedUnitBall_map_iff ω hω (T.symm z.val)).mp
     (by erw [T.apply_symm_apply z.val]; exact z.property)
 
 /-- The completed-ball equivalence has the actual canonical tensor value. -/
 theorem numberFieldNormalizeCompletedUnitBallEquiv_coe
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin)
-    (z : ξ.completedUnitBallModule ω.val (normalizedPlace_mem_old_fin ω hω) hξ) :
-    (ξ.numberFieldNormalizeCompletedUnitBallEquiv hξ ω hω z).val =
+    (z : ξ.completedUnitBallModule ω.val (normalizedPlace_mem_old_fin ω hω)) :
+    (ξ.numberFieldNormalizeCompletedUnitBallEquiv ω hω z).val =
       normalizedNormFamilyTensorEquiv ω z.val := rfl
 
 /-- The actual ball equivalence respects the transported completed coefficient action. -/
@@ -154,10 +155,10 @@ theorem numberFieldNormalizeCompletedUnitBallEquiv_smul
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin)
     (a : (numberFieldAdelicStructure K).completedLocalRing ω.val
       (normalizedPlace_mem_old_fin ω hω))
-    (z : ξ.completedUnitBallModule ω.val (normalizedPlace_mem_old_fin ω hω) hξ) :
-    ξ.numberFieldNormalizeCompletedUnitBallEquiv hξ ω hω (a • z) =
+    (z : ξ.completedUnitBallModule ω.val (normalizedPlace_mem_old_fin ω hω)) :
+    ξ.numberFieldNormalizeCompletedUnitBallEquiv ω hω (a • z) =
       normalizedCompletedLocalRingEquiv ω hω a •
-        ξ.numberFieldNormalizeCompletedUnitBallEquiv hξ ω hω z := by
+        ξ.numberFieldNormalizeCompletedUnitBallEquiv ω hω z := by
   apply Subtype.ext
   exact AbsoluteValue.completionScalarExtensionEquiv_smul _ _ _ E a.val z.val
 
@@ -166,18 +167,18 @@ theorem numberFieldNormalize_completedUnitBall_image
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) :
     normalizedNormFamilyTensorEquiv ω '' ξ.completedUnitBall ω.val =
-      (ξ.numberFieldNormalize hξ).completedUnitBall ω := by
+      (ξ.numberFieldNormalize).completedUnitBall ω := by
   ext y
   constructor
   · rintro ⟨z, hz, rfl⟩
-    exact (ξ.numberFieldNormalize_mem_completedUnitBall_map_iff hξ ω hω z).mpr hz
+    exact (ξ.numberFieldNormalize_mem_completedUnitBall_map_iff ω hω z).mpr hz
   · intro hy
     obtain ⟨z, rfl⟩ := (normalizedNormFamilyTensorEquiv ω).surjective y
-    exact ⟨z, (ξ.numberFieldNormalize_mem_completedUnitBall_map_iff hξ ω hω z).mp hy, rfl⟩
+    exact ⟨z, (ξ.numberFieldNormalize_mem_completedUnitBall_map_iff ω hω z).mp hy, rfl⟩
 
 /-- The normalized global ball imposes precisely the nontrivial old finite conditions. -/
 theorem numberFieldNormalize_mem_globalUnitBall_iff (x : E) :
-    x ∈ (ξ.numberFieldNormalize hξ).globalUnitBall ↔
+    x ∈ (ξ.numberFieldNormalize).globalUnitBall ↔
       ∀ ω ∈ (numberFieldAdelicStructure K).Ωfin,
         ω ≠ AbsoluteValue.trivialPlace K → x ∈ ξ.rationalUnitBall ω := by
   constructor
@@ -186,38 +187,40 @@ theorem numberFieldNormalize_mem_globalUnitBall_iff (x : E) :
         (normalizedNumberFieldAdelicStructure K).Ωfin :=
       (NumberField.isNonarchimedean_congr
         (normalizedPlaceValue_isEquiv_placeRep ⟨ω, hnt⟩)).mpr hω
-    exact (ξ.numberFieldNormalize_mem_rationalUnitBall_iff hξ ⟨ω, hnt⟩ hnew x).mp
+    exact (ξ.numberFieldNormalize_mem_rationalUnitBall_iff ⟨ω, hnt⟩ hnew x).mp
       (hx ⟨ω, hnt⟩ hnew)
   · intro hx ω hω
-    exact (ξ.numberFieldNormalize_mem_rationalUnitBall_iff hξ ω hω x).mpr
+    exact (ξ.numberFieldNormalize_mem_rationalUnitBall_iff ω hω x).mpr
       (hx ω.val (normalizedPlace_mem_old_fin ω hω) ω.property)
 
 /-- The old global ball is the normalized global ball with the trivial-point condition. -/
 theorem mem_globalUnitBall_iff_numberFieldNormalize (x : E) :
-    x ∈ ξ.globalUnitBall ↔ x ∈ (ξ.numberFieldNormalize hξ).globalUnitBall ∧
+    x ∈ ξ.globalUnitBall ↔ x ∈ (ξ.numberFieldNormalize).globalUnitBall ∧
       x ∈ ξ.rationalUnitBall (AbsoluteValue.trivialPlace K) := by
   have ht : AbsoluteValue.trivialPlace K ∈ (numberFieldAdelicStructure K).Ωfin :=
     (NumberField.isNonarchimedean_congr (placeRep_equiv (AbsoluteValue.trivialPlace K))).mp
       AbsoluteValue.isNonarchimedeanPlace_trivialPlace
   constructor
   · intro hx
-    exact ⟨(ξ.numberFieldNormalize_mem_globalUnitBall_iff hξ x).mpr
+    exact ⟨(ξ.numberFieldNormalize_mem_globalUnitBall_iff x).mpr
       (fun ω hω _ => hx ω hω), hx _ ht⟩
   · rintro ⟨hx, hxt⟩ ω hω
     by_cases hnt : ω = AbsoluteValue.trivialPlace K
     · exact hnt ▸ hxt
-    · exact (ξ.numberFieldNormalize_mem_globalUnitBall_iff hξ x).mp hx ω hω hnt
+    · exact (ξ.numberFieldNormalize_mem_globalUnitBall_iff x).mp hx ω hω hnt
 
 /-- The old global ball is contained in the normalized one, with no converse asserted. -/
 theorem globalUnitBall_subset_numberFieldNormalize :
-    ξ.globalUnitBall ⊆ (ξ.numberFieldNormalize hξ).globalUnitBall :=
-  fun x hx => ((ξ.mem_globalUnitBall_iff_numberFieldNormalize hξ x).mp hx).1
+    ξ.globalUnitBall ⊆ (ξ.numberFieldNormalize).globalUnitBall :=
+  fun x hx => ((ξ.mem_globalUnitBall_iff_numberFieldNormalize x).mp hx).1
 
 /-- Adding or omitting the one trivial parameter preserves finite norm exceptions. -/
 theorem numberFieldNormalize_hasFiniteNormExceptions_iff :
-    (ξ.numberFieldNormalize hξ).HasFiniteNormExceptions ↔ ξ.HasFiniteNormExceptions := by
+    (ξ.numberFieldNormalize).HasFiniteNormExceptions ↔ ξ.HasFiniteNormExceptions := by
   constructor
-  · intro hfinite x
+  · intro hfinite
+    constructor
+    intro x
     have hi := (hfinite x).image
       (Subtype.val : (normalizedNumberFieldAdelicStructure K).Ω → AbsoluteValue.Place K)
     refine (hi.union (Set.finite_singleton (AbsoluteValue.trivialPlace K))).subset ?_
@@ -233,8 +236,10 @@ theorem numberFieldNormalize_hasFiniteNormExceptions_iff :
             (normalizedPlaceValue_isEquiv_placeRep ⟨ω, ht⟩)).mpr hω
         have hold : x ∉ ξ.rationalUnitBall ω := not_le.mpr hx
         exact not_le.mp (mt
-          (ξ.numberFieldNormalize_mem_rationalUnitBall_iff hξ ⟨ω, ht⟩ hnew x).mp hold)
-  · intro hfinite x
+          (ξ.numberFieldNormalize_mem_rationalUnitBall_iff ⟨ω, ht⟩ hnew x).mp hold)
+  · intro hfinite
+    constructor
+    intro x
     have hp : ((Subtype.val : (normalizedNumberFieldAdelicStructure K).Ω →
         AbsoluteValue.Place K) ⁻¹' {ω | ω ∈ (numberFieldAdelicStructure K).Ωfin ∧
         1 < ξ.norm ω (1 ⊗ₜ[K] x)}).Finite :=
@@ -243,9 +248,9 @@ theorem numberFieldNormalize_hasFiniteNormExceptions_iff :
     refine hp.subset ?_
     rintro ω ⟨hω, hx⟩
     refine ⟨normalizedPlace_mem_old_fin ω hω, ?_⟩
-    have hnew : x ∉ (ξ.numberFieldNormalize hξ).rationalUnitBall ω := not_le.mpr hx
+    have hnew : x ∉ (ξ.numberFieldNormalize).rationalUnitBall ω := not_le.mpr hx
     exact not_le.mp (mt
-      (ξ.numberFieldNormalize_mem_rationalUnitBall_iff hξ ω hω x).mpr hnew)
+      (ξ.numberFieldNormalize_mem_rationalUnitBall_iff ω hω x).mpr hnew)
 
 end NormFamily
 

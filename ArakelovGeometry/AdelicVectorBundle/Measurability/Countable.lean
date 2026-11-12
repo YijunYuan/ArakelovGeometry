@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Density.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import ArakelovGeometry.Analysis.NormedSpace.CountableNormEvaluation
 import Mathlib.CategoryTheory.Category.Init
@@ -64,6 +65,7 @@ is dense in all completed fields. -/
 theorem IsMeasurable.dual_of_countable_dense_subfield {ξ : NormFamily S E}
     (hξ : ξ.IsMeasurable) (K₀ : Subfield K) [Countable K₀]
     (hK₀ : ∀ ω, S.IsDenseSubfieldAt K₀ ω) : ξ.dual.IsMeasurable := by
+  constructor
   intro ℓ
   let b := Module.finBasis K E
   have he : (fun ω => ξ.dual.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] ℓ)) =
@@ -79,7 +81,7 @@ measurability; no per-place choice of a different subfield is made. -/
 theorem IsMeasurable.dual_of_common_countable_dense_subfield {ξ : NormFamily S E}
     (hξ : ξ.IsMeasurable) (hS : S.HasCommonCountableDenseSubfield) :
     ξ.dual.IsMeasurable := by
-  obtain ⟨K₀, hcount, hK₀⟩ := hS
+  obtain ⟨K₀, hcount, hK₀⟩ := hS.exists_subfield
   let : Countable K₀ := hcount
   exact hξ.dual_of_countable_dense_subfield K₀ hK₀
 
@@ -153,6 +155,7 @@ theorem IsMeasurable.pushforward_of_countable_dense_subfield {ξ : NormFamily S 
     (hξ : ξ.IsMeasurable) (π : E →ₗ[K] G) (hπ : Function.Surjective π)
     (K₀ : Subfield K) [Countable K₀] (hK₀ : ∀ ω, S.IsDenseSubfieldAt K₀ ω) :
     (ξ.pushforward π hπ).IsMeasurable := by
+  constructor
   intro z
   obtain ⟨s, rfl⟩ := hπ z
   let b := Module.finBasis K π.ker
@@ -169,7 +172,7 @@ theorem IsMeasurable.pushforward_of_countable_dense_subfield {ξ : NormFamily S 
 theorem IsMeasurable.pushforward_of_common_countable_dense_subfield {ξ : NormFamily S E}
     (hξ : ξ.IsMeasurable) (π : E →ₗ[K] G) (hπ : Function.Surjective π)
     (hS : S.HasCommonCountableDenseSubfield) : (ξ.pushforward π hπ).IsMeasurable := by
-  obtain ⟨K₀, hcount, hK₀⟩ := hS
+  obtain ⟨K₀, hcount, hK₀⟩ := hS.exists_subfield
   let : Countable K₀ := hcount
   exact hξ.pushforward_of_countable_dense_subfield π hπ K₀ hK₀
 
@@ -252,7 +255,7 @@ theorem IsMeasurable.localDist_of_countable_dense_subfield {ξ η : NormFamily S
 theorem IsMeasurable.localDist_of_common_countable_dense_subfield {ξ η : NormFamily S E}
     (hξ : ξ.IsMeasurable) (hη : η.IsMeasurable)
     (hS : S.HasCommonCountableDenseSubfield) : Measurable (ξ.localDist η) := by
-  obtain ⟨K₀, hcount, hK₀⟩ := hS
+  obtain ⟨K₀, hcount, hK₀⟩ := hS.exists_subfield
   let : Countable K₀ := hcount
   exact hξ.localDist_of_countable_dense_subfield hη K₀ hK₀
 

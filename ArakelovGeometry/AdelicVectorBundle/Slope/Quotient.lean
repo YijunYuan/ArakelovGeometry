@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.ExactSequence.Basic
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -81,14 +82,14 @@ variable [S.IsProper]
 quotient by the kernel of the composite quotient map. -/
 theorem maximalSlope_quotient_quotient_eq_quotient_ker (V : AdelicVectorBundle S E)
     (U : Submodule K E) (T : Submodule K (E ⧸ U))
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    ((V.quotientOfMeasurableBase U hS).quotientOfMeasurableBase T hS).maximalSlope hS hN =
-      (V.quotientOfMeasurableBase (T.mkQ.comp U.mkQ).ker hS).maximalSlope hS hN := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    ((V.quotientOfMeasurableBase U).quotientOfMeasurableBase T).maximalSlope =
+      (V.quotientOfMeasurableBase (T.mkQ.comp U.mkQ).ker).maximalSlope := by
   let π := T.mkQ.comp U.mkQ
   have hπ : Function.Surjective π := T.mkQ_surjective.comp U.mkQ_surjective
   symm
-  apply maximalSlope_eq_of_completed_isometry _ _ (π.quotKerEquivOfSurjective hπ) hS hN
+  apply maximalSlope_eq_of_completed_isometry _ _ (π.quotKerEquivOfSurjective hπ)
   intro ω z
   simp only [quotientOfMeasurableBase_toNormFamily]
   change ((V.toNormFamily.pushforward U.mkQ U.mkQ_surjective).pushforward
@@ -101,12 +102,12 @@ quotients defining the minimal slope. -/
 theorem minimalSlope_le_maximalSlope_quotient_quotient (V : AdelicVectorBundle S E)
     (U : Submodule K E) (T : Submodule K (E ⧸ U))
     (hT : 0 < Module.finrank K ((E ⧸ U) ⧸ T))
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.minimalSlope hS hN ≤
-      ((V.quotientOfMeasurableBase U hS).quotientOfMeasurableBase T hS).maximalSlope hS hN := by
-  rw [V.maximalSlope_quotient_quotient_eq_quotient_ker U T hS hN]
-  apply V.minimalSlope_le_maximalSlope_quotient (T.mkQ.comp U.mkQ).ker _ hS hN
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.minimalSlope ≤
+      ((V.quotientOfMeasurableBase U).quotientOfMeasurableBase T).maximalSlope := by
+  rw [V.maximalSlope_quotient_quotient_eq_quotient_ker U T]
+  apply V.minimalSlope_le_maximalSlope_quotient (T.mkQ.comp U.mkQ).ker _
   rwa [((T.mkQ.comp U.mkQ).quotKerEquivOfSurjective
     (T.mkQ_surjective.comp U.mkQ_surjective)).finrank_eq]
 
@@ -114,38 +115,38 @@ theorem minimalSlope_le_maximalSlope_quotient_quotient (V : AdelicVectorBundle S
 This follows from the actual quotient composition, including zero quotients. -/
 theorem minimalSlope_le_minimalSlope_quotient (V : AdelicVectorBundle S E)
     (U : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.minimalSlope hS hN ≤ (V.quotientOfMeasurableBase U hS).minimalSlope hS hN := by
-  apply (V.quotientOfMeasurableBase U hS).le_minimalSlope hS hN
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.minimalSlope ≤ (V.quotientOfMeasurableBase U).minimalSlope := by
+  apply (V.quotientOfMeasurableBase U).le_minimalSlope
   intro T hT
-  exact V.minimalSlope_le_maximalSlope_quotient_quotient U T hT hS hN
+  exact V.minimalSlope_le_maximalSlope_quotient_quotient U T hT
 
 /-- If the mean slope is at most `c` and a nonzero subspace has mean
 slope greater than `c`, its actual quotient is nonzero of smaller rank
 and has mean slope strictly less than `c`. -/
 theorem quotient_rank_and_slope_lt_of_lt_restrict (V : AdelicVectorBundle S E)
     (U : Submodule K E) (hU : 0 < Module.finrank K U)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (c : ℝ) (hmean : V.slope hS hN ≤ c)
-    (hR : c < (V.restrictOfMeasurableBase U hS).slope hS hN) :
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    (c : ℝ) (hmean : V.slope ≤ c)
+    (hR : c < (V.restrictOfMeasurableBase U).slope) :
     0 < Module.finrank K (E ⧸ U) ∧
       Module.finrank K (E ⧸ U) < Module.finrank K E ∧
-      (V.quotientOfMeasurableBase U hS).slope hS hN < c := by
+      (V.quotientOfMeasurableBase U).slope < c := by
   have hproper : U ≠ ⊤ := by
     intro htop
-    rw [htop, V.slope_restrict_top hS hN] at hR
+    rw [htop, V.slope_restrict_top] at hR
     exact (not_lt_of_ge hmean) hR
   have hdim := U.finrank_quotient_add_finrank
   have hRdim := Submodule.finrank_lt hproper
   have hQpos : 0 < Module.finrank K (E ⧸ U) := by omega
   have hQlt : Module.finrank K (E ⧸ U) < Module.finrank K E := by omega
   refine ⟨hQpos, hQlt, ?_⟩
-  have hd := V.degree_restrict_add_degree_quotient_le U hS hN
-  rw [(V.restrictOfMeasurableBase U hS).degree_eq_rank_mul_slope hS hN,
-    (V.quotientOfMeasurableBase U hS).degree_eq_rank_mul_slope hS hN,
-    V.degree_eq_rank_mul_slope hS hN] at hd
+  have hd := V.degree_restrict_add_degree_quotient_le U
+  rw [(V.restrictOfMeasurableBase U).degree_eq_rank_mul_slope,
+    (V.quotientOfMeasurableBase U).degree_eq_rank_mul_slope,
+    V.degree_eq_rank_mul_slope] at hd
   have hUreal : (0 : ℝ) < Module.finrank K U := Nat.cast_pos.mpr hU
   have hQreal : (0 : ℝ) < Module.finrank K (E ⧸ U) := Nat.cast_pos.mpr hQpos
   have hdimreal : (Module.finrank K (E ⧸ U) : ℝ) + Module.finrank K U =
@@ -161,111 +162,111 @@ private theorem exists_quotient_maximalSlope_le_of_slope_le_aux (r : ℕ) :
     ∀ (E : Type w) [AddCommGroup E] [Module K E] [FiniteDimensional K E],
       Module.finrank K E = r →
       ∀ (V : AdelicVectorBundle S E)
-        (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-        (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion),
-        0 < Module.finrank K E → ∀ c : ℝ, V.slope hS hN ≤ c →
+        [S.HasMeasurableBase]
+        [S.IsArchimedeanNormalized],
+        0 < Module.finrank K E → ∀ c : ℝ, V.slope ≤ c →
         ∃ U : Submodule K E, 0 < Module.finrank K (E ⧸ U) ∧
-          (V.quotientOfMeasurableBase U hS).maximalSlope hS hN ≤ (c : EReal) := by
+          (V.quotientOfMeasurableBase U).maximalSlope ≤ (c : EReal) := by
   induction r using Nat.strong_induction_on with
   | h r ih =>
     intro E _ _ _ hdim V hS hN hr c hmean
-    by_cases hmax : V.maximalSlope hS hN ≤ (c : EReal)
+    by_cases hmax : V.maximalSlope ≤ (c : EReal)
     · refine ⟨⊥, ?_, ?_⟩
       · have h := (⊥ : Submodule K E).finrank_quotient_add_finrank
         rw [finrank_bot, add_zero] at h
         rwa [h]
-      · rwa [V.maximalSlope_quotient_bot hS hN]
-    · have hhigh : (c : EReal) < V.maximalSlope hS hN := lt_of_not_ge hmax
+      · rwa [V.maximalSlope_quotient_bot]
+    · have hhigh : (c : EReal) < V.maximalSlope := lt_of_not_ge hmax
       change (c : EReal) < ⨆ U : {U : Submodule K E // 0 < Module.finrank K U},
-        ((V.restrictOfMeasurableBase U.val hS).slope hS hN : EReal) at hhigh
+        ((V.restrictOfMeasurableBase U.val).slope : EReal) at hhigh
       obtain ⟨U, hUs⟩ := lt_iSup_iff.mp hhigh
-      have hUsreal : c < (V.restrictOfMeasurableBase U.val hS).slope hS hN :=
+      have hUsreal : c < (V.restrictOfMeasurableBase U.val).slope :=
         EReal.coe_lt_coe_iff.mp hUs
       have hQ := V.quotient_rank_and_slope_lt_of_lt_restrict U.val U.property
-        hS hN c hmean hUsreal
+        c hmean hUsreal
       obtain ⟨T, hTpos, hTmax⟩ := ih (Module.finrank K (E ⧸ U.val))
         (by rw [← hdim]; exact hQ.2.1) (E ⧸ U.val) rfl
-        (V.quotientOfMeasurableBase U.val hS) hS hN hQ.1 c hQ.2.2.le
+        (V.quotientOfMeasurableBase U.val) hQ.1 c hQ.2.2.le
       refine ⟨(T.mkQ.comp U.val.mkQ).ker, ?_, ?_⟩
       · rwa [((T.mkQ.comp U.val.mkQ).quotKerEquivOfSurjective
           (T.mkQ_surjective.comp U.val.mkQ_surjective)).finrank_eq]
-      · rwa [← V.maximalSlope_quotient_quotient_eq_quotient_ker U.val T hS hN]
+      · rwa [← V.maximalSlope_quotient_quotient_eq_quotient_ker U.val T]
 
 /-- A positive-rank bundle with mean at most a real `c` has an actual
 nonzero quotient with maximal slope at most `c`. Rank induction uses
 degree superadditivity and the actual quotient composition theorem. -/
 theorem exists_quotient_maximalSlope_le_of_slope_le (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hr : 0 < Module.finrank K E) (c : ℝ) (hmean : V.slope hS hN ≤ c) :
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    (hr : 0 < Module.finrank K E) (c : ℝ) (hmean : V.slope ≤ c) :
     ∃ U : Submodule K E, 0 < Module.finrank K (E ⧸ U) ∧
-      (V.quotientOfMeasurableBase U hS).maximalSlope hS hN ≤ (c : EReal) := by
+      (V.quotientOfMeasurableBase U).maximalSlope ≤ (c : EReal) := by
   exact exists_quotient_maximalSlope_le_of_slope_le_aux (Module.finrank K E)
-    E rfl V hS hN hr c hmean
+    E rfl V hr c hmean
 
 /-- Source Proposition 4.3.26: minimal slope is at most mean slope in
 positive rank. Neither extremum is assumed finite. -/
 theorem minimalSlope_le_slope (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (hr : 0 < Module.finrank K E) :
-    V.minimalSlope hS hN ≤ (V.slope hS hN : EReal) := by
+    V.minimalSlope ≤ (V.slope : EReal) := by
   obtain ⟨U, hU, hmax⟩ :=
-    V.exists_quotient_maximalSlope_le_of_slope_le hS hN hr (V.slope hS hN) le_rfl
-  exact (V.minimalSlope_le_maximalSlope_quotient U hU hS hN).trans hmax
+    V.exists_quotient_maximalSlope_le_of_slope_le hr (V.slope) le_rfl
+  exact (V.minimalSlope_le_maximalSlope_quotient U hU).trans hmax
 
 /-- The source minimal slope is at most the mean of every nonzero
 actual quotient. Iterated quotient norm composition is used through
 minimal slope monotonicity. -/
 theorem minimalSlope_le_slope_quotient (V : AdelicVectorBundle S E)
     (U : Submodule K E) (hU : 0 < Module.finrank K (E ⧸ U))
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.minimalSlope hS hN ≤ ((V.quotientOfMeasurableBase U hS).slope hS hN : EReal) := by
-  exact (V.minimalSlope_le_minimalSlope_quotient U hS hN).trans
-    ((V.quotientOfMeasurableBase U hS).minimalSlope_le_slope hS hN hU)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.minimalSlope ≤ ((V.quotientOfMeasurableBase U).slope : EReal) := by
+  exact (V.minimalSlope_le_minimalSlope_quotient U).trans
+    ((V.quotientOfMeasurableBase U).minimalSlope_le_slope hU)
 
 /-- Source Proposition 4.3.26 as an equality in the extended real line.
 The original infimum of quotient maximal slopes equals the infimum
 of actual quotient means. The formula also includes the zero bundle:
 both infima are empty and equal to `⊤`. -/
 theorem minimalSlope_eq_iInf_slope_quotient (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.minimalSlope hS hN =
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.minimalSlope =
       ⨅ U : {U : Submodule K E // 0 < Module.finrank K (E ⧸ U)},
-        ((V.quotientOfMeasurableBase U.val hS).slope hS hN : EReal) := by
+        ((V.quotientOfMeasurableBase U.val).slope : EReal) := by
   apply le_antisymm
-  · exact le_iInf fun U => V.minimalSlope_le_slope_quotient U.val U.property hS hN
-  · apply V.le_minimalSlope hS hN
+  · exact le_iInf fun U ↦ V.minimalSlope_le_slope_quotient U.val U.property
+  · apply V.le_minimalSlope
     intro U hU
     have hi : (⨅ W : {W : Submodule K E // 0 < Module.finrank K (E ⧸ W)},
-        ((V.quotientOfMeasurableBase W.val hS).slope hS hN : EReal)) ≤
-        ((V.quotientOfMeasurableBase U hS).slope hS hN : EReal) :=
+        ((V.quotientOfMeasurableBase W.val).slope : EReal)) ≤
+        ((V.quotientOfMeasurableBase U).slope : EReal) :=
       iInf_le (fun W : {W : Submodule K E // 0 < Module.finrank K (E ⧸ W)} =>
-        ((V.quotientOfMeasurableBase W.val hS).slope hS hN : EReal)) ⟨U, hU⟩
-    exact hi.trans ((V.quotientOfMeasurableBase U hS).slope_le_maximalSlope hS hN hU)
+        ((V.quotientOfMeasurableBase W.val).slope : EReal)) ⟨U, hU⟩
+    exact hi.trans ((V.quotientOfMeasurableBase U).slope_le_maximalSlope hU)
 
 /-- The quotient mean bound also applies to arbitrary actual surjective
 rational quotient presentations through their completed kernel normal form. -/
 theorem minimalSlope_le_slope_pushforward (V : AdelicVectorBundle S E)
     (π : E →ₗ[K] F) (hπ : Function.Surjective π)
-    (hm : (V.toNormFamily.pushforward π hπ).IsMeasurable)
+    [hm : (V.toNormFamily.pushforward π hπ).IsMeasurable]
     (hr : 0 < Module.finrank K F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.minimalSlope hS hN ≤ ((V.pushforward π hπ hm).slope hS hN : EReal) := by
-  rw [V.slope_pushforward_eq_quotient_ker π hπ hm hS hN]
-  apply V.minimalSlope_le_slope_quotient π.ker _ hS hN
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.minimalSlope ≤ ((V.pushforward π hπ).slope : EReal) := by
+  rw [V.slope_pushforward_eq_quotient_ker π hπ]
+  apply V.minimalSlope_le_slope_quotient π.ker _
   rwa [(π.quotKerEquivOfSurjective hπ).finrank_eq]
 
 /-- Source minimal slope has a finite real upper bound in positive
 rank; this conclusion does not assert a finite lower bound. -/
 theorem minimalSlope_lt_top (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hr : 0 < Module.finrank K E) : V.minimalSlope hS hN < ⊤ :=
-  (V.minimalSlope_le_slope hS hN hr).trans_lt (EReal.coe_lt_top _)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    (hr : 0 < Module.finrank K E) : V.minimalSlope < ⊤ :=
+  (V.minimalSlope_le_slope hr).trans_lt (EReal.coe_lt_top _)
 
 end AdelicVectorBundle
 

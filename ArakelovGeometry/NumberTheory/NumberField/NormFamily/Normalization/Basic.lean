@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basic
 public import ArakelovGeometry.Analysis.AbsoluteValue.PowerTransport
 public import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.ProductFormulaComparison
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.PrimeIndexing
 
@@ -100,7 +101,7 @@ theorem normalizedNormFamilyTensorEquiv_one_tmul
 
 namespace NormFamily
 
-variable (ξ : NormFamily (numberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
+variable (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
 
 /-- Normalize the actual completed norm family at every nontrivial number-field place. -/
 def numberFieldNormalize : NormFamily (normalizedNumberFieldAdelicStructure K) E where
@@ -138,7 +139,7 @@ theorem numberFieldNormalize_norm_map_fin
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin)
     (z : (placeRep ω.val).Completion ⊗[K] E) :
-    (ξ.numberFieldNormalize hξ).norm ω (normalizedNormFamilyTensorEquiv ω z) =
+    (ξ.numberFieldNormalize).norm ω (normalizedNormFamilyTensorEquiv ω z) =
       ξ.norm ω.val z ^ ((normalizedPlaceValue ω).localDegree ℚ : ℝ)⁻¹ := by
   classical
   change IsNonarchimedean (normalizedPlaceValue ω) at hω
@@ -152,7 +153,7 @@ theorem numberFieldNormalize_norm_map_inf
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (hω : ω ∉ (normalizedNumberFieldAdelicStructure K).Ωfin)
     (z : (placeRep ω.val).Completion ⊗[K] E) :
-    (ξ.numberFieldNormalize hξ).norm ω (normalizedNormFamilyTensorEquiv ω z) =
+    (ξ.numberFieldNormalize).norm ω (normalizedNormFamilyTensorEquiv ω z) =
       ξ.norm ω.val z := by
   classical
   change ¬ IsNonarchimedean (normalizedPlaceValue ω) at hω
@@ -162,7 +163,8 @@ theorem numberFieldNormalize_norm_map_inf
   exact AbsoluteValue.sameValueTransportSeminorm_map _ _ _ _ _ _ z
 
 /-- The actual normalized family is ultrametric at every normalized finite place. -/
-theorem numberFieldNormalize_isUltrametric : (ξ.numberFieldNormalize hξ).IsUltrametric := by
+theorem numberFieldNormalize_isUltrametric : (ξ.numberFieldNormalize).IsUltrametric := by
+  constructor
   classical
   intro ω hω y z
   change IsNonarchimedean (normalizedPlaceValue ω) at hω
@@ -175,20 +177,20 @@ theorem numberFieldNormalize_isUltrametric : (ξ.numberFieldNormalize hξ).IsUlt
 theorem numberFieldNormalize_norm_tmul_fin
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) (x : E) :
-    (ξ.numberFieldNormalize hξ).norm ω (1 ⊗ₜ[K] x) =
+    (ξ.numberFieldNormalize).norm ω (1 ⊗ₜ[K] x) =
       ξ.norm ω.val (1 ⊗ₜ[K] x) ^ ((normalizedPlaceValue ω).localDegree ℚ : ℝ)⁻¹ :=
-  (congrArg ((ξ.numberFieldNormalize hξ).norm ω)
+  (congrArg ((ξ.numberFieldNormalize).norm ω)
     (normalizedNormFamilyTensorEquiv_one_tmul ω x).symm).trans
-    (ξ.numberFieldNormalize_norm_map_fin hξ ω hω (1 ⊗ₜ[K] x))
+    (ξ.numberFieldNormalize_norm_map_fin ω hω (1 ⊗ₜ[K] x))
 
 /-- The normalization formula for every rational vector at an actual infinite place. -/
 theorem numberFieldNormalize_norm_tmul_inf
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (hω : ω ∉ (normalizedNumberFieldAdelicStructure K).Ωfin) (x : E) :
-    (ξ.numberFieldNormalize hξ).norm ω (1 ⊗ₜ[K] x) = ξ.norm ω.val (1 ⊗ₜ[K] x) :=
-  (congrArg ((ξ.numberFieldNormalize hξ).norm ω)
+    (ξ.numberFieldNormalize).norm ω (1 ⊗ₜ[K] x) = ξ.norm ω.val (1 ⊗ₜ[K] x) :=
+  (congrArg ((ξ.numberFieldNormalize).norm ω)
     (normalizedNormFamilyTensorEquiv_one_tmul ω x).symm).trans
-    (ξ.numberFieldNormalize_norm_map_inf hξ ω hω (1 ⊗ₜ[K] x))
+    (ξ.numberFieldNormalize_norm_map_inf ω hω (1 ⊗ₜ[K] x))
 
 /-- Actual local-degree weights cancel the finite tensor norm power, also at zero. -/
 theorem numberFieldNormalize_weighted_log_norm_map_fin
@@ -196,13 +198,13 @@ theorem numberFieldNormalize_weighted_log_norm_map_fin
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin)
     (z : (placeRep ω.val).Completion ⊗[K] E) :
     ((normalizedPlaceValue ω).localDegree ℚ : ℝ) *
-      Real.log ((ξ.numberFieldNormalize hξ).norm ω (normalizedNormFamilyTensorEquiv ω z)) =
+      Real.log ((ξ.numberFieldNormalize).norm ω (normalizedNormFamilyTensorEquiv ω z)) =
         Real.log (ξ.norm ω.val z) := by
   have hd : (0 : ℝ) < ((normalizedPlaceValue ω).localDegree ℚ : ℝ) :=
     inv_pos.mp (normalizedFiniteExponent_pos ω hω)
-  have hv := ξ.numberFieldNormalize_norm_map_fin hξ ω hω z
+  have hv := ξ.numberFieldNormalize_norm_map_fin ω hω z
   by_cases hz : ξ.norm ω.val z = 0
-  · have hn : (ξ.numberFieldNormalize hξ).norm ω (normalizedNormFamilyTensorEquiv ω z) = 0 :=
+  · have hn : (ξ.numberFieldNormalize).norm ω (normalizedNormFamilyTensorEquiv ω z) = 0 :=
       hv.trans ((congrArg (fun r : ℝ => r ^
         ((normalizedPlaceValue ω).localDegree ℚ : ℝ)⁻¹) hz).trans
           (Real.zero_rpow (inv_pos.mpr hd).ne'))

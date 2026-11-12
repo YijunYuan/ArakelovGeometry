@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import HarderNarasimhan.Filtration.Defs
+
 import HarderNarasimhan.Filtration.Unique
 
 /-!
@@ -94,10 +95,10 @@ theorem finiteFlags_eq {n m : ℕ} (F : Fin (n + 1) → L) (G : Fin (m + 1) → 
     (hF : StrictMono F) (hG : StrictMono G)
     (hF0 : F 0 = ⊥) (hG0 : G 0 = ⊥)
     (hFtop : F (Fin.last n) = ⊤) (hGtop : G (Fin.last m) = ⊤)
-    (hFsemi : ∀ i : Fin n,
-      (μ.restrict ⟨F i.castSucc, F i.succ, hF Fin.castSucc_lt_succ⟩).IsSemistable)
-    (hGsemi : ∀ i : Fin m,
-      (μ.restrict ⟨G i.castSucc, G i.succ, hG Fin.castSucc_lt_succ⟩).IsSemistable)
+    [hFsemi : ∀ i : Fin n,
+      (μ.restrict ⟨F i.castSucc, F i.succ, hF Fin.castSucc_lt_succ⟩).IsSemistable]
+    [hGsemi : ∀ i : Fin m,
+      (μ.restrict ⟨G i.castSucc, G i.succ, hG Fin.castSucc_lt_succ⟩).IsSemistable]
     (hFA : StrictAnti fun i : Fin n ↦
       μ.A ⟨F i.castSucc, F i.succ, hF Fin.castSucc_lt_succ⟩)
     (hGA : StrictAnti fun i : Fin m ↦

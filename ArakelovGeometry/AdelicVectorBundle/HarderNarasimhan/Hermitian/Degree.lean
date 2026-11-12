@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.Basic
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.Hermitian
 import ArakelovGeometry.AdelicVectorBundle.Degree.Isometry
 import ArakelovGeometry.AdelicVectorBundle.Subquotient.Quotient.Restriction
@@ -36,59 +37,59 @@ universe u v w
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (V : AdelicVectorBundle S E)
-  (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-  (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-  (hV : V.toNormFamily.IsHermitian hN)
+  [hS : S.HasMeasurableBase]
+  [hN : S.IsArchimedeanNormalized]
+  [hV : V.toNormFamily.IsHermitian]
 
 /-- The actual image factor and canonical quotient of the next restricted
 flag term have the same degree under their completed isometry. -/
 theorem degree_hermitianHNFactor_eq_flagQuotient
-    (i : Fin (V.hermitianHNLength hS hN hV)) :
-    (V.hermitianHNFactor hS hN hV i).degree hS hN =
-      (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag hS hN hV) hS i).degree hS hN := by
-  let U := V.hermitianHNTerm hS hN hV i.val
-  let W := V.hermitianHNTerm hS hN hV (i.val + 1)
+    (i : Fin (V.hermitianHNLength)) :
+    (V.hermitianHNFactor i).degree =
+      (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag) i).degree := by
+  let U := V.hermitianHNTerm i.val
+  let W := V.hermitianHNTerm (i.val + 1)
   let g : W →ₗ[K] E ⧸ U := U.mkQ.comp W.subtype
-  have hUW : U ≤ W := V.hermitianHNTerm_monotone hS hN hV (Nat.le_succ _)
+  have hUW : U ≤ W := V.hermitianHNTerm_monotone (Nat.le_succ _)
   have hk : g.ker = U.comap W.subtype := by
     simp only [g, LinearMap.ker_comp, Submodule.ker_mkQ]
   have hr : g.range = W.map U.mkQ := by
     simp only [g, LinearMap.range_comp, Submodule.range_subtype]
-  have hd : ((V.restrictOfMeasurableBase W hS).quotientOfMeasurableBase g.ker hS).degree
-      hS hN = ((V.quotientOfMeasurableBase U hS).restrictOfMeasurableBase
-        g.range hS).degree hS hN := by
-    apply degree_eq_of_completed_isometry _ _ g.quotKerEquivRange hS hN
+  have hd : ((V.restrictOfMeasurableBase W).quotientOfMeasurableBase g.ker).degree
+    = ((V.quotientOfMeasurableBase U).restrictOfMeasurableBase
+        g.range).degree := by
+    apply degree_eq_of_completed_isometry _ _ g.quotKerEquivRange
     intro ω z
     exact (V.toNormFamily.quotient_restrict_range_norm_eq W U hUW ω z).symm
   have hkd := congrArg (fun T : Submodule K W ↦
-    ((V.restrictOfMeasurableBase W hS).quotientOfMeasurableBase T hS).degree hS hN) hk
+    ((V.restrictOfMeasurableBase W).quotientOfMeasurableBase T).degree) hk
   have hrd := congrArg (fun T : Submodule K (E ⧸ U) ↦
-    ((V.quotientOfMeasurableBase U hS).restrictOfMeasurableBase T hS).degree hS hN) hr
+    ((V.quotientOfMeasurableBase U).restrictOfMeasurableBase T).degree) hr
   exact (hrd.symm.trans hd.symm).trans hkd
 
 /-- The actual constructed positive-rank factors telescope to the original
 Hermitian degree; in rank zero this is the genuine empty sum. -/
 theorem sum_hermitianHNFactor_degree_eq :
-    (∑ i : Fin (V.hermitianHNLength hS hN hV),
-      (V.hermitianHNFactor hS hN hV i).degree hS hN) = V.degree hS hN := by
+    (∑ i : Fin (V.hermitianHNLength),
+      (V.hermitianHNFactor i).degree) = V.degree := by
   calc
-    _ = ∑ i : Fin (V.hermitianHNLength hS hN hV),
-        (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag hS hN hV) hS i).degree hS hN := by
+    _ = ∑ i : Fin (V.hermitianHNLength),
+        (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag) i).degree := by
       apply Finset.sum_congr rfl
       intro i _
-      exact V.degree_hermitianHNFactor_eq_flagQuotient hS hN hV i
-    _ = V.degree hS hN := V.sum_flagQuotient_degree_eq_of_isHermitian
-      (V.hermitianHNFlag hS hN hV) (V.hermitianHNFlag_strictMono hS hN hV).monotone
-      (V.hermitianHNFlag_zero hS hN hV) (V.hermitianHNFlag_last hS hN hV) hS hN hV
+      exact V.degree_hermitianHNFactor_eq_flagQuotient i
+    _ = V.degree := V.sum_flagQuotient_degree_eq_of_isHermitian
+      (V.hermitianHNFlag) (V.hermitianHNFlag_strictMono).monotone
+      (V.hermitianHNFlag_zero) (V.hermitianHNFlag_last)
 
 /-- The actual degree is the sum of actual factor means with their actual
 rank multiplicities, prior to identifying individual ordered slots. -/
 theorem sum_hermitianHNFactor_rank_mul_slope_eq_degree :
-    (∑ i : Fin (V.hermitianHNLength hS hN hV),
-      (Module.finrank K ((V.hermitianHNTerm hS hN hV (i.val + 1)).map
-        (V.hermitianHNTerm hS hN hV i.val).mkQ) : ℝ) *
-        (V.hermitianHNFactor hS hN hV i).slope hS hN) = V.degree hS hN := by
-  simpa only [← degree_eq_rank_mul_slope] using V.sum_hermitianHNFactor_degree_eq hS hN hV
+    (∑ i : Fin (V.hermitianHNLength),
+      (Module.finrank K ((V.hermitianHNTerm (i.val + 1)).map
+        (V.hermitianHNTerm i.val).mkQ) : ℝ) *
+        (V.hermitianHNFactor i).slope) = V.degree := by
+  simpa only [← degree_eq_rank_mul_slope] using V.sum_hermitianHNFactor_degree_eq
 
 end
 

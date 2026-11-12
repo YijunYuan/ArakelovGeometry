@@ -10,6 +10,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Hermitian
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Purity.Basic
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Approximation
 import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.InfiniteMass
@@ -69,10 +70,10 @@ theorem integral_infiniteLogEnvelope {n : ℕ} (hn : 0 < n) {ε : ℝ} (hε : 0 
 domination proved from the computed infinite envelope and its finite purity retained. -/
 theorem exists_hermitian_approximation
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
-    (hU : V.toNormFamily.IsUltrametric) (hpure : V.toNormFamily.IsPureAtFinitePlaces)
+    [hU : V.toNormFamily.IsUltrametric] [hpure : V.toNormFamily.IsPureAtFinitePlaces]
     (hn : 0 < Module.finrank K E) {ε : ℝ} (hε : 0 < ε) :
     ∃ W : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E,
-      W.toNormFamily.IsHermitian normalizedNumberFieldArchimedeanCompletions ∧
+      W.toNormFamily.IsHermitian ∧
       W.toNormFamily.IsPureAtFinitePlaces ∧
       (∀ ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin, ∀ z,
         W.toNormFamily.norm ω z = V.toNormFamily.norm ω z) ∧
@@ -83,7 +84,7 @@ theorem exists_hermitian_approximation
   let S := normalizedNumberFieldAdelicStructure K
   let : Countable K := (Module.finBasis ℚ K).repr.injective.countable
   obtain ⟨η, hmη, hHη, hfη, hbη⟩ := V.isMeasurable.exists_hermitian_approximation hU
-    normalizedNumberFieldArchimedeanCompletions (⊤ : Subfield K)
+    (⊤ : Subfield K)
       (fun ω _ => S.isDenseSubfieldAt_top ω) hε
   let g := infiniteLogEnvelope (K := K) (Module.finrank K E) ε
   have hg := infiniteLogEnvelope_integrable (K := K) (Module.finrank K E) ε
@@ -113,8 +114,9 @@ theorem exists_hermitian_approximation
         (Real.exp_le_one_iff.mpr (neg_nonpos.mpr (hg0 ω))) (V.toNormFamily.norm_nonneg ω z)
       _ ≤ η.norm ω z := by simpa using hlower ω z
   have hdη : η.IsDominated := V.isDominated.of_localDist ⟨g, hg, Eventually.of_forall hδ⟩
-  let W := AdelicVectorBundle.ofMeasurableDominated η hmη hdη (Or.inl inferInstance)
+  let W := AdelicVectorBundle.ofMeasurableDominated η (hm := hmη) (hd := hdη)
   refine ⟨W, hHη, ?_, hfη, hlower, hupper⟩
+  constructor
   intro ω hω z hz
   obtain ⟨a, ha, he⟩ := hpure ω hω z hz
   exact ⟨a, ha, (hfη ω hω z).trans he⟩
@@ -122,14 +124,14 @@ theorem exists_hermitian_approximation
 /-- The actual first-minimum estimate at every positive Hermitian approximation scale. -/
 theorem maximalSlope_sub_approximation_error_le_firstMinimum
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
-    (hU : V.toNormFamily.IsUltrametric) (hpure : V.toNormFamily.IsPureAtFinitePlaces)
+    [hU : V.toNormFamily.IsUltrametric] [hpure : V.toNormFamily.IsPureAtFinitePlaces]
     (hn : 0 < Module.finrank K E) {ε : ℝ} (hε : 0 < ε) :
-    V.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions -
+    V.maximalSlope -
       (((Module.finrank ℚ K : ℝ) / 2 * Real.log ((Module.finrank K E : ℝ) + ε) +
         ((Module.finrank ℚ K : ℝ) / 2 * Real.log (Module.finrank K E : ℝ) +
           Real.log |(NumberField.discr K : ℝ)| / 2) : ℝ) : EReal) ≤
             V.maximalLogarithmicMinimum := by
-  obtain ⟨W, hH, hP, _, hlower, hupper⟩ := exists_hermitian_approximation V hU hpure hn hε
+  obtain ⟨W, hH, hP, _, hlower, hupper⟩ := exists_hermitian_approximation V hn hε
   let g := infiniteLogEnvelope (K := K) (Module.finrank K E) ε
   have hg := infiniteLogEnvelope_integrable (K := K) (Module.finrank K E) ε
   have hmin := (logarithmicMinimum_comparison V W (fun _ => 0) g (integrable_zero _ ℝ _) hg
@@ -138,7 +140,7 @@ theorem maximalSlope_sub_approximation_error_le_firstMinimum
   have hslope := maximalSlope_sub_integral_le V W g hg hupper
   rw [integral_infiniteLogEnvelope (K := K) hn hε] at hslope
   have hherm := NumberFieldHermitianFirstMinimum.maximalSlope_sub_error_le_firstMinimum
-    W hH hP hn
+    W (hV := hH) (hpure := hP) hn
   have h := (EReal.sub_le_sub hslope le_rfl).trans (hherm.trans hmin)
   convert h using 1 <;>
     simp only [AdelicVectorBundle.maximalLogarithmicMinimum, sub_eq_add_neg,
@@ -151,13 +153,13 @@ theorem maximalSlope_sub_approximation_error_le_firstMinimum
 finite norms, obtained by the honest positive-scale limit without finite-value assumptions. -/
 theorem maximalSlope_sub_error_le_firstMinimum
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
-    (hU : V.toNormFamily.IsUltrametric) (hpure : V.toNormFamily.IsPureAtFinitePlaces)
+    [hU : V.toNormFamily.IsUltrametric] [hpure : V.toNormFamily.IsPureAtFinitePlaces]
     (hn : 0 < Module.finrank K E) :
-    V.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions -
+    V.maximalSlope -
       (((Module.finrank ℚ K : ℝ) * Real.log (Module.finrank K E : ℝ) +
         Real.log |(NumberField.discr K : ℝ)| / 2 : ℝ) : EReal) ≤
           V.maximalLogarithmicMinimum := by
-  let M := V.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions
+  let M := V.maximalSlope
   let c : ℝ → ℝ := fun ε =>
     (Module.finrank ℚ K : ℝ) / 2 * Real.log ((Module.finrank K E : ℝ) + ε) +
       ((Module.finrank ℚ K : ℝ) / 2 * Real.log (Module.finrank K E : ℝ) +
@@ -185,7 +187,7 @@ theorem maximalSlope_sub_error_le_firstMinimum
   have hbound : ∀ᶠ ε : ℝ in 𝓝[>] 0,
       M + ((-c ε : ℝ) : EReal) ≤ V.maximalLogarithmicMinimum := by
     filter_upwards [self_mem_nhdsWithin] with ε hε
-    have h := maximalSlope_sub_approximation_error_le_firstMinimum V hU hpure hn hε
+    have h := maximalSlope_sub_approximation_error_le_firstMinimum V hn hε
     simpa only [M, c, sub_eq_add_neg, ← EReal.coe_neg] using h
   have h := le_of_tendsto hlim hbound
   simpa only [hc0, M, EReal.coe_neg, sub_eq_add_neg] using h

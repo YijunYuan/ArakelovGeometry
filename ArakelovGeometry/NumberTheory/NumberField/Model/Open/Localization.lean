@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.UnitBall.Spanning
 public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
+
 import ArakelovGeometry.Analysis.AbsoluteValue.Ostrowski
 
 /-!
@@ -139,13 +140,13 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- Integral scalars act through the proved canonical coefficient map on the
 existing actual local unit-ball module. -/
 noncomputable instance rationalUnitBall_integralModule (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) (hξ : ξ.IsUltrametric) :
-    Module (𝓞 K) (ξ.rationalUnitBallModule ω hω hξ) :=
-  Module.compHom (ξ.rationalUnitBallModule ω hω hξ) (S.integralLocalCoefficientMap ω hω)
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] :
+    Module (𝓞 K) (ξ.rationalUnitBallModule ω hω) :=
+  Module.compHom (ξ.rationalUnitBallModule ω hω) (S.integralLocalCoefficientMap ω hω)
 
 instance rationalUnitBall_integralScalarTower (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) (hξ : ξ.IsUltrametric) :
-    IsScalarTower (𝓞 K) (S.rationalLocalRing ω hω) (ξ.rationalUnitBallModule ω hω hξ) := by
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] :
+    IsScalarTower (𝓞 K) (S.rationalLocalRing ω hω) (ξ.rationalUnitBallModule ω hω) := by
   constructor
   intro a r x
   change (S.integralLocalCoefficientMap ω hω a * r) • x =
@@ -154,47 +155,47 @@ instance rationalUnitBall_integralScalarTower (ξ : NormFamily S E)
 
 @[simp]
 theorem rationalUnitBall_integral_smul_coe (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) (hξ : ξ.IsUltrametric)
-    (a : 𝓞 K) (x : ξ.rationalUnitBallModule ω hω hξ) :
-    ((a • x : ξ.rationalUnitBallModule ω hω hξ) : E) =
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric]
+    (a : 𝓞 K) (x : ξ.rationalUnitBallModule ω hω) :
+    ((a • x : ξ.rationalUnitBallModule ω hω) : E) =
       algebraMap (𝓞 K) K a • (x : E) := rfl
 
 /-- The actual rational local unit ball, restricted to integral coefficients,
 is already a localized module at its actual finite prime. -/
 theorem isLocalizedModule_rationalUnitBall_of_finitePlace [NumberField K] (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) (hξ : ξ.IsUltrametric)
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric]
     (p : NumberField.FinitePlace K) (hp : (S.ϕ ω).IsEquiv p.val) :
     IsLocalizedModule p.maximalIdeal.asIdeal.primeCompl
-      (LinearMap.id : ξ.rationalUnitBallModule ω hω hξ →ₗ[𝓞 K]
-        ξ.rationalUnitBallModule ω hω hξ) := by
+      (LinearMap.id : ξ.rationalUnitBallModule ω hω →ₗ[𝓞 K]
+        ξ.rationalUnitBallModule ω hω) := by
   let := S.isLocalization_rationalLocalRing_of_finitePlace ω hω p hp
   exact isLocalizedModule_id p.maximalIdeal.asIdeal.primeCompl
-    (ξ.rationalUnitBallModule ω hω hξ) (S.rationalLocalRing ω hω)
+    (ξ.rationalUnitBallModule ω hω) (S.rationalLocalRing ω hω)
 
 /-- The actual integer-to-local coefficient scalar extension of the genuine
 rational unit ball recovers that actual local module. -/
 noncomputable def rationalUnitBallIntegerLocalizationEquiv [NumberField K] (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) (hξ : ξ.IsUltrametric)
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric]
     (p : NumberField.FinitePlace K) (hp : (S.ϕ ω).IsEquiv p.val) :
-    (S.rationalLocalRing ω hω) ⊗[𝓞 K] (ξ.rationalUnitBallModule ω hω hξ) ≃ₗ[
-      S.rationalLocalRing ω hω] ξ.rationalUnitBallModule ω hω hξ := by
+    (S.rationalLocalRing ω hω) ⊗[𝓞 K] (ξ.rationalUnitBallModule ω hω) ≃ₗ[
+      S.rationalLocalRing ω hω] ξ.rationalUnitBallModule ω hω := by
   letI := S.isLocalization_rationalLocalRing_of_finitePlace ω hω p hp
-  letI := ξ.isLocalizedModule_rationalUnitBall_of_finitePlace ω hω hξ p hp
+  letI := ξ.isLocalizedModule_rationalUnitBall_of_finitePlace ω hω p hp
   exact (IsLocalizedModule.isBaseChange p.maximalIdeal.asIdeal.primeCompl
     (S.rationalLocalRing ω hω) (LinearMap.id :
-      ξ.rationalUnitBallModule ω hω hξ →ₗ[𝓞 K] ξ.rationalUnitBallModule ω hω hξ)).equiv
+      ξ.rationalUnitBallModule ω hω →ₗ[𝓞 K] ξ.rationalUnitBallModule ω hω)).equiv
 
 @[simp]
 theorem rationalUnitBallIntegerLocalizationEquiv_tmul [NumberField K] (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) (hξ : ξ.IsUltrametric)
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric]
     (p : NumberField.FinitePlace K) (hp : (S.ϕ ω).IsEquiv p.val)
-    (r : S.rationalLocalRing ω hω) (x : ξ.rationalUnitBallModule ω hω hξ) :
-    ξ.rationalUnitBallIntegerLocalizationEquiv ω hω hξ p hp (r ⊗ₜ[𝓞 K] x) = r • x := by
+    (r : S.rationalLocalRing ω hω) (x : ξ.rationalUnitBallModule ω hω) :
+    ξ.rationalUnitBallIntegerLocalizationEquiv ω hω p hp (r ⊗ₜ[𝓞 K] x) = r • x := by
   let := S.isLocalization_rationalLocalRing_of_finitePlace ω hω p hp
-  let := ξ.isLocalizedModule_rationalUnitBall_of_finitePlace ω hω hξ p hp
+  let := ξ.isLocalizedModule_rationalUnitBall_of_finitePlace ω hω p hp
   exact IsBaseChange.equiv_tmul
     (IsLocalizedModule.isBaseChange p.maximalIdeal.asIdeal.primeCompl
       (S.rationalLocalRing ω hω) (LinearMap.id :
-        ξ.rationalUnitBallModule ω hω hξ →ₗ[𝓞 K] ξ.rationalUnitBallModule ω hω hξ)) r x
+        ξ.rationalUnitBallModule ω hω →ₗ[𝓞 K] ξ.rationalUnitBallModule ω hω)) r x
 
 end ArakelovGeometry.NormFamily

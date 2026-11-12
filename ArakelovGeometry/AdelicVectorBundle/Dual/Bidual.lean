@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Dual.Basic
+
 import ArakelovGeometry.Analysis.Dual.ArchimedeanDual
 import ArakelovGeometry.Analysis.Dual.UltrametricDual
 import Mathlib.Analysis.Normed.Group.Ultra
@@ -94,8 +95,8 @@ theorem dual_dual_norm_eval_eq_of_isRCLike (ξ : NormFamily S E) (ω : S.Ω)
 /-- With the source's usual Archimedean absolute values, an ultrametric norm
 family equals its bidual under canonical evaluation. The normalization of the
 actual completed fields is an explicit hypothesis. -/
-theorem dual_dual_pullback_eq (ξ : NormFamily S E) (hξ : ξ.IsUltrametric)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+theorem dual_dual_pullback_eq (ξ : NormFamily S E) [hξ : ξ.IsUltrametric]
+    [hS : S.IsArchimedeanNormalized] :
     ξ.dual.dual.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K) = ξ := by
   ext ω x
   by_cases hω : ω ∈ S.Ωfin

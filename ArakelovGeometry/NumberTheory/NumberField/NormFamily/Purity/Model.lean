@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.Full.Gauge
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Purity.Basic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Subquotient
 import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.InfiniteMass
@@ -47,7 +48,7 @@ variable [FiniteDimensional K E]
 
 theorem pure_primeScale_le_localDist_of_norm_ne
     (ξ η : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsPureAtFinitePlaces) (hη : η.IsPureAtFinitePlaces)
+    [hξ : ξ.IsPureAtFinitePlaces] [hη : η.IsPureAtFinitePlaces]
     (p : HeightOneSpectrum (𝓞 K))
     (hne : ξ.norm (normalizedPrimeParameter p) ≠ η.norm (normalizedPrimeParameter p)) :
     normalizedPrimeLogScale p ≤ ξ.localDist η (normalizedPrimeParameter p) := by
@@ -82,7 +83,7 @@ theorem pure_primeScale_le_localDist_of_norm_ne
 
 theorem pure_log_two_le_weighted_localDist_of_norm_ne
     (ξ η : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsPureAtFinitePlaces) (hη : η.IsPureAtFinitePlaces)
+    [hξ : ξ.IsPureAtFinitePlaces] [hη : η.IsPureAtFinitePlaces]
     (p : HeightOneSpectrum (𝓞 K))
     (hne : ξ.norm (normalizedPrimeParameter p) ≠ η.norm (normalizedPrimeParameter p)) :
     Real.log 2 ≤ (normalizedNumberFieldAdelicStructure K).v.real {normalizedPrimeParameter p} *
@@ -90,7 +91,7 @@ theorem pure_log_two_le_weighted_localDist_of_norm_ne
   have hgap := normalized_weighted_prime_log_gap p
   rw [normalizedPlaceLogScale_prime] at hgap
   exact hgap.trans (mul_le_mul_of_nonneg_left
-    (pure_primeScale_le_localDist_of_norm_ne ξ η hξ hη p hne) ENNReal.toReal_nonneg)
+    (pure_primeScale_le_localDist_of_norm_ne ξ η p hne) ENNReal.toReal_nonneg)
 
 theorem summable_normalized_weighted_localDist_of_integrable
     (ξ η : NormFamily (normalizedNumberFieldAdelicStructure K) E)
@@ -114,7 +115,7 @@ theorem summable_normalized_weighted_localDist_of_integrable
 
 theorem finite_finiteNorm_disagreements_of_integrable
     (ξ η : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsPureAtFinitePlaces) (hη : η.IsPureAtFinitePlaces)
+    [hξ : ξ.IsPureAtFinitePlaces] [hη : η.IsPureAtFinitePlaces]
     (hI : Integrable (ξ.localDist η) (normalizedNumberFieldAdelicStructure K).v) :
     {ω | ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin ∧ ξ.norm ω ≠ η.norm ω}.Finite := by
   have hs := summable_normalized_weighted_localDist_of_integrable ξ η hI
@@ -123,7 +124,7 @@ theorem finite_finiteNorm_disagreements_of_integrable
   apply (Filter.eventually_cofinite.mp he).subset
   rintro ω ⟨hω, hne⟩
   obtain ⟨p, rfl⟩ := exists_normalizedPrimeParameter_eq ω hω
-  exact not_lt_of_ge (pure_log_two_le_weighted_localDist_of_norm_ne ξ η hξ hη p hne)
+  exact not_lt_of_ge (pure_log_two_le_weighted_localDist_of_norm_ne ξ η p hne)
 
 theorem IsDominated.integrable_localDist_normalizedBasisMixed
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E} (hdom : ξ.IsDominated)
@@ -133,10 +134,10 @@ theorem IsDominated.integrable_localDist_normalizedBasisMixed
   let S := normalizedNumberFieldAdelicStructure K
   let : DiscreteMeasurableSpace S.Ω := inferInstanceAs
     (DiscreteMeasurableSpace {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
-  have hstrong := (ξ.isStronglyDominated_iff_isDominated_of_ultrametric hξ
-    (normalizedNumberFieldArchimedeanCompletions (K := K))).mpr hdom
+  have hstrong := (ξ.isStronglyDominated_iff_isDominated_of_ultrametric
+    (hS := ⟨(normalizedNumberFieldArchimedeanCompletions (K := K))⟩)).mpr hdom
   have hb := ofBasisMixed_isStronglyDominated (S := S) b
-    (normalizedNumberFieldArchimedeanCompletions (K := K))
+    (hS := ⟨(normalizedNumberFieldArchimedeanCompletions (K := K))⟩)
   have hfin : S.v S.Ωinf < ⊤ := by
     rw [normalizedNumberFieldAdelicStructure_v_Ωinf]
     exact ENNReal.natCast_lt_top _
@@ -148,12 +149,13 @@ theorem IsDominated.finite_normalizedBasisMixed_disagreements
     {ι : Type*} [Fintype ι] (b : Module.Basis ι K E) :
     {ω | ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin ∧
       ξ.norm ω ≠ (ofBasisMixed (normalizedNumberFieldAdelicStructure K) E b).norm ω}.Finite :=
-  finite_finiteNorm_disagreements_of_integrable ξ _ hpure (ofBasisMixed_isPureAtFinitePlaces b)
+  finite_finiteNorm_disagreements_of_integrable ξ _ (hη := (ofBasisMixed_isPureAtFinitePlaces b))
     (hdom.integrable_localDist_normalizedBasisMixed hξ b)
 
 theorem IsDominated.hasFiniteNormExceptions_of_pure
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E} (hdom : ξ.IsDominated)
     (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) : ξ.HasFiniteNormExceptions := by
+  constructor
   let b := Module.finBasis K E
   have hbad := hdom.finite_normalizedBasisMixed_disagreements hξ hpure b
   intro x
@@ -200,20 +202,20 @@ theorem IsDominated.exists_primeBasisGauge_eq_off_finset
 theorem IsDominated.pure_normalizedGlobalUnitBall_finite_projective_span
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E} (hdom : ξ.IsDominated)
     (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
-    (ξ.globalUnitBallModule hξ).FG ∧ Module.Projective (𝓞 K) (ξ.globalUnitBallModule hξ) ∧
+    (ξ.globalUnitBallModule).FG ∧ Module.Projective (𝓞 K) (ξ.globalUnitBallModule) ∧
       Submodule.span K ξ.globalUnitBall = ⊤ := by
   have hc := hdom.hasFiniteNormExceptions_of_pure hξ hpure
   have hm := hdom.fg_and_span_normalizedGlobalUnitBallModule hξ hc
-  exact ⟨hm.1, NumberFieldFullLattice.projective (ξ.globalUnitBallModule hξ) hm.1, hm.2⟩
+  exact ⟨hm.1, NumberFieldFullLattice.projective (ξ.globalUnitBallModule) hm.1, hm.2⟩
 
 set_option backward.isDefEq.respectTransparency false in
 theorem IsDominated.exists_pure_fullLatticeGaugeFamily_eq
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E} (hdom : ξ.IsDominated)
     (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
-    ∃ (hfg : (ξ.globalUnitBallModule hξ).FG)
+    ∃ (hfg : (ξ.globalUnitBallModule).FG)
       (hspan : Submodule.span K ξ.globalUnitBall = ⊤),
       NumberFieldFullLattice.fullLatticeGaugeFamily
-        (ξ.globalUnitBallModule hξ) hfg hspan ξ = ξ := by
+        (ξ.globalUnitBallModule) hfg hspan ξ = ξ := by
   have hc := hdom.hasFiniteNormExceptions_of_pure hξ hpure
   have hm := hdom.fg_and_span_normalizedGlobalUnitBallModule hξ hc
   refine ⟨hm.1, hm.2, ?_⟩

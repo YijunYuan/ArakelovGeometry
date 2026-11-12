@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Model.TraceDual.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Model.TraceDual.Projective.Generic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.NumberTheory.NumberField.Minkowski.PolarVolume
 import Mathlib.Analysis.Normed.Module.DoubleDual
@@ -66,27 +67,27 @@ variable {K : Type u} [Field K] [NumberField K]
 /-- The prescribed original trace-dual tensor family is Hermitian. -/
 theorem originalPrescribedTraceDualFamily_isHermitian
     {η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M)}
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
-    (originalPrescribedTraceDualFamily M hη).IsHermitian
-      normalizedNumberFieldArchimedeanCompletions :=
-  (prescribedTraceDualFamily_isHermitian hη).pullback
+    [hη : η.IsHermitian] :
+    (originalPrescribedTraceDualFamily M (η := η) (hη := hη)).IsHermitian
+      :=
+  (prescribedTraceDualFamily_isHermitian (ξ := η)).pullback
     (traceTensorGenericPairEquiv (K := K) M).toLinearMap
     (traceTensorGenericPairEquiv (K := K) M).injective
 
 /-- The actual original trace tensor is isometric to the native real continuous dual. -/
 def originalTraceDualRealIsometry
     {η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M)}
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     letI : NormedAddCommGroup (CompletedVectorProduct K (K ⊗[𝓞 K] M)) :=
       euclideanNormedAddCommGroup η
     letI : NormedSpace ℝ (CompletedVectorProduct K (K ⊗[𝓞 K] M)) :=
       euclideanNormedSpace η
     letI : NormedAddCommGroup (CompletedVectorProduct K
         (K ⊗[𝓞 K] (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M))) :=
-      euclideanNormedAddCommGroup (originalPrescribedTraceDualFamily M hη)
+      euclideanNormedAddCommGroup (originalPrescribedTraceDualFamily M (η := η) (hη := hη))
     letI : NormedSpace ℝ (CompletedVectorProduct K
         (K ⊗[𝓞 K] (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M))) :=
-      euclideanNormedSpace (originalPrescribedTraceDualFamily M hη)
+      euclideanNormedSpace (originalPrescribedTraceDualFamily M (η := η) (hη := hη))
     CompletedVectorProduct K
       (K ⊗[𝓞 K] (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M)) ≃ₗᵢ[ℝ]
       StrongDual ℝ (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := by
@@ -95,10 +96,10 @@ def originalTraceDualRealIsometry
   let : NormedSpace ℝ (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := euclideanNormedSpace η
   let : NormedAddCommGroup (CompletedVectorProduct K
       (K ⊗[𝓞 K] (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M))) :=
-    euclideanNormedAddCommGroup (originalPrescribedTraceDualFamily M hη)
+    euclideanNormedAddCommGroup (originalPrescribedTraceDualFamily M (η := η) (hη := hη))
   let : NormedSpace ℝ (CompletedVectorProduct K
       (K ⊗[𝓞 K] (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M))) :=
-    euclideanNormedSpace (originalPrescribedTraceDualFamily M hη)
+    euclideanNormedSpace (originalPrescribedTraceDualFamily M (η := η) (hη := hη))
   let : NormedAddCommGroup (CompletedVectorProduct K (Module.Dual K (K ⊗[𝓞 K] M))) :=
     ordinaryTraceDualNormedAddCommGroup η
   let : NormedSpace ℝ (CompletedVectorProduct K (Module.Dual K (K ⊗[𝓞 K] M))) :=
@@ -106,23 +107,23 @@ def originalTraceDualRealIsometry
   let e₁ : CompletedVectorProduct K
       (K ⊗[𝓞 K] (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M)) ≃ₗᵢ[ℝ]
         CompletedVectorProduct K (Module.Dual K (K ⊗[𝓞 K] M)) :=
-    originalPrescribedTraceDualIsometry M hη
+    originalPrescribedTraceDualIsometry M (η := η) (hη := hη)
   let e₂ : CompletedVectorProduct K (Module.Dual K (K ⊗[𝓞 K] M)) ≃ₗᵢ[ℝ]
       StrongDual ℝ (CompletedVectorProduct K (K ⊗[𝓞 K] M)) :=
-    ordinaryTraceDualIsometry hη
+    ordinaryTraceDualIsometry (ξ := η)
   exact e₁.trans e₂
 
 /-- The actual original real isometry evaluates integral diagonals by integer trace. -/
 theorem originalTraceDualRealIsometry_original
     {η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M)}
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hη : η.IsHermitian]
     (z : codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M) (m : M) :
-    originalTraceDualRealIsometry M hη
+    originalTraceDualRealIsometry M (η := η)
       (originalDiagonalMap (K := K)
         (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M) z)
       (originalDiagonalMap (K := K) M m) =
         (integerTensorEquiv (K := K) M z m : ℝ) :=
-  originalPrescribedTraceDualIsometry_original M hη z m
+  originalPrescribedTraceDualIsometry_original M (η := η) (hη := hη) z m
 
 /-- Scalar extension of the literal original trace-bidual equivalence. -/
 def genericTraceBidualEquiv :
@@ -174,20 +175,20 @@ theorem originalDiagonalMap_span
 by their real spanning property; it holds on the entire completed products. -/
 theorem traceBidualProductEquiv_pairing
     {η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M)}
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hη : η.IsHermitian]
     (t : CompletedVectorProduct K (K ⊗[𝓞 K] (codifferentModule K ⊗[𝓞 K]
       Module.Dual (𝓞 K) (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M))))
     (z : CompletedVectorProduct K
       (K ⊗[𝓞 K] (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M))) :
     originalTraceDualRealIsometry
       (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M)
-      (originalPrescribedTraceDualFamily_isHermitian M hη) t z =
-        originalTraceDualRealIsometry M hη z (traceBidualProductEquiv (K := K) M t) := by
+      (hη := (originalPrescribedTraceDualFamily_isHermitian M (η := η))) t z =
+        originalTraceDualRealIsometry M (η := η) z (traceBidualProductEquiv (K := K) M t) := by
   let T := codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M
   let TT := codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) T
-  let η₁ := originalPrescribedTraceDualFamily M hη
-  let hη₁ := originalPrescribedTraceDualFamily_isHermitian M hη
-  let η₂ := originalPrescribedTraceDualFamily T hη₁
+  let η₁ := originalPrescribedTraceDualFamily M (η := η) (hη := hη)
+  let hη₁ := originalPrescribedTraceDualFamily_isHermitian M (η := η)
+  let η₂ := originalPrescribedTraceDualFamily T (hη := hη₁)
   let X := CompletedVectorProduct K (K ⊗[𝓞 K] M)
   let Y := CompletedVectorProduct K (K ⊗[𝓞 K] T)
   let Z := CompletedVectorProduct K (K ⊗[𝓞 K] TT)
@@ -203,26 +204,26 @@ theorem traceBidualProductEquiv_pairing
     ContinuousLinearMap.toNormedAddCommGroup (𝕜 := ℝ) (𝕜₂ := ℝ) (E := Y) (F := ℝ)
   let : NormedSpace ℝ (StrongDual ℝ Y) :=
     ContinuousLinearMap.toNormedSpace (𝕜 := ℝ) (𝕜₂ := ℝ) (E := Y) (F := ℝ)
-  let e₁ : Y ≃ₗᵢ[ℝ] StrongDual ℝ X := originalTraceDualRealIsometry M hη
-  let e₂ : Z ≃ₗᵢ[ℝ] StrongDual ℝ Y := originalTraceDualRealIsometry T hη₁
+  let e₁ : Y ≃ₗᵢ[ℝ] StrongDual ℝ X := originalTraceDualRealIsometry M (η := η)
+  let e₂ : Z ≃ₗᵢ[ℝ] StrongDual ℝ Y := originalTraceDualRealIsometry T (hη := hη₁)
   let b : Z ≃ₗ[ℝ] X := traceBidualProductEquiv (K := K) M
   refine pairing_eq_of_spanning e₁ e₂ b.toLinearMap
     (originalDiagonalMap_span TT η₂) (originalDiagonalMap_span T η₁) ?_ t z
   rintro _ ⟨t, rfl⟩ _ ⟨z, rfl⟩
-  change originalTraceDualRealIsometry T hη₁
+  change originalTraceDualRealIsometry T (hη := hη₁)
       (originalDiagonalMap (K := K) TT t) (originalDiagonalMap (K := K) T z) =
-    originalTraceDualRealIsometry M hη (originalDiagonalMap (K := K) T z)
+    originalTraceDualRealIsometry M (η := η) (originalDiagonalMap (K := K) T z)
       (traceBidualProductEquiv (K := K) M (originalDiagonalMap (K := K) TT t))
   rw [traceBidualProductEquiv_original]
-  erw [originalTraceDualRealIsometry_original T hη₁ t z,
-    originalTraceDualRealIsometry_original M hη z (traceBidualEquiv (K := K) M t)]
+  erw [originalTraceDualRealIsometry_original T (hη := hη₁) t z,
+    originalTraceDualRealIsometry_original M (η := η) z (traceBidualEquiv (K := K) M t)]
   exact congrArg (fun n : ℤ => (n : ℝ))
     (integerTraceBidualEquiv_pairing (K := K) M t z).symm
 
 /-- The literal original trace-bidual map preserves the completed Euclidean product norm. -/
 theorem traceBidualProductEquiv_norm
     {η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M)}
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hη : η.IsHermitian]
     (t : CompletedVectorProduct K (K ⊗[𝓞 K] (codifferentModule K ⊗[𝓞 K]
       Module.Dual (𝓞 K) (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M)))) :
     letI : NormedAddCommGroup (CompletedVectorProduct K (K ⊗[𝓞 K] M)) :=
@@ -231,13 +232,14 @@ theorem traceBidualProductEquiv_norm
         (codifferentModule K ⊗[𝓞 K]
           Module.Dual (𝓞 K) (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M)))) :=
       euclideanNormedAddCommGroup
-        (originalPrescribedTraceDualFamily _ (originalPrescribedTraceDualFamily_isHermitian M hη))
+        (originalPrescribedTraceDualFamily _
+            (hη := (originalPrescribedTraceDualFamily_isHermitian M (η := η))))
     ‖traceBidualProductEquiv (K := K) M t‖ = ‖t‖ := by
   let T := codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M
   let TT := codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) T
-  let η₁ := originalPrescribedTraceDualFamily M hη
-  let hη₁ := originalPrescribedTraceDualFamily_isHermitian M hη
-  let η₂ := originalPrescribedTraceDualFamily T hη₁
+  let η₁ := originalPrescribedTraceDualFamily M (η := η) (hη := hη)
+  let hη₁ := originalPrescribedTraceDualFamily_isHermitian M (η := η)
+  let η₂ := originalPrescribedTraceDualFamily T (hη := hη₁)
   let X := CompletedVectorProduct K (K ⊗[𝓞 K] M)
   let Y := CompletedVectorProduct K (K ⊗[𝓞 K] T)
   let Z := CompletedVectorProduct K (K ⊗[𝓞 K] TT)
@@ -253,12 +255,12 @@ theorem traceBidualProductEquiv_norm
     ContinuousLinearMap.toNormedAddCommGroup (𝕜 := ℝ) (𝕜₂ := ℝ) (E := Y) (F := ℝ)
   let : NormedSpace ℝ (StrongDual ℝ Y) :=
     ContinuousLinearMap.toNormedSpace (𝕜 := ℝ) (𝕜₂ := ℝ) (E := Y) (F := ℝ)
-  let e₁ : Y ≃ₗᵢ[ℝ] StrongDual ℝ X := originalTraceDualRealIsometry M hη
-  let e₂ : Z ≃ₗᵢ[ℝ] StrongDual ℝ Y := originalTraceDualRealIsometry T hη₁
+  let e₁ : Y ≃ₗᵢ[ℝ] StrongDual ℝ X := originalTraceDualRealIsometry M (η := η)
+  let e₂ : Z ≃ₗᵢ[ℝ] StrongDual ℝ Y := originalTraceDualRealIsometry T (hη := hη₁)
   let b : Z ≃ₗ[ℝ] X := traceBidualProductEquiv (K := K) M
   have he : e₂ t = (NormedSpace.inclusionInDoubleDual ℝ X (b t)).comp
       (e₁ : Y →L[ℝ] StrongDual ℝ X) :=
-    ContinuousLinearMap.ext fun z => traceBidualProductEquiv_pairing M hη t z
+    ContinuousLinearMap.ext fun z ↦ traceBidualProductEquiv_pairing M (η := η) t z
   calc
     ‖b t‖ = ‖NormedSpace.inclusionInDoubleDual ℝ X (b t)‖ :=
       ((NormedSpace.inclusionInDoubleDualLi ℝ (E := X)).norm_map (b t)).symm
@@ -272,19 +274,19 @@ theorem traceBidualProductEquiv_norm
 of the original integer-ring trace-bidual equivalence. -/
 theorem traceBidualProductEquiv_norm_infinite
     {η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M)}
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hη : η.IsHermitian]
     (w : InfinitePlace K)
     (z : CompletedCoefficient w ⊗[K] (K ⊗[𝓞 K] (codifferentModule K ⊗[𝓞 K]
       Module.Dual (𝓞 K) (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M)))) :
     (originalPrescribedTraceDualFamily _
-      (originalPrescribedTraceDualFamily_isHermitian M hη)).norm
+      (hη := (originalPrescribedTraceDualFamily_isHermitian M (η := η)))).norm
         (normalizedInfinitePlacePoint w) z =
       η.norm (normalizedInfinitePlacePoint w)
         (LinearEquiv.baseChange K (CompletedCoefficient w) _ _
           (genericTraceBidualEquiv (K := K) M) z) := by
   classical
   let η₂ := originalPrescribedTraceDualFamily _
-    (originalPrescribedTraceDualFamily_isHermitian M hη)
+    (hη := (originalPrescribedTraceDualFamily_isHermitian M (η := η)))
   let y := LinearEquiv.baseChange K (CompletedCoefficient w) _ _
     (genericTraceBidualEquiv (K := K) M) z
   have hs : traceBidualProductEquiv (K := K) M (Pi.single w z) = Pi.single w y := by
@@ -298,7 +300,7 @@ theorem traceBidualProductEquiv_norm_infinite
       exact (LinearEquiv.baseChange K (CompletedCoefficient v) _ _
         (genericTraceBidualEquiv (K := K) M)).map_zero
   have h := congrArg (fun r : ℝ => r ^ 2)
-    (traceBidualProductEquiv_norm M hη (Pi.single w z))
+    (traceBidualProductEquiv_norm M (η := η) (Pi.single w z))
   rw [hs] at h
   erw [euclidean_norm_sq η, euclidean_norm_sq η₂] at h
   have h₁ : (∑ v, η.norm (normalizedInfinitePlacePoint v)
@@ -329,18 +331,18 @@ theorem traceBidualProductEquiv_norm_infinite
 so it preserves the actual effective-section inequalities. -/
 theorem traceBidual_norm_original
     {η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M)}
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hη : η.IsHermitian]
     (w : InfinitePlace K)
     (t : codifferentModule K ⊗[𝓞 K]
       Module.Dual (𝓞 K) (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M)) :
     (originalPrescribedTraceDualFamily _
-      (originalPrescribedTraceDualFamily_isHermitian M hη)).norm
+      (hη := (originalPrescribedTraceDualFamily_isHermitian M (η := η)))).norm
         (normalizedInfinitePlacePoint w)
         ((1 : CompletedCoefficient w) ⊗ₜ[K] ((1 : K) ⊗ₜ[𝓞 K] t)) =
       η.norm (normalizedInfinitePlacePoint w)
         ((1 : CompletedCoefficient w) ⊗ₜ[K]
           ((1 : K) ⊗ₜ[𝓞 K] traceBidualEquiv (K := K) M t)) := by
-  have h := traceBidualProductEquiv_norm_infinite M hη w
+  have h := traceBidualProductEquiv_norm_infinite M (η := η) w
     ((1 : CompletedCoefficient w) ⊗ₜ[K] ((1 : K) ⊗ₜ[𝓞 K] t))
   have hmap := congrArg (fun f => f w)
     (traceBidualProductEquiv_original (K := K) M t)

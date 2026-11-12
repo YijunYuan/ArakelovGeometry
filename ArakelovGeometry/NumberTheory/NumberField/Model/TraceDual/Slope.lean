@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Model.TraceDual.Metric
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.AdelicVectorBundle.Degree.LineVector
 import ArakelovGeometry.AdelicVectorBundle.Dual.Bidual
@@ -38,22 +39,22 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 /-- Exact Hermitian extremal duality, including the zero-space conventions. -/
 theorem maximalSlope_dual_eq_neg_minimalSlope
     (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.IsHermitian hN) :
-    (V.dualOfMeasurableBase hS).maximalSlope hS hN = -V.minimalSlope hS hN := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.IsHermitian] :
+    (V.dualOfMeasurableBase).maximalSlope = -V.minimalSlope := by
   by_cases hr : Module.finrank K E = 0
-  · rw [(V.dualOfMeasurableBase hS).maximalSlope_eq_bot_of_finrank_eq_zero hS hN
-      (Subspace.dual_finrank_eq.trans hr), V.minimalSlope_eq_top_of_finrank_eq_zero hS hN hr]
+  · rw [(V.dualOfMeasurableBase).maximalSlope_eq_bot_of_finrank_eq_zero
+      (Subspace.dual_finrank_eq.trans hr), V.minimalSlope_eq_top_of_finrank_eq_zero hr]
     rfl
   have hrpos : 0 < Module.finrank K E := Nat.pos_of_ne_zero hr
-  let D := V.dualOfMeasurableBase hS
+  let D := V.dualOfMeasurableBase
   have hrD : 0 < Module.finrank K (Module.Dual K E) := by
     rwa [Subspace.dual_finrank_eq]
-  have hbidual : (D.dualOfMeasurableBase hS).minimalSlope hS hN =
-      V.minimalSlope hS hN := by
+  have hbidual : (D.dualOfMeasurableBase).minimalSlope =
+      V.minimalSlope := by
     symm
-    apply V.minimalSlope_eq_of_completed_isometry _ (Module.evalEquiv K E) hS hN
+    apply V.minimalSlope_eq_of_completed_isometry _ (Module.evalEquiv K E)
     intro ω z
     simp only [AdelicVectorBundle.dualOfMeasurableBase_toNormFamily,
       Module.evalEquiv_toLinearMap]
@@ -61,42 +62,43 @@ theorem maximalSlope_dual_eq_neg_minimalSlope
     · exact hV.1.dual_dual_norm_eval ω hω z
     · exact V.toNormFamily.dual_dual_norm_eval_eq_of_isRCLike ω (hN ω hω) z
   have he := D.minimalSlope_dual_add_maximalSlope_eq_zero_of_isHermitian
-    hS hN hV.dual hrD
+    (hV := hV.dual) hrD
   rw [hbidual] at he
-  obtain ⟨a, ha⟩ := V.exists_minimalSlope_eq_coe hS hN hrpos
-  obtain ⟨b, hb⟩ := D.exists_maximalSlope_eq_coe hS hN hrD
+  obtain ⟨a, ha⟩ := V.exists_minimalSlope_eq_coe hrpos
+  obtain ⟨b, hb⟩ := D.exists_maximalSlope_eq_coe hrD
   rw [ha, hb, ← EReal.coe_add, ← EReal.coe_zero, EReal.coe_eq_coe_iff] at he
-  change D.maximalSlope hS hN = -V.minimalSlope hS hN
+  change D.maximalSlope = -V.minimalSlope
   rw [ha, hb, ← EReal.coe_neg]
   exact congrArg (fun t : ℝ => (t : EReal)) (by linarith : b = -a)
 
 /-- Tensoring with an actual scalar line shifts maximal slope by its degree. -/
 theorem maximalSlope_orthogonalTensor_scalarLine
     (V : AdelicVectorBundle S E) (L : AdelicVectorBundle S K)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.IsHermitian hN) (hL : L.IsHermitian hN) :
-    (V.orthogonalTensorPair L hS hN hV hL).maximalSlope hS hN =
-      V.maximalSlope hS hN + (L.degree hS hN : EReal) := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.IsHermitian] [hL : L.IsHermitian] :
+    (V ⊗ʰ L).maximalSlope =
+      V.maximalSlope + (L.degree : EReal) := by
   let φ := L.toNormFamily.logNorm (1 : K)
   let hm := L.isMeasurable.logNorm (1 : K)
   let hi := L.integrable_logNorm (1 : K)
   let R := V.scaleExp φ hm hi
-  let P := V.orthogonalTensorPair L hS hN hV hL
-  have he : R.maximalSlope hS hN = P.maximalSlope hS hN := by
-    apply R.maximalSlope_eq_of_completed_isometry P (TensorProduct.rid K E).symm hS hN
+  let P := V.orthogonalTensorPair L
+  have he : R.maximalSlope = P.maximalSlope := by
+    apply R.maximalSlope_eq_of_completed_isometry P (TensorProduct.rid K E).symm
     intro ω z
-    change (V.toNormFamily.orthogonalTensorPair L.toNormFamily hN hV hL).norm ω
+    change (V.toNormFamily ⊗ʰ L.toNormFamily).norm ω
         (LinearEquiv.baseChange K (S.ϕ ω).Completion _ _ (TensorProduct.rid K E).symm z) =
       Real.exp (φ ω) * V.norm ω z
     rw [NumberFieldProjectiveTraceDualMetric.tensorUnitBaseChange_symm]
     erw [NormFamily.orthogonalTensorPair_norm_tmul_completed]
     change _ = Real.exp (Real.log (L.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] (1 : K)))) * _
     rw [Real.exp_log (L.toNormFamily.norm_rational_pos ω one_ne_zero), mul_comm]
-  have hdeg : L.degree hS hN = -(∫ ω, φ ω ∂S.v) := by
-    rw [L.degree_eq_lineDegree hS hN (Module.finrank_self K),
-      L.lineDegree_eq_neg_integral (Module.finrank_self K) ⟨1, one_ne_zero⟩]
-  rw [← he, V.maximalSlope_scaleExp φ hm hi hS hN, hdeg, EReal.coe_neg]
+  let : L.IsLine := ⟨Module.finrank_self K⟩
+  have hdeg : L.degree = -(∫ ω, φ ω ∂S.v) := by
+    rw [L.degree_eq_lineDegree,
+      L.lineDegree_eq_neg_integral ⟨1, one_ne_zero⟩]
+  rw [← he, V.maximalSlope_scaleExp φ hm hi, hdeg, EReal.coe_neg]
   rfl
 
 /-- Scalar-valued base change is the completed dual evaluation times the scalar unit. -/
@@ -121,7 +123,7 @@ local notation "curve" => normalizedNumberFieldAdelicStructure K
 ball of maps into that scalar line's completed unit ball. -/
 theorem scalarLine_mul_dual_norm_le_one_iff
     (ξ : NormFamily (curve) E) (L : NormFamily (curve) K)
-    (hξ : ξ.IsPureAtFinitePlaces) (hL : L.IsPureAtFinitePlaces)
+    [hξ : ξ.IsPureAtFinitePlaces] [hL : L.IsPureAtFinitePlaces]
     (ω : (curve).Ω) (hω : ω ∈ (curve).Ωfin)
     (f : Module.Dual K E) :
     L.norm ω ((1 : ((curve).ϕ ω).Completion) ⊗ₜ[K] (1 : K)) *
@@ -182,16 +184,16 @@ theorem fullLattice_scaledDual_ball_iff_codifferent
     have hm : (m : E) ∈ ξ.globalUnitBall := by
       rw [fullLatticeGaugeFamily_globalUnitBall_eq L hfg hspan η]
       exact m.property
-    have h := (scalarLine_mul_dual_norm_le_one_iff ξ Q hp hQp ω hω f).mp
+    have h := (scalarLine_mul_dual_norm_le_one_iff ξ Q (hξ := hp) (hL := hQp) ω hω f).mp
       (hf ω hω) (1 ⊗ₜ[K] (m : E)) (hm ω hω)
     rwa [LinearMap.baseChange_tmul] at h
   · intro hf ω hω
-    apply (scalarLine_mul_dual_norm_le_one_iff ξ Q hp hQp ω hω f).mpr
+    apply (scalarLine_mul_dual_norm_le_one_iff ξ Q (hξ := hp) (hL := hQp) ω hω f).mpr
     obtain ⟨p, rfl⟩ := ActualPrimeIndexing.exists_normalizedPrimeParameter_eq ω hω
     let ω := ActualPrimeIndexing.normalizedPrimeParameter p
     let F := ((normalizedNumberFieldAdelicStructure K).ϕ ω).Completion
     let O := (normalizedNumberFieldAdelicStructure K).completedLocalRing ω hω
-    let B := Q.completedUnitBallModule ω hω hQu
+    let B := Q.completedUnitBallModule ω hω (hξ := hQu)
     have hle : NumberFieldModel.completedLatticeSpan L p ≤
         B.comap ((LinearMap.baseChange F f).restrictScalars O) := by
       apply Submodule.span_le.mpr
@@ -226,20 +228,20 @@ original generic lattice as its finite global unit ball. -/
 theorem originalPrescribedTraceDualFamily_globalUnitBallModule
     (η : NormFamily (normalizedNumberFieldAdelicStructure K)
       (K ⊗[NumberField.RingOfIntegers K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     let L := genericImage (K := K) M
     let ξ := fullLatticeGaugeFamily L (genericImage_fg M) (genericImage_fullSpan M) η
-    let hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions :=
-      fullLatticeGaugeFamily_isHermitian L (genericImage_fg M) (genericImage_fullSpan M) η hη
-    (originalPrescribedTraceDualFamily M hξ).globalUnitBallModule
-      (originalPrescribedTraceDualFamily_isHermitian M hξ).1 =
+    let hξ : ξ.IsHermitian :=
+      fullLatticeGaugeFamily_isHermitian L (genericImage_fg M) (genericImage_fullSpan M) η
+    (originalPrescribedTraceDualFamily M (hη := hξ)).globalUnitBallModule
+      (hξ := (originalPrescribedTraceDualFamily_isHermitian M (hη := hξ)).1) =
       genericImage (K := K) (codifferentModule K ⊗[NumberField.RingOfIntegers K]
         Module.Dual (NumberField.RingOfIntegers K) M) := by
   let L := genericImage (K := K) M
   let ξ := fullLatticeGaugeFamily L (genericImage_fg M) (genericImage_fullSpan M) η
   let hξ := fullLatticeGaugeFamily_isHermitian L (genericImage_fg M)
-    (genericImage_fullSpan M) η hη
-  let δ := originalPrescribedTraceDualFamily M hξ
+    (genericImage_fullSpan M) η
+  let δ := originalPrescribedTraceDualFamily M (hη := hξ)
   let e := (traceTensorGenericPairEquiv (K := K) M).trans
     (TensorProduct.rid K (Module.Dual K (K ⊗[NumberField.RingOfIntegers K] M)))
   have he (z : codifferentModule K ⊗[NumberField.RingOfIntegers K]
@@ -258,10 +260,10 @@ theorem originalPrescribedTraceDualFamily_globalUnitBallModule
     let r := TensorProduct.rid K (Module.Dual K (K ⊗[NumberField.RingOfIntegers K] M))
     have hx : traceTensorGenericPairEquiv M x = r.symm (e x) := by
       exact (r.symm_apply_apply _).symm
-    change (prescribedTraceDualFamily hξ).norm ω
+    change (prescribedTraceDualFamily (hξ := hξ)).norm ω
       ((1 : F) ⊗ₜ[K] traceTensorGenericPairEquiv M x) = _
     rw [hx]
-    change (prescribedTraceDualFamily hξ).norm ω
+    change (prescribedTraceDualFamily (hξ := hξ)).norm ω
       (LinearEquiv.baseChange K F _ _ r.symm ((1 : F) ⊗ₜ[K] e x)) = _
     rw [tensorUnitBaseChange_symm]
     erw [NormFamily.orthogonalTensorPair_norm_tmul_completed]
@@ -295,19 +297,19 @@ full-lattice bundle, its actual dual, and the actual dualizing line. -/
 theorem originalPrescribedTraceDualFamily_isDominated
     (η : NormFamily (normalizedNumberFieldAdelicStructure K)
       (K ⊗[NumberField.RingOfIntegers K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     let L := genericImage (K := K) M
     let ξ := fullLatticeGaugeFamily L (genericImage_fg M) (genericImage_fullSpan M) η
-    let hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions :=
-      fullLatticeGaugeFamily_isHermitian L (genericImage_fg M) (genericImage_fullSpan M) η hη
-    (originalPrescribedTraceDualFamily M hξ).IsDominated := by
+    let hξ : ξ.IsHermitian :=
+      fullLatticeGaugeFamily_isHermitian L (genericImage_fg M) (genericImage_fullSpan M) η
+    (originalPrescribedTraceDualFamily M (hη := hξ)).IsDominated := by
   let L := genericImage (K := K) M
   let V := fullLatticeAdelicBundle L (genericImage_fg M) (genericImage_fullSpan M) η
   let hV := fullLatticeGaugeFamily_isHermitian L (genericImage_fg M)
-    (genericImage_fullSpan M) η hη
-  let D := V.dualOfMeasurableBase (Or.inl inferInstance)
+    (genericImage_fullSpan M) η
+  let D := V.dualOfMeasurableBase
+  let : D.IsHermitian := hV.dual
   have hd := D.isDominated.strong_orthogonalTensorPair (dualizingLine K).isDominated
-    normalizedNumberFieldArchimedeanCompletions hV.dual (dualizingLine_isHermitian K)
   exact hd.isDominated.pullback (traceTensorGenericPairEquiv M).toLinearMap
     (traceTensorGenericPairEquiv M).injective
 
@@ -317,57 +319,57 @@ family at every completed place. -/
 theorem originalPrescribedTraceDualFamily_eq_fullLatticeGaugeFamily
     (η : NormFamily (normalizedNumberFieldAdelicStructure K)
       (K ⊗[NumberField.RingOfIntegers K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     let L := genericImage (K := K) M
     let ξ := fullLatticeGaugeFamily L (genericImage_fg M) (genericImage_fullSpan M) η
-    let hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions :=
-      fullLatticeGaugeFamily_isHermitian L (genericImage_fg M) (genericImage_fullSpan M) η hη
+    let hξ : ξ.IsHermitian :=
+      fullLatticeGaugeFamily_isHermitian L (genericImage_fg M) (genericImage_fullSpan M) η
     let T := codifferentModule K ⊗[NumberField.RingOfIntegers K]
       Module.Dual (NumberField.RingOfIntegers K) M
-    let δ := originalPrescribedTraceDualFamily M hξ
+    let δ := originalPrescribedTraceDualFamily M (hη := hξ)
     fullLatticeGaugeFamily (genericImage (K := K) T) (genericImage_fg T)
       (genericImage_fullSpan T) δ = δ := by
   let L := genericImage (K := K) M
   let ξ := fullLatticeGaugeFamily L (genericImage_fg M) (genericImage_fullSpan M) η
   let hξ := fullLatticeGaugeFamily_isHermitian L (genericImage_fg M)
-    (genericImage_fullSpan M) η hη
-  let δ := originalPrescribedTraceDualFamily M hξ
-  have hd : δ.IsDominated := originalPrescribedTraceDualFamily_isDominated M η hη
+    (genericImage_fullSpan M) η
+  let δ := originalPrescribedTraceDualFamily M (hη := hξ)
+  have hd : δ.IsDominated := originalPrescribedTraceDualFamily_isDominated M η
   have hp : δ.IsPureAtFinitePlaces :=
     NumberFieldClassicalTraceDualPurity.originalPrescribedTraceDualFamily_isPureAtFinitePlaces
-      M hξ (fullLatticeGaugeFamily_isPureAtFinitePlaces L (genericImage_fg M)
-        (genericImage_fullSpan M) η)
+      M (hη := hξ) (hpη := (fullLatticeGaugeFamily_isPureAtFinitePlaces L (genericImage_fg M)
+        (genericImage_fullSpan M) η))
   obtain ⟨hfg, hspan, he⟩ := hd.exists_pure_fullLatticeGaugeFamily_eq
-    (originalPrescribedTraceDualFamily_isHermitian M hξ).1 hp
+    (originalPrescribedTraceDualFamily_isHermitian M (hη := hξ)).1 hp
   dsimp only [δ, hξ, ξ, L] at he
-  simpa only [originalPrescribedTraceDualFamily_globalUnitBallModule M η hη] using he
+  simpa only [originalPrescribedTraceDualFamily_globalUnitBallModule M η] using he
 
 /-- The maximal slope of the actual original trace-dual full-lattice bundle,
 with the prescribed trace metric, including the zero-rank conventions. -/
 theorem originalPrescribedTraceDual_maximalSlope
     (η : NormFamily (normalizedNumberFieldAdelicStructure K)
       (K ⊗[NumberField.RingOfIntegers K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     let L := genericImage (K := K) M
     let V := fullLatticeAdelicBundle L (genericImage_fg M) (genericImage_fullSpan M) η
-    let hV : V.IsHermitian normalizedNumberFieldArchimedeanCompletions :=
-      fullLatticeGaugeFamily_isHermitian L (genericImage_fg M) (genericImage_fullSpan M) η hη
+    let hV : V.IsHermitian :=
+      fullLatticeGaugeFamily_isHermitian L (genericImage_fg M) (genericImage_fullSpan M) η
     let T := codifferentModule K ⊗[NumberField.RingOfIntegers K]
       Module.Dual (NumberField.RingOfIntegers K) M
-    let δ := originalPrescribedTraceDualFamily M hV
+    let δ := originalPrescribedTraceDualFamily M (hη := hV)
     let W := fullLatticeAdelicBundle (genericImage (K := K) T) (genericImage_fg T)
       (genericImage_fullSpan T) δ
-    W.maximalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions =
+    W.maximalSlope =
       ((Real.log |(NumberField.discr K : ℝ)| -
         2 * (NumberField.InfinitePlace.nrComplexPlaces K : ℝ) * Real.log 2 : ℝ) : EReal) -
-          V.minimalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions := by
+          V.minimalSlope := by
   let L := genericImage (K := K) M
   let V := fullLatticeAdelicBundle L (genericImage_fg M) (genericImage_fullSpan M) η
   let hV := fullLatticeGaugeFamily_isHermitian L (genericImage_fg M)
-    (genericImage_fullSpan M) η hη
+    (genericImage_fullSpan M) η
   let T := codifferentModule K ⊗[NumberField.RingOfIntegers K]
     Module.Dual (NumberField.RingOfIntegers K) M
-  let δ := originalPrescribedTraceDualFamily M hV
+  let δ := originalPrescribedTraceDualFamily M (hη := hV)
   let W := fullLatticeAdelicBundle (genericImage (K := K) T) (genericImage_fg T)
     (genericImage_fullSpan T) δ
   let hS : DiscreteMeasurableSpace (normalizedNumberFieldAdelicStructure K).Ω ∨
@@ -376,20 +378,24 @@ theorem originalPrescribedTraceDual_maximalSlope
   let hN := normalizedNumberFieldArchimedeanCompletions (K := K)
   let Q := dualizingLine K
   let hQ := dualizingLine_isHermitian K
-  let D := V.dualOfMeasurableBase hS
-  let P := D.orthogonalTensorPair Q hS hN hV.dual hQ
+  let D := V.dualOfMeasurableBase (hS := ⟨hS⟩)
+  let P := D.orthogonalTensorPair Q (hS := ⟨hS⟩) (hN := ⟨hN⟩) (hV := hV.dual) (hW := hQ)
   have hW : W.toNormFamily = δ :=
-    originalPrescribedTraceDualFamily_eq_fullLatticeGaugeFamily M η hη
-  have hs : W.maximalSlope hS hN = P.maximalSlope hS hN := by
-    apply W.maximalSlope_eq_of_completed_isometry P (traceTensorGenericPairEquiv M) hS hN
+    originalPrescribedTraceDualFamily_eq_fullLatticeGaugeFamily M η
+  have hs : W.maximalSlope (hS := ⟨hS⟩) (hN := ⟨hN⟩) = P.maximalSlope (hS := ⟨hS⟩)
+      (hN := ⟨hN⟩) := by
+    apply W.maximalSlope_eq_of_completed_isometry P (traceTensorGenericPairEquiv M) (hS := ⟨hS⟩)
+        (hN := ⟨hN⟩)
     intro ω z
     rw [hW]
     rfl
-  change W.maximalSlope hS hN = _
-  rw [hs, maximalSlope_orthogonalTensor_scalarLine D Q hS hN hV.dual hQ]
-  rw [maximalSlope_dual_eq_neg_minimalSlope V hS hN hV]
+  change W.maximalSlope (hS := ⟨hS⟩) (hN := ⟨hN⟩) = _
+  rw [hs, maximalSlope_orthogonalTensor_scalarLine D Q (hS := ⟨hS⟩) (hN := ⟨hN⟩) (hV := hV.dual)
+      (hL := hQ)]
+  rw [maximalSlope_dual_eq_neg_minimalSlope V (hS := ⟨hS⟩) (hN := ⟨hN⟩) (hV := hV)]
   rw [NumberFieldTraceDualizingLineCovolume.dualizingLine_degree]
-  change -V.minimalSlope hS hN + _ = _ - V.minimalSlope hS hN
+  change -V.minimalSlope (hS := ⟨hS⟩) (hN := ⟨hN⟩) + _ = _ - V.minimalSlope (hS := ⟨hS⟩)
+      (hN := ⟨hN⟩)
   exact (add_comm _ _).trans (sub_eq_add_neg _ _).symm
 
 end NumberField

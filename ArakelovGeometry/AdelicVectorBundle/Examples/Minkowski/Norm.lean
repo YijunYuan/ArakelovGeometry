@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Domination.Counting
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import Mathlib.CategoryTheory.Category.Init
@@ -166,6 +167,7 @@ theorem normFamily_norm_rational (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1)
 /-- The actual family is ultrametric on every completed finite fibre. -/
 theorem normFamily_isUltrametric (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1) :
     (normFamily c hc hc1).IsUltrametric := by
+  constructor
   intro a _ x y
   rw [normFamily_norm, normFamily_norm, normFamily_norm, map_add]
   exact rawNorm_add_le_max hc.le hc1 a _ _

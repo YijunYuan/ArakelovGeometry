@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Tensor.Pair
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Interval.TensorDeterminant
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.AdelicVectorBundle.Examples.Interval.Degrees
@@ -33,7 +34,7 @@ open AdelicStructure
 def rationalIntervalTensorBundle :
     AdelicVectorBundle rationalAdelicStructure ((Fin 2 → ℚ) ⊗[ℚ] (Fin 3 → ℚ)) :=
   rationalIntervalPlaneBundle.mixedTensorPair rationalIntervalThreeBundle
-    (Or.inl inferInstance) rationalAdelicStructure_isRCLike
+    (hN := ⟨rationalAdelicStructure_isRCLike⟩)
 
 @[simp]
 theorem rationalIntervalTensorBundle_toNormFamily :
@@ -193,14 +194,14 @@ theorem rationalIntervalTensorBundle_determinant_logNorm_le
 /-- The degree of the actual rational interval mixed tensor bundle is at least `log 2`. -/
 theorem rationalIntervalTensorBundle_log_two_le_degree :
     Real.log 2 ≤ rationalIntervalTensorBundle.degree
-      (Or.inl inferInstance) rationalAdelicStructure_isRCLike := by
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) := by
   let hS : DiscreteMeasurableSpace rationalAdelicStructure.Ω ∨
       rationalAdelicStructure.HasCommonCountableDenseSubfield := Or.inl inferInstance
   let D := rationalAdelicStructure.Ωinf.indicator (fun _ => -Real.log 2)
   have hf : Integrable (rationalIntervalTensorBundle.toNormFamily.determinant.logNorm
       rationalIntervalTensorDeterminantVector) rationalAdelicStructure.v :=
-    (rationalIntervalTensorBundle.determinantOfMeasurableBase hS
-      rationalAdelicStructure_isRCLike).integrable_logNorm _
+    (rationalIntervalTensorBundle.determinantOfMeasurableBase (hS := ⟨hS⟩)
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩)).integrable_logNorm _
   have hD : Integrable D rationalAdelicStructure.v :=
     (integrable_indicator_iff rationalAdelicStructure.measurableSet_Ωinf).mpr
       (integrableOn_const (by rw [rationalAdelicStructure_v_Ωinf]; exact ENNReal.one_ne_top))
@@ -211,37 +212,37 @@ theorem rationalIntervalTensorBundle_log_two_le_degree :
       ∂rationalAdelicStructure.v at h
   rw [integral_indicator_const _ rationalAdelicStructure.measurableSet_Ωinf,
     Measure.real_def, rationalAdelicStructure_v_Ωinf, ENNReal.toReal_one, one_smul] at h
-  rw [rationalIntervalTensorBundle.degree_eq_neg_integral hS
-    rationalAdelicStructure_isRCLike
+  rw [rationalIntervalTensorBundle.degree_eq_neg_integral (hS := ⟨hS⟩)
+    (hN := ⟨rationalAdelicStructure_isRCLike⟩)
       ⟨rationalIntervalTensorDeterminantVector, rationalIntervalTensorDeterminantVector_ne_zero⟩]
   linarith
 
 /-- This actual rank-six adelic tensor bundle has strictly positive degree. -/
 theorem rationalIntervalTensorBundle_degree_pos :
     0 < rationalIntervalTensorBundle.degree
-      (Or.inl inferInstance) rationalAdelicStructure_isRCLike :=
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) :=
   (Real.log_pos (by norm_num : (1 : ℝ) < 2)).trans_le
     rationalIntervalTensorBundle_log_two_le_degree
 
 /-- The actual global mixed tensor degree strictly exceeds the weighted factor degrees. -/
 theorem rationalIntervalTensorBundle_degree_strict :
-    3 * rationalIntervalPlaneBundle.degree (Or.inl inferInstance)
-      rationalAdelicStructure_isRCLike +
-      2 * rationalIntervalThreeBundle.degree (Or.inl inferInstance)
-        rationalAdelicStructure_isRCLike <
-    rationalIntervalTensorBundle.degree (Or.inl inferInstance)
-      rationalAdelicStructure_isRCLike := by
+    3 * rationalIntervalPlaneBundle.degree
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) +
+      2 * rationalIntervalThreeBundle.degree
+        (hN := ⟨rationalAdelicStructure_isRCLike⟩) <
+    rationalIntervalTensorBundle.degree
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) := by
   simpa only [rationalIntervalPlaneBundle_degree_eq_zero,
     rationalIntervalThreeBundle_degree_eq_zero, mul_zero, add_zero] using
       rationalIntervalTensorBundle_degree_pos
 
 /-- The unrestricted printed mixed tensor degree equality fails for actual rational bundles. -/
 theorem rationalIntervalTensorBundle_degree_ne_weighted_factors :
-    rationalIntervalTensorBundle.degree (Or.inl inferInstance) rationalAdelicStructure_isRCLike ≠
-    3 * rationalIntervalPlaneBundle.degree (Or.inl inferInstance)
-      rationalAdelicStructure_isRCLike +
-      2 * rationalIntervalThreeBundle.degree (Or.inl inferInstance)
-        rationalAdelicStructure_isRCLike :=
+    rationalIntervalTensorBundle.degree (hN := ⟨rationalAdelicStructure_isRCLike⟩) ≠
+    3 * rationalIntervalPlaneBundle.degree
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) +
+      2 * rationalIntervalThreeBundle.degree
+        (hN := ⟨rationalAdelicStructure_isRCLike⟩) :=
   ne_of_gt rationalIntervalTensorBundle_degree_strict
 
 end ArakelovGeometry

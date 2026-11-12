@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Extension.ParameterSpace
 public import Mathlib.RingTheory.Trace.Defs
+
 import ArakelovGeometry.AdelicCurve.Extension.PowerSums
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Data.Fin.Tuple.Sort
@@ -103,7 +104,7 @@ theorem measurable_iSup_abv_aut (s : AS.Ω → ParameterSpaceExtension AS (Algeb
     (hs : ∀ ω, (s ω).proj = ω) {c : AlgebraicClosure K} (hc : IsSeparable K c) :
     Measurable fun ω : AS.Ω ↦
       ⨆ τ : AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K, (s ω).ϕ (τ c) := by
- classical
+        classical
   let E := IntermediateField.adjoin K {c}
   let : FiniteDimensional K E := IntermediateField.adjoin.finiteDimensional hc.isIntegral
   let : Algebra.IsSeparable K E :=

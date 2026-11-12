@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Basic
+
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 
@@ -55,8 +56,8 @@ when its middle family is Hermitian. -/
 theorem IsExactSequence.isHermitian_left
     {η : NormFamily S F} {ξ : NormFamily S E} {ζ : NormFamily S G}
     {i : F →ₗ[K] E} {p : E →ₗ[K] G} (h : IsExactSequence η ξ ζ i p)
-    {hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
-    (hξ : ξ.IsHermitian hN) : η.IsHermitian hN := by
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] : η.IsHermitian := by
   rw [h.left_norm]
   exact hξ.pullback i h.i_injective
 
@@ -65,8 +66,8 @@ when its middle family is Hermitian. -/
 theorem IsExactSequence.isHermitian_right
     {η : NormFamily S F} {ξ : NormFamily S E} {ζ : NormFamily S G}
     {i : F →ₗ[K] E} {p : E →ₗ[K] G} (h : IsExactSequence η ξ ζ i p)
-    {hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
-    (hξ : ξ.IsHermitian hN) : ζ.IsHermitian hN := by
+    [hN : S.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] : ζ.IsHermitian := by
   rw [h.right_norm]
   exact hξ.pushforward p h.p_surjective
 

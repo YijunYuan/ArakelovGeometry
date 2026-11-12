@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicCurve.Examples.FunctionFields
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.BasisComparison
 import ArakelovGeometry.MeasureTheory.Measure.PositiveAtomic
 
@@ -84,6 +85,21 @@ theorem functionField_Ωinf_eq_empty :
   | some v =>
     exact iff_false_intro (fun h => h (v.isNonarchimedean_adicAbv one_lt_expBase))
 
+/-- The geometric projective line has only non-Archimedean places. -/
+instance functionField_hasOnlyFinitePlaces :
+    (functionFieldAdelicStructure k).HasOnlyFinitePlaces := by
+  constructor
+  intro ω
+  by_contra h
+  have hω : ω ∈ (functionFieldAdelicStructure k).Ωinf := h
+  rw [functionField_Ωinf_eq_empty] at hω
+  exact hω
+
+/-- The geometric point measure has positive atoms. -/
+instance functionField_hasPositiveAtoms :
+    (functionFieldAdelicStructure k).HasPositiveAtoms :=
+  ⟨functionField_singleton_pos⟩
+
 end AdelicStructure
 
 namespace NormFamily
@@ -98,7 +114,7 @@ distance is integrable, its actual support countable, and all completed
 norms agree outside that support. The original norm need not be ultrametric. -/
 theorem IsDominated.bidual_coordinate_exceptions_of_positive_atoms
     [DiscreteMeasurableSpace S.Ω] (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hfin : S.v S.Ωinf < ⊤) :
+    [hpos : S.HasPositiveAtoms] (hfin : S.v S.Ωinf < ⊤) :
     let p := ξ.dual.dual.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K)
     let q := ofBasisMixed S E b
     Integrable (p.localDist q) S.v ∧
@@ -133,7 +149,6 @@ theorem IsDominated.functionField_bidual_coordinate_exceptions
         ∀ z : ((AdelicStructure.functionFieldAdelicStructure k).ϕ ω).Completion ⊗[RatFunc k] E,
           p.norm ω z = q.norm ω z := by
   apply IsDominated.bidual_coordinate_exceptions_of_positive_atoms b ξ hξ
-    AdelicStructure.functionField_singleton_pos
   rw [AdelicStructure.functionField_Ωinf_eq_empty, measure_empty]
   exact ENNReal.zero_lt_top
 

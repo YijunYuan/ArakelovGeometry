@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Operator.Height
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 import ArakelovGeometry.AdelicVectorBundle.Operator.Comparison
 import ArakelovGeometry.AdelicVectorBundle.Tensor.Domination
@@ -38,7 +39,7 @@ dual to the second bidual, through the genuine tensor-to-Hom equivalence. -/
 theorem localHeight_dual_bidual_bounds {E : Unit ⊕ Unit → Type w}
     [∀ i, AddCommGroup (E i)] [∀ i, Module K (E i)]
     [∀ i, FiniteDimensional K (E i)] (ξ : ∀ i, NormFamily S (E i))
-    (hξ : ∀ i, (ξ i).IsDominated) (hfin : S.v S.Ωinf < ⊤)
+    [hξ : ∀ i, (ξ i).IsDominated] (hfin : S.v S.Ωinf < ⊤)
     (f : {f : Module.Dual K (E (.inl ())) →ₗ[K] E (.inr ()) // f ≠ 0}) :
     HasIntegrableBounds ((ξ (.inl ())).dual.localHeight
       ((ξ (.inr ())).dual.dual.pullback (Module.Dual.eval K (E (.inr ())))
@@ -65,7 +66,7 @@ variable {E F : Type (max u w)} [AddCommGroup E] [Module K E]
 /-- Every map between canonical bidual norm families has integrable logarithmic
 bounds. The tensor representing it is supplied by a proved linear equivalence. -/
 theorem localHeight_bidual_bounds (ξ : NormFamily S E) (η : NormFamily S F)
-    (hξ : ξ.IsDominated) (hη : η.IsDominated) (hfin : S.v S.Ωinf < ⊤)
+    [hξ : ξ.IsDominated] [hη : η.IsDominated] (hfin : S.v S.Ωinf < ⊤)
     (f : {f : E →ₗ[K] F // f ≠ 0}) :
     HasIntegrableBounds
       ((ξ.dual.dual.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K)).localHeight
@@ -96,7 +97,7 @@ theorem localHeight_bidual_bounds (ξ : NormFamily S E) (η : NormFamily S F)
     intro h
     apply f.property
     rw [← hge, h, LinearMap.zero_comp]
-  have hb := localHeight_dual_bidual_bounds Ξ hΞ hfin ⟨g, hg⟩
+  have hb := localHeight_dual_bidual_bounds Ξ (hξ := hΞ) hfin ⟨g, hg⟩
   apply hb.congr
   apply Eventually.of_forall
   intro ω
@@ -113,7 +114,7 @@ theorem IsStronglyDominated.localHeight_bounds {ξ : NormFamily S E} {η : NormF
     HasIntegrableBounds (ξ.localHeight η f) S.v := by
   let ξbb := ξ.dual.dual.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K)
   let ηbb := η.dual.dual.pullback (Module.Dual.eval K F) (Module.eval_apply_injective K)
-  have hb := localHeight_bidual_bounds ξ η hξ.1 hη.1 hfin f
+  have hb := localHeight_bidual_bounds ξ η (hξ := hξ.1) (hη := hη.1) hfin f
   apply ((hb.abs.add hξ.2).add hη.2).of_abs_le
   apply Eventually.of_forall
   intro ω
@@ -134,11 +135,11 @@ give an integrable local map height. -/
 theorem IsStronglyDominated.integrable_localHeight {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsStronglyDominated) (hη : η.IsStronglyDominated)
     (hmξ : ξ.IsMeasurable) (hmη : η.IsMeasurable)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
+    [hS : S.HasMeasurableBase]
     (hfin : S.v S.Ωinf < ⊤) (f : {f : E →ₗ[K] F // f ≠ 0}) :
     Integrable (ξ.localHeight η f) S.v :=
   (hξ.localHeight_bounds hη hfin f).integrable
-    (hmξ.localHeight_of_discrete_or_countable hmη hS f).aestronglyMeasurable
+    (hmξ.localHeight_of_discrete_or_countable hmη f).aestronglyMeasurable
 
 end
 
@@ -155,23 +156,23 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- Source Proposition4.3.16: local map height is integrable for strongly
 adelic bundles. Normalization proves the required finite Archimedean measure. -/
 theorem integrable_localHeight_of_isStronglyAdelic (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F) (hV : V.IsStronglyAdelic) (hW : W.IsStronglyAdelic)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (W : AdelicVectorBundle S F) [hV : V.IsStronglyAdelic] [hW : W.IsStronglyAdelic]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (f : {f : E →ₗ[K] F // f ≠ 0}) :
     Integrable (V.toNormFamily.localHeight W.toNormFamily f) S.v :=
-  hV.integrable_localHeight hW V.isMeasurable W.isMeasurable hS
-    (S.v_Ωinf_lt_top_of_isRCLike hN) f
+  hV.integrable_localHeight hW V.isMeasurable W.isMeasurable
+    (S.v_Ωinf_lt_top_of_isRCLike) f
 
 /-- The actual lower-integral map height is a finite real integral for a
 nonzero map between strongly adelic bundles. -/
 theorem mapHeight_eq_integral_of_isStronglyAdelic (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F) (hV : V.IsStronglyAdelic) (hW : W.IsStronglyAdelic)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (W : AdelicVectorBundle S F) [hV : V.IsStronglyAdelic] [hW : W.IsStronglyAdelic]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     {f : E →ₗ[K] F} (hf : f ≠ 0) :
     V.mapHeight W f = ((∫ ω, V.toNormFamily.localHeight W.toNormFamily ⟨f, hf⟩ ω ∂S.v) : ℝ) :=
   V.mapHeight_eq_integral W hf
-    (V.integrable_localHeight_of_isStronglyAdelic W hV hW hS hN ⟨f, hf⟩)
+    (V.integrable_localHeight_of_isStronglyAdelic W ⟨f, hf⟩)
 
 end ArakelovGeometry.AdelicVectorBundle

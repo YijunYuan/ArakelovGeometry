@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Basic
 public import ArakelovGeometry.LinearAlgebra.FiniteFiltration
+
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 import Mathlib.MeasureTheory.Covering.Besicovitch
@@ -195,7 +196,7 @@ open Classical in
 family's literal closed balls, including zero vectors and endpoints. -/
 theorem trivialFiltration_ofTrivialFiltration (t : ℝ) :
     (ofTrivialFiltration F hF hbot htop hleft).trivialFiltration
-      (ofTrivialFiltration_isUltrametric F hF hbot htop hleft) t = F t := by
+      (hξ := (ofTrivialFiltration_isUltrametric F hF hbot htop hleft)) t = F t := by
   ext x
   simp only [mem_trivialFiltration, ofTrivialFiltration, trivialSeminorm_ofTrivialNorm,
     trivialFiltrationSeminorm_apply]
@@ -208,13 +209,13 @@ open Classical in
 /-- The inverse construction recovers an actual ultrametric family on
 all completed vectors, via equality of its genuine extracted norm. -/
 theorem ofTrivialFiltration_trivialFiltration [FiniteDimensional K E]
-    (ξ : NormFamily (singleTrivialPlace K) E) (hξ : ξ.IsUltrametric) :
-    ofTrivialFiltration (ξ.trivialFiltration hξ) (ξ.antitone_trivialFiltration hξ)
-      (ξ.trivialFiltration_attains_bot_top hξ).1 (ξ.trivialFiltration_attains_bot_top hξ).2
-      (ξ.trivialFiltration_locallyConstant_left hξ) = ξ := by
-  let p := trivialFiltrationSeminorm (ξ.trivialFiltration hξ) (ξ.antitone_trivialFiltration hξ)
-    (ξ.trivialFiltration_attains_bot_top hξ).1 (ξ.trivialFiltration_attains_bot_top hξ).2
-    (ξ.trivialFiltration_locallyConstant_left hξ)
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric] :
+    ofTrivialFiltration (ξ.trivialFiltration) (ξ.antitone_trivialFiltration)
+      (ξ.trivialFiltration_attains_bot_top).1 (ξ.trivialFiltration_attains_bot_top).2
+      (ξ.trivialFiltration_locallyConstant_left) = ξ := by
+  let p := trivialFiltrationSeminorm (ξ.trivialFiltration) (ξ.antitone_trivialFiltration)
+    (ξ.trivialFiltration_attains_bot_top).1 (ξ.trivialFiltration_attains_bot_top).2
+    (ξ.trivialFiltration_locallyConstant_left)
   have hp : p = ξ.trivialSeminorm := by
     ext x
     change trivialFiltrationSeminorm _ _ _ _ _ x = ξ.trivialSeminorm x
@@ -222,11 +223,11 @@ theorem ofTrivialFiltration_trivialFiltration [FiniteDimensional K E]
     by_cases hx : x = 0
     · rw [ite_eq_left hx, hx]
       exact (map_zero ξ.trivialSeminorm).symm
-    · have hj : Submodule.filtrationJump (ξ.trivialFiltration hξ) (K ∙ x) =
+    · have hj : Submodule.filtrationJump (ξ.trivialFiltration) (K ∙ x) =
           -Real.log (ξ.trivialSeminorm x) :=
         Submodule.filtrationJump_eq_of_cut (fun t ↦ by
           rw [Submodule.span_singleton_le_iff_mem]
-          exact ξ.mem_trivialFiltration_iff_le_neg_log hξ t x hx)
+          exact ξ.mem_trivialFiltration_iff_le_neg_log t x hx)
       have hxpos : 0 < ξ.trivialSeminorm x := by
         rw [trivialSeminorm_apply]
         exact ξ.norm_rational_pos PUnit.unit hx

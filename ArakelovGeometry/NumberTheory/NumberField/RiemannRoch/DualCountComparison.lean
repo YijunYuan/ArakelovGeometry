@@ -9,6 +9,7 @@ public import ArakelovGeometry.NumberTheory.NumberField.Model.Sections
 public import ArakelovGeometry.NumberTheory.NumberField.Model.TraceDual.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Model.TraceDual.Projective.OriginalCovolume
 public import ArakelovGeometry.NumberTheory.NumberField.RiemannRoch.ComparisonConstants
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.NumberTheory.NumberField.RiemannRoch.CountComparison
 import Mathlib.Topology.Sheaves.Init
@@ -41,21 +42,21 @@ variable {K : Type u} [Field K] [NumberField K]
 tensor, retaining its actual second trace-dual section count. -/
 theorem traceTensor_count_inequality
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     let T := codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M
-    let δ := originalPrescribedTraceDualFamily M hη
-    let hδ := originalPrescribedTraceDualFamily_isHermitian M hη
-    originalTensorCovolume M η hη *
+    let δ := originalPrescribedTraceDualFamily M (η := η) (hη := hη)
+    let hδ := originalPrescribedTraceDualFamily_isHermitian M (η := η) (hη := hη)
+    originalTensorCovolume M η (hη := hη) *
         (arithmeticPolarNumerator K (Module.finrank K (K ⊗[𝓞 K] M)) /
           (Module.finrank K (K ⊗[𝓞 K] M) * Module.finrank ℚ K).factorial) *
         (Nat.card (effectiveSections T δ) : ℝ) ≤
       6 ^ (Module.finrank ℚ K * Module.finrank K (K ⊗[𝓞 K] M)) *
         (Nat.card (effectiveSections (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) T)
-          (originalPrescribedTraceDualFamily T hδ)) : ℝ) := by
+          (originalPrescribedTraceDualFamily T (hη := hδ))) : ℝ) := by
   let T := codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M
-  let δ := originalPrescribedTraceDualFamily M hη
-  let hδ := originalPrescribedTraceDualFamily_isHermitian M hη
-  have h := nativePolar_mul_original_count_le_traceDual_count T δ hδ
+  let δ := originalPrescribedTraceDualFamily M (η := η) (hη := hη)
+  let hδ := originalPrescribedTraceDualFamily_isHermitian M (η := η) (hη := hη)
+  have h := nativePolar_mul_original_count_le_traceDual_count T δ (hη := hδ)
   erw [traceTensor_generic_finrank M] at h
   exact h
 
@@ -63,33 +64,33 @@ theorem traceTensor_count_inequality
 reverse logarithmic comparison before the metric bidual count is substituted. -/
 theorem logTraceDual_sub_logTraceBidual_sub_logCovolume_le
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     let T := codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M
-    let δ := originalPrescribedTraceDualFamily M hη
-    let hδ := originalPrescribedTraceDualFamily_isHermitian M hη
+    let δ := originalPrescribedTraceDualFamily M (η := η) (hη := hη)
+    let hδ := originalPrescribedTraceDualFamily_isHermitian M (η := η) (hη := hη)
     logSectionCount T δ -
         logSectionCount (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) T)
-          (originalPrescribedTraceDualFamily T hδ) -
-        Real.log (euclideanCovolume η hη (genericImage (K := K) M)) ≤
+          (originalPrescribedTraceDualFamily T (hη := hδ)) -
+        Real.log (euclideanCovolume η (genericImage (K := K) M)) ≤
       correctedDualityConstant K (Module.finrank K (K ⊗[𝓞 K] M)) := by
   let n := Module.finrank K (K ⊗[𝓞 K] M)
   let d := Module.finrank ℚ K
   let T := codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M
-  let δ := originalPrescribedTraceDualFamily M hη
-  let hδ := originalPrescribedTraceDualFamily_isHermitian M hη
+  let δ := originalPrescribedTraceDualFamily M (η := η) (hη := hη)
+  let hδ := originalPrescribedTraceDualFamily_isHermitian M (η := η) (hη := hη)
   let TT := codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) T
-  let ε := originalPrescribedTraceDualFamily T hδ
-  let c := euclideanCovolume η hη (genericImage (K := K) M)
+  let ε := originalPrescribedTraceDualFamily T (hη := hδ)
+  let c := euclideanCovolume η (genericImage (K := K) M)
   let Q := arithmeticPolarNumerator K n / (n * d).factorial
-  have hc : 0 < c := euclideanCovolume_pos η hη _ (genericImage_fg (K := K) M)
+  have hc : 0 < c := euclideanCovolume_pos η _ (genericImage_fg (K := K) M)
     (genericImage_fullSpan (K := K) M)
   have hQ : 0 < Q := div_pos (arithmeticPolarNumerator_pos n) (by positivity)
   have hT : 0 < (Nat.card (effectiveSections T δ) : ℝ) :=
     Nat.cast_pos.mpr (card_effectiveSections_pos T δ)
-  have hcount := traceTensor_count_inequality M η hη
-  change originalTensorCovolume M η hη * Q * (Nat.card (effectiveSections T δ) : ℝ) ≤
+  have hcount := traceTensor_count_inequality M η
+  change originalTensorCovolume M η (hη := hη) * Q * (Nat.card (effectiveSections T δ) : ℝ) ≤
     6 ^ (d * n) * (Nat.card (effectiveSections TT ε) : ℝ) at hcount
-  rw [originalTensorCovolume_eq_inv M η hη] at hcount
+  rw [originalTensorCovolume_eq_inv M η (hη := hη)] at hcount
   change c⁻¹ * Q * (Nat.card (effectiveSections T δ) : ℝ) ≤
     6 ^ (d * n) * (Nat.card (effectiveSections TT ε) : ℝ) at hcount
   have hTT : 0 < (Nat.card (effectiveSections TT ε) : ℝ) := by

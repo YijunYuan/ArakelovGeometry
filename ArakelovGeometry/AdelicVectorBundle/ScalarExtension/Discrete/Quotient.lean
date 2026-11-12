@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Subquotient
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Discrete.Bundle
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Tower.Transport
+
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.ComplexQuotient
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Subspace.ComplexDescent
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Tower.Basic
@@ -66,7 +67,7 @@ private theorem discreteTensorQuotientEquiv_comp_mkQ (P : Submodule k X) :
 variable [Algebra.IsAlgebraic k l] {T : AdelicStructure k} [FiniteDimensional k X]
 
 private theorem tensorQuotient_norm_eq_of_comp_eq (ξ : NormFamily T X)
-    (hN : ∀ ω ∈ T.Ωinf, IsRCLikeNormedField (T.ϕ ω).Completion)
+    [hN : T.IsArchimedeanNormalized]
     (hi : ∃ a : k, a ^ 2 = -1) (P : Submodule k X)
     (e : (l ⊗[k] (X ⧸ P)) ≃ₗ[l] ((l ⊗[k] X) ⧸ P.baseChange l))
     (he : e.toLinearMap.comp (P.mkQ.baseChange l) = (P.baseChange l).mkQ)
@@ -85,7 +86,7 @@ private theorem tensorQuotient_norm_eq_of_comp_eq (ξ : NormFamily T X)
     (LinearMap.baseChange_surjective l P.mkQ_surjective)).pushforward_norm_of_injective
     e.toLinearMap e.surjective e.injective ω z
   exact (hc.symm.trans ht).trans
-    (ξ.scalarExtension_pushforward_norm_eq_of_sqrt_neg_one hN hi P.mkQ P.mkQ_surjective x z)
+    (ξ.scalarExtension_pushforward_norm_eq_of_sqrt_neg_one hi P.mkQ P.mkQ_surjective x z)
 
 end TensorQuotient
 
@@ -126,8 +127,7 @@ private theorem scalarExtension_quotient_tower_norm_eq
     [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
     (η : NormFamily (S.algebraicExtension F) X)
     (θ : NormFamily (S.algebraicExtension L) Y)
-    (hN : ∀ ω ∈ (S.algebraicExtension F).Ωinf,
-      IsRCLikeNormedField ((S.algebraicExtension F).ϕ ω).Completion)
+    [hN : (S.algebraicExtension F).IsArchimedeanNormalized]
     (hi : ∃ a : F, a ^ 2 = -1)
     (c : (L ⊗[F] X) ≃ₗ[L] Y) (B : Submodule F X) (A : Submodule L Y)
     (q : ((L ⊗[F] X) ⧸ B.baseChange L) ≃ₗ[L] (Y ⧸ A))
@@ -146,12 +146,12 @@ private theorem scalarExtension_quotient_tower_norm_eq
       ((η.quotient B).scalarExtension (L := L)).norm x z := by
   exact (quotientEquiv_towerPullback_norm_eq (η.scalarExtension (L := L)) θ x c
     (B.baseChange L) A q hq (hc x) (d.toLinearMap.baseChange x.abv.Completion z)).trans
-      (tensorQuotient_norm_eq_of_comp_eq η hN hi B d hd x z)
+      (tensorQuotient_norm_eq_of_comp_eq η hi B d hd x z)
 
 /-- Quotient norms commute with scalar extension through a complexifying algebraic tower.
 In particular, this identifies the native target quotient with any finite-stage quotient. -/
 theorem scalarExtension_quotient_finiteStage_norm_eq (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
     [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L]
     (hi : ∃ a : F, a ^ 2 = -1)
@@ -171,7 +171,6 @@ theorem scalarExtension_quotient_finiteStage_norm_eq (ξ : NormFamily S E)
     (K := K) (S := S) (L := L) (F := F)
     (X := F ⊗[K] E) (Y := L ⊗[K] E)
     (ξ.scalarExtension (L := F)) (ξ.scalarExtension (L := L))
-    (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN)
     hi c B A q (by ext y; rfl) d (discreteTensorQuotientEquiv_comp_mkQ B)
     (fun x t ↦ (ξ.scalarExtension_trans x t).symm) x z
 
@@ -186,6 +185,7 @@ private theorem isMeasurable_of_quotient_tower_norm_eq
       θ.norm (scalarExtensionTowerPlace x) (q.toLinearMap.baseChange x.abv.Completion
         (d.toLinearMap.baseChange x.abv.Completion z)) = η.norm x z)
     (hm : η.IsMeasurable) : θ.IsMeasurable := by
+  constructor
   intro y
   apply (AdelicStructure.Algebraic.towerMeasurableEquiv S
     F.toIntermediateField).measurable_comp_iff.mp
@@ -217,8 +217,7 @@ private theorem scalarExtension_quotient_isMeasurable_of_tower
     [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
     (η : NormFamily (S.algebraicExtension F) X)
     (θ : NormFamily (S.algebraicExtension L) Y)
-    (hN : ∀ ω ∈ (S.algebraicExtension F).Ωinf,
-      IsRCLikeNormedField ((S.algebraicExtension F).ϕ ω).Completion)
+    [hN : (S.algebraicExtension F).IsArchimedeanNormalized]
     (hi : ∃ a : F, a ^ 2 = -1)
     (c : (L ⊗[F] X) ≃ₗ[L] Y) (B : Submodule F X) (A : Submodule L Y)
     (q : ((L ⊗[F] X) ⧸ B.baseChange L) ≃ₗ[L] (Y ⧸ A))
@@ -233,14 +232,14 @@ private theorem scalarExtension_quotient_isMeasurable_of_tower
     (θ.quotient A).IsMeasurable := by
   exact isMeasurable_of_quotient_tower_norm_eq F
     ((η.quotient B).scalarExtension (L := L)) (θ.quotient A) d q
-    (scalarExtension_quotient_tower_norm_eq η θ hN hi c B A q hq d hd hc) hm
+    (scalarExtension_quotient_tower_norm_eq η θ hi c B A q hq d hd hc) hm
 
 variable [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] [IsAlgClosed L]
 
 /-- Every actual native target quotient has produced primal measurability
 over a countable discrete original base. No target regularity is assumed. -/
 theorem scalarExtension_quotient_isMeasurable_of_countable_discrete (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] E)) :
     ((ξ.scalarExtension (L := L)).quotient A).IsMeasurable := by
   obtain ⟨F, hi, B, hB, _, _⟩ := exists_complexFiniteStage_subspaces
@@ -259,10 +258,10 @@ theorem scalarExtension_quotient_isMeasurable_of_countable_discrete (ξ : NormFa
   let η := ((ξ.scalarExtension (L := F)).quotient (B 0)).scalarExtension (L := L)
   have hm : η.IsMeasurable :=
     ((ξ.scalarExtension (L := F)).quotient (B 0)).scalarExtension_isMeasurable_of_countable_discrete
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN)
+      (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩)
   exact scalarExtension_quotient_isMeasurable_of_tower F
     (ξ.scalarExtension (L := F)) (ξ.scalarExtension (L := L))
-    (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN) hi
+    hi
     c (B 0) A q (by ext y; rfl) d (discreteTensorQuotientEquiv_comp_mkQ (B 0))
     (fun x t ↦ (ξ.scalarExtension_trans x t).symm) hm
 
@@ -274,18 +273,18 @@ variable [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] [IsAlgClosed L]
 /-- The genuine native target quotient bundle, with primal measurability
 produced from finite descent and completed norm transport. -/
 def scalarExtensionQuotientOfCountableDiscreteBase (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] E)) :
     AdelicVectorBundle (S.algebraicExtension L) ((L ⊗[K] E) ⧸ A) :=
-  (V.scalarExtensionOfCountableDiscreteBase (L := L) hN).quotient A
-    (V.toNormFamily.scalarExtension_quotient_isMeasurable_of_countable_discrete hN A)
+  (V.scalarExtensionOfCountableDiscreteBase (L := L)).quotient A
+    (hm := (V.toNormFamily.scalarExtension_quotient_isMeasurable_of_countable_discrete A))
 
 @[simp]
 theorem scalarExtensionQuotientOfCountableDiscreteBase_toNormFamily
     (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] E)) :
-    (V.scalarExtensionQuotientOfCountableDiscreteBase (L := L) hN A).toNormFamily =
+    (V.scalarExtensionQuotientOfCountableDiscreteBase (L := L) A).toNormFamily =
       (V.toNormFamily.scalarExtension (L := L)).quotient A := rfl
 
 end AdelicVectorBundle

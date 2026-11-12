@@ -10,6 +10,7 @@ public import ArakelovGeometry.NumberTheory.NumberField.Model.Sections
 public import ArakelovGeometry.NumberTheory.NumberField.Model.TraceDual.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Model.TraceDual.Projective.Generic
 public import ArakelovGeometry.NumberTheory.NumberField.RiemannRoch.ComparisonConstants
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.NumberTheory.NumberField.Model.TraceDual.Slope
 import ArakelovGeometry.NumberTheory.NumberField.RiemannRoch.ArithmeticDuality
@@ -47,18 +48,18 @@ variable {K : Type u} [Field K] [NumberField K]
 without a minimal-slope hypothesis. -/
 theorem degree_sub_logSectionCount_le
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     let V := fullLatticeAdelicBundle (genericImage (K := K) M)
       (genericImage_fg M) (genericImage_fullSpan M) η
-    V.degree (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions -
+    V.degree -
       logSectionCount M η ≤ comparisonConstant K (Module.finrank K (K ⊗[𝓞 K] M)) := by
   let L := genericImage (K := K) M
   let ξ := fullLatticeGaugeFamily L (genericImage_fg M) (genericImage_fullSpan M) η
-  let hξ := fullLatticeGaugeFamily_isHermitian L (genericImage_fg M) (genericImage_fullSpan M) η hη
-  have h := (abs_le.mp (abs_logSectionCount_sub_traceDual_sub_degree_le M η hη)).1
+  let hξ := fullLatticeGaugeFamily_isHermitian L (genericImage_fg M) (genericImage_fullSpan M) η
+  have h := (abs_le.mp (abs_logSectionCount_sub_traceDual_sub_degree_le M η)).1
   have hT := logSectionCount_nonneg
     (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M)
-    (originalPrescribedTraceDualFamily M hξ)
+    (originalPrescribedTraceDualFamily M (hη := hξ))
   dsimp only at h ⊢
   unfold comparisonConstant
   linarith
@@ -67,33 +68,33 @@ theorem degree_sub_logSectionCount_le
 removes its h0 term from the sharp one-sided comparison. -/
 theorem logSectionCount_sub_degree_le_of_traceDual_maximalSlope_neg
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     let L := genericImage (K := K) M
     let ξ := fullLatticeGaugeFamily L (genericImage_fg M) (genericImage_fullSpan M) η
-    let hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions :=
-      fullLatticeGaugeFamily_isHermitian L (genericImage_fg M) (genericImage_fullSpan M) η hη
+    let hξ : ξ.IsHermitian :=
+      fullLatticeGaugeFamily_isHermitian L (genericImage_fg M) (genericImage_fullSpan M) η
     let T := codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M
-    let δ := originalPrescribedTraceDualFamily M hξ
+    let δ := originalPrescribedTraceDualFamily M (hη := hξ)
     let V := fullLatticeAdelicBundle L (genericImage_fg M) (genericImage_fullSpan M) η
     (fullLatticeAdelicBundle (genericImage (K := K) T)
       (genericImage_fg T) (genericImage_fullSpan T) δ).maximalSlope
-        (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions < 0 →
+        < 0 →
     logSectionCount M η -
-        V.degree (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions ≤
+        V.degree ≤
       correctedDualityConstant K (Module.finrank K (K ⊗[𝓞 K] M)) +
         (Module.finrank K (K ⊗[𝓞 K] M) : ℝ) *
           ((InfinitePlace.nrComplexPlaces K : ℝ) * Real.log 2 -
             Real.log |(NumberField.discr K : ℝ)| / 2) := by
   let L := genericImage (K := K) M
   let ξ := fullLatticeGaugeFamily L (genericImage_fg M) (genericImage_fullSpan M) η
-  let hξ := fullLatticeGaugeFamily_isHermitian L (genericImage_fg M) (genericImage_fullSpan M) η hη
+  let hξ := fullLatticeGaugeFamily_isHermitian L (genericImage_fg M) (genericImage_fullSpan M) η
   let T := codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M
-  let δ := originalPrescribedTraceDualFamily M hξ
+  let δ := originalPrescribedTraceDualFamily M (hη := hξ)
   dsimp only
   intro hneg
   have hz := NumberFieldClassicalSectionVanishing.logSectionCount_eq_zero_of_maximalSlope_neg
     T δ hneg
-  have h := (abs_le.mp (abs_logSectionCount_sub_traceDual_sub_degree_le M η hη)).2
+  have h := (abs_le.mp (abs_logSectionCount_sub_traceDual_sub_degree_le M η)).2
   change logSectionCount M η - logSectionCount T δ - _ - _ ≤ _ at h
   rw [hz] at h
   linarith
@@ -103,13 +104,11 @@ signed trace-line correction retained. The actual trace slope theorem and
 positive twists discharge the negative-dual-slope premise, including rank zero. -/
 theorem abs_logSectionCount_sub_degree_le_of_minimalSlope_nonneg
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     let V := fullLatticeAdelicBundle (genericImage (K := K) M)
       (genericImage_fg M) (genericImage_fullSpan M) η
-    0 ≤ V.minimalSlope (Or.inl inferInstance)
-      normalizedNumberFieldArchimedeanCompletions →
-    |logSectionCount M η - V.degree (Or.inl inferInstance)
-      normalizedNumberFieldArchimedeanCompletions| ≤
+    0 ≤ V.minimalSlope →
+      |logSectionCount M η - V.degree| ≤
         comparisonConstant K (Module.finrank K (K ⊗[𝓞 K] M)) +
           (Module.finrank K (K ⊗[𝓞 K] M) : ℝ) *
             max 0 (-(Real.log |(NumberField.discr K : ℝ)| -
@@ -118,25 +117,25 @@ theorem abs_logSectionCount_sub_degree_le_of_minimalSlope_nonneg
     fullLatticeAdelicBundle (genericImage (K := K) M)
       (genericImage_fg M) (genericImage_fullSpan M) η
   let Tof (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-      (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :=
+      (hη : η.IsHermitian) :=
     let ξ := fullLatticeGaugeFamily (genericImage (K := K) M)
       (genericImage_fg M) (genericImage_fullSpan M) η
-    let hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions :=
-      fullLatticeGaugeFamily_isHermitian _ _ _ η hη
+    let hξ : ξ.IsHermitian :=
+      fullLatticeGaugeFamily_isHermitian _ _ _ η
     let T := codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M
     fullLatticeAdelicBundle (genericImage (K := K) T)
-      (genericImage_fg T) (genericImage_fullSpan T) (originalPrescribedTraceDualFamily M hξ)
-  change 0 ≤ (Vof η).minimalSlope (Or.inl inferInstance)
-    normalizedNumberFieldArchimedeanCompletions → _
+      (genericImage_fg T) (genericImage_fullSpan T) (originalPrescribedTraceDualFamily M (hη := hξ))
+  change 0 ≤ (Vof η).minimalSlope
+    → _
   intro hmin
   let n := Module.finrank K (K ⊗[𝓞 K] M)
-  let D := (Vof η).degree (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions
+  let D := (Vof η).degree
   let a := Real.log |(NumberField.discr K : ℝ)| -
     2 * (InfinitePlace.nrComplexPlaces K : ℝ) * Real.log 2
   let χ := (InfinitePlace.nrComplexPlaces K : ℝ) * Real.log 2 -
     Real.log |(NumberField.discr K : ℝ)| / 2
   have haχ : a = -2 * χ := by dsimp only [a, χ]; ring
-  have hlower := degree_sub_logSectionCount_le M η hη
+  have hlower := degree_sub_logSectionCount_le M η
   change D - logSectionCount M η ≤ comparisonConstant K n at hlower
   have hupper : logSectionCount M η - D ≤ comparisonConstant K n +
       (n : ℝ) * max 0 (-a) := by
@@ -147,24 +146,25 @@ theorem abs_logSectionCount_sub_degree_le_of_minimalSlope_nonneg
         let t := a + ε
         have ht : 0 ≤ t := by dsimp only [t]; linarith
         let θ := twistFamily η t
-        have hθ := twistFamily_isHermitian hη t
-        have hμ : (a : EReal) < (Vof θ).minimalSlope (Or.inl inferInstance)
-            normalizedNumberFieldArchimedeanCompletions := by
-          change _ < (fullLatticeAdelicBundle _ _ _ (twistFamily η t)).minimalSlope _ _
+        have hθ := twistFamily_isHermitian (η := η) t
+        have hμ : (a : EReal) < (Vof θ).minimalSlope
+            := by
+          change _ < (fullLatticeAdelicBundle _ _ _ (twistFamily η t)).minimalSlope
           rw [minimalSlope_twistFamily]
           have hat : (a : EReal) < (t : EReal) := by
             exact_mod_cast (show a < t by dsimp only [t]; linarith)
           exact hat.trans_le (by
             simpa only [Vof, add_zero, zero_add, add_comm] using add_le_add_right hmin (t : EReal))
-        have hneg : (Tof θ hθ).maximalSlope (Or.inl inferInstance)
-            normalizedNumberFieldArchimedeanCompletions < 0 := by
-          erw [NumberFieldClassicalTraceDualSlope.originalPrescribedTraceDual_maximalSlope M θ hθ]
+        have hneg : (Tof θ hθ).maximalSlope
+            < 0 := by
+          erw [NumberFieldClassicalTraceDualSlope.originalPrescribedTraceDual_maximalSlope M θ
+              (hη := hθ)]
           exact (EReal.sub_neg (Or.inl (EReal.coe_ne_top _))
             (Or.inl (EReal.coe_ne_bot _))).mpr hμ
-        have hu := logSectionCount_sub_degree_le_of_traceDual_maximalSlope_neg M θ hθ hneg
+        have hu := logSectionCount_sub_degree_le_of_traceDual_maximalSlope_neg M θ (hη := hθ) hneg
         have hm := logSectionCount_le_twistFamily M η ht
         change logSectionCount M θ -
-          (fullLatticeAdelicBundle _ _ _ (twistFamily η t)).degree _ _ ≤ _ at hu
+          (fullLatticeAdelicBundle _ _ _ (twistFamily η t)).degree ≤ _ at hu
         rw [degree_twistFamily] at hu
         change logSectionCount M θ - (D + (n : ℝ) * t) ≤
           correctedDualityConstant K n + (n : ℝ) * χ at hu
@@ -180,15 +180,15 @@ theorem abs_logSectionCount_sub_degree_le_of_minimalSlope_nonneg
         apply (div_le_iff₀ (by positivity : 0 < (n : ℝ) + 1)).mpr
         nlinarith
       linarith
-    · have hμ : (a : EReal) < (Vof η).minimalSlope (Or.inl inferInstance)
-          normalizedNumberFieldArchimedeanCompletions := by
+    · have hμ : (a : EReal) < (Vof η).minimalSlope
+          := by
         exact (show (a : EReal) < 0 by exact_mod_cast (lt_of_not_ge ha)).trans_le hmin
-      have hneg : (Tof η hη).maximalSlope (Or.inl inferInstance)
-          normalizedNumberFieldArchimedeanCompletions < 0 := by
-        erw [NumberFieldClassicalTraceDualSlope.originalPrescribedTraceDual_maximalSlope M η hη]
+      have hneg : (Tof η hη).maximalSlope
+          < 0 := by
+        erw [NumberFieldClassicalTraceDualSlope.originalPrescribedTraceDual_maximalSlope M η]
         exact (EReal.sub_neg (Or.inl (EReal.coe_ne_top _))
           (Or.inl (EReal.coe_ne_bot _))).mpr hμ
-      have hu := logSectionCount_sub_degree_le_of_traceDual_maximalSlope_neg M η hη hneg
+      have hu := logSectionCount_sub_degree_le_of_traceDual_maximalSlope_neg M η hneg
       change logSectionCount M η - D ≤ correctedDualityConstant K n + (n : ℝ) * χ at hu
       rw [max_eq_right (by linarith : 0 ≤ -a)]
       change logSectionCount M η - D ≤ correctedDualityConstant K n - (n : ℝ) * χ + (n : ℝ) * (-a)
@@ -203,18 +203,16 @@ theorem abs_logSectionCount_sub_degree_le_of_minimalSlope_nonneg
 exact printed factorial constant and the actual determinant degree. -/
 theorem abs_logSectionCount_sub_degree_le_rank_log_discr
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     let V := fullLatticeAdelicBundle (genericImage (K := K) M)
       (genericImage_fg M) (genericImage_fullSpan M) η
-    0 ≤ V.minimalSlope (Or.inl inferInstance)
-      normalizedNumberFieldArchimedeanCompletions →
-    |logSectionCount M η - V.degree (Or.inl inferInstance)
-      normalizedNumberFieldArchimedeanCompletions| ≤
+    0 ≤ V.minimalSlope →
+      |logSectionCount M η - V.degree| ≤
         (Module.finrank K (K ⊗[𝓞 K] M) : ℝ) * Real.log |(NumberField.discr K : ℝ)| +
           comparisonConstant K (Module.finrank K (K ⊗[𝓞 K] M)) := by
   dsimp only
   intro hmin
-  have h := abs_logSectionCount_sub_degree_le_of_minimalSlope_nonneg M η hη hmin
+  have h := abs_logSectionCount_sub_degree_le_of_minimalSlope_nonneg M η hmin
   have hc := mul_le_mul_of_nonneg_left
     (NumberFieldClassicalWeakDiscriminant.traceDegree_correction_le_log_discr K)
       (show 0 ≤ (Module.finrank K (K ⊗[𝓞 K] M) : ℝ) by positivity)

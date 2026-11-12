@@ -10,6 +10,7 @@ public import ArakelovGeometry.Analysis.NormedSpace.LinearMapBound
 public import ArakelovGeometry.LinearAlgebra.Dual.BaseChange
 public import Mathlib.LinearAlgebra.FreeModule.Finite.Matrix
 public import Mathlib.LinearAlgebra.FreeModule.PID
+
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 import Mathlib.RingTheory.TensorProduct.Finite
@@ -92,6 +93,7 @@ theorem dual_norm_le (ω : S.Ω)
 /-- Every dual family is ultrametric at the non-Archimedean places, without
 requiring the original norm family to be ultrametric. -/
 theorem dual_isUltrametric : ξ.dual.IsUltrametric := by
+  constructor
   intro ω hω z t
   let := ξ.fibreNormedAddCommGroup ω
   let := ξ.fibreNormedSpace ω
@@ -259,4 +261,8 @@ theorem dual_dual_dual_pullback :
   ext ω z
   exact ξ.dual_dual_dual_norm_eval ω z
 
+end ArakelovGeometry.NormFamily
+
+namespace ArakelovGeometry.NormFamily
+attribute [instance] dual_isUltrametric
 end ArakelovGeometry.NormFamily

@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Strong
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Subquotient
 import ArakelovGeometry.MeasureTheory.Integral.UpperEnvelope
@@ -51,7 +52,7 @@ theorem upperIntegralDist_ne_bot (ξ η : NormFamily S E) :
   ne_of_gt (lt_of_lt_of_le EReal.bot_lt_zero (ξ.upperIntegralDist_nonneg η))
 
 theorem upperIntegralDist_lt_top {ξ η : NormFamily S E}
-    (hξ : ξ.IsStronglyDominated) (hη : η.IsStronglyDominated)
+    [hξ : ξ.IsStronglyDominated] [hη : η.IsStronglyDominated]
     (hfin : S.v S.Ωinf < ⊤) : ξ.upperIntegralDist η < ⊤ :=
   hasIntegrableUpperBound_iff_upperEnvelopeIntegral_lt_top.mp
     (hξ.localDist hη hfin).1
@@ -59,10 +60,10 @@ theorem upperIntegralDist_lt_top {ξ η : NormFamily S E}
 /-- The standing usual-absolute-value hypothesis of Chapter 4 supplies finite
 measure of the infinite locus, hence finiteness of the source distance. -/
 theorem upperIntegralDist_lt_top_of_isRCLike {ξ η : NormFamily S E}
-    (hξ : ξ.IsStronglyDominated) (hη : η.IsStronglyDominated)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hξ : ξ.IsStronglyDominated] [hη : η.IsStronglyDominated]
+    [hS : S.IsArchimedeanNormalized] :
     ξ.upperIntegralDist η < ⊤ :=
-  upperIntegralDist_lt_top hξ hη (S.v_Ωinf_lt_top_of_isRCLike hS)
+  upperIntegralDist_lt_top (S.v_Ωinf_lt_top_of_isRCLike)
 
 @[simp]
 theorem upperIntegralDist_self (ξ : NormFamily S E) : ξ.upperIntegralDist ξ = 0 := by
@@ -126,18 +127,18 @@ noncomputable instance instPseudoMetricSpace :
     have h := EReal.toReal_le_toReal (ξ.val.upperIntegralDist_triangle η.val ζ.val)
       (ξ.val.upperIntegralDist_ne_bot ζ.val)
       (EReal.add_ne_top
-        (NormFamily.upperIntegralDist_lt_top ξ.property η.property Fact.out).ne
-        (NormFamily.upperIntegralDist_lt_top η.property ζ.property Fact.out).ne)
+        (NormFamily.upperIntegralDist_lt_top (hξ := ξ.property) (hη := η.property) Fact.out).ne
+        (NormFamily.upperIntegralDist_lt_top (hξ := η.property) (hη := ζ.property) Fact.out).ne)
     rwa [EReal.toReal_add
-      (NormFamily.upperIntegralDist_lt_top ξ.property η.property Fact.out).ne
+      (NormFamily.upperIntegralDist_lt_top (hξ := ξ.property) (hη := η.property) Fact.out).ne
       (ξ.val.upperIntegralDist_ne_bot η.val)
-      (NormFamily.upperIntegralDist_lt_top η.property ζ.property Fact.out).ne
+      (NormFamily.upperIntegralDist_lt_top (hξ := η.property) (hη := ζ.property) Fact.out).ne
       (η.val.upperIntegralDist_ne_bot ζ.val)] at h
 
 theorem dist_eq_upperIntegralDist (ξ η : StronglyDominatedNormFamily S E) :
     (dist ξ η : EReal) = ξ.val.upperIntegralDist η.val :=
   EReal.coe_toReal
-    (NormFamily.upperIntegralDist_lt_top ξ.property η.property Fact.out).ne
+    (NormFamily.upperIntegralDist_lt_top (hξ := ξ.property) (hη := η.property) Fact.out).ne
     (ξ.val.upperIntegralDist_ne_bot η.val)
 
 /-- The pseudometric separates exactly the almost-everywhere classes of fibre norms. -/

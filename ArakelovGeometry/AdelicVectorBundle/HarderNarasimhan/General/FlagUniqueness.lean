@@ -27,20 +27,20 @@ universe u v w
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (V : AdelicVectorBundle S E)
-  (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-  (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+  [hS : S.HasMeasurableBase]
+  [hN : S.IsArchimedeanNormalized]
 
 
 /-- Every candidate term is attained at its actual factor modified mean. -/
 theorem semistableFlag_succ_eq_generalHNFiltration {n : ℕ}
     (U : Fin (n + 1) → Submodule K E) (hU : StrictMono U) (hz : U 0 = ⊥)
     (ht : U (Fin.last n) = ⊤)
-    (hsemi : ∀ i : Fin n, (V.flagQuotientOfMeasurableBase U hS i).IsSemistable hS hN)
-    (hb : StrictAnti (fun i : Fin n ↦ (V.flagQuotientOfMeasurableBase U hS i).modifiedSlope
-      hS hN)) (i : Fin n) :
-    V.generalHNFiltration hS hN
-      ((V.flagQuotientOfMeasurableBase U hS i).modifiedSlope hS hN) = U i.succ := by
-  rw [V.generalHNFiltration_eq_of_semistableFlag hS hN U hU hz ht hsemi hb]
+    [hsemi : ∀ i : Fin n, (V.flagQuotientOfMeasurableBase U i).IsSemistable]
+    (hb : StrictAnti (fun i : Fin n ↦ (V.flagQuotientOfMeasurableBase U i).modifiedSlope
+)) (i : Fin n) :
+    V.generalHNFiltration
+      ((V.flagQuotientOfMeasurableBase U i).modifiedSlope) = U i.succ := by
+  rw [V.generalHNFiltration_eq_of_semistableFlag U hU hz ht hb]
   apply le_antisymm
   · apply iSup_le
     intro j
@@ -58,12 +58,12 @@ theorem semistableFlag_succ_eq_generalHNFiltration {n : ℕ}
 theorem range_generalHNFiltration_eq_of_semistableFlag {n : ℕ}
     (U : Fin (n + 1) → Submodule K E) (hU : StrictMono U) (hz : U 0 = ⊥)
     (ht : U (Fin.last n) = ⊤)
-    (hsemi : ∀ i : Fin n, (V.flagQuotientOfMeasurableBase U hS i).IsSemistable hS hN)
-    (hb : StrictAnti (fun i : Fin n ↦ (V.flagQuotientOfMeasurableBase U hS i).modifiedSlope
-      hS hN)) :
-    Set.range (V.generalHNFiltration hS hN) = Set.range U := by
+    [hsemi : ∀ i : Fin n, (V.flagQuotientOfMeasurableBase U i).IsSemistable]
+    (hb : StrictAnti (fun i : Fin n ↦ (V.flagQuotientOfMeasurableBase U i).modifiedSlope
+)) :
+    Set.range (V.generalHNFiltration) = Set.range U := by
   classical
-  let b : Fin n → ℝ := fun i ↦ (V.flagQuotientOfMeasurableBase U hS i).modifiedSlope hS hN
+  let b : Fin n → ℝ := fun i ↦ (V.flagQuotientOfMeasurableBase U i).modifiedSlope
   apply Set.Subset.antisymm
   · rintro W ⟨t, rfl⟩
     let J : Finset (Fin n) := Finset.univ.filter (fun i ↦ t ≤ b i)
@@ -72,7 +72,7 @@ theorem range_generalHNFiltration_eq_of_semistableFlag {n : ℕ}
       have hi : t ≤ b i := (Finset.mem_filter.mp (Finset.max'_mem J hJ)).2
       refine ⟨i.succ, ?_⟩
       symm
-      rw [V.generalHNFiltration_eq_of_semistableFlag hS hN U hU hz ht hsemi hb]
+      rw [V.generalHNFiltration_eq_of_semistableFlag U hU hz ht hb]
       apply le_antisymm
       · apply iSup_le
         intro j
@@ -85,7 +85,7 @@ theorem range_generalHNFiltration_eq_of_semistableFlag {n : ℕ}
           exact Nat.add_le_add_right hji 1)
       · exact le_iSup_of_le i (le_iSup_of_le hi le_rfl)
     · refine ⟨0, ?_⟩
-      rw [hz, V.generalHNFiltration_eq_of_semistableFlag hS hN U hU hz ht hsemi hb]
+      rw [hz, V.generalHNFiltration_eq_of_semistableFlag U hU hz ht hb]
       symm
       apply le_antisymm _ bot_le
       apply iSup_le
@@ -95,14 +95,14 @@ theorem range_generalHNFiltration_eq_of_semistableFlag {n : ℕ}
       exact (hJ ⟨i, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hi⟩⟩).elim
   · rintro W ⟨k, rfl⟩
     by_cases hk : k.val = 0
-    · obtain ⟨t, ht⟩ := V.exists_generalHNFiltration_eq_bot hS hN
+    · obtain ⟨t, ht⟩ := V.exists_generalHNFiltration_eq_bot
       refine ⟨t, ?_⟩
       rw [show k = 0 from Fin.ext hk, hz]
       exact ht
     · let i : Fin n := ⟨k.val - 1, by have h := k.isLt; omega⟩
       have hik : i.succ = k := Fin.ext (by dsimp [i]; omega)
       exact ⟨b i, (V.semistableFlag_succ_eq_generalHNFiltration
-        hS hN U hU hz ht hsemi hb i).trans (congrArg U hik)⟩
+        U hU hz ht hb i).trans (congrArg U hik)⟩
 
 
 end

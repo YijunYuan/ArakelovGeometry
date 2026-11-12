@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Purity.Basic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 
 /-!
@@ -90,6 +91,7 @@ theorem IsPureAtFinitePlaces.dual_norm_eq_uniformizer_zpow
 theorem IsPureAtFinitePlaces.dual
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
     (hξ : ξ.IsPureAtFinitePlaces) : ξ.dual.IsPureAtFinitePlaces := by
+  constructor
   intro ω hω z hz
   obtain ⟨p, rfl⟩ := exists_normalizedPrimeParameter_eq ω hω
   obtain ⟨n, hn⟩ := hξ.dual_norm_eq_uniformizer_zpow p hz
@@ -153,5 +155,9 @@ theorem globalImpurity_eq_zero_dual
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
     (hσ : ξ.globalImpurity = 0) : ξ.dual.globalImpurity = 0 :=
   (ξ.isPureAtFinitePlaces_iff_globalImpurity_eq_zero.mpr hσ).dual.globalImpurity_eq_zero
+
+instance instIsPureAtFinitePlacesDual (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
+    [hξ : ξ.IsPureAtFinitePlaces] : ξ.dual.IsPureAtFinitePlaces :=
+  hξ.dual
 
 end ArakelovGeometry.NormFamily

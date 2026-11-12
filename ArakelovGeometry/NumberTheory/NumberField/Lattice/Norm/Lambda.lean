@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Minima.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.Norm.Gauge
+
 import ArakelovGeometry.AdelicVectorBundle.Minima.BasisSupremum
 import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.InfiniteMass
 
@@ -94,24 +95,24 @@ theorem latticeLambda_eq_top_of_finrank_eq_zero (hr : Module.finrank K E = 0) :
     exact False.elim (by simpa [hr] using i.isLt)
   exact le_iSup_of_le a (le_iSup_of_le ha le_rfl)
 
-theorem latticeGaugeFamily_archimedeanMaxNorm_eq (hξ : ξ.IsUltrametric) (x : E) :
-    (ξ.latticeGaugeFamily hξ).archimedeanMaxNorm x = ξ.archimedeanMaxNorm x := by
+theorem latticeGaugeFamily_archimedeanMaxNorm_eq [hξ : ξ.IsUltrametric] (x : E) :
+    (ξ.latticeGaugeFamily).archimedeanMaxNorm x = ξ.archimedeanMaxNorm x := by
   unfold archimedeanMaxNorm
   congr 2
   apply Set.image_congr
   intro ω hω
-  rw [ξ.latticeGaugeFamily_norm_not_finite hξ ω hω]
+  rw [ξ.latticeGaugeFamily_norm_not_finite ω hω]
 
-theorem latticeGaugeFamily_integralBasisThresholds_eq (hξ : ξ.IsUltrametric) :
-    (ξ.latticeGaugeFamily hξ).integralBasisThresholds = ξ.integralBasisThresholds := by
+theorem latticeGaugeFamily_integralBasisThresholds_eq [hξ : ξ.IsUltrametric] :
+    (ξ.latticeGaugeFamily).integralBasisThresholds = ξ.integralBasisThresholds := by
   ext a
   simp only [integralBasisThresholds, Set.mem_ofPred_eq,
-    ξ.latticeGaugeFamily_globalUnitBall_eq hξ,
-    ξ.latticeGaugeFamily_archimedeanMaxNorm_eq hξ]
+    ξ.latticeGaugeFamily_globalUnitBall_eq,
+    ξ.latticeGaugeFamily_archimedeanMaxNorm_eq]
 
-theorem latticeGaugeFamily_latticeLambda_eq (hξ : ξ.IsUltrametric) :
-    (ξ.latticeGaugeFamily hξ).latticeLambda = ξ.latticeLambda := by
-  simp only [latticeLambda, ξ.latticeGaugeFamily_integralBasisThresholds_eq hξ]
+theorem latticeGaugeFamily_latticeLambda_eq [hξ : ξ.IsUltrametric] :
+    (ξ.latticeGaugeFamily).latticeLambda = ξ.latticeLambda := by
+  simp only [latticeLambda, ξ.latticeGaugeFamily_integralBasisThresholds_eq]
 
 /-- Genuine full rational span of the literal integral ball produces an
 actual integral basis and a real threshold, including the empty basis. -/
@@ -160,10 +161,10 @@ theorem HasFiniteNormExceptions.latticeLambda_ne_bot
 /-- The actual degree of an integral vector bounded at infinity is at least
 the rational number-field degree times its logarithmic bound. -/
 theorem vectorDegree_ge_of_integral_archimedean_bound
-    (hd : ξ.IsDominated) (hm : ξ.IsMeasurable) (s : {x : E // x ≠ 0})
+    [hd : ξ.IsDominated] [hm : ξ.IsMeasurable] (s : {x : E // x ≠ 0})
     {a : ℝ} (hs : s.val ∈ ξ.globalUnitBall)
     (ha : ξ.archimedeanMaxNorm s.val ≤ Real.exp (-a)) :
-    (Module.finrank ℚ K : ℝ) * a ≤ ξ.vectorDegree hd hm s := by
+    (Module.finrank ℚ K : ℝ) * a ≤ ξ.vectorDegree s := by
   classical
   let S := normalizedNumberFieldAdelicStructure K
   have : MeasurableSingletonClass S.Ω := by
@@ -196,7 +197,7 @@ theorem vectorDegree_ge_of_integral_archimedean_bound
       (normalizedNumberFieldAdelicStructure K).Ωinf).toReal = _
     rw [normalizedNumberFieldAdelicStructure_v_Ωinf, ENNReal.toReal_natCast]
   rw [hmass, smul_eq_mul] at hi
-  rw [ξ.vectorDegree_eq_neg_integral hd hm s]
+  rw [ξ.vectorDegree_eq_neg_integral s]
   linarith
 
 end ArakelovGeometry.NormFamily
@@ -219,7 +220,7 @@ theorem coe_le_minimalLogarithmicMinimum_of_integralBasisThreshold
   apply (V.finrank_le_degreeThresholdSpan_iff_exists_basis _).mpr
   refine ⟨b, fun i => ?_⟩
   exact V.toNormFamily.vectorDegree_ge_of_integral_archimedean_bound
-    V.isDominated V.isMeasurable ⟨b i, b.ne_zero i⟩ (hb i).1 (hb i).2
+    ⟨b i, b.ne_zero i⟩ (hb i).1 (hb i).2
 
 /-- The first inequality of source Proposition 4.4.10 in the extended real
 line. Coherence and a finite endpoint are unnecessary for this direction. -/

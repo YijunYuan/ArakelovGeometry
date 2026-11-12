@@ -9,6 +9,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Degree.Positive.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Algebraic.ClosureApproximation
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Bundle
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.HermitianComparison.DeterminantDegree
+
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.HermitianComparison.Comparison
 import Mathlib.CategoryTheory.Category.Init
 
@@ -37,73 +38,74 @@ local instance hermitianOrdinaryComparisonProper : (S.algebraicExtension L).IsPr
 /-- Every actual ordinary native restricted degree is at most its Hermitian
 counterpart on the same actual target subspace and completed fibres. -/
 theorem degree_restrict_scalarExtension_le_hermitianScalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) (U : Submodule L (L ⊗[K] E)) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] (U : Submodule L (L ⊗[K] E)) :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-    let P := V.scalarExtension (L := L) hcount hN
-    let H := V.hermitianScalarExtension (L := L) hcount hN hLN hH
-    (P.restrictOfMeasurableBase U hLS).degree hLS hLN ≤
-      (H.restrictOfMeasurableBase U hLS).degree hLS hLN := by
+    let P := V.scalarExtension (L := L)
+    let H := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
+    (P.restrictOfMeasurableBase U (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) ≤
+      (H.restrictOfMeasurableBase U (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
   intro hLN hLS P H
   have hn : H.toNormFamily ≤ P.toNormFamily :=
-    V.toNormFamily.hermitianScalarExtension_le_scalarExtension hN hLN hH
-  exact degree_antitone (H.restrictOfMeasurableBase U hLS)
-    (P.restrictOfMeasurableBase U hLS) hLS hLN (fun x z ↦ hn x _)
+    V.toNormFamily.hermitianScalarExtension_le_scalarExtension (hL := ⟨hLN⟩)
+  exact degree_antitone (H.restrictOfMeasurableBase U (hS := ⟨hLS⟩))
+    (P.restrictOfMeasurableBase U (hS := ⟨hLS⟩)) (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (fun x z ↦ hn x _)
 
 /-- Dividing genuine native restricted degree domination by the common rank
 compares both real means, including the zero-rank convention. -/
 theorem slope_restrict_scalarExtension_le_hermitianScalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) (U : Submodule L (L ⊗[K] E)) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] (U : Submodule L (L ⊗[K] E)) :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-    let P := V.scalarExtension (L := L) hcount hN
-    let H := V.hermitianScalarExtension (L := L) hcount hN hLN hH
-    (P.restrictOfMeasurableBase U hLS).slope hLS hLN ≤
-      (H.restrictOfMeasurableBase U hLS).slope hLS hLN := by
+    let P := V.scalarExtension (L := L)
+    let H := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
+    (P.restrictOfMeasurableBase U (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) ≤
+      (H.restrictOfMeasurableBase U (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
   intro hLN hLS P H
   dsimp only [slope]
   exact div_le_div_of_nonneg_right
     (V.degree_restrict_scalarExtension_le_hermitianScalarExtension_of_isAlgClosed
-      hcount hN hH U) (Nat.cast_nonneg _)
+       U) (Nat.cast_nonneg _)
 
 /-- The ordinary actual positive-degree supremum is bounded by the actual
 Hermitian supremum, using every genuine native target restricted degree. -/
 theorem positiveDegree_scalarExtension_le_hermitianScalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-    let P := V.scalarExtension (L := L) hcount hN
-    let H := V.hermitianScalarExtension (L := L) hcount hN hLN hH
-    P.positiveDegree hLS hLN ≤ H.positiveDegree hLS hLN := by
+    let P := V.scalarExtension (L := L)
+    let H := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
+    P.positiveDegree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) ≤ H.positiveDegree (hS := ⟨hLS⟩)
+        (hN := ⟨hLN⟩) := by
   intro hLN hLS P H
-  apply P.positiveDegree_le hLS hLN
+  apply P.positiveDegree_le (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
   intro U
   exact (EReal.coe_le_coe_iff.mpr
     (V.degree_restrict_scalarExtension_le_hermitianScalarExtension_of_isAlgClosed
-      hcount hN hH U)).trans (H.degree_restrict_le_positiveDegree hLS hLN U)
+       U)).trans (H.degree_restrict_le_positiveDegree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) U)
 
 /-- Every actual positive-rank ordinary mean is bounded by the same Hermitian
 mean, hence the actual maximal-slope suprema are ordered in every rank. -/
 theorem maximalSlope_scalarExtension_le_hermitianScalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-    let P := V.scalarExtension (L := L) hcount hN
-    let H := V.hermitianScalarExtension (L := L) hcount hN hLN hH
-    P.maximalSlope hLS hLN ≤ H.maximalSlope hLS hLN := by
+    let P := V.scalarExtension (L := L)
+    let H := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
+    P.maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) ≤ H.maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
   intro hLN hLS P H
-  apply P.maximalSlope_le hLS hLN
+  apply P.maximalSlope_le (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
   intro U hU
   exact (EReal.coe_le_coe_iff.mpr
     (V.slope_restrict_scalarExtension_le_hermitianScalarExtension_of_isAlgClosed
-      hcount hN hH U)).trans (H.slope_restrict_le_maximalSlope U hU hLS hLN)
+       U)).trans (H.slope_restrict_le_maximalSlope U hU (hS := ⟨hLS⟩) (hN := ⟨hLN⟩))
 
 end ArakelovGeometry.AdelicVectorBundle

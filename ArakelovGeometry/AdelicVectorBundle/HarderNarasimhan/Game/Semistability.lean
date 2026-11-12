@@ -27,24 +27,24 @@ universe u v w
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (V : AdelicVectorBundle S E)
-  (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-  (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+  [hS : S.HasMeasurableBase]
+  [hN : S.IsArchimedeanNormalized]
 
 /-- The initial subintervals of the game describe all actual restrictions
 of its subquotient. Hence game semistability is the existing minimal-slope criterion. -/
 theorem isSemistable_restrict_maximalSlopePayoff_iff (I : StrictIntvl (Submodule K E)) :
-    ((V.maximalSlopePayoff hS hN).restrict I).IsSemistable ↔
+    ((V.maximalSlopePayoff).restrict I).IsSemistable ↔
       ∀ Z : Submodule K (I.right ⧸ I.left.comap I.right.subtype), Z ≠ ⊥ →
-        ((((V.restrictOfMeasurableBase I.right hS).quotientOfMeasurableBase
-          (I.left.comap I.right.subtype) hS).restrictOfMeasurableBase Z hS).minimalSlope hS hN) ≤
-        ((V.restrictOfMeasurableBase I.right hS).quotientOfMeasurableBase
-          (I.left.comap I.right.subtype) hS).minimalSlope hS hN := by
-  have hcriterion : ((V.maximalSlopePayoff hS hN).restrict I).IsSemistable ↔
+        ((((V.restrictOfMeasurableBase I.right).quotientOfMeasurableBase
+          (I.left.comap I.right.subtype)).restrictOfMeasurableBase Z).minimalSlope) ≤
+        ((V.restrictOfMeasurableBase I.right).quotientOfMeasurableBase
+          (I.left.comap I.right.subtype)).minimalSlope := by
+  have hcriterion : ((V.maximalSlopePayoff).restrict I).IsSemistable ↔
       ∀ U : Submodule K E, I.left < U → U ≤ I.right →
-        ((V.restrictOfMeasurableBase U hS).quotientOfMeasurableBase
-          (I.left.comap U.subtype) hS).minimalSlope hS hN ≤
-        ((V.restrictOfMeasurableBase I.right hS).quotientOfMeasurableBase
-          (I.left.comap I.right.subtype) hS).minimalSlope hS hN := by
+        ((V.restrictOfMeasurableBase U).quotientOfMeasurableBase
+          (I.left.comap U.subtype)).minimalSlope ≤
+        ((V.restrictOfMeasurableBase I.right).quotientOfMeasurableBase
+          (I.left.comap I.right.subtype)).minimalSlope := by
     constructor
     · intro h U hAU hUB
       have ht := h.not_lt (⟨U, hAU.le, hUB⟩ : ↥I) hAU
@@ -78,7 +78,7 @@ theorem isSemistable_restrict_maximalSlopePayoff_iff (I : StrictIntvl (Submodule
       apply hZ
       rw [← hRange, LinearMap.range_comp, Submodule.range_subtype, he', Submodule.mkQ_map_self])
     have hb := h U hAU' hUB
-    rw [← V.minimalSlope_subquotient_restrict_range hS hN I.left U I.right hAU hUB,
+    rw [← V.minimalSlope_subquotient_restrict_range I.left U I.right hAU hUB,
       hRange] at hb
     exact hb
   · intro h U hAU hUB
@@ -96,7 +96,7 @@ theorem isSemistable_restrict_maximalSlopePayoff_iff (I : StrictIntvl (Submodule
           inf_eq_right.mpr hUB, inf_eq_right.mpr I.lt.le] using hm
       exact hAU.not_ge hUA
     have hb := h (T.mkQ.comp R.subtype).range hZ
-    rw [V.minimalSlope_subquotient_restrict_range hS hN I.left U I.right hAU.le hUB] at hb
+    rw [V.minimalSlope_subquotient_restrict_range I.left U I.right hAU.le hUB] at hb
     exact hb
 
 end

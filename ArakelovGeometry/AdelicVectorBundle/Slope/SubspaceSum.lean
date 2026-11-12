@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Supermodular
 import ArakelovGeometry.AdelicVectorBundle.Slope.Extension
 import Mathlib.CategoryTheory.Category.Init
@@ -81,14 +82,14 @@ variable [S.IsProper] [FiniteDimensional K E]
 /-- Arbitrary sums of actual restricted subspaces preserve a common lower
 bound on their actual minimal slopes. Zero summands and an empty family are allowed. -/
 theorem minimalSlope_restrict_iSup_ge (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     {ι : Type w''} (U : ι → Submodule K E) (a : ℝ)
-    (hU : ∀ i, (a : EReal) ≤ (V.restrictOfMeasurableBase (U i) hS).minimalSlope hS hN) :
-    (a : EReal) ≤ (V.restrictOfMeasurableBase (⨆ i, U i) hS).minimalSlope hS hN := by
+    (hU : ∀ i, (a : EReal) ≤ (V.restrictOfMeasurableBase (U i)).minimalSlope) :
+    (a : EReal) ≤ (V.restrictOfMeasurableBase (⨆ i, U i)).minimalSlope := by
   let W : Submodule K E := ⨆ i, U i
-  let B := V.restrictOfMeasurableBase W hS
-  apply B.le_minimalSlope hS hN
+  let B := V.restrictOfMeasurableBase W
+  apply B.le_minimalSlope
   intro T hT
   have hq : T.mkQ ≠ 0 := by
     intro hzero
@@ -103,18 +104,18 @@ theorem minimalSlope_restrict_iSup_ge (V : AdelicVectorBundle S E)
     omega
   obtain ⟨i, hi⟩ := Submodule.exists_ne_zero_comp_inclusion_iSup U T.mkQ hq
   let f := T.mkQ.comp (Submodule.inclusion (le_iSup U i))
-  let A := V.restrictOfMeasurableBase (U i) hS
-  let Q := B.quotientOfMeasurableBase T hS
+  let A := V.restrictOfMeasurableBase (U i)
+  let Q := B.quotientOfMeasurableBase T
   have hh : A.mapHeight Q f ≤ 0 := by
     apply mapHeight_le_zero_of_completed_contraction
     intro ω z
     exact V.toNormFamily.quotient_after_inclusion_norm_le (U i) W (le_iSup U i) T ω z
-  have hm := A.minimalSlope_sub_mapHeight_le_maximalSlope_of_ne_zero Q hS hN f hi
+  have hm := A.minimalSlope_sub_mapHeight_le_maximalSlope_of_ne_zero Q f hi
   calc
-    (a : EReal) ≤ A.minimalSlope hS hN := hU i
-    _ = A.minimalSlope hS hN - 0 := by simp
-    _ ≤ A.minimalSlope hS hN - A.mapHeight Q f := EReal.sub_le_sub le_rfl hh
-    _ ≤ Q.maximalSlope hS hN := hm
+    (a : EReal) ≤ A.minimalSlope := hU i
+    _ = A.minimalSlope - 0 := by simp
+    _ ≤ A.minimalSlope - A.mapHeight Q f := EReal.sub_le_sub le_rfl hh
+    _ ≤ Q.maximalSlope := hm
 
 
 end AdelicVectorBundle

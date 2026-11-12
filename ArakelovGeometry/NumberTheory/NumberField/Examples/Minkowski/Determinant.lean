@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Examples.Minkowski.Basic
+
 import ArakelovGeometry.AdelicCurve.Equiv
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.AdelicVectorBundle.Determinant.DualNorm
@@ -52,8 +53,8 @@ coordinate dual bounds. No determinant equality is supplied as a hypothesis. -/
 theorem determinant_norm_completedBasis_eq_prod
     {K E : Type*} [Field K] {T : AdelicStructure K} [AddCommGroup E] [Module K E]
     [FiniteDimensional K E] (ξ : NormFamily T E)
-    {hT : ∀ ω ∈ T.Ωinf, IsRCLikeNormedField (T.ϕ ω).Completion}
-    (hξ : ξ.IsHermitian hT) (ω : T.Ω)
+    [hT : T.IsArchimedeanNormalized]
+    [hξ : ξ.IsHermitian] (ω : T.Ω)
     (b : Module.Basis (Fin (Module.finrank K E)) (T.ϕ ω).Completion
       ((T.ϕ ω).Completion ⊗[K] E))
     (hb : ∀ i, ξ.dual.norm ω
@@ -228,7 +229,7 @@ theorem family_determinant_norm_prime (p : Nat.Primes) (a : ℤ) :
     exact congrArg (fun z => (1 : (S.ϕ (primePoint p)).Completion) ⊗ₜ[ℚ] z)
       (shearBasis_wedge_eq_determinantVector a)
   rw [← hw, determinant_norm_completedBasis_eq_prod (family p a)
-    (family_isHermitian p a) _ b hb, ← e.prod_comp]
+    (hξ := (family_isHermitian p a)) _ b hb, ← e.prod_comp]
   simp only [b, Module.Basis.reindex_apply, Equiv.symm_apply_apply, Fin.prod_univ_two,
     family_norm_shearBasis_zero, family_norm_shearBasis_one, one_mul]
 
@@ -292,7 +293,7 @@ theorem family_determinant_norm_off_prime (p : Nat.Primes) (a : ℤ)
     rw [he, exteriorBaseChangeEquiv_symm_ιMulti_tmul, Finset.prod_const_one]
     rfl
   rw [← hw, determinant_norm_completedBasis_eq_prod (family p a)
-    (family_isHermitian p a) _ b hb]
+    (hξ := (family_isHermitian p a)) _ b hb]
   simp only [b, Module.Basis.reindex_apply, family_norm_standardBasis_off_prime p a ω hω,
     Finset.prod_const_one]
 
@@ -343,13 +344,13 @@ theorem rationalCurveRegularity :
 /-- The actual degree is negative one half of the prime logarithm. No
 primitive-vector or slope estimate is needed for this determinant calculation. -/
 theorem bundle_degree (p : Nat.Primes) (a : ℤ) :
-    (bundle p a).degree rationalCurveRegularity
-      (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) = -Real.log (p : ℝ) / 2 := by
+    (bundle p a).degree (hS := ⟨rationalCurveRegularity⟩)
+      (hN := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) = -Real.log (p : ℝ) / 2 := by
   classical
   let : DiscreteMeasurableSpace S.Ω := inferInstanceAs
     (DiscreteMeasurableSpace {ω : AbsoluteValue.Place ℚ // ω ≠ AbsoluteValue.trivialPlace ℚ})
-  rw [(bundle p a).degree_eq_neg_integral rationalCurveRegularity
-    (normalizedNumberFieldArchimedeanCompletions (K := ℚ))
+  rw [(bundle p a).degree_eq_neg_integral (hS := ⟨rationalCurveRegularity⟩)
+    (hN := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩)
       ⟨determinantVector, determinantVector_ne_zero⟩]
   have he : (bundle p a).toNormFamily.determinant.logNorm determinantVector =
       ({primePoint p} : Set S.Ω).indicator (fun _ => Real.log (Real.sqrt (p : ℝ))) := by

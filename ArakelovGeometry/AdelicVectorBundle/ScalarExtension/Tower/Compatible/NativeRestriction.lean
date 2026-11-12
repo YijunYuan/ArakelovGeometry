@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Minima.Absolute.CompatibleTower
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.PositiveAtoms.Algebraic.RestrictionDegree
 public import ArakelovGeometry.AdelicVectorBundle.Subquotient.EquivalencePullback
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.Degree.Determinant.Isometry
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Tower.Basic
@@ -63,100 +64,102 @@ theorem scalarExtension_compatibleTower_restrict_pullback (ξ : NormFamily S E)
 variable [IsAlgClosed M] [MeasurableSingletonClass S.Ω]
 
 /-- Transport the direct native restriction to its iterated tensor-product subspace. -/
-def nativeRestrictionTowerBundle (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin)
+def nativeRestrictionTowerBundle (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
     AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M) A :=
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
-  let R := ξ.nativeAlgebraicRestrictionOfPositiveAtoms hξ hpos hS (A.map c.toLinearMap)
+  let R := ξ.nativeAlgebraicRestrictionOfPositiveAtoms (A.map c.toLinearMap)
   (R.compatibleTowerPullback (L := L)).pullbackEquiv (c.submoduleMap A)
 
 /-- Tower transport recovers the literal iterated restriction norm family. -/
 theorem nativeRestrictionTowerBundle_normFamily (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) (hpos : ∀ ω : S.Ω, 0 < S.v {ω})
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
-    (nativeRestrictionTowerBundle ξ hξ hpos hS A).toNormFamily =
+    [ξ.IsDominated] [S.HasPositiveAtoms]
+    [S.HasOnlyFinitePlaces] (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
+    (nativeRestrictionTowerBundle ξ A).toNormFamily =
       ((ξ.scalarExtension (L := L)).scalarExtension (L := M)).restrict A :=
   ξ.scalarExtension_compatibleTower_restrict_pullback A
 
 /-- A genuine ordinary adelic bundle on each actual iterated native subspace,
 with all fields produced from original positive finite atoms. -/
 def nativeCompatibleTowerRestrictionOfPositiveAtoms (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) (hpos : ∀ ω : S.Ω, 0 < S.v {ω})
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
+    [hξ : ξ.IsDominated] [hpos : S.HasPositiveAtoms]
+    [hS : S.HasOnlyFinitePlaces] (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
     AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M) A where
   toNormFamily := ((ξ.scalarExtension (L := L)).scalarExtension (L := M)).restrict A
   isMeasurable := by
-    rw [← nativeRestrictionTowerBundle_normFamily ξ hξ hpos hS A]
-    exact (nativeRestrictionTowerBundle ξ hξ hpos hS A).isMeasurable
+    rw [← nativeRestrictionTowerBundle_normFamily ξ A]
+    exact (nativeRestrictionTowerBundle ξ A).isMeasurable
   dual_isMeasurable := by
-    rw [← nativeRestrictionTowerBundle_normFamily ξ hξ hpos hS A]
-    exact (nativeRestrictionTowerBundle ξ hξ hpos hS A).dual_isMeasurable
+    rw [← nativeRestrictionTowerBundle_normFamily ξ A]
+    exact (nativeRestrictionTowerBundle ξ A).dual_isMeasurable
   isDominated := by
-    rw [← nativeRestrictionTowerBundle_normFamily ξ hξ hpos hS A]
-    exact (nativeRestrictionTowerBundle ξ hξ hpos hS A).isDominated
+    rw [← nativeRestrictionTowerBundle_normFamily ξ A]
+    exact (nativeRestrictionTowerBundle ξ A).isDominated
 
 @[simp]
 theorem nativeCompatibleTowerRestrictionOfPositiveAtoms_toNormFamily (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) (hpos : ∀ ω : S.Ω, 0 < S.v {ω})
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
-    (ξ.nativeCompatibleTowerRestrictionOfPositiveAtoms hξ hpos hS A).toNormFamily =
+    [hξ : ξ.IsDominated] [hpos : S.HasPositiveAtoms]
+    [hS : S.HasOnlyFinitePlaces] (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
+    (ξ.nativeCompatibleTowerRestrictionOfPositiveAtoms A).toNormFamily =
       ((ξ.scalarExtension (L := L)).scalarExtension (L := M)).restrict A := rfl
 
 /-- Finite descent and the actual restricted associator produce determinant
 measurability on the iterated curve without target regularity. -/
 theorem IsDominated.compatibleTower_restrict_determinant_isMeasurable_of_positive_atoms
     (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin)
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
     (((ξ.scalarExtension (L := L)).scalarExtension (L := M)).restrict A).determinant.IsMeasurable :=
     by
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
-  let R := ξ.nativeAlgebraicRestrictionOfPositiveAtoms hξ hpos hS (A.map c.toLinearMap)
+  let R := ξ.nativeAlgebraicRestrictionOfPositiveAtoms (A.map c.toLinearMap)
   let T := R.compatibleTowerPullback (L := L)
   have hdet : T.toNormFamily.determinant.IsMeasurable :=
     R.toNormFamily.determinant_isMeasurable_compatibleTowerPullback
-      (hξ.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
-        ξ hpos hS (A.map c.toLinearMap))
-  rw [← nativeRestrictionTowerBundle_normFamily ξ hξ hpos hS A]
-  exact T.pullbackEquiv_determinant_isMeasurable (c.submoduleMap A) hdet
+      (hdet :=
+        (hξ.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+        ξ (A.map c.toLinearMap)))
+  rw [← nativeRestrictionTowerBundle_normFamily ξ A]
+  exact T.pullbackEquiv_determinant_isMeasurable (c.submoduleMap A) (hdet := hdet)
 
 variable [S.IsProper]
 
 /-- Canonical measurable-determinant degree of the literal iterated native
 restriction; determinant measurability and normalization are produced. -/
 def nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) (hpos : ∀ ω : S.Ω, 0 < S.v {ω})
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) (A : Submodule M (M ⊗[L] (L ⊗[K] E))) : ℝ :=
+    [hξ : ξ.IsDominated] [hpos : S.HasPositiveAtoms]
+    [hS : S.HasOnlyFinitePlaces] (A : Submodule M (M ⊗[L] (L ⊗[K] E))) : ℝ :=
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension L) M
-  (ξ.nativeCompatibleTowerRestrictionOfPositiveAtoms hξ hpos hS A).degreeOfMeasurableDeterminant
-    (hξ.compatibleTower_restrict_determinant_isMeasurable_of_positive_atoms
-      ξ hpos hS A)
-    (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M)
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L)
-        (by exact AdelicStructure.isRCLikeNormedField_of_forall_mem_Ωfin hS)))
+  (ξ.nativeCompatibleTowerRestrictionOfPositiveAtoms A).degreeOfMeasurableDeterminant
+    (hdet := (hξ.compatibleTower_restrict_determinant_isMeasurable_of_positive_atoms
+      ξ A))
+    (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M)
+      (hS := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L)
+        (hS := ⟨(by exact AdelicStructure.isRCLikeNormedField_of_forall_mem_Ωfin)⟩))⟩))⟩)
 
 /-- Every actual iterated native degree equals the actual direct native
 degree of its associator image, without hypotheses on the intermediate curve. -/
 theorem nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms_eq_direct (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) (hpos : ∀ ω : S.Ω, 0 < S.v {ω})
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
-    ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms hξ hpos hS A =
-      ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS
+    [hξ : ξ.IsDominated] [hpos : S.HasPositiveAtoms]
+    [hS : S.HasOnlyFinitePlaces] (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
+    ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms A =
+      ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms
         (A.map (TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E).toLinearMap) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension L) M
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
-  let R := ξ.nativeAlgebraicRestrictionOfPositiveAtoms hξ hpos hS (A.map c.toLinearMap)
+  let R := ξ.nativeAlgebraicRestrictionOfPositiveAtoms (A.map c.toLinearMap)
   let T := R.compatibleTowerPullback (L := L)
-  let W := ξ.nativeCompatibleTowerRestrictionOfPositiveAtoms hξ hpos hS A
+  let W := ξ.nativeCompatibleTowerRestrictionOfPositiveAtoms A
   let hdet := hξ.compatibleTower_restrict_determinant_isMeasurable_of_positive_atoms
-    ξ hpos hS A
-  let hN := AdelicStructure.isRCLikeNormedField_of_forall_mem_Ωfin hS
-  let hNT := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M)
-    (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN)
+    ξ A
+  let hN := AdelicStructure.isRCLikeNormedField_of_forall_mem_Ωfin (S := S)
+  let hNT := AdelicStructure.isRCLikeNormedField_algebraicExtension
+    (S := S.algebraicExtension L) (L := M)
+    (hS := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) (hS := ⟨hN⟩))⟩)
   have he : ∀ x z, T.toNormFamily.norm x
       ((c.submoduleMap A).toLinearMap.baseChange
         (((S.algebraicExtension L).algebraicExtension M).ϕ x).Completion z) =
@@ -165,20 +168,20 @@ theorem nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms_eq_direct (ξ : No
     exact DFunLike.congr_fun (congrArg (fun η => η.norm x)
       (ξ.scalarExtension_compatibleTower_restrict_pullback A)) z
   have hd := W.degreeOfMeasurableDeterminant_eq_of_completed_isometry
-    T (c.submoduleMap A) hdet hNT he
-  change W.degreeOfMeasurableDeterminant hdet hNT = _
+    T (c.submoduleMap A) (hdet := hdet) (hN := ⟨hNT⟩) he
+  change W.degreeOfMeasurableDeterminant (hdet := hdet) (hN := ⟨hNT⟩) = _
   rw [hd]
   exact R.degreeOfMeasurableDeterminant_compatibleTowerPullback
-    (hξ.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
-      ξ hpos hS (A.map c.toLinearMap)) hN
+    (hdet := (hξ.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+      ξ (A.map c.toLinearMap))) (hN := ⟨hN⟩)
 
 /-- Rank zero keeps the genuine empty-determinant degree zero. -/
 theorem nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms_eq_zero_of_finrank_eq_zero
-    (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin)
+    (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     (A : Submodule M (M ⊗[L] (L ⊗[K] E))) (hr : Module.finrank M A = 0) :
-    ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms hξ hpos hS A = 0 := by
-  rw [ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms_eq_direct hξ hpos hS A]
+    ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms A = 0 := by
+  rw [ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms_eq_direct A]
   apply ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms_eq_zero_of_finrank_eq_zero
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
   rw [← (c.submoduleMap A).finrank_eq, hr]

@@ -187,24 +187,24 @@ variable {K : Type*} [Field K] [NumberField K]
 
 /-- Actual normalized rational logarithmic norm integrals agree with the old ones. -/
 theorem numberFieldNormalize_integral_logNorm
-    (ξ : NormFamily (numberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric) (x : E)
+    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric] (x : E)
     (hx : Integrable (ξ.logNorm x) (numberFieldAdelicStructure K).v) :
-    (∫ ω, (ξ.numberFieldNormalize hξ).logNorm x ω
+    (∫ ω, (ξ.numberFieldNormalize).logNorm x ω
       ∂(normalizedNumberFieldAdelicStructure K).v) =
       ∫ ω, ξ.logNorm x ω ∂(numberFieldAdelicStructure K).v := by
   exact (integral_congr_ae (Filter.Eventually.of_forall
-    (fun ω => ξ.numberFieldNormalize_logNorm hξ x ω))).trans
+    (fun ω ↦ ξ.numberFieldNormalize_logNorm x ω))).trans
       (integral_numberFieldNormalizationExponent_mul (ξ.logNorm x) hx)
 
 /-- Actual normalized absolute logarithmic norm integrals agree with the old ones. -/
 theorem numberFieldNormalize_integral_abs_logNorm
-    (ξ : NormFamily (numberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric) (x : E)
+    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric] (x : E)
     (hx : Integrable (ξ.logNorm x) (numberFieldAdelicStructure K).v) :
-    (∫ ω, |(ξ.numberFieldNormalize hξ).logNorm x ω|
+    (∫ ω, |(ξ.numberFieldNormalize).logNorm x ω|
       ∂(normalizedNumberFieldAdelicStructure K).v) =
       ∫ ω, |ξ.logNorm x ω| ∂(numberFieldAdelicStructure K).v := by
   exact (integral_congr_ae (Filter.Eventually.of_forall
-    (fun ω => congrArg abs (ξ.numberFieldNormalize_logNorm hξ x ω)))).trans
+    (fun ω ↦ congrArg abs (ξ.numberFieldNormalize_logNorm x ω)))).trans
       (integral_abs_numberFieldNormalizationExponent_mul (ξ.logNorm x) hx)
 
 end ArakelovGeometry.NormFamily

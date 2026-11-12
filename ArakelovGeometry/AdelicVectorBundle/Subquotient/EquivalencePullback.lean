@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Determinant.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Determinant.Isometry
 import ArakelovGeometry.AdelicVectorBundle.Degree.IsometryDual
 import Mathlib.CategoryTheory.Category.Init
@@ -34,13 +35,13 @@ variable {M : Type u} [Field M] {T : AdelicStructure.{u, v} M}
 measurability produced by the completed transpose isometry. -/
 def pullbackEquiv (V : AdelicVectorBundle T Y) (e : X ≃ₗ[M] Y) :
     AdelicVectorBundle T X :=
-  V.pullback e.toLinearMap e.injective (by
+  V.pullback e.toLinearMap e.injective (hm := (by
     apply NormFamily.IsMeasurable.of_completed_isometry V.toNormFamily.dual
       (V.toNormFamily.pullback e.toLinearMap e.injective).dual e.dualMap
     · intro ω z
       let η := V.toNormFamily.pullback e.toLinearMap e.injective
       exact η.dualEquiv_norm_eq_of_completed_isometry V.toNormFamily ω e (fun _ => rfl) z
-    · exact V.dual_isMeasurable)
+    · exact V.dual_isMeasurable))
 
 @[simp]
 theorem pullbackEquiv_toNormFamily (V : AdelicVectorBundle T Y) (e : X ≃ₗ[M] Y) :
@@ -57,21 +58,21 @@ theorem pullbackEquiv_inverse_norm (V : AdelicVectorBundle T Y) (e : X ≃ₗ[M]
 
 /-- Actual determinant measurability transports from the original bundle. -/
 theorem pullbackEquiv_determinant_isMeasurable (V : AdelicVectorBundle T Y)
-    (e : X ≃ₗ[M] Y) (hdet : V.toNormFamily.determinant.IsMeasurable) :
+    (e : X ≃ₗ[M] Y) [hdet : V.toNormFamily.determinant.IsMeasurable] :
     (V.pullbackEquiv e).toNormFamily.determinant.IsMeasurable :=
   V.toNormFamily.determinant_isMeasurable_of_completed_isometry
-    (V.pullbackEquiv e).toNormFamily e.symm (V.pullbackEquiv_inverse_norm e) hdet
+    (V.pullbackEquiv e).toNormFamily e.symm (V.pullbackEquiv_inverse_norm e)
 
 /-- The genuine equivalence pullback preserves the canonical determinant
 degree; its determinant measurability is produced, without base regularity. -/
 theorem degreeOfMeasurableDeterminant_pullbackEquiv [T.IsProper]
     (V : AdelicVectorBundle T Y) (e : X ≃ₗ[M] Y)
-    (hdet : V.toNormFamily.determinant.IsMeasurable)
-    (hN : ∀ ω ∈ T.Ωinf, IsRCLikeNormedField (T.ϕ ω).Completion) :
+    [hdet : V.toNormFamily.determinant.IsMeasurable]
+    [hN : T.IsArchimedeanNormalized] :
     (V.pullbackEquiv e).degreeOfMeasurableDeterminant
-      (V.pullbackEquiv_determinant_isMeasurable e hdet) hN =
-        V.degreeOfMeasurableDeterminant hdet hN :=
+      (hdet := (V.pullbackEquiv_determinant_isMeasurable e)) =
+        V.degreeOfMeasurableDeterminant :=
   (V.degreeOfMeasurableDeterminant_eq_of_completed_isometry
-    (V.pullbackEquiv e) e.symm hdet hN (V.pullbackEquiv_inverse_norm e)).symm
+    (V.pullbackEquiv e) e.symm (V.pullbackEquiv_inverse_norm e)).symm
 
 end ArakelovGeometry.AdelicVectorBundle

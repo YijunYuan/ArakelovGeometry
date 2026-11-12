@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Dual.Restriction
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.PositiveAtoms.MeasurableQuotient
@@ -31,7 +32,7 @@ variable {K E m : Type*} [Field K] {S : AdelicStructure K}
 
 omit [FiniteDimensional K E] in
 private theorem ofBasis_eq_mixed_of_all_finite (b : Module.Basis m K E)
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    [hS : S.HasOnlyFinitePlaces] :
     ofBasis S E b = ofBasisMixed S E b := by
   ext ω z
   exact (ofBasisMixed_norm_of_finite b ω (hS ω) z).symm
@@ -39,41 +40,41 @@ private theorem ofBasis_eq_mixed_of_all_finite (b : Module.Basis m K E)
 /-- The genuine completed dual of a coordinate maximum family is the dual-basis
 coordinate maximum family when every place is non-Archimedean. -/
 theorem ofBasis_dual_of_all_finite [DecidableEq m] (b : Module.Basis m K E)
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    [hS : S.HasOnlyFinitePlaces] :
     (ofBasis S E b).dual = ofBasis S (Module.Dual K E) b.dualBasis := by
-  rw [ofBasis_eq_mixed_of_all_finite b hS, ofBasisMixed_dual]
+  rw [ofBasis_eq_mixed_of_all_finite (S := S) b, ofBasisMixed_dual]
 
 /-- The actual coordinate dual family has measurable rational evaluations. -/
 theorem ofBasis_dual_isMeasurable_of_all_finite (b : Module.Basis m K E)
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) : (ofBasis S E b).dual.IsMeasurable := by
+    [hS : S.HasOnlyFinitePlaces] : (ofBasis S E b).dual.IsMeasurable := by
   classical
-  rw [ofBasis_dual_of_all_finite b hS]
+  rw [ofBasis_dual_of_all_finite b]
   exact ofBasis_isMeasurable b.dualBasis
 
 /-- The canonical dual of every actual coordinate quotient is measurable. -/
 theorem ofBasis_quotient_dual_isMeasurable_of_all_finite (b : Module.Basis m K E)
-    (F : Submodule K E) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    (F : Submodule K E) [hS : S.HasOnlyFinitePlaces] :
     ((ofBasis S E b).quotient F).dual.IsMeasurable := by
   classical
   rw [(ofBasis S E b).quotient_dual_annihilator F]
-  exact ((ofBasis_dual_isMeasurable_of_all_finite b hS).restrict F.dualAnnihilator).pullback
+  exact ((ofBasis_dual_isMeasurable_of_all_finite b).restrict F.dualAnnihilator).pullback
     F.dualQuotEquivDualAnnihilator.toLinearMap F.dualQuotEquivDualAnnihilator.injective
 
 /-- The actual dual of every coordinate subspace restriction is measurable. -/
 theorem ofBasis_restrict_dual_isMeasurable_of_all_finite (b : Module.Basis m K E)
-    (F : Submodule K E) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    (F : Submodule K E) [hS : S.HasOnlyFinitePlaces] :
     ((ofBasis S E b).restrict F).dual.IsMeasurable := by
   classical
   have hξ : (ofBasis S E b).IsUltrametric := by
-    rw [ofBasis_eq_mixed_of_all_finite b hS]
+    rw [ofBasis_eq_mixed_of_all_finite (S := S) b]
     exact ofBasisMixed_isUltrametric b
   have harch : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion := by
     intro ω hω
     exact False.elim (hω (hS ω))
   have hm : ((ofBasis S E b).dual.quotient F.dualAnnihilator).IsMeasurable := by
-    rw [ofBasis_dual_of_all_finite b hS]
-    exact ofBasis_quotient_isMeasurable_of_all_finite b.dualBasis F.dualAnnihilator hS
-  rw [(ofBasis S E b).dual_quotient_annihilator hξ harch F] at hm
+    rw [ofBasis_dual_of_all_finite b]
+    exact ofBasis_quotient_isMeasurable_of_all_finite b.dualBasis F.dualAnnihilator
+  rw [(ofBasis S E b).dual_quotient_annihilator (hξ := hξ) (hS := ⟨harch⟩) F] at hm
   exact ((ofBasis S E b).restrict F).dual.isMeasurable_pullback_iff
     (Subspace.quotAnnihilatorEquiv F) |>.mp hm
 

@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Dual.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.UnitBall.Spanning
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import ArakelovGeometry.NumberTheory.NumberField.Model.Open.Localization
 
@@ -96,9 +97,9 @@ theorem scaledCoordinate_mem_rationalLocalRing {ι : Type*}
 using produced scaled dual coordinates. -/
 def localUnitBallCoefficientEmbedding {ι : Type*}
     (ξ : NormFamily S E) (b : Module.Basis ι K E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hξ : ξ.IsUltrametric) (a : 𝓞 K) (ha : ∀ i,
+    [hξ : ξ.IsUltrametric] (a : 𝓞 K) (ha : ∀ i,
       ξ.dual.norm ω (1 ⊗ₜ[K] (algebraMap (𝓞 K) K a • b.coord i)) ≤ 1) :
-    ξ.rationalUnitBallModule ω hω hξ →ₗ[S.rationalLocalRing ω hω]
+    ξ.rationalUnitBallModule ω hω →ₗ[S.rationalLocalRing ω hω]
       (ι → S.rationalLocalRing ω hω) where
   toFun x i := ⟨algebraMap (𝓞 K) K a * b.coord i x,
     ξ.scaledCoordinate_mem_rationalLocalRing b ω hω a ha x.property i⟩
@@ -120,18 +121,18 @@ omit [NumberField K] in
 @[simp]
 theorem localUnitBallCoefficientEmbedding_coe {ι : Type*}
     (ξ : NormFamily S E) (b : Module.Basis ι K E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hξ : ξ.IsUltrametric) (a : 𝓞 K) (ha : ∀ i,
+    [hξ : ξ.IsUltrametric] (a : 𝓞 K) (ha : ∀ i,
       ξ.dual.norm ω (1 ⊗ₜ[K] (algebraMap (𝓞 K) K a • b.coord i)) ≤ 1)
-    (x : ξ.rationalUnitBallModule ω hω hξ) (i : ι) :
-    (ξ.localUnitBallCoefficientEmbedding b ω hω hξ a ha x i : K) =
+    (x : ξ.rationalUnitBallModule ω hω) (i : ι) :
+    (ξ.localUnitBallCoefficientEmbedding b ω hω a ha x i : K) =
       algebraMap (𝓞 K) K a * b.coord i (x : E) := rfl
 
 /-- Nonzero scaling preserves actual basis-coordinate injectivity. -/
 theorem localUnitBallCoefficientEmbedding_injective {ι : Type*}
     (ξ : NormFamily S E) (b : Module.Basis ι K E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hξ : ξ.IsUltrametric) (a : 𝓞 K) (ha0 : a ≠ 0) (ha : ∀ i,
+    [hξ : ξ.IsUltrametric] (a : 𝓞 K) (ha0 : a ≠ 0) (ha : ∀ i,
       ξ.dual.norm ω (1 ⊗ₜ[K] (algebraMap (𝓞 K) K a • b.coord i)) ≤ 1) :
-    Function.Injective (ξ.localUnitBallCoefficientEmbedding b ω hω hξ a ha) := by
+    Function.Injective (ξ.localUnitBallCoefficientEmbedding b ω hω a ha) := by
   have haK : algebraMap (𝓞 K) K a ≠ 0 :=
     (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 K) K)).mpr ha0
   intro x y h
@@ -144,34 +145,34 @@ theorem localUnitBallCoefficientEmbedding_injective {ι : Type*}
 produce finite generation of the literal local unit ball. -/
 theorem fg_rationalUnitBallModule_of_basis {ι : Type*} [Finite ι]
     (ξ : NormFamily S E) (b : Module.Basis ι K E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hnt : (S.ϕ ω).IsNontrivial) (hξ : ξ.IsUltrametric) :
-    (ξ.rationalUnitBallModule ω hω hξ).FG := by
+    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (ξ.rationalUnitBallModule ω hω).FG := by
   let := S.isNoetherianRing_rationalLocalRing ω hω hnt
   obtain ⟨a, ha0, ha⟩ := ξ.exists_integral_dualBasis_unitBound b ω hω hnt
   have hfinite : Module.Finite (S.rationalLocalRing ω hω)
-      (ξ.rationalUnitBallModule ω hω hξ) :=
-    Module.Finite.of_injective (ξ.localUnitBallCoefficientEmbedding b ω hω hξ a ha)
-      (ξ.localUnitBallCoefficientEmbedding_injective b ω hω hξ a ha0 ha)
+      (ξ.rationalUnitBallModule ω hω) :=
+    Module.Finite.of_injective (ξ.localUnitBallCoefficientEmbedding b ω hω a ha)
+      (ξ.localUnitBallCoefficientEmbedding_injective b ω hω a ha0 ha)
   exact Module.Finite.iff_fg.mp hfinite
 
 /-- Every finite-dimensional literal rational local unit ball is finitely
 generated at a genuine nontrivial finite number-field place, without any
 global coherence or domination hypothesis. -/
 theorem fg_rationalUnitBallModule (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hnt : (S.ϕ ω).IsNontrivial) (hξ : ξ.IsUltrametric) :
-    (ξ.rationalUnitBallModule ω hω hξ).FG :=
-  ξ.fg_rationalUnitBallModule_of_basis (Module.finBasis K E) ω hω hnt hξ
+    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (ξ.rationalUnitBallModule ω hω).FG :=
+  ξ.fg_rationalUnitBallModule_of_basis (Module.finBasis K E) ω hω hnt
 
 /-- The actual normalized number-field curve has pointwise nontrivial values,
 so every finite-place literal local unit ball is actually finitely generated. -/
 theorem fg_normalizedRationalUnitBallModule
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
     (ω : (normalizedNumberFieldAdelicStructure K).Ω)
-    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) (hξ : ξ.IsUltrametric) :
-    (ξ.rationalUnitBallModule ω hω hξ).FG :=
+    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hξ : ξ.IsUltrametric] :
+    (ξ.rationalUnitBallModule ω hω).FG :=
   ξ.fg_rationalUnitBallModule ω hω
     (NormalizedNumberFieldPlaces.parameter_isNontrivial
-      (NormalizedNumberFieldPlaces.parameterMeasurableEquivNontrivialPlace.symm ω)) hξ
+      (NormalizedNumberFieldPlaces.parameterMeasurableEquivNontrivialPlace.symm ω))
 
 end ArakelovGeometry.NormFamily
 

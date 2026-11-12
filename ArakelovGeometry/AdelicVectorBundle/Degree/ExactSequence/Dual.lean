@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.ExactSequence.Basic
 import ArakelovGeometry.AdelicVectorBundle.Degree.Isometry
 import ArakelovGeometry.AdelicVectorBundle.Dual.Restriction
@@ -33,12 +34,12 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 equal degrees under their canonical rational isomorphism. -/
 theorem degree_dual_quotient_eq_degree_restrict_annihilator [S.IsProper]
     (V : AdelicVectorBundle S E) (W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    ((V.quotientOfMeasurableBase W hS).dualOfMeasurableBase hS).degree hS hN =
-      ((V.dualOfMeasurableBase hS).restrictOfMeasurableBase W.dualAnnihilator hS).degree
-        hS hN := by
-  apply degree_eq_of_completed_isometry _ _ W.dualQuotEquivDualAnnihilator hS hN
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    ((V.quotientOfMeasurableBase W).dualOfMeasurableBase).degree =
+      ((V.dualOfMeasurableBase).restrictOfMeasurableBase W.dualAnnihilator).degree
+        := by
+  apply degree_eq_of_completed_isometry _ _ W.dualQuotEquivDualAnnihilator
   intro ω z
   simp only [dualOfMeasurableBase_toNormFamily, quotientOfMeasurableBase_toNormFamily,
     restrictOfMeasurableBase_toNormFamily]
@@ -48,64 +49,64 @@ theorem degree_dual_quotient_eq_degree_restrict_annihilator [S.IsProper]
 of the actual restricted-space dual under the source local hypotheses. -/
 theorem degree_dual_quotient_annihilator_eq_degree_dual_restrict [S.IsProper]
     (V : AdelicVectorBundle S E) (W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsUltrametric) :
-    ((V.dualOfMeasurableBase hS).quotientOfMeasurableBase W.dualAnnihilator hS).degree
-        hS hN =
-      ((V.restrictOfMeasurableBase W hS).dualOfMeasurableBase hS).degree hS hN := by
-  apply degree_eq_of_completed_isometry _ _ (Subspace.quotAnnihilatorEquiv W) hS hN
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsUltrametric] :
+    ((V.dualOfMeasurableBase).quotientOfMeasurableBase W.dualAnnihilator).degree
+        =
+      ((V.restrictOfMeasurableBase W).dualOfMeasurableBase).degree := by
+  apply degree_eq_of_completed_isometry _ _ (Subspace.quotAnnihilatorEquiv W)
   intro ω z
   simp only [dualOfMeasurableBase_toNormFamily, quotientOfMeasurableBase_toNormFamily,
     restrictOfMeasurableBase_toNormFamily]
-  exact (V.toNormFamily.dual_quotient_annihilator_norm_eq hV hN W ω z).symm
+  exact (V.toNormFamily.dual_quotient_annihilator_norm_eq W ω z).symm
 
 /-- The actual degree minus determinant discrepancy is subadditive for the
 restriction and quotient of an ultrametric-outside-infinity bundle. -/
 theorem degree_sub_determinantDiscrepancy_le_restrict_add_quotient [S.IsProper]
     (V : AdelicVectorBundle S E) (W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsUltrametric) :
-    V.degree hS hN - V.determinantDiscrepancy ≤
-      ((V.restrictOfMeasurableBase W hS).degree hS hN -
-        (V.restrictOfMeasurableBase W hS).determinantDiscrepancy) +
-      ((V.quotientOfMeasurableBase W hS).degree hS hN -
-        (V.quotientOfMeasurableBase W hS).determinantDiscrepancy) := by
-  have h := (V.dualOfMeasurableBase hS).degree_restrict_add_degree_quotient_le
-    W.dualAnnihilator hS hN
-  rw [← V.degree_dual_quotient_eq_degree_restrict_annihilator W hS hN,
-    V.degree_dual_quotient_annihilator_eq_degree_dual_restrict W hS hN hV] at h
-  rw [V.determinantDiscrepancy_eq_degree_add_degree_dual hS hN,
-    (V.restrictOfMeasurableBase W hS).determinantDiscrepancy_eq_degree_add_degree_dual hS hN,
-    (V.quotientOfMeasurableBase W hS).determinantDiscrepancy_eq_degree_add_degree_dual hS hN]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsUltrametric] :
+    V.degree - V.determinantDiscrepancy ≤
+      ((V.restrictOfMeasurableBase W).degree -
+        (V.restrictOfMeasurableBase W).determinantDiscrepancy) +
+      ((V.quotientOfMeasurableBase W).degree -
+        (V.quotientOfMeasurableBase W).determinantDiscrepancy) := by
+  have h := (V.dualOfMeasurableBase).degree_restrict_add_degree_quotient_le
+    W.dualAnnihilator
+  rw [← V.degree_dual_quotient_eq_degree_restrict_annihilator W,
+    V.degree_dual_quotient_annihilator_eq_degree_dual_restrict W] at h
+  rw [V.determinantDiscrepancy_eq_degree_add_degree_dual,
+    (V.restrictOfMeasurableBase W).determinantDiscrepancy_eq_degree_add_degree_dual,
+    (V.quotientOfMeasurableBase W).determinantDiscrepancy_eq_degree_add_degree_dual]
   linarith
 
 /-- Vanishing ambient Hermitian discrepancy and nonnegative end discrepancies
 give the reverse of the ordinary two-step degree lower bound. -/
 theorem degree_le_restrict_add_degree_quotient_of_isHermitian [S.IsProper]
     (V : AdelicVectorBundle S E) (W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) :
-    V.degree hS hN ≤ (V.restrictOfMeasurableBase W hS).degree hS hN +
-      (V.quotientOfMeasurableBase W hS).degree hS hN := by
-  have h := V.degree_sub_determinantDiscrepancy_le_restrict_add_quotient W hS hN hV.1
-  have hz := V.determinantDiscrepancy_eq_zero_of_isHermitian hN hV
-  have hR := (V.restrictOfMeasurableBase W hS).determinantDiscrepancy_nonneg
-  have hQ := (V.quotientOfMeasurableBase W hS).determinantDiscrepancy_nonneg
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] :
+    V.degree ≤ (V.restrictOfMeasurableBase W).degree +
+      (V.quotientOfMeasurableBase W).degree := by
+  have h := V.degree_sub_determinantDiscrepancy_le_restrict_add_quotient W (hV := hV.1)
+  have hz := V.determinantDiscrepancy_eq_zero_of_isHermitian
+  have hR := (V.restrictOfMeasurableBase W).determinantDiscrepancy_nonneg
+  have hQ := (V.quotientOfMeasurableBase W).determinantDiscrepancy_nonneg
   linarith
 
 /-- Exact additivity of the genuine restriction and quotient degrees for
 a Hermitian bundle, including zero ambient spaces and zero ends. -/
 theorem degree_restrict_add_degree_quotient_eq_of_isHermitian [S.IsProper]
     (V : AdelicVectorBundle S E) (W : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) :
-    (V.restrictOfMeasurableBase W hS).degree hS hN +
-      (V.quotientOfMeasurableBase W hS).degree hS hN = V.degree hS hN :=
-  le_antisymm (V.degree_restrict_add_degree_quotient_le W hS hN)
-    (V.degree_le_restrict_add_degree_quotient_of_isHermitian W hS hN hV)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] :
+    (V.restrictOfMeasurableBase W).degree +
+      (V.quotientOfMeasurableBase W).degree = V.degree :=
+  le_antisymm (V.degree_restrict_add_degree_quotient_le W)
+    (V.degree_le_restrict_add_degree_quotient_of_isHermitian W)
 
 end ArakelovGeometry.AdelicVectorBundle

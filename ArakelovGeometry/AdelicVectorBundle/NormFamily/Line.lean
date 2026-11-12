@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -54,7 +55,9 @@ theorem isMeasurable_iff_norm_one_vector (ξ : NormFamily S E)
     ξ.IsMeasurable ↔
       Measurable (fun ω ↦ ξ.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] x)) := by
   refine ⟨fun h ↦ h x, ?_⟩
-  intro h y
+  intro h
+  constructor
+  intro y
   obtain ⟨a, rfl⟩ := exists_smul_eq_of_finrank_one hr hx y
   simpa only [norm_rational_smul, Pi.mul_def] using
     (S.measurable_absValue a).mul h
@@ -72,6 +75,7 @@ theorem dual_norm_rational_eq_div (ξ : NormFamily S E) (hr : Module.finrank K E
 /-- The dual of a measurable line family is measurable, with no density assumption. -/
 theorem IsMeasurable.dual_of_finrank_one {ξ : NormFamily S E} (hξ : ξ.IsMeasurable)
     (hr : Module.finrank K E = 1) : ξ.dual.IsMeasurable := by
+  constructor
   have hn : Nontrivial E := Module.nontrivial_of_finrank_pos (by omega : 0 < Module.finrank K E)
   obtain ⟨x, hx⟩ := exists_ne (0 : E)
   intro ℓ
@@ -84,7 +88,9 @@ theorem isUpperDominated_iff_logNorm_one_vector (ξ : NormFamily S E)
     (hr : Module.finrank K E = 1) {x : E} (hx : x ≠ 0) :
     ξ.IsUpperDominated ↔ HasIntegrableUpperBound (ξ.logNorm x) S.v := by
   refine ⟨fun h ↦ h x hx, ?_⟩
-  intro h y hy
+  intro h
+  constructor
+  intro y hy
   obtain ⟨a, rfl⟩ := exists_smul_eq_of_finrank_one hr hx y
   have ha : a ≠ 0 := by rintro rfl; simp at hy
   have he : ξ.logNorm (a • x) = (fun ω ↦ Real.log ((S.ϕ ω) a)) + ξ.logNorm x :=
@@ -98,7 +104,9 @@ theorem isLowerDominated_iff_logNorm_one_vector (ξ : NormFamily S E)
     (hr : Module.finrank K E = 1) {x : E} (hx : x ≠ 0) :
     ξ.IsLowerDominated ↔ HasIntegrableLowerBound (ξ.logNorm x) S.v := by
   refine ⟨fun h ↦ h x hx, ?_⟩
-  intro h y hy
+  intro h
+  constructor
+  intro y hy
   obtain ⟨a, rfl⟩ := exists_smul_eq_of_finrank_one hr hx y
   have ha : a ≠ 0 := by rintro rfl; simp at hy
   have he : ξ.logNorm (a • x) = (fun ω ↦ Real.log ((S.ϕ ω) a)) + ξ.logNorm x :=
@@ -141,7 +149,7 @@ theorem isDominated_iff_logNorm_bounds (ξ : NormFamily S E)
     ξ.IsDominated ↔ HasIntegrableBounds (ξ.logNorm x) S.v := by
   refine ⟨fun h ↦ h.logNorm_bounds hx, ?_⟩
   intro h
-  refine ⟨(ξ.isUpperDominated_iff_logNorm_one_vector hr hx).2 h.1, ?_⟩
+  refine ⟨(ξ.isUpperDominated_iff_logNorm_one_vector hr hx).2 h.1, ⟨?_⟩⟩
   intro ℓ hℓ
   have he : ξ.dual.logNorm ℓ = (fun ω ↦ Real.log ((S.ϕ ω) (ℓ x))) +
       (fun ω ↦ -ξ.logNorm x ω) := by

@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Minkowski.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.FirstSlope
 import ArakelovGeometry.AdelicVectorBundle.Minima.StrongMinkowski
 import Mathlib.CategoryTheory.Category.Init
@@ -34,17 +35,17 @@ variable {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 /-- The actual strong ordered-minimum bound and first-slope defect give the
 corrected first-minimum estimate, without assuming attainment. -/
 theorem maximalSlope_le_maximalLogarithmicMinimum_add_of_strongMinkowski
-    (V : AdelicVectorBundle S E) (hV : V.toNormFamily.IsUltrametric)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} hS hN C)
+    (V : AdelicVectorBundle S E) [hV : V.toNormFamily.IsUltrametric]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} C)
     (hr : 0 < Module.finrank K E) :
-    V.maximalSlope hS hN ≤ V.maximalLogarithmicMinimum +
+    V.maximalSlope ≤ V.maximalLogarithmicMinimum +
       ((C + (S.v S.Ωinf).toReal / 2) * Real.log (Module.finrank K E) : ℝ) := by
-  have hfirst := V.maximalSlope_le_generalHNOrderedSlope_zero_add_log_rank hS hN hV hr
+  have hfirst := V.maximalSlope_le_generalHNOrderedSlope_zero_add_log_rank hr
   have hminimum := V.generalHNOrderedSlope_le_logarithmicMinimum_add_log_rank
-    hV hS hN hM ⟨0, hr⟩
-  change (V.generalHNOrderedSlope hS hN ⟨0, hr⟩ : EReal) ≤
+     hM ⟨0, hr⟩
+  change (V.generalHNOrderedSlope ⟨0, hr⟩ : EReal) ≤
     V.maximalLogarithmicMinimum + (C * Real.log (Module.finrank K E) : ℝ) at hminimum
   rw [EReal.coe_add] at hfirst
   have h := hfirst.trans (add_le_add hminimum (le_refl
@@ -57,14 +58,14 @@ theorem maximalSlope_le_maximalLogarithmicMinimum_add_of_strongMinkowski
 
 /-- In rank one the produced correction is zero. -/
 theorem maximalSlope_le_maximalLogarithmicMinimum_of_strongMinkowski_finrank_one
-    (V : AdelicVectorBundle S E) (hV : V.toNormFamily.IsUltrametric)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} hS hN C)
+    (V : AdelicVectorBundle S E) [hV : V.toNormFamily.IsUltrametric]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} C)
     (hr : Module.finrank K E = 1) :
-    V.maximalSlope hS hN ≤ V.maximalLogarithmicMinimum := by
+    V.maximalSlope ≤ V.maximalLogarithmicMinimum := by
   have h := V.maximalSlope_le_maximalLogarithmicMinimum_add_of_strongMinkowski
-    hV hS hN hM (by omega)
+     hM (by omega)
   simpa only [hr, Nat.cast_one, Real.log_one, mul_zero, EReal.coe_zero, add_zero] using h
 
 variable {E' : Type (max u w)} [AddCommGroup E'] [Module K E'] [FiniteDimensional K E']
@@ -73,41 +74,41 @@ variable {E' : Type (max u w)} [AddCommGroup E'] [Module K E'] [FiniteDimensiona
 Hermitian ordered slope is the maximal slope. This retains the same level. -/
 theorem maximalSlope_le_maximalLogarithmicMinimum_add_of_strongMinkowski_hermitian
     (V : AdelicVectorBundle S E')
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN)
-    {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, max u w} hS hN C)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian]
+    {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, max u w} C)
     (hr : 0 < Module.finrank K E') :
-    V.maximalSlope hS hN ≤ V.maximalLogarithmicMinimum +
+    V.maximalSlope ≤ V.maximalLogarithmicMinimum +
       (C * Real.log (Module.finrank K E') : ℝ) := by
   have h := V.generalHNOrderedSlope_le_logarithmicMinimum_add_log_rank
-    hV.1 hS hN hM ⟨0, hr⟩
-  rw [V.generalHNOrderedSlope_eq_hermitianHNOrderedSlope hS hN hV,
-    V.hermitianHNOrderedSlope_zero_eq_maximalSlope hS hN hV hr] at h
+    (hV := hV.1) hM ⟨0, hr⟩
+  rw [V.generalHNOrderedSlope_eq_hermitianHNOrderedSlope,
+    V.hermitianHNOrderedSlope_zero_eq_maximalSlope hr] at h
   exact h
 
 end AdelicVectorBundle
 
 namespace AdelicStructure
-variable {hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield}
-  {hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion} {C : ℝ}
+variable [hS : S.HasMeasurableBase]
+  [hN : S.IsArchimedeanNormalized] {C : ℝ}
 
 /-- Source Remark 4.3.81 with the actual general first-slope correction,
 quantified over all original admissible positive-rank bundles. -/
 theorem HasStrongMinkowskiPropertyAtLevel.minkowski_add_half_archimedeanMass
-    (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} hS hN C) :
-    S.HasMinkowskiPropertyAtLevel.{u, v, w} hS hN (C + (S.v S.Ωinf).toReal / 2) := by
+    (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} C) :
+    S.HasMinkowskiPropertyAtLevel.{u, v, w} (C + (S.v S.Ωinf).toReal / 2) := by
   refine ⟨add_nonneg hM.1 (div_nonneg ENNReal.toReal_nonneg (by norm_num)),
     fun E _ _ _ V hr hV => ?_⟩
   exact (EReal.sub_le_iff_le_add (Or.inl (EReal.coe_ne_bot _))
     (Or.inl (EReal.coe_ne_top _))).mpr
-      (V.maximalSlope_le_maximalLogarithmicMinimum_add_of_strongMinkowski hV hS hN hM hr)
+      (V.maximalSlope_le_maximalLogarithmicMinimum_add_of_strongMinkowski (hV := hV) hM hr)
 
 /-- Zero Archimedean measure removes the correction, even if the locus
 contains points of measure zero. -/
 theorem HasStrongMinkowskiPropertyAtLevel.minkowski_of_archimedeanMass_eq_zero
-    (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} hS hN C)
-    (hzero : S.v S.Ωinf = 0) : S.HasMinkowskiPropertyAtLevel.{u, v, w} hS hN C := by
+    (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} C)
+    (hzero : S.v S.Ωinf = 0) : S.HasMinkowskiPropertyAtLevel.{u, v, w} C := by
   simpa only [hzero, ENNReal.toReal_zero, zero_div, add_zero] using
     hM.minkowski_add_half_archimedeanMass
 

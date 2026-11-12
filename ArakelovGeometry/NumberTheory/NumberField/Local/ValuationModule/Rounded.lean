@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Local.ValuationModule.Basic
+
 import ArakelovGeometry.NumberTheory.NumberField.Local.Prime.DominationThresholds
 import ArakelovGeometry.NumberTheory.NumberField.Local.ValuationModule.Finite
 
@@ -43,12 +44,12 @@ omit [NumberField K] in
 /-- Injective actual prime indexing transports the proved weighted-gap
 negative ceiling support to finite positive actual prime support. -/
 theorem IsLowerDominated.finite_positive_roundedPrimeBound
-    (hξ : ξ.IsLowerDominated) (hμ : ∀ ω, 0 < S.v {ω}) {x : E} (hx : x ≠ 0)
+    (hξ : ξ.IsLowerDominated) [hμ : S.HasPositiveAtoms] {x : E} (hx : x ≠ 0)
     (e : IsDedekindDomain.HeightOneSpectrum (𝓞 K) → S.Ω) (he : Function.Injective e)
     (γ : S.Ω → ℝ) (hγ : ∀ p, 0 < γ (e p)) {ε : ℝ} (hε : 0 < ε)
     (hgap : ∀ p, ε ≤ S.v.real {e p} * γ (e p)) :
     {p | 0 < ξ.roundedPrimeBound x e γ p}.Finite := by
-  have hfinite := hξ.finite_negative_rounded_orders hμ hx (Set.range e) γ
+  have hfinite := hξ.finite_negative_rounded_orders hx (Set.range e) γ
     (fun ω ⟨p, hp⟩ => hp ▸ hγ p) hε (fun ω ⟨p, hp⟩ => hp ▸ hgap p)
   have hpre := Set.Finite.preimage (fun _ _ _ _ h => he h) hfinite
   refine hpre.subset ?_
@@ -58,7 +59,7 @@ theorem IsLowerDominated.finite_positive_roundedPrimeBound
 /-- The rounded actual valuation module has a genuine nonzero actual
 integer common denominator, including the possible zero-module case. -/
 theorem IsLowerDominated.exists_rounded_valuation_common_denominator
-    (hξ : ξ.IsLowerDominated) (hμ : ∀ ω, 0 < S.v {ω}) {x : E} (hx : x ≠ 0)
+    (hξ : ξ.IsLowerDominated) [hμ : S.HasPositiveAtoms] {x : E} (hx : x ≠ 0)
     (e : IsDedekindDomain.HeightOneSpectrum (𝓞 K) → S.Ω) (he : Function.Injective e)
     (γ : S.Ω → ℝ) (hγ : ∀ p, 0 < γ (e p)) {ε : ℝ} (hε : 0 < ε)
     (hgap : ∀ p, ε ≤ S.v.real {e p} * γ (e p)) :
@@ -66,17 +67,17 @@ theorem IsLowerDominated.exists_rounded_valuation_common_denominator
       (ξ.roundedPrimeBound x e γ),
       algebraMap (𝓞 K) K d * a ∈ (algebraMap (𝓞 K) K).range :=
   FiniteValuation.exists_common_denominator_of_finite_positive
-    (hξ.finite_positive_roundedPrimeBound hμ hx e he γ hγ hε hgap)
+    (hξ.finite_positive_roundedPrimeBound hx e he γ hγ hε hgap)
 
 /-- The actual rounded valuation module is finitely generated; this
 conclusion is produced from domination rather than assumed as a certificate. -/
 theorem IsLowerDominated.fg_rounded_valuationModule
-    (hξ : ξ.IsLowerDominated) (hμ : ∀ ω, 0 < S.v {ω}) {x : E} (hx : x ≠ 0)
+    (hξ : ξ.IsLowerDominated) [hμ : S.HasPositiveAtoms] {x : E} (hx : x ≠ 0)
     (e : IsDedekindDomain.HeightOneSpectrum (𝓞 K) → S.Ω) (he : Function.Injective e)
     (γ : S.Ω → ℝ) (hγ : ∀ p, 0 < γ (e p)) {ε : ℝ} (hε : 0 < ε)
     (hgap : ∀ p, ε ≤ S.v.real {e p} * γ (e p)) :
     (FiniteValuation.valuationModule (K := K) (ξ.roundedPrimeBound x e γ)).FG :=
   FiniteValuation.fg_valuationModule_of_finite_positive
-    (hξ.finite_positive_roundedPrimeBound hμ hx e he γ hγ hε hgap)
+    (hξ.finite_positive_roundedPrimeBound hx e he γ hγ hε hgap)
 
 end ArakelovGeometry.NormFamily

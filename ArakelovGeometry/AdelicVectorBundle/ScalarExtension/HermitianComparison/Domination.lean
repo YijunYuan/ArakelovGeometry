@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Hermitian.Basic
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integral
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.BasisComparison
@@ -38,20 +39,19 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {L : Type w} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (ξ : NormFamily S E)
-  (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-  (hL : ∀ x ∈ (S.algebraicExtension L).Ωinf,
-    IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion)
-  (hξ : ξ.IsHermitian hS)
+  [hS : S.IsArchimedeanNormalized]
+  [hL : (S.algebraicExtension L).IsArchimedeanNormalized]
+  [hξ : ξ.IsHermitian]
 
 /-- The actual Hermitian extension contracts every original rational vector.
 At infinite places the norm is exactly preserved. -/
 theorem hermitianScalarExtension_norm_one_tmul_le (x : S.ParameterSpaceExtension L)
     (e : E) :
-    (hermitianScalarExtension ξ hS hL hξ).norm x
+    (hermitianScalarExtension (L := L) ξ).norm x
       ((1 : x.abv.Completion) ⊗ₜ[L] ((1 : L) ⊗ₜ[K] e)) ≤
       ξ.norm x.base ((1 : (S.ϕ x.base).Completion) ⊗ₜ[K] e) := by
   by_cases hx : x ∈ (S.algebraicExtension L).Ωfin
-  · exact (hermitianScalarExtension_norm_of_finite ξ hS hL hξ x hx
+  · exact (hermitianScalarExtension_norm_of_finite ξ x hx
       ((1 : x.abv.Completion) ⊗ₜ[L] ((1 : L) ⊗ₜ[K] e))).trans_le
       ((ξ.injectiveScalarExtension_norm_le_scalarExtension_norm x _).trans
         (ξ.scalarExtension_norm_one_tmul_le x e))
@@ -59,7 +59,7 @@ theorem hermitianScalarExtension_norm_one_tmul_le (x : S.ParameterSpaceExtension
     have ht := completedScalarExtensionEquiv_tmul E (S.ϕ x.base) x.abv x.restrict_eq
       (1 : x.abv.Completion) (1 : L) e
     simp only [map_one, one_mul] at ht
-    have hn := hermitianScalarExtension_norm_tmul_of_infinite ξ hS hL hξ x hx
+    have hn := hermitianScalarExtension_norm_tmul_of_infinite ξ x hx
       (1 : x.abv.Completion) ((1 : (S.ϕ x.base).Completion) ⊗ₜ[K] e)
     rw [← ht, LinearEquiv.symm_apply_apply, norm_one, one_mul] at hn
     exact hn.le
@@ -68,15 +68,15 @@ theorem hermitianScalarExtension_norm_one_tmul_le (x : S.ParameterSpaceExtension
 Hermitian dual norm than the original rational functional. -/
 theorem hermitianScalarExtension_dual_norm_baseChange_one_tmul_le
     (x : S.ParameterSpaceExtension L) (f : Module.Dual K E) :
-    (hermitianScalarExtension ξ hS hL hξ).dual.norm x
+    (hermitianScalarExtension (L := L) ξ).dual.norm x
       ((1 : x.abv.Completion) ⊗ₜ[L] Module.Dual.baseChange L f) ≤
         ξ.dual.norm x.base ((1 : (S.ϕ x.base).Completion) ⊗ₜ[K] f) := by
-  have he := hermitianScalarExtension_dual ξ hS hL hξ x
+  have he := hermitianScalarExtension_dual ξ x
     ((1 : x.abv.Completion) ⊗ₜ[L] ((1 : L) ⊗ₜ[K] f))
   simp only [LinearMap.baseChange_tmul, LinearEquiv.coe_coe,
     dualBaseChangeEquiv_tmul, one_smul] at he
   exact he.symm.trans_le
-    (hermitianScalarExtension_norm_one_tmul_le ξ.dual hS hL hξ.dual x f)
+    (hermitianScalarExtension_norm_one_tmul_le ξ.dual (hξ := hξ.dual) x f)
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι K E)
 
@@ -87,10 +87,10 @@ theorem hermitianScalarExtension_localDist_ofBasisMixed_le
     (ha : ∀ i, ξ.norm x.base ((b.baseChange (S.ϕ x.base).Completion) i) ≤ Real.exp A)
     (hb : ∀ i, ξ.dual.norm x.base
       ((1 : (S.ϕ x.base).Completion) ⊗ₜ[K] b.dualBasis i) ≤ Real.exp B) :
-    (hermitianScalarExtension ξ hS hL hξ).localDist
+    (hermitianScalarExtension (L := L) ξ).localDist
       (ofBasisMixed (S.algebraicExtension L) (L ⊗[K] E) (b.baseChange L)) x ≤
         A + B + S.Ωinf.indicator (fun _ => Real.log (Fintype.card ι : ℝ)) x.base := by
-  let η := hermitianScalarExtension ξ hS hL hξ
+  let η := hermitianScalarExtension (L := L) ξ
   let R := S.Ωinf.indicator (fun _ => Real.log (Fintype.card ι : ℝ))
   have hR : 0 ≤ R x.base :=
     Set.indicator_nonneg (fun _ _ => Real.log_natCast_nonneg _) _
@@ -98,14 +98,14 @@ theorem hermitianScalarExtension_localDist_ofBasisMixed_le
       Real.exp A := by
     intro i
     rw [Module.Basis.baseChange_apply, Module.Basis.baseChange_apply]
-    apply (hermitianScalarExtension_norm_one_tmul_le ξ hS hL hξ x (b i)).trans
+    apply (hermitianScalarExtension_norm_one_tmul_le ξ x (b i)).trans
     simpa only [Module.Basis.baseChange_apply] using ha i
   have hb' : ∀ i, η.dual.norm x
       ((1 : x.abv.Completion) ⊗ₜ[L] (b.baseChange L).dualBasis i) ≤ Real.exp B := by
     intro i
     rw [Module.Basis.dualBasis_baseChange]
     exact (hermitianScalarExtension_dual_norm_baseChange_one_tmul_le
-      ξ hS hL hξ x (b.dualBasis i)).trans (hb i)
+      ξ x (b.dualBasis i)).trans (hb i)
   have hRI : (S.algebraicExtension L).Ωinf.indicator
       (fun _ => Real.log (Fintype.card ι : ℝ)) x = R x.base := by
     by_cases hx : x.base ∈ S.Ωinf
@@ -121,7 +121,7 @@ theorem hermitianScalarExtension_localDist_ofBasisMixed_le
   intro z
   constructor
   · exact (norm_le_mul_of_basis_norm_le (S := S.algebraicExtension L)
-      (b.baseChange L) η (hermitianScalarExtension_isUltrametric ξ hS hL hξ)
+      (b.baseChange L) η (hξ := (hermitianScalarExtension_isUltrametric ξ))
       x (Real.exp_pos _).le ha' z).trans
       (mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr (by linarith))
         ((ofBasisMixed (S.algebraicExtension L) (L ⊗[K] E)
@@ -142,11 +142,11 @@ omit [DecidableEq ι] in
 basis-distance envelope on the actual algebraically extended curve. -/
 theorem IsDominated.hermitianScalarExtension_localDist_ofBasisMixed
     (hd : ξ.IsDominated) :
-    HasIntegrableBounds ((hermitianScalarExtension ξ hS hL hξ).localDist
+    HasIntegrableBounds ((hermitianScalarExtension (L := L) ξ).localDist
       (ofBasisMixed (S.algebraicExtension L) (L ⊗[K] E) (b.baseChange L)))
         (S.algebraicExtension L).v := by
   classical
-  let η := hermitianScalarExtension ξ hS hL hξ
+  let η := hermitianScalarExtension (L := L) ξ
   let η₀ := ofBasisMixed (S.algebraicExtension L) (L ⊗[K] E) (b.baseChange L)
   change HasIntegrableBounds (η.localDist η₀) (S.algebraicExtension L).v
   obtain ⟨A, hA, hA0, ha⟩ := IsUpperDominated.exists_basis_norm_bound (ξ := ξ) b hd.1
@@ -158,7 +158,7 @@ theorem IsDominated.hermitianScalarExtension_localDist_ofBasisMixed
   let R := S.Ωinf.indicator (fun _ => Real.log (Fintype.card ι : ℝ))
   have hR : Integrable R S.v :=
     (integrable_indicator_iff S.measurableSet_Ωinf).mpr
-      (integrableOn_const (S.v_Ωinf_lt_top_of_isRCLike hS).ne)
+      (integrableOn_const (S.v_Ωinf_lt_top_of_isRCLike).ne)
   have hproj : MeasurePreserving (fun x : (S.algebraicExtension L).Ω => x.base)
       (S.algebraicExtension L).v S.v :=
     ⟨AdelicStructure.Algebraic.measurable_proj_projective S L,
@@ -171,7 +171,7 @@ theorem IsDominated.hermitianScalarExtension_localDist_ofBasisMixed
   have hbound : ∀ᵐ x ∂(S.algebraicExtension L).v, η.localDist η₀ x ≤ C x.base := by
     filter_upwards [hproj.quasiMeasurePreserving.ae ha,
       hproj.quasiMeasurePreserving.ae hb'] with x hax hbx
-    exact hermitianScalarExtension_localDist_ofBasisMixed_le ξ hS hL hξ b x
+    exact hermitianScalarExtension_localDist_ofBasisMixed_le ξ b x
       (hA0 x.base) (hB0 x.base) hax hbx
   have hupper : HasIntegrableUpperBound (η.localDist η₀) (S.algebraicExtension L).v :=
     ⟨fun x => C x.base, hi, hbound⟩
@@ -184,22 +184,22 @@ omit [Fintype ι] [DecidableEq ι] in
 is strongly dominated. The normalizations imply the required finite measure. -/
 theorem IsDominated.hermitianScalarExtension_isStronglyDominated
     (hd : ξ.IsDominated) :
-    (hermitianScalarExtension ξ hS hL hξ).IsStronglyDominated := by
+    (hermitianScalarExtension (L := L) ξ).IsStronglyDominated := by
   classical
   let b := Module.finBasis K E
   have hfinL : (S.algebraicExtension L).v (S.algebraicExtension L).Ωinf < ⊤ := by
     rw [scalarExtension_measure_Ωinf]
-    exact S.v_Ωinf_lt_top_of_isRCLike hS
+    exact S.v_Ωinf_lt_top_of_isRCLike
   exact (isStronglyDominated_iff_localDist_ofBasisMixed_of_measure_lt_top
-    (b.baseChange L) (hermitianScalarExtension ξ hS hL hξ) hfinL).mpr
-      (IsDominated.hermitianScalarExtension_localDist_ofBasisMixed ξ hS hL hξ b hd)
+    (b.baseChange L) (hermitianScalarExtension (L := L) ξ) hfinL).mpr
+      (IsDominated.hermitianScalarExtension_localDist_ofBasisMixed (L := L) ξ b hd)
 
 omit [Fintype ι] [DecidableEq ι] in
 /-- The Hermitian-extension conclusion of Remark 4.1.14, for the actual
 completed norm family and explicit usual Archimedean normalizations. -/
 theorem IsDominated.hermitianScalarExtension (hd : ξ.IsDominated) :
-    (hermitianScalarExtension ξ hS hL hξ).IsDominated :=
-  (IsDominated.hermitianScalarExtension_isStronglyDominated ξ hS hL hξ hd).isDominated
+    (hermitianScalarExtension (L := L) ξ).IsDominated :=
+  (IsDominated.hermitianScalarExtension_isStronglyDominated (L := L) ξ hd).isDominated
 
 end ArakelovGeometry.NormFamily
 

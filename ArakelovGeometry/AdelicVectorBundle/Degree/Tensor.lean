@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Tensor.Pair
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Tensor.Comparison
 import ArakelovGeometry.AdelicVectorBundle.Tensor.Line
 import Mathlib.CategoryTheory.Category.Init
@@ -148,17 +149,17 @@ namespace AdelicVectorBundle
 All ranks are allowed; the source's asserted general equality is false. -/
 theorem rank_mul_degree_add_rank_mul_degree_le_degree_mixedTensorPair [S.IsProper]
     (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (Module.finrank K F : ℝ) * V.degree hS hN +
-      (Module.finrank K E : ℝ) * W.degree hS hN ≤
-        (V.mixedTensorPair W hS hN).degree hS hN := by
-  let DV := V.determinantOfMeasurableBase hS hN
-  let DW := W.determinantOfMeasurableBase hS hN
-  let T := V.mixedTensorPair W hS hN
-  let DT := T.determinantOfMeasurableBase hS hN
-  let s := DV.lineGenerator (V.determinantOfMeasurableBase_isLine hS hN)
-  let t := DW.lineGenerator (W.determinantOfMeasurableBase_isLine hS hN)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    (Module.finrank K F : ℝ) * V.degree +
+      (Module.finrank K E : ℝ) * W.degree ≤
+        (V.mixedTensorPair W).degree := by
+  let DV := V.determinantOfMeasurableBase
+  let DW := W.determinantOfMeasurableBase
+  let T := V.mixedTensorPair W
+  let DT := T.determinantOfMeasurableBase
+  let s := DV.lineGenerator (hV := (V.determinantOfMeasurableBase_isLine))
+  let t := DW.lineGenerator (hV := (W.determinantOfMeasurableBase_isLine))
   let q := determinantTensorEquiv K E F
     ((⨂ₜ[K] (_ : Fin (Module.finrank K F)), s.val) ⊗ₜ[K]
       (⨂ₜ[K] (_ : Fin (Module.finrank K E)), t.val))
@@ -173,7 +174,7 @@ theorem rank_mul_degree_add_rank_mul_degree_le_degree_mixedTensorPair [S.IsPrope
   calc
     _ = -(∫ ω, (Module.finrank K F : ℝ) * V.toNormFamily.determinant.logNorm s.val ω +
         (Module.finrank K E : ℝ) * W.toNormFamily.determinant.logNorm t.val ω ∂S.v) := by
-      rw [V.degree_eq_neg_integral hS hN s, W.degree_eq_neg_integral hS hN t,
+      rw [V.degree_eq_neg_integral s, W.degree_eq_neg_integral t,
         integral_add (hsI.const_mul _) (htI.const_mul _), integral_const_mul,
         integral_const_mul]
       ring
@@ -182,7 +183,7 @@ theorem rank_mul_degree_add_rank_mul_degree_le_degree_mixedTensorPair [S.IsPrope
       apply integral_mono_ae hqI ((hsI.const_mul _).add (htI.const_mul _))
       exact Filter.Eventually.of_forall fun ω ↦
         V.toNormFamily.mixedTensorPair_determinant_logNorm_le W.toNormFamily ω s t
-    _ = _ := (T.degree_eq_neg_integral hS hN ⟨q, hq⟩).symm
+    _ = _ := (T.degree_eq_neg_integral ⟨q, hq⟩).symm
 
 end AdelicVectorBundle
 

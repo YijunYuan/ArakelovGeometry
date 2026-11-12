@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Model.Sections
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.AdelicVectorBundle.Degree.LineVector
 import Mathlib.Topology.Sheaves.Init
@@ -30,9 +31,9 @@ variable {K E : Type*} [Field K] {S : AdelicStructure K} [S.IsProper]
 contradicting negative actual maximal slope. -/
 theorem effectiveSections_eq_singleton_of_maximalSlope_neg
     (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hneg : V.maximalSlope hS hN < 0) : V.toNormFamily.effectiveSections = {0} := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    (hneg : V.maximalSlope < 0) : V.toNormFamily.effectiveSections = {0} := by
   ext s
   constructor
   · intro hs
@@ -44,7 +45,7 @@ theorem effectiveSections_eq_singleton_of_maximalSlope_neg
       apply integral_nonpos_of_ae
       exact Filter.Eventually.of_forall fun ω =>
         Real.log_nonpos (V.toNormFamily.norm_nonneg _ _) (hs ω)
-    have hm := V.vectorDegree_le_maximalSlope hS hN ⟨s, hszero⟩
+    have hm := V.vectorDegree_le_maximalSlope ⟨s, hszero⟩
     have hz : (0 : EReal) ≤ (V.vectorDegree ⟨s, hszero⟩ : EReal) := by exact_mod_cast hd
     exact (not_le_of_gt hneg) (hz.trans hm)
   · intro hs
@@ -57,17 +58,17 @@ theorem effectiveSections_eq_singleton_of_maximalSlope_neg
 so all actual effective sections come from the literal restricted subspace. -/
 theorem effectiveSections_eq_image_restrict_of_quotient_maximalSlope_neg
     (V : AdelicVectorBundle S E) (U : Submodule K E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hneg : (V.quotientOfMeasurableBase U hS).maximalSlope hS hN < 0) :
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    (hneg : (V.quotientOfMeasurableBase U).maximalSlope < 0) :
     V.toNormFamily.effectiveSections =
-      U.subtype '' (V.restrictOfMeasurableBase U hS).toNormFamily.effectiveSections := by
-  have hQ := (V.quotientOfMeasurableBase U hS).effectiveSections_eq_singleton_of_maximalSlope_neg
-    hS hN hneg
+      U.subtype '' (V.restrictOfMeasurableBase U).toNormFamily.effectiveSections := by
+  have hQ := (V.quotientOfMeasurableBase U).effectiveSections_eq_singleton_of_maximalSlope_neg
+    hneg
   ext x
   constructor
   · intro hx
-    have hxQ : U.mkQ x ∈ (V.quotientOfMeasurableBase U hS).toNormFamily.effectiveSections := by
+    have hxQ : U.mkQ x ∈ (V.quotientOfMeasurableBase U).toNormFamily.effectiveSections := by
       intro ω
       change (V.toNormFamily.quotient U).norm ω (1 ⊗ₜ[K] U.mkQ x) ≤ 1
       have h := (V.toNormFamily.quotient_norm_mk_le U ω (1 ⊗ₜ[K] x)).trans (hx ω)
@@ -101,12 +102,12 @@ theorem effectiveSections_eq_singleton_of_maximalSlope_neg
     (hneg :
       (fullLatticeAdelicBundle (genericImage (K := K) M)
       (genericImage_fg (K := K) M) (genericImage_fullSpan (K := K) M) η).maximalSlope
-        (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions < 0) :
+        < 0) :
     effectiveSections M η = {0} := by
   let V := fullLatticeAdelicBundle (genericImage (K := K) M)
     (genericImage_fg (K := K) M) (genericImage_fullSpan (K := K) M) η
   have hV := V.effectiveSections_eq_singleton_of_maximalSlope_neg
-    (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions hneg
+    hneg
   ext m
   constructor
   · intro hm
@@ -127,7 +128,7 @@ theorem logSectionCount_eq_zero_of_maximalSlope_neg
     (hneg :
       (fullLatticeAdelicBundle (genericImage (K := K) M)
       (genericImage_fg (K := K) M) (genericImage_fullSpan (K := K) M) η).maximalSlope
-        (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions < 0) :
+        < 0) :
     logSectionCount M η = 0 := by
   simp [logSectionCount, effectiveSections_eq_singleton_of_maximalSlope_neg M η hneg]
 

@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Countable
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Determinant.DualBaseChange
+
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Duality
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -32,22 +33,22 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- Dualizing a Hermitian adelic bundle negates its Arakelov degree. -/
 theorem degree_dualOfMeasurableBase [S.IsProper] (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.IsHermitian hN) :
-    (V.dualOfMeasurableBase hS).degree hS hN = -V.degree hS hN := by
-  let D := V.determinantOfMeasurableBase hS hN
-  have hD : D.IsLine := V.determinantOfMeasurableBase_isLine hS hN
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.IsHermitian] :
+    (V.dualOfMeasurableBase).degree = -V.degree := by
+  let D := V.determinantOfMeasurableBase
+  have hD : D.IsLine := V.determinantOfMeasurableBase_isLine
   calc
-    (V.dualOfMeasurableBase hS).degree hS hN =
-        (D.dualLine hD).lineDegree (D.dualLine_isLine hD) := by
-      apply lineDegree_eq_of_norm_rational_eq _ _ _ _ (determinantDualEquiv K E)
+    (V.dualOfMeasurableBase).degree =
+        (D.dualLine (hV := hD)).lineDegree (hV := (D.dualLine_isLine (hV := hD))) := by
+      apply lineDegree_eq_of_norm_rational_eq _ _ (determinantDualEquiv K E)
       intro ω x
       change V.toNormFamily.dual.determinant.norm ω (1 ⊗ₜ[K] x) =
         V.toNormFamily.determinant.dual.norm ω
           (1 ⊗ₜ[K] determinantDualEquiv K E x)
       simpa only [LinearMap.baseChange_tmul, LinearEquiv.coe_coe] using
         hV.determinant_dual_norm V.toNormFamily ω (1 ⊗ₜ[K] x)
-    _ = -V.degree hS hN := lineDegree_dualLine D hD
+    _ = -V.degree := lineDegree_dualLine D (hV := hD)
 
 end ArakelovGeometry.AdelicVectorBundle

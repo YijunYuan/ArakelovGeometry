@@ -34,7 +34,7 @@ variable [FiniteDimensional K E]
 
 /-- A dominated standard number-field family gives an actual adelic bundle. -/
 noncomputable def ofDominatedNumberField
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (hξ : ξ.IsDominated) :
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsDominated] :
     AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E where
   toNormFamily := ξ
   isMeasurable := ξ.isMeasurable_normalizedNumberField
@@ -43,13 +43,13 @@ noncomputable def ofDominatedNumberField
 
 @[simp]
 theorem ofDominatedNumberField_toNormFamily
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (hξ : ξ.IsDominated) :
-    (ofDominatedNumberField ξ hξ).toNormFamily = ξ := rfl
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsDominated] :
+    (ofDominatedNumberField ξ).toNormFamily = ξ := rfl
 
 /-- Strong domination is exactly strong adelicity for the produced bundle. -/
 theorem ofDominatedNumberField_isStronglyAdelic_iff
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) (hξ : ξ.IsDominated) :
-    (ofDominatedNumberField ξ hξ).IsStronglyAdelic ↔ ξ.IsStronglyDominated := Iff.rfl
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsDominated] :
+    (ofDominatedNumberField ξ).IsStronglyAdelic ↔ ξ.IsStronglyDominated := Iff.rfl
 
 end AdelicVectorBundle
 end ArakelovGeometry

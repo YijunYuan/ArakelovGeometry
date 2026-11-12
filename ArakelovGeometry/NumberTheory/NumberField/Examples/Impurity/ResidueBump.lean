@@ -10,6 +10,7 @@ public import ArakelovGeometry.Analysis.Ultrametric.ResidueDirectionBump
 public import ArakelovGeometry.NumberTheory.NumberField.Examples.Impurity.ResidueDirection
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Completion
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Measurable
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Subquotient
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Coherence.Model
@@ -43,7 +44,7 @@ def referenceFamily : NormFamily S Plane := ofBasisMixed S Plane basis
 
 theorem referenceFamily_strong : referenceFamily.IsStronglyDominated :=
   ofBasisMixed_isStronglyDominated basis
-    AdelicStructure.normalizedNumberFieldArchimedeanCompletions
+    (hS := ⟨AdelicStructure.normalizedNumberFieldArchimedeanCompletions⟩)
 
 /-- Coordinates use the actual scalar extension of the rational basis. -/
 def coordinates (ω : S.Ω) : ((S.ϕ ω).Completion ⊗[ℚ] Plane) ≃ₗ[(S.ϕ ω).Completion]
@@ -198,7 +199,8 @@ theorem finite_logNorm_difference_support (z : Plane) :
 /-- The actual standard-number-field family is dominated in the source's primal/dual sense. -/
 theorem family_isDominated : family.IsDominated := by
   constructor
-  · intro z hz
+  · constructor
+    intro z hz
     have hd : Integrable (fun ω ↦ family.logNorm z ω - referenceFamily.logNorm z ω) S.v :=
       integrable_normalized_of_finiteSupport _ (finite_logNorm_difference_support z)
     have hb : HasIntegrableUpperBound
@@ -211,7 +213,7 @@ theorem family_isDominated : family.IsDominated := by
 
 /-- A genuine adelic vector bundle with the original residue-bump completed norms. -/
 def bundle : AdelicVectorBundle S Plane :=
-  AdelicVectorBundle.ofDominatedNumberField family family_isDominated
+  AdelicVectorBundle.ofDominatedNumberField family (hξ := family_isDominated)
 
 /-- Every selected actual place contributes at least the fixed positive logarithmic distance. -/
 theorem log_two_le_localDist_point (n : ℕ) :
@@ -281,10 +283,11 @@ theorem family_not_isStronglyDominated : ¬ family.IsStronglyDominated := by
   intro h
   exact localDist_not_hasIntegrableUpperBound
     (h.localDist referenceFamily_strong
-      (S.v_Ωinf_lt_top_of_isRCLike AdelicStructure.normalizedNumberFieldArchimedeanCompletions)).1
+      (S.v_Ωinf_lt_top_of_isRCLike (hS :=
+          ⟨AdelicStructure.normalizedNumberFieldArchimedeanCompletions⟩))).1
 
 /-- Every actual classical full-lattice family is at infinite upper-integral distance. -/
-theorem upperIntegralDist_eq_top_of_isClassical (η : NormFamily S Plane) (hη : η.IsClassical) :
+theorem upperIntegralDist_eq_top_of_isClassical (η : NormFamily S Plane) [hη : η.IsClassical] :
     family.upperIntegralDist η = ⊤ := by
   by_contra h
   have hu : HasIntegrableUpperBound (family.localDist η) S.v :=

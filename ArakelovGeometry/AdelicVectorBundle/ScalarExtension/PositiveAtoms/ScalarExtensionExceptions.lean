@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicCurve.Examples.FunctionFields
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Domination.Pointwise
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.PositiveAtoms.AtomicNormComparison
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.PositiveAtoms.AtomicTail
@@ -38,7 +39,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 algebraic extension and every vector of its actual completed fibre. -/
 theorem IsDominated.exists_scalarExtension_coordinate_exceptions_of_positive_atoms
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E) (b : Module.Basis ι K E)
-    (hξ : ξ.IsDominated) (hpos : ∀ ω : S.Ω, 0 < S.v {ω})
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
     (hfin : S.v S.Ωinf < ⊤) :
     ∃ H : S.Ω → ℝ, Integrable H S.v ∧ (∀ ω, 0 ≤ H ω) ∧
       (Function.support H).Countable ∧
@@ -97,7 +98,6 @@ theorem IsDominated.functionField_scalarExtension_coordinate_exceptions
             (ofBasisMixed ((AdelicStructure.functionFieldAdelicStructure k).algebraicExtension L)
               (L ⊗[RatFunc k] E) (b.baseChange L)).norm x z := by
   apply IsDominated.exists_scalarExtension_coordinate_exceptions_of_positive_atoms ξ b hξ
-    AdelicStructure.functionField_singleton_pos
   rw [AdelicStructure.functionField_Ωinf_eq_empty, measure_empty]
   exact ENNReal.zero_lt_top
 

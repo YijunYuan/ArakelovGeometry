@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Minkowski.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.LineVector
 import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Norm.AdaptedBasis
 import ArakelovGeometry.AdelicVectorBundle.Minima.Basis
@@ -52,10 +53,10 @@ namespace AdelicStructure
 inequality at zero, using an actual full basis and the produced norm bound. -/
 theorem singleTrivialPlace_hasStrongMinkowskiPropertyAtLevel_zero (K : Type u) [Field K] :
     (singleTrivialPlace K).HasStrongMinkowskiPropertyAtLevel.{u, 0, w}
-      (Or.inl inferInstance) (singleTrivialPlace_normalized K) 0 := by
+      0 := by
   refine ⟨le_rfl, fun E _ _ _ V hr hV => ?_⟩
   obtain ⟨x, hx, he, hR, hbound⟩ :=
-    V.toNormFamily.exists_nonzero_trivialSeminorm_eq_sSup_range hV hr
+    V.toNormFamily.exists_nonzero_trivialSeminorm_eq_sSup_range (hξ := hV) hr
   let b := Module.finBasis K E
   let s : Fin (Module.finrank K E) → {x : E // x ≠ 0} :=
     fun i => ⟨b i, b.ne_zero i⟩
@@ -70,7 +71,7 @@ theorem singleTrivialPlace_hasStrongMinkowskiPropertyAtLevel_zero (K : Type u) [
     · exact hbound (b i)
   have hm := V.coe_le_logarithmicMinimum_of_linearIndependent s b.linearIndependent hd
   rw [V.minimalSlope_eq_neg_log_sSup_range_of_isUltrametric
-    (Or.inl inferInstance) (singleTrivialPlace_normalized K) hV hr]
+    (hN := ⟨(singleTrivialPlace_normalized K)⟩) (hV := hV) hr]
   simpa only [zero_mul, EReal.coe_zero, sub_zero,
     AdelicVectorBundle.minimalLogarithmicMinimum] using hm
 
@@ -78,7 +79,7 @@ theorem singleTrivialPlace_hasStrongMinkowskiPropertyAtLevel_zero (K : Type u) [
 Archimedean mass, giving the universal ordinary level without assumptions. -/
 theorem singleTrivialPlace_hasMinkowskiPropertyAtLevel_zero (K : Type u) [Field K] :
     (singleTrivialPlace K).HasMinkowskiPropertyAtLevel.{u, 0, w}
-      (Or.inl inferInstance) (singleTrivialPlace_normalized K) 0 := by
+      0 := by
   have hz : (singleTrivialPlace K).v (singleTrivialPlace K).Ωinf = 0 := by
     rw [singleTrivialPlace_Ωinf, measure_empty]
   exact HasStrongMinkowskiPropertyAtLevel.minkowski_of_archimedeanMass_eq_zero
@@ -91,33 +92,33 @@ variable {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 /-- Equality of the actual last minimum and minimal slope for all ranks. -/
 theorem minimalLogarithmicMinimum_eq_minimalSlope_singleTrivialPlace
     (V : AdelicVectorBundle (AdelicStructure.singleTrivialPlace K) E)
-    (hV : V.toNormFamily.IsUltrametric) :
-    V.minimalLogarithmicMinimum = V.minimalSlope (Or.inl inferInstance)
-      (AdelicStructure.singleTrivialPlace_normalized K) := by
+    [hV : V.toNormFamily.IsUltrametric] :
+    V.minimalLogarithmicMinimum = V.minimalSlope
+      (hN := ⟨(AdelicStructure.singleTrivialPlace_normalized K)⟩) := by
   by_cases hz : Module.finrank K E = 0
   · rw [V.minimalLogarithmicMinimum_eq_top_of_finrank_eq_zero hz,
-      V.minimalSlope_eq_top_of_finrank_eq_zero (Or.inl inferInstance)
-        (AdelicStructure.singleTrivialPlace_normalized K) hz]
+      V.minimalSlope_eq_top_of_finrank_eq_zero
+        (hN := ⟨(AdelicStructure.singleTrivialPlace_normalized K)⟩) hz]
   have h := (AdelicStructure.singleTrivialPlace_hasStrongMinkowskiPropertyAtLevel_zero K).2
     E V (Nat.pos_of_ne_zero hz) hV
   simp only [zero_mul, EReal.coe_zero, sub_zero] at h
-  exact le_antisymm (V.minimalLogarithmicMinimum_le_minimalSlope (Or.inl inferInstance)
-    (AdelicStructure.singleTrivialPlace_normalized K)) h
+  exact le_antisymm (V.minimalLogarithmicMinimum_le_minimalSlope
+    (hN := ⟨(AdelicStructure.singleTrivialPlace_normalized K)⟩)) h
 
 /-- Equality of the actual first minimum and maximal slope for all ranks. -/
 theorem maximalLogarithmicMinimum_eq_maximalSlope_singleTrivialPlace
     (V : AdelicVectorBundle (AdelicStructure.singleTrivialPlace K) E)
-    (hV : V.toNormFamily.IsUltrametric) :
-    V.maximalLogarithmicMinimum = V.maximalSlope (Or.inl inferInstance)
-      (AdelicStructure.singleTrivialPlace_normalized K) := by
+    [hV : V.toNormFamily.IsUltrametric] :
+    V.maximalLogarithmicMinimum = V.maximalSlope
+      (hN := ⟨(AdelicStructure.singleTrivialPlace_normalized K)⟩) := by
   by_cases hz : Module.finrank K E = 0
   · rw [V.maximalLogarithmicMinimum_eq_bot_of_finrank_eq_zero hz,
-      V.maximalSlope_eq_bot_of_finrank_eq_zero (Or.inl inferInstance)
-        (AdelicStructure.singleTrivialPlace_normalized K) hz]
+      V.maximalSlope_eq_bot_of_finrank_eq_zero
+        (hN := ⟨(AdelicStructure.singleTrivialPlace_normalized K)⟩) hz]
   have h := (AdelicStructure.singleTrivialPlace_hasMinkowskiPropertyAtLevel_zero K).2
     E V (Nat.pos_of_ne_zero hz) hV
   simp only [zero_mul, EReal.coe_zero, sub_zero] at h
-  exact le_antisymm (V.maximalLogarithmicMinimum_le_maximalSlope (Or.inl inferInstance)
-    (AdelicStructure.singleTrivialPlace_normalized K)) h
+  exact le_antisymm (V.maximalLogarithmicMinimum_le_maximalSlope
+    (hN := ⟨(AdelicStructure.singleTrivialPlace_normalized K)⟩)) h
 end AdelicVectorBundle
 end ArakelovGeometry

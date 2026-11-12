@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Countable
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Algebraic.ClosureApproximation
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Bundle
+
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.FiniteStage.Degree
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.QuotientEquiv
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Subspace.Degree
@@ -51,50 +52,50 @@ theorem rank_quotient_scalarExtension_finiteStage
 /-- The genuine native closure quotient has its actual complexifying
 finite-stage degree through the canonical completed quotient isometry. -/
 theorem degree_quotient_scalarExtension_finiteStage [S.IsProper]
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
     (F : AdelicStructure.FiniteIntermediateField K L) (hi : ∃ a : F, a ^ 2 = -1)
     (B : Submodule F (F ⊗[K] E)) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
-    let hF := hcount.algebraicExtension_of_finiteDimensional (L := F)
-    let hL := hcount.algebraicExtension_of_isAlgClosed (L := L)
+    let _ := hcount.algebraicExtension_of_finiteDimensional (L := F)
+    let _ := hcount.algebraicExtension_of_isAlgClosed (L := L)
     let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E
-    ((V.scalarExtension (L := L) hcount hN).quotientOfMeasurableBase
-      ((B.baseChange L).map c.toLinearMap) (Or.inr hL)).degree (Or.inr hL)
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) =
-    ((V.scalarExtension (L := F) hcount hN).quotientOfMeasurableBase
-      B (Or.inr hF)).degree (Or.inr hF)
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN) := by
+    ((V.scalarExtension (L := L)).quotientOfMeasurableBase
+      ((B.baseChange L).map c.toLinearMap)).degree
+      (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
+    ((V.scalarExtension (L := F)).quotientOfMeasurableBase
+      B).degree
+      (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
   let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
   let hF := hcount.algebraicExtension_of_finiteDimensional (L := F)
   let hL := hcount.algebraicExtension_of_isAlgClosed (L := L)
   let hT := hF.algebraicExtension_of_isAlgClosed (L := L)
-  let hFN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN
-  let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
-  let hTN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hFN
+  let hFN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := F)
+  let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
+  let hTN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) (hS := ⟨hFN⟩)
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E
   let e := finiteStageQuotientEquiv (L := L) F B
-  let Q₀ := (V.scalarExtension (L := F) hcount hN).quotientOfMeasurableBase B (Or.inr hF)
-  let W := Q₀.scalarExtension (L := L) hF hFN
-  let R := (V.scalarExtension (L := L) hcount hN).quotientOfMeasurableBase
-    ((B.baseChange L).map c.toLinearMap) (Or.inr hL)
-  change R.degree (Or.inr hL) hLN = Q₀.degree (Or.inr hF) hFN
+  let Q₀ := (V.scalarExtension (L := F)).quotientOfMeasurableBase B
+  let W := Q₀.scalarExtension (L := L) (hS := hF) (hN := ⟨hFN⟩)
+  let R := (V.scalarExtension (L := L)).quotientOfMeasurableBase
+    ((B.baseChange L).map c.toLinearMap)
+  change R.degree (hN := ⟨hLN⟩) = Q₀.degree (hN := ⟨hFN⟩)
   exact (degree_eq_of_tower_completed_isometry F.toIntermediateField W R e
-    (Or.inr hL) (Or.inr hT) hLN hTN (fun x z ↦
-      V.toNormFamily.scalarExtension_quotient_finiteStage_equiv_norm_eq hN F hi B x z)).trans
-        (Q₀.degree_scalarExtension_of_isAlgClosed hF hFN)
+    (hND := ⟨hLN⟩) (hNT := ⟨hTN⟩) (fun x z ↦
+      V.toNormFamily.scalarExtension_quotient_finiteStage_equiv_norm_eq F hi B x z)).trans
+        (Q₀.degree_scalarExtension_of_isAlgClosed (hcount := hF) (hN := ⟨hFN⟩))
 
 /-- One produced complexifying finite field preserves the native restricted
 and quotient degrees and ranks of every actual finite family. -/
 theorem exists_complexFiniteStage_native_subspace_quotient_degrees [S.IsProper]
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
     {ι : Type*} [Finite ι] (A : ι → Submodule L (L ⊗[K] E)) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    let hL := hcount.algebraicExtension_of_isAlgClosed (L := L)
+    let _ := hcount.algebraicExtension_of_isAlgClosed (L := L)
     ∃ F : AdelicStructure.FiniteIntermediateField K L, (∃ a : F, a ^ 2 = -1) ∧
       ∃ B : ι → Submodule F (F ⊗[K] E),
         (∀ i, Submodule.map
@@ -104,29 +105,29 @@ theorem exists_complexFiniteStage_native_subspace_quotient_degrees [S.IsProper]
         (∀ i j, B i ≤ B j ↔ A i ≤ A j) ∧
         ∀ i,
           let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
-          let hF := hcount.algebraicExtension_of_finiteDimensional (L := F)
-          (((V.scalarExtension (L := L) hcount hN).restrictOfMeasurableBase
-            (A i) (Or.inr hL)).degree (Or.inr hL)
-            (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) =
-          ((V.scalarExtension (L := F) hcount hN).restrictOfMeasurableBase
-            (B i) (Or.inr hF)).degree (Or.inr hF)
-            (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN)) ∧
-          (((V.scalarExtension (L := L) hcount hN).quotientOfMeasurableBase
-            (A i) (Or.inr hL)).degree (Or.inr hL)
-            (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) =
-          ((V.scalarExtension (L := F) hcount hN).quotientOfMeasurableBase
-            (B i) (Or.inr hF)).degree (Or.inr hF)
-            (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN)) ∧
+          let _ := hcount.algebraicExtension_of_finiteDimensional (L := F)
+          (((V.scalarExtension (L := L)).restrictOfMeasurableBase
+            (A i)).degree
+            (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
+          ((V.scalarExtension (L := F)).restrictOfMeasurableBase
+            (B i)).degree
+            (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩)) ∧
+          (((V.scalarExtension (L := L)).quotientOfMeasurableBase
+            (A i)).degree
+            (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
+          ((V.scalarExtension (L := F)).quotientOfMeasurableBase
+            (B i)).degree
+            (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩)) ∧
           Module.finrank L ((L ⊗[K] E) ⧸ A i) =
             Module.finrank F ((F ⊗[K] E) ⧸ B i) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   dsimp only
   obtain ⟨F, hi, B, hB, hr, hinc, hd⟩ :=
-    V.exists_complexFiniteStage_native_degrees hcount hN A
+    V.exists_complexFiniteStage_native_degrees A
   refine ⟨F, hi, B, hB, hr, hinc, ?_⟩
   intro i
   refine ⟨hd i, ?_, ?_⟩
-  · have hq := V.degree_quotient_scalarExtension_finiteStage hcount hN F hi (B i)
+  · have hq := V.degree_quotient_scalarExtension_finiteStage F hi (B i)
     dsimp only at hq
     rw [← hB i]
     exact hq

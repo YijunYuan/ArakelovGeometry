@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Degree
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Hermitian.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Comparison
 import ArakelovGeometry.AdelicVectorBundle.Determinant.HermitianBasis
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Line
@@ -91,10 +92,9 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {L : Type w} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (ξ : NormFamily S E)
-  (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-  (hL : ∀ x ∈ (S.algebraicExtension L).Ωinf,
-    IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion)
-  (hξ : ξ.IsHermitian hS)
+  [hS : S.IsArchimedeanNormalized]
+  [hL : (S.algebraicExtension L).IsArchimedeanNormalized]
+  [hξ : ξ.IsHermitian]
 
 /-- The actual completed Hermitian norm is the Euclidean norm of the
 extended coordinates in any original orthonormal basis. -/
@@ -106,13 +106,13 @@ theorem hermitianScalarExtension_norm_coordinates
     letI := IsRCLikeNormedField.rclike (S.ϕ x.base).Completion
     letI := ξ.fibreNormedAddCommGroup x.base
     letI := ξ.fibreNormedSpace x.base
-    letI := hξ.fibreInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
+    letI := ξ.fiberInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
     letI : IsRCLikeNormedField x.abv.Completion := hL x hx
     letI := IsRCLikeNormedField.rclike x.abv.Completion
     ∀ b : OrthonormalBasis (Fin (Module.finrank K E)) (S.ϕ x.base).Completion
       ((S.ϕ x.base).Completion ⊗[K] E),
     ∀ z : x.abv.Completion ⊗[L] (L ⊗[K] E),
-      (hermitianScalarExtension ξ hS hL hξ).norm x z =
+      (hermitianScalarExtension (L := L) ξ).norm x z =
         ‖ArakelovGeometry.hermitianScalarExtensionCoordinates (L := x.abv.Completion) b
           (completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq z)‖ := by
   let := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
@@ -120,11 +120,11 @@ theorem hermitianScalarExtension_norm_coordinates
   let := IsRCLikeNormedField.rclike (S.ϕ x.base).Completion
   let := ξ.fibreNormedAddCommGroup x.base
   let := ξ.fibreNormedSpace x.base
-  let := hξ.fibreInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
+  let := ξ.fiberInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
   let : IsRCLikeNormedField x.abv.Completion := hL x hx
   let := IsRCLikeNormedField.rclike x.abv.Completion
   intro b z
-  refine (hermitianScalarExtension_norm_of_infinite ξ hS hL hξ x hx z).trans ?_
+  refine (hermitianScalarExtension_norm_of_infinite ξ x hx z).trans ?_
   let b₀ := stdOrthonormalBasis (S.ϕ x.base).Completion
     ((S.ϕ x.base).Completion ⊗[K] E)
   change ArakelovGeometry.hermitianScalarExtensionSeminorm b₀
@@ -147,10 +147,10 @@ theorem hermitianScalarExtension_completedBasis_unit_bounds
     letI := IsRCLikeNormedField.rclike (S.ϕ x.base).Completion
     letI := ξ.fibreNormedAddCommGroup x.base
     letI := ξ.fibreNormedSpace x.base
-    letI := hξ.fibreInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
+    letI := ξ.fiberInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
     ∀ b : OrthonormalBasis (Fin (Module.finrank K E)) (S.ϕ x.base).Completion
       ((S.ϕ x.base).Completion ⊗[K] E),
-    let η := hermitianScalarExtension ξ hS hL hξ
+    let η := hermitianScalarExtension (L := L) ξ
     let a := completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq
     let e : Fin (Module.finrank K E) ≃ Fin (Module.finrank L (L ⊗[K] E)) :=
       finCongr Module.finrank_baseChange.symm
@@ -164,9 +164,9 @@ theorem hermitianScalarExtension_completedBasis_unit_bounds
   let := IsRCLikeNormedField.rclike (S.ϕ x.base).Completion
   let := ξ.fibreNormedAddCommGroup x.base
   let := ξ.fibreNormedSpace x.base
-  let := hξ.fibreInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
+  let := ξ.fiberInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
   intro b
-  let η := hermitianScalarExtension ξ hS hL hξ
+  let η := hermitianScalarExtension (L := L) ξ
   let a := completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq
   let e : Fin (Module.finrank K E) ≃ Fin (Module.finrank L (L ⊗[K] E)) :=
     finCongr Module.finrank_baseChange.symm
@@ -181,12 +181,12 @@ theorem hermitianScalarExtension_completedBasis_unit_bounds
           ((dualBaseChangeEquiv L x.abv.Completion (L ⊗[K] E)).symm (c.coord j)) ≤ 1) := by
     let : IsRCLikeNormedField x.abv.Completion := hL x hx
     let := IsRCLikeNormedField.rclike x.abv.Completion
-    have hn := hermitianScalarExtension_norm_coordinates ξ hS hL hξ x hx b
+    have hn := hermitianScalarExtension_norm_coordinates ξ x hx b
     let p : Seminorm x.abv.Completion (x.abv.Completion ⊗[L] (L ⊗[K] E)) := η.norm x
     have hp (z) : p z = ‖ArakelovGeometry.hermitianScalarExtensionCoordinates b (a z)‖ := hn z
     have hb (j) : η.norm x (c j) ≤ 1 := by
       refine ((congrArg (η.norm x) (hc j)).trans
-        (hermitianScalarExtension_norm_tmul_of_infinite ξ hS hL hξ x hx
+        (hermitianScalarExtension_norm_tmul_of_infinite ξ x hx
           (1 : x.abv.Completion) (b (e.symm j)))).trans_le ?_
       change ‖(1 : x.abv.Completion)‖ * ‖b (e.symm j)‖ ≤ 1
       simp only [norm_one, b.norm_eq_one, one_mul, le_refl]
@@ -220,10 +220,10 @@ theorem hermitianScalarExtension_determinant_norm_completedBasis
     letI := IsRCLikeNormedField.rclike (S.ϕ x.base).Completion
     letI := ξ.fibreNormedAddCommGroup x.base
     letI := ξ.fibreNormedSpace x.base
-    letI := hξ.fibreInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
+    letI := ξ.fiberInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
     ∀ b : OrthonormalBasis (Fin (Module.finrank K E)) (S.ϕ x.base).Completion
       ((S.ϕ x.base).Completion ⊗[K] E),
-    let η := hermitianScalarExtension ξ hS hL hξ
+    let η := hermitianScalarExtension (L := L) ξ
     let a := completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq
     let e : Fin (Module.finrank K E) ≃ Fin (Module.finrank L (L ⊗[K] E)) :=
       finCongr Module.finrank_baseChange.symm
@@ -242,13 +242,13 @@ theorem hermitianScalarExtension_determinant_norm_completedBasis
   let := IsRCLikeNormedField.rclike (S.ϕ x.base).Completion
   let := ξ.fibreNormedAddCommGroup x.base
   let := ξ.fibreNormedSpace x.base
-  let := hξ.fibreInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
+  let := ξ.fiberInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
   intro b η a e c
   let q : Seminorm ((S.algebraicExtension L).ϕ x).Completion
       (((S.algebraicExtension L).ϕ x).Completion ⊗[L]
         (⋀[L]^(Module.finrank L (L ⊗[K] E)) (L ⊗[K] E))) := η.determinant.norm x
-  have hbound := hermitianScalarExtension_completedBasis_unit_bounds ξ hS hL hξ x hx b
-  have hη : η.IsHermitian hL := hermitianScalarExtension_isHermitian ξ hS hL hξ
+  have hbound := hermitianScalarExtension_completedBasis_unit_bounds ξ x hx b
+  have hη : η.IsHermitian := hermitianScalarExtension_isHermitian ξ
   have hq (w : ((S.algebraicExtension L).ϕ x).Completion ⊗[L]
       (⋀[L]^(Module.finrank L (L ⊗[K] E)) (L ⊗[K] E))) :
       q w = η.determinant.norm x w := rfl
@@ -264,7 +264,7 @@ theorem hermitianScalarExtension_determinant_norm_orthonormalBasis
     (x : S.ParameterSpaceExtension L)
     (hx : x ∈ (S.algebraicExtension L).Ωinf) :
     letI := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
-    let η := hermitianScalarExtension ξ hS hL hξ
+    let η := hermitianScalarExtension (L := L) ξ
     let W (t : Fin (Module.finrank K E) → (S.ϕ x.base).Completion ⊗[K] E) :=
       ((determinantScalarExtensionEquiv K L E).toLinearMap.baseChange x.abv.Completion)
         ((completedScalarExtensionEquiv (⋀[K]^(Module.finrank K E) E)
@@ -278,7 +278,7 @@ theorem hermitianScalarExtension_determinant_norm_orthonormalBasis
     letI := IsRCLikeNormedField.rclike (S.ϕ x.base).Completion
     letI := ξ.fibreNormedAddCommGroup x.base
     letI := ξ.fibreNormedSpace x.base
-    letI := hξ.fibreInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
+    letI := ξ.fiberInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
     ∀ b : OrthonormalBasis (Fin (Module.finrank K E)) (S.ϕ x.base).Completion
       ((S.ϕ x.base).Completion ⊗[K] E),
       η.determinant.norm x (W (fun i => b i)) = 1 := by
@@ -289,15 +289,15 @@ theorem hermitianScalarExtension_determinant_norm_orthonormalBasis
   let := IsRCLikeNormedField.rclike (S.ϕ x.base).Completion
   let := ξ.fibreNormedAddCommGroup x.base
   let := ξ.fibreNormedSpace x.base
-  let := hξ.fibreInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
+  let := ξ.fiberInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
   intro b
   let q : Seminorm x.abv.Completion
       (x.abv.Completion ⊗[L]
         (⋀[L]^(Module.finrank L (L ⊗[K] E)) (L ⊗[K] E))) := η.determinant.norm x
   have hq (w : ((S.algebraicExtension L).ϕ x).Completion ⊗[L]
       (⋀[L]^(Module.finrank L (L ⊗[K] E)) (L ⊗[K] E))) :
-      q w = (hermitianScalarExtension ξ hS hL hξ).determinant.norm x w := rfl
-  have hv := hermitianScalarExtension_determinant_norm_completedBasis ξ hS hL hξ x hx b
+      q w = (hermitianScalarExtension (L := L) ξ).determinant.norm x w := rfl
+  have hv := hermitianScalarExtension_determinant_norm_completedBasis ξ x hx b
   have hvq := (hq _).trans hv
   have hm := determinantScalarExtensionEquiv_baseChange_completedBasis x b.toBasis
   have hmnorm := congrArg q hm
@@ -312,11 +312,11 @@ theorem hermitianScalarExtension_determinant_norm_eq_scalarExtension
     (x : S.ParameterSpaceExtension L)
     (z : x.abv.Completion ⊗[L]
       (⋀[L]^(Module.finrank L (L ⊗[K] E)) (L ⊗[K] E))) :
-    (hermitianScalarExtension ξ hS hL hξ).determinant.norm x z =
+    (hermitianScalarExtension (L := L) ξ).determinant.norm x z =
       (ξ.scalarExtension (L := L)).determinant.norm x z := by
   classical
   let := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
-  let η := hermitianScalarExtension ξ hS hL hξ
+  let η := hermitianScalarExtension (L := L) ξ
   let qH : Seminorm x.abv.Completion
       (x.abv.Completion ⊗[L]
         (⋀[L]^(Module.finrank L (L ⊗[K] E)) (L ⊗[K] E))) := η.determinant.norm x
@@ -336,22 +336,22 @@ theorem hermitianScalarExtension_determinant_norm_eq_scalarExtension
     (exteriorBaseChangeEquiv K (S.ϕ x.base).Completion E (Module.finrank K E)).symm
       (_root_.exteriorPower.ιMulti (S.ϕ x.base).Completion (Module.finrank K E) t)
   have hm : ∀ v, qH v ≤ qO v :=
-    determinant_mono (hermitianScalarExtension_le_scalarExtension ξ hS hL hξ) x
+    determinant_mono (hermitianScalarExtension_le_scalarExtension ξ) x
   change qH z = qO z
   by_cases hx : x ∈ (S.algebraicExtension L).Ωfin
   · apply le_antisymm (hm z)
     exact determinant_norm_mono (ξ.scalarExtension (L := L)) η x
-      (fun v => (scalarExtension_norm_eq_hermitian_of_finite ξ hS hL hξ x hx v).le) z
+      (fun v ↦ (scalarExtension_norm_eq_hermitian_of_finite ξ x hx v).le) z
   · have hbase := (scalarExtension_mem_Ωinf_iff x).mp hx
     let := hS x.base hbase
     let := IsRCLikeNormedField.rclike (S.ϕ x.base).Completion
     let := ξ.fibreNormedAddCommGroup x.base
     let := ξ.fibreNormedSpace x.base
-    let := hξ.fibreInnerProductSpace x.base hbase
+    let := ξ.fiberInnerProductSpace x.base hbase
     obtain ⟨b, hb⟩ := hξ.exists_completedOrthonormalBasis_determinant_norm_eq_one ξ x.base hbase
     let w := A ((1 : x.abv.Completion) ⊗ₜ[(S.ϕ x.base).Completion] U (fun i => b i))
     have hH : qH w = 1 := by
-      have h := hermitianScalarExtension_determinant_norm_orthonormalBasis ξ hS hL hξ x hx b
+      have h := hermitianScalarExtension_determinant_norm_orthonormalBasis ξ x hx b
       convert h using 1
     have hbU : ξ.determinant.norm x.base (U (fun i => b i)) = 1 := by
       convert hb using 1
@@ -375,46 +375,46 @@ theorem hermitianScalarExtension_determinant_norm_eq
     (x : S.ParameterSpaceExtension L)
     (z : x.abv.Completion ⊗[L]
       (⋀[L]^(Module.finrank L (L ⊗[K] E)) (L ⊗[K] E))) :
-    (hermitianScalarExtension ξ hS hL hξ).determinant.norm x z =
+    (hermitianScalarExtension (L := L) ξ).determinant.norm x z =
       (ξ.determinant.scalarExtension (L := L)).norm x
         (((determinantScalarExtensionEquiv K L E).symm.toLinearMap.baseChange
           x.abv.Completion) z) :=
-  (hermitianScalarExtension_determinant_norm_eq_scalarExtension ξ hS hL hξ x z).trans
+  (hermitianScalarExtension_determinant_norm_eq_scalarExtension ξ x z).trans
     (ξ.determinant_scalarExtension_norm_eq x z)
 
 /-- The actual Hermitian and ordinary extended determinant families agree. -/
 theorem hermitianScalarExtension_determinant_eq_scalarExtension :
-    (hermitianScalarExtension ξ hS hL hξ).determinant =
+    (hermitianScalarExtension (L := L) ξ).determinant =
       (ξ.scalarExtension (L := L)).determinant := by
   apply NormFamily.ext
   intro x z
-  exact hermitianScalarExtension_determinant_norm_eq_scalarExtension ξ hS hL hξ x z
+  exact hermitianScalarExtension_determinant_norm_eq_scalarExtension ξ x z
 
 /-- The actual Hermitian extended determinant is the rational pullback of
 the scalar extension of the original determinant along the canonical map. -/
 theorem hermitianScalarExtension_determinant_eq_pullback :
-    (hermitianScalarExtension ξ hS hL hξ).determinant =
+    (hermitianScalarExtension (L := L) ξ).determinant =
       (ξ.determinant.scalarExtension (L := L)).pullback
         (determinantScalarExtensionEquiv K L E).symm.toLinearMap
         (determinantScalarExtensionEquiv K L E).symm.injective := by
   apply NormFamily.ext
   intro x z
-  exact hermitianScalarExtension_determinant_norm_eq ξ hS hL hξ x z
+  exact hermitianScalarExtension_determinant_norm_eq ξ x z
 
 /-- Original determinant measurability transfers to the actual Hermitian
 extended determinant without requiring whole-vector extension measurability. -/
 theorem IsMeasurable.determinant_hermitianScalarExtension
     (hm : ξ.determinant.IsMeasurable) :
-    (hermitianScalarExtension ξ hS hL hξ).determinant.IsMeasurable := by
-  rw [hermitianScalarExtension_determinant_eq_scalarExtension ξ hS hL hξ]
+    (hermitianScalarExtension (L := L) ξ).determinant.IsMeasurable := by
+  rw [hermitianScalarExtension_determinant_eq_scalarExtension ξ]
   exact hm.determinant_scalarExtension
 
 /-- Domination of the original measurable determinant transfers to the
 actual Hermitian extended determinant through its proved norm identity. -/
 theorem IsDominated.determinant_hermitianScalarExtension
     (hd : ξ.determinant.IsDominated) (hm : ξ.determinant.IsMeasurable) :
-    (hermitianScalarExtension ξ hS hL hξ).determinant.IsDominated := by
-  rw [hermitianScalarExtension_determinant_eq_scalarExtension ξ hS hL hξ]
+    (hermitianScalarExtension (L := L) ξ).determinant.IsDominated := by
+  rw [hermitianScalarExtension_determinant_eq_scalarExtension ξ]
   exact hd.determinant_scalarExtension hm
 
 end

@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Basic
 public import ArakelovGeometry.Analysis.NormShape.Measurable
+
 import ArakelovGeometry.AdelicVectorBundle.DirectSum.Domination
 import ArakelovGeometry.AdelicVectorBundle.DirectSum.DualArchimedean
 import ArakelovGeometry.AdelicVectorBundle.Measurability.DirectSum
@@ -35,7 +36,7 @@ variable (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
   (U : Set S.Ω) (hU : MeasurableSet U) (hfinU : S.v U < ⊤)
   (hmax : ∀ ω ∉ U,
     Set.EqOn (ψ ω).toFun NormShape.maxShape.toFun (Set.Icc (0 : ℝ) 1))
-  (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+  [hS : S.IsArchimedeanNormalized]
 
 /-- The adelic bundle on the actual profile direct sum, for source-measurable
 profiles equal to maximum outside a measurable set of finite measure. -/
@@ -43,18 +44,18 @@ noncomputable def directSum : AdelicVectorBundle S (E × F) where
   toNormFamily := V.toNormFamily.directSum W.toNormFamily ψ
   isMeasurable := by exact V.isMeasurable.directSum W.isMeasurable hψ
   dual_isMeasurable := by
-    exact V.toNormFamily.directSum_dual_isMeasurable W.toNormFamily ψ hS
-      V.dual_isMeasurable W.dual_isMeasurable hψ
-  isDominated := by exact V.isDominated.directSum W.isDominated ψ U hU hfinU hmax hS
+    exact V.toNormFamily.directSum_dual_isMeasurable W.toNormFamily ψ
+      hψ
+  isDominated := by exact V.isDominated.directSum W.isDominated ψ U hU hfinU hmax
 
 @[simp]
 theorem directSum_toNormFamily :
-    (V.directSum W ψ hψ U hU hfinU hmax hS).toNormFamily =
+    (V.directSum W ψ hψ U hU hfinU hmax).toNormFamily =
       V.toNormFamily.directSum W.toNormFamily ψ := rfl
 
 /-- Source Proposition 4.1.35, strongly adelic clause, including rank zero. -/
-theorem directSum_isStronglyAdelic (hV : V.IsStronglyAdelic) (hW : W.IsStronglyAdelic) :
-    (V.directSum W ψ hψ U hU hfinU hmax hS).IsStronglyAdelic :=
-  hV.directSum hW ψ U hU hfinU hmax hS
+theorem directSum_isStronglyAdelic [hV : V.IsStronglyAdelic] [hW : W.IsStronglyAdelic] :
+    (V.directSum W ψ hψ U hU hfinU hmax).IsStronglyAdelic :=
+  hV.directSum hW ψ U hU hfinU hmax
 
 end ArakelovGeometry.AdelicVectorBundle

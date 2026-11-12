@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Slope.Finite
 import ArakelovGeometry.AdelicVectorBundle.Subquotient.Restriction.Functor
 import Mathlib.CategoryTheory.Category.Init
@@ -34,79 +35,79 @@ namespace AdelicVectorBundle
 /-- Source positive degree, initially as the extended supremum over all
 actual subspace degrees. Its finiteness is proved below. -/
 def positiveDegree (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) : EReal :=
-  ⨆ U : Submodule K E, ((V.restrictOfMeasurableBase U hS).degree hS hN : EReal)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] : EReal :=
+  ⨆ U : Submodule K E, ((V.restrictOfMeasurableBase U).degree : EReal)
 
 /-- Every actual restricted degree is among the terms of positive degree. -/
 theorem degree_restrict_le_positiveDegree (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (U : Submodule K E) :
-    ((V.restrictOfMeasurableBase U hS).degree hS hN : EReal) ≤
-      V.positiveDegree hS hN := le_iSup
-        (fun T : Submodule K E ↦ ((V.restrictOfMeasurableBase T hS).degree hS hN : EReal)) U
+    ((V.restrictOfMeasurableBase U).degree : EReal) ≤
+      V.positiveDegree := le_iSup
+        (fun T : Submodule K E ↦ ((V.restrictOfMeasurableBase T).degree : EReal)) U
 
 /-- The zero subspace supplies nonnegativity, even in rank zero. -/
 theorem positiveDegree_nonneg (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    0 ≤ V.positiveDegree hS hN := by
-  have h := V.degree_restrict_le_positiveDegree hS hN ⊥
-  rw [degree_eq_zero_of_finrank_eq_zero _ hS hN (finrank_bot K E), EReal.coe_zero] at h
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    0 ≤ V.positiveDegree := by
+  have h := V.degree_restrict_le_positiveDegree ⊥
+  rw [degree_eq_zero_of_finrank_eq_zero _ (finrank_bot K E), EReal.coe_zero] at h
   exact h
 
 /-- The total actual restriction shows degree is at most positive degree. -/
 theorem degree_le_positiveDegree (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.degree hS hN : EReal) ≤ V.positiveDegree hS hN := by
-  simpa only [V.degree_restrict_top hS hN] using
-    V.degree_restrict_le_positiveDegree hS hN ⊤
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    (V.degree : EReal) ≤ V.positiveDegree := by
+  simpa only [V.degree_restrict_top] using
+    V.degree_restrict_le_positiveDegree ⊤
 
 /-- Any bound on all actual restricted degrees bounds their supremum. -/
 theorem positiveDegree_le (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) {a : EReal}
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] {a : EReal}
     (ha : ∀ U : Submodule K E,
-      ((V.restrictOfMeasurableBase U hS).degree hS hN : EReal) ≤ a) :
-    V.positiveDegree hS hN ≤ a := iSup_le ha
+      ((V.restrictOfMeasurableBase U).degree : EReal) ≤ a) :
+    V.positiveDegree ≤ a := iSup_le ha
 
 /-- The zero bundle's positive degree is zero, rather than an empty supremum. -/
 theorem positiveDegree_eq_zero_of_finrank_eq_zero (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hr : Module.finrank K E = 0) : V.positiveDegree hS hN = 0 := by
-  apply le_antisymm _ (V.positiveDegree_nonneg hS hN)
-  apply V.positiveDegree_le hS hN
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    (hr : Module.finrank K E = 0) : V.positiveDegree = 0 := by
+  apply le_antisymm _ (V.positiveDegree_nonneg)
+  apply V.positiveDegree_le
   intro U
   have hU : Module.finrank K U = 0 := by
     have h := U.finrank_le
     omega
-  rw [degree_eq_zero_of_finrank_eq_zero _ hS hN hU, EReal.coe_zero]
+  rw [degree_eq_zero_of_finrank_eq_zero _ hU, EReal.coe_zero]
 
 /-- Increasing the actual norms decreases every restricted degree and hence
 positive degree. -/
 theorem positiveDegree_antitone (V W : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (h : V.toNormFamily ≤ W.toNormFamily) :
-    W.positiveDegree hS hN ≤ V.positiveDegree hS hN := by
-  apply W.positiveDegree_le hS hN
+    W.positiveDegree ≤ V.positiveDegree := by
+  apply W.positiveDegree_le
   intro U
-  have hU : (V.restrictOfMeasurableBase U hS).toNormFamily ≤
-      (W.restrictOfMeasurableBase U hS).toNormFamily := fun ω z ↦ h ω _
-  exact (EReal.coe_le_coe_iff.mpr (degree_antitone _ _ hS hN hU)).trans
-    (V.degree_restrict_le_positiveDegree hS hN U)
+  have hU : (V.restrictOfMeasurableBase U).toNormFamily ≤
+      (W.restrictOfMeasurableBase U).toNormFamily := fun ω z ↦ h ω _
+  exact (EReal.coe_le_coe_iff.mpr (degree_antitone _ _ hU)).trans
+    (V.degree_restrict_le_positiveDegree U)
 
 /-- Positive degree of an actual restriction is bounded by ambient positive
 degree, using the canonical nested restriction degree isometry. -/
 theorem positiveDegree_restrict_le (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (W : Submodule K E) :
-    (V.restrictOfMeasurableBase W hS).positiveDegree hS hN ≤ V.positiveDegree hS hN := by
-  apply positiveDegree_le _ hS hN
+    (V.restrictOfMeasurableBase W).positiveDegree ≤ V.positiveDegree := by
+  apply positiveDegree_le _
   intro U
   let T := U.map W.subtype
   have hTW : T ≤ W := by
@@ -114,21 +115,21 @@ theorem positiveDegree_restrict_le (V : AdelicVectorBundle S E)
     exact u.property
   have hcomap : T.comap W.subtype = U :=
     Submodule.comap_map_eq_of_injective W.subtype_injective U
-  have hd := V.degree_restrict_restrict T W hTW hS hN
+  have hd := V.degree_restrict_restrict T W hTW
   rw [hcomap] at hd
   rw [hd]
-  exact V.degree_restrict_le_positiveDegree hS hN T
+  exact V.degree_restrict_le_positiveDegree T
 
 /-- The produced uniform rank-degree bound makes positive degree finite.
 No maximizing subspace, caller-supplied bound or HN object is required. -/
 theorem positiveDegree_lt_top (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.positiveDegree hS hN < ⊤ := by
-  obtain ⟨C, hC⟩ := V.exists_degree_restrict_le_rank_mul hS hN
-  have hb : V.positiveDegree hS hN ≤
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.positiveDegree < ⊤ := by
+  obtain ⟨C, hC⟩ := V.exists_degree_restrict_le_rank_mul
+  have hb : V.positiveDegree ≤
       ((Module.finrank K E : ℝ) * max C 0 : ℝ) := by
-    apply V.positiveDegree_le hS hN
+    apply V.positiveDegree_le
     intro U
     apply EReal.coe_le_coe_iff.mpr
     exact (hC U).trans ((mul_le_mul_of_nonneg_left (le_max_left C 0)
@@ -139,50 +140,50 @@ theorem positiveDegree_lt_top (V : AdelicVectorBundle S E)
 /-- Both extended endpoints are excluded before positive degree is represented
 by a real number. This includes the zero bundle. -/
 theorem exists_positiveDegree_eq_coe (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    ∃ c : ℝ, V.positiveDegree hS hN = (c : EReal) := by
-  lift V.positiveDegree hS hN to ℝ using
-    ⟨(V.positiveDegree_lt_top hS hN).ne,
-      ((EReal.bot_lt_coe 0).trans_le (V.positiveDegree_nonneg hS hN)).ne'⟩ with c
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    ∃ c : ℝ, V.positiveDegree = (c : EReal) := by
+  lift V.positiveDegree to ℝ using
+    ⟨(V.positiveDegree_lt_top).ne,
+      ((EReal.bot_lt_coe 0).trans_le (V.positiveDegree_nonneg)).ne'⟩ with c
   exact ⟨c, rfl⟩
 
 /-- Positive degree vanishes precisely when every actual subspace degree is
 nonpositive. The zero subspace supplies the reverse inequality. -/
 theorem positiveDegree_eq_zero_iff (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.positiveDegree hS hN = 0 ↔ ∀ U : Submodule K E,
-      (V.restrictOfMeasurableBase U hS).degree hS hN ≤ 0 := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.positiveDegree = 0 ↔ ∀ U : Submodule K E,
+      (V.restrictOfMeasurableBase U).degree ≤ 0 := by
   constructor
   · intro h U
-    have hd := V.degree_restrict_le_positiveDegree hS hN U
+    have hd := V.degree_restrict_le_positiveDegree U
     rw [h, ← EReal.coe_zero] at hd
     exact EReal.coe_le_coe_iff.mp hd
   · intro h
-    exact le_antisymm (V.positiveDegree_le hS hN (fun U ↦ by
-      exact_mod_cast h U)) (V.positiveDegree_nonneg hS hN)
+    exact le_antisymm (V.positiveDegree_le (fun U ↦ by
+      exact_mod_cast h U)) (V.positiveDegree_nonneg)
 
 /-- The actual maximal slope detects vanishing positive degree, including the
 rank-zero maximal slope convention. -/
 theorem positiveDegree_eq_zero_iff_maximalSlope_nonpos (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.positiveDegree hS hN = 0 ↔ V.maximalSlope hS hN ≤ 0 := by
-  rw [V.positiveDegree_eq_zero_iff hS hN]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.positiveDegree = 0 ↔ V.maximalSlope ≤ 0 := by
+  rw [V.positiveDegree_eq_zero_iff]
   constructor
   · intro h
-    apply V.maximalSlope_le hS hN
+    apply V.maximalSlope_le
     intro U hU
     apply EReal.coe_le_coe_iff.mpr
-    change (V.restrictOfMeasurableBase U hS).degree hS hN /
+    change (V.restrictOfMeasurableBase U).degree /
       (Module.finrank K U : ℝ) ≤ 0
     exact div_nonpos_of_nonpos_of_nonneg (h U) (Nat.cast_nonneg _)
   · intro h U
     by_cases hU : Module.finrank K U = 0
-    · exact (degree_eq_zero_of_finrank_eq_zero _ hS hN hU).le
-    · have hs := (V.slope_restrict_le_maximalSlope U (Nat.pos_of_ne_zero hU) hS hN).trans h
-      have hs' : (V.restrictOfMeasurableBase U hS).slope hS hN ≤ 0 := by
+    · exact (degree_eq_zero_of_finrank_eq_zero _ hU).le
+    · have hs := (V.slope_restrict_le_maximalSlope U (Nat.pos_of_ne_zero hU)).trans h
+      have hs' : (V.restrictOfMeasurableBase U).slope ≤ 0 := by
         exact_mod_cast hs
       rw [degree_eq_rank_mul_slope]
       exact mul_nonpos_of_nonneg_of_nonpos (Nat.cast_nonneg _) hs'

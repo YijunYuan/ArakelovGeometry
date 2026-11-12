@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.NumberTheory.NumberField.Minkowski.ProductBall
 public import ArakelovGeometry.NumberTheory.NumberField.Model.TraceDual.Projective.Metric
 public import Mathlib.Analysis.LocallyConvex.Polar
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import Mathlib.Topology.Sheaves.Init
 
@@ -47,7 +48,7 @@ private theorem unit_inner_maximizer {V : Type*} [NormedAddCommGroup V]
 including zero-dimensional fibres. -/
 theorem exists_local_trace_maximizer
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (w : InfinitePlace K) (f : CompletedCoefficient w ⊗[K] Module.Dual K E) :
     ∃ x : CompletedCoefficient w ⊗[K] E,
       ξ.norm (normalizedInfinitePlacePoint w) x ≤ 1 ∧
@@ -55,22 +56,22 @@ theorem exists_local_trace_maximizer
         (w.mult : ℝ) * ξ.dual.norm (normalizedInfinitePlacePoint w) f := by
   let := ξ.fibreNormedAddCommGroup (normalizedInfinitePlacePoint w)
   let := fibreRealNormedSpace ξ w
-  let := localRealInnerProduct hξ w
-  obtain ⟨x, hx, he⟩ := unit_inner_maximizer (localTraceRiesz hξ w f)
+  let := localRealInnerProduct (ξ := ξ) w
+  obtain ⟨x, hx, he⟩ := unit_inner_maximizer (localTraceRiesz (ξ := ξ) w f)
   refine ⟨x, hx, ?_⟩
   rw [localTraceRiesz_inner] at he
-  exact he.trans (norm_localTraceRiesz hξ w f)
+  exact he.trans (norm_localTraceRiesz (ξ := ξ) w f)
 
 /-- The actual trace pairing attains the sum of its actual local trace-dual norms
 on the original product of completed unit balls. -/
 theorem exists_product_trace_maximizer
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) :
     ∃ x ∈ productBall ξ 1, tracePairing (K := K) (E := E) f x =
       ∑ w : InfinitePlace K,
         (w.mult : ℝ) * ξ.dual.norm (normalizedInfinitePlacePoint w) (f w) := by
-  choose x hx he using fun w => exists_local_trace_maximizer hξ w (f w)
+  choose x hx he using fun w ↦ exists_local_trace_maximizer (ξ := ξ) w (f w)
   refine ⟨x, hx, ?_⟩
   change (∑ w, localTraceDualMap (K := K) (E := E) w (f w) (x w)) = _
   exact Finset.sum_congr rfl (fun w _ => he w)
@@ -94,13 +95,13 @@ theorem tracePairing_bound_productBall
 trace-dual norms, through the existing ordinary trace isometry. -/
 theorem ordinaryTraceDualIsometry_mem_polar
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (f : CompletedVectorProduct K (Module.Dual K E)) :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
     letI := ordinaryTraceDualNormedAddCommGroup ξ
     letI := ordinaryTraceDualNormedSpace ξ
-    ordinaryTraceDualIsometry hξ f ∈ StrongDual.polar ℝ (productBall ξ 1) ↔
+    ordinaryTraceDualIsometry (ξ := ξ) f ∈ StrongDual.polar ℝ (productBall ξ 1) ↔
       (∑ w : InfinitePlace K,
         (w.mult : ℝ) * ξ.dual.norm (normalizedInfinitePlacePoint w) (f w)) ≤ 1 := by
   let := euclideanNormedAddCommGroup ξ
@@ -109,7 +110,7 @@ theorem ordinaryTraceDualIsometry_mem_polar
   let := ordinaryTraceDualNormedSpace ξ
   constructor
   · intro hf
-    obtain ⟨x, hx, he⟩ := exists_product_trace_maximizer hξ f
+    obtain ⟨x, hx, he⟩ := exists_product_trace_maximizer (ξ := ξ) f
     have h := hf x hx
     change ‖tracePairing (K := K) (E := E) f x‖ ≤ 1 at h
     rw [he, Real.norm_eq_abs,
@@ -124,53 +125,53 @@ theorem ordinaryTraceDualIsometry_mem_polar
 with the original completed tensor-unit map and all existing norm structures. -/
 def arithmeticTraceTensorIsometry
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
-    letI := euclideanNormedAddCommGroup (prescribedTraceDualFamily hξ)
-    letI := euclideanNormedSpace (prescribedTraceDualFamily hξ)
+    letI := euclideanNormedAddCommGroup (prescribedTraceDualFamily (ξ := ξ))
+    letI := euclideanNormedSpace (prescribedTraceDualFamily (ξ := ξ))
     CompletedVectorProduct K (Module.Dual K E ⊗[K] K) ≃ₗᵢ[ℝ]
       StrongDual ℝ (CompletedVectorProduct K E) := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanNormedAddCommGroup (prescribedTraceDualFamily hξ)
-  let := euclideanNormedSpace (prescribedTraceDualFamily hξ)
+  let := euclideanNormedAddCommGroup (prescribedTraceDualFamily (ξ := ξ))
+  let := euclideanNormedSpace (prescribedTraceDualFamily (ξ := ξ))
   let := ordinaryTraceDualNormedAddCommGroup ξ
   let := ordinaryTraceDualNormedSpace ξ
-  exact (prescribedTraceDualIsometry hξ).trans (ordinaryTraceDualIsometry hξ)
+  exact (prescribedTraceDualIsometry (ξ := ξ)).trans (ordinaryTraceDualIsometry (ξ := ξ))
 
 /-- Exact polar set in the actual prescribed dual-tensor completed product.
 The actual component norms already include the real1/complex2 trace factors. -/
 theorem prescribedTraceDual_polar
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
-    letI := euclideanNormedAddCommGroup (prescribedTraceDualFamily hξ)
-    letI := euclideanNormedSpace (prescribedTraceDualFamily hξ)
-    arithmeticTraceTensorIsometry hξ ⁻¹' StrongDual.polar ℝ (productBall ξ 1) =
+    letI := euclideanNormedAddCommGroup (prescribedTraceDualFamily (ξ := ξ))
+    letI := euclideanNormedSpace (prescribedTraceDualFamily (ξ := ξ))
+    arithmeticTraceTensorIsometry (ξ := ξ) ⁻¹' StrongDual.polar ℝ (productBall ξ 1) =
       {z | (∑ w : InfinitePlace K,
-        (prescribedTraceDualFamily hξ).norm (normalizedInfinitePlacePoint w) (z w)) ≤ 1} := by
+        (prescribedTraceDualFamily (ξ := ξ)).norm (normalizedInfinitePlacePoint w) (z w)) ≤ 1} := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanNormedAddCommGroup (prescribedTraceDualFamily hξ)
-  let := euclideanNormedSpace (prescribedTraceDualFamily hξ)
+  let := euclideanNormedAddCommGroup (prescribedTraceDualFamily (ξ := ξ))
+  let := euclideanNormedSpace (prescribedTraceDualFamily (ξ := ξ))
   let := ordinaryTraceDualNormedAddCommGroup ξ
   let := ordinaryTraceDualNormedSpace ξ
   ext z
-  have h := ordinaryTraceDualIsometry_mem_polar hξ
+  have h := ordinaryTraceDualIsometry_mem_polar (ξ := ξ)
     (tensorUnitProductEquiv (K := K) (E := Module.Dual K E) z)
   have hs : (∑ w : InfinitePlace K, (w.mult : ℝ) *
       ξ.dual.norm (normalizedInfinitePlacePoint w)
         (tensorUnitProductEquiv (K := K) (E := Module.Dual K E) z w)) =
       ∑ w : InfinitePlace K,
-        (prescribedTraceDualFamily hξ).norm (normalizedInfinitePlacePoint w) (z w) := by
+        (prescribedTraceDualFamily (ξ := ξ)).norm (normalizedInfinitePlacePoint w) (z w) := by
     apply Finset.sum_congr rfl
     intro w _
     let e := LinearEquiv.baseChange K (CompletedCoefficient w) _ _
       (TensorProduct.rid K (Module.Dual K E))
-    have he := dualizingTensor_norm_infinite ξ.dual hξ.dual w (e (z w))
-    change (prescribedTraceDualFamily hξ).norm (normalizedInfinitePlacePoint w)
+    have he := dualizingTensor_norm_infinite ξ.dual (hξ := hξ.dual) w (e (z w))
+    change (prescribedTraceDualFamily (ξ := ξ)).norm (normalizedInfinitePlacePoint w)
       (e.symm (e (z w))) = _ at he
     rw [e.symm_apply_apply] at he
     exact he.symm
@@ -181,21 +182,21 @@ theorem prescribedTraceDual_polar
 unit ball, on exactly the same completed vector product. -/
 theorem prescribedTraceDual_polar_subset_productBall
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
-    letI := euclideanNormedAddCommGroup (prescribedTraceDualFamily hξ)
-    letI := euclideanNormedSpace (prescribedTraceDualFamily hξ)
-    arithmeticTraceTensorIsometry hξ ⁻¹' StrongDual.polar ℝ (productBall ξ 1) ⊆
-      productBall (prescribedTraceDualFamily hξ) 1 := by
+    letI := euclideanNormedAddCommGroup (prescribedTraceDualFamily (ξ := ξ))
+    letI := euclideanNormedSpace (prescribedTraceDualFamily (ξ := ξ))
+    arithmeticTraceTensorIsometry (ξ := ξ) ⁻¹' StrongDual.polar ℝ (productBall ξ 1) ⊆
+      productBall (prescribedTraceDualFamily (ξ := ξ)) 1 := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanNormedAddCommGroup (prescribedTraceDualFamily hξ)
-  let := euclideanNormedSpace (prescribedTraceDualFamily hξ)
+  let := euclideanNormedAddCommGroup (prescribedTraceDualFamily (ξ := ξ))
+  let := euclideanNormedSpace (prescribedTraceDualFamily (ξ := ξ))
   rw [prescribedTraceDual_polar]
   intro z hz w
   exact (Finset.single_le_sum
-    (fun v _ => (prescribedTraceDualFamily hξ).norm_nonneg _ (z v))
+    (fun v _ => (prescribedTraceDualFamily (ξ := ξ)).norm_nonneg _ (z v))
     (Finset.mem_univ w)).trans hz
 
 end ArakelovGeometry.NumberFieldArithmeticPolar

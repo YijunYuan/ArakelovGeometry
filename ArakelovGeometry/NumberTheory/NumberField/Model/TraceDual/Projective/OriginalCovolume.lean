@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Model.TraceDual.Projective.Generic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import Mathlib.Topology.Sheaves.Init
 
@@ -67,15 +68,15 @@ private theorem covolume_isometry
 their scalar actions or finite-place norms. -/
 theorem originalPrescribedTraceDualFamily_isHermitian
     {η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M)}
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
-    (originalPrescribedTraceDualFamily M hη).IsHermitian
-      normalizedNumberFieldArchimedeanCompletions := by
+    [hη : η.IsHermitian] :
+    (originalPrescribedTraceDualFamily M (η := η)).IsHermitian
+      := by
   unfold originalPrescribedTraceDualFamily
   apply NormFamily.IsHermitian.pullback
   have hline : (dualizingLine K).toNormFamily.IsHermitian
-      normalizedNumberFieldArchimedeanCompletions := dualizingLine_isHermitian K
+      := dualizingLine_isHermitian K
   exact NormFamily.orthogonalTensorPair_isHermitian η.dual
-    (dualizingLine K).toNormFamily normalizedNumberFieldArchimedeanCompletions hη.dual hline
+    (dualizingLine K).toNormFamily (hξ := hη.dual) (hη := hline)
 
 /-- The actual source diagonal maps onto the previously proved literal original
 trace-integral diagonal, under the proved canonical source equivalence. -/
@@ -97,10 +98,10 @@ theorem originalTensorDiagonalMap_transport :
 using the actual prescribed tensor norm and its compatible inner-product volume. -/
 def originalTensorCovolume
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) : ℝ := by
-  let := euclideanNormedAddCommGroup (originalPrescribedTraceDualFamily M hη)
-  let := euclideanNormedSpace (originalPrescribedTraceDualFamily M hη)
-  let := euclideanInnerProduct (originalPrescribedTraceDualFamily_isHermitian M hη)
+    [hη : η.IsHermitian] : ℝ := by
+  let := euclideanNormedAddCommGroup (originalPrescribedTraceDualFamily M (η := η))
+  let := euclideanNormedSpace (originalPrescribedTraceDualFamily M (η := η))
+  let := euclideanInnerProduct (hξ := (originalPrescribedTraceDualFamily_isHermitian M (η := η)))
   let : MeasurableSpace (CompletedVectorProduct K
       (K ⊗[𝓞 K] (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M))) := borel _
   let : BorelSpace (CompletedVectorProduct K
@@ -115,7 +116,7 @@ def originalTensorCovolume
 
 private theorem traceTensorLattice_properties
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     letI := euclideanNormedAddCommGroup η
     letI := euclideanNormedSpace η
     letI := ordinaryTraceDualNormedAddCommGroup η
@@ -126,10 +127,10 @@ private theorem traceTensorLattice_properties
       Submodule.span ℝ (L : Set (CompletedVectorProduct K (Module.Dual K (K ⊗[𝓞 K] M)))) = ⊤ := by
   let := euclideanNormedAddCommGroup η
   let := euclideanNormedSpace η
-  let := euclideanInnerProduct hη
+  let := euclideanInnerProduct (hξ := hη)
   let := ordinaryTraceDualNormedAddCommGroup η
   let := ordinaryTraceDualNormedSpace η
-  let := ordinaryTraceDualInnerProduct hη
+  let := ordinaryTraceDualInnerProduct (hξ := hη)
   let := GeometryOfNumbers.strongDualInnerProduct
     (E := CompletedVectorProduct K (K ⊗[𝓞 K] M))
   let := euclidean_discrete_diagonalLattice η
@@ -148,8 +149,8 @@ private theorem traceTensorLattice_properties
     (E := CompletedVectorProduct K (K ⊗[𝓞 K] M))
     (diagonalLattice (K := K) (E := K ⊗[𝓞 K] M)
       (NumberFieldInvertibleGeneric.genericImage (K := K) M))
-  let t := ordinaryTraceDualIsometry hη
-  have hmapt := traceTensorDiagonalMap_integralDual_image M η hη
+  let t := ordinaryTraceDualIsometry (hξ := hη)
+  have hmapt := traceTensorDiagonalMap_integralDual_image M η (hη := hη)
   rw [NumberFieldProjectiveGeneric.originalDiagonalMap_range] at hmapt
   have hcomapt : ZLattice.comap ℝ
       (GeometryOfNumbers.integralDual
@@ -191,13 +192,13 @@ private theorem traceTensorLattice_properties
 tensor metric and canonical ordinary Euclidean volume, has reciprocal covolume. -/
 theorem originalTensorCovolume_eq_inv
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
-    originalTensorCovolume M η hη =
-      (NumberFieldArchimedeanCovolume.euclideanCovolume η hη
+    [hη : η.IsHermitian] :
+    originalTensorCovolume M η =
+      (NumberFieldArchimedeanCovolume.euclideanCovolume η
         (NumberFieldInvertibleGeneric.genericImage (K := K) M))⁻¹ := by
-  let := euclideanNormedAddCommGroup (originalPrescribedTraceDualFamily M hη)
-  let := euclideanNormedSpace (originalPrescribedTraceDualFamily M hη)
-  let := euclideanInnerProduct (originalPrescribedTraceDualFamily_isHermitian M hη)
+  let := euclideanNormedAddCommGroup (originalPrescribedTraceDualFamily M (η := η))
+  let := euclideanNormedSpace (originalPrescribedTraceDualFamily M (η := η))
+  let := euclideanInnerProduct (hξ := (originalPrescribedTraceDualFamily_isHermitian M (η := η)))
   let : MeasurableSpace (CompletedVectorProduct K
       (K ⊗[𝓞 K] (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M))) := borel _
   let : BorelSpace (CompletedVectorProduct K
@@ -206,23 +207,23 @@ theorem originalTensorCovolume_eq_inv
     (K ⊗[𝓞 K] (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M)))
   let := euclideanNormedAddCommGroup η
   let := euclideanNormedSpace η
-  let := euclideanInnerProduct hη
+  let := euclideanInnerProduct (ξ := η)
   let := ordinaryTraceDualNormedAddCommGroup η
   let := ordinaryTraceDualNormedSpace η
-  let := ordinaryTraceDualInnerProduct hη
+  let := ordinaryTraceDualInnerProduct (ξ := η)
   let : MeasurableSpace (CompletedVectorProduct K (Module.Dual K (K ⊗[𝓞 K] M))) := borel _
   let : BorelSpace (CompletedVectorProduct K (Module.Dual K (K ⊗[𝓞 K] M))) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace
     (E := CompletedVectorProduct K (Module.Dual K (K ⊗[𝓞 K] M)))
   let L : Submodule ℤ (CompletedVectorProduct K (Module.Dual K (K ⊗[𝓞 K] M))) :=
     (traceTensorDiagonalMap (K := K) M).range
-  have hprops := traceTensorLattice_properties M η hη
+  have hprops := traceTensorLattice_properties M η
   let : DiscreteTopology L := hprops.1
   let : IsZLattice ℝ L := ⟨hprops.2⟩
-  have ht := covolume_isometry (originalPrescribedTraceDualIsometry M hη)
+  have ht := covolume_isometry (originalPrescribedTraceDualIsometry M (η := η))
     (NumberFieldProjectiveGeneric.originalDiagonalMap (K := K)
       (codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) M)).range L
     (originalTensorDiagonalMap_transport M)
-  exact ht.trans (traceTensorDiagonalMap_covolume M η hη)
+  exact ht.trans (traceTensorDiagonalMap_covolume M η (hη := hη))
 
 end ArakelovGeometry.NumberFieldProjectiveTraceDualOriginalCovolume

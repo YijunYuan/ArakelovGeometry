@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Domination
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.Analysis.AbsoluteValue.EquivalentCompletionDual
 
@@ -64,33 +65,33 @@ theorem normalizedNormFamilyTensorEquiv_dualPairing_norm
 
 namespace NormFamily
 
-variable (ξ : NormFamily (numberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
+variable (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
 
 omit [FiniteDimensional K E] in
 /-- The actual finite and infinite completed norm formulas in one positive exponent. -/
 theorem numberFieldNormalize_norm_map
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (y : (placeRep ω.val).Completion ⊗[K] E) :
-    (ξ.numberFieldNormalize hξ).norm ω (normalizedNormFamilyTensorEquiv ω y) =
+    (ξ.numberFieldNormalize).norm ω (normalizedNormFamilyTensorEquiv ω y) =
       ξ.norm ω.val y ^ numberFieldNormalizationExponent ω := by
   by_cases hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin
   · erw [numberFieldNormalizationExponent_of_fin ω hω]
-    exact ξ.numberFieldNormalize_norm_map_fin hξ ω hω y
+    exact ξ.numberFieldNormalize_norm_map_fin ω hω y
   · erw [numberFieldNormalizationExponent_of_inf ω hω, Real.rpow_one]
-    exact ξ.numberFieldNormalize_norm_map_inf hξ ω hω y
+    exact ξ.numberFieldNormalize_norm_map_inf ω hω y
 
 /-- Dual operator norms transport by the same positive local power as the original norms. -/
 theorem numberFieldNormalize_dual_norm_map
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})
     (z : (placeRep ω.val).Completion ⊗[K] Module.Dual K E) :
-    (ξ.numberFieldNormalize hξ).dual.norm ω (normalizedNormFamilyTensorEquiv ω z) =
+    (ξ.numberFieldNormalize).dual.norm ω (normalizedNormFamilyTensorEquiv ω z) =
       ξ.dual.norm ω.val z ^ numberFieldNormalizationExponent ω := by
   let θ := numberFieldNormalizationExponent ω
   have hθ : 0 < θ := numberFieldNormalizationExponent_pos ω
   have hcancel {r : ℝ} (hr : 0 ≤ r) : (r ^ θ⁻¹) ^ θ = r := by
     rw [← Real.rpow_mul hr, inv_mul_cancel₀ hθ.ne', Real.rpow_one]
   apply le_antisymm
-  · apply (ξ.numberFieldNormalize hξ).dual_norm_le ω _
+  · apply (ξ.numberFieldNormalize).dual_norm_le ω _
       (Real.rpow_nonneg (ξ.dual.norm_nonneg ω.val z) θ)
     intro y
     obtain ⟨x, rfl⟩ := (normalizedNormFamilyTensorEquiv ω).surjective y
@@ -99,21 +100,21 @@ theorem numberFieldNormalize_dual_norm_map
     exact (Real.rpow_le_rpow (_root_.norm_nonneg _)
       (ξ.norm_dual_apply_le ω.val z x) hθ.le).trans_eq
       (Real.mul_rpow (ξ.dual.norm_nonneg ω.val z) (ξ.norm_nonneg ω.val x))
-  · have hB := (ξ.numberFieldNormalize hξ).dual.norm_nonneg ω
+  · have hB := (ξ.numberFieldNormalize).dual.norm_nonneg ω
       (normalizedNormFamilyTensorEquiv ω z)
     have hbound : ξ.dual.norm ω.val z ≤
-        (ξ.numberFieldNormalize hξ).dual.norm ω
+        (ξ.numberFieldNormalize).dual.norm ω
           (normalizedNormFamilyTensorEquiv ω z) ^ θ⁻¹ := by
       apply ξ.dual_norm_le ω.val z (Real.rpow_nonneg hB θ⁻¹)
       intro y
-      have hb := (ξ.numberFieldNormalize hξ).norm_dual_apply_le ω
+      have hb := (ξ.numberFieldNormalize).norm_dual_apply_le ω
         (normalizedNormFamilyTensorEquiv ω z) (normalizedNormFamilyTensorEquiv ω y)
       erw [normalizedNormFamilyTensorEquiv_dualPairing_norm,
         numberFieldNormalize_norm_map] at hb
       apply (Real.rpow_le_rpow_iff (_root_.norm_nonneg _)
         (mul_nonneg (Real.rpow_nonneg hB θ⁻¹) (ξ.norm_nonneg ω.val y)) hθ).mp
       calc
-        _ ≤ (ξ.numberFieldNormalize hξ).dual.norm ω
+        _ ≤ (ξ.numberFieldNormalize).dual.norm ω
             (normalizedNormFamilyTensorEquiv ω z) * ξ.norm ω.val y ^ θ := hb
         _ = _ := by
           rw [Real.mul_rpow (Real.rpow_nonneg hB θ⁻¹) (ξ.norm_nonneg ω.val y),
@@ -123,7 +124,7 @@ theorem numberFieldNormalize_dual_norm_map
 
 /-- Normalization commutes with the actual completed dual norm family. -/
 theorem numberFieldNormalize_dual :
-    (ξ.numberFieldNormalize hξ).dual = ξ.dual.numberFieldNormalize ξ.dual_isUltrametric := by
+    (ξ.numberFieldNormalize).dual = ξ.dual.numberFieldNormalize (hξ := ξ.dual_isUltrametric) := by
   ext ω z
   obtain ⟨y, rfl⟩ := (normalizedNormFamilyTensorEquiv ω).surjective z
   erw [numberFieldNormalize_dual_norm_map, numberFieldNormalize_norm_map]
@@ -131,9 +132,9 @@ theorem numberFieldNormalize_dual :
 /-- Upper envelopes for the original family and its actual dual transport together. -/
 theorem IsDominated.numberFieldNormalize {ξ : NormFamily (numberFieldAdelicStructure K) E}
     (h : ξ.IsDominated) (hξ : ξ.IsUltrametric) :
-    (ξ.numberFieldNormalize hξ).IsDominated := by
+    (ξ.numberFieldNormalize).IsDominated := by
   refine ⟨h.1.numberFieldNormalize hξ, ?_⟩
-  rw [ξ.numberFieldNormalize_dual hξ]
+  rw [ξ.numberFieldNormalize_dual]
   exact h.2.numberFieldNormalize ξ.dual_isUltrametric
 
 end NormFamily

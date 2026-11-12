@@ -5,8 +5,8 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.LinearAlgebra.CommonAdaptedBasis
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Inverse
+public import ArakelovGeometry.LinearAlgebra.CommonAdaptedBasis
 
 /-!
 # Simultaneous real weights and trivial-place norms
@@ -93,9 +93,9 @@ variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
 /-- A weighted coordinate description of all balls determines the norm on every
 completed vector. The supremum of the empty coordinate support is zero. -/
 theorem norm_eq_sup_of_weighted_coordinates
-    (ξ : NormFamily (singleTrivialPlace K) E) (hξ : ξ.IsUltrametric)
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric]
     {ι : Type*} (b : Basis ι K E) (a : ι → ℝ)
-    (hb : ∀ t x, x ∈ ξ.trivialFiltration hξ t ↔
+    (hb : ∀ t x, x ∈ ξ.trivialFiltration t ↔
       ∀ i, b.repr x i ≠ 0 → t ≤ a i)
     (ω : (singleTrivialPlace K).Ω)
     (z : ((singleTrivialPlace K).ϕ ω).Completion ⊗[K] E) :
@@ -126,7 +126,7 @@ theorem norm_eq_sup_of_weighted_coordinates
     obtain ⟨i, hi⟩ := Finsupp.support_nonempty_iff.mpr hrepr
     have hM : 0 < (M : ℝ) := (Real.exp_pos _).trans_le (hs i hi)
     apply le_antisymm
-    · have hm : x ∈ ξ.trivialFiltration hξ (-Real.log (M : ℝ)) := by
+    · have hm : x ∈ ξ.trivialFiltration (-Real.log (M : ℝ)) := by
         apply (hb _ x).mpr
         intro j hj
         have h := hs j (Finsupp.mem_support_iff.mpr hj)
@@ -134,7 +134,7 @@ theorem norm_eq_sup_of_weighted_coordinates
         linarith
       change ξ.trivialSeminorm x ≤ Real.exp (-(-Real.log (M : ℝ))) at hm
       simpa only [neg_neg, Real.exp_log hM] using hm
-    · have hm : x ∈ ξ.trivialFiltration hξ (-Real.log (ξ.trivialSeminorm x)) := by
+    · have hm : x ∈ ξ.trivialFiltration (-Real.log (ξ.trivialSeminorm x)) := by
         change ξ.trivialSeminorm x ≤ Real.exp (-(-Real.log (ξ.trivialSeminorm x)))
         rw [neg_neg, Real.exp_log hp]
       have hsup : M ≤ ⟨ξ.trivialSeminorm x, hp.le⟩ := by
@@ -158,10 +158,10 @@ theorem norm_eq_sup_of_weighted_coordinates
 basis describing both filtrations and both norms on all completed vectors. -/
 theorem exists_common_orthogonal_basis [FiniteDimensional K E]
     (ξ η : NormFamily (singleTrivialPlace K) E)
-    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric) :
+    [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric] :
     ∃ (b : Basis (Fin (finrank K E)) K E) (a c : Fin (finrank K E) → ℝ),
-      (∀ t, ξ.trivialFiltration hξ t = Submodule.span K (b '' {i | t ≤ a i})) ∧
-      (∀ t, η.trivialFiltration hη t = Submodule.span K (b '' {i | t ≤ c i})) ∧
+      (∀ t, ξ.trivialFiltration t = Submodule.span K (b '' {i | t ≤ a i})) ∧
+      (∀ t, η.trivialFiltration t = Submodule.span K (b '' {i | t ≤ c i})) ∧
       (∀ ω (z : ((singleTrivialPlace K).ϕ ω).Completion ⊗[K] E),
         ξ.norm ω z =
           (((b.repr (trivialCompletedTensorEquiv K E z)).support.sup fun i ↦
@@ -172,12 +172,12 @@ theorem exists_common_orthogonal_basis [FiniteDimensional K E]
             ⟨Real.exp (-c i), (Real.exp_pos _).le⟩ : NNReal) : ℝ)) := by
   obtain ⟨b, a, c, hFa, hGc, hFcoord, hGcoord⟩ :=
     Submodule.exists_common_weighted_basis
-      (ξ.antitone_trivialFiltration hξ) (ξ.trivialFiltration_attains_bot_top hξ).1
-      (ξ.trivialFiltration_attains_bot_top hξ).2 (ξ.trivialFiltration_locallyConstant_left hξ)
-      (η.antitone_trivialFiltration hη) (η.trivialFiltration_attains_bot_top hη).1
-      (η.trivialFiltration_attains_bot_top hη).2 (η.trivialFiltration_locallyConstant_left hη)
-  exact ⟨b, a, c, hFa, hGc, ξ.norm_eq_sup_of_weighted_coordinates hξ b a hFcoord,
-    η.norm_eq_sup_of_weighted_coordinates hη b c hGcoord⟩
+      (ξ.antitone_trivialFiltration) (ξ.trivialFiltration_attains_bot_top).1
+      (ξ.trivialFiltration_attains_bot_top).2 (ξ.trivialFiltration_locallyConstant_left)
+      (η.antitone_trivialFiltration) (η.trivialFiltration_attains_bot_top).1
+      (η.trivialFiltration_attains_bot_top).2 (η.trivialFiltration_locallyConstant_left)
+  exact ⟨b, a, c, hFa, hGc, ξ.norm_eq_sup_of_weighted_coordinates b a hFcoord,
+    η.norm_eq_sup_of_weighted_coordinates b c hGcoord⟩
 
 /-- The norm realizations of two arbitrary real filtrations share an orthogonal
 basis whose two weights still describe the original threshold submodules. -/
@@ -202,8 +202,8 @@ theorem exists_common_orthogonal_basis_ofTrivialFiltration [FiniteDimensional K 
     exists_common_orthogonal_basis
       (ofTrivialFiltration F hF hFbot hFtop hFleft)
       (ofTrivialFiltration G hG hGbot hGtop hGleft)
-      (ofTrivialFiltration_isUltrametric F hF hFbot hFtop hFleft)
-      (ofTrivialFiltration_isUltrametric G hG hGbot hGtop hGleft)
+      (hξ := (ofTrivialFiltration_isUltrametric F hF hFbot hFtop hFleft))
+      (hη := (ofTrivialFiltration_isUltrametric G hG hGbot hGtop hGleft))
 
 end
 

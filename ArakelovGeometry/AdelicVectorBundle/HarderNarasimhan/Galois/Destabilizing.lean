@@ -9,6 +9,7 @@ public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Destabilizing
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Algebraic.ClosureApproximation
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.HermitianComparison.DeterminantDegree
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Isomorphism.Subspace
+
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Descent.Subspace
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Galois.ScalarExtensionDegree
 import Mathlib.CategoryTheory.Category.Init
@@ -38,78 +39,85 @@ local instance hermitianGaloisDestabilizingProper : (S.algebraicExtension L).IsP
 coefficient automorphism; regularity and Hermitianity are produced. -/
 theorem destabilizingSubspace_hermitianScalarExtension_algEquiv_of_finiteDimensional
     [FiniteDimensional K L] (V : AdelicVectorBundle S E)
-    (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) (hr : 0 < Module.finrank K E)
+    [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E)
     (σ : L ≃ₐ[K] L) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
-    let W := V.hermitianScalarExtension (L := L) hcount hN hLN hH
-    let hLH := V.hermitianScalarExtension_isHermitian hcount hN hLN hH
+    let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
+    let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
     let hrL : 0 < Module.finrank L (L ⊗[K] E) :=
       (Module.finrank_baseChange (R := L) (S := K) (M' := E)).symm ▸ hr
-    scalarExtensionSubspaceOrderIso σ (W.destabilizingSubspace hLS hLN hLH hrL) =
-      W.destabilizingSubspace hLS hLN hLH hrL := by
+    scalarExtensionSubspaceOrderIso σ (W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
+        (hV := hLH) hrL) =
+      W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL := by
   intro hLN hLS W hLH hrL
-  let D := W.destabilizingSubspace hLS hLN hLH hrL
-  have hp := W.destabilizingSubspace_finrank_pos hLS hLN hLH hrL
+  let D := W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL
+  have hp := W.destabilizingSubspace_finrank_pos (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL
   apply Submodule.eq_of_le_of_finrank_eq
-  · apply W.le_destabilizingSubspace_of_slope_eq_maximalSlope hLS hLN hLH hrL
+  · apply W.le_destabilizingSubspace_of_slope_eq_maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
+      (hV := hLH) hrL
     · rw [scalarExtensionSubspaceOrderIso_finrank]
       exact hp
     · rw [V.slope_hermitianScalarExtension_restrict_algEquiv_of_finiteDimensional
-        hcount hN hH σ D]
-      exact W.slope_destabilizingSubspace_eq_maximalSlope hLS hLN hLH hrL
+         σ D]
+      exact W.slope_destabilizingSubspace_eq_maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
+          (hV := hLH) hrL
   · exact scalarExtensionSubspaceOrderIso_finrank σ D
 
 /-- The genuine closed-extension largest destabilizer is fixed by every
 coefficient automorphism, without assuming perfectness or stability. -/
 theorem destabilizingSubspace_hermitianScalarExtension_algEquiv_of_isAlgClosed
     [IsAlgClosed L] (V : AdelicVectorBundle S E)
-    (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) (hr : 0 < Module.finrank K E)
+    [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E)
     (σ : L ≃ₐ[K] L) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-    let W := V.hermitianScalarExtension (L := L) hcount hN hLN hH
-    let hLH := V.hermitianScalarExtension_isHermitian hcount hN hLN hH
+    let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
+    let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
     let hrL : 0 < Module.finrank L (L ⊗[K] E) :=
       (Module.finrank_baseChange (R := L) (S := K) (M' := E)).symm ▸ hr
-    scalarExtensionSubspaceOrderIso σ (W.destabilizingSubspace hLS hLN hLH hrL) =
-      W.destabilizingSubspace hLS hLN hLH hrL := by
+    scalarExtensionSubspaceOrderIso σ (W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
+        (hV := hLH) hrL) =
+      W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL := by
   intro hLN hLS W hLH hrL
-  let D := W.destabilizingSubspace hLS hLN hLH hrL
-  have hp := W.destabilizingSubspace_finrank_pos hLS hLN hLH hrL
+  let D := W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL
+  have hp := W.destabilizingSubspace_finrank_pos (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL
   apply Submodule.eq_of_le_of_finrank_eq
-  · apply W.le_destabilizingSubspace_of_slope_eq_maximalSlope hLS hLN hLH hrL
+  · apply W.le_destabilizingSubspace_of_slope_eq_maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
+      (hV := hLH) hrL
     · rw [scalarExtensionSubspaceOrderIso_finrank]
       exact hp
     · rw [V.slope_hermitianScalarExtension_restrict_algEquiv_of_isAlgClosed
-        hcount hN hH σ D]
-      exact W.slope_destabilizingSubspace_eq_maximalSlope hLS hLN hLH hrL
+         σ D]
+      exact W.slope_destabilizingSubspace_eq_maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
+          (hV := hLH) hrL
   · exact scalarExtensionSubspaceOrderIso_finrank σ D
 
 /-- The actual first destabilizer over a finite Galois extension descends
 uniquely, with coefficient stability proved rather than assumed. -/
 theorem existsUnique_baseChange_destabilizingSubspace_hermitianScalarExtension
     [FiniteDimensional K L] [IsGalois K L] (V : AdelicVectorBundle S E)
-    (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) (hr : 0 < Module.finrank K E) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
-    let W := V.hermitianScalarExtension (L := L) hcount hN hLN hH
-    let hLH := V.hermitianScalarExtension_isHermitian hcount hN hLN hH
+    let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
+    let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
     let hrL : 0 < Module.finrank L (L ⊗[K] E) :=
       (Module.finrank_baseChange (R := L) (S := K) (M' := E)).symm ▸ hr
-    ∃! U : Submodule K E, U.baseChange L = W.destabilizingSubspace hLS hLN hLH hrL := by
+    ∃! U : Submodule K E, U.baseChange L = W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
+        (hV := hLH) hrL := by
   intro hLN hLS W hLH hrL
-  let D := W.destabilizingSubspace hLS hLN hLH hrL
+  let D := W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL
   apply HermitianAbsoluteDescent.existsUnique_baseChange_eq_of_stable
   intro σ x hx
   have hfixed := V.destabilizingSubspace_hermitianScalarExtension_algEquiv_of_finiteDimensional
-    hcount hN hH hr σ
+     hr σ
   change scalarExtensionSubspaceOrderIso σ D = D at hfixed
   change scalarExtensionSemilinearEquiv σ x ∈ D
   rw [← hfixed]

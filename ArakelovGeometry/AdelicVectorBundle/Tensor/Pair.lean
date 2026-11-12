@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Countable
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Basic
 public import ArakelovGeometry.Analysis.Tensor.Operator
+
 import ArakelovGeometry.AdelicVectorBundle.Construction.Tensor.Countable
 import ArakelovGeometry.AdelicVectorBundle.Tensor.Domination
 import Mathlib.CategoryTheory.Category.Init
@@ -66,11 +67,32 @@ def tensorPairFactors (ξ : NormFamily S E) (η : NormFamily S F) :
   | .inl _ => ξ
   | .inr _ => η
 
+omit [FiniteDimensional K E] [FiniteDimensional K F] in
+instance instIsMeasurableTensorPairFactors (ξ : NormFamily S E) (η : NormFamily S F)
+    [hξ : ξ.IsMeasurable] [hη : η.IsMeasurable] (i : Unit ⊕ Unit) :
+    (tensorPairFactors ξ η i).IsMeasurable :=
+  match i with
+  | .inl _ => hξ
+  | .inr _ => hη
+
+instance instIsDominatedTensorPairFactors (ξ : NormFamily S E) (η : NormFamily S F)
+    [hξ : ξ.IsDominated] [hη : η.IsDominated] (i : Unit ⊕ Unit) :
+    (tensorPairFactors ξ η i).IsDominated :=
+  match i with
+  | .inl _ => hξ
+  | .inr _ => hη
+
 /-- The injective norm on the ordinary binary tensor product, transported
 from the existing canonical finite tensor norm. -/
 noncomputable def injectiveTensorPair (ξ : NormFamily S E) (η : NormFamily S F) :
     NormFamily S (E ⊗[K] F) :=
   (injectiveTensor (tensorPairFactors ξ η)).pullback
+    (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.toLinearMap
+    (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.injective
+
+instance instIsUltrametricInjectiveTensorPair (ξ : NormFamily S E) (η : NormFamily S F) :
+    (ξ.injectiveTensorPair η).IsUltrametric :=
+  (injectiveTensor_isUltrametric (tensorPairFactors ξ η)).pullback
     (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.toLinearMap
     (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.injective
 
@@ -84,23 +106,15 @@ theorem injectiveTensorPair_norm_tmul (ξ : NormFamily S E) (η : NormFamily S F
 /-- Either source base hypothesis proves measurability of the actual binary norm. -/
 theorem IsMeasurable.injectiveTensorPair {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsMeasurable) (hη : η.IsMeasurable)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield) :
-    (ξ.injectiveTensorPair η).IsMeasurable := by
-  have hm : ∀ i, (tensorPairFactors ξ η i).IsMeasurable := by
-    rintro (i | i)
-    · exact hξ
-    · exact hη
-  exact (IsMeasurable.injectiveTensor_of_discrete_or_countable _ hm hS).pullback _ _
+    [hS : S.HasMeasurableBase] :
+    (ξ.injectiveTensorPair η).IsMeasurable :=
+  (inferInstance : (injectiveTensor (tensorPairFactors ξ η)).IsMeasurable).pullback _ _
 
 /-- Domination of both factors supplies domination of the actual binary norm. -/
 theorem IsDominated.injectiveTensorPair {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsDominated) (hη : η.IsDominated) (hfin : S.v S.Ωinf < ⊤) :
-    (ξ.injectiveTensorPair η).IsDominated := by
-  have hd : ∀ i, (tensorPairFactors ξ η i).IsDominated := by
-    rintro (i | i)
-    · exact hξ
-    · exact hη
-  exact (IsDominated.strong_injectiveTensor _ hd hfin).1.pullback _ _
+    (ξ.injectiveTensorPair η).IsDominated :=
+  (IsDominated.strong_injectiveTensor (tensorPairFactors ξ η) inferInstance hfin).1.pullback _ _
 
 end NormFamily
 
@@ -110,19 +124,19 @@ namespace AdelicVectorBundle
 proved under the source alternatives. -/
 noncomputable def injectiveTensorPair (V : AdelicVectorBundle S E)
     (W : AdelicVectorBundle S F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
     AdelicVectorBundle S (E ⊗[K] F) :=
   ofMeasurableDominated (V.toNormFamily.injectiveTensorPair W.toNormFamily)
-    (V.isMeasurable.injectiveTensorPair W.isMeasurable hS)
-    (V.isDominated.injectiveTensorPair W.isDominated (by exact S.v_Ωinf_lt_top_of_isRCLike hN)) hS
+    (hm := (V.isMeasurable.injectiveTensorPair W.isMeasurable))
+    (hd := (V.isDominated.injectiveTensorPair W.isDominated (by exact S.v_Ωinf_lt_top_of_isRCLike)))
 
 @[simp]
 theorem injectiveTensorPair_toNormFamily (V : AdelicVectorBundle S E)
     (W : AdelicVectorBundle S F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.injectiveTensorPair W hS hN).toNormFamily =
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    (V.injectiveTensorPair W).toNormFamily =
       V.toNormFamily.injectiveTensorPair W.toNormFamily := rfl
 
 end AdelicVectorBundle

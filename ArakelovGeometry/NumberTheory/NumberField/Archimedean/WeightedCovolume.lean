@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.Covolume
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.WeightedEuclidean
+
 import ArakelovGeometry.NumberTheory.NumberField.Archimedean.WeightedJacobian
 import Mathlib.Topology.Sheaves.Init
 
@@ -35,13 +36,13 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 
 /-- Canonical volume of the original unweighted Hermitian inner product. -/
 def euclideanVolume (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := euclideanNormedAddCommGroup ξ
     letI : MeasurableSpace (CompletedVectorProduct K E) := borel _
     Measure (CompletedVectorProduct K E) := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
@@ -49,13 +50,13 @@ def euclideanVolume (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
 
 /-- Canonical volume of the actual degree-weighted Hermitian inner product. -/
 def weightedVolume (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := weightedNormedAddCommGroup ξ
     letI : MeasurableSpace (CompletedVectorProduct K E) := borel _
     Measure (CompletedVectorProduct K E) := by
   let := weightedNormedAddCommGroup ξ
   let := weightedNormedSpace ξ
-  let := weightedInnerProduct hξ
+  let := weightedInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
@@ -75,14 +76,14 @@ def weightIsometry (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) 
 
 theorem weightedVolume_eq_image
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (B : Set (CompletedVectorProduct K E)) :
-    weightedVolume ξ hξ B =
-      euclideanVolume ξ hξ (weightEquiv (K := K) (E := E) '' B) := by
+    weightedVolume ξ B =
+      euclideanVolume ξ (weightEquiv (K := K) (E := E) '' B) := by
   let n := euclideanNormedAddCommGroup ξ
   let nw := weightedNormedAddCommGroup ξ
-  let i := euclideanInnerProduct hξ
-  let iw := weightedInnerProduct hξ
+  let i := euclideanInnerProduct (ξ := ξ)
+  let iw := weightedInnerProduct (ξ := ξ)
   let m : MeasurableSpace (CompletedVectorProduct K E) := by
     letI := n
     exact borel _
@@ -100,15 +101,15 @@ theorem weightedVolume_eq_image
   let f := weightIsometry ξ
   let e := @LinearIsometryEquiv.toMeasurableEquiv _ _ n i nw iw mw bw m b f
   have h := @LinearIsometryEquiv.measurePreserving _ _ n i nw iw mw bw m b _ _ f
-  have he := @MeasurableEquiv.map_apply _ _ mw m (weightedVolume ξ hξ) e
+  have he := @MeasurableEquiv.map_apply _ _ mw m (weightedVolume ξ) e
     (weightEquiv (K := K) (E := E) '' B)
-  change (@Measure.map _ _ mw m f (weightedVolume ξ hξ))
+  change (@Measure.map _ _ mw m f (weightedVolume ξ))
     (weightEquiv (K := K) (E := E) '' B) =
-      weightedVolume ξ hξ (f ⁻¹' (weightEquiv (K := K) (E := E) '' B)) at he
-  rw [@MeasurePreserving.map_eq _ _ mw m f (weightedVolume ξ hξ)
-    (euclideanVolume ξ hξ) h] at he
-  change euclideanVolume ξ hξ (weightEquiv (K := K) (E := E) '' B) =
-    weightedVolume ξ hξ (weightEquiv (K := K) (E := E) ⁻¹'
+      weightedVolume ξ (f ⁻¹' (weightEquiv (K := K) (E := E) '' B)) at he
+  rw [@MeasurePreserving.map_eq _ _ mw m f (weightedVolume ξ)
+    (euclideanVolume ξ) h] at he
+  change euclideanVolume ξ (weightEquiv (K := K) (E := E) '' B) =
+    weightedVolume ξ (weightEquiv (K := K) (E := E) ⁻¹'
       (weightEquiv (K := K) (E := E) '' B)) at he
   rw [Set.preimage_image_eq _ (weightEquiv (K := K) (E := E)).injective] at he
   exact he.symm
@@ -116,22 +117,22 @@ theorem weightedVolume_eq_image
 open scoped Classical in
 theorem weightedVolume_eq_mul
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (B : Set (CompletedVectorProduct K E)) :
-    weightedVolume ξ hξ B =
+    weightedVolume ξ B =
       ENNReal.ofReal ((2 : ℝ) ^
         (Fintype.card {w : InfinitePlace K // w.IsComplex} * Module.finrank K E)) *
-        euclideanVolume ξ hξ B := by
+        euclideanVolume ξ B := by
   rw [weightedVolume_eq_image]
-  exact volume_weightEquiv_image ξ hξ B
+  exact volume_weightEquiv_image ξ B
 
 /-- Covolume for the canonical weighted inner product of the original product. -/
 def weightedCovolume (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) : ℝ := by
   letI := weightedNormedAddCommGroup ξ
   letI := weightedNormedSpace ξ
-  letI := weightedInnerProduct hξ
+  letI := weightedInnerProduct (ξ := ξ)
   letI : MeasurableSpace (CompletedVectorProduct K E) := borel _
   letI : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   letI := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
@@ -144,14 +145,14 @@ def diagonalFundamentalDomain (M : Submodule (𝓞 K) E) (hfg : M.FG)
 
 theorem weightedCovolume_eq_fundamentalDomain
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) :
-    weightedCovolume ξ hξ M =
-      (weightedVolume ξ hξ (diagonalFundamentalDomain M hfg hspan)).toReal := by
+    weightedCovolume ξ M =
+      (weightedVolume ξ (diagonalFundamentalDomain M hfg hspan)).toReal := by
   let := weightedNormedAddCommGroup ξ
   let := weightedNormedSpace ξ
-  let := weightedInnerProduct hξ
+  let := weightedInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
@@ -165,14 +166,14 @@ theorem weightedCovolume_eq_fundamentalDomain
 
 theorem euclideanCovolume_eq_fundamentalDomain
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) :
-    euclideanCovolume ξ hξ M =
-      (euclideanVolume ξ hξ (diagonalFundamentalDomain M hfg hspan)).toReal := by
+    euclideanCovolume ξ M =
+      (euclideanVolume ξ (diagonalFundamentalDomain M hfg hspan)).toReal := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
@@ -187,36 +188,36 @@ theorem euclideanCovolume_eq_fundamentalDomain
 open scoped Classical in
 theorem weightedCovolume_eq_mul
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) :
-    weightedCovolume ξ hξ M =
+    weightedCovolume ξ M =
       (2 : ℝ) ^ (Fintype.card {w : InfinitePlace K // w.IsComplex} * Module.finrank K E) *
-        euclideanCovolume ξ hξ M := by
-  rw [weightedCovolume_eq_fundamentalDomain ξ hξ M hfg hspan,
-    euclideanCovolume_eq_fundamentalDomain ξ hξ M hfg hspan,
+        euclideanCovolume ξ M := by
+  rw [weightedCovolume_eq_fundamentalDomain ξ M hfg hspan,
+    euclideanCovolume_eq_fundamentalDomain ξ M hfg hspan,
     weightedVolume_eq_mul, ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity)]
 
 theorem weightedCovolume_pos
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) :
-    0 < weightedCovolume ξ hξ M := by
-  rw [weightedCovolume_eq_mul ξ hξ M hfg hspan]
-  exact mul_pos (by positivity) (euclideanCovolume_pos ξ hξ M hfg hspan)
+    0 < weightedCovolume ξ M := by
+  rw [weightedCovolume_eq_mul ξ M hfg hspan]
+  exact mul_pos (by positivity) (euclideanCovolume_pos ξ M hfg hspan)
 
 theorem weightedCovolume_div_eq_relIndex
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M₀ M : Submodule (𝓞 K) E) (hfg₀ : M₀.FG)
     (hspan₀ : Submodule.span K (M₀ : Set E) = ⊤) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) (h : M₀ ≤ M) :
-    weightedCovolume ξ hξ M₀ / weightedCovolume ξ hξ M =
+    weightedCovolume ξ M₀ / weightedCovolume ξ M =
       (M₀.toAddSubgroup.relIndex M.toAddSubgroup : ℝ) := by
-  rw [weightedCovolume_eq_mul ξ hξ M₀ hfg₀ hspan₀,
-    weightedCovolume_eq_mul ξ hξ M hfg hspan, mul_div_mul_left _ _ (by positivity)]
-  exact euclideanCovolume_div_eq_relIndex ξ hξ M₀ M hfg₀ hspan₀ hfg hspan h
+  rw [weightedCovolume_eq_mul ξ M₀ hfg₀ hspan₀,
+    weightedCovolume_eq_mul ξ M hfg hspan, mul_div_mul_left _ _ (by positivity)]
+  exact euclideanCovolume_div_eq_relIndex ξ M₀ M hfg₀ hspan₀ hfg hspan h
 
 end ArakelovGeometry.NumberFieldArchimedeanWeightedCovolume
 
@@ -232,20 +233,20 @@ open scoped Classical in
 theorem IsDominated.pure_globalBall_weightedCovolume_eq
     (hdom : ξ.IsDominated) (hultra : ξ.IsUltrametric)
     (hpure : ξ.IsPureAtFinitePlaces)
-    (hHerm : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
-    weightedCovolume ξ hHerm (ξ.globalUnitBallModule hultra) =
+    (hHerm : ξ.IsHermitian) :
+    weightedCovolume ξ (ξ.globalUnitBallModule) =
       (2 : ℝ) ^ (Fintype.card {w : InfinitePlace K // w.IsComplex} * Module.finrank K E) *
-        euclideanCovolume ξ hHerm (ξ.globalUnitBallModule hultra) :=
-  weightedCovolume_eq_mul ξ hHerm _
+        euclideanCovolume ξ (ξ.globalUnitBallModule) :=
+  weightedCovolume_eq_mul ξ _
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hultra hpure).1
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hultra hpure).2.2
 
 theorem IsDominated.pure_globalBall_weightedCovolume_pos
     (hdom : ξ.IsDominated) (hultra : ξ.IsUltrametric)
     (hpure : ξ.IsPureAtFinitePlaces)
-    (hHerm : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
-    0 < weightedCovolume ξ hHerm (ξ.globalUnitBallModule hultra) :=
-  weightedCovolume_pos ξ hHerm _
+    (hHerm : ξ.IsHermitian) :
+    0 < weightedCovolume ξ (ξ.globalUnitBallModule) :=
+  weightedCovolume_pos ξ _
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hultra hpure).1
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hultra hpure).2.2
 

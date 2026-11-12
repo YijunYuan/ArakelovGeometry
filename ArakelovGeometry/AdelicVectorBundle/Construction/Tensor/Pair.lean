@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.PairNorm
+
 import ArakelovGeometry.AdelicVectorBundle.Construction.Tensor.Countable
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Subquotient
 import ArakelovGeometry.AdelicVectorBundle.Tensor.Domination
@@ -38,25 +39,17 @@ namespace NormFamily
 /-- Either source base alternative produces actual binary mixed measurability. -/
 theorem IsMeasurable.mixedTensorPair {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsMeasurable) (hη : η.IsMeasurable)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield) :
-    (ξ.mixedTensorPair η).IsMeasurable := by
-  have hm : ∀ i, (tensorPairFactors ξ η i).IsMeasurable := by
-    rintro (i | i)
-    · exact hξ
-    · exact hη
-  exact (IsMeasurable.mixedTensor_of_discrete_or_countable _ hm hS).pullback _ _
+    [hS : S.HasMeasurableBase] :
+    (ξ.mixedTensorPair η).IsMeasurable :=
+  (inferInstance : (mixedTensor (tensorPairFactors ξ η)).IsMeasurable).pullback _ _
 
 /-- The actual mixed binary norm is strongly dominated from the two factors. -/
 theorem IsDominated.strong_mixedTensorPair {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsDominated) (hη : η.IsDominated)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (ξ.mixedTensorPair η).IsStronglyDominated := by
-  have hd : ∀ i, (tensorPairFactors ξ η i).IsDominated := by
-    rintro (i | i)
-    · exact hξ
-    · exact hη
-  exact (IsDominated.strong_mixedTensor _ hd
-    (S.v_Ωinf_lt_top_of_isRCLike hN)).pullback _ _ hN
+    [hN : S.IsArchimedeanNormalized] :
+    (ξ.mixedTensorPair η).IsStronglyDominated :=
+  (IsDominated.strong_mixedTensor (tensorPairFactors ξ η) inferInstance
+    S.v_Ωinf_lt_top_of_isRCLike).pullback _ _
 
 end NormFamily
 
@@ -64,28 +57,28 @@ namespace AdelicVectorBundle
 
 /-- The actual binary mixed tensor bundle, with its analytic properties produced. -/
 def mixedTensorPair (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
     AdelicVectorBundle S (E ⊗[K] F) :=
   ofMeasurableDominated (V.toNormFamily.mixedTensorPair W.toNormFamily)
-    (V.isMeasurable.mixedTensorPair W.isMeasurable hS)
-    (V.isDominated.strong_mixedTensorPair W.isDominated hN).isDominated hS
+    (hm := (V.isMeasurable.mixedTensorPair W.isMeasurable))
+    (hd := (V.isDominated.strong_mixedTensorPair W.isDominated).isDominated)
 
 @[simp]
 theorem mixedTensorPair_toNormFamily (V : AdelicVectorBundle S E)
     (W : AdelicVectorBundle S F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.mixedTensorPair W hS hN).toNormFamily =
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    (V.mixedTensorPair W).toNormFamily =
       V.toNormFamily.mixedTensorPair W.toNormFamily := rfl
 
 /-- The binary tensor constructor retains the actual strong adelic predicate. -/
 theorem mixedTensorPair_isStronglyAdelic (V : AdelicVectorBundle S E)
     (W : AdelicVectorBundle S F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.mixedTensorPair W hS hN).IsStronglyAdelic :=
-  V.isDominated.strong_mixedTensorPair W.isDominated hN
+    [S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    (V.mixedTensorPair W).IsStronglyAdelic :=
+  V.isDominated.strong_mixedTensorPair W.isDominated
 
 end AdelicVectorBundle
 

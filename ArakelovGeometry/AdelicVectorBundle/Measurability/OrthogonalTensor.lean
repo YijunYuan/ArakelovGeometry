@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Hermitian
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.Measurability.Archimedean
 import ArakelovGeometry.AdelicVectorBundle.Measurability.InjectiveTensor
@@ -37,18 +38,18 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- Rational factor pairings are measurable in the compatible completed embeddings. -/
 theorem IsMeasurable.archimedeanInner_rational {V : Type w} [AddCommGroup V]
     [Module K V] [FiniteDimensional K V] {ξ : NormFamily S V} (hξ : ξ.IsMeasurable)
-    {hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
-    (hH : ξ.IsHermitian hS)
+    [hS : S.IsArchimedeanNormalized]
+    [ξ.IsHermitian]
     (σ : ∀ ω : S.Ωinf, (S.ϕ ω.val).Completion →+* ℂ)
     (hσ : ∀ ω x, ‖σ ω x‖ = ‖x‖)
     (hm : ∀ x : K, Measurable (fun ω : S.Ωinf =>
       σ ω (algebraMap K (S.ϕ ω.val).Completion x)))
     (K₀ : Subfield K) [Countable K₀]
     (hK₀ : ∀ ω ∈ S.Ωinf, S.IsDenseSubfieldAt K₀ ω) (x y : V) :
-    Measurable (fun ω : S.Ωinf => σ ω (hH.archimedeanInner ω
+    Measurable (fun ω : S.Ωinf => σ ω (ξ.archimedeanInner ω
       ((1 : (S.ϕ ω.val).Completion) ⊗ₜ[K] x)
       ((1 : (S.ϕ ω.val).Completion) ⊗ₜ[K] y))) := by
-  apply hξ.archimedeanInner_of_measurable_coordinates hH (Module.finBasis K V)
+  apply hξ.archimedeanInner_of_measurable_coordinates (Module.finBasis K V)
     id measurable_id σ hσ hm K₀ (fun ω => hK₀ ω.val ω.property)
   all_goals
     intro i
@@ -59,8 +60,8 @@ variable {ι : Type wι} [Fintype ι]
   {E : ι → Type w} [∀ i, AddCommGroup (E i)] [∀ i, Module K (E i)]
   [∀ i, FiniteDimensional K (E i)]
   (ξ : ∀ i, NormFamily S (E i))
-  (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-  (hH : ∀ i, (ξ i).IsHermitian hS)
+  [hS : S.IsArchimedeanNormalized]
+  [hH : ∀ i, (ξ i).IsHermitian]
 
 /-- The defining product pairing of the actual completed orthogonal tensor norm. -/
 def orthogonalTensorArchInner (ω : S.Ωinf)
@@ -73,7 +74,7 @@ def orthogonalTensorArchInner (ω : S.Ωinf)
   let : ∀ i, NormedSpace (S.ϕ ω.val).Completion ((S.ϕ ω.val).Completion ⊗[K] E i) :=
     fun i => (ξ i).fibreNormedSpace ω.val
   let : ∀ i, InnerProductSpace (S.ϕ ω.val).Completion ((S.ϕ ω.val).Completion ⊗[K] E i) :=
-    fun i => (hH i).fibreInnerProductSpace ω.val ω.property
+    fun i ↦ (ξ i).fiberInnerProductSpace ω.val ω.property
   let b := fun i =>
     stdOrthonormalBasis (S.ϕ ω.val).Completion ((S.ϕ ω.val).Completion ⊗[K] E i)
   exact inner (S.ϕ ω.val).Completion
@@ -85,8 +86,8 @@ def orthogonalTensorArchInner (ω : S.Ωinf)
 /-- Additivity of the defining tensor pairing in its first variable. -/
 theorem orthogonalTensorArchInner_add_left (ω : S.Ωinf)
     (x y z : (S.ϕ ω.val).Completion ⊗[K] (⨂[K] i, E i)) :
-    orthogonalTensorArchInner ξ hS hH ω (x + y) z =
-      orthogonalTensorArchInner ξ hS hH ω x z + orthogonalTensorArchInner ξ hS hH ω y z := by
+    orthogonalTensorArchInner ξ ω (x + y) z =
+      orthogonalTensorArchInner ξ ω x z + orthogonalTensorArchInner ξ ω y z := by
   classical
   let := hS ω.val ω.property
   let := IsRCLikeNormedField.rclike (S.ϕ ω.val).Completion
@@ -95,8 +96,8 @@ theorem orthogonalTensorArchInner_add_left (ω : S.Ωinf)
 /-- Additivity of the defining tensor pairing in its second variable. -/
 theorem orthogonalTensorArchInner_add_right (ω : S.Ωinf)
     (x y z : (S.ϕ ω.val).Completion ⊗[K] (⨂[K] i, E i)) :
-    orthogonalTensorArchInner ξ hS hH ω x (y + z) =
-      orthogonalTensorArchInner ξ hS hH ω x y + orthogonalTensorArchInner ξ hS hH ω x z := by
+    orthogonalTensorArchInner ξ ω x (y + z) =
+      orthogonalTensorArchInner ξ ω x y + orthogonalTensorArchInner ξ ω x z := by
   classical
   let := hS ω.val ω.property
   let := IsRCLikeNormedField.rclike (S.ϕ ω.val).Completion
@@ -107,12 +108,12 @@ embedded factor pairings, with the exact conjugate-first scalar factors. -/
 theorem orthogonalTensorArchInner_rational_tprod (ω : S.Ωinf)
     (σ : (S.ϕ ω.val).Completion →+* ℂ) (hσ : ∀ x, ‖σ x‖ = ‖x‖)
     (r s : K) (x y : ∀ i, E i) :
-    σ (orthogonalTensorArchInner ξ hS hH ω
+    σ (orthogonalTensorArchInner ξ ω
       ((1 : (S.ϕ ω.val).Completion) ⊗ₜ[K] (r • (⨂ₜ[K] i, x i)))
       ((1 : (S.ϕ ω.val).Completion) ⊗ₜ[K] (s • (⨂ₜ[K] i, y i)))) =
       σ (algebraMap K (S.ϕ ω.val).Completion s) *
         (starRingEnd ℂ (σ (algebraMap K (S.ϕ ω.val).Completion r)) *
-          ∏ i, σ ((hH i).archimedeanInner ω
+          ∏ i, σ ((ξ i).archimedeanInner ω
             ((1 : (S.ϕ ω.val).Completion) ⊗ₜ[K] x i)
             ((1 : (S.ϕ ω.val).Completion) ⊗ₜ[K] y i))) := by
   classical
@@ -123,7 +124,7 @@ theorem orthogonalTensorArchInner_rational_tprod (ω : S.Ωinf)
   let : ∀ i, NormedSpace (S.ϕ ω.val).Completion ((S.ϕ ω.val).Completion ⊗[K] E i) :=
     fun i => (ξ i).fibreNormedSpace ω.val
   let : ∀ i, InnerProductSpace (S.ϕ ω.val).Completion ((S.ϕ ω.val).Completion ⊗[K] E i) :=
-    fun i => (hH i).fibreInnerProductSpace ω.val ω.property
+    fun i ↦ (ξ i).fiberInnerProductSpace ω.val ω.property
   have ht (a : K) (z : ⨂[K] i, E i) :
       (1 : (S.ϕ ω.val).Completion) ⊗ₜ[K] (a • z) =
         algebraMap K (S.ϕ ω.val).Completion a •
@@ -144,8 +145,8 @@ orthogonal norm squared, independent of the complex orientation. -/
 theorem orthogonalTensor_norm_sq_eq_re_archInner (ω : S.Ωinf)
     (σ : (S.ϕ ω.val).Completion →+* ℂ) (hσ : ∀ x, ‖σ x‖ = ‖x‖)
     (z : (S.ϕ ω.val).Completion ⊗[K] (⨂[K] i, E i)) :
-    (orthogonalTensor ξ hS hH).norm ω.val z ^ 2 =
-      (σ (orthogonalTensorArchInner ξ hS hH ω z z)).re := by
+    (orthogonalTensor ξ).norm ω.val z ^ 2 =
+      (σ (orthogonalTensorArchInner ξ ω z z)).re := by
   let := hS ω.val ω.property
   let := IsRCLikeNormedField.rclike (S.ϕ ω.val).Completion
   let : ∀ i, NormedAddCommGroup ((S.ϕ ω.val).Completion ⊗[K] E i) :=
@@ -153,22 +154,22 @@ theorem orthogonalTensor_norm_sq_eq_re_archInner (ω : S.Ωinf)
   let : ∀ i, NormedSpace (S.ϕ ω.val).Completion ((S.ϕ ω.val).Completion ⊗[K] E i) :=
     fun i => (ξ i).fibreNormedSpace ω.val
   let : ∀ i, InnerProductSpace (S.ϕ ω.val).Completion ((S.ϕ ω.val).Completion ⊗[K] E i) :=
-    fun i => (hH i).fibreInnerProductSpace ω.val ω.property
-  rw [orthogonalTensor_norm_of_infinite ξ hS hH ω.val ω.property,
+    fun i ↦ (ξ i).fiberInnerProductSpace ω.val ω.property
+  rw [orthogonalTensor_norm_of_infinite ξ ω.val ω.property,
     complexEmbedding_re σ hσ]
   exact ArakelovGeometry.orthogonalTensorSeminorm_sq _ _
 
 /-- Finite expansion of the actual tensor pairing gives measurable rational
 evaluations from the measurable factor pairings. -/
 theorem measurable_orthogonalTensorArchInner
-    (hξ : ∀ i, (ξ i).IsMeasurable)
+    [hξ : ∀ i, (ξ i).IsMeasurable]
     (σ : ∀ ω : S.Ωinf, (S.ϕ ω.val).Completion →+* ℂ)
     (hσ : ∀ ω x, ‖σ ω x‖ = ‖x‖)
     (hm : ∀ x : K, Measurable (fun ω : S.Ωinf =>
       σ ω (algebraMap K (S.ϕ ω.val).Completion x)))
     (K₀ : Subfield K) [Countable K₀]
     (hK₀ : ∀ ω ∈ S.Ωinf, S.IsDenseSubfieldAt K₀ ω) (x y : ⨂[K] i, E i) :
-    Measurable (fun ω : S.Ωinf => σ ω (orthogonalTensorArchInner ξ hS hH ω
+    Measurable (fun ω : S.Ωinf => σ ω (orthogonalTensorArchInner ξ ω
       ((1 : (S.ϕ ω.val).Completion) ⊗ₜ[K] x)
       ((1 : (S.ϕ ω.val).Completion) ⊗ₜ[K] y))) := by
   classical
@@ -176,14 +177,14 @@ theorem measurable_orthogonalTensorArchInner
   | smul_tprod r x =>
       induction y using PiTensorProduct.induction_on with
       | smul_tprod s y =>
-          have hp : Measurable (fun ω : S.Ωinf => ∏ i, σ ω ((hH i).archimedeanInner ω
+          have hp : Measurable (fun ω : S.Ωinf => ∏ i, σ ω ((ξ i).archimedeanInner ω
               ((1 : (S.ϕ ω.val).Completion) ⊗ₜ[K] x i)
               ((1 : (S.ϕ ω.val).Completion) ⊗ₜ[K] y i))) :=
             Finset.measurable_prod _ (fun i _ =>
-              (hξ i).archimedeanInner_rational (hH i) σ hσ hm K₀ hK₀ (x i) (y i))
+              (hξ i).archimedeanInner_rational σ hσ hm K₀ hK₀ (x i) (y i))
           convert (hm s).mul (((Complex.continuous_conj.measurable).comp (hm r)).mul hp) using 1
           funext ω
-          exact orthogonalTensorArchInner_rational_tprod ξ hS hH ω (σ ω) (hσ ω) r s x y
+          exact orthogonalTensorArchInner_rational_tprod ξ ω (σ ω) (hσ ω) r s x y
       | add y z hy hz =>
           convert hy.add hz using 1
           funext ω
@@ -198,34 +199,35 @@ theorem measurable_orthogonalTensorArchInner
 /-- At infinite places the norm is the square root of the real diagonal of
 the actual measurable product pairing. -/
 theorem measurable_orthogonalTensor_norm_infinite
-    (hξ : ∀ i, (ξ i).IsMeasurable)
+    [hξ : ∀ i, (ξ i).IsMeasurable]
     (K₀ : Subfield K) [Countable K₀]
     (hK₀ : ∀ ω ∈ S.Ωinf, S.IsDenseSubfieldAt K₀ ω) (z : ⨂[K] i, E i) :
-    Measurable (fun ω : S.Ωinf => (orthogonalTensor ξ hS hH).norm ω.val
+    Measurable (fun ω : S.Ωinf => (orthogonalTensor ξ).norm ω.val
       ((1 : (S.ϕ ω.val).Completion) ⊗ₜ[K] z)) := by
-  obtain ⟨σ, hσ, hm⟩ := S.exists_measurable_archimedeanComplexEmbedding hS K₀ hK₀
+  obtain ⟨σ, hσ, hm⟩ := S.exists_measurable_archimedeanComplexEmbedding K₀ hK₀
   have hi := (Complex.measurable_re.comp
-    (measurable_orthogonalTensorArchInner ξ hS hH hξ σ hσ hm K₀ hK₀ z z)).sqrt
+    (measurable_orthogonalTensorArchInner ξ σ hσ hm K₀ hK₀ z z)).sqrt
   convert hi using 1
   funext ω
   dsimp only [Function.comp_def]
-  rw [← orthogonalTensor_norm_sq_eq_re_archInner ξ hS hH ω (σ ω) (hσ ω),
-    Real.sqrt_sq ((orthogonalTensor ξ hS hH).norm_nonneg _ _)]
+  rw [← orthogonalTensor_norm_sq_eq_re_archInner ξ ω (σ ω) (hσ ω),
+    Real.sqrt_sq ((orthogonalTensor ξ).norm_nonneg _ _)]
 
 /-- The actual orthogonal tensor family is measurable under the source common
 countable-density hypothesis. Empty tensor products and zero factors are included. -/
 theorem IsMeasurable.orthogonalTensor_of_common_countable_dense_subfield
     (hξ : ∀ i, (ξ i).IsMeasurable) (hcount : S.HasCommonCountableDenseSubfield) :
-    (orthogonalTensor ξ hS hH).IsMeasurable := by
+    (orthogonalTensor ξ).IsMeasurable := by
+  constructor
   intro z
   apply measurable_of_restrict_of_restrict_compl S.measurableSet_Ωinf
   · obtain ⟨K₀, hcard, hdense⟩ := hcount
     let : Countable K₀ := hcard
-    exact measurable_orthogonalTensor_norm_infinite ξ hS hH hξ K₀
+    exact measurable_orthogonalTensor_norm_infinite ξ K₀
       (fun ω _ => hdense ω) z
   · have hε := IsMeasurable.injectiveTensor_of_common_countable_dense_subfield ξ hξ hcount
     convert (hε z).comp measurable_subtype_coe using 1
     funext ω
-    exact orthogonalTensor_norm_of_finite ξ hS hH ω.val (not_not.mp ω.property) _
+    exact orthogonalTensor_norm_of_finite ξ ω.val (not_not.mp ω.property) _
 
 end ArakelovGeometry.NormFamily

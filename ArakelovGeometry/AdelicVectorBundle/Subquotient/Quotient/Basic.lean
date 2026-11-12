@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basic
+
 import ArakelovGeometry.Analysis.NormedSpace.FiniteDimensional
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -167,7 +168,7 @@ theorem quotientSeminorm_id (ω : S.Ω) (x : (S.ϕ ω).Completion ⊗[K] E) :
     Function.injective_id ω x
 
 /-- The quotient seminorm retains the non-Archimedean triangle inequality. -/
-theorem quotientSeminorm_add_le_max (hξ : ξ.IsUltrametric)
+theorem quotientSeminorm_add_le_max [hξ : ξ.IsUltrametric]
     (π : E →ₗ[K] G) (hπ : Function.Surjective π) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
     (z t : (S.ϕ ω).Completion ⊗[K] G) :
     ξ.quotientSeminorm π hπ ω (z + t) ≤
@@ -284,7 +285,7 @@ theorem pushforward_norm_of_subsingleton [Subsingleton E]
 /-- Quotient families remain ultrametric at every non-Archimedean place. -/
 theorem IsUltrametric.pushforward {ξ : NormFamily S E} (hξ : ξ.IsUltrametric)
     (π : E →ₗ[K] G) (hπ : Function.Surjective π) : (ξ.pushforward π hπ).IsUltrametric :=
-  fun ω hω x y ↦ ξ.quotientSeminorm_add_le_max hξ π hπ ω hω x y
+  ⟨fun ω hω x y ↦ ξ.quotientSeminorm_add_le_max π hπ ω hω x y⟩
 
 /-- Quotient by a subspace, using the scalar extension of its canonical quotient map. -/
 noncomputable def quotient (F : Submodule K E) : NormFamily S (E ⧸ F) :=
@@ -375,5 +376,21 @@ theorem quotientEquiv_norm_eq (ξ : NormFamily T X) (η : NormFamily T Y)
   exact quotientEquiv_norm_eq_of_comp_eq ξ η ω e P Q q (by ext y; rfl) he z
 
 end Isometry
+
+end ArakelovGeometry.NormFamily
+
+namespace ArakelovGeometry.NormFamily
+
+variable {K : Type*} [Field K] {S : AdelicStructure K}
+  {E F : Type*} [AddCommGroup E] [Module K E] [AddCommGroup F] [Module K F]
+
+variable [FiniteDimensional K E]
+
+instance instIsUltrametricPushforward {ξ : NormFamily S E} [hξ : ξ.IsUltrametric]
+    (f : E →ₗ[K] F) (hf : Function.Surjective f) : (ξ.pushforward f hf).IsUltrametric :=
+  hξ.pushforward f hf
+
+instance instIsUltrametricQuotient {ξ : NormFamily S E} [hξ : ξ.IsUltrametric]
+    (P : Submodule K E) : (ξ.quotient P).IsUltrametric := hξ.quotient P
 
 end ArakelovGeometry.NormFamily

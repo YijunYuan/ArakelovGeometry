@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.IntegerBasis
 public import ArakelovGeometry.NumberTheory.NumberField.TraceDual.Basic
 public import Mathlib.RingTheory.DedekindDomain.Different
+
 import Mathlib.Topology.Sheaves.Init
 
 /-!
@@ -230,19 +231,21 @@ variable {K E : Type*} [Field K] [NumberField K]
   {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
 
 /-- The original dominated pure global ball has its actual integer trace dual. -/
-def IsDominated.pure_normalizedGlobalUnitBall_integralTraceEquiv (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
-    NumberFieldIntegralTraceDual.integralTraceDual (ξ.globalUnitBallModule hξ) ≃ₗ[ℤ]
-      Module.Dual ℤ (ξ.globalUnitBallModule hξ) :=
-  NumberFieldIntegralTraceDual.integralTraceEquiv (ξ.globalUnitBallModule hξ)
+def normalizedGlobalUnitBallIntegralTraceEquiv
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
+    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
+    NumberFieldIntegralTraceDual.integralTraceDual (ξ.globalUnitBallModule) ≃ₗ[ℤ]
+      Module.Dual ℤ (ξ.globalUnitBallModule) :=
+  NumberFieldIntegralTraceDual.integralTraceEquiv (ξ.globalUnitBallModule)
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure).2.2
 
 @[simp]
-theorem IsDominated.pure_normalizedGlobalUnitBall_integralTraceEquiv_apply
-    (hdom : ξ.IsDominated) (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces)
-    (f : NumberFieldIntegralTraceDual.integralTraceDual (ξ.globalUnitBallModule hξ))
-    (m : ξ.globalUnitBallModule hξ) :
-    (hdom.pure_normalizedGlobalUnitBall_integralTraceEquiv hξ hpure f m : ℚ) =
+theorem normalizedGlobalUnitBallIntegralTraceEquiv_apply
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
+    [ξ.IsDominated] [ξ.IsUltrametric] [ξ.IsPureAtFinitePlaces]
+    (f : NumberFieldIntegralTraceDual.integralTraceDual (ξ.globalUnitBallModule))
+    (m : ξ.globalUnitBallModule) :
+    (ξ.normalizedGlobalUnitBallIntegralTraceEquiv f m : ℚ) =
       Algebra.trace ℚ K (f.1 (m : E)) :=
   NumberFieldIntegralTraceDual.traceRestriction_apply _ _ _
 

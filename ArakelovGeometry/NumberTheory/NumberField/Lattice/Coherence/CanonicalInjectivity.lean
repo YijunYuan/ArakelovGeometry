@@ -54,8 +54,8 @@ variable {K : Type*} [Field K] [NumberField K]
 ultrametric family, with no coherence or domination input. -/
 theorem normalizedGlobalLocalTensorMap_injective
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsUltrametric) (p : HeightOneSpectrum (𝓞 K)) :
-    Function.Injective (ξ.normalizedGlobalLocalTensorMap hξ p) := by
+    [hξ : ξ.IsUltrametric] (p : HeightOneSpectrum (𝓞 K)) :
+    Function.Injective (ξ.normalizedGlobalLocalTensorMap p) := by
   let : IsLocalization p.asIdeal.primeCompl
       ((normalizedNumberFieldAdelicStructure K).rationalLocalRing
         (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p)) := by
@@ -64,16 +64,16 @@ theorem normalizedGlobalLocalTensorMap_injective
         (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p) (FinitePlace.mk p)
         (Quotient.eq'.mp (normalizedPlaceValue_class (normalizedPrimeParameter p)))
   exact linearMap_liftBaseChange_injective_of_isLocalization p.asIdeal.primeCompl
-    (ξ.globalToRationalUnitBall hξ p) (ξ.globalToRationalUnitBall_injective hξ p)
+    (ξ.globalToRationalUnitBall p) (ξ.globalToRationalUnitBall_injective p)
 
 /-- The literal global-ball generic tensor inclusion is injective without a
 coherence or domination hypothesis. -/
 theorem normalizedGlobalGenericFibreMap_injective
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsUltrametric) :
-    Function.Injective (ξ.normalizedGlobalGenericFibreMap hξ) :=
+    [hξ : ξ.IsUltrametric] :
+    Function.Injective (ξ.normalizedGlobalGenericFibreMap) :=
   linearMap_liftBaseChange_injective_of_isLocalization (nonZeroDivisors (𝓞 K))
-    (ξ.globalUnitBallModule hξ).subtype (ξ.globalUnitBallModule hξ).subtype_injective
+    (ξ.globalUnitBallModule).subtype (ξ.globalUnitBallModule).subtype_injective
 
 end NormFamily
 end ArakelovGeometry

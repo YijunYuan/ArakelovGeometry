@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicCurve.Examples.FunctionFields
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Basic
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Dual.Descent
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.FiniteStage.Basic
@@ -51,13 +52,14 @@ private theorem measurable_actual_stage_restriction
 an all-finite positive atomic curve, from original domination alone. -/
 theorem IsDominated.scalarExtension_isMeasurable_of_positive_atoms_of_isAlgebraic
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
     (ξ.scalarExtension (L := L)).IsMeasurable := by
-  have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin hS
+  constructor
+  have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin (S := S)
   intro z
   obtain ⟨F, y, hy⟩ := exists_finiteStage_tensor_lift z
   have hm := IsDominated.scalarExtension_isMeasurable_of_positive_atoms (L := F)
-    ξ (Module.finBasis K E) hξ hpos hfin
+    ξ (Module.finBasis K E) hξ hfin
   have he : (fun x : (S.algebraicExtension L).Ω =>
       (ξ.scalarExtension (L := L)).norm x
         ((1 : ((S.algebraicExtension L).ϕ x).Completion) ⊗ₜ[L] z)) =
@@ -68,7 +70,8 @@ theorem IsDominated.scalarExtension_isMeasurable_of_positive_atoms_of_isAlgebrai
     funext x
     rw [← hy]
     exact ξ.scalarExtension_norm_finiteStage F
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension_of_forall_mem_Ωfin (L := F) hS) x y
+      (hF := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension_of_forall_mem_Ωfin
+          (L := F))⟩) x y
   rw [he]
   exact (hm y).comp (measurable_actual_stage_restriction F)
 
@@ -76,9 +79,10 @@ theorem IsDominated.scalarExtension_isMeasurable_of_positive_atoms_of_isAlgebrai
 using actual functional finite-stage factorization rather than a regularity premise. -/
 theorem IsDominated.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlgebraic
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
     (ξ.scalarExtension (L := L)).dual.IsMeasurable := by
-  have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin hS
+  constructor
+  have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin (S := S)
   intro ℓ
   obtain ⟨F, y, hy⟩ := exists_finiteStage_tensor_lift
     ((dualBaseChangeEquiv K L E).symm ℓ)
@@ -87,7 +91,7 @@ theorem IsDominated.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlg
         ((1 : L) ⊗ₜ[F] y)) = ℓ := by
     rw [hy, LinearEquiv.apply_symm_apply]
   have hm := IsDominated.scalarExtension_dual_isMeasurable_of_positive_atoms (L := F)
-    ξ (Module.finBasis K E) hξ hpos hfin
+    ξ (Module.finBasis K E) hξ hfin
   have he : (fun x : (S.algebraicExtension L).Ω =>
       (ξ.scalarExtension (L := L)).dual.norm x
         ((1 : ((S.algebraicExtension L).ϕ x).Completion) ⊗ₜ[L] ℓ)) =
@@ -110,12 +114,7 @@ theorem IsDominated.functionField_algebraicScalarExtension_isMeasurable
     (ξ : NormFamily (AdelicStructure.functionFieldAdelicStructure k) E)
     (hξ : ξ.IsDominated) : (ξ.scalarExtension (L := L)).IsMeasurable := by
   apply IsDominated.scalarExtension_isMeasurable_of_positive_atoms_of_isAlgebraic
-    ξ hξ AdelicStructure.functionField_singleton_pos
-  intro ω
-  by_contra h
-  have hω : ω ∈ (AdelicStructure.functionFieldAdelicStructure k).Ωinf := h
-  rw [AdelicStructure.functionField_Ωinf_eq_empty] at hω
-  exact hω
+    ξ hξ
 
 /-- The actual completed dual of the ordinary algebraic extension is measurable
 on the geometric projective-line curve, with no original regularity or countability premise. -/
@@ -126,11 +125,6 @@ theorem IsDominated.functionField_algebraicScalarExtension_dual_isMeasurable
     (ξ : NormFamily (AdelicStructure.functionFieldAdelicStructure k) E)
     (hξ : ξ.IsDominated) : (ξ.scalarExtension (L := L)).dual.IsMeasurable := by
   apply IsDominated.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlgebraic
-    ξ hξ AdelicStructure.functionField_singleton_pos
-  intro ω
-  by_contra h
-  have hω : ω ∈ (AdelicStructure.functionFieldAdelicStructure k).Ωinf := h
-  rw [AdelicStructure.functionField_Ωinf_eq_empty] at hω
-  exact hω
+    ξ hξ
 
 end ArakelovGeometry.NormFamily

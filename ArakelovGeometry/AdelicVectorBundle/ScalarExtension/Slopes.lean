@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Positive.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Algebraic.ClosureApproximation
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Bundle
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Supermodular
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Subspace.Basic
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Subspace.Degree
@@ -36,85 +37,86 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 /-- The original restricted degree is at most the degree of the actual native
 restriction after ordinary extension, without original ultrametricity. -/
 theorem degree_le_restrict_scalarExtension
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule K E) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    (V.restrictOfMeasurableBase A (Or.inr hcount)).degree (Or.inr hcount) hN ≤
-    ((V.scalarExtension (L := L) hcount hN).restrictOfMeasurableBase
-      (A.baseChange L) (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))).degree
-      (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) := by
+    (V.restrictOfMeasurableBase A).degree ≤
+    ((V.scalarExtension (L := L)).restrictOfMeasurableBase
+      (A.baseChange L) (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed
+          (L := L)))⟩)).degree
+      (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
+      (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let hL : DiscreteMeasurableSpace (S.algebraicExtension L).Ω ∨
       (S.algebraicExtension L).HasCommonCountableDenseSubfield :=
     Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-  let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
-  let W := (V.restrictOfMeasurableBase A (Or.inr hcount)).scalarExtension (L := L) hcount hN
-  let R := (V.scalarExtension (L := L) hcount hN).restrictOfMeasurableBase (A.baseChange L) hL
-  have he : W.degree hL hLN ≤ R.degree hL hLN :=
+  let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
+  let W := (V.restrictOfMeasurableBase A).scalarExtension (L := L)
+  let R := (V.scalarExtension (L := L)).restrictOfMeasurableBase (A.baseChange L) (hS := ⟨hL⟩)
+  have he : W.degree (hS := ⟨hL⟩) (hN := ⟨hLN⟩) ≤ R.degree (hS := ⟨hL⟩) (hN := ⟨hLN⟩) :=
     W.degree_le_of_completed_contraction R (Submodule.toBaseChange.toLinearEquiv L A)
-      hL hLN (fun x z => V.toNormFamily.scalarExtension_restrict_norm_le A x z)
-  exact ((V.restrictOfMeasurableBase A (Or.inr hcount)).degree_scalarExtension_of_isAlgClosed
-    (L := L) hcount hN).symm.le.trans he
+      (hS := ⟨hL⟩) (hN := ⟨hLN⟩) (fun x z => V.toNormFamily.scalarExtension_restrict_norm_le A x z)
+  exact ((V.restrictOfMeasurableBase A).degree_scalarExtension_of_isAlgClosed
+    (L := L)).symm.le.trans he
 
 /-- Mean slopes of actual native restrictions increase, including rank zero. -/
 theorem slope_le_restrict_scalarExtension
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
     (A : Submodule K E) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    (V.restrictOfMeasurableBase A (Or.inr hcount)).slope (Or.inr hcount) hN ≤
-    ((V.scalarExtension (L := L) hcount hN).restrictOfMeasurableBase
-      (A.baseChange L) (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))).slope
-      (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) := by
+    (V.restrictOfMeasurableBase A).slope ≤
+    ((V.scalarExtension (L := L)).restrictOfMeasurableBase
+      (A.baseChange L) (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)).slope
+      (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
+      (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   unfold slope
-  have hr := V.rank_restrict_scalarExtension (L := L) hcount hN A
+  have hr := V.rank_restrict_scalarExtension (L := L) A
   change Module.finrank L (A.baseChange L) = Module.finrank K A at hr
   rw [hr]
-  exact div_le_div_of_nonneg_right (V.degree_le_restrict_scalarExtension hcount hN A)
+  exact div_le_div_of_nonneg_right (V.degree_le_restrict_scalarExtension A)
     (Nat.cast_nonneg _)
 
 /-- Every original subspace gives an actual extended subspace, so positive
  degree increases under ordinary extension to an algebraically closed target. -/
 theorem positiveDegree_le_scalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    V.positiveDegree (Or.inr hcount) hN ≤
-    (V.scalarExtension (L := L) hcount hN).positiveDegree
-      (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) := by
+    V.positiveDegree ≤
+    (V.scalarExtension (L := L)).positiveDegree
+      (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
+      (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-  apply V.positiveDegree_le (Or.inr hcount) hN
+  apply V.positiveDegree_le
   intro A
-  exact (EReal.coe_le_coe_iff.mpr (V.degree_le_restrict_scalarExtension hcount hN A)).trans
-    ((V.scalarExtension (L := L) hcount hN).degree_restrict_le_positiveDegree
-      (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) (A.baseChange L))
+  exact (EReal.coe_le_coe_iff.mpr (V.degree_le_restrict_scalarExtension A)).trans
+    ((V.scalarExtension (L := L)).degree_restrict_le_positiveDegree
+      (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
+      (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) (A.baseChange L))
 
 /-- The actual maximal slope increases on algebraic closure, with the empty
 positive-rank supremum convention in rank zero. -/
 theorem maximalSlope_le_scalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    V.maximalSlope (Or.inr hcount) hN ≤
-    (V.scalarExtension (L := L) hcount hN).maximalSlope
-      (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) := by
+    V.maximalSlope ≤
+    (V.scalarExtension (L := L)).maximalSlope
+      (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
+      (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-  apply V.maximalSlope_le (Or.inr hcount) hN
+  apply V.maximalSlope_le
   intro A hA
   have hr : 0 < Module.finrank L (A.baseChange L) := by
-    have he := V.rank_restrict_scalarExtension (L := L) hcount hN A
+    have he := V.rank_restrict_scalarExtension (L := L) A
     change Module.finrank L (A.baseChange L) = Module.finrank K A at he
     simpa only [he] using hA
-  exact (EReal.coe_le_coe_iff.mpr (V.slope_le_restrict_scalarExtension hcount hN A)).trans
-    ((V.scalarExtension (L := L) hcount hN).slope_restrict_le_maximalSlope
-      (A.baseChange L) hr (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN))
+  exact (EReal.coe_le_coe_iff.mpr (V.slope_le_restrict_scalarExtension A)).trans
+    ((V.scalarExtension (L := L)).slope_restrict_le_maximalSlope
+      (A.baseChange L) hr (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
+      (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩))
 
 end ArakelovGeometry.AdelicVectorBundle

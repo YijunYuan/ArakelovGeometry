@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.DirectSum.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
 public import ArakelovGeometry.Analysis.NormShape.Measurable
+
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 
@@ -35,6 +36,7 @@ families and source-measurable convex profiles. -/
 theorem IsMeasurable.directSum {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsMeasurable) (hη : η.IsMeasurable) {ψ : S.Ω → NormShape}
     (hψ : NormShape.IsMeasurableFamily ψ) : (ξ.directSum η ψ).IsMeasurable := by
+  constructor
   rintro ⟨x, y⟩
   simpa only [directSum_norm_tmul] using
     hψ.perspective (hξ x) (hη y) (fun ω ↦ ξ.norm_nonneg ω _)

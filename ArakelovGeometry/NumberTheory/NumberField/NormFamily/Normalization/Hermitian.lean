@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Strong
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import ArakelovGeometry.Analysis.AbsoluteValue.NormalizedCompletion
 import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.ReverseDomination
@@ -86,16 +87,24 @@ theorem normalizedNumberFieldArchimedeanCompletions :
       (2 : ((normalizedNumberFieldAdelicStructure K).ϕ ω).Completion) := map_ofNat _ 2
   exact (congrArg Norm.norm hm).symm.trans (hn.trans hvalue)
 
+instance numberFieldAdelicStructure_isArchimedeanNormalized :
+    (numberFieldAdelicStructure K).IsArchimedeanNormalized :=
+  ⟨numberFieldArchimedeanCompletions⟩
+
+instance normalizedNumberFieldAdelicStructure_isArchimedeanNormalized :
+    (normalizedNumberFieldAdelicStructure K).IsArchimedeanNormalized :=
+  ⟨normalizedNumberFieldArchimedeanCompletions⟩
+
 end AdelicStructure
 
 namespace NormFamily
 
-variable (ξ : NormFamily (numberFieldAdelicStructure K) E) (hξ : ξ.IsUltrametric)
+variable (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
 
 /-- Actual Hermitianity is preserved and reflected on the canonical completed fibres. -/
 theorem numberFieldNormalize_isHermitian_iff :
-    (ξ.numberFieldNormalize hξ).IsHermitian normalizedNumberFieldArchimedeanCompletions ↔
-      ξ.IsHermitian numberFieldArchimedeanCompletions := by
+    (ξ.numberFieldNormalize).IsHermitian ↔
+      ξ.IsHermitian (hS := ⟨numberFieldArchimedeanCompletions⟩) := by
   constructor
   · intro hnew
     have hp := isHermitian_iff_parallelogram.mp hnew
@@ -114,49 +123,49 @@ theorem numberFieldNormalize_isHermitian_iff :
       (normalizedNormFamilyTensorEquiv v y)
     erw [← (normalizedNormFamilyTensorEquiv v).map_add x y,
       ← (normalizedNormFamilyTensorEquiv v).map_sub x y] at he
-    erw [ξ.numberFieldNormalize_norm_map_inf hξ v hv (x + y),
-      ξ.numberFieldNormalize_norm_map_inf hξ v hv (x - y),
-      ξ.numberFieldNormalize_norm_map_inf hξ v hv x,
-      ξ.numberFieldNormalize_norm_map_inf hξ v hv y] at he
+    erw [ξ.numberFieldNormalize_norm_map_inf v hv (x + y),
+      ξ.numberFieldNormalize_norm_map_inf v hv (x - y),
+      ξ.numberFieldNormalize_norm_map_inf v hv x,
+      ξ.numberFieldNormalize_norm_map_inf v hv y] at he
     exact he
   · intro hold
     have hp := isHermitian_iff_parallelogram.mp hold
     apply isHermitian_iff_parallelogram.mpr
-    refine ⟨ξ.numberFieldNormalize_isUltrametric hξ, ?_⟩
+    refine ⟨ξ.numberFieldNormalize_isUltrametric, ?_⟩
     intro ω hω x y
     obtain ⟨a, rfl⟩ := (normalizedNormFamilyTensorEquiv ω).surjective x
     obtain ⟨b, rfl⟩ := (normalizedNormFamilyTensorEquiv ω).surjective y
     erw [← (normalizedNormFamilyTensorEquiv ω).map_add a b,
       ← (normalizedNormFamilyTensorEquiv ω).map_sub a b]
-    erw [ξ.numberFieldNormalize_norm_map_inf hξ ω hω (a + b),
-      ξ.numberFieldNormalize_norm_map_inf hξ ω hω (a - b),
-      ξ.numberFieldNormalize_norm_map_inf hξ ω hω a,
-      ξ.numberFieldNormalize_norm_map_inf hξ ω hω b]
+    erw [ξ.numberFieldNormalize_norm_map_inf ω hω (a + b),
+      ξ.numberFieldNormalize_norm_map_inf ω hω (a - b),
+      ξ.numberFieldNormalize_norm_map_inf ω hω a,
+      ξ.numberFieldNormalize_norm_map_inf ω hω b]
     exact hp.2 ω.val ((normalizedPlace_mem_inf_iff ω).mp hω) a b
 
 /-- A Hermitian old family transports to a Hermitian actual normalized family. -/
 theorem IsHermitian.numberFieldNormalize
     {ξ : NormFamily (numberFieldAdelicStructure K) E}
-    (h : ξ.IsHermitian numberFieldArchimedeanCompletions) :
-    (ξ.numberFieldNormalize h.1).IsHermitian normalizedNumberFieldArchimedeanCompletions :=
-  (ξ.numberFieldNormalize_isHermitian_iff h.1).mpr h
+    (h : ξ.IsHermitian (hS := ⟨numberFieldArchimedeanCompletions⟩)) :
+    (ξ.numberFieldNormalize (hξ := h.1)).IsHermitian :=
+  (ξ.numberFieldNormalize_isHermitian_iff (hξ := h.1)).mpr h
 
 variable [FiniteDimensional K E]
 
 /-- Strong domination is equivalent under actual number-field normalization. -/
 theorem numberFieldNormalize_isStronglyDominated_iff :
-    (ξ.numberFieldNormalize hξ).IsStronglyDominated ↔ ξ.IsStronglyDominated :=
-  ((ξ.numberFieldNormalize hξ).isStronglyDominated_iff_isDominated_of_ultrametric
-    (ξ.numberFieldNormalize_isUltrametric hξ) normalizedNumberFieldArchimedeanCompletions).trans
-      ((ξ.numberFieldNormalize_isDominated_iff hξ).trans
-        (ξ.isStronglyDominated_iff_isDominated_of_ultrametric hξ
-          numberFieldArchimedeanCompletions).symm)
+    (ξ.numberFieldNormalize).IsStronglyDominated ↔ ξ.IsStronglyDominated :=
+  ((ξ.numberFieldNormalize).isStronglyDominated_iff_isDominated_of_ultrametric
+    (hξ := (ξ.numberFieldNormalize_isUltrametric))).trans
+      ((ξ.numberFieldNormalize_isDominated_iff).trans
+        (ξ.isStronglyDominated_iff_isDominated_of_ultrametric
+          (hS := ⟨numberFieldArchimedeanCompletions⟩)).symm)
 
 /-- A strongly dominated old family has a strongly dominated normalized family. -/
 theorem IsStronglyDominated.numberFieldNormalize
     {ξ : NormFamily (numberFieldAdelicStructure K) E} (hξ : ξ.IsUltrametric)
-    (h : ξ.IsStronglyDominated) : (ξ.numberFieldNormalize hξ).IsStronglyDominated :=
-  (ξ.numberFieldNormalize_isStronglyDominated_iff hξ).mpr h
+    (h : ξ.IsStronglyDominated) : (ξ.numberFieldNormalize).IsStronglyDominated :=
+  (ξ.numberFieldNormalize_isStronglyDominated_iff).mpr h
 
 end NormFamily
 

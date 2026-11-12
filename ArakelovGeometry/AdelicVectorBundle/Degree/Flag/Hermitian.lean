@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.ExactSequence.Dual
 import ArakelovGeometry.AdelicVectorBundle.Subquotient.Restriction.Functor
 import Mathlib.CategoryTheory.Category.Init
@@ -35,11 +36,11 @@ degree of its final restricted bundle, without strict-inclusion assumptions. -/
 theorem sum_flagQuotient_degree_eq_restrict_of_isHermitian [S.IsProper]
     (V : AdelicVectorBundle S E) {n : ℕ} (F : Fin (n + 1) → Submodule K E)
     (hF : Monotone F) (hzero : F 0 = ⊥)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) :
-    (∑ i : Fin n, (V.flagQuotientOfMeasurableBase F hS i).degree hS hN) =
-      (V.restrictOfMeasurableBase (F (Fin.last n)) hS).degree hS hN := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] :
+    (∑ i : Fin n, (V.flagQuotientOfMeasurableBase F i).degree) =
+      (V.restrictOfMeasurableBase (F (Fin.last n))).degree := by
   induction n with
   | zero =>
       have hz : F (Fin.last 0) = ⊥ := hzero
@@ -47,7 +48,7 @@ theorem sum_flagQuotient_degree_eq_restrict_of_isHermitian [S.IsProper]
         rw [hz]
         exact finrank_bot K E
       have hd := degree_eq_zero_of_finrank_eq_zero
-        (V.restrictOfMeasurableBase (F (Fin.last 0)) hS) hS hN hr
+        (V.restrictOfMeasurableBase (F (Fin.last 0))) hr
       simp only [Fin.sum_univ_zero, hd]
   | succ n ih =>
       let G : Fin (n + 1) → Submodule K E := fun i ↦ F i.castSucc
@@ -57,17 +58,17 @@ theorem sum_flagQuotient_degree_eq_restrict_of_isHermitian [S.IsProper]
       have hzG : G 0 = ⊥ := hzero
       have hprefix := ih G hG hzG
       change (∑ i : Fin n,
-        (V.flagQuotientOfMeasurableBase F hS i.castSucc).degree hS hN) =
-          (V.restrictOfMeasurableBase U hS).degree hS hN at hprefix
+        (V.flagQuotientOfMeasurableBase F i.castSucc).degree) =
+          (V.restrictOfMeasurableBase U).degree at hprefix
       have hUW : U ≤ W := hF (Fin.le_last _)
-      have hHW : (V.restrictOfMeasurableBase W hS).toNormFamily.IsHermitian hN := by
+      have hHW : (V.restrictOfMeasurableBase W).toNormFamily.IsHermitian := by
         simpa only [restrictOfMeasurableBase_toNormFamily] using hV.restrict W
       have hstep := degree_restrict_add_degree_quotient_eq_of_isHermitian
-        (V.restrictOfMeasurableBase W hS) (U.comap W.subtype) hS hN hHW
-      rw [V.degree_restrict_restrict U W hUW hS hN] at hstep
-      change (V.restrictOfMeasurableBase U hS).degree hS hN +
-        (V.flagQuotientOfMeasurableBase F hS (Fin.last n)).degree hS hN =
-          (V.restrictOfMeasurableBase W hS).degree hS hN at hstep
+        (V.restrictOfMeasurableBase W) (U.comap W.subtype) (hV := hHW)
+      rw [V.degree_restrict_restrict U W hUW] at hstep
+      change (V.restrictOfMeasurableBase U).degree +
+        (V.flagQuotientOfMeasurableBase F (Fin.last n)).degree =
+          (V.restrictOfMeasurableBase W).degree at hstep
       rw [Fin.sum_univ_castSucc, hprefix]
       exact hstep
 
@@ -75,15 +76,15 @@ theorem sum_flagQuotient_degree_eq_restrict_of_isHermitian [S.IsProper]
 theorem sum_flagQuotient_degree_eq_of_isHermitian [S.IsProper]
     (V : AdelicVectorBundle S E) {n : ℕ} (F : Fin (n + 1) → Submodule K E)
     (hF : Monotone F) (hzero : F 0 = ⊥) (htop : F (Fin.last n) = ⊤)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) :
-    (∑ i : Fin n, (V.flagQuotientOfMeasurableBase F hS i).degree hS hN) =
-      V.degree hS hN := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] :
+    (∑ i : Fin n, (V.flagQuotientOfMeasurableBase F i).degree) =
+      V.degree := by
   calc
-    _ = (V.restrictOfMeasurableBase (F (Fin.last n)) hS).degree hS hN :=
-      V.sum_flagQuotient_degree_eq_restrict_of_isHermitian F hF hzero hS hN hV
-    _ = V.degree hS hN := by
-      rw [htop, V.degree_restrict_top hS hN]
+    _ = (V.restrictOfMeasurableBase (F (Fin.last n))).degree :=
+      V.sum_flagQuotient_degree_eq_restrict_of_isHermitian F hF hzero
+    _ = V.degree := by
+      rw [htop, V.degree_restrict_top]
 
 end ArakelovGeometry.AdelicVectorBundle

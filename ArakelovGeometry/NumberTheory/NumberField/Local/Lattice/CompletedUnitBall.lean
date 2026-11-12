@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Density.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.UnitBall.Spanning
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import ArakelovGeometry.Analysis.AbsoluteValue.Basic
 import Mathlib.Analysis.Normed.Group.Ultra
@@ -121,7 +122,7 @@ theorem isClosed_completedUnitBall (ξ : NormFamily S E) (ω : S.Ω) :
 /-- The literal completed unit ball is an actual module over the actual
 completed local coefficient ring. -/
 def completedUnitBallModule (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hξ : ξ.IsUltrametric) :
+    [hξ : ξ.IsUltrametric] :
     Submodule (S.completedLocalRing ω hω) ((S.ϕ ω).Completion ⊗[K] E) where
   carrier := ξ.completedUnitBall ω
   zero_mem' := by simp
@@ -135,37 +136,37 @@ def completedUnitBallModule (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ω
 
 @[simp]
 theorem coe_completedUnitBallModule (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hξ : ξ.IsUltrametric) :
-    (ξ.completedUnitBallModule ω hω hξ : Set ((S.ϕ ω).Completion ⊗[K] E)) =
+    [hξ : ξ.IsUltrametric] :
+    (ξ.completedUnitBallModule ω hω : Set ((S.ϕ ω).Completion ⊗[K] E)) =
       ξ.completedUnitBall ω := rfl
 
 /-- Restricting actual completed coefficients gives the canonical rational action. -/
 instance completedUnitBall_rationalModule (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) (hξ : ξ.IsUltrametric) :
-    Module (S.rationalLocalRing ω hω) (ξ.completedUnitBallModule ω hω hξ) :=
-  (ξ.completedUnitBallModule ω hω hξ).module'
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] :
+    Module (S.rationalLocalRing ω hω) (ξ.completedUnitBallModule ω hω) :=
+  (ξ.completedUnitBallModule ω hω).module'
 
 /-- The rational and completed actions on the literal unit ball form the actual tower. -/
 instance completedUnitBall_rationalScalarTower (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) (hξ : ξ.IsUltrametric) :
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] :
     IsScalarTower (S.rationalLocalRing ω hω) (S.completedLocalRing ω hω)
-      (ξ.completedUnitBallModule ω hω hξ) :=
-  (ξ.completedUnitBallModule ω hω hξ).isScalarTower
+      (ξ.completedUnitBallModule ω hω) :=
+  (ξ.completedUnitBallModule ω hω).isScalarTower
 
 /-- The canonical actual local-ball inclusion into its completed unit-ball module. -/
 def rationalUnitBallCompletionMap (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hξ : ξ.IsUltrametric) :
-    ξ.rationalUnitBallModule ω hω hξ →ₗ[S.rationalLocalRing ω hω]
-      ξ.completedUnitBallModule ω hω hξ where
+    [hξ : ξ.IsUltrametric] :
+    ξ.rationalUnitBallModule ω hω →ₗ[S.rationalLocalRing ω hω]
+      ξ.completedUnitBallModule ω hω where
   toFun x := ⟨1 ⊗ₜ[K] (x : E), x.property⟩
   map_add' _ _ := Subtype.ext (TensorProduct.tmul_add _ _ _)
   map_smul' r x := by
     apply Subtype.ext
     change (1 : (S.ϕ ω).Completion) ⊗ₜ[K] (↑(r • x) : E) =
-      ↑(r • (⟨1 ⊗ₜ[K] (x : E), x.property⟩ : ξ.completedUnitBallModule ω hω hξ))
+      ↑(r • (⟨1 ⊗ₜ[K] (x : E), x.property⟩ : ξ.completedUnitBallModule ω hω))
     rw [Submodule.coe_smul r x,
       Submodule.coe_smul_of_tower r
-        (⟨1 ⊗ₜ[K] (x : E), x.property⟩ : ξ.completedUnitBallModule ω hω hξ),
+        (⟨1 ⊗ₜ[K] (x : E), x.property⟩ : ξ.completedUnitBallModule ω hω),
       Subring.smul_def r (x : E)]
     have ht : (algebraMap (S.rationalLocalRing ω hω) K r) •
         ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] (x : E)) =
@@ -175,37 +176,37 @@ def rationalUnitBallCompletionMap (ξ : NormFamily S E) (ω : S.Ω) (hω : ω �
 
 @[simp]
 theorem rationalUnitBallCompletionMap_coe (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hξ : ξ.IsUltrametric) (x : ξ.rationalUnitBallModule ω hω hξ) :
-    (ξ.rationalUnitBallCompletionMap ω hω hξ x : (S.ϕ ω).Completion ⊗[K] E) =
+    (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] (x : ξ.rationalUnitBallModule ω hω) :
+    (ξ.rationalUnitBallCompletionMap ω hω x : (S.ϕ ω).Completion ⊗[K] E) =
       1 ⊗ₜ[K] (x : E) := rfl
 
 /-- The actual rational-ball completion map is injective on original vectors. -/
 theorem rationalUnitBallCompletionMap_injective (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hξ : ξ.IsUltrametric) :
-    Function.Injective (ξ.rationalUnitBallCompletionMap ω hω hξ) := by
+    (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] :
+    Function.Injective (ξ.rationalUnitBallCompletionMap ω hω) := by
   intro x y h
   apply Subtype.ext
   apply rational_tmul_injective ω
-  exact congrArg (fun z : ξ.completedUnitBallModule ω hω hξ =>
+  exact congrArg (fun z : ξ.completedUnitBallModule ω hω =>
     (z : (S.ϕ ω).Completion ⊗[K] E)) h
 
 /-- The canonical completed-coefficient tensor map into the literal completed
 unit ball; its surjectivity is not built into the definition. -/
 def rationalUnitBallCompletedTensorMap (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hξ : ξ.IsUltrametric) :
+    (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] :
     (S.completedLocalRing ω hω) ⊗[S.rationalLocalRing ω hω]
-      (ξ.rationalUnitBallModule ω hω hξ) →ₗ[S.completedLocalRing ω hω]
-      ξ.completedUnitBallModule ω hω hξ := by
-  letI := ξ.completedUnitBall_rationalScalarTower ω hω hξ
-  exact (ξ.rationalUnitBallCompletionMap ω hω hξ).liftBaseChange (S.completedLocalRing ω hω)
+      (ξ.rationalUnitBallModule ω hω) →ₗ[S.completedLocalRing ω hω]
+      ξ.completedUnitBallModule ω hω := by
+  letI := ξ.completedUnitBall_rationalScalarTower ω hω
+  exact (ξ.rationalUnitBallCompletionMap ω hω).liftBaseChange (S.completedLocalRing ω hω)
 
 @[simp]
 theorem rationalUnitBallCompletedTensorMap_tmul (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hξ : ξ.IsUltrametric) (a : S.completedLocalRing ω hω)
-    (x : ξ.rationalUnitBallModule ω hω hξ) :
-    ξ.rationalUnitBallCompletedTensorMap ω hω hξ (a ⊗ₜ[S.rationalLocalRing ω hω] x) =
-      a • ξ.rationalUnitBallCompletionMap ω hω hξ x := by
-  let := ξ.completedUnitBall_rationalScalarTower ω hω hξ
+    (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] (a : S.completedLocalRing ω hω)
+    (x : ξ.rationalUnitBallModule ω hω) :
+    ξ.rationalUnitBallCompletedTensorMap ω hω (a ⊗ₜ[S.rationalLocalRing ω hω] x) =
+      a • ξ.rationalUnitBallCompletionMap ω hω x := by
+  let := ξ.completedUnitBall_rationalScalarTower ω hω
   exact LinearMap.liftBaseChange_tmul _ _ _ _
 
 variable [FiniteDimensional K E]
@@ -224,7 +225,7 @@ theorem denseRange_rational_tmul (ξ : NormFamily S E) (ω : S.Ω) :
 
 /-- Every actual completed unit-ball vector admits arbitrarily accurate
 rational approximants that remain in the literal rational unit ball. -/
-theorem exists_rationalUnitBall_approx (ξ : NormFamily S E) (hξ : ξ.IsUltrametric)
+theorem exists_rationalUnitBall_approx (ξ : NormFamily S E) [hξ : ξ.IsUltrametric]
     (ω : S.Ω) (hω : ω ∈ S.Ωfin) {z : (S.ϕ ω).Completion ⊗[K] E}
     (hz : z ∈ ξ.completedUnitBall ω) {ε : ℝ} (hε : 0 < ε) :
     ∃ x ∈ ξ.rationalUnitBall ω,
@@ -247,7 +248,7 @@ theorem exists_rationalUnitBall_approx (ξ : NormFamily S E) (hξ : ξ.IsUltrame
 /-- The closure in the actual norm topology of the literal rational local
 unit-ball image is exactly the literal completed local unit ball. -/
 theorem closure_rationalUnitBall_image_eq_completedUnitBall
-    (ξ : NormFamily S E) (hξ : ξ.IsUltrametric) (ω : S.Ω) (hω : ω ∈ S.Ωfin) :
+    (ξ : NormFamily S E) [hξ : ξ.IsUltrametric] (ω : S.Ω) (hω : ω ∈ S.Ωfin) :
     letI := ξ.fibreNormedAddCommGroup ω
     closure ((fun x : E => (1 : (S.ϕ ω).Completion) ⊗ₜ[K] x) '' ξ.rationalUnitBall ω) =
       ξ.completedUnitBall ω := by
@@ -259,19 +260,19 @@ theorem closure_rationalUnitBall_image_eq_completedUnitBall
   · intro z hz
     apply Metric.mem_closure_iff.mpr
     intro ε hε
-    obtain ⟨x, hx, herr⟩ := ξ.exists_rationalUnitBall_approx hξ ω hω hz hε
+    obtain ⟨x, hx, herr⟩ := ξ.exists_rationalUnitBall_approx ω hω hz hε
     exact ⟨1 ⊗ₜ[K] x, ⟨x, hx, rfl⟩, by rw [dist_eq_norm]; exact herr⟩
 
 /-- The genuine rational local-ball completion map has dense range in the
 literal completed local-ball module for the given fibre norm topology. -/
 theorem denseRange_rationalUnitBallCompletionMap (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hξ : ξ.IsUltrametric) :
+    (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] :
     letI := ξ.fibreNormedAddCommGroup ω
-    DenseRange (ξ.rationalUnitBallCompletionMap ω hω hξ) := by
+    DenseRange (ξ.rationalUnitBallCompletionMap ω hω) := by
   let := ξ.fibreNormedAddCommGroup ω
   apply Metric.denseRange_iff.mpr
   intro z ε hε
-  obtain ⟨x, hx, herr⟩ := ξ.exists_rationalUnitBall_approx hξ ω hω z.property hε
+  obtain ⟨x, hx, herr⟩ := ξ.exists_rationalUnitBall_approx ω hω z.property hε
   refine ⟨⟨x, hx⟩, ?_⟩
   rw [Subtype.dist_eq, dist_eq_norm]
   exact herr
@@ -279,11 +280,11 @@ theorem denseRange_rationalUnitBallCompletionMap (ξ : NormFamily S E) (ω : S.�
 /-- Completed-coefficient extension of the actual rational local unit ball
 has dense image in the literal completed unit-ball module. -/
 theorem denseRange_rationalUnitBallCompletedTensorMap (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hξ : ξ.IsUltrametric) :
+    (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] :
     letI := ξ.fibreNormedAddCommGroup ω
-    DenseRange (ξ.rationalUnitBallCompletedTensorMap ω hω hξ) := by
+    DenseRange (ξ.rationalUnitBallCompletedTensorMap ω hω) := by
   let := ξ.fibreNormedAddCommGroup ω
-  apply Dense.mono (hd := ξ.denseRange_rationalUnitBallCompletionMap ω hω hξ)
+  apply Dense.mono (hd := ξ.denseRange_rationalUnitBallCompletionMap ω hω)
   rintro z ⟨x, rfl⟩
   exact ⟨1 ⊗ₜ[S.rationalLocalRing ω hω] x, by
     rw [ξ.rationalUnitBallCompletedTensorMap_tmul, one_smul]⟩

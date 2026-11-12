@@ -9,6 +9,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Construction.Countable
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.Covolume.HermitianBasis
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.Analysis.Determinant.ExactSequence
 import ArakelovGeometry.NumberTheory.NumberField.Archimedean.DeterminantIntegral
@@ -43,8 +44,8 @@ def fullLatticeAdelicBundle
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) E) :
     AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E :=
   AdelicVectorBundle.ofMeasurableDominated (fullLatticeGaugeFamily L hfg hspan η)
-    (NormFamily.isMeasurable_of_discrete _)
-    (fullLatticeGaugeFamily_coherent_and_dominated L hfg hspan η).2 (Or.inl inferInstance)
+    (hm := (NormFamily.isMeasurable_of_discrete _))
+    (hd := (fullLatticeGaugeFamily_coherent_and_dominated L hfg hspan η).2)
 
 @[simp]
 theorem fullLatticeAdelicBundle_toNormFamily
@@ -56,13 +57,13 @@ theorem fullLatticeAdelicBundle_toNormFamily
 
 omit [FiniteDimensional K E] in
 /-- Prescribing Hermitian infinite norms makes the actual full-lattice family Hermitian. -/
-theorem fullLatticeGaugeFamily_isHermitian
+instance fullLatticeGaugeFamily_isHermitian
     (L : Submodule (𝓞 K) E) (hfg : L.FG)
     (hspan : Submodule.span K (L : Set E) = ⊤)
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     (fullLatticeGaugeFamily L hfg hspan η).IsHermitian
-      normalizedNumberFieldArchimedeanCompletions := by
+      := by
   refine ⟨fullLatticeGaugeFamily_isUltrametric L hfg hspan η, ?_⟩
   intro ω hω
   obtain ⟨c, hc⟩ := hη.2 ω hω
@@ -121,8 +122,8 @@ theorem fullLatticeGaugeFamily_finite_integral_neg_log_basis
       -(fullLatticeGaugeFamily L hfg hspan η).determinant.logNorm
         (exteriorPower.ιMulti K _ b) ω) (normalizedNumberFieldAdelicStructure K).Ωfin
           (normalizedNumberFieldAdelicStructure K).v :=
-    ((V.determinantOfMeasurableBase (Or.inl inferInstance)
-    normalizedNumberFieldArchimedeanCompletions).integrable_logNorm
+    ((V.determinantOfMeasurableBase
+   ).integrable_logNorm
       (exteriorPower.ιMulti K _ b)).neg.integrableOn
   rw [normalized_finite_integral_eq_tsum _ hint,
     integralLattice_log_relIndex_eq_tsum_localLength (principalModule b) L hb
@@ -140,8 +141,8 @@ theorem fullLatticeAdelicBundle_degree_eq_index_sub_integral
     (L : Submodule (𝓞 K) E) (hfg : L.FG)
     (hspan : Submodule.span K (L : Set E) = ⊤) (hb : principalModule b ≤ L)
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) E) :
-    (fullLatticeAdelicBundle L hfg hspan η).degree (Or.inl inferInstance)
-      normalizedNumberFieldArchimedeanCompletions =
+    (fullLatticeAdelicBundle L hfg hspan η).degree
+      =
       Real.log ((principalModule b).toAddSubgroup.relIndex L.toAddSubgroup : ℝ) -
         ∫ ω in (normalizedNumberFieldAdelicStructure K).Ωinf,
           (fullLatticeGaugeFamily L hfg hspan η).determinant.logNorm
@@ -152,10 +153,10 @@ theorem fullLatticeAdelicBundle_degree_eq_index_sub_integral
     have h := congrArg (determinantCoordinateEquiv b) hz
     rw [determinantCoordinateEquiv_ιMulti, b.det_self, map_zero] at h
     exact one_ne_zero h
-  rw [V.degree_eq_neg_integral (Or.inl inferInstance)
-    normalizedNumberFieldArchimedeanCompletions ⟨_, hu⟩]
-  have hint := (V.determinantOfMeasurableBase (Or.inl inferInstance)
-    normalizedNumberFieldArchimedeanCompletions).integrable_logNorm
+  rw [V.degree_eq_neg_integral
+    ⟨_, hu⟩]
+  have hint := (V.determinantOfMeasurableBase
+   ).integrable_logNorm
       (exteriorPower.ιMulti K _ b)
   have hsplit := integral_add_compl (normalizedNumberFieldAdelicStructure K).measurableSet_Ωinf
     hint
@@ -183,17 +184,17 @@ theorem fullLattice_log_euclideanCovolume_eq_neg_degree
     (L : Submodule (𝓞 K) E) (hfg : L.FG)
     (hspan : Submodule.span K (L : Set E) = ⊤)
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     Real.log (euclideanCovolume (fullLatticeGaugeFamily L hfg hspan η)
-      (fullLatticeGaugeFamily_isHermitian L hfg hspan η hη) L) =
-      -(fullLatticeAdelicBundle L hfg hspan η).degree (Or.inl inferInstance)
-        normalizedNumberFieldArchimedeanCompletions +
+      (hξ := (fullLatticeGaugeFamily_isHermitian L hfg hspan η)) L) =
+      -(fullLatticeAdelicBundle L hfg hspan η).degree
+        +
         (Module.finrank K E : ℝ) * Real.log
           ((2⁻¹ : ℝ) ^ InfinitePlace.nrComplexPlaces K *
             Real.sqrt |(NumberField.discr K : ℝ)|) := by
   obtain ⟨b, hb⟩ := exists_principalModule_le L hspan
   have hv := log_euclideanCovolume_eq_integral (fullLatticeGaugeFamily L hfg hspan η)
-    (fullLatticeGaugeFamily_isHermitian L hfg hspan η hη) b L hfg hspan hb
+    (hξ := (fullLatticeGaugeFamily_isHermitian L hfg hspan η)) b L hfg hspan hb
   have hd := fullLatticeAdelicBundle_degree_eq_index_sub_integral b L hfg hspan hb η
   linarith
 
@@ -202,15 +203,15 @@ theorem fullLattice_euclideanCovolume_eq_exp_neg_degree
     (L : Submodule (𝓞 K) E) (hfg : L.FG)
     (hspan : Submodule.span K (L : Set E) = ⊤)
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     euclideanCovolume (fullLatticeGaugeFamily L hfg hspan η)
-      (fullLatticeGaugeFamily_isHermitian L hfg hspan η hη) L =
-      Real.exp (-(fullLatticeAdelicBundle L hfg hspan η).degree (Or.inl inferInstance)
-        normalizedNumberFieldArchimedeanCompletions +
+      (hξ := (fullLatticeGaugeFamily_isHermitian L hfg hspan η)) L =
+      Real.exp (-(fullLatticeAdelicBundle L hfg hspan η).degree
+        +
         (Module.finrank K E : ℝ) * Real.log
           ((2⁻¹ : ℝ) ^ InfinitePlace.nrComplexPlaces K *
             Real.sqrt |(NumberField.discr K : ℝ)|)) := by
-  rw [← fullLattice_log_euclideanCovolume_eq_neg_degree L hfg hspan η hη,
-    Real.exp_log (euclideanCovolume_pos _ _ L hfg hspan)]
+  rw [← fullLattice_log_euclideanCovolume_eq_neg_degree L hfg hspan η,
+    Real.exp_log (euclideanCovolume_pos _ L hfg hspan)]
 
 end ArakelovGeometry.NumberFieldFullLattice

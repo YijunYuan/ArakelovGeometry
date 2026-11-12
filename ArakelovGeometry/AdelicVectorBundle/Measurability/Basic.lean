@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Basic
+
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 
@@ -32,8 +33,21 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {F : Type w'} [AddCommGroup F] [Module K F]
 
 /-- Every fixed rational vector has a measurable norm evaluation. -/
-def IsMeasurable (ξ : NormFamily S E) : Prop :=
-  ∀ x : E, Measurable (fun ω ↦ ξ.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] x))
+class IsMeasurable (ξ : NormFamily S E) : Prop where
+  /-- The defining property. -/
+  measurable_norm :
+    ∀ x : E, Measurable (fun ω ↦ ξ.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] x))
+
+instance (ξ : NormFamily S E) : CoeFun (ξ.IsMeasurable)
+    (fun _ ↦
+      ∀ x : E, Measurable (fun ω ↦ ξ.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] x))) :=
+  ⟨fun h ↦ h.measurable_norm⟩
+
+/-- The defining proposition of `IsMeasurable`. -/
+theorem IsMeasurable.iff (ξ : NormFamily S E) :
+    ξ.IsMeasurable ↔
+    ∀ x : E, Measurable (fun ω ↦ ξ.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] x)) :=
+  ⟨fun h ↦ h.measurable_norm, fun h ↦ ⟨h⟩⟩
 
 /-- Measurable norm evaluations have measurable logarithms, including at zero. -/
 theorem IsMeasurable.logNorm {ξ : NormFamily S E} (hξ : ξ.IsMeasurable) (x : E) :
@@ -43,7 +57,9 @@ theorem IsMeasurable.logNorm {ξ : NormFamily S E} (hξ : ξ.IsMeasurable) (x : 
 theorem isMeasurable_iff_logNorm (ξ : NormFamily S E) :
     ξ.IsMeasurable ↔ ∀ x : E, x ≠ 0 → Measurable (ξ.logNorm x) := by
   refine ⟨fun h x _ ↦ h.logNorm x, ?_⟩
-  intro h x
+  intro h
+  constructor
+  intro x
   by_cases hx : x = 0
   · simp only [hx, TensorProduct.tmul_zero, norm_zero]
     exact measurable_const
@@ -54,17 +70,21 @@ theorem isMeasurable_iff_logNorm (ξ : NormFamily S E) :
 /-- A norm family on the zero space is measurable. -/
 theorem isMeasurable_of_subsingleton [Subsingleton E] (ξ : NormFamily S E) :
     ξ.IsMeasurable := by
+  constructor
   intro x
   simp only [ξ.norm_eq_zero_of_subsingleton]
   exact measurable_const
 
 /-- On a discrete measurable parameter space every norm family is measurable. -/
 theorem isMeasurable_of_discrete [DiscreteMeasurableSpace S.Ω] (ξ : NormFamily S E) :
-    ξ.IsMeasurable := fun _ ↦ Measurable.of_discrete
+    ξ.IsMeasurable := ⟨fun _ ↦ Measurable.of_discrete⟩
+
+attribute [instance] isMeasurable_of_subsingleton isMeasurable_of_discrete
 
 /-- Pullback along an injective rational map preserves measurability. -/
 theorem IsMeasurable.pullback {ξ : NormFamily S E} (hξ : ξ.IsMeasurable)
     (f : F →ₗ[K] E) (hf : Function.Injective f) : (ξ.pullback f hf).IsMeasurable := by
+  constructor
   intro x
   exact hξ (f x)
 
@@ -77,7 +97,9 @@ theorem IsMeasurable.restrict {ξ : NormFamily S E} (hξ : ξ.IsMeasurable)
 theorem isMeasurable_pullback_iff (ξ : NormFamily S E) (e : F ≃ₗ[K] E) :
     (ξ.pullback e.toLinearMap e.injective).IsMeasurable ↔ ξ.IsMeasurable := by
   refine ⟨?_, fun h ↦ h.pullback e.toLinearMap e.injective⟩
-  intro h x
+  intro h
+  constructor
+  intro x
   obtain ⟨y, rfl⟩ := e.surjective x
   exact h y
 
@@ -85,6 +107,7 @@ theorem isMeasurable_pullback_iff (ξ : NormFamily S E) (e : F ≃ₗ[K] E) :
 theorem IsMeasurable.scale {ξ : NormFamily S E} (hξ : ξ.IsMeasurable)
     (f : S.Ω → ℝ) (hf : ∀ ω, 0 < f ω) (hm : Measurable f) :
     (ξ.scale f hf).IsMeasurable := by
+  constructor
   intro x
   exact hm.mul (hξ x)
 
@@ -108,5 +131,19 @@ theorem IsDominated.integrable_logNorm [FiniteDimensional K E]
     rw [hz]
     exact integrable_zero S.Ω ℝ S.v
   · exact (hd.logNorm_bounds hx).integrable (hm.logNorm x).aestronglyMeasurable
+
+end ArakelovGeometry.NormFamily
+
+namespace ArakelovGeometry.NormFamily
+
+variable {K : Type*} [Field K] {S : AdelicStructure K}
+  {E F : Type*} [AddCommGroup E] [Module K E] [AddCommGroup F] [Module K F]
+
+instance instIsMeasurablePullback {ξ : NormFamily S E} [hξ : ξ.IsMeasurable]
+    (f : F →ₗ[K] E) (hf : Function.Injective f) : (ξ.pullback f hf).IsMeasurable :=
+  hξ.pullback f hf
+
+instance instIsMeasurableRestrict {ξ : NormFamily S E} [hξ : ξ.IsMeasurable]
+    (P : Submodule K E) : (ξ.restrict P).IsMeasurable := hξ.restrict P
 
 end ArakelovGeometry.NormFamily

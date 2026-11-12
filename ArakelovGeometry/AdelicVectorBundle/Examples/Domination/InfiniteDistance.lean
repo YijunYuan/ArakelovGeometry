@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Domination.InfiniteCounting
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -138,6 +139,7 @@ theorem expensiveFamily_integrable_logNorm {x : (Plane K)} (hx : x ≠ 0) :
   exact ((integrable_logNorm K) hx).neg
 
 theorem expensiveFamily_isUpperDominated : (expensiveFamily K).IsUpperDominated := by
+  constructor
   intro x hx
   exact ⟨(expensiveFamily K).logNorm x, (expensiveFamily_integrable_logNorm K) hx,
     Filter.Eventually.of_forall fun _ ↦ le_rfl⟩
@@ -222,6 +224,7 @@ theorem expensiveFamily_dual_logNorm_eq_zero (ℓ : Module.Dual K (Plane K))
 
 theorem expensiveFamily_dual_isUpperDominated :
     (expensiveFamily K).dual.IsUpperDominated := by
+  constructor
   intro ℓ _
   exact ⟨0, integrable_zero _ _ _, Filter.Eventually.of_forall fun a ↦ by
     simp only [(expensiveFamily_dual_logNorm_eq_zero K), Pi.zero_apply, le_refl]⟩
@@ -313,13 +316,15 @@ theorem basisFamily_dual_norm_rational (a : (countingCurve K).Ω)
 
 theorem basisFamily_isDominated : (basisFamily K).IsDominated := by
   constructor
-  · intro x _
+  · constructor
+    intro x _
     refine ⟨0, integrable_zero _ _ _, Filter.Eventually.of_forall ?_⟩
     intro a
     change Real.log _ ≤ 0
     rw [(basisFamily_norm_rational K)]
     split_ifs <;> simp
-  · intro ℓ _
+  · constructor
+    intro ℓ _
     refine ⟨0, integrable_zero _ _ _, Filter.Eventually.of_forall ?_⟩
     intro a
     change Real.log _ ≤ 0

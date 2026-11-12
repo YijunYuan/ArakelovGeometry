@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Bundle
+
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Domination.Basic
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.FiniteStage.Basic
 import Mathlib.CategoryTheory.Category.Init
@@ -66,7 +67,7 @@ theorem discreteMeasurableSpace_of_finiteDimensional [FiniteDimensional K L]
 end AdelicStructure.ParameterSpaceExtension
 
 /-- The actual algebraic extension sigma algebra is discrete for a finite extension. -/
-theorem AdelicStructure.discreteMeasurableSpace_algebraicExtension_of_finiteDimensional
+instance AdelicStructure.discreteMeasurableSpace_algebraicExtension_of_finiteDimensional
     [FiniteDimensional K L] [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] :
     DiscreteMeasurableSpace (S.algebraicExtension L).Ω := by
   change @DiscreteMeasurableSpace (S.ParameterSpaceExtension L)
@@ -100,8 +101,9 @@ theorem scalarExtension_dual_isMeasurable_of_finiteDimensional_of_countable_disc
 for every algebraic extension by actual finite-coordinate descent. -/
 theorem scalarExtension_isMeasurable_of_countable_discrete
     [Countable S.Ω] [DiscreteMeasurableSpace S.Ω]
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hN : S.IsArchimedeanNormalized] :
     (ξ.scalarExtension (L := L)).IsMeasurable := by
+  constructor
   intro z
   obtain ⟨F, y, hy⟩ := exists_finiteStage_tensor_lift z
   have hm := ξ.scalarExtension_isMeasurable_of_finiteDimensional_of_countable_discrete
@@ -125,7 +127,7 @@ theorem scalarExtension_isMeasurable_of_countable_discrete
     funext x
     rw [← hy]
     exact ξ.scalarExtension_norm_finiteStage F
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN) x y
+      (hF := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩) x y
   rw [he]
   exact (hm y).comp hr
 
@@ -139,7 +141,7 @@ variable {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 /-- Actual finite scalar extension over a countable discrete base, with both
 measurability clauses and domination produced. -/
 def scalarExtensionOfCountableDiscrete (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hN : S.IsArchimedeanNormalized] :
     AdelicVectorBundle (S.algebraicExtension L) (L ⊗[K] E) where
   toNormFamily := V.toNormFamily.scalarExtension (L := L)
   isMeasurable :=
@@ -148,33 +150,33 @@ def scalarExtensionOfCountableDiscrete (V : AdelicVectorBundle S E)
     V.toNormFamily.scalarExtension_dual_isMeasurable_of_finiteDimensional_of_countable_discrete
   isDominated := by
     exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
-      V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike hN)).isDominated
+      V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)).isDominated
 
 @[simp]
 theorem scalarExtensionOfCountableDiscrete_toNormFamily (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.scalarExtensionOfCountableDiscrete (L := L) hN).toNormFamily =
+    [hN : S.IsArchimedeanNormalized] :
+    (V.scalarExtensionOfCountableDiscrete (L := L)).toNormFamily =
       V.toNormFamily.scalarExtension (L := L) := rfl
 
 /-- The constructed finite extended bundle is strongly adelic. -/
 theorem scalarExtensionOfCountableDiscrete_isStronglyAdelic (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.scalarExtensionOfCountableDiscrete (L := L) hN).IsStronglyAdelic :=
+    [hN : S.IsArchimedeanNormalized] :
+    (V.scalarExtensionOfCountableDiscrete (L := L)).IsStronglyAdelic :=
   NormFamily.IsDominated.scalarExtension_isStronglyDominated
-    V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike hN)
+    V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)
 
 /-- The construction preserves rank, including zero. -/
 theorem scalarExtensionOfCountableDiscrete_rank (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.scalarExtensionOfCountableDiscrete (L := L) hN).rank = V.rank :=
+    [S.IsArchimedeanNormalized] :
+    (V.scalarExtensionOfCountableDiscrete (L := L)).rank = V.rank :=
   Module.finrank_baseChange
 
 /-- On overlapping hypotheses the finite discrete and common-density constructors agree. -/
 theorem scalarExtensionOfCountableDiscrete_eq_scalarExtension
-    (V : AdelicVectorBundle S E) (hS : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.scalarExtensionOfCountableDiscrete (L := L) hN =
-      V.scalarExtension (L := L) hS hN := by
+    (V : AdelicVectorBundle S E) [hS : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized] :
+    V.scalarExtensionOfCountableDiscrete (L := L) =
+      V.scalarExtension (L := L) := by
   apply AdelicVectorBundle.ext
   rfl
 
@@ -182,26 +184,27 @@ theorem scalarExtensionOfCountableDiscrete_eq_scalarExtension
 and extended Archimedean normalization both derived. -/
 theorem degree_scalarExtensionOfCountableDiscrete [S.IsProper]
     (V : AdelicVectorBundle S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    (V.scalarExtensionOfCountableDiscrete (L := L) hN).degree
-      (Or.inl (AdelicStructure.discreteMeasurableSpace_algebraicExtension_of_finiteDimensional
-        (S := S) (L := L)))
-      (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) =
-        V.degree (Or.inl inferInstance) hN := by
+    (V.scalarExtensionOfCountableDiscrete (L := L)).degree
+      (hS :=
+        ⟨(Or.inl (AdelicStructure.discreteMeasurableSpace_algebraicExtension_of_finiteDimensional
+        (S := S) (L := L)))⟩)
+      (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
+        V.degree := by
   intro hp
   let := hp
   let hLS := AdelicStructure.discreteMeasurableSpace_algebraicExtension_of_finiteDimensional
     (S := S) (L := L)
-  let hNL := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
-  have he : (V.scalarExtensionOfCountableDiscrete (L := L) hN).determinantOfMeasurableBase
-      (Or.inl hLS) hNL =
-        V.scalarExtensionDeterminant (L := L) (Or.inl inferInstance) hN := by
+  let hNL := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
+  have he : (V.scalarExtensionOfCountableDiscrete (L := L)).determinantOfMeasurableBase
+      (hS := ⟨(Or.inl hLS)⟩) (hN := ⟨hNL⟩) =
+        V.scalarExtensionDeterminant (L := L) := by
     apply AdelicVectorBundle.ext
     rfl
-  change (V.scalarExtensionOfCountableDiscrete (L := L) hN).degree (Or.inl hLS) hNL = _
-  rw [degree, he]
-  exact V.lineDegree_scalarExtensionDeterminant (L := L) (Or.inl inferInstance) hN
+  change (V.scalarExtensionOfCountableDiscrete (L := L)).degree (hS := ⟨(Or.inl hLS)⟩)
+      (hN := ⟨hNL⟩) = _
+  simpa only [degree, he] using V.lineDegree_scalarExtensionDeterminant (L := L)
 
 end AdelicVectorBundle
 

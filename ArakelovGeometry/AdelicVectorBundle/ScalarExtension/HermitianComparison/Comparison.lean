@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Hermitian.Basic
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Domination.Basic
 import Mathlib.CategoryTheory.Category.Init
@@ -124,29 +125,28 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {L : Type w} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (ξ : NormFamily S E)
-  (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-  (hL : ∀ x ∈ (S.algebraicExtension L).Ωinf,
-    IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion)
-  (hξ : ξ.IsHermitian hS)
+  [hS : S.IsArchimedeanNormalized]
+  [hL : (S.algebraicExtension L).IsArchimedeanNormalized]
+  [hξ : ξ.IsHermitian]
 
 /-- Ordinary and Hermitian scalar extension agree on every finite completed fibre. -/
 theorem scalarExtension_norm_eq_hermitian_of_finite (x : S.ParameterSpaceExtension L)
     (hx : x ∈ (S.algebraicExtension L).Ωfin)
     (z : x.abv.Completion ⊗[L] (L ⊗[K] E)) :
     (ξ.scalarExtension (L := L)).norm x z =
-      (hermitianScalarExtension ξ hS hL hξ).norm x z := by
+      (hermitianScalarExtension ξ).norm x z := by
   exact (ξ.scalarExtension_norm_of_mem_Ωfin x
     ((AdelicStructure.mem_Ωfin_algebraicExtension_iff x).mp hx) z).trans
-      (hermitianScalarExtension_norm_of_finite ξ hS hL hξ x hx z).symm
+      (hermitianScalarExtension_norm_of_finite ξ x hx z).symm
 
 /-- On every infinite completed fibre, the actual norms satisfy `H ≤ π ≤ √2 H`. -/
 theorem scalarExtension_hermitian_norm_comparison_of_infinite
     (x : S.ParameterSpaceExtension L) (hx : x ∈ (S.algebraicExtension L).Ωinf)
     (z : x.abv.Completion ⊗[L] (L ⊗[K] E)) :
-    (hermitianScalarExtension ξ hS hL hξ).norm x z ≤
+    (hermitianScalarExtension ξ).norm x z ≤
         (ξ.scalarExtension (L := L)).norm x z ∧
       (ξ.scalarExtension (L := L)).norm x z ≤
-        Real.sqrt 2 * (hermitianScalarExtension ξ hS hL hξ).norm x z := by
+        Real.sqrt 2 * (hermitianScalarExtension ξ).norm x z := by
   have hbase := (scalarExtension_mem_Ωinf_iff x).mp hx
   let := hS x.base hbase
   let := IsRCLikeNormedField.rclike (S.ϕ x.base).Completion
@@ -156,10 +156,10 @@ theorem scalarExtension_hermitian_norm_comparison_of_infinite
     AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
   let := ξ.fibreNormedAddCommGroup x.base
   let := ξ.fibreNormedSpace x.base
-  let := hξ.fibreInnerProductSpace x.base hbase
+  let := ξ.fiberInnerProductSpace x.base hbase
   let b := stdOrthonormalBasis (S.ϕ x.base).Completion ((S.ϕ x.base).Completion ⊗[K] E)
   let y := completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq z
-  rw [hermitianScalarExtension_norm_of_infinite ξ hS hL hξ x hx z,
+  rw [hermitianScalarExtension_norm_of_infinite ξ x hx z,
     ξ.scalarExtension_norm_of_not_mem_Ωfin x hbase z]
   change hermitianScalarExtensionSeminorm b y ≤ scalarExtensionProjectiveSeminorm y ∧
     scalarExtensionProjectiveSeminorm y ≤ Real.sqrt 2 * hermitianScalarExtensionSeminorm b y
@@ -168,71 +168,71 @@ theorem scalarExtension_hermitian_norm_comparison_of_infinite
 
 /-- The Hermitian extension is bounded by the ordinary extension at every place. -/
 theorem hermitianScalarExtension_le_scalarExtension :
-    hermitianScalarExtension ξ hS hL hξ ≤ ξ.scalarExtension (L := L) := by
+    hermitianScalarExtension ξ ≤ ξ.scalarExtension (L := L) := by
   intro x z
   change S.ParameterSpaceExtension L at x
   change x.abv.Completion ⊗[L] (L ⊗[K] E) at z
   by_cases hx : x ∈ (S.algebraicExtension L).Ωfin
-  · exact (scalarExtension_norm_eq_hermitian_of_finite ξ hS hL hξ x hx z).symm.le
-  · exact (scalarExtension_hermitian_norm_comparison_of_infinite ξ hS hL hξ x hx z).1
+  · exact (scalarExtension_norm_eq_hermitian_of_finite ξ x hx z).symm.le
+  · exact (scalarExtension_hermitian_norm_comparison_of_infinite ξ x hx z).1
 
 /-- The two scalar extensions have zero distance at every finite place. -/
 theorem scalarExtension_localDist_hermitian_eq_zero_of_finite
     (x : S.ParameterSpaceExtension L) (hx : x ∈ (S.algebraicExtension L).Ωfin) :
-    (ξ.scalarExtension (L := L)).localDist (hermitianScalarExtension ξ hS hL hξ) x = 0 := by
+    (ξ.scalarExtension (L := L)).localDist (hermitianScalarExtension ξ) x = 0 := by
   apply ((ξ.scalarExtension (L := L)).localDist_eq_zero_iff
-    (hermitianScalarExtension ξ hS hL hξ) x).mpr
+    (hermitianScalarExtension ξ) x).mpr
   ext z
-  exact scalarExtension_norm_eq_hermitian_of_finite ξ hS hL hξ x hx z
+  exact scalarExtension_norm_eq_hermitian_of_finite ξ x hx z
 
 /-- The sharp source upper bound is one half of `log 2` at infinity and zero elsewhere. -/
 theorem scalarExtension_localDist_hermitian_le (x : S.ParameterSpaceExtension L) :
-    (ξ.scalarExtension (L := L)).localDist (hermitianScalarExtension ξ hS hL hξ) x ≤
+    (ξ.scalarExtension (L := L)).localDist (hermitianScalarExtension ξ) x ≤
       (S.algebraicExtension L).Ωinf.indicator (fun _ => (1 / 2 : ℝ) * Real.log 2) x := by
   classical
   have hlog : 0 ≤ (1 / 2 : ℝ) * Real.log 2 :=
     mul_nonneg (by norm_num) (Real.log_nonneg (by norm_num))
   by_cases hx : x ∈ (S.algebraicExtension L).Ωinf
   · have hbound : (ξ.scalarExtension (L := L)).localDist
-        (hermitianScalarExtension ξ hS hL hξ) x ≤ (1 / 2 : ℝ) * Real.log 2 := by
+        (hermitianScalarExtension ξ) x ≤ (1 / 2 : ℝ) * Real.log 2 := by
       apply ((ξ.scalarExtension (L := L)).localDist_le_iff_norm_le
-        (hermitianScalarExtension ξ hS hL hξ) x hlog).mpr
+        (hermitianScalarExtension ξ) x hlog).mpr
       intro z
-      have h := scalarExtension_hermitian_norm_comparison_of_infinite ξ hS hL hξ x hx z
+      have h := scalarExtension_hermitian_norm_comparison_of_infinite ξ x hx z
       have hsqrt : Real.sqrt 2 = Real.exp ((1 / 2 : ℝ) * Real.log 2) := by
         rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos (by norm_num), mul_comm]
       refine ⟨?_, ?_⟩
       · exact h.2.trans_eq (congrArg (fun c => c *
-          (hermitianScalarExtension ξ hS hL hξ).norm x z) hsqrt)
+          (hermitianScalarExtension ξ).norm x z) hsqrt)
       · exact h.1.trans
           (le_mul_of_one_le_left ((ξ.scalarExtension (L := L)).norm_nonneg x z)
             (Real.one_le_exp_iff.mpr hlog))
     exact hbound.trans_eq (Set.indicator_of_mem hx
       (fun _ : (S.algebraicExtension L).Ω => (1 / 2 : ℝ) * Real.log 2)).symm
   · have hfin : x ∈ (S.algebraicExtension L).Ωfin := not_not.mp hx
-    exact (scalarExtension_localDist_hermitian_eq_zero_of_finite ξ hS hL hξ x hfin).le.trans_eq
+    exact (scalarExtension_localDist_hermitian_eq_zero_of_finite ξ x hfin).le.trans_eq
       (Set.indicator_of_notMem hx
         (fun _ : (S.algebraicExtension L).Ω => (1 / 2 : ℝ) * Real.log 2)).symm
 
 /-- The zero-rank case has exactly zero distance at every extending place. -/
 theorem scalarExtension_localDist_hermitian_eq_zero_of_finrank_zero
     (hrank : Module.finrank K E = 0) (x : S.ParameterSpaceExtension L) :
-    (ξ.scalarExtension (L := L)).localDist (hermitianScalarExtension ξ hS hL hξ) x = 0 := by
+    (ξ.scalarExtension (L := L)).localDist (hermitianScalarExtension ξ) x = 0 := by
   let : Subsingleton E := Module.finrank_zero_iff.mp hrank
   exact (ξ.scalarExtension (L := L)).localDist_eq_zero_of_subsingleton
-    (hermitianScalarExtension ξ hS hL hξ) x
+    (hermitianScalarExtension ξ) x
 
 /-- The explicit half-log-two correction gives actual integrable distance envelopes. -/
 theorem scalarExtension_localDist_hermitian_hasIntegrableBounds
     (hfin : S.v S.Ωinf < ⊤) :
     HasIntegrableBounds ((ξ.scalarExtension (L := L)).localDist
-      (hermitianScalarExtension ξ hS hL hξ)) (S.algebraicExtension L).v := by
+      (hermitianScalarExtension ξ)) (S.algebraicExtension L).v := by
   have hfinL : (S.algebraicExtension L).v (S.algebraicExtension L).Ωinf < ⊤ := by
     rw [scalarExtension_measure_Ωinf]
     exact hfin
   refine ⟨⟨(S.algebraicExtension L).Ωinf.indicator
     (fun _ => (1 / 2 : ℝ) * Real.log 2), ?_,
-    Filter.Eventually.of_forall (scalarExtension_localDist_hermitian_le ξ hS hL hξ)⟩,
+    Filter.Eventually.of_forall (scalarExtension_localDist_hermitian_le ξ)⟩,
     ⟨0, integrable_zero _ _ _, Filter.Eventually.of_forall ?_⟩⟩
   · exact (integrable_indicator_iff (S.algebraicExtension L).measurableSet_Ωinf).mpr
       (integrableOn_const hfinL.ne)

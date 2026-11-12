@@ -9,6 +9,7 @@ public import ArakelovGeometry.Analysis.AbsoluteValue.Basic -- shake: keep
 public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.NumberTheory.Ostrowski
+
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 
@@ -71,6 +72,38 @@ def Ωfin {K : Type*} [Field K] (AS : AdelicStructure K) : Set AS.Ω :=
 /-- The archimedean (infinite) locus of an adelic structure. -/
 def Ωinf {K : Type*} [Field K] (AS : AdelicStructure K) : Set AS.Ω :=
   {ω : AS.Ω | ¬IsNonarchimedean (AS.ϕ ω)}
+
+/-- The completed fields at infinite places carry their usual real or complex norm. -/
+class IsArchimedeanNormalized {K : Type*} [Field K] (S : AdelicStructure K) : Prop where
+  /-- Usual normalization at each infinite place. -/
+  completion : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion
+
+instance {K : Type*} [Field K] {S : AdelicStructure K} :
+    CoeFun S.IsArchimedeanNormalized
+      (fun _ ↦ ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :=
+  ⟨fun h ↦ h.completion⟩
+
+/-- Every place of the adelic structure is nonarchimedean. -/
+class HasOnlyFinitePlaces {K : Type*} [Field K] (S : AdelicStructure K) : Prop where
+  /-- Every index belongs to the finite locus. -/
+  mem_Ωfin : ∀ ω : S.Ω, ω ∈ S.Ωfin
+
+instance {K : Type*} [Field K] {S : AdelicStructure K} :
+    CoeFun S.HasOnlyFinitePlaces (fun _ ↦ ∀ ω : S.Ω, ω ∈ S.Ωfin) :=
+  ⟨fun h ↦ h.mem_Ωfin⟩
+
+/-- Every singleton place has positive measure. -/
+class HasPositiveAtoms {K : Type*} [Field K] (S : AdelicStructure K) : Prop where
+  /-- Positivity of the measure of every singleton. -/
+  measure_singleton_pos : ∀ ω : S.Ω, 0 < S.v {ω}
+
+instance {K : Type*} [Field K] {S : AdelicStructure K} :
+    CoeFun S.HasPositiveAtoms (fun _ ↦ ∀ ω : S.Ω, 0 < S.v {ω}) :=
+  ⟨fun h ↦ h.measure_singleton_pos⟩
+
+instance {K : Type*} [Field K] (S : AdelicStructure K) [S.HasOnlyFinitePlaces] :
+    S.IsArchimedeanNormalized where
+  completion ω hω := (hω (HasOnlyFinitePlaces.mem_Ωfin ω)).elim
 
 open Classical in
 /-- The archimedean exponent of a place: for `ω ∈ Ωinf`, the exponent `κ ω ∈ (0, 1]` with

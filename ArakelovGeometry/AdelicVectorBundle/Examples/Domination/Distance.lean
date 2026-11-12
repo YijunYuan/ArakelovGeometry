@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Domination.Counting
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 import Mathlib.CategoryTheory.Category.Init
 
@@ -131,6 +132,7 @@ theorem expensiveFamily_integrable_logNorm {x : Plane} (hx : x ≠ 0) :
   exact (integrable_logNorm hx).neg
 
 theorem expensiveFamily_isUpperDominated : expensiveFamily.IsUpperDominated := by
+  constructor
   intro x hx
   exact ⟨expensiveFamily.logNorm x, expensiveFamily_integrable_logNorm hx,
     Filter.Eventually.of_forall fun _ ↦ le_rfl⟩
@@ -214,6 +216,7 @@ theorem expensiveFamily_dual_logNorm_eq_zero (ℓ : Module.Dual ℚ Plane)
 
 theorem expensiveFamily_dual_isUpperDominated :
     expensiveFamily.dual.IsUpperDominated := by
+  constructor
   intro ℓ _
   exact ⟨0, integrable_zero _ _ _, Filter.Eventually.of_forall fun a ↦ by
     simp only [expensiveFamily_dual_logNorm_eq_zero, Pi.zero_apply, le_refl]⟩
@@ -305,13 +308,15 @@ theorem basisFamily_dual_norm_rational (a : countingCurve.Ω)
 
 theorem basisFamily_isDominated : basisFamily.IsDominated := by
   constructor
-  · intro x _
+  · constructor
+    intro x _
     refine ⟨0, integrable_zero _ _ _, Filter.Eventually.of_forall ?_⟩
     intro a
     change Real.log _ ≤ 0
     rw [basisFamily_norm_rational]
     split_ifs <;> simp
-  · intro ℓ _
+  · constructor
+    intro ℓ _
     refine ⟨0, integrable_zero _ _ _, Filter.Eventually.of_forall ?_⟩
     intro a
     change Real.log _ ≤ 0

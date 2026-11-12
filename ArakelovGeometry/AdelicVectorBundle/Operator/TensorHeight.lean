@@ -9,6 +9,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Degree.Vector
 public import ArakelovGeometry.AdelicVectorBundle.Operator.Height
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.OperatorBaseChange
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Pair
+
 import ArakelovGeometry.AdelicVectorBundle.Dual.Bidual
 import ArakelovGeometry.AdelicVectorBundle.Operator.Comparison
 import ArakelovGeometry.AdelicVectorBundle.Tensor.Operator
@@ -86,22 +87,22 @@ theorem injectiveTensorPair_dual_norm_eq_bidual_operatorNorm (ξ : NormFamily S 
 /-- At the source's ultrametric/normalized norms, both biduals are the original
 norms, giving the exact operator norm on the ordinary dual tensor product. -/
 theorem injectiveTensorPair_dual_norm_eq_operatorNorm (ξ : NormFamily S E)
-    (η : NormFamily S F) (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (η : NormFamily S F) [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric]
+    [hN : S.IsArchimedeanNormalized]
     (ω : S.Ω) (z : Module.Dual K E ⊗[K] F) :
     (ξ.dual.injectiveTensorPair η).norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] z) =
       ξ.operatorNorm η ω (dualTensorHom K E F z) := by
   rw [injectiveTensorPair_dual_norm_eq_bidual_operatorNorm,
-    ξ.dual_dual_pullback_eq hξ hN, η.dual_dual_pullback_eq hη hN]
+    ξ.dual_dual_pullback_eq, η.dual_dual_pullback_eq]
 
 /-- The local height is the logarithmic norm of the actual representing tensor. -/
 theorem localHeight_eq_logNorm_tensor (ξ : NormFamily S E) (η : NormFamily S F)
-    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric]
+    [hN : S.IsArchimedeanNormalized]
     (f : {f : E →ₗ[K] F // f ≠ 0}) (ω : S.Ω) :
     ξ.localHeight η f ω = (ξ.dual.injectiveTensorPair η).logNorm (linearMapTensor f).val ω := by
   dsimp only [localHeight, logNorm]
-  rw [injectiveTensorPair_dual_norm_eq_operatorNorm ξ η hξ hη hN,
+  rw [injectiveTensorPair_dual_norm_eq_operatorNorm ξ η,
     dualTensorHom_linearMapTensor]
 
 end NormFamily
@@ -111,18 +112,18 @@ namespace AdelicVectorBundle
 /-- Source Definition4.3.17: with ultrametric finite-place norms, map height
 is minus the vector degree in the actual injective dual tensor bundle. -/
 theorem mapHeight_eq_neg_tensor_vectorDegree (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F) (hV : V.toNormFamily.IsUltrametric)
-    (hW : W.toNormFamily.IsUltrametric)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    (W : AdelicVectorBundle S F) [hV : V.toNormFamily.IsUltrametric]
+    [hW : W.toNormFamily.IsUltrametric]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (f : {f : E →ₗ[K] F // f ≠ 0}) :
-    let T := (V.dualOfMeasurableBase hS).injectiveTensorPair W hS hN
+    let T := (V.dualOfMeasurableBase).injectiveTensorPair W
     V.mapHeight W f.val =
-      (-(T.toNormFamily.vectorDegree T.isDominated T.isMeasurable (linearMapTensor f)) : ℝ) := by
+      (-(T.toNormFamily.vectorDegree (linearMapTensor f)) : ℝ) := by
   intro T
   have he (ω : S.Ω) : V.toNormFamily.localHeight W.toNormFamily f ω =
       T.toNormFamily.logNorm (linearMapTensor f).val ω :=
-    V.toNormFamily.localHeight_eq_logNorm_tensor W.toNormFamily hV hW hN f ω
+    V.toNormFamily.localHeight_eq_logNorm_tensor W.toNormFamily f ω
   have hi : Integrable (V.toNormFamily.localHeight W.toNormFamily f) S.v :=
     (T.isDominated.integrable_logNorm T.isMeasurable (linearMapTensor f).val).congr
       (Filter.Eventually.of_forall fun ω ↦ (he ω).symm)

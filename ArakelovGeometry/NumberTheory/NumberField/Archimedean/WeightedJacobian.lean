@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.WeightedEuclidean
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import Mathlib.Topology.Sheaves.Init
 
@@ -140,11 +141,11 @@ theorem det_weightEquiv_pos :
 open scoped Classical in
 theorem volume_weightEquiv_image
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (B : Set (CompletedVectorProduct K E)) :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
-    letI := euclideanInnerProduct hξ
+    letI := euclideanInnerProduct (ξ := ξ)
     letI : MeasurableSpace (CompletedVectorProduct K E) := borel _
     letI : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
     letI := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
@@ -154,7 +155,7 @@ theorem volume_weightEquiv_image
         volume B := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)

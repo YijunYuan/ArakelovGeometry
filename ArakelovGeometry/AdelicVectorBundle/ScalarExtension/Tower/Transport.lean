@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerBasic
 public import ArakelovGeometry.AdelicCurve.Extension.Algebraic.TowerPlace
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Tower
 import ArakelovGeometry.AdelicVectorBundle.Degree.Isometry
 import ArakelovGeometry.AdelicVectorBundle.Dual.Map
@@ -104,6 +105,7 @@ omit [FiniteDimensional L E] in
 theorem IsMeasurable.towerPullback {ξ : NormFamily (S.algebraicExtension L) E}
     (hξ : ξ.IsMeasurable) (F : IntermediateField K L) :
     (ξ.towerPullback F).IsMeasurable := by
+  constructor
   intro z
   exact (hξ z).comp (AdelicStructure.Algebraic.towerMeasurableEquiv S F).measurable
 
@@ -112,6 +114,7 @@ omit [FiniteDimensional L E] in
 theorem IsUpperDominated.towerPullback {ξ : NormFamily (S.algebraicExtension L) E}
     (hξ : ξ.IsUpperDominated) (F : IntermediateField K L) :
     (ξ.towerPullback F).IsUpperDominated := by
+  constructor
   intro z hz
   rw [towerPullback_logNorm]
   exact (hξ z hz).comp_measurePreserving
@@ -136,7 +139,9 @@ identification, without any regularity assumption on either place space. -/
 theorem isMeasurable_towerPullback_iff (ξ : NormFamily (S.algebraicExtension L) X)
     (F : IntermediateField K L) : (ξ.towerPullback F).IsMeasurable ↔ ξ.IsMeasurable := by
   refine ⟨?_, fun h => h.towerPullback F⟩
-  intro hξ y
+  intro hξ
+  constructor
+  intro y
   let e := AdelicStructure.Algebraic.towerMeasurableEquiv S F
   have hn : (fun x : (S.algebraicExtension L).Ω =>
       ξ.norm x ((1 : x.abv.Completion) ⊗ₜ[L] y)) =
@@ -208,6 +213,7 @@ theorem IsMeasurable.dual_of_tower_completed_isometry
       (z : x.abv.Completion ⊗[L] X), θ.norm (scalarExtensionTowerPlace x)
         (e.toLinearMap.baseChange x.abv.Completion z) = η.norm x z)
     (hm : η.dual.IsMeasurable) : θ.dual.IsMeasurable := by
+  constructor
   intro ℓ
   let τ := (AdelicStructure.Algebraic.towerMeasurableEquiv S F.toIntermediateField).symm
   have hnorm : (fun x : (S.algebraicExtension L).Ω =>
@@ -253,23 +259,23 @@ theorem towerPullback_toNormFamily (V : AdelicVectorBundle (S.algebraicExtension
     (V.towerPullback F).toNormFamily = V.toNormFamily.towerPullback F := rfl
 
 /-- Tower transport preserves the same one-dimensional vector space. -/
-theorem isLine_towerPullback (V : AdelicVectorBundle (S.algebraicExtension L) E)
-    (F : IntermediateField K L) (hV : V.IsLine) : (V.towerPullback F).IsLine := hV
+instance isLine_towerPullback (V : AdelicVectorBundle (S.algebraicExtension L) E)
+    (F : IntermediateField K L) [hV : V.IsLine] : (V.towerPullback F).IsLine := ⟨hV.rank_eq_one⟩
 
 /-- Actual line degree is unchanged by the measure-preserving tower equivalence. -/
 theorem lineDegree_towerPullback [S.IsProper]
     (V : AdelicVectorBundle (S.algebraicExtension L) E)
-    (F : IntermediateField K L) (hV : V.IsLine) :
+    (F : IntermediateField K L) [hV : V.IsLine] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
     let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
-    (V.towerPullback F).lineDegree (V.isLine_towerPullback F hV) = V.lineDegree hV := by
+    (V.towerPullback F).lineDegree (hV := (V.isLine_towerPullback F)) = V.lineDegree := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
   let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
-  change (V.towerPullback F).lineDegree (V.isLine_towerPullback F hV) = V.lineDegree hV
-  let s := V.lineGenerator hV
-  rw [lineDegree_eq_neg_integral _ _ s, lineDegree_eq_neg_integral _ _ s]
+  change (V.towerPullback F).lineDegree (hV := (V.isLine_towerPullback F)) = V.lineDegree
+  let s := V.lineGenerator
+  rw [lineDegree_eq_neg_integral _ s, lineDegree_eq_neg_integral _ s]
   change -(∫ x, V.toNormFamily.logNorm s.val
       (AdelicStructure.Algebraic.towerMeasurableEquiv S F x)
       ∂((S.algebraicExtension F).algebraicExtension L).v) =
@@ -282,25 +288,21 @@ theorem lineDegree_towerPullback [S.IsProper]
 theorem degree_towerPullback [S.IsProper]
     (V : AdelicVectorBundle (S.algebraicExtension L) E)
     (F : IntermediateField K L)
-    (hD : DiscreteMeasurableSpace (S.algebraicExtension L).Ω ∨
-      (S.algebraicExtension L).HasCommonCountableDenseSubfield)
-    (hT : DiscreteMeasurableSpace ((S.algebraicExtension F).algebraicExtension L).Ω ∨
-      ((S.algebraicExtension F).algebraicExtension L).HasCommonCountableDenseSubfield)
-    (hND : ∀ x ∈ (S.algebraicExtension L).Ωinf,
-      IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion)
-    (hNT : ∀ x ∈ ((S.algebraicExtension F).algebraicExtension L).Ωinf,
-      IsRCLikeNormedField (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion) :
+    [hD : (S.algebraicExtension L).HasMeasurableBase]
+    [hT : ((S.algebraicExtension F).algebraicExtension L).HasMeasurableBase]
+    [hND : (S.algebraicExtension L).IsArchimedeanNormalized]
+    [hNT : ((S.algebraicExtension F).algebraicExtension L).IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
     let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
-    (V.towerPullback F).degree hT hNT = V.degree hD hND := by
+    (V.towerPullback F).degree = V.degree := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
   let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
-  change (V.towerPullback F).degree hT hNT = V.degree hD hND
-  let s := (V.determinantOfMeasurableBase hD hND).lineGenerator
-    (V.determinantOfMeasurableBase_isLine hD hND)
-  rw [degree_eq_neg_integral _ hT hNT s, degree_eq_neg_integral _ hD hND s]
+  change (V.towerPullback F).degree = V.degree
+  let s := (V.determinantOfMeasurableBase).lineGenerator
+    (hV := (V.determinantOfMeasurableBase_isLine))
+  rw [degree_eq_neg_integral _ s, degree_eq_neg_integral _ s]
   change -(∫ x, (V.toNormFamily.towerPullback F).determinant.logNorm s.val x
       ∂((S.algebraicExtension F).algebraicExtension L).v) =
     -(∫ x, V.toNormFamily.determinant.logNorm s.val x ∂(S.algebraicExtension L).v)
@@ -317,27 +319,22 @@ theorem degree_eq_of_tower_completed_isometry [S.IsProper]
     [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
     (W : AdelicVectorBundle ((S.algebraicExtension F).algebraicExtension L) X)
     (R : AdelicVectorBundle (S.algebraicExtension L) Y) (e : X ≃ₗ[L] Y)
-    (hD : DiscreteMeasurableSpace (S.algebraicExtension L).Ω ∨
-      (S.algebraicExtension L).HasCommonCountableDenseSubfield)
-    (hT : DiscreteMeasurableSpace
-      ((S.algebraicExtension F).algebraicExtension L).Ω ∨
-      ((S.algebraicExtension F).algebraicExtension L).HasCommonCountableDenseSubfield)
-    (hND : ∀ x ∈ (S.algebraicExtension L).Ωinf,
-      IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion)
-    (hNT : ∀ x ∈ ((S.algebraicExtension F).algebraicExtension L).Ωinf,
-      IsRCLikeNormedField (((S.algebraicExtension F).algebraicExtension L).ϕ x).Completion)
+    [hD : (S.algebraicExtension L).HasMeasurableBase]
+    [hT : ((S.algebraicExtension F).algebraicExtension L).HasMeasurableBase]
+    [hND : (S.algebraicExtension L).IsArchimedeanNormalized]
+    [hNT : ((S.algebraicExtension F).algebraicExtension L).IsArchimedeanNormalized]
     (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
       (z : x.abv.Completion ⊗[L] X), R.toNormFamily.norm (scalarExtensionTowerPlace x)
         (e.toLinearMap.baseChange x.abv.Completion z) = W.toNormFamily.norm x z) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
     let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
-    R.degree hD hND = W.degree hT hNT := by
+    R.degree = W.degree := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
   let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
-  exact (R.degree_towerPullback F hD hT hND hNT).symm.trans
-    (W.degree_eq_of_completed_isometry (R.towerPullback F) e hT hNT he).symm
+  exact (R.degree_towerPullback F).symm.trans
+    (W.degree_eq_of_completed_isometry (R.towerPullback F) e he).symm
 
 end AdelicVectorBundle
 end ArakelovGeometry

@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Flag.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Majorant.Isometry
 import ArakelovGeometry.AdelicVectorBundle.Degree.ExactSequence.Majorant
 import ArakelovGeometry.AdelicVectorBundle.Subquotient.Restriction.Functor
@@ -39,12 +40,12 @@ The terms are extended real, so infinite discrepancies are retained. -/
 theorem degree_restrict_sub_majorantDiscrepancy_le_sum_flagQuotient [S.IsProper]
     (V : AdelicVectorBundle S E) {n : ℕ} (F : Fin (n + 1) → Submodule K E)
     (hF : Monotone F) (hzero : F 0 = ⊥)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    ((V.restrictOfMeasurableBase (F (Fin.last n)) hS).degree hS hN : EReal) -
-        (V.restrictOfMeasurableBase (F (Fin.last n)) hS).majorantDiscrepancy hN ≤
-      ∑ i : Fin n, (((V.flagQuotientOfMeasurableBase F hS i).degree hS hN : EReal) -
-        (V.flagQuotientOfMeasurableBase F hS i).majorantDiscrepancy hN) := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    ((V.restrictOfMeasurableBase (F (Fin.last n))).degree : EReal) -
+        (V.restrictOfMeasurableBase (F (Fin.last n))).majorantDiscrepancy ≤
+      ∑ i : Fin n, (((V.flagQuotientOfMeasurableBase F i).degree : EReal) -
+        (V.flagQuotientOfMeasurableBase F i).majorantDiscrepancy) := by
   induction n with
   | zero =>
       have hz : F (Fin.last 0) = ⊥ := hzero
@@ -52,9 +53,9 @@ theorem degree_restrict_sub_majorantDiscrepancy_le_sum_flagQuotient [S.IsProper]
         rw [hz]
         exact finrank_bot K E
       have hd := degree_eq_zero_of_finrank_eq_zero
-        (V.restrictOfMeasurableBase (F (Fin.last 0)) hS) hS hN hr
+        (V.restrictOfMeasurableBase (F (Fin.last 0))) hr
       have hΔ := majorantDiscrepancy_eq_zero_of_finrank_eq_zero
-        (V.restrictOfMeasurableBase (F (Fin.last 0)) hS) hN hr
+        (V.restrictOfMeasurableBase (F (Fin.last 0))) hr
       simp only [Fin.sum_univ_zero, hd, hΔ, EReal.coe_zero, sub_zero, le_refl]
   | succ n ih =>
       let G : Fin (n + 1) → Submodule K E := fun i ↦ F i.castSucc
@@ -63,22 +64,22 @@ theorem degree_restrict_sub_majorantDiscrepancy_le_sum_flagQuotient [S.IsProper]
       have hG : Monotone G := hF.comp Fin.strictMono_castSucc.monotone
       have hzG : G 0 = ⊥ := hzero
       have hprefix := ih G hG hzG
-      change ((V.restrictOfMeasurableBase U hS).degree hS hN : EReal) -
-          (V.restrictOfMeasurableBase U hS).majorantDiscrepancy hN ≤
+      change ((V.restrictOfMeasurableBase U).degree : EReal) -
+          (V.restrictOfMeasurableBase U).majorantDiscrepancy ≤
         ∑ i : Fin n,
-          (((V.flagQuotientOfMeasurableBase F hS i.castSucc).degree hS hN : EReal) -
-          (V.flagQuotientOfMeasurableBase F hS i.castSucc).majorantDiscrepancy hN) at hprefix
+          (((V.flagQuotientOfMeasurableBase F i.castSucc).degree : EReal) -
+          (V.flagQuotientOfMeasurableBase F i.castSucc).majorantDiscrepancy) at hprefix
       have hUW : U ≤ W := hF (Fin.le_last _)
       have hstep := degree_sub_majorantDiscrepancy_le_restrict_add_quotient
-        (V.restrictOfMeasurableBase W hS) (U.comap W.subtype) hS hN
-      rw [V.degree_restrict_restrict U W hUW hS hN,
-        V.majorantDiscrepancy_restrict_restrict U W hUW hS hN] at hstep
-      change ((V.restrictOfMeasurableBase W hS).degree hS hN : EReal) -
-          (V.restrictOfMeasurableBase W hS).majorantDiscrepancy hN ≤
-        (((V.restrictOfMeasurableBase U hS).degree hS hN : EReal) -
-          (V.restrictOfMeasurableBase U hS).majorantDiscrepancy hN) +
-        (((V.flagQuotientOfMeasurableBase F hS (Fin.last n)).degree hS hN : EReal) -
-          (V.flagQuotientOfMeasurableBase F hS (Fin.last n)).majorantDiscrepancy hN) at hstep
+        (V.restrictOfMeasurableBase W) (U.comap W.subtype)
+      rw [V.degree_restrict_restrict U W hUW,
+        V.majorantDiscrepancy_restrict_restrict U W hUW] at hstep
+      change ((V.restrictOfMeasurableBase W).degree : EReal) -
+          (V.restrictOfMeasurableBase W).majorantDiscrepancy ≤
+        (((V.restrictOfMeasurableBase U).degree : EReal) -
+          (V.restrictOfMeasurableBase U).majorantDiscrepancy) +
+        (((V.flagQuotientOfMeasurableBase F (Fin.last n)).degree : EReal) -
+          (V.flagQuotientOfMeasurableBase F (Fin.last n)).majorantDiscrepancy) at hstep
       rw [Fin.sum_univ_castSucc]
       exact hstep.trans (add_le_add_left hprefix _)
 
@@ -87,16 +88,16 @@ ultrametricity or finiteness of the global majorant discrepancies is assumed. -/
 theorem degree_sub_majorantDiscrepancy_le_sum_flagQuotient [S.IsProper]
     (V : AdelicVectorBundle S E) {n : ℕ} (F : Fin (n + 1) → Submodule K E)
     (hF : Monotone F) (hzero : F 0 = ⊥) (htop : F (Fin.last n) = ⊤)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.degree hS hN : EReal) - V.majorantDiscrepancy hN ≤
-      ∑ i : Fin n, (((V.flagQuotientOfMeasurableBase F hS i).degree hS hN : EReal) -
-        (V.flagQuotientOfMeasurableBase F hS i).majorantDiscrepancy hN) := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    (V.degree : EReal) - V.majorantDiscrepancy ≤
+      ∑ i : Fin n, (((V.flagQuotientOfMeasurableBase F i).degree : EReal) -
+        (V.flagQuotientOfMeasurableBase F i).majorantDiscrepancy) := by
   calc
-    _ = ((V.restrictOfMeasurableBase (F (Fin.last n)) hS).degree hS hN : EReal) -
-        (V.restrictOfMeasurableBase (F (Fin.last n)) hS).majorantDiscrepancy hN := by
-      rw [htop, V.degree_restrict_top hS hN, V.majorantDiscrepancy_restrict_top hS hN]
+    _ = ((V.restrictOfMeasurableBase (F (Fin.last n))).degree : EReal) -
+        (V.restrictOfMeasurableBase (F (Fin.last n))).majorantDiscrepancy := by
+      rw [htop, V.degree_restrict_top, V.majorantDiscrepancy_restrict_top]
     _ ≤ _ := V.degree_restrict_sub_majorantDiscrepancy_le_sum_flagQuotient
-      F hF hzero hS hN
+      F hF hzero
 
 end ArakelovGeometry.AdelicVectorBundle

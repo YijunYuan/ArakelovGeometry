@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Countable
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Determinant.DualNorm
+
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Duality
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -158,14 +159,14 @@ theorem determinantDiscrepancy_eq_inv_norm_mul (ω : S.Ω)
 /-- Measurability is derived from the two actual rational determinant norm
 functions, rather than assumed for the discrepancy itself. -/
 theorem measurable_determinantDiscrepancy
-    (hm : ξ.determinant.IsMeasurable) (hd : ξ.dual.determinant.IsMeasurable) :
+    [hm : ξ.determinant.IsMeasurable] [hd : ξ.dual.determinant.IsMeasurable] :
     Measurable ξ.determinantDiscrepancy :=
   ((hm determinantGenerator).mul (hd dualDeterminantGenerator)).inv
 
-variable {hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
+variable [hS : S.IsArchimedeanNormalized]
 
 /-- Hermitian determinant duality makes the discrepancy identically one. -/
-theorem IsHermitian.determinantDiscrepancy_eq_one (hξ : ξ.IsHermitian hS) (ω : S.Ω) :
+theorem IsHermitian.determinantDiscrepancy_eq_one (hξ : ξ.IsHermitian) (ω : S.Ω) :
     ξ.determinantDiscrepancy ω = 1 := by
   have h := hξ.norm_completedDeterminantPairing_eq ξ ω
     (1 ⊗ₜ[K] dualDeterminantGenerator (K := K) (E := E))
@@ -173,6 +174,7 @@ theorem IsHermitian.determinantDiscrepancy_eq_one (hξ : ξ.IsHermitian hS) (ω 
   rw [completedDeterminantGenerator_pairing, norm_one] at h
   rw [determinantDiscrepancy, ← h, inv_one]
 
+omit hS in
 /-- Rank zero has the scalar unit determinant line and discrepancy one. -/
 theorem determinantDiscrepancy_eq_one_of_finrank_eq_zero
     (hr : Module.finrank K E = 0) (ω : S.Ω) : ξ.determinantDiscrepancy ω = 1 := by
@@ -189,21 +191,21 @@ namespace AdelicVectorBundle
 /-- The discrepancy of an adelic bundle is measurable under exactly the
 source's standing measurability alternative. -/
 theorem measurable_determinantDiscrepancy (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield) :
+    [hS : S.HasMeasurableBase] :
     Measurable V.toNormFamily.determinantDiscrepancy :=
   V.toNormFamily.measurable_determinantDiscrepancy
-    (V.isMeasurable.determinant_of_discrete_or_countable hS)
-    ((V.dualOfMeasurableBase hS).isMeasurable.determinant_of_discrete_or_countable hS)
+    (hm := (V.isMeasurable.determinant_of_discrete_or_countable))
+    (hd := ((V.dualOfMeasurableBase).isMeasurable.determinant_of_discrete_or_countable))
 
 /-- Both genuine determinant lines are adelic, so their logarithmic
 norms supply integrability of the logarithmic discrepancy. -/
 theorem integrable_log_determinantDiscrepancy (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
     Integrable (fun ω ↦ Real.log (V.toNormFamily.determinantDiscrepancy ω)) S.v := by
-  have hm := (V.determinantOfMeasurableBase hS hN).integrable_logNorm
+  have hm := (V.determinantOfMeasurableBase).integrable_logNorm
     (determinantGenerator (K := K) (E := E))
-  have hd := ((V.dualOfMeasurableBase hS).determinantOfMeasurableBase hS hN).integrable_logNorm
+  have hd := ((V.dualOfMeasurableBase).determinantOfMeasurableBase).integrable_logNorm
     (dualDeterminantGenerator (K := K) (E := E))
   change Integrable (V.toNormFamily.determinant.logNorm determinantGenerator) S.v at hm
   change Integrable (V.toNormFamily.dual.determinant.logNorm dualDeterminantGenerator) S.v at hd
@@ -214,18 +216,18 @@ theorem integrable_log_determinantDiscrepancy (V : AdelicVectorBundle S E)
 determinant discrepancy, in every rank. -/
 theorem degree_add_degree_dual_eq_integral_log_determinantDiscrepancy [S.IsProper]
     (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.degree hS hN + (V.dualOfMeasurableBase hS).degree hS hN =
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.degree + (V.dualOfMeasurableBase).degree =
       ∫ ω, Real.log (V.toNormFamily.determinantDiscrepancy ω) ∂S.v := by
   let f := V.toNormFamily.determinant.logNorm (determinantGenerator (K := K) (E := E))
   let g := V.toNormFamily.dual.determinant.logNorm
     (dualDeterminantGenerator (K := K) (E := E))
-  have hm : Integrable f S.v := (V.determinantOfMeasurableBase hS hN).integrable_logNorm _
+  have hm : Integrable f S.v := (V.determinantOfMeasurableBase).integrable_logNorm _
   have hd : Integrable g S.v :=
-    ((V.dualOfMeasurableBase hS).determinantOfMeasurableBase hS hN).integrable_logNorm _
-  rw [V.degree_eq_neg_integral hS hN ⟨_, determinantGenerator_ne_zero⟩,
-    (V.dualOfMeasurableBase hS).degree_eq_neg_integral hS hN
+    ((V.dualOfMeasurableBase).determinantOfMeasurableBase).integrable_logNorm _
+  rw [V.degree_eq_neg_integral ⟨_, determinantGenerator_ne_zero⟩,
+    (V.dualOfMeasurableBase).degree_eq_neg_integral
       ⟨_, dualDeterminantGenerator_ne_zero⟩]
   change -(∫ ω, f ω ∂S.v) + -(∫ ω, g ω ∂S.v) = _
   have hm' : Integrable (fun ω ↦ -f ω) S.v := hm.neg
@@ -239,10 +241,10 @@ theorem degree_add_degree_dual_eq_integral_log_determinantDiscrepancy [S.IsPrope
 
 /-- Degree plus dual degree is nonnegative, with no Hermitian hypothesis. -/
 theorem degree_add_degree_dual_nonneg [S.IsProper] (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    0 ≤ V.degree hS hN + (V.dualOfMeasurableBase hS).degree hS hN := by
-  rw [V.degree_add_degree_dual_eq_integral_log_determinantDiscrepancy hS hN]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    0 ≤ V.degree + (V.dualOfMeasurableBase).degree := by
+  rw [V.degree_add_degree_dual_eq_integral_log_determinantDiscrepancy]
   exact integral_nonneg (fun ω ↦ V.toNormFamily.log_determinantDiscrepancy_nonneg ω)
 
 end AdelicVectorBundle

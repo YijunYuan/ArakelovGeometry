@@ -45,21 +45,35 @@ namespace NormFamily
 
 /-- Literal completed gauges of one full finite integral lattice, with finite exceptions.
 The model is automatically finite projective over the ring of integers. -/
-def IsClassical (ξ : NormFamily (N) E) : Prop :=
-  ∃ L : Submodule (𝓞 K) E, L.FG ∧ Submodule.span K (L : Set E) = ⊤ ∧
-    ∃ T : Set (N).Ω, T.Finite ∧ ∀ p : HeightOneSpectrum (𝓞 K),
-      normalizedPrimeParameter p ∉ T → ∀ z,
-      ξ.norm (normalizedPrimeParameter p) z =
-        scalarLatticeGauge (F := ((N).ϕ (normalizedPrimeParameter p)).Completion)
-          (NumberFieldModel.completedLatticeSpan L p : Set _) z
+class IsClassical (ξ : NormFamily (N) E) : Prop where
+  /-- The defining property. -/
+  exists_lattice :
+    ∃ L : Submodule (𝓞 K) E, L.FG ∧ Submodule.span K (L : Set E) = ⊤ ∧
+      ∃ T : Set (N).Ω, T.Finite ∧ ∀ p : HeightOneSpectrum (𝓞 K),
+        normalizedPrimeParameter p ∉ T → ∀ z,
+        ξ.norm (normalizedPrimeParameter p) z =
+          scalarLatticeGauge (F := ((N).ϕ (normalizedPrimeParameter p)).Completion)
+            (NumberFieldModel.completedLatticeSpan L p : Set _) z
+
+omit [FiniteDimensional K E] in
+/-- The defining proposition of `IsClassical`. -/
+theorem IsClassical.iff (ξ : NormFamily (N) E) :
+    ξ.IsClassical ↔
+    ∃ L : Submodule (𝓞 K) E, L.FG ∧ Submodule.span K (L : Set E) = ⊤ ∧
+      ∃ T : Set (N).Ω, T.Finite ∧ ∀ p : HeightOneSpectrum (𝓞 K),
+        normalizedPrimeParameter p ∉ T → ∀ z,
+        ξ.norm (normalizedPrimeParameter p) z =
+          scalarLatticeGauge (F := ((N).ϕ (normalizedPrimeParameter p)).Completion)
+            (NumberFieldModel.completedLatticeSpan L p : Set _) z :=
+  ⟨fun h ↦ h.exists_lattice, fun h ↦ ⟨h⟩⟩
 
 omit [FiniteDimensional K E] in
 /-- A literal full-lattice family is classical with no exceptional finite primes. -/
-theorem isClassical_fullLatticeGaugeFamily (L : Submodule (𝓞 K) E) (hfg : L.FG)
+instance isClassical_fullLatticeGaugeFamily (L : Submodule (𝓞 K) E) (hfg : L.FG)
     (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (N) E) :
     (fullLatticeGaugeFamily L hfg hspan η).IsClassical :=
-  ⟨L, hfg, hspan, ∅, Set.finite_empty, fun p _ z ↦
-    fullLatticeGaugeFamily_norm_prime L hfg hspan η p z⟩
+  ⟨⟨L, hfg, hspan, ∅, Set.finite_empty, fun p _ z ↦
+    fullLatticeGaugeFamily_norm_prime L hfg hspan η p z⟩⟩
 
 /-- The full model's produced domination and ultrametricity give strong domination. -/
 theorem fullLatticeGaugeFamily_isStronglyDominated
@@ -67,14 +81,14 @@ theorem fullLatticeGaugeFamily_isStronglyDominated
     (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (N) E) :
     (fullLatticeGaugeFamily L hfg hspan η).IsStronglyDominated :=
   ((fullLatticeGaugeFamily L hfg hspan η).isStronglyDominated_iff_isDominated_of_ultrametric
-    (fullLatticeGaugeFamily_isUltrametric L hfg hspan η)
-    normalizedNumberFieldArchimedeanCompletions).mpr
+    (hξ := (fullLatticeGaugeFamily_isUltrametric L hfg hspan η))
+   ).mpr
       (fullLatticeGaugeFamily_coherent_and_dominated L hfg hspan η).2
 
 /-- Classical families are strongly dominated even with nonultrametric exceptional norms. -/
 theorem IsClassical.isStronglyDominated {ξ : NormFamily (N) E}
     (hξ : ξ.IsClassical) : ξ.IsStronglyDominated := by
-  obtain ⟨L, hfg, hspan, T, hT, heq⟩ := hξ
+  obtain ⟨L, hfg, hspan, T, hT, heq⟩ := hξ.exists_lattice
   let η := fullLatticeGaugeFamily L hfg hspan ξ
   apply (fullLatticeGaugeFamily_isStronglyDominated L hfg hspan ξ).of_localDist
   refine ⟨η.localDist ξ, integrable_localDist_of_norm_eq_off_finite η ξ
@@ -88,12 +102,17 @@ theorem IsClassical.isStronglyDominated {ξ : NormFamily (N) E}
   rw [fullLatticeGaugeFamily_norm_prime]
   exact (heq p (fun hp ↦ hω (Or.inl hp)) z).symm
 
+instance instIsStronglyDominatedOfClassical (ξ : NormFamily (N) E) [hξ : ξ.IsClassical] :
+    ξ.IsStronglyDominated :=
+  hξ.isStronglyDominated
+
 omit [FiniteDimensional K E] in
 /-- Finite changes preserve the literal common-lattice model. -/
 theorem IsClassical.of_norm_eq_off_finite {ξ η : NormFamily (N) E}
     (hη : η.IsClassical) (T : Set (N).Ω) (hT : T.Finite)
     (heq : ∀ ω ∉ T, ξ.norm ω = η.norm ω) : ξ.IsClassical := by
-  obtain ⟨L, hfg, hspan, F, hF, hmodel⟩ := hη
+  constructor
+  obtain ⟨L, hfg, hspan, F, hF, hmodel⟩ := hη.exists_lattice
   refine ⟨L, hfg, hspan, T ∪ F, hT.union hF, fun p hp z ↦ ?_⟩
   rw [heq _ (fun h ↦ hp (Or.inl h))]
   exact hmodel p (fun h ↦ hp (Or.inr h)) z
@@ -120,7 +139,7 @@ namespace StronglyDominatedNormFamily
 fact lets downstream metric and completeness instances use the source pseudometric. -/
 instance normalizedInfiniteMeasureFinite :
     Fact ((N).v (N).Ωinf < ⊤) :=
-  ⟨(N).v_Ωinf_lt_top_of_isRCLike normalizedNumberFieldArchimedeanCompletions⟩
+  ⟨(N).v_Ωinf_lt_top_of_isRCLike⟩
 
 /-- On the countable discrete number-field place space the distance is the ordinary integral. -/
 theorem numberField_dist_eq_integral

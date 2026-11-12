@@ -10,6 +10,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Measurability.Density.Basic
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Basic
 public import ArakelovGeometry.Analysis.Convex.JohnEllipsoid.RationalEllipsoid
 public import Mathlib.CategoryTheory.Category.Basic
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.Measurability.Archimedean
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
@@ -193,7 +194,7 @@ theorem complexEllipsoid_bounds_of_dense_tests (ξ : NormFamily S E)
 every infinite place. One countable subfield is required only at infinity. -/
 theorem IsMeasurable.exists_complexEllipsoid_choice {ξ : NormFamily S E}
     (hξ : ξ.IsMeasurable) (b : Module.Basis ι K E)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.IsArchimedeanNormalized]
     (σ : ∀ ω : S.Ωinf, (S.ϕ ω.val).Completion →+* ℂ)
     (hσ : ∀ ω x, ‖σ ω x‖ = ‖x‖)
     (hm : ∀ x : K, Measurable (fun ω : S.Ωinf =>
@@ -326,7 +327,7 @@ theorem complexEllipsoidFamily_norm_finite (ω : S.Ω) (hω : ω ∈ S.Ωfin)
 /-- Finite-place ultrametricity is preserved and reflected. -/
 theorem complexEllipsoidFamily_isUltrametric_iff :
     (ξ.complexEllipsoidFamily b σ hσ Q hQ).IsUltrametric ↔ ξ.IsUltrametric := by
-  constructor <;> intro hu ω hω x y
+  constructor <;> intro hu <;> constructor <;> intro ω hω x y
   · simpa only [ξ.complexEllipsoidFamily_norm_finite b σ hσ Q hQ ω hω] using
       hu ω hω x y
   · simpa only [ξ.complexEllipsoidFamily_norm_finite b σ hσ Q hQ ω hω] using
@@ -351,7 +352,7 @@ theorem complexEllipsoidFamily_parallelogram (ω : S.Ω) (hω : ω ∈ S.Ωinf)
 /-- The ellipsoid norm is induced by a positive definite inner product on the
 original completed scalar module, without any finite-place hypothesis. -/
 theorem complexEllipsoidFamily_exists_innerProduct
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.IsArchimedeanNormalized]
     (ω : S.Ω) (hω : ω ∈ S.Ωinf) :
     letI := hS ω hω
     letI := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
@@ -368,19 +369,20 @@ theorem complexEllipsoidFamily_exists_innerProduct
 /-- The infinite-place inner products and unchanged finite norms give the
 source Hermitian condition whenever the original family is ultrametric. -/
 theorem complexEllipsoidFamily_isHermitian
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hu : ξ.IsUltrametric) :
-    (ξ.complexEllipsoidFamily b σ hσ Q hQ).IsHermitian hS :=
+    [hS : S.IsArchimedeanNormalized]
+    [hu : ξ.IsUltrametric] :
+    (ξ.complexEllipsoidFamily b σ hσ Q hQ).IsHermitian :=
   ⟨(ξ.complexEllipsoidFamily_isUltrametric_iff b σ hσ Q hQ).mpr hu,
-    ξ.complexEllipsoidFamily_exists_innerProduct b σ hσ Q hQ hS⟩
+    ξ.complexEllipsoidFamily_exists_innerProduct b σ hσ Q hQ⟩
 
 /-- Measurable rational evaluations on the infinite subtype paste with the
 original measurable norms across the measurable infinite-place locus. -/
-theorem complexEllipsoidFamily_isMeasurable (hξ : ξ.IsMeasurable)
+theorem complexEllipsoidFamily_isMeasurable [hξ : ξ.IsMeasurable]
     (hm : ∀ x : E, Measurable (fun ω : S.Ωinf =>
       complexEllipsoidSeminorm b ω.val (σ ω) (hσ ω) (Q ω)
         ((1 : (S.ϕ ω.val).Completion) ⊗ₜ[K] x))) :
     (ξ.complexEllipsoidFamily b σ hσ Q hQ).IsMeasurable := by
+  constructor
   intro x
   apply measurable_of_restrict_of_restrict_compl S.measurableSet_Ωinf
   · convert hm x using 1
@@ -408,7 +410,7 @@ inner products at infinity. Finite norms are unchanged, so ultrametricity is
 preserved and reflected rather than imposed as a hypothesis. -/
 theorem IsMeasurable.exists_archimedean_innerProduct_approximation
     [FiniteDimensional K E] {ξ : NormFamily S E} (hξ : ξ.IsMeasurable)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.IsArchimedeanNormalized]
     (K₀ : Subfield K) [Countable K₀]
     (hK₀ : ∀ ω ∈ S.Ωinf, S.IsDenseSubfieldAt K₀ ω) {ε : ℝ} (hε : 0 < ε) :
     ∃ η : NormFamily S E, η.IsMeasurable ∧
@@ -423,13 +425,13 @@ theorem IsMeasurable.exists_archimedean_innerProduct_approximation
         η.norm ω x ≤ Real.sqrt (Module.finrank K E + ε) * ξ.norm ω x := by
   classical
   let b := Module.finBasis K E
-  obtain ⟨σ, hσ, hm⟩ := S.exists_measurable_archimedeanComplexEmbedding hS K₀ hK₀
+  obtain ⟨σ, hσ, hm⟩ := S.exists_measurable_archimedeanComplexEmbedding K₀ hK₀
   obtain ⟨Q, _, hmeas, hbounds⟩ :=
-    hξ.exists_complexEllipsoid_choice b hS σ hσ hm K₀ hK₀ hε
+    hξ.exists_complexEllipsoid_choice b σ hσ hm K₀ hK₀ hε
   let hQ := fun ω x => (hbounds ω x).1
   refine ⟨ξ.complexEllipsoidFamily b σ hσ Q hQ,
-    ξ.complexEllipsoidFamily_isMeasurable b σ hσ Q hQ hξ hmeas,
-    ξ.complexEllipsoidFamily_exists_innerProduct b σ hσ Q hQ hS,
+    ξ.complexEllipsoidFamily_isMeasurable b σ hσ Q hQ hmeas,
+    ξ.complexEllipsoidFamily_exists_innerProduct b σ hσ Q hQ,
     ξ.complexEllipsoidFamily_isUltrametric_iff b σ hσ Q hQ,
     ξ.complexEllipsoidFamily_norm_finite b σ hσ Q hQ, fun ω hω x => ?_⟩
   rw [ξ.complexEllipsoidFamily_norm_of_mem b σ hσ Q hQ ω hω]
@@ -441,15 +443,15 @@ The common countable subfield is required only at infinite places. The
 statement includes rank zero and the empty infinite-place locus. -/
 theorem IsMeasurable.exists_hermitian_approximation [FiniteDimensional K E]
     {ξ : NormFamily S E} (hξ : ξ.IsMeasurable) (hu : ξ.IsUltrametric)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.IsArchimedeanNormalized]
     (K₀ : Subfield K) [Countable K₀]
     (hK₀ : ∀ ω ∈ S.Ωinf, S.IsDenseSubfieldAt K₀ ω) {ε : ℝ} (hε : 0 < ε) :
-    ∃ η : NormFamily S E, η.IsMeasurable ∧ η.IsHermitian hS ∧
+    ∃ η : NormFamily S E, η.IsMeasurable ∧ η.IsHermitian ∧
       (∀ ω ∈ S.Ωfin, ∀ x, η.norm ω x = ξ.norm ω x) ∧
       ∀ ω ∈ S.Ωinf, ∀ x, ξ.norm ω x ≤ η.norm ω x ∧
         η.norm ω x ≤ Real.sqrt (Module.finrank K E + ε) * ξ.norm ω x := by
   obtain ⟨η, hm, hi, hu', hf, hb⟩ :=
-    hξ.exists_archimedean_innerProduct_approximation hS K₀ hK₀ hε
+    hξ.exists_archimedean_innerProduct_approximation K₀ hK₀ hε
   exact ⟨η, hm, ⟨hu'.mpr hu, hi⟩, hf, hb⟩
 
 end ArakelovGeometry.NormFamily

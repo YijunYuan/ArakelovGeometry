@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.UnitBall.Spanning
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import ArakelovGeometry.Analysis.AbsoluteValue.Ostrowski
 
@@ -57,13 +58,28 @@ theorem mem_globalUnitBall (ξ : NormFamily S E) (x : E) :
     x ∈ ξ.globalUnitBall ↔ ∀ ω ∈ S.Ωfin, x ∈ ξ.rationalUnitBall ω := Iff.rfl
 
 /-- The genuine finite-exception coherence condition in source 4.4.2(1). -/
-def HasFiniteNormExceptions (ξ : NormFamily S E) : Prop :=
-  ∀ x : E, {ω | ω ∈ S.Ωfin ∧
-    1 < ξ.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] x)}.Finite
+class HasFiniteNormExceptions (ξ : NormFamily S E) : Prop where
+  /-- The defining property. -/
+  finite_exceptions :
+    ∀ x : E, {ω | ω ∈ S.Ωfin ∧
+      1 < ξ.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] x)}.Finite
+
+instance (ξ : NormFamily S E) : CoeFun (ξ.HasFiniteNormExceptions)
+    (fun _ ↦
+      ∀ x : E, {ω | ω ∈ S.Ωfin ∧
+        1 < ξ.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] x)}.Finite) :=
+  ⟨fun h ↦ h.finite_exceptions⟩
+
+/-- The defining proposition of `HasFiniteNormExceptions`. -/
+theorem HasFiniteNormExceptions.iff (ξ : NormFamily S E) :
+    ξ.HasFiniteNormExceptions ↔
+    ∀ x : E, {ω | ω ∈ S.Ωfin ∧
+      1 < ξ.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] x)}.Finite :=
+  ⟨fun h ↦ h.finite_exceptions, fun h ↦ ⟨h⟩⟩
 
 /-- Ultrametric finite norms make the literal global ball an actual
 integer-ring submodule, with the original integral scalar action. -/
-def globalUnitBallModule (ξ : NormFamily S E) (hξ : ξ.IsUltrametric) :
+def globalUnitBallModule (ξ : NormFamily S E) [hξ : ξ.IsUltrametric] :
     Submodule (𝓞 K) E where
   carrier := ξ.globalUnitBall
   zero_mem' ω _ := ξ.zero_mem_rationalUnitBall ω
@@ -82,8 +98,8 @@ def globalUnitBallModule (ξ : NormFamily S E) (hξ : ξ.IsUltrametric) :
       (mul_one 1)
 
 @[simp]
-theorem mem_globalUnitBallModule (ξ : NormFamily S E) (hξ : ξ.IsUltrametric) (x : E) :
-    x ∈ ξ.globalUnitBallModule hξ ↔ x ∈ ξ.globalUnitBall := Iff.rfl
+theorem mem_globalUnitBallModule (ξ : NormFamily S E) [hξ : ξ.IsUltrametric] (x : E) :
+    x ∈ ξ.globalUnitBallModule ↔ x ∈ ξ.globalUnitBall := Iff.rfl
 
 variable [NumberField K]
 

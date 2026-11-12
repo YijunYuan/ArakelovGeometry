@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Algebraic.ClosureApproximation
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.HermitianComparison.DeterminantDegree
+
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.AlgebraicClosure.HNScalarExtension
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.MeasureTheory.Covering.Besicovitch
@@ -38,100 +39,106 @@ local instance hermitianClosedHNFactorScalarExtensionProper :
 /-- Corresponding actual canonical HN factors have identical real mean
 slopes. The target index bound is produced from the actual length equality. -/
 theorem slope_hermitianHNFactor_hermitianScalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) (i : ℕ)
-    (hi : i < V.hermitianHNLength (Or.inr hcount) hN hH) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] (i : ℕ)
+    (hi : i < V.hermitianHNLength) :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-    let W := V.hermitianScalarExtension (L := L) hcount hN hLN hH
-    let hLH := V.hermitianScalarExtension_isHermitian hcount hN hLN hH
-    ∃ hj : i < W.hermitianHNLength hLS hLN hLH,
-      (W.hermitianHNFactor hLS hLN hLH ⟨i, hj⟩).slope hLS hLN =
-        (V.hermitianHNFactor (Or.inr hcount) hN hH ⟨i, hi⟩).slope (Or.inr hcount) hN := by
+    let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
+    let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
+    ∃ hj : i < W.hermitianHNLength (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH),
+      (W.hermitianHNFactor (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) ⟨i, hj⟩).slope (hS := ⟨hLS⟩)
+          (hN := ⟨hLN⟩) =
+        (V.hermitianHNFactor ⟨i, hi⟩).slope := by
   intro hLN hLS W hLH
-  change W.toNormFamily.IsHermitian hLN at hLH
+  change W.toNormFamily.IsHermitian (hS := ⟨hLN⟩) at hLH
   have hlen := V.hermitianHNLength_hermitianScalarExtension_of_isAlgClosed
-    (L := L) hcount hN hH
-  have hj : i < W.hermitianHNLength hLS hLN hLH := hlen ▸ hi
+    (L := L)
+  have hj : i < W.hermitianHNLength (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) := hlen ▸ hi
   refine ⟨hj, ?_⟩
   apply EReal.coe_injective
   calc
-    _ = (W.quotientOfMeasurableBase (W.hermitianHNTerm hLS hLN hLH i) hLS).maximalSlope
-        hLS hLN := W.slope_hermitianHNFactor_eq_maximalSlope_quotient hLS hLN hLH ⟨i, hj⟩
+    _ = (W.quotientOfMeasurableBase (W.hermitianHNTerm (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) i)
+        (hS := ⟨hLS⟩)).maximalSlope
+        (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := W.slope_hermitianHNFactor_eq_maximalSlope_quotient
+            (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) ⟨i, hj⟩
     _ = (W.quotientOfMeasurableBase
-        ((V.hermitianHNTerm (Or.inr hcount) hN hH i).baseChange L) hLS).maximalSlope
-          hLS hLN := congrArg (fun U : Submodule L (L ⊗[K] E) ↦
-            (W.quotientOfMeasurableBase U hLS).maximalSlope hLS hLN)
+        ((V.hermitianHNTerm i).baseChange L) (hS := ⟨hLS⟩)).maximalSlope
+          (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := congrArg (fun U : Submodule L (L ⊗[K] E) ↦
+            (W.quotientOfMeasurableBase U (hS := ⟨hLS⟩)).maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩))
               (V.hermitianHNTerm_baseChange_hermitianScalarExtension_of_isAlgClosed
-                hcount hN hH i).symm
+                 i).symm
     _ = (V.quotientOfMeasurableBase
-        (V.hermitianHNTerm (Or.inr hcount) hN hH i) (Or.inr hcount)).maximalSlope
-          (Or.inr hcount) hN :=
-      V.maximalSlope_quotient_hermitianScalarExtension_of_isAlgClosed hcount hN hH
-        (V.hermitianHNTerm (Or.inr hcount) hN hH i)
+        (V.hermitianHNTerm i)).maximalSlope
+          :=
+      V.maximalSlope_quotient_hermitianScalarExtension_of_isAlgClosed
+        (V.hermitianHNTerm i)
     _ = _ := (V.slope_hermitianHNFactor_eq_maximalSlope_quotient
-      (Or.inr hcount) hN hH ⟨i, hi⟩).symm
+      ⟨i, hi⟩).symm
 
 
 /-- The actual real threshold cut indices agree, including the empty factor
 set and the empty retained set, through produced canonical factor means. -/
 theorem hermitianHNCut_hermitianScalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) (t : ℝ) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] (t : ℝ) :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-    let W := V.hermitianScalarExtension (L := L) hcount hN hLN hH
-    let hLH := V.hermitianScalarExtension_isHermitian hcount hN hLN hH
-    V.hermitianHNCut (Or.inr hcount) hN hH t = W.hermitianHNCut hLS hLN hLH t := by
+    let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
+    let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
+    V.hermitianHNCut t = W.hermitianHNCut (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) t := by
   intro hLN hLS W hLH
-  change W.toNormFamily.IsHermitian hLN at hLH
+  change W.toNormFamily.IsHermitian (hS := ⟨hLN⟩) at hLH
   have hlen := V.hermitianHNLength_hermitianScalarExtension_of_isAlgClosed
-    (L := L) hcount hN hH
+    (L := L)
   apply le_antisymm
   · apply Finset.sup_le_iff.mpr
     intro i hi
     obtain ⟨hj, hm⟩ := V.slope_hermitianHNFactor_hermitianScalarExtension_of_isAlgClosed
-      (L := L) hcount hN hH i.val i.isLt
-    let j : Fin (W.hermitianHNLength hLS hLN hLH) := ⟨i.val, hj⟩
-    have ht : t ≤ (W.hermitianHNFactor hLS hLN hLH j).slope hLS hLN := by
+      (L := L) i.val i.isLt
+    let j : Fin (W.hermitianHNLength (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH)) := ⟨i.val, hj⟩
+    have ht : t ≤ (W.hermitianHNFactor (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) j).slope
+        (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
       rw [hm]
       exact (Finset.mem_filter.mp hi).2
-    exact Finset.le_sup (f := fun k : Fin (W.hermitianHNLength hLS hLN hLH) ↦ k.val + 1)
+    exact Finset.le_sup (f := fun k : Fin (W.hermitianHNLength (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
+        (hV := hLH)) ↦ k.val + 1)
       (Finset.mem_filter.mpr ⟨Finset.mem_univ j, ht⟩)
   · apply Finset.sup_le_iff.mpr
     intro j hj
-    have hi : j.val < V.hermitianHNLength (Or.inr hcount) hN hH := hlen.symm ▸ j.isLt
+    have hi : j.val < V.hermitianHNLength := hlen.symm ▸ j.isLt
     obtain ⟨hb, hm⟩ := V.slope_hermitianHNFactor_hermitianScalarExtension_of_isAlgClosed
-      (L := L) hcount hN hH j.val hi
-    let i : Fin (V.hermitianHNLength (Or.inr hcount) hN hH) := ⟨j.val, hi⟩
-    have ht : t ≤ (V.hermitianHNFactor (Or.inr hcount) hN hH i).slope
-        (Or.inr hcount) hN := by
+      (L := L) j.val hi
+    let i : Fin (V.hermitianHNLength) := ⟨j.val, hi⟩
+    have ht : t ≤ (V.hermitianHNFactor i).slope
+        := by
       rw [← hm]
       exact (Finset.mem_filter.mp hj).2
     exact Finset.le_sup
-      (f := fun k : Fin (V.hermitianHNLength (Or.inr hcount) hN hH) ↦ k.val + 1)
+      (f := fun k : Fin (V.hermitianHNLength) ↦ k.val + 1)
       (Finset.mem_filter.mpr ⟨Finset.mem_univ i, ht⟩)
 
 /-- The genuine canonical real HN filtration commutes with closed algebraic
 Hermitian extension at every real threshold, in every rank. -/
 theorem hermitianHNFiltration_baseChange_hermitianScalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) (t : ℝ) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] (t : ℝ) :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
-    let W := V.hermitianScalarExtension (L := L) hcount hN hLN hH
-    let hLH := V.hermitianScalarExtension_isHermitian hcount hN hLN hH
-    (V.hermitianHNFiltration (Or.inr hcount) hN hH t).baseChange L =
-      W.hermitianHNFiltration hLS hLN hLH t := by
+    let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
+    let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
+    (V.hermitianHNFiltration t).baseChange L =
+      W.hermitianHNFiltration (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) t := by
   intro hLN hLS W hLH
-  change (V.hermitianHNTerm (Or.inr hcount) hN hH
-    (V.hermitianHNCut (Or.inr hcount) hN hH t)).baseChange L =
-      W.hermitianHNTerm hLS hLN hLH (W.hermitianHNCut hLS hLN hLH t)
-  rw [← V.hermitianHNCut_hermitianScalarExtension_of_isAlgClosed hcount hN hH t]
+  change (V.hermitianHNTerm
+    (V.hermitianHNCut t)).baseChange L =
+      W.hermitianHNTerm (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) (W.hermitianHNCut (hS := ⟨hLS⟩)
+          (hN := ⟨hLN⟩) (hV := hLH) t)
+  rw [← V.hermitianHNCut_hermitianScalarExtension_of_isAlgClosed t]
   exact V.hermitianHNTerm_baseChange_hermitianScalarExtension_of_isAlgClosed
-    hcount hN hH _
+     _
 
 end ArakelovGeometry.AdelicVectorBundle

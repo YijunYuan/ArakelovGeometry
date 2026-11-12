@@ -12,6 +12,7 @@ public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Domination
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Hermitian
 public import Mathlib.NumberTheory.Padics.HeightOneSpectrum
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.LineVector
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Line
 import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Determinant
@@ -90,7 +91,8 @@ def bundle : AdelicVectorBundle OldS ℚ := base.scaleExp φ φ_measurable φ_in
 theorem bundle_ultrametric : bundle.toNormFamily.IsUltrametric :=
   bundle.toNormFamily.isUltrametric_of_finrank_le_one (Module.finrank_self ℚ).le
 
-def normalizedBundle : AdelicVectorBundle NewS ℚ := bundle.numberFieldNormalize bundle_ultrametric
+def normalizedBundle : AdelicVectorBundle NewS ℚ := bundle.numberFieldNormalize
+    (hV := bundle_ultrametric)
 
 theorem finite_original_norm_two : bundle.norm ωTwo.val (1 ⊗ₜ[ℚ] (1 : ℚ)) = 2 := by
   classical
@@ -114,34 +116,36 @@ theorem finite_original_determinant_norm_two :
 theorem finite_normalized_determinant_norm_two :
     normalizedBundle.toNormFamily.determinant.norm ωTwo (1 ⊗ₜ[ℚ] detOne) = 2 := by
   have H := bundle.toNormFamily.numberFieldNormalize_determinant_norm_map
-    bundle_ultrametric ωTwo (1 ⊗ₜ[ℚ] detOne)
+    (hξ := bundle_ultrametric) ωTwo (1 ⊗ₜ[ℚ] detOne)
   erw [normalizedNormFamilyTensorEquiv_one_tmul,
     finite_original_determinant_norm_two, rational_finite_exponent,
     Real.rpow_one] at H
   exact H
 
 theorem old_nontrivial_degree :
-    bundle.degree (Or.inl (inferInstanceAs (DiscreteMeasurableSpace (AbsoluteValue.Place ℚ))))
-      numberFieldArchimedeanCompletions = -Real.log 2 := by
+    bundle.degree (hS := ⟨(Or.inl (inferInstanceAs (DiscreteMeasurableSpace (AbsoluteValue.Place
+        ℚ))))⟩)
+      (hN := ⟨numberFieldArchimedeanCompletions⟩) = -Real.log 2 := by
   erw [bundle, degree_scaleExp]
-  have hb : base.degree (Or.inl oldCurveDiscrete) numberFieldArchimedeanCompletions = 0 := by
-    erw [base, degree_eq_lineDegree _ _ _ (scalarLine_isLine OldS), lineDegree_scalarLine]
+  have hb : base.degree (hS := ⟨(Or.inl oldCurveDiscrete)⟩)
+      (hN := ⟨numberFieldArchimedeanCompletions⟩) = 0 := by
+    erw [base, degree_eq_lineDegree _ (hV := (scalarLine_isLine OldS)), lineDegree_scalarLine]
   erw [hb, φ_integral, Module.finrank_self]
   norm_num
 
 theorem normalized_nontrivial_degree :
     normalizedBundle.degree
-        (Or.inl (inferInstanceAs (DiscreteMeasurableSpace
-          {ω : AbsoluteValue.Place ℚ // ω ≠ AbsoluteValue.trivialPlace ℚ})))
-        normalizedNumberFieldArchimedeanCompletions = -Real.log 2 := by
-  erw [normalizedBundle, bundle.numberFieldNormalize_degree bundle_ultrametric]
+        (hS := ⟨(Or.inl (inferInstanceAs (DiscreteMeasurableSpace
+          {ω : AbsoluteValue.Place ℚ // ω ≠ AbsoluteValue.trivialPlace ℚ})))⟩)
+        = -Real.log 2 := by
+  erw [normalizedBundle, bundle.numberFieldNormalize_degree (hV := bundle_ultrametric)]
   exact old_nontrivial_degree
 
 theorem normalized_degree_negative :
     normalizedBundle.degree
-        (Or.inl (inferInstanceAs (DiscreteMeasurableSpace
-          {ω : AbsoluteValue.Place ℚ // ω ≠ AbsoluteValue.trivialPlace ℚ})))
-        normalizedNumberFieldArchimedeanCompletions < 0 := by
+        (hS := ⟨(Or.inl (inferInstanceAs (DiscreteMeasurableSpace
+          {ω : AbsoluteValue.Place ℚ // ω ≠ AbsoluteValue.trivialPlace ℚ})))⟩)
+        < 0 := by
   erw [normalized_nontrivial_degree]
   exact neg_neg_of_pos (Real.log_pos (by norm_num))
 
@@ -152,12 +156,12 @@ theorem ξ₂_ultrametric : ξ₂.IsUltrametric := ofBasisMixed_isUltrametric b�
 
 theorem rank_two_completed_determinant
     (z : (placeRep ωTwo.val).Completion ⊗[ℚ] (⋀[ℚ]^(Module.finrank ℚ V₂) V₂)) :
-    (ξ₂.numberFieldNormalize ξ₂_ultrametric).determinant.norm ωTwo
+    (ξ₂.numberFieldNormalize (hξ := ξ₂_ultrametric)).determinant.norm ωTwo
         (normalizedNormFamilyTensorEquiv ωTwo z) = ξ₂.determinant.norm ωTwo.val z := by
   erw [numberFieldNormalize_determinant_norm_map, rational_finite_exponent, Real.rpow_one]
 
 theorem rank_two_zero_determinant :
-    (ξ₂.numberFieldNormalize ξ₂_ultrametric).determinant.norm ωTwo
+    (ξ₂.numberFieldNormalize (hξ := ξ₂_ultrametric)).determinant.norm ωTwo
       (normalizedNormFamilyTensorEquiv ωTwo 0) = 0 := by
   erw [rank_two_completed_determinant, ξ₂.determinant.norm_zero]
 
@@ -171,7 +175,7 @@ def zeroBundle : AdelicVectorBundle OldS (Empty → ℚ) where
   isDominated := zeroOld.isDominated_of_subsingleton
 
 theorem rank_zero_determinant_empty_norm (a : (placeRep ωTwo.val).Completion) :
-    (zeroOld.numberFieldNormalize zero_ultrametric).determinant.norm ωTwo
+    (zeroOld.numberFieldNormalize (hξ := zero_ultrametric)).determinant.norm ωTwo
         (normalizedNormFamilyTensorEquiv ωTwo (a ⊗ₜ[ℚ]
           _root_.exteriorPower.ιMulti ℚ (Module.finrank ℚ (Empty → ℚ)) (fun _ => 0))) = ‖a‖ := by
   erw [numberFieldNormalize_determinant_norm_map, rational_finite_exponent,
@@ -179,10 +183,11 @@ theorem rank_zero_determinant_empty_norm (a : (placeRep ωTwo.val).Completion) :
   rfl
 
 theorem rank_zero_normalized_degree :
-    (zeroBundle.numberFieldNormalize zero_ultrametric).degree
-        (Or.inl (inferInstanceAs (DiscreteMeasurableSpace
-          {ω : AbsoluteValue.Place ℚ // ω ≠ AbsoluteValue.trivialPlace ℚ})))
-        normalizedNumberFieldArchimedeanCompletions = 0 :=
-  zeroBundle.numberFieldNormalize_degree_eq_zero_of_finrank_eq_zero zero_ultrametric (by simp)
+    (zeroBundle.numberFieldNormalize (hV := zero_ultrametric)).degree
+        (hS := ⟨(Or.inl (inferInstanceAs (DiscreteMeasurableSpace
+          {ω : AbsoluteValue.Place ℚ // ω ≠ AbsoluteValue.trivialPlace ℚ})))⟩)
+        = 0 :=
+  zeroBundle.numberFieldNormalize_degree_eq_zero_of_finrank_eq_zero
+      (hV := zero_ultrametric) (by simp)
 
 end ArakelovGeometry.NumberFieldNormalizationExamples

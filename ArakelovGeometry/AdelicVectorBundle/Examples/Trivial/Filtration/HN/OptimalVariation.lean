@@ -63,9 +63,9 @@ namespace ArakelovGeometry.AdelicVectorBundle
 variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
   [FiniteDimensional K E] {S : AdelicStructure K} [S.IsProper]
   (V : AdelicVectorBundle S E)
-  (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-  (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-  (hV : V.toNormFamily.IsHermitian hN)
+  [hS : S.HasMeasurableBase]
+  [hN : S.IsArchimedeanNormalized]
+  [hV : V.toNormFamily.IsHermitian]
 
 /-- Chosen actual grade-HN lift data. The cuts retain the actual HN filtration
 on each quotient; the mean and pairing identities are supplied by A7, not
@@ -89,11 +89,12 @@ structure HNVariationLift (P : ℝ → Submodule K E) where
   direction_left : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → direction s = direction t
   cuts : ∀ i t, ((direction t).comap (flag i.succ).subtype).map
       ((flag i.castSucc).comap (flag i.succ).subtype).mkQ =
-    (V.flagQuotientOfMeasurableBase flag hS i).hermitianHNFiltration hS hN
-      ((hV.restrict (flag i.succ)).quotient ((flag i.castSucc).comap (flag i.succ).subtype)) t
-  mean : Submodule.filtrationExpectation direction = V.slope hS hN
+    (V.flagQuotientOfMeasurableBase flag i).hermitianHNFiltration
+      (hV := ((hV.restrict (flag i.succ)).quotient ((flag i.castSucc).comap (flag
+          i.succ).subtype))) t
+  mean : Submodule.filtrationExpectation direction = V.slope
   pairing : (finrank K E : ℝ) * Submodule.filtrationPairing P direction =
-    ∑ i, weight i * (V.flagQuotientOfMeasurableBase flag hS i).degree hS hN
+    ∑ i, weight i * (V.flagQuotientOfMeasurableBase flag i).degree
   primary_mean : (finrank K E : ℝ) * Submodule.filtrationExpectation P =
     ∑ i, weight i * (finrank K
       ((flag i.succ) ⧸ (flag i.castSucc).comap (flag i.succ).subtype) : ℝ)
@@ -103,12 +104,12 @@ grade-HN lift, not an assertion that the lift is the ambient HN filtration. -/
 theorem exists_hnVariationLift (P : ℝ → Submodule K E)
     (hP : Antitone P) (hb : ∃ t, P t = ⊥) (ht : ∃ t, P t = ⊤)
     (hl : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → P s = P t) :
-    Nonempty (V.HNVariationLift hS hN hV P) := by
+    Nonempty (V.HNVariationLift P) := by
   classical
   obtain ⟨n, U, a, hU, hz, htop, _, ha, _, hlevel, hright, hrec⟩ :=
     Submodule.exists_strictMono_flag_and_jumps_of_antitone hP hb ht hl
   obtain ⟨b, w, B, hB, _, hHN, hquot, hspan, hRspan, hR, hRb, hRt, hRl, hc, hm, hp⟩ :=
-    V.exists_hermitianHN_quotient_lift hS hN hV U hU.monotone hz htop
+    V.exists_hermitianHN_quotient_lift U hU.monotone hz htop
   have hPspan (t : ℝ) : P t = Submodule.span K (B '' {j | t ≤ a j.1}) :=
     (hrec t).trans (Submodule.iSup_flag_eq_span_weights U B hspan a ha.antitone t)
   refine ⟨⟨n, U, hU.monotone, hz, htop, a, ha.antitone, hlevel, hright, hrec,
@@ -138,17 +139,17 @@ variable {V hS hN hV} {P : ℝ → Submodule K E}
 /-- Bost p32 (48), for the actual chosen grade-HN lift: semistability and
 centering force nonpositive pairing. This is the special HN direction of the
 CM variation argument; no full (5.13), A6 upper bound or A8 existence is used. -/
-theorem pairing_nonpos (L : V.HNVariationLift hS hN hV P)
-    (hsemi : V.IsMeanSlopeSemistable hS hN)
+theorem pairing_nonpos (L : V.HNVariationLift P)
+    [hsemi : V.IsMeanSlopeSemistable]
     (hcenter : Submodule.filtrationExpectation P = 0) :
     Submodule.filtrationPairing P L.direction ≤ 0 := by
   let d : Fin (L.length + 1) → ℝ := fun i ↦
-    (V.restrictOfMeasurableBase (L.flag i) hS).degree hS hN -
-      (finrank K (L.flag i) : ℝ) * V.slope hS hN
+    (V.restrictOfMeasurableBase (L.flag i)).degree -
+      (finrank K (L.flag i) : ℝ) * V.slope
   have hd (i) : d i ≤ 0 := by
     dsimp only [d]
     by_cases hz : finrank K (L.flag i) = 0
-    · rw [degree_eq_zero_of_finrank_eq_zero _ hS hN hz, hz]
+    · rw [degree_eq_zero_of_finrank_eq_zero _ hz, hz]
       simp
     · rw [degree_eq_rank_mul_slope]
       exact sub_nonpos.mpr (mul_le_mul_of_nonneg_left
@@ -157,31 +158,31 @@ theorem pairing_nonpos (L : V.HNVariationLift hS hN hV P)
     dsimp only [d]
     rw [L.flag_zero]
     simp only [finrank_bot, Nat.cast_zero, zero_mul, sub_zero]
-    exact degree_eq_zero_of_finrank_eq_zero _ hS hN (finrank_bot K E)
+    exact degree_eq_zero_of_finrank_eq_zero _ (finrank_bot K E)
   have htop : d (Fin.last L.length) = 0 := by
     dsimp only [d]
     rw [L.flag_top]
-    simp only [finrank_top, V.degree_restrict_top hS hN,
-      V.degree_eq_rank_mul_slope hS hN, sub_self]
+    simp only [finrank_top, V.degree_restrict_top,
+      V.degree_eq_rank_mul_slope, sub_self]
   have hstep (i : Fin L.length) :
-      (V.flagQuotientOfMeasurableBase L.flag hS i).degree hS hN -
+      (V.flagQuotientOfMeasurableBase L.flag i).degree -
         (finrank K ((L.flag i.succ) ⧸
-          (L.flag i.castSucc).comap (L.flag i.succ).subtype) : ℝ) * V.slope hS hN =
+          (L.flag i.castSucc).comap (L.flag i.succ).subtype) : ℝ) * V.slope =
         d i.succ - d i.castSucc := by
     have hle := L.monotone_flag i.castSucc_le_succ
-    have hh : (V.restrictOfMeasurableBase (L.flag i.succ) hS).toNormFamily.IsHermitian hN :=
+    have hh : (V.restrictOfMeasurableBase (L.flag i.succ)).toNormFamily.IsHermitian :=
       hV.restrict _
     have he := degree_restrict_add_degree_quotient_eq_of_isHermitian
-      (V.restrictOfMeasurableBase (L.flag i.succ) hS)
-      ((L.flag i.castSucc).comap (L.flag i.succ).subtype) hS hN hh
-    rw [V.degree_restrict_restrict _ _ hle hS hN] at he
+      (V.restrictOfMeasurableBase (L.flag i.succ))
+      ((L.flag i.castSucc).comap (L.flag i.succ).subtype) (hV := hh)
+    rw [V.degree_restrict_restrict _ _ hle] at he
     have hr := ((L.flag i.castSucc).comap (L.flag i.succ).subtype).finrank_quotient_add_finrank
     rw [(Submodule.comapSubtypeEquivOfLe hle).finrank_eq] at hr
     have hr' : (finrank K ((L.flag i.succ) ⧸
         (L.flag i.castSucc).comap (L.flag i.succ).subtype) : ℝ) +
         finrank K (L.flag i.castSucc) = finrank K (L.flag i.succ) := by exact_mod_cast hr
-    change (V.restrictOfMeasurableBase (L.flag i.castSucc) hS).degree hS hN +
-      (V.flagQuotientOfMeasurableBase L.flag hS i).degree hS hN = _ at he
+    change (V.restrictOfMeasurableBase (L.flag i.castSucc)).degree +
+      (V.flagQuotientOfMeasurableBase L.flag i).degree = _ at he
     dsimp only [d]
     rw [← hr']
     nlinarith [he]
@@ -439,18 +440,18 @@ variable {K E F Q ι κ : Type*} [Field K]
   [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
   [Finite ι] [Finite κ] {S : AdelicStructure K} [S.IsProper]
   {V : AdelicVectorBundle S E} {Z : AdelicVectorBundle S F}
-  {hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield}
-  {hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
-  {hV : V.toNormFamily.IsHermitian hN} {hZ : Z.toNormFamily.IsHermitian hN}
+  [hS : S.HasMeasurableBase]
+  [hN : S.IsArchimedeanNormalized]
+  [hV : V.toNormFamily.IsHermitian] [hZ : Z.toNormFamily.IsHermitian]
   {P : ℝ → Submodule K E} {T : ℝ → Submodule K F}
-  (L : V.HNVariationLift hS hN hV P) (M : Z.HNVariationLift hS hN hZ T)
+  (L : V.HNVariationLift (hV := hV) P) (M : Z.HNVariationLift (hV := hZ) T)
   (b : Basis ι K E) (d : Basis κ K F) (a r : ι → ℝ) (v s : κ → ℝ)
   (hP : ∀ t, P t = span K (b '' {i | t ≤ a i}))
   (hR : ∀ t, L.direction t = span K (b '' {i | t ≤ r i}))
   (hT : ∀ t, T t = span K (d '' {i | t ≤ v i}))
   (hW : ∀ t, M.direction t = span K (d '' {i | t ≤ s i}))
   (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)
-  (hsemiV : V.IsMeanSlopeSemistable hS hN) (hsemiZ : Z.IsMeanSlopeSemistable hS hN)
+  [hsemiV : V.IsMeanSlopeSemistable] [hsemiZ : Z.IsMeanSlopeSemistable]
   (hPc : filtrationExpectation P = 0) (hTc : filtrationExpectation T = 0)
   (hunit : filtrationPairing P P + filtrationPairing T T = 1)
 
@@ -493,10 +494,11 @@ theorem quotient_variation_lower_bound :
     let β := filtrationPairing P L.direction + filtrationPairing T M.direction
     ∃ η > 0, ∀ ε, 0 < ε → ε < η →
       0 < 1 + 2 * ε * β + ε ^ 2 * D ∧
-      ε * (V.slope hS hN + Z.slope hS hN) +
+      ε * (V.slope + Z.slope) +
         c * Real.sqrt (1 + 2 * ε * β + ε ^ 2 * D) ≤ N ε ∧
-      c + ε * (V.slope hS hN + Z.slope hS hN) + c * D * ε ^ 2 ≤ N ε := by
-  have hbeta := add_nonpos (L.pairing_nonpos hsemiV hPc) (M.pairing_nonpos hsemiZ hTc)
+      c + ε * (V.slope + Z.slope) + c * D * ε ^ 2 ≤ N ε := by
+  have hbeta := add_nonpos (L.pairing_nonpos (hsemi := hsemiV) hPc)
+    (M.pairing_nonpos (hsemi := hsemiZ) hTc)
   simpa only [L.mean, M.mean] using
     tensor_quotient_variation_lower_bound b d a r v s hP hR hT hW q hq hQ
       hPc hTc hunit c hc hmin hbeta
@@ -508,9 +510,9 @@ pairing sign here. This does not assert full CM (5.13), A8 existence, the A6
 upper bound itself, or Bost's main theorem. -/
 theorem slope_sum_le_of_eventual_upper_bound (δ : ℝ)
     (hupper : ∃ η > 0, ∀ ε, 0 < ε → ε < η → N ε ≤ c + ε * δ) :
-    V.slope hS hN + Z.slope hS hN ≤ δ := by
+    V.slope + Z.slope ≤ δ := by
   obtain ⟨η, hη, hlow⟩ := L.quotient_variation_lower_bound M b d a r v s hP hR hT hW
-    q hq hQ hsemiV hsemiZ hPc hTc hunit hc hmin
+    q hq hQ hPc hTc hunit hc hmin
   exact le_of_quadratic_lower_affine_upper N c _ δ D
     ⟨η, hη, fun ε hε he ↦ (hlow ε hε he).2.2⟩ hupper
 
@@ -519,9 +521,9 @@ This corollary leaves that exact A6 identity explicit and uses only its upper
 inequality. Full CM (5.13), A8 existence and the Bost theorem are not asserted. -/
 theorem slope_sum_le_of_eventual_affine (δ : ℝ)
     (haffine : ∃ η > 0, ∀ ε, 0 < ε → ε < η → N ε = c + ε * δ) :
-    V.slope hS hN + Z.slope hS hN ≤ δ := by
+    V.slope + Z.slope ≤ δ := by
   apply L.slope_sum_le_of_eventual_upper_bound M b d a r v s hP hR hT hW q hq hQ
-    hsemiV hsemiZ hPc hTc hunit hc hmin δ
+     hPc hTc hunit hc hmin δ
   obtain ⟨η, hη, he⟩ := haffine
   exact ⟨η, hη, fun ε hε heη ↦ (he ε hε heη).le⟩
 
@@ -543,9 +545,9 @@ variable {K : Type*} [Field K] {E F : Type u} {Q : Type*}
   [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
   {S : AdelicStructure K} [S.IsProper]
   (V : AdelicVectorBundle S E) (Z : AdelicVectorBundle S F)
-  (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-  (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-  (hV : V.toNormFamily.IsHermitian hN) (hZ : Z.toNormFamily.IsHermitian hN)
+  [hS : S.HasMeasurableBase]
+  [hN : S.IsArchimedeanNormalized]
+  [hV : V.toNormFamily.IsHermitian] [hZ : Z.toNormFamily.IsHermitian]
 
 set_option quotPrecheck false in
 local notation "CenteredE" => (fun A : ℝ → Submodule K E ↦
@@ -564,7 +566,7 @@ inequality. The negative candidate remains the A8 boundary; proving the A6
 upper bound and its comparison with the quotient's arithmetic slope remains
 downstream. This theorem does not prove Bost's main theorem. -/
 theorem exists_bost_hn_variation_bound
-    (hsemiV : V.IsMeanSlopeSemistable hS hN) (hsemiZ : Z.IsMeanSlopeSemistable hS hN)
+    [hsemiV : V.IsMeanSlopeSemistable] [hsemiZ : Z.IsMeanSlopeSemistable]
     (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)
     (P₀ : ℝ → Submodule K E) (T₀ : ℝ → Submodule K F)
     (hP₀ : CenteredE P₀) (hT₀ : CenteredF T₀)
@@ -577,7 +579,7 @@ theorem exists_bost_hn_variation_bound
         filtrationExpectation (fun t ↦ (tensorFiltration P T t).map q) ≤
           filtrationExpectation (fun t ↦ (tensorFiltration A B t).map q) /
             Real.sqrt (filtrationPairing A A + filtrationPairing B B)) ∧
-      ∃ (L : V.HNVariationLift hS hN hV P) (M : Z.HNVariationLift hS hN hZ T)
+      ∃ (L : V.HNVariationLift P) (M : Z.HNVariationLift T)
         (b : Basis (Fin (finrank K E)) K E) (d : Basis (Fin (finrank K F)) K F)
         (a r : Fin (finrank K E) → ℝ) (v s : Fin (finrank K F) → ℝ),
         (∀ t, P t = span K (b '' {i | t ≤ a i})) ∧
@@ -589,11 +591,11 @@ theorem exists_bost_hn_variation_bound
             (tensorFiltration (weightedBasisVariation b a r ε)
               (weightedBasisVariation d v s ε) t).map q) ≤
           filtrationExpectation (fun t ↦ (tensorFiltration P T t).map q) + ε * δ) →
-          V.slope hS hN + Z.slope hS hN ≤ δ := by
+          V.slope + Z.slope ≤ δ := by
   obtain ⟨P, T, hP, hT, hunit, hneg, hmin⟩ :=
     exists_normalized_tensor_quotient_optimizer q hq hsemiV.1 hsemiZ.1 P₀ T₀ hP₀ hT₀ hneg₀
-  obtain ⟨L⟩ := V.exists_hnVariationLift hS hN hV P hP.1 hP.2.1 hP.2.2.1 hP.2.2.2.1
-  obtain ⟨M⟩ := Z.exists_hnVariationLift hS hN hZ T hT.1 hT.2.1 hT.2.2.1 hT.2.2.2.1
+  obtain ⟨L⟩ := V.exists_hnVariationLift P hP.1 hP.2.1 hP.2.2.1 hP.2.2.2.1
+  obtain ⟨M⟩ := Z.exists_hnVariationLift T hT.1 hT.2.1 hT.2.2.1 hT.2.2.2.1
   obtain ⟨b, a, r, hPb, hR, _, _⟩ := exists_common_weighted_basis
     hP.1 hP.2.1 hP.2.2.1 hP.2.2.2.1
     L.antitone_direction L.direction_bot L.direction_top L.direction_left
@@ -603,7 +605,7 @@ theorem exists_bost_hn_variation_bound
   refine ⟨P, T, hP, hT, hunit, hneg, hmin, L, M, b, d, a, r, v, s, hPb, hR, hTd, hW, ?_⟩
   intro δ hu
   exact L.slope_sum_le_of_eventual_upper_bound M b d a r v s hPb hR hTd hW q hq hQ
-    hsemiV hsemiZ hP.2.2.2.2 hT.2.2.2.2 hunit hneg hmin δ hu
+     hP.2.2.2.2 hT.2.2.2.2 hunit hneg hmin δ hu
 
 end BinaryAssembly
 

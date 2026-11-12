@@ -5,8 +5,8 @@ Authors: Yijun Yuan
 -/
 module
 
-public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Quotient
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Expectation
+public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Quotient
 
 /-!
 # The graded-degree interpretation of intrinsic pairing
@@ -64,30 +64,28 @@ variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
 /-- The actual `F`-grade, carrying the norm induced from the specified bundle `V`. -/
 noncomputable def filtrationGradedBundle (V : AdelicVectorBundle (singleTrivialPlace K) E)
     (F : ℝ → Submodule K E) (s : ℝ)
-    (hS : DiscreteMeasurableSpace (singleTrivialPlace K).Ω ∨
-      (singleTrivialPlace K).HasCommonCountableDenseSubfield) :
+    [hS : (singleTrivialPlace K).HasMeasurableBase] :
     AdelicVectorBundle (singleTrivialPlace K) (FiltrationGraded F s) :=
-  (V.restrictOfMeasurableBase (F s) hS).quotientOfMeasurableBase
-    ((filtrationRightLimit F s).comap (F s).subtype) hS
+  (V.restrictOfMeasurableBase (F s)).quotientOfMeasurableBase
+    ((filtrationRightLimit F s).comap (F s).subtype)
 
 variable (V : AdelicVectorBundle (singleTrivialPlace K) E)
-  (hS : DiscreteMeasurableSpace (singleTrivialPlace K).Ω ∨
-    (singleTrivialPlace K).HasCommonCountableDenseSubfield)
-  (hN : ∀ ω ∈ (singleTrivialPlace K).Ωinf,
-    IsRCLikeNormedField ((singleTrivialPlace K).ϕ ω).Completion)
-  (hV : V.toNormFamily.IsUltrametric)
+  [hS : (singleTrivialPlace K).HasMeasurableBase]
+  [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
+  [hV : V.toNormFamily.IsUltrametric]
   (F : ℝ → Submodule K E)
 
+omit hN in
 /-- Literal balls on the actual subquotient are the induced cuts on the shared grade carrier. -/
 theorem trivialFiltration_filtrationGradedBundle (s t : ℝ) :
-    (V.filtrationGradedBundle F s hS).toNormFamily.trivialFiltration
-      ((hV.restrict (F s)).quotient ((filtrationRightLimit F s).comap (F s).subtype)) t =
-      filtrationOnGraded F (V.toNormFamily.trivialFiltration hV) s t := by
+    (V.filtrationGradedBundle F s).toNormFamily.trivialFiltration
+      (hξ := ((hV.restrict (F s)).quotient ((filtrationRightLimit F s).comap (F s).subtype))) t =
+      filtrationOnGraded F (V.toNormFamily.trivialFiltration) s t := by
   have he := NormFamily.trivialFiltration_pushforward (V.toNormFamily.restrict (F s))
-    (hV.restrict (F s)) ((filtrationRightLimit F s).comap (F s).subtype).mkQ
+    (hξ := (hV.restrict (F s))) ((filtrationRightLimit F s).comap (F s).subtype).mkQ
     ((filtrationRightLimit F s).comap (F s).subtype).mkQ_surjective t
-  have hr : (V.toNormFamily.restrict (F s)).trivialFiltration (hV.restrict (F s)) t =
-      (V.toNormFamily.trivialFiltration hV t).comap (F s).subtype := by
+  have hr : (V.toNormFamily.restrict (F s)).trivialFiltration (hξ := (hV.restrict (F s))) t =
+      (V.toNormFamily.trivialFiltration t).comap (F s).subtype := by
     classical
     ext x
     change (V.toNormFamily.restrict (F s)).trivialSeminorm x ≤ Real.exp (-t) ↔
@@ -99,38 +97,38 @@ theorem trivialFiltration_filtrationGradedBundle (s t : ℝ) :
 
 /-- The actual induced degree equals the second-weight sum of intrinsic joint grades. -/
 theorem degree_filtrationGradedBundle_eq_jointMultiplicity (hF : Antitone F) (s : ℝ) :
-    (V.filtrationGradedBundle F s hS).degree hS hN =
+    (V.filtrationGradedBundle F s).degree =
       ∑ᶠ t : ℝ, t *
-        (filtrationJointMultiplicity F (V.toNormFamily.trivialFiltration hV) s t : ℝ) := by
-  have hc := funext (V.trivialFiltration_filtrationGradedBundle hS hV F s)
-  rw [degree_eq_finsum_trivialFiltration _ hS hN
-    ((hV.restrict (F s)).quotient ((filtrationRightLimit F s).comap (F s).subtype)), hc]
+        (filtrationJointMultiplicity F (V.toNormFamily.trivialFiltration) s t : ℝ) := by
+  have hc := funext (V.trivialFiltration_filtrationGradedBundle F s)
+  rw [degree_eq_finsum_trivialFiltration _
+    (hV := ((hV.restrict (F s)).quotient ((filtrationRightLimit F s).comap (F s).subtype))), hc]
   simp only [finrank_filtrationGraded_filtrationOnGraded hF
-    (V.toNormFamily.antitone_trivialFiltration hV)]
+    (V.toNormFamily.antitone_trivialFiltration)]
 
 /-- Compute each actual graded degree in any common adapted basis. -/
 theorem degree_filtrationGradedBundle_eq_sum_weights (hF : Antitone F)
     {ι : Type*} [Fintype ι] (b : Basis ι K E) (a c : ι → ℝ)
     (hFa : ∀ t, F t = span K (b '' {i | t ≤ a i}))
-    (hGc : ∀ t, V.toNormFamily.trivialFiltration hV t = span K (b '' {i | t ≤ c i}))
+    (hGc : ∀ t, V.toNormFamily.trivialFiltration t = span K (b '' {i | t ≤ c i}))
     (s : ℝ) :
-    (V.filtrationGradedBundle F s hS).degree hS hN =
+    (V.filtrationGradedBundle F s).degree =
       ∑ i ∈ Finset.univ.filter (fun i ↦ a i = s), c i := by
-  rw [V.degree_filtrationGradedBundle_eq_jointMultiplicity hS hN hV F hF,
+  rw [V.degree_filtrationGradedBundle_eq_jointMultiplicity F hF,
     finsum_snd_mul_filtrationJointMultiplicity b a c hFa hGc]
 
 /-- The graded degree sum equals the intrinsic pairing; each grade uses the norm from `V`. -/
 theorem filtrationPairing_eq_finsum_graded_degree_of_common_basis (hF : Antitone F)
     {ι : Type*} [Finite ι] (b : Basis ι K E) (a c : ι → ℝ)
     (hFa : ∀ t, F t = span K (b '' {i | t ≤ a i}))
-    (hGc : ∀ t, V.toNormFamily.trivialFiltration hV t = span K (b '' {i | t ≤ c i})) :
-    filtrationPairing F (V.toNormFamily.trivialFiltration hV) =
-      (∑ᶠ s : ℝ, s * (V.filtrationGradedBundle F s hS).degree hS hN) / finrank K E := by
+    (hGc : ∀ t, V.toNormFamily.trivialFiltration t = span K (b '' {i | t ≤ c i})) :
+    filtrationPairing F (V.toNormFamily.trivialFiltration) =
+      (∑ᶠ s : ℝ, s * (V.filtrationGradedBundle F s).degree) / finrank K E := by
   classical
   let : Fintype ι := Fintype.ofFinite ι
   rw [filtrationPairing_eq_sum_weights b a c hFa hGc]
   congr 1
-  simp_rw [V.degree_filtrationGradedBundle_eq_sum_weights hS hN hV F hF b a c hFa hGc]
+  simp_rw [V.degree_filtrationGradedBundle_eq_sum_weights F hF b a c hFa hGc]
   rw [finsum_eq_sum_of_support_subset _ (s := Finset.univ.image a) (by
     intro s hs
     by_contra hn
@@ -160,15 +158,15 @@ theorem filtrationPairing_eq_finsum_graded_degree
     (hGleft : ∀ t, ∃ ε > 0, ∀ u, t - ε < u → u ≤ t → G u = G t) :
     filtrationPairing F G =
       (∑ᶠ s : ℝ, s * ((ofTrivialFiltration G hG hGbot hGtop hGleft).filtrationGradedBundle
-        F s hS).degree hS hN) / finrank K E := by
+        F s).degree) / finrank K E := by
   obtain ⟨b, a, c, hFa, hGc, _, _⟩ := NormFamily.exists_common_orthogonal_basis_ofTrivialFiltration
     F G hF hFbot hFtop hFleft hG hGbot hGtop hGleft
   have hrecover : (NormFamily.ofTrivialFiltration G hG hGbot hGtop hGleft).trivialFiltration
-      (NormFamily.ofTrivialFiltration_isUltrametric G hG hGbot hGtop hGleft) = G :=
+      (hξ := (NormFamily.ofTrivialFiltration_isUltrametric G hG hGbot hGtop hGleft)) = G :=
     funext (NormFamily.trivialFiltration_ofTrivialFiltration G hG hGbot hGtop hGleft)
   have he := filtrationPairing_eq_finsum_graded_degree_of_common_basis
-    (ofTrivialFiltration G hG hGbot hGtop hGleft) hS hN
-    (NormFamily.ofTrivialFiltration_isUltrametric G hG hGbot hGtop hGleft) F hF b a c hFa
+    (ofTrivialFiltration G hG hGbot hGtop hGleft)
+    (hV := (NormFamily.ofTrivialFiltration_isUltrametric G hG hGbot hGtop hGleft)) F hF b a c hFa
     (by simpa only [ofTrivialFiltration_toNormFamily, hrecover] using hGc)
   simpa only [ofTrivialFiltration_toNormFamily, hrecover] using he
 

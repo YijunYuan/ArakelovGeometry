@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.DirectSum.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Dual.Basic
 public import ArakelovGeometry.Analysis.NormShape.Euclidean
+
 import ArakelovGeometry.Analysis.Dual.ArchimedeanDual
 import ArakelovGeometry.Analysis.Hermitian.Norm
 import ArakelovGeometry.Analysis.NormedSpace.FiniteDimensional
@@ -42,20 +43,25 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- Chen–Moriwaki's Hermitian condition, with the usual Archimedean normalization
 explicit.  The inner-product core is positive definite and uses the canonical
 module structure of the completed fibre. -/
-def IsHermitian (ξ : NormFamily S E)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) : Prop :=
-  ξ.IsUltrametric ∧ ∀ ω (hω : ω ∈ S.Ωinf),
+class IsHermitian (ξ : NormFamily S E)
+    [hS : S.IsArchimedeanNormalized] : Prop where
+  /-- Ultrametricity at finite places. -/
+  isUltrametric : ξ.IsUltrametric
+  /-- An inner-product core inducing each infinite-place norm. -/
+  exists_innerProduct : ∀ ω (hω : ω ∈ S.Ωinf),
     letI := hS ω hω
     letI := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
     ∃ c : InnerProductSpace.Core (S.ϕ ω).Completion ((S.ϕ ω).Completion ⊗[K] E),
       ∀ x, (ξ.norm ω x) ^ 2 = RCLike.re (c.inner x x)
 
+attribute [instance] IsHermitian.isUltrametric
+
 variable {ξ : NormFamily S E}
-  {hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
+  [hS : S.IsArchimedeanNormalized]
 
 /-- The diagonal identity in `IsHermitian` gives exactly the source's
 square-root formula for the norm. -/
-theorem IsHermitian.exists_innerProduct_norm_eq_sqrt (hξ : ξ.IsHermitian hS)
+theorem IsHermitian.exists_innerProduct_norm_eq_sqrt (hξ : ξ.IsHermitian)
     (ω : S.Ω) (hω : ω ∈ S.Ωinf) :
     letI := hS ω hω
     letI := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
@@ -70,7 +76,7 @@ theorem IsHermitian.exists_innerProduct_norm_eq_sqrt (hξ : ξ.IsHermitian hS)
 /-- An equivalent condition expressed entirely in the original fibre norms.
 The reverse implication constructs positive definite inner products by
 polarization, without changing the scalar action. -/
-theorem isHermitian_iff_parallelogram : ξ.IsHermitian hS ↔
+theorem isHermitian_iff_parallelogram : ξ.IsHermitian ↔
     ξ.IsUltrametric ∧ ∀ ω ∈ S.Ωinf, ∀ x y,
       ξ.norm ω (x + y) * ξ.norm ω (x + y) +
         ξ.norm ω (x - y) * ξ.norm ω (x - y) =
@@ -93,9 +99,9 @@ theorem isHermitian_iff_parallelogram : ξ.IsHermitian hS ↔
     exact exists_innerProductCore_iff_innerProductSpaceable.mpr ⟨hp ω hω⟩
 
 /-- Pullback along an injective map preserves the source Hermitian condition. -/
-theorem IsHermitian.pullback (hξ : ξ.IsHermitian hS)
+theorem IsHermitian.pullback (hξ : ξ.IsHermitian)
     (f : F →ₗ[K] E) (hf : Function.Injective f) :
-    (ξ.pullback f hf).IsHermitian hS := by
+    (ξ.pullback f hf).IsHermitian := by
   obtain ⟨hu, hp⟩ := isHermitian_iff_parallelogram.mp hξ
   apply isHermitian_iff_parallelogram.mpr
   refine ⟨hu.pullback f hf, fun ω hω x y => ?_⟩
@@ -103,13 +109,13 @@ theorem IsHermitian.pullback (hξ : ξ.IsHermitian hS)
     hp ω hω (f.baseChange (S.ϕ ω).Completion x) (f.baseChange (S.ϕ ω).Completion y)
 
 /-- Restriction to a subspace preserves Hermitianity, including the zero subspace. -/
-theorem IsHermitian.restrict (hξ : ξ.IsHermitian hS) (F : Submodule K E) :
-    (ξ.restrict F).IsHermitian hS :=
+theorem IsHermitian.restrict (hξ : ξ.IsHermitian) (F : Submodule K E) :
+    (ξ.restrict F).IsHermitian :=
   hξ.pullback F.subtype F.subtype_injective
 
 /-- Multiplying each fibre norm by a positive real number preserves Hermitianity. -/
-theorem IsHermitian.scale (hξ : ξ.IsHermitian hS)
-    (a : S.Ω → ℝ) (ha : ∀ ω, 0 < a ω) : (ξ.scale a ha).IsHermitian hS := by
+theorem IsHermitian.scale (hξ : ξ.IsHermitian)
+    (a : S.Ω → ℝ) (ha : ∀ ω, 0 < a ω) : (ξ.scale a ha).IsHermitian := by
   obtain ⟨hu, hp⟩ := isHermitian_iff_parallelogram.mp hξ
   apply isHermitian_iff_parallelogram.mpr
   refine ⟨hu.scale a ha, fun ω hω x y => ?_⟩
@@ -118,10 +124,11 @@ theorem IsHermitian.scale (hξ : ξ.IsHermitian hS)
 
 /-- A zero-dimensional norm family is Hermitian; no nonzero vector or
 nonempty basis is required. -/
-theorem isHermitian_of_subsingleton [Subsingleton E] : ξ.IsHermitian hS := by
+theorem isHermitian_of_subsingleton [Subsingleton E] : ξ.IsHermitian := by
   apply isHermitian_iff_parallelogram.mpr
   constructor
-  · intro ω hω x y
+  · constructor
+    intro ω hω x y
     simp only [ξ.norm_eq_zero_of_subsingleton, max_self, le_refl]
   · intro ω hω x y
     simp only [ξ.norm_eq_zero_of_subsingleton, mul_zero, add_zero]
@@ -129,8 +136,8 @@ theorem isHermitian_of_subsingleton [Subsingleton E] : ξ.IsHermitian hS := by
 /-- The actual completed dual norm family of a Hermitian family is Hermitian.
 At infinite places, the operator norm is transported from the continuous dual,
 whose parallelogram law follows from the Riesz isometry. -/
-theorem IsHermitian.dual [FiniteDimensional K E] (hξ : ξ.IsHermitian hS) :
-    ξ.dual.IsHermitian hS := by
+theorem IsHermitian.dual [FiniteDimensional K E] (hξ : ξ.IsHermitian) :
+    ξ.dual.IsHermitian := by
   refine ⟨ξ.dual_isUltrametric, fun ω hω => ?_⟩
   let := hS ω hω
   let := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
@@ -159,9 +166,9 @@ theorem IsHermitian.dual [FiniteDimensional K E] (hξ : ξ.IsHermitian hS) :
 /-- The quotient norm along a surjective map preserves Hermitianity.  At an
 infinite place the canonical quotient norm is the norm on the orthogonal
 complement of the completed kernel, by Mathlib's quotient inner product. -/
-theorem IsHermitian.pushforward [FiniteDimensional K E] (hξ : ξ.IsHermitian hS)
+theorem IsHermitian.pushforward [FiniteDimensional K E] (hξ : ξ.IsHermitian)
     (π : E →ₗ[K] F) (hπ : Function.Surjective π) :
-    (ξ.pushforward π hπ).IsHermitian hS := by
+    (ξ.pushforward π hπ).IsHermitian := by
   refine ⟨hξ.1.pushforward π hπ, fun ω hω => ?_⟩
   let := hS ω hω
   let := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
@@ -184,10 +191,11 @@ theorem IsHermitian.pushforward [FiniteDimensional K E] (hξ : ξ.IsHermitian hS
 
 /-- Quotient by any subspace preserves Hermitianity, including the full
 subspace and the zero subspace. -/
-theorem IsHermitian.quotient [FiniteDimensional K E] (hξ : ξ.IsHermitian hS)
-    (F : Submodule K E) : (ξ.quotient F).IsHermitian hS :=
+theorem IsHermitian.quotient [FiniteDimensional K E] (hξ : ξ.IsHermitian)
+    (F : Submodule K E) : (ξ.quotient F).IsHermitian :=
   hξ.pushforward F.mkQ F.mkQ_surjective
 
+omit hS in
 /-- An infinite-place Euclidean profile gives the sum-of-squares identity on
 the actual completed direct-sum fibre. -/
 theorem directSum_norm_sq_of_profile_eq_euclidean (ξ : NormFamily S E)
@@ -206,12 +214,12 @@ theorem directSum_norm_sq_of_profile_eq_euclidean (ξ : NormFamily S E)
 /-- Source profiles agreeing with the max profile at finite places and the
 Euclidean profile at infinite places preserve Hermitian norm families. -/
 theorem IsHermitian.directSum_of_profile_eq {η : NormFamily S F}
-    (hξ : ξ.IsHermitian hS) (hη : η.IsHermitian hS) (ψ : S.Ω → NormShape)
+    (hξ : ξ.IsHermitian) (hη : η.IsHermitian) (ψ : S.Ω → NormShape)
     (hfin : ∀ ω ∈ S.Ωfin,
       Set.EqOn (ψ ω).toFun NormShape.maxShape.toFun (Set.Icc (0 : ℝ) 1))
     (hinf : ∀ ω ∈ S.Ωinf,
       Set.EqOn (ψ ω).toFun NormShape.euclideanShape.toFun (Set.Icc (0 : ℝ) 1)) :
-    (ξ.directSum η ψ).IsHermitian hS := by
+    (ξ.directSum η ψ).IsHermitian := by
   apply isHermitian_iff_parallelogram.mpr
   refine ⟨hξ.1.directSum_of_profile_eq_max hη.1 ψ hfin, fun ω hω x y => ?_⟩
   let e := TensorProduct.prodRight K (S.ϕ ω).Completion (S.ϕ ω).Completion E F
@@ -232,6 +240,7 @@ noncomputable def orthogonalSum (ξ : NormFamily S E) (η : NormFamily S F) :
   exact ξ.directSum η (fun ω =>
     if ω ∈ S.Ωinf then NormShape.euclideanShape else NormShape.maxShape)
 
+omit hS in
 /-- The orthogonal direct-sum norm is the max norm at finite places. -/
 theorem orthogonalSum_norm_pair_of_finite (ξ : NormFamily S E) (η : NormFamily S F)
     (ω : S.Ω) (hω : ω ∈ S.Ωfin)
@@ -243,6 +252,7 @@ theorem orthogonalSum_norm_pair_of_finite (ξ : NormFamily S E) (η : NormFamily
   simp only [orthogonalSum, directSum_norm_pair, ite_eq_right hn]
   exact NormShape.maxShape_perspective (ξ.norm_nonneg ω x) (η.norm_nonneg ω y)
 
+omit hS in
 /-- The orthogonal direct-sum norm is the Euclidean norm at infinite places. -/
 theorem orthogonalSum_norm_pair_of_infinite (ξ : NormFamily S E) (η : NormFamily S F)
     (ω : S.Ω) (hω : ω ∈ S.Ωinf)
@@ -256,8 +266,8 @@ theorem orthogonalSum_norm_pair_of_infinite (ξ : NormFamily S E) (η : NormFami
 
 /-- Orthogonal direct sums of Hermitian families are Hermitian. -/
 theorem IsHermitian.orthogonalSum {η : NormFamily S F}
-    (hξ : ξ.IsHermitian hS) (hη : η.IsHermitian hS) :
-    (ξ.orthogonalSum η).IsHermitian hS := by
+    (hξ : ξ.IsHermitian) (hη : η.IsHermitian) :
+    (ξ.orthogonalSum η).IsHermitian := by
   apply hξ.directSum_of_profile_eq hη
   · intro ω hω t ht
     have hn : ω ∉ S.Ωinf := fun h => h hω
@@ -265,4 +275,40 @@ theorem IsHermitian.orthogonalSum {η : NormFamily S F}
   · intro ω hω t ht
     simp only [ite_eq_left hω]
 
+end ArakelovGeometry.NormFamily
+
+namespace ArakelovGeometry.NormFamily
+
+variable {K : Type*} [Field K] {S : AdelicStructure K}
+  {E F : Type*} [AddCommGroup E] [Module K E] [AddCommGroup F] [Module K F]
+
+variable [S.IsArchimedeanNormalized]
+
+instance instIsHermitianPullback {ξ : NormFamily S E} [hξ : ξ.IsHermitian]
+    (f : F →ₗ[K] E) (hf : Function.Injective f) : (ξ.pullback f hf).IsHermitian :=
+  hξ.pullback f hf
+
+instance instIsHermitianRestrict {ξ : NormFamily S E} [hξ : ξ.IsHermitian]
+    (P : Submodule K E) : (ξ.restrict P).IsHermitian := hξ.restrict P
+
+instance instIsHermitianOrthogonalSum {ξ : NormFamily S E} {η : NormFamily S F}
+    [hξ : ξ.IsHermitian] [hη : η.IsHermitian] : (ξ.orthogonalSum η).IsHermitian :=
+  hξ.orthogonalSum hη
+
+variable [FiniteDimensional K E]
+
+instance instIsHermitianDual {ξ : NormFamily S E} [hξ : ξ.IsHermitian] :
+    ξ.dual.IsHermitian := hξ.dual
+
+instance instIsHermitianPushforward {ξ : NormFamily S E} [hξ : ξ.IsHermitian]
+    (f : E →ₗ[K] F) (hf : Function.Surjective f) : (ξ.pushforward f hf).IsHermitian :=
+  hξ.pushforward f hf
+
+instance instIsHermitianQuotient {ξ : NormFamily S E} [hξ : ξ.IsHermitian]
+    (P : Submodule K E) : (ξ.quotient P).IsHermitian := hξ.quotient P
+
+end ArakelovGeometry.NormFamily
+
+namespace ArakelovGeometry.NormFamily
+attribute [instance] isHermitian_of_subsingleton
 end ArakelovGeometry.NormFamily

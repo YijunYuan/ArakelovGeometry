@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Slope.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Supermodular
 import ArakelovGeometry.AdelicVectorBundle.Subquotient.Restriction.Functor
 import ArakelovGeometry.LinearAlgebra.Submodule.SupermodularSlope
@@ -38,36 +39,36 @@ namespace AdelicVectorBundle
 /-- A nonzero Hermitian bundle has a unique largest actual maximizing
 subspace. No boundedness or attainment premise is supplied by the caller. -/
 theorem exists_unique_largest_maximalSlope_subspace (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) (hr : 0 < Module.finrank K E) :
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
     ∃! D : Submodule K E, 0 < Module.finrank K D ∧
-      ((V.restrictOfMeasurableBase D hS).slope hS hN : EReal) = V.maximalSlope hS hN ∧
+      ((V.restrictOfMeasurableBase D).slope : EReal) = V.maximalSlope ∧
       ∀ F : Submodule K E, 0 < Module.finrank K F →
-        ((V.restrictOfMeasurableBase F hS).slope hS hN : EReal) = V.maximalSlope hS hN →
+        ((V.restrictOfMeasurableBase F).slope : EReal) = V.maximalSlope →
         F ≤ D := by
   let : Nontrivial E := Module.nontrivial_of_finrank_pos hr
-  let d := fun U : Submodule K E ↦ (V.restrictOfMeasurableBase U hS).degree hS hN
+  let d := fun U : Submodule K E ↦ (V.restrictOfMeasurableBase U).degree
   have hd0 : d ⊥ ≤ 0 := by
     dsimp only [d]
-    rw [(V.restrictOfMeasurableBase ⊥ hS).degree_eq_zero_of_finrank_eq_zero
-      hS hN (by simp)]
+    rw [(V.restrictOfMeasurableBase ⊥).degree_eq_zero_of_finrank_eq_zero
+      (by simp)]
   have hdsuper : ∀ U W, d U + d W ≤ d (U ⊓ W) + d (U ⊔ W) :=
-    fun U W ↦ V.degree_restrict_inf_add_sup_ge_of_isHermitian U W hS hN hV
+    fun U W ↦ V.degree_restrict_inf_add_sup_ge_of_isHermitian U W
   obtain ⟨D, ⟨hD, hmax⟩, _⟩ :=
     exists_unique_largest_finrank_slope_maximizer d hd0 hdsuper
   have hp : 0 < Module.finrank K D :=
     Nat.pos_of_ne_zero (fun hz ↦ hD (Submodule.finrank_eq_zero.mp hz))
-  have he : ((V.restrictOfMeasurableBase D hS).slope hS hN : EReal) =
-      V.maximalSlope hS hN := by
-    apply le_antisymm (V.slope_restrict_le_maximalSlope D hp hS hN)
-    apply V.maximalSlope_le hS hN
+  have he : ((V.restrictOfMeasurableBase D).slope : EReal) =
+      V.maximalSlope := by
+    apply le_antisymm (V.slope_restrict_le_maximalSlope D hp)
+    apply V.maximalSlope_le
     intro F hF
     apply EReal.coe_le_coe_iff.mpr
     exact (hmax F (fun hz ↦ (ne_of_gt hF) (Submodule.finrank_eq_zero.mpr hz))).1
   have hcontains (F : Submodule K E) (hF : 0 < Module.finrank K F)
-      (heF : ((V.restrictOfMeasurableBase F hS).slope hS hN : EReal) =
-        V.maximalSlope hS hN) : F ≤ D := by
+      (heF : ((V.restrictOfMeasurableBase F).slope : EReal) =
+        V.maximalSlope) : F ≤ D := by
     apply (hmax F (fun hz ↦ (ne_of_gt hF) (Submodule.finrank_eq_zero.mpr hz))).2
     exact EReal.coe_eq_coe_iff.mp (heF.trans he.symm)
   refine ⟨D, ⟨hp, he, hcontains⟩, ?_⟩
@@ -76,140 +77,148 @@ theorem exists_unique_largest_maximalSlope_subspace (V : AdelicVectorBundle S E)
 
 /-- The maximal destabilizing subspace produced from actual Hermitian degree. -/
 def destabilizingSubspace (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) (hr : 0 < Module.finrank K E) : Submodule K E :=
-  Classical.choose (V.exists_unique_largest_maximalSlope_subspace hS hN hV hr)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) : Submodule K E :=
+  Classical.choose (V.exists_unique_largest_maximalSlope_subspace hr)
 
 /-- The produced destabilizing subspace is nonzero. -/
 theorem destabilizingSubspace_finrank_pos (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) (hr : 0 < Module.finrank K E) :
-    0 < Module.finrank K (V.destabilizingSubspace hS hN hV hr) :=
-  (Classical.choose_spec (V.exists_unique_largest_maximalSlope_subspace hS hN hV hr)).1.1
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    0 < Module.finrank K (V.destabilizingSubspace hr) :=
+  (Classical.choose_spec (V.exists_unique_largest_maximalSlope_subspace hr)).1.1
 
 /-- The produced subspace's real mean is the actual extended-real maximum. -/
 theorem slope_destabilizingSubspace_eq_maximalSlope (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) (hr : 0 < Module.finrank K E) :
-    ((V.restrictOfMeasurableBase (V.destabilizingSubspace hS hN hV hr) hS).slope
-      hS hN : EReal) = V.maximalSlope hS hN :=
-  (Classical.choose_spec (V.exists_unique_largest_maximalSlope_subspace hS hN hV hr)).1.2.1
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    ((V.restrictOfMeasurableBase (V.destabilizingSubspace hr)).slope
+      : EReal) = V.maximalSlope :=
+  (Classical.choose_spec (V.exists_unique_largest_maximalSlope_subspace hr)).1.2.1
 
 /-- Every actual maximizing subspace is contained in the produced one. -/
 theorem le_destabilizingSubspace_of_slope_eq_maximalSlope (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) (hr : 0 < Module.finrank K E)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E)
     (F : Submodule K E) (hF : 0 < Module.finrank K F)
-    (heF : ((V.restrictOfMeasurableBase F hS).slope hS hN : EReal) = V.maximalSlope hS hN) :
-    F ≤ V.destabilizingSubspace hS hN hV hr :=
-  (Classical.choose_spec (V.exists_unique_largest_maximalSlope_subspace hS hN hV hr)).1.2.2
+    (heF : ((V.restrictOfMeasurableBase F).slope : EReal) = V.maximalSlope) :
+    F ≤ V.destabilizingSubspace hr :=
+  (Classical.choose_spec (V.exists_unique_largest_maximalSlope_subspace hr)).1.2.2
     F hF heF
 
 /-- Semistability uses actual restrictions and includes the source's nonzero
 qualification. Hermitian attainment identifies it with the whole-space
 destabilizing subspace below. -/
-def IsMeanSlopeSemistable (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) : Prop :=
-  0 < Module.finrank K E ∧ ∀ F : Submodule K E, 0 < Module.finrank K F →
-    (V.restrictOfMeasurableBase F hS).slope hS hN ≤ V.slope hS hN
+class IsMeanSlopeSemistable (V : AdelicVectorBundle S E)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] : Prop where
+  /-- Semistability excludes the zero bundle. -/
+  rank_pos : 0 < Module.finrank K E
+  /-- Every nonzero subspace has slope at most the ambient mean slope. -/
+  slope_le : ∀ F : Submodule K E, 0 < Module.finrank K F →
+    (V.restrictOfMeasurableBase F).slope ≤ V.slope
 
 /-- For any positive-rank bundle, semistability is equality of maximal and
 mean slopes. The equality retains the actual `EReal` maximal slope. -/
 theorem isMeanSlopeSemistable_iff_maximalSlope_eq_slope (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (hr : 0 < Module.finrank K E) :
-    V.IsMeanSlopeSemistable hS hN ↔ V.maximalSlope hS hN = (V.slope hS hN : EReal) := by
+    V.IsMeanSlopeSemistable ↔ V.maximalSlope = (V.slope : EReal) := by
   constructor
   · intro h
     exact le_antisymm
-      (V.maximalSlope_le hS hN (fun F hF ↦ EReal.coe_le_coe_iff.mpr (h.2 F hF)))
-      (V.slope_le_maximalSlope hS hN hr)
+      (V.maximalSlope_le (fun F hF ↦ EReal.coe_le_coe_iff.mpr (h.2 F hF)))
+      (V.slope_le_maximalSlope hr)
   · intro he
     refine ⟨hr, fun F hF ↦ ?_⟩
     exact EReal.coe_le_coe_iff.mp
-      ((V.slope_restrict_le_maximalSlope F hF hS hN).trans_eq he)
+      ((V.slope_restrict_le_maximalSlope F hF).trans_eq he)
 
 /-- Source Definition 4.3.29: the produced destabilizing subspace is the
 whole space exactly when the actual bundle is semistable. -/
 theorem destabilizingSubspace_eq_top_iff_isMeanSlopeSemistable (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) (hr : 0 < Module.finrank K E) :
-    V.destabilizingSubspace hS hN hV hr = ⊤ ↔ V.IsMeanSlopeSemistable hS hN := by
-  rw [V.isMeanSlopeSemistable_iff_maximalSlope_eq_slope hS hN hr]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    V.destabilizingSubspace hr = ⊤ ↔ V.IsMeanSlopeSemistable := by
+  rw [V.isMeanSlopeSemistable_iff_maximalSlope_eq_slope hr]
   constructor
   · intro hD
-    have h := V.slope_destabilizingSubspace_eq_maximalSlope hS hN hV hr
-    rwa [hD, V.slope_restrict_top hS hN, eq_comm] at h
+    have h := V.slope_destabilizingSubspace_eq_maximalSlope hr
+    rwa [hD, V.slope_restrict_top, eq_comm] at h
   · intro he
     apply top_le_iff.mp
-    apply V.le_destabilizingSubspace_of_slope_eq_maximalSlope hS hN hV hr ⊤
+    apply V.le_destabilizingSubspace_of_slope_eq_maximalSlope hr ⊤
     · simpa only [finrank_top] using hr
-    · rw [V.slope_restrict_top hS hN, he]
+    · rw [V.slope_restrict_top, he]
 
 /-- Canonical nested restrictions preserve actual mean slopes, as well as
 the degrees and dimensions that define them. -/
 theorem slope_restrict_restrict (V : AdelicVectorBundle S E)
     (U W : Submodule K E) (h : U ≤ W)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    ((V.restrictOfMeasurableBase W hS).restrictOfMeasurableBase
-      (U.comap W.subtype) hS).slope hS hN =
-      (V.restrictOfMeasurableBase U hS).slope hS hN := by
-  rw [slope, slope, V.degree_restrict_restrict U W h hS hN,
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    ((V.restrictOfMeasurableBase W).restrictOfMeasurableBase
+      (U.comap W.subtype)).slope =
+      (V.restrictOfMeasurableBase U).slope := by
+  rw [slope, slope, V.degree_restrict_restrict U W h,
     (Submodule.comapSubtypeEquivOfLe h).finrank_eq]
 
 /-- The actual restriction to the produced largest destabilizing subspace
 is semistable, by viewing every one of its subspaces inside the original
 bundle through the canonical nested restriction isometry. -/
 theorem isMeanSlopeSemistable_restrict_destabilizingSubspace (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hV : V.toNormFamily.IsHermitian hN) (hr : 0 < Module.finrank K E) :
-    (V.restrictOfMeasurableBase (V.destabilizingSubspace hS hN hV hr) hS).IsMeanSlopeSemistable
-      hS hN := by
-  let D := V.destabilizingSubspace hS hN hV hr
-  refine ⟨V.destabilizingSubspace_finrank_pos hS hN hV hr, fun F hF ↦ ?_⟩
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    (V.restrictOfMeasurableBase (V.destabilizingSubspace hr)).IsMeanSlopeSemistable
+      := by
+  let D := V.destabilizingSubspace hr
+  refine ⟨V.destabilizingSubspace_finrank_pos hr, fun F hF ↦ ?_⟩
   let U := F.map D.subtype
   have hUD : U ≤ D := D.map_subtype_le F
   have hc : U.comap D.subtype = F := by
     simp only [U, Submodule.comap_map_eq, Submodule.ker_subtype, sup_bot_eq]
-  have hs := V.slope_restrict_restrict U D hUD hS hN
+  have hs := V.slope_restrict_restrict U D hUD
   rw [hc] at hs
   rw [hs]
   apply EReal.coe_le_coe_iff.mp
   have hpU : 0 < Module.finrank K U := by
     rw [Submodule.finrank_map_subtype_eq]
     exact hF
-  exact (V.slope_restrict_le_maximalSlope U hpU hS hN).trans_eq
-    (V.slope_destabilizingSubspace_eq_maximalSlope hS hN hV hr).symm
+  exact (V.slope_restrict_le_maximalSlope U hpU).trans_eq
+    (V.slope_destabilizingSubspace_eq_maximalSlope hr).symm
 
 /-- The source nonzero qualification excludes the zero-rank bundle from
 semistability. -/
 theorem not_isMeanSlopeSemistable_of_finrank_eq_zero (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hr : Module.finrank K E = 0) : ¬ V.IsMeanSlopeSemistable hS hN := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    (hr : Module.finrank K E = 0) : ¬ V.IsMeanSlopeSemistable := by
   intro h
   exact (ne_of_gt h.1) hr
 
 /-- Every actual line bundle is semistable: its only nonzero rational
 subspace is the total space. -/
 theorem isMeanSlopeSemistable_of_finrank_eq_one (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hr : Module.finrank K E = 1) : V.IsMeanSlopeSemistable hS hN := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
+    (hr : Module.finrank K E = 1) : V.IsMeanSlopeSemistable := by
   refine ⟨by omega, fun F hF ↦ ?_⟩
   have ht : F = ⊤ := Submodule.eq_top_of_finrank_eq (by
     have hle := F.finrank_le
     omega)
-  rw [ht, V.slope_restrict_top hS hN]
+  rw [ht, V.slope_restrict_top]
+
+instance isMeanSlopeSemistable_of_isLine (V : AdelicVectorBundle S E)
+    [S.HasMeasurableBase] [S.IsArchimedeanNormalized] [hV : V.IsLine] :
+    V.IsMeanSlopeSemistable :=
+  V.isMeanSlopeSemistable_of_finrank_eq_one hV.rank_eq_one
 
 end AdelicVectorBundle
 

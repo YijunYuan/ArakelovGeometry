@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Vector
 public import ArakelovGeometry.MeasureTheory.Integral.UpperEnvelope
 public import Mathlib.Analysis.SpecialFunctions.Log.ENNRealLog
+
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import Mathlib.Analysis.SpecialFunctions.Log.ENNRealLogExp
 import Mathlib.CategoryTheory.Category.Init
@@ -191,9 +192,9 @@ theorem seminorm_logNorm_eq (ξ : NormFamily S E) (s : {x : E // x ≠ 0}) (ω :
 
 /-- The extended seminorm degree agrees with the actual L1 vector degree whenever
 the norm family is dominated and measurable. -/
-theorem seminorm_vectorDegree_eq (ξ : NormFamily S E) (hd : ξ.IsDominated) (hm : ξ.IsMeasurable)
+theorem seminorm_vectorDegree_eq (ξ : NormFamily S E) [hd : ξ.IsDominated] [hm : ξ.IsMeasurable]
     (s : {x : E // x ≠ 0}) :
-    SeminormFamily.vectorDegree ξ.norm s.val = (ξ.vectorDegree hd hm s : EReal) := by
+    SeminormFamily.vectorDegree ξ.norm s.val = (ξ.vectorDegree s : EReal) := by
   unfold SeminormFamily.vectorDegree
   have he : SeminormFamily.logNorm ξ.norm s.val = fun ω ↦ (ξ.logNorm s.val ω : EReal) :=
     funext (ξ.seminorm_logNorm_eq s)

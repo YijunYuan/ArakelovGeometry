@@ -111,21 +111,21 @@ theorem IsMeasurable.norm_of_measurable_coordinates {ξ : NormFamily S E}
 
 /-- The Hermitian pairing on the existing completed fibre, with its prescribed
 norm and scalar action. -/
-def IsHermitian.archimedeanInner {ξ : NormFamily S E}
-    {hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
-    (hξ : ξ.IsHermitian hS) (ω : S.Ωinf)
+def archimedeanInner (ξ : NormFamily S E)
+    [hS : S.IsArchimedeanNormalized]
+    [ξ.IsHermitian] (ω : S.Ωinf)
     (x y : (S.ϕ ω.val).Completion ⊗[K] E) : (S.ϕ ω.val).Completion := by
   let := hS ω.val ω.property
   let := IsRCLikeNormedField.rclike (S.ϕ ω.val).Completion
   let := ξ.fibreNormedAddCommGroup ω.val
   let := ξ.fibreNormedSpace ω.val
-  let := hξ.fibreInnerProductSpace ω.val ω.property
+  let := ξ.fiberInnerProductSpace ω.val ω.property
   exact inner (S.ϕ ω.val).Completion x y
 
 /-- Rational tests detect the complex locus after any measurable pullback and
 for any compatible measurable choice of completed embeddings. -/
 theorem measurableSet_complex_locus_pullback
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.IsArchimedeanNormalized]
     {α : Type*} [MeasurableSpace α] (p : α → S.Ωinf)
     (σ : ∀ a, (S.ϕ (p a).val).Completion →+* ℂ)
     (hσ : ∀ a x, ‖σ a x‖ = ‖x‖)
@@ -155,8 +155,8 @@ theorem measurableSet_complex_locus_pullback
 measurable coordinates, including after an arbitrary measurable pullback. -/
 theorem IsMeasurable.archimedeanInner_of_measurable_coordinates {ξ : NormFamily S E}
     (hξ : ξ.IsMeasurable)
-    {hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
-    (hH : ξ.IsHermitian hS) (b : Module.Basis ι K E)
+    [hS : S.IsArchimedeanNormalized]
+    [ξ.IsHermitian] (b : Module.Basis ι K E)
     {α : Type*} [MeasurableSpace α] (p : α → S.Ωinf) (hp : Measurable p)
     (σ : ∀ a, (S.ϕ (p a).val).Completion →+* ℂ)
     (hσ : ∀ a x, ‖σ a x‖ = ‖x‖)
@@ -169,7 +169,7 @@ theorem IsMeasurable.archimedeanInner_of_measurable_coordinates {ξ : NormFamily
       σ a ((b.baseChange (S.ϕ (p a).val).Completion).equivFun (x a) i)))
     (hy : ∀ i, Measurable (fun a =>
       σ a ((b.baseChange (S.ϕ (p a).val).Completion).equivFun (y a) i))) :
-    Measurable (fun a => σ a (hH.archimedeanInner (p a) (x a) (y a))) := by
+    Measurable (fun a ↦ σ a (ξ.archimedeanInner (p a) (x a) (y a))) := by
   classical
   let c : ∀ a, (S.ϕ (p a).val).Completion := fun a =>
     if h : Function.Surjective (σ a) then (h Complex.I).choose else 0
@@ -182,7 +182,7 @@ theorem IsMeasurable.archimedeanInner_of_measurable_coordinates {ξ : NormFamily
   have hmc : Measurable (fun a => σ a (c a)) := by
     simp_rw [hc]
     exact Measurable.piecewise
-      (measurableSet_complex_locus_pullback hS p σ hσ hm K₀ hK₀)
+      (measurableSet_complex_locus_pullback p σ hσ hm K₀ hK₀)
       measurable_const measurable_const
   have hp' : Measurable (fun a => (p a).val) := measurable_subtype_coe.comp hp
   have hplus : Measurable (fun a => ξ.norm (p a).val (x a + y a)) :=
@@ -214,7 +214,7 @@ theorem IsMeasurable.archimedeanInner_of_measurable_coordinates {ξ : NormFamily
         convert (hx i).sub (hic i) using 1
         funext a
         simp only [map_sub, Pi.sub_apply])
-  have hre : (fun a => (σ a (hH.archimedeanInner (p a) (x a) (y a))).re) =
+  have hre : (fun a ↦ (σ a (ξ.archimedeanInner (p a) (x a) (y a))).re) =
       fun a => (ξ.norm (p a).val (x a + y a) ^ 2 -
         ξ.norm (p a).val (x a - y a) ^ 2) / 4 := by
     funext a
@@ -222,9 +222,9 @@ theorem IsMeasurable.archimedeanInner_of_measurable_coordinates {ξ : NormFamily
     let := IsRCLikeNormedField.rclike (S.ϕ (p a).val).Completion
     let := ξ.fibreNormedAddCommGroup (p a).val
     let := ξ.fibreNormedSpace (p a).val
-    let := hH.fibreInnerProductSpace (p a).val (p a).property
+    let := ξ.fiberInnerProductSpace (p a).val (p a).property
     exact complexEmbedding_inner_re (σ a) (hσ a) (x a) (y a)
-  have himag : (fun a => (σ a (hH.archimedeanInner (p a) (x a) (y a))).im) =
+  have himag : (fun a ↦ (σ a (ξ.archimedeanInner (p a) (x a) (y a))).im) =
       fun a => (ξ.norm (p a).val (x a - c a • y a) ^ 2 -
         ξ.norm (p a).val (x a + c a • y a) ^ 2) / 4 := by
     funext a
@@ -232,7 +232,7 @@ theorem IsMeasurable.archimedeanInner_of_measurable_coordinates {ξ : NormFamily
     let := IsRCLikeNormedField.rclike (S.ϕ (p a).val).Completion
     let := ξ.fibreNormedAddCommGroup (p a).val
     let := ξ.fibreNormedSpace (p a).val
-    let := hH.fibreInnerProductSpace (p a).val (p a).property
+    let := ξ.fiberInnerProductSpace (p a).val (p a).property
     by_cases h : Function.Surjective (σ a)
     · exact complexEmbedding_inner_im (σ a) (hσ a) (c a) (by simpa [h] using hc a)
         (x a) (y a)
@@ -240,11 +240,11 @@ theorem IsMeasurable.archimedeanInner_of_measurable_coordinates {ξ : NormFamily
         simpa only [complexEmbedding_surjective_iff (σ a) (hσ a), not_not] using h
       simp [c, h, hr]
   have Hr : Measurable (fun a =>
-      (σ a (hH.archimedeanInner (p a) (x a) (y a))).re) := by
+      (σ a (ξ.archimedeanInner (p a) (x a) (y a))).re) := by
     rw [hre]
     exact ((hplus.pow_const 2).sub (hminus.pow_const 2)).div_const 4
   have Hi : Measurable (fun a =>
-      (σ a (hH.archimedeanInner (p a) (x a) (y a))).im) := by
+      (σ a (ξ.archimedeanInner (p a) (x a) (y a))).im) := by
     rw [himag]
     exact ((him.pow_const 2).sub (hip.pow_const 2)).div_const 4
   convert (Complex.measurable_ofReal.comp Hr).add
@@ -254,18 +254,18 @@ theorem IsMeasurable.archimedeanInner_of_measurable_coordinates {ξ : NormFamily
 
 /-- The actual completed Hermitian Gram matrix, expressed using a compatible
 complex embedding and the scalar extension of the given rational basis. -/
-def IsHermitian.archimedeanGram {ξ : NormFamily S E}
-    {hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
-    (hH : ξ.IsHermitian hS) (b : Module.Basis ι K E) (ω : S.Ωinf)
+def archimedeanGram (ξ : NormFamily S E)
+    [S.IsArchimedeanNormalized]
+    [ξ.IsHermitian] (b : Module.Basis ι K E) (ω : S.Ωinf)
     (σ : (S.ϕ ω.val).Completion →+* ℂ) : Matrix ι ι ℂ := fun i j =>
-  σ (hH.archimedeanInner ω ((b.baseChange (S.ϕ ω.val).Completion) i)
+  σ (ξ.archimedeanInner ω ((b.baseChange (S.ϕ ω.val).Completion) i)
     ((b.baseChange (S.ϕ ω.val).Completion) j))
 
 /-- Every Gram entry is measurable, with the same arbitrary pullback and
 infinite-place countable density permitted for completed coordinate evaluation. -/
 theorem IsMeasurable.archimedeanGram {ξ : NormFamily S E} (hξ : ξ.IsMeasurable)
-    {hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
-    (hH : ξ.IsHermitian hS) (b : Module.Basis ι K E)
+    [hS : S.IsArchimedeanNormalized]
+    [ξ.IsHermitian] (b : Module.Basis ι K E)
     {α : Type*} [MeasurableSpace α] (p : α → S.Ωinf) (hp : Measurable p)
     (σ : ∀ a, (S.ϕ (p a).val).Completion →+* ℂ)
     (hσ : ∀ a x, ‖σ a x‖ = ‖x‖)
@@ -273,9 +273,9 @@ theorem IsMeasurable.archimedeanGram {ξ : NormFamily S E} (hξ : ξ.IsMeasurabl
       σ a (algebraMap K (S.ϕ (p a).val).Completion x)))
     (K₀ : Subfield K) [Countable K₀]
     (hK₀ : ∀ a, S.IsDenseSubfieldAt K₀ (p a).val) (i j : ι) :
-    Measurable (fun a => hH.archimedeanGram b (p a) (σ a) i j) := by
+    Measurable (fun a ↦ ξ.archimedeanGram b (p a) (σ a) i j) := by
   classical
-  apply hξ.archimedeanInner_of_measurable_coordinates hH b p hp σ hσ hm K₀ hK₀
+  apply hξ.archimedeanInner_of_measurable_coordinates b p hp σ hσ hm K₀ hK₀
   all_goals
     intro k
     simpa only [Module.Basis.equivFun_apply, Module.Basis.repr_self_apply,
@@ -284,45 +284,45 @@ theorem IsMeasurable.archimedeanGram {ξ : NormFamily S E} (hξ : ξ.IsMeasurabl
 
 omit [Finite ι] in
 /-- The Gram matrix has the conjugate symmetry of the actual Hermitian pairing. -/
-theorem IsHermitian.conj_archimedeanGram {ξ : NormFamily S E}
-    {hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
-    (hH : ξ.IsHermitian hS) (b : Module.Basis ι K E) (ω : S.Ωinf)
+theorem conj_archimedeanGram (ξ : NormFamily S E)
+    [hS : S.IsArchimedeanNormalized]
+    [ξ.IsHermitian] (b : Module.Basis ι K E) (ω : S.Ωinf)
     (σ : (S.ϕ ω.val).Completion →+* ℂ) (hσ : ∀ x, ‖σ x‖ = ‖x‖) (i j : ι) :
-    starRingEnd ℂ (hH.archimedeanGram b ω σ j i) = hH.archimedeanGram b ω σ i j := by
+    starRingEnd ℂ (ξ.archimedeanGram b ω σ j i) = ξ.archimedeanGram b ω σ i j := by
   let := hS ω.val ω.property
   let := IsRCLikeNormedField.rclike (S.ϕ ω.val).Completion
   let := ξ.fibreNormedAddCommGroup ω.val
   let := ξ.fibreNormedSpace ω.val
-  let := hH.fibreInnerProductSpace ω.val ω.property
+  let := ξ.fiberInnerProductSpace ω.val ω.property
   change starRingEnd ℂ (σ (inner _ _ _)) = σ (inner _ _ _)
   rw [← complexEmbedding_map_conj σ hσ, inner_conj_symm]
 
 /-- The Gram quadratic form is exactly the original completed norm squared. -/
-theorem IsHermitian.archimedeanGram_norm_sq [Fintype ι] {ξ : NormFamily S E}
-    {hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
-    (hH : ξ.IsHermitian hS) (b : Module.Basis ι K E) (ω : S.Ωinf)
+theorem archimedeanGram_norm_sq [Fintype ι] (ξ : NormFamily S E)
+    [hS : S.IsArchimedeanNormalized]
+    [ξ.IsHermitian] (b : Module.Basis ι K E) (ω : S.Ωinf)
     (σ : (S.ϕ ω.val).Completion →+* ℂ) (hσ : ∀ x, ‖σ x‖ = ‖x‖)
     (c : ι → (S.ϕ ω.val).Completion) :
     ξ.norm ω.val ((b.baseChange (S.ϕ ω.val).Completion).equivFun.symm c) ^ 2 =
-      (∑ i, ∑ j, starRingEnd ℂ (σ (c i)) * hH.archimedeanGram b ω σ i j * σ (c j)).re := by
+      (∑ i, ∑ j, starRingEnd ℂ (σ (c i)) * ξ.archimedeanGram b ω σ i j * σ (c j)).re := by
   let := hS ω.val ω.property
   let := IsRCLikeNormedField.rclike (S.ϕ ω.val).Completion
   let := ξ.fibreNormedAddCommGroup ω.val
   let := ξ.fibreNormedSpace ω.val
-  let := hH.fibreInnerProductSpace ω.val ω.property
+  let := ξ.fiberInnerProductSpace ω.val ω.property
   rw [Module.Basis.equivFun_symm_apply]
   exact complexEmbedding_norm_sum_sq σ hσ c (b.baseChange (S.ϕ ω.val).Completion)
 
 /-- Positive definiteness is asserted on the actual completed coordinate space;
 at real places this is precisely the real image of the compatible embedding. -/
-theorem IsHermitian.archimedeanGram_quadratic_pos [Fintype ι] {ξ : NormFamily S E}
-    {hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
-    (hH : ξ.IsHermitian hS) (b : Module.Basis ι K E) (ω : S.Ωinf)
+theorem archimedeanGram_quadratic_pos [Fintype ι] (ξ : NormFamily S E)
+    [S.IsArchimedeanNormalized]
+    [ξ.IsHermitian] (b : Module.Basis ι K E) (ω : S.Ωinf)
     (σ : (S.ϕ ω.val).Completion →+* ℂ) (hσ : ∀ x, ‖σ x‖ = ‖x‖)
     (c : ι → (S.ϕ ω.val).Completion) (hc : c ≠ 0) :
     0 < (∑ i, ∑ j, starRingEnd ℂ (σ (c i)) *
-      hH.archimedeanGram b ω σ i j * σ (c j)).re := by
-  rw [← hH.archimedeanGram_norm_sq b ω σ hσ]
+      ξ.archimedeanGram b ω σ i j * σ (c j)).re := by
+  rw [← ξ.archimedeanGram_norm_sq b ω σ hσ]
   exact pow_pos (ξ.norm_pos ω.val
     ((b.baseChange (S.ϕ ω.val).Completion).equivFun.symm.map_ne_zero_iff.mpr hc)) _
 

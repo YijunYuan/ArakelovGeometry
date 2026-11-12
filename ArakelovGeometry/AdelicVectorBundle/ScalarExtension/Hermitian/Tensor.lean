@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Hermitian.Basic
 public import ArakelovGeometry.Analysis.ScalarExtension.Hermitian.Tensor
+
 import Mathlib.CategoryTheory.Category.Init
 
 /-!
@@ -30,10 +31,9 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {L : Type w} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (ξ : NormFamily S E)
-  (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-  (hL : ∀ x ∈ (S.algebraicExtension L).Ωinf,
-    IsRCLikeNormedField ((S.algebraicExtension L).ϕ x).Completion)
-  (hξ : ξ.IsHermitian hS)
+  [hS : S.IsArchimedeanNormalized]
+  [hL : (S.algebraicExtension L).IsArchimedeanNormalized]
+  [hξ : ξ.IsHermitian]
 
 /-- The actual infinite-place Hermitian scalar-extension norm is the
 orthogonal tensor norm of the original completed fibre and the extended
@@ -48,10 +48,10 @@ theorem hermitianScalarExtension_norm_eq_tensor_norm (x : S.ParameterSpaceExtens
     let := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
     let := ξ.fibreNormedAddCommGroup x.base
     let := ξ.fibreNormedSpace x.base
-    let := hξ.fibreInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
+    let := ξ.fiberInnerProductSpace x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
     let := normedAlgebraInnerProductSpace
       (k := (S.ϕ x.base).Completion) (L := x.abv.Completion)
-    (hermitianScalarExtension ξ hS hL hξ).norm x z =
+    (hermitianScalarExtension ξ).norm x z =
       ‖completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq z‖ := by
   intro hV rV hW rW aVW nV nsV iV iW
   let := hV
@@ -63,7 +63,7 @@ theorem hermitianScalarExtension_norm_eq_tensor_norm (x : S.ParameterSpaceExtens
   let := nsV
   let := iV
   let := iW
-  rw [hermitianScalarExtension_norm_of_infinite ξ hS hL hξ x hx z]
+  rw [hermitianScalarExtension_norm_of_infinite ξ x hx z]
   change hermitianScalarExtensionSeminorm
       (stdOrthonormalBasis (S.ϕ x.base).Completion ((S.ϕ x.base).Completion ⊗[K] E))
       (completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq z) = _

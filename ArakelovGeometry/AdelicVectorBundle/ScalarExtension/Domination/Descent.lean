@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Basic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Integral
 import ArakelovGeometry.AdelicVectorBundle.Dual.Bidual
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.BasisComparison
@@ -84,7 +85,7 @@ theorem injectiveScalarExtension_norm_completed_one_tmul
 /-- Under the usual Archimedean normalization, restricting the mixed
 scalar extension to the original completed fibre is its bidual norm. -/
 theorem scalarExtension_norm_completed_one_tmul
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.IsArchimedeanNormalized]
     (x : S.ParameterSpaceExtension L) (y : (S.ϕ x.base).Completion ⊗[K] E) :
     let := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
     (ξ.scalarExtension (L := L)).norm x
@@ -185,7 +186,7 @@ omit [Finite ι] in
 /-- Restriction to completed base vectors bounds the base bidual-to-basis
 distance by the distance on every actual extended completed fibre. -/
 theorem bidual_localDist_ofBasisMixed_le_scalarExtension
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.IsArchimedeanNormalized]
     (x : S.ParameterSpaceExtension L) :
     (ξ.dual.dual.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K)).localDist
       (ofBasisMixed S E b) x.base ≤
@@ -200,7 +201,7 @@ theorem bidual_localDist_ofBasisMixed_le_scalarExtension
   let z := (completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq).symm
     ((1 : x.abv.Completion) ⊗ₜ[(S.ϕ x.base).Completion] y)
   have hb := ((ξ.scalarExtension (L := L)).localDist_le_iff_norm_le ηL x h0).mp le_rfl z
-  have hn := ξ.scalarExtension_norm_completed_one_tmul hS x y
+  have hn := ξ.scalarExtension_norm_completed_one_tmul x y
   have hm := ofBasisMixed_norm_completed_one_tmul b x y
   change (ξ.scalarExtension (L := L)).norm x z = _ at hn
   change ηL.norm x z = _ at hm
@@ -211,12 +212,12 @@ theorem bidual_localDist_ofBasisMixed_le_scalarExtension
 completed bidual family under the usual Archimedean normalization. -/
 theorem IsDominated.bidual_of_scalarExtension
     (hL : (ξ.scalarExtension (L := L)).IsDominated)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     (ξ.dual.dual.pullback (Module.Dual.eval K E)
       (Module.eval_apply_injective K)).IsDominated := by
   let b := Module.finBasis K E
   let η := ξ.dual.dual.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K)
-  have hfin := S.v_Ωinf_lt_top_of_isRCLike hS
+  have hfin := S.v_Ωinf_lt_top_of_isRCLike
   have hfinL : (S.algebraicExtension L).v (S.algebraicExtension L).Ωinf < ⊤ := by
     rw [scalarExtension_measure_Ωinf]
     exact hfin
@@ -225,7 +226,7 @@ theorem IsDominated.bidual_of_scalarExtension
   have hu : HasIntegrableUpperBound
       (fun x : (S.algebraicExtension L).Ω => η.localDist (ofBasisMixed S E b) x.base)
       (S.algebraicExtension L).v := hbL.1.mono
-    (Eventually.of_forall fun x => ξ.bidual_localDist_ofBasisMixed_le_scalarExtension b hS x)
+    (Eventually.of_forall fun x ↦ ξ.bidual_localDist_ofBasisMixed_le_scalarExtension b x)
   have hb : HasIntegrableBounds (η.localDist (ofBasisMixed S E b)) S.v :=
     ⟨hu.of_algebraic_comp,
       ⟨0, integrable_zero _ _ _, Eventually.of_forall (η.localDist_nonneg _)⟩⟩
@@ -236,11 +237,11 @@ algebraic scalar extension and integrable distance to the completed bidual
 imply domination of the original family. -/
 theorem IsDominated.of_scalarExtension
     (hL : (ξ.scalarExtension (L := L)).IsDominated)
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.IsArchimedeanNormalized]
     (hb : HasIntegrableBounds
       (ξ.localDist (ξ.dual.dual.pullback (Module.Dual.eval K E)
         (Module.eval_apply_injective K))) S.v) : ξ.IsDominated := by
-  have hη := IsDominated.bidual_of_scalarExtension ξ hL hS
+  have hη := IsDominated.bidual_of_scalarExtension ξ hL
   apply hη.of_localDist
   have he : (ξ.dual.dual.pullback (Module.Dual.eval K E)
       (Module.eval_apply_injective K)).localDist ξ =

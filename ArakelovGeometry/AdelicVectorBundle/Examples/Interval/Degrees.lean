@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Interval.Determinant
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.Analysis.Determinant.Pairing
 
@@ -104,8 +105,8 @@ theorem rationalIntervalThreeFamily_determinant_norm_standard
 
 /-- The genuine rational interval plane bundle has canonical degree zero. -/
 theorem rationalIntervalPlaneBundle_degree_eq_zero :
-    rationalIntervalPlaneBundle.degree (Or.inl inferInstance)
-      rationalAdelicStructure_isRCLike = 0 := by
+    rationalIntervalPlaneBundle.degree
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) = 0 := by
   have hn : rationalStandardDeterminantVector 2 ≠ 0 := by
     intro hz
     have h0 : rationalIntervalPlaneFamily.determinant.norm (.inr ())
@@ -114,8 +115,8 @@ theorem rationalIntervalPlaneBundle_degree_eq_zero :
       rw [hz, TensorProduct.tmul_zero, NormFamily.norm_zero]
     exact zero_ne_one (h0.symm.trans
       (rationalIntervalPlaneFamily_determinant_norm_standard (.inr ())))
-  rw [rationalIntervalPlaneBundle.degree_eq_neg_integral (Or.inl inferInstance)
-    rationalAdelicStructure_isRCLike ⟨rationalStandardDeterminantVector 2, hn⟩]
+  rw [rationalIntervalPlaneBundle.degree_eq_neg_integral
+    (hN := ⟨rationalAdelicStructure_isRCLike⟩) ⟨rationalStandardDeterminantVector 2, hn⟩]
   have he : (fun ω => rationalIntervalPlaneBundle.toNormFamily.determinant.logNorm
       (rationalStandardDeterminantVector 2) ω) = 0 := by
     funext ω
@@ -130,8 +131,8 @@ theorem rationalIntervalPlaneBundle_degree_eq_zero :
 
 /-- The genuine rational interval three bundle has canonical degree zero. -/
 theorem rationalIntervalThreeBundle_degree_eq_zero :
-    rationalIntervalThreeBundle.degree (Or.inl inferInstance)
-      rationalAdelicStructure_isRCLike = 0 := by
+    rationalIntervalThreeBundle.degree
+      (hN := ⟨rationalAdelicStructure_isRCLike⟩) = 0 := by
   have hn : rationalStandardDeterminantVector 3 ≠ 0 := by
     intro hz
     have h0 : rationalIntervalThreeFamily.determinant.norm (.inr ())
@@ -140,8 +141,8 @@ theorem rationalIntervalThreeBundle_degree_eq_zero :
       rw [hz, TensorProduct.tmul_zero, NormFamily.norm_zero]
     exact zero_ne_one (h0.symm.trans
       (rationalIntervalThreeFamily_determinant_norm_standard (.inr ())))
-  rw [rationalIntervalThreeBundle.degree_eq_neg_integral (Or.inl inferInstance)
-    rationalAdelicStructure_isRCLike ⟨rationalStandardDeterminantVector 3, hn⟩]
+  rw [rationalIntervalThreeBundle.degree_eq_neg_integral
+    (hN := ⟨rationalAdelicStructure_isRCLike⟩) ⟨rationalStandardDeterminantVector 3, hn⟩]
   have he : (fun ω => rationalIntervalThreeBundle.toNormFamily.determinant.logNorm
       (rationalStandardDeterminantVector 3) ω) = 0 := by
     funext ω

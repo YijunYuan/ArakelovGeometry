@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.Euclidean
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import Mathlib.Topology.Sheaves.Init
 
@@ -99,13 +100,13 @@ theorem weighted_norm_sq (ξ : NormFamily (normalizedNumberFieldAdelicStructure 
 @[instance_reducible]
 def weightedInnerProduct
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := weightedNormedAddCommGroup ξ
     letI := weightedNormedSpace ξ
     InnerProductSpace ℝ (CompletedVectorProduct K E) := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   exact InnerProductSpace.induced weightEquiv.toLinearMap
 
 theorem weighted_discrete_diagonalLattice [FiniteDimensional K E]
@@ -150,7 +151,7 @@ variable {K E : Type*} [Field K] [NumberField K]
 theorem IsDominated.pure_globalBall_weighted_discrete (hdom : ξ.IsDominated)
     (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
     letI := weightedNormedAddCommGroup ξ
-    DiscreteTopology (diagonalLattice (ξ.globalUnitBallModule hξ)) :=
+    DiscreteTopology (diagonalLattice (ξ.globalUnitBallModule)) :=
   weighted_discrete_diagonalLattice ξ _
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure).1
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure).2.2
@@ -161,7 +162,7 @@ theorem IsDominated.pure_globalBall_weighted_isZLattice (hdom : ξ.IsDominated)
     letI := weightedNormedAddCommGroup ξ
     letI := weightedNormedSpace ξ
     letI := hdom.pure_globalBall_weighted_discrete hξ hpure
-    IsZLattice ℝ (diagonalLattice (ξ.globalUnitBallModule hξ)) :=
+    IsZLattice ℝ (diagonalLattice (ξ.globalUnitBallModule)) :=
   weighted_isZLattice_diagonalLattice ξ _
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure).1
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure).2.2

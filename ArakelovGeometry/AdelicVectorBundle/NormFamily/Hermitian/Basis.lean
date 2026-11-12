@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Basic
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.BasisComparison
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
@@ -103,6 +104,7 @@ theorem ofBasisHermitian_norm_rational (ω : S.Ω) (x : E) :
 
 /-- The Hermitian basis family has measurable rational evaluations. -/
 theorem ofBasisHermitian_isMeasurable : (ofBasisHermitian S E b).IsMeasurable := by
+  constructor
   classical
   intro x
   simp only [ofBasisHermitian_norm_rational]
@@ -113,15 +115,16 @@ theorem ofBasisHermitian_isMeasurable : (ofBasisHermitian S E b).IsMeasurable :=
 
 /-- The finite-place branch is ultrametric in every dimension. -/
 theorem ofBasisHermitian_isUltrametric : (ofBasisHermitian S E b).IsUltrametric := by
+  constructor
   intro ω hω x y
   simpa only [ofBasisHermitian_norm_of_finite b ω hω,
     ofBasisMixed_norm_of_finite b ω hω] using ofBasisMixed_isUltrametric b ω hω x y
 
 /-- The actual completed coordinate isometry pulls the canonical Euclidean
 inner product back to the prescribed fibre norm and scalar action. -/
-theorem ofBasisHermitian_isHermitian
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (ofBasisHermitian S E b).IsHermitian hS := by
+instance ofBasisHermitian_isHermitian
+    [hS : S.IsArchimedeanNormalized] :
+    (ofBasisHermitian S E b).IsHermitian := by
   refine ⟨ofBasisHermitian_isUltrametric b, fun ω hω => ?_⟩
   let := hS ω hω
   let := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
@@ -209,16 +212,16 @@ theorem ofBasisHermitian_isStronglyDominated_of_measure_lt_top (hfin : S.v S.Ωi
 
 /-- Domination of the Hermitian basis family in Remark 4.1.14. -/
 theorem ofBasisHermitian_isDominated
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     (ofBasisHermitian S E b).IsDominated :=
   (ofBasisHermitian_isStronglyDominated_of_measure_lt_top b
-    (S.v_Ωinf_lt_top_of_isRCLike hS)).1
+    (S.v_Ωinf_lt_top_of_isRCLike)).1
 
 /-- Its rational logarithmic norms are integrable, including the zero vector. -/
 theorem ofBasisHermitian_integrable_logNorm
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (x : E) :
+    [hS : S.IsArchimedeanNormalized] (x : E) :
     Integrable ((ofBasisHermitian S E b).logNorm x) S.v :=
-  (ofBasisHermitian_isDominated b hS).integrable_logNorm (ofBasisHermitian_isMeasurable b) x
+  (ofBasisHermitian_isDominated b).integrable_logNorm (ofBasisHermitian_isMeasurable b) x
 
 variable (S E)
 
@@ -226,11 +229,11 @@ variable (S E)
 norm family under the usual Archimedean normalization. The witness is the
 explicit max-finite, Euclidean-infinite completed-basis construction. -/
 theorem exists_hermitian_dominated_measurable
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    ∃ ξ : NormFamily S E, ξ.IsHermitian hS ∧ ξ.IsDominated ∧ ξ.IsMeasurable :=
+    [hS : S.IsArchimedeanNormalized] :
+    ∃ ξ : NormFamily S E, ξ.IsHermitian ∧ ξ.IsDominated ∧ ξ.IsMeasurable :=
   ⟨ofBasisHermitian S E (Module.finBasis K E),
-    ofBasisHermitian_isHermitian (Module.finBasis K E) hS,
-    ofBasisHermitian_isDominated (Module.finBasis K E) hS,
+    ofBasisHermitian_isHermitian (Module.finBasis K E),
+    ofBasisHermitian_isDominated (Module.finBasis K E),
     ofBasisHermitian_isMeasurable (Module.finBasis K E)⟩
 
 variable {S E}
@@ -296,7 +299,7 @@ theorem ofBasisHermitian_dual_norm_of_infinite (ω : S.Ω) (hω : ω ∈ S.Ωinf
 /-- The actual completed dual Hermitian family is the same explicit
 construction on the rational dual basis. -/
 theorem ofBasisHermitian_dual [DecidableEq ι]
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     (ofBasisHermitian S E b).dual = ofBasisHermitian S (Module.Dual K E) b.dualBasis := by
   ext ω z
   by_cases hω : ω ∈ S.Ωinf
@@ -313,17 +316,17 @@ theorem ofBasisHermitian_dual [DecidableEq ι]
 /-- Strict measurability of the actual dual follows from its exact rational
 dual-basis coordinate formula, without a countability assumption on the field. -/
 theorem ofBasisHermitian_dual_isMeasurable
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     (ofBasisHermitian S E b).dual.IsMeasurable := by
   classical
-  rw [ofBasisHermitian_dual b hS]
+  rw [ofBasisHermitian_dual b]
   exact ofBasisHermitian_isMeasurable b.dualBasis
 
 /-- The dual rational logarithmic norms are integrable too. -/
 theorem ofBasisHermitian_dual_integrable_logNorm
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.IsArchimedeanNormalized]
     (ℓ : Module.Dual K E) : Integrable ((ofBasisHermitian S E b).dual.logNorm ℓ) S.v :=
-  (ofBasisHermitian_isDominated b hS).dual.integrable_logNorm
-    (ofBasisHermitian_dual_isMeasurable b hS) ℓ
+  (ofBasisHermitian_isDominated b).dual.integrable_logNorm
+    (ofBasisHermitian_dual_isMeasurable b) ℓ
 
 end ArakelovGeometry.NormFamily

@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Discrepancy.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Determinant.Functor
 import ArakelovGeometry.AdelicVectorBundle.Subquotient.Elementary
 import ArakelovGeometry.AdelicVectorBundle.Subquotient.Restriction.Functor
@@ -41,9 +42,9 @@ namespace NormFamily
 source with the same actual determinant ratio. -/
 theorem majorantRatios_subset_of_completed_isometry (ξ : NormFamily S E)
     (η : NormFamily S F) (e : E ≃ₗ[K] F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω)
     (he : ∀ x, η.norm ω (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = ξ.norm ω x) :
-    η.majorantRatios hN ω ⊆ ξ.majorantRatios hN ω := by
+    η.majorantRatios ω ⊆ ξ.majorantRatios ω := by
   rintro a ⟨α, ha, hle, rfl⟩
   let β := α.pullback e.toLinearMap e.injective
   let z := (1 : (S.ϕ ω).Completion) ⊗ₜ[K] determinantGenerator (K := K) (E := E)
@@ -72,11 +73,11 @@ theorem majorantRatios_subset_of_completed_isometry (ξ : NormFamily S E)
 candidate sets; the generators on the two determinant lines need not agree. -/
 theorem majorantRatios_eq_of_completed_isometry (ξ : NormFamily S E)
     (η : NormFamily S F) (e : E ≃ₗ[K] F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω)
     (he : ∀ x, η.norm ω (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = ξ.norm ω x) :
-    ξ.majorantRatios hN ω = η.majorantRatios hN ω := by
-  apply Set.Subset.antisymm _ (ξ.majorantRatios_subset_of_completed_isometry η e hN ω he)
-  apply η.majorantRatios_subset_of_completed_isometry ξ e.symm hN ω
+    ξ.majorantRatios ω = η.majorantRatios ω := by
+  apply Set.Subset.antisymm _ (ξ.majorantRatios_subset_of_completed_isometry η e ω he)
+  apply η.majorantRatios_subset_of_completed_isometry ξ e.symm ω
   intro y
   let eω := e.baseChange K (S.ϕ ω).Completion E F
   change ξ.norm ω (eω.symm y) = η.norm ω y
@@ -88,29 +89,29 @@ theorem majorantRatios_eq_of_completed_isometry (ξ : NormFamily S E)
 under every rational completed-fibre isometry. -/
 theorem majorantDiscrepancy_eq_of_completed_isometry (ξ : NormFamily S E)
     (η : NormFamily S F) (e : E ≃ₗ[K] F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω)
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω)
     (he : ∀ x, η.norm ω (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = ξ.norm ω x) :
-    ξ.majorantDiscrepancy hN ω = η.majorantDiscrepancy hN ω := by
+    ξ.majorantDiscrepancy ω = η.majorantDiscrepancy ω := by
   rw [majorantDiscrepancy, majorantDiscrepancy, e.finrank_eq,
-    ξ.majorantRatios_eq_of_completed_isometry η e hN ω he]
+    ξ.majorantRatios_eq_of_completed_isometry η e ω he]
 
 /-- The local majorant infimum of a nested actual restriction equals that
 of the direct restriction, in every rank and at every place. -/
 theorem majorantDiscrepancy_restrict_restrict (ξ : NormFamily S E)
     (U W : Submodule K E) (h : U ≤ W)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω) :
-    ((ξ.restrict W).restrict (U.comap W.subtype)).majorantDiscrepancy hN ω =
-      (ξ.restrict U).majorantDiscrepancy hN ω := by
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω) :
+    ((ξ.restrict W).restrict (U.comap W.subtype)).majorantDiscrepancy ω =
+      (ξ.restrict U).majorantDiscrepancy ω := by
   apply majorantDiscrepancy_eq_of_completed_isometry _ _
-    (Submodule.comapSubtypeEquivOfLe h) hN ω
+    (Submodule.comapSubtypeEquivOfLe h) ω
   intro z
   exact (ξ.restrict_restrict_norm_eq U W h ω z).symm
 
 /-- Total restriction preserves the actual local elementary-majorant infimum. -/
 theorem majorantDiscrepancy_restrict_top (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (ω : S.Ω) :
-    (ξ.restrict ⊤).majorantDiscrepancy hN ω = ξ.majorantDiscrepancy hN ω := by
-  apply majorantDiscrepancy_eq_of_completed_isometry _ _ Submodule.topEquiv hN ω
+    [hN : S.IsArchimedeanNormalized] (ω : S.Ω) :
+    (ξ.restrict ⊤).majorantDiscrepancy ω = ξ.majorantDiscrepancy ω := by
+  apply majorantDiscrepancy_eq_of_completed_isometry _ _ Submodule.topEquiv ω
   intro z
   exact (ξ.restrict_top_norm_eq ω z).symm
 
@@ -122,27 +123,27 @@ namespace AdelicVectorBundle
 preserved by completed-fibre isometries, even when it equals positive infinity. -/
 theorem majorantDiscrepancy_eq_of_completed_isometry
     (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = V.toNormFamily.norm ω x) :
-    V.majorantDiscrepancy hN = W.majorantDiscrepancy hN := by
+    V.majorantDiscrepancy = W.majorantDiscrepancy := by
   unfold majorantDiscrepancy
   congr 1
   funext ω
   rw [V.toNormFamily.majorantDiscrepancy_eq_of_completed_isometry
-    W.toNormFamily e hN ω (he ω)]
+    W.toNormFamily e ω (he ω)]
 
 /-- Canonical nested restriction preserves the global capital discrepancy
 of the actual norm family. -/
 theorem majorantDiscrepancy_restrict_restrict (V : AdelicVectorBundle S E)
     (U W : Submodule K E) (h : U ≤ W)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    ((V.restrictOfMeasurableBase W hS).restrictOfMeasurableBase
-      (U.comap W.subtype) hS).majorantDiscrepancy hN =
-      (V.restrictOfMeasurableBase U hS).majorantDiscrepancy hN := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    ((V.restrictOfMeasurableBase W).restrictOfMeasurableBase
+      (U.comap W.subtype)).majorantDiscrepancy =
+      (V.restrictOfMeasurableBase U).majorantDiscrepancy := by
   apply majorantDiscrepancy_eq_of_completed_isometry _ _
-    (Submodule.comapSubtypeEquivOfLe h) hN
+    (Submodule.comapSubtypeEquivOfLe h)
   intro ω z
   simp only [restrictOfMeasurableBase_toNormFamily]
   exact (V.toNormFamily.restrict_restrict_norm_eq U W h ω z).symm
@@ -150,11 +151,11 @@ theorem majorantDiscrepancy_restrict_restrict (V : AdelicVectorBundle S E)
 /-- Restriction to the total subspace preserves the actual global capital
 discrepancy, without a finiteness assumption on its lower integral. -/
 theorem majorantDiscrepancy_restrict_top (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.restrictOfMeasurableBase ⊤ hS).majorantDiscrepancy hN =
-      V.majorantDiscrepancy hN := by
-  apply majorantDiscrepancy_eq_of_completed_isometry _ _ Submodule.topEquiv hN
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    (V.restrictOfMeasurableBase ⊤).majorantDiscrepancy =
+      V.majorantDiscrepancy := by
+  apply majorantDiscrepancy_eq_of_completed_isometry _ _ Submodule.topEquiv
   intro ω z
   simp only [restrictOfMeasurableBase_toNormFamily]
   exact (V.toNormFamily.restrict_top_norm_eq ω z).symm

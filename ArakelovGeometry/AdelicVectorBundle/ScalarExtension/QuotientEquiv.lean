@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Discrete.Quotient
+
 import Mathlib.CategoryTheory.Category.Init
 
 /-!
@@ -87,7 +88,7 @@ variable {S : AdelicStructure.{u, v} K} [Algebra.IsAlgebraic K L]
 /-- The canonical quotient equivalence is an isometry on every completed vector
 for an algebraic tower whose intermediate field contains a square root of `-1`. -/
 theorem scalarExtension_quotient_finiteStage_equiv_norm_eq (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
     [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] (hi : ∃ a : F, a ^ 2 = -1)
     (B : Submodule F (F ⊗[K] E))
@@ -101,7 +102,7 @@ theorem scalarExtension_quotient_finiteStage_equiv_norm_eq (ξ : NormFamily S E)
   intro c A
   let d := tensorQuotientBaseChangeEquiv (L := L) B
   let q := Submodule.Quotient.equiv (B.baseChange L) A c rfl
-  have h := ξ.scalarExtension_quotient_finiteStage_norm_eq hN F hi B x z
+  have h := ξ.scalarExtension_quotient_finiteStage_norm_eq F hi B x z
   change ((ξ.scalarExtension (L := L)).quotient A).norm (scalarExtensionTowerPlace x)
       (q.toLinearMap.baseChange x.abv.Completion
         (d.toLinearMap.baseChange x.abv.Completion z)) = _ at h

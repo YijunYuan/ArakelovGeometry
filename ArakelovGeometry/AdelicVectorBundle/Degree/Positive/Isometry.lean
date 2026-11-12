@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Positive.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Subquotient.ExactSequence
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Isometry
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -36,33 +37,33 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 target positive degree. The zero subspace is included. -/
 theorem positiveDegree_le_of_completed_isometry
     (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = V.toNormFamily.norm ω x) :
-    V.positiveDegree hS hN ≤ W.positiveDegree hS hN := by
-  apply V.positiveDegree_le hS hN
+    V.positiveDegree ≤ W.positiveDegree := by
+  apply V.positiveDegree_le
   intro U
-  have hu : (V.restrictOfMeasurableBase U hS).degree hS hN =
-      (W.restrictOfMeasurableBase (U.map e.toLinearMap) hS).degree hS hN := by
-    apply degree_eq_of_completed_isometry _ _ (e.submoduleMap U) hS hN
+  have hu : (V.restrictOfMeasurableBase U).degree =
+      (W.restrictOfMeasurableBase (U.map e.toLinearMap)).degree := by
+    apply degree_eq_of_completed_isometry _ _ (e.submoduleMap U)
     intro ω z
     simp only [restrictOfMeasurableBase_toNormFamily]
     exact V.toNormFamily.restrict_map_equiv_norm_eq W.toNormFamily e U ω (he ω) z
   rw [hu]
-  exact W.degree_restrict_le_positiveDegree hS hN (U.map e.toLinearMap)
+  exact W.degree_restrict_le_positiveDegree (U.map e.toLinearMap)
 
 /-- Actual completed isometries preserve the positive-degree supremum,
 including rank zero, without requiring a maximizing subspace. -/
 theorem positiveDegree_eq_of_completed_isometry
     (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = V.toNormFamily.norm ω x) :
-    V.positiveDegree hS hN = W.positiveDegree hS hN := by
-  apply le_antisymm (V.positiveDegree_le_of_completed_isometry W e hS hN he)
-  apply W.positiveDegree_le_of_completed_isometry V e.symm hS hN
+    V.positiveDegree = W.positiveDegree := by
+  apply le_antisymm (V.positiveDegree_le_of_completed_isometry W e he)
+  apply W.positiveDegree_le_of_completed_isometry V e.symm
   intro ω y
   let eω := e.baseChange K (S.ϕ ω).Completion E F
   change V.toNormFamily.norm ω (eω.symm y) = W.toNormFamily.norm ω y
@@ -74,13 +75,13 @@ theorem positiveDegree_eq_of_completed_isometry
 actual kernel quotient under the canonical first-isomorphism map. -/
 theorem positiveDegree_pushforward_eq_quotient_ker
     (V : AdelicVectorBundle S E) (π : E →ₗ[K] F) (hπ : Function.Surjective π)
-    (hm : (V.toNormFamily.pushforward π hπ).IsMeasurable)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.pushforward π hπ hm).positiveDegree hS hN =
-      (V.quotientOfMeasurableBase π.ker hS).positiveDegree hS hN := by
+    [hm : (V.toNormFamily.pushforward π hπ).IsMeasurable]
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    (V.pushforward π hπ).positiveDegree =
+      (V.quotientOfMeasurableBase π.ker).positiveDegree := by
   symm
-  apply positiveDegree_eq_of_completed_isometry _ _ (π.quotKerEquivOfSurjective hπ) hS hN
+  apply positiveDegree_eq_of_completed_isometry _ _ (π.quotKerEquivOfSurjective hπ)
   intro ω z
   exact V.toNormFamily.quotient_ker_equiv_norm_eq π hπ ω z
 
@@ -90,12 +91,12 @@ theorem positiveDegree_exactSequence_left
     (V : AdelicVectorBundle S E) (L : AdelicVectorBundle S F) (R : AdelicVectorBundle S G)
     (i : F →ₗ[K] E) (p : E →ₗ[K] G)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    L.positiveDegree hS hN = (V.restrictOfMeasurableBase p.ker hS).positiveDegree hS hN := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    L.positiveDegree = (V.restrictOfMeasurableBase p.ker).positiveDegree := by
   rw [hx.exact.linearMap_ker_eq]
   let e := LinearEquiv.ofInjective i hx.i_injective
-  apply positiveDegree_eq_of_completed_isometry _ _ e hS hN
+  apply positiveDegree_eq_of_completed_isometry _ _ e
   intro ω z
   have hc : i.range.subtype.comp e.toLinearMap = i := by
     ext x
@@ -115,12 +116,12 @@ theorem positiveDegree_exactSequence_right
     (V : AdelicVectorBundle S E) (L : AdelicVectorBundle S F) (R : AdelicVectorBundle S G)
     (i : F →ₗ[K] E) (p : E →ₗ[K] G)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    R.positiveDegree hS hN = (V.quotientOfMeasurableBase p.ker hS).positiveDegree hS hN := by
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    R.positiveDegree = (V.quotientOfMeasurableBase p.ker).positiveDegree := by
   symm
   apply positiveDegree_eq_of_completed_isometry _ _
-    (p.quotKerEquivOfSurjective hx.p_surjective) hS hN
+    (p.quotKerEquivOfSurjective hx.p_surjective)
   intro ω z
   change R.toNormFamily.norm ω
     ((p.quotKerEquivOfSurjective hx.p_surjective).toLinearMap.baseChange

@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicStructure.TrivialPlace
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.General.Semistability
+
 import ArakelovGeometry.AdelicVectorBundle.Construction.Rescaling
 import ArakelovGeometry.AdelicVectorBundle.Determinant.HermitianBasis
 import ArakelovGeometry.AdelicVectorBundle.Slope.Quotient
@@ -97,6 +98,7 @@ theorem integrable_logNorm_singleTrivialPlace (ξ : NormFamily (singleTrivialPla
 rational log norm itself as its integrable envelope. -/
 theorem isUpperDominated_singleTrivialPlace (ξ : NormFamily (singleTrivialPlace K) E) :
     ξ.IsUpperDominated := by
+  constructor
   intro x _
   exact ⟨ξ.logNorm x, ξ.integrable_logNorm_singleTrivialPlace x,
     Filter.Eventually.of_forall fun _ ↦ le_rfl⟩
@@ -185,7 +187,9 @@ theorem ofTrivialNorm_isUltrametric_iff
         (p (trivialCompletedTensorEquiv K E
           ((1 : (AbsoluteValue.trivial : AbsoluteValue K ℝ).Completion) ⊗ₜ[K] y))) at he
     simpa only [map_add, trivialCompletedTensorEquiv_one_tmul] using he
-  · intro h ω _ z t
+  · intro h
+    constructor
+    intro ω _ z t
     change (AbsoluteValue.trivial : AbsoluteValue K ℝ).Completion ⊗[K] E at z t
     change p (trivialCompletedTensorEquiv K E (z + t)) ≤
       max (p (trivialCompletedTensorEquiv K E z)) (p (trivialCompletedTensorEquiv K E t))
@@ -265,6 +269,7 @@ whole actual completed fibre. -/
 theorem isUltrametric_of_trivialSeminorm_eq_const
     (ξ : NormFamily (singleTrivialPlace K) E) {c : ℝ}
     (h : ∀ x, x ≠ 0 → ξ.trivialSeminorm x = c) : ξ.IsUltrametric := by
+  constructor
   intro ω _ x y
   by_cases hx : x = 0
   · simp [hx]
@@ -290,19 +295,17 @@ open Classical in
 therefore actual degree zero, including the empty determinant wedge. -/
 theorem degree_eq_zero_of_trivialSeminorm_eq_one
     (V : AdelicVectorBundle (singleTrivialPlace K) E)
-    (hS : DiscreteMeasurableSpace (singleTrivialPlace K).Ω ∨
-      (singleTrivialPlace K).HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ (singleTrivialPlace K).Ωinf,
-      IsRCLikeNormedField ((singleTrivialPlace K).ϕ ω).Completion)
+    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     (h : ∀ x, x ≠ 0 → V.toNormFamily.trivialSeminorm x = 1) :
-    V.degree hS hN = 0 := by
+    V.degree = 0 := by
   let C := (AbsoluteValue.trivial : AbsoluteValue K ℝ).Completion
   let b := Module.finBasis K E
   let B := b.baseChange C
   let q : Seminorm C (C ⊗[K] E) := V.toNormFamily.norm PUnit.unit
   let qd : Seminorm C (C ⊗[K] (⋀[K]^(Module.finrank K E) E)) :=
     V.toNormFamily.determinant.norm PUnit.unit
-  have hH : V.toNormFamily.IsHermitian hN := by
+  have hH : V.toNormFamily.IsHermitian := by
     refine ⟨V.toNormFamily.isUltrametric_of_trivialSeminorm_eq_const h, ?_⟩
     intro ω hω
     simp only [singleTrivialPlace_Ωinf, Set.mem_empty_iff_false] at hω
@@ -347,7 +350,7 @@ theorem degree_eq_zero_of_trivialSeminorm_eq_one
     rw [hz, TensorProduct.tmul_zero,
       show qd 0 = 0 from V.toNormFamily.determinant.norm_zero PUnit.unit] at hw
     exact zero_ne_one hw
-  rw [V.degree_eq_neg_integral hS hN ⟨_, hn⟩, integral_singleTrivialPlace]
+  rw [V.degree_eq_neg_integral ⟨_, hn⟩, integral_singleTrivialPlace]
   change -Real.log (qd ((1 : C) ⊗ₜ[K] _root_.exteriorPower.ιMulti K _ b)) = 0
   rw [hw, Real.log_one, neg_zero]
 
@@ -356,13 +359,11 @@ open Classical in
 degree, in every rank. -/
 theorem degree_eq_neg_finrank_mul_log_of_trivialSeminorm_eq_const
     (V : AdelicVectorBundle (singleTrivialPlace K) E)
-    (hS : DiscreteMeasurableSpace (singleTrivialPlace K).Ω ∨
-      (singleTrivialPlace K).HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ (singleTrivialPlace K).Ωinf,
-      IsRCLikeNormedField ((singleTrivialPlace K).ϕ ω).Completion)
+    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     {c : ℝ} (hc : 0 < c)
     (h : ∀ x, x ≠ 0 → V.toNormFamily.trivialSeminorm x = c) :
-    V.degree hS hN = -(Module.finrank K E : ℝ) * Real.log c := by
+    V.degree = -(Module.finrank K E : ℝ) * Real.log c := by
   let φ : (singleTrivialPlace K).Ω → ℝ := fun _ ↦ -Real.log c
   have hm : Measurable φ := measurable_const
   have hi : Integrable φ (singleTrivialPlace K).v := integrable_const _
@@ -374,8 +375,8 @@ theorem degree_eq_neg_finrank_mul_log_of_trivialSeminorm_eq_const
       ((1 : (AbsoluteValue.trivial : AbsoluteValue K ℝ).Completion) ⊗ₜ[K] x) = 1
     rw [← NormFamily.trivialSeminorm_apply, h x hx, Real.exp_neg,
       Real.exp_log hc, inv_mul_cancel₀ hc.ne']
-  have he := (V.scaleExp φ hm hi).degree_eq_zero_of_trivialSeminorm_eq_one hS hN hu
-  rw [V.degree_scaleExp φ hm hi hS hN, integral_singleTrivialPlace] at he
+  have he := (V.scaleExp φ hm hi).degree_eq_zero_of_trivialSeminorm_eq_one hu
+  rw [V.degree_scaleExp φ hm hi, integral_singleTrivialPlace] at he
   dsimp only [φ] at he
   linarith
 
@@ -456,10 +457,8 @@ open AdelicStructure
 
 variable [FiniteDimensional K E]
   (V : AdelicVectorBundle (singleTrivialPlace K) E)
-  (hS : DiscreteMeasurableSpace (singleTrivialPlace K).Ω ∨
-    (singleTrivialPlace K).HasCommonCountableDenseSubfield)
-  (hN : ∀ ω ∈ (singleTrivialPlace K).Ωinf,
-    IsRCLikeNormedField ((singleTrivialPlace K).ϕ ω).Completion)
+  [hS : (singleTrivialPlace K).HasMeasurableBase]
+  [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
 open Classical in
 /-- The positive-rank ordinary mean of an actual constant norm is its
@@ -467,9 +466,9 @@ negative logarithm. Rank zero keeps the source zero-mean convention. -/
 theorem slope_eq_neg_log_of_trivialSeminorm_eq_const
     {c : ℝ} (hc : 0 < c)
     (h : ∀ x, x ≠ 0 → V.toNormFamily.trivialSeminorm x = c)
-    (hr : 0 < Module.finrank K E) : V.slope hS hN = -Real.log c := by
+    (hr : 0 < Module.finrank K E) : V.slope = -Real.log c := by
   have hn : (Module.finrank K E : ℝ) ≠ 0 := (Nat.cast_pos.mpr hr).ne'
-  rw [slope, V.degree_eq_neg_finrank_mul_log_of_trivialSeminorm_eq_const hS hN hc h]
+  rw [slope, V.degree_eq_neg_finrank_mul_log_of_trivialSeminorm_eq_const hc h]
   apply (div_eq_iff hn).mpr
   ring
 
@@ -480,21 +479,21 @@ theorem minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const
     {c : ℝ} (hc : 0 < c)
     (h : ∀ x, x ≠ 0 → V.toNormFamily.trivialSeminorm x = c)
     (hr : 0 < Module.finrank K E) :
-    V.minimalSlope hS hN = (-Real.log c : ℝ) := by
+    V.minimalSlope = (-Real.log c : ℝ) := by
   apply le_antisymm
-  · have he := V.minimalSlope_le_slope hS hN hr
-    rw [V.slope_eq_neg_log_of_trivialSeminorm_eq_const hS hN hc h hr] at he
+  · have he := V.minimalSlope_le_slope hr
+    rw [V.slope_eq_neg_log_of_trivialSeminorm_eq_const hc h hr] at he
     exact he
-  · rw [V.minimalSlope_eq_iInf_slope_quotient hS hN]
+  · rw [V.minimalSlope_eq_iInf_slope_quotient]
     apply le_iInf
     intro U
     have hq : ∀ x, x ≠ 0 →
-        (V.quotientOfMeasurableBase U.val hS).toNormFamily.trivialSeminorm x = c := by
+        (V.quotientOfMeasurableBase U.val).toNormFamily.trivialSeminorm x = c := by
       intro x hx
       exact V.toNormFamily.trivialSeminorm_pushforward_eq_const h
         U.val.mkQ U.val.mkQ_surjective x hx
-    rw [(V.quotientOfMeasurableBase U.val hS).slope_eq_neg_log_of_trivialSeminorm_eq_const
-      hS hN hc hq U.property]
+    rw [(V.quotientOfMeasurableBase U.val).slope_eq_neg_log_of_trivialSeminorm_eq_const
+      hc hq U.property]
 
 open Classical in
 /-- True general semistability of a positive-rank actual constant norm
@@ -502,18 +501,18 @@ follows from the minimum slope of every genuine restriction. -/
 theorem isSemistable_of_trivialSeminorm_eq_const
     {c : ℝ} (hc : 0 < c)
     (h : ∀ x, x ≠ 0 → V.toNormFamily.trivialSeminorm x = c)
-    (hr : 0 < Module.finrank K E) : V.IsSemistable hS hN := by
-  apply (V.isSemistable_iff_minimalSlope_restrict_le hS hN hr).mpr
+    (hr : 0 < Module.finrank K E) : V.IsSemistable := by
+  apply (V.isSemistable_iff_minimalSlope_restrict_le hr).mpr
   intro U hU
   have hUr : 0 < Module.finrank K U :=
     Nat.pos_of_ne_zero (fun hz ↦ hU (Submodule.finrank_eq_zero.mp hz))
   have hu : ∀ x, x ≠ 0 →
-      (V.restrictOfMeasurableBase U hS).toNormFamily.trivialSeminorm x = c := by
+      (V.restrictOfMeasurableBase U).toNormFamily.trivialSeminorm x = c := by
     intro x hx
     exact V.toNormFamily.trivialSeminorm_restrict_eq_const h U x hx
-  rw [V.minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const hS hN hc h hr,
-    (V.restrictOfMeasurableBase U hS).minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const
-      hS hN hc hu hUr]
+  rw [V.minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const hc h hr,
+    (V.restrictOfMeasurableBase U).minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const
+      hc hu hUr]
 
 end AdelicVectorBundle
 

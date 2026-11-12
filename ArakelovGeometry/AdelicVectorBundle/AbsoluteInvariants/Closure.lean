@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Algebraic.ClosureApproximation
+
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Isomorphism.Invariants
 import Mathlib.CategoryTheory.Category.Init
 
@@ -29,29 +30,29 @@ variable {K : Type*} [Field K] {S : AdelicStructure K} [S.IsProper]
 /-- The existing absolute positive degree is computed on any prescribed
 algebraic closure using a produced field isomorphism. -/
 theorem absolutePositiveDegree_eq_scalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    V.absolutePositiveDegree hcount hN =
-      (V.scalarExtension (L := L) hcount hN).positiveDegree
-        (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))
-        (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) := by
+    V.absolutePositiveDegree =
+      (V.scalarExtension (L := L)).positiveDegree
+        (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
+        (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) := by
   let : IsAlgClosure K L := ⟨inferInstance, inferInstance⟩
   let σ := IsAlgClosure.equiv K (AlgebraicClosure K) L
-  exact (V.positiveDegree_scalarExtension_algEquiv hcount hN σ).symm
+  exact (V.positiveDegree_scalarExtension_algEquiv σ).symm
 
 /-- The existing absolute maximal slope is computed on every algebraic
 closure, including its bottom convention for the zero bundle. -/
 theorem absoluteMaximalSlope_eq_scalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    V.absoluteMaximalSlope hcount hN =
-      (V.scalarExtension (L := L) hcount hN).maximalSlope
-        (Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))
-        (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN) := by
+    V.absoluteMaximalSlope =
+      (V.scalarExtension (L := L)).maximalSlope
+        (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
+        (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) := by
   let : IsAlgClosure K L := ⟨inferInstance, inferInstance⟩
   let σ := IsAlgClosure.equiv K (AlgebraicClosure K) L
-  exact (V.maximalSlope_scalarExtension_algEquiv hcount hN σ).symm
+  exact (V.maximalSlope_scalarExtension_algEquiv σ).symm
 
 end ArakelovGeometry.AdelicVectorBundle

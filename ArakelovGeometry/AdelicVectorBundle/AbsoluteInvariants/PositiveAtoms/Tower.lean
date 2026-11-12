@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants.PositiveAtoms.Basic
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Tower.Compatible.NativeRestriction
+
 import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants.PositiveAtoms.Closure
 import Mathlib.CategoryTheory.Category.Init
 
@@ -35,39 +36,39 @@ variable {K L M : Type*} [Field K] [Field L] [Field M]
 /-- Every literal iterated native subspace corresponds to a direct native
 subspace with the same actual degree; neither supremum needs attainment. -/
 theorem iSup_nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms_eq_direct
-    (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
     (⨆ A : Submodule M (M ⊗[L] (L ⊗[K] E)),
-      (ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms hξ hpos hS A : EReal)) =
+      (ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms A : EReal)) =
     ⨆ B : Submodule M (M ⊗[K] E),
-      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS B : EReal) := by
+      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms B : EReal) := by
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
   let o := Submodule.orderIsoMapComap c
   apply le_antisymm
   · apply iSup_le
     intro A
-    rw [ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms_eq_direct hξ hpos hS A]
+    rw [ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms_eq_direct A]
     exact le_iSup (fun B : Submodule M (M ⊗[K] E) =>
-      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS B : EReal)) _
+      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms B : EReal)) _
   · apply iSup_le
     intro B
     obtain ⟨A, rfl⟩ := o.surjective B
-    change (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS
+    change (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms
       (A.map c.toLinearMap) : EReal) ≤ _
-    rw [← ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms_eq_direct hξ hpos hS A]
+    rw [← ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms_eq_direct A]
     exact le_iSup (fun A : Submodule M (M ⊗[L] (L ⊗[K] E)) =>
-      (ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms hξ hpos hS A : EReal)) A
+      (ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms A : EReal)) A
 
 /-- The genuine associator preserves every positive native rank and mean,
 including the source's empty maximal-slope index set. -/
 theorem iSup_nativeCompatibleTowerMeanOfPositiveAtoms_eq_direct
-    (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
     (⨆ A : {A : Submodule M (M ⊗[L] (L ⊗[K] E)) // 0 < Module.finrank M A},
-      (ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms hξ hpos hS A.val /
+      (ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms A.val /
         (Module.finrank M A.val : ℝ) : EReal)) =
     ⨆ B : {B : Submodule M (M ⊗[K] E) // 0 < Module.finrank M B},
-      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS B.val /
+      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms B.val /
         (Module.finrank M B.val : ℝ) : EReal) := by
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
   let o := Submodule.orderIsoMapComap c
@@ -76,9 +77,9 @@ theorem iSup_nativeCompatibleTowerMeanOfPositiveAtoms_eq_direct
     intro A
     have hr := (c.submoduleMap A.val).finrank_eq
     have hB : 0 < Module.finrank M (A.val.map c.toLinearMap) := hr ▸ A.property
-    rw [ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms_eq_direct hξ hpos hS A.val, hr]
+    rw [ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms_eq_direct A.val, hr]
     exact le_iSup (fun B : {B : Submodule M (M ⊗[K] E) // 0 < Module.finrank M B} =>
-      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms hξ hpos hS B.val /
+      (ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms B.val /
         (Module.finrank M B.val : ℝ) : EReal)) ⟨A.val.map c.toLinearMap, hB⟩
   · apply iSup_le
     intro B
@@ -89,36 +90,36 @@ theorem iSup_nativeCompatibleTowerMeanOfPositiveAtoms_eq_direct
       rw [ho] at hr
       exact hr
     have hA : 0 < Module.finrank M A := hr.symm ▸ B.property
-    have hd := ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms_eq_direct hξ hpos hS A
+    have hd := ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms_eq_direct A
     rw [ho] at hd
     exact (le_of_eq (by rw [← hd, ← hr])).trans
       (le_iSup (fun A : {A : Submodule M (M ⊗[L] (L ⊗[K] E)) // 0 < Module.finrank M A} =>
-        (ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms hξ hpos hS A.val /
+        (ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms A.val /
           (Module.finrank M A.val : ℝ) : EReal)) ⟨A, hA⟩)
 
 /-- The original absolute positive degree is the canonical degree supremum
 of every actual native subspace over the true iterated closure curve. -/
 theorem absolutePositiveDegreeOfPositiveAtoms_eq_iSup_compatibleTower
-    (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
-    ξ.absolutePositiveDegreeOfPositiveAtoms hξ hpos hS =
+    (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
+    ξ.absolutePositiveDegreeOfPositiveAtoms =
       ⨆ A : Submodule M (M ⊗[L] (L ⊗[K] E)),
-        (ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms hξ hpos hS A : EReal) := by
-  rw [ξ.absolutePositiveDegreeOfPositiveAtoms_eq_iSup_of_isAlgClosed (L := M) hξ hpos hS]
+        (ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms A : EReal) := by
+  rw [ξ.absolutePositiveDegreeOfPositiveAtoms_eq_iSup_of_isAlgClosed (L := M)]
   exact (ξ.iSup_nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms_eq_direct
-    (L := L) hξ hpos hS).symm
+    (L := L)).symm
 
 /-- The original absolute maximal slope is the supremum of all actual
 positive-rank means over the genuine iterated closure curve. -/
 theorem absoluteMaximalSlopeOfPositiveAtoms_eq_iSup_compatibleTower
-    (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    (hpos : ∀ ω : S.Ω, 0 < S.v {ω}) (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
-    ξ.absoluteMaximalSlopeOfPositiveAtoms hξ hpos hS =
+    (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
+    ξ.absoluteMaximalSlopeOfPositiveAtoms =
       ⨆ A : {A : Submodule M (M ⊗[L] (L ⊗[K] E)) // 0 < Module.finrank M A},
-        (ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms hξ hpos hS A.val /
+        (ξ.nativeCompatibleTowerRestrictionDegreeOfPositiveAtoms A.val /
           (Module.finrank M A.val : ℝ) : EReal) := by
-  rw [ξ.absoluteMaximalSlopeOfPositiveAtoms_eq_iSup_of_isAlgClosed (L := M) hξ hpos hS]
-  exact (ξ.iSup_nativeCompatibleTowerMeanOfPositiveAtoms_eq_direct (L := L) hξ hpos hS).symm
+  rw [ξ.absoluteMaximalSlopeOfPositiveAtoms_eq_iSup_of_isAlgClosed (L := M)]
+  exact (ξ.iSup_nativeCompatibleTowerMeanOfPositiveAtoms_eq_direct (L := L)).symm
 
 end NormFamily
 end ArakelovGeometry

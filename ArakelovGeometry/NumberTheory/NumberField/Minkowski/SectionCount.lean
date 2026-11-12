@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Model.Sections
+
 import ArakelovGeometry.AdelicCurve.Equiv
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.GeometryOfNumbers.Counting.LatticeCount
@@ -83,21 +84,21 @@ theorem effectiveSections_fullLatticeGaugeFamily
 literal original diagonal covolume and no supplied volume or counting conclusion. -/
 theorem productBallVolume_le_original_section_count
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     letI := euclideanNormedAddCommGroup η
     letI := euclideanNormedSpace η
-    letI := euclideanInnerProduct hη
+    letI := euclideanInnerProduct (ξ := η)
     letI : MeasurableSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := borel _
     letI : BorelSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := ⟨rfl⟩
     letI := measureSpaceOfInnerProductSpace
       (E := CompletedVectorProduct K (K ⊗[𝓞 K] M))
-    productBallVolume η hη 1 ≤
+    productBallVolume η 1 ≤
       2 ^ (Module.finrank ℚ K * Module.finrank K (K ⊗[𝓞 K] M)) *
         (Nat.card (effectiveSections M η) : ℝ≥0∞) *
           ENNReal.ofReal (ZLattice.covolume (originalDiagonalMap (K := K) M).range) := by
   let := euclideanNormedAddCommGroup η
   let := euclideanNormedSpace η
-  let := euclideanInnerProduct hη
+  let := euclideanInnerProduct (ξ := η)
   let : MeasurableSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := borel _
   let : BorelSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace
@@ -127,7 +128,7 @@ theorem productBallVolume_le_original_section_count
     (productBall_isClosed η 1).measurableSet
     (productBall_isCompact η (R := 1) zero_le_one).isBounded
     (convex_productBall η 1) hsymm
-  change productBallVolume η hη 1 ≤
+  change productBallVolume η 1 ≤
     2 ^ Module.finrank ℝ (CompletedVectorProduct K (K ⊗[𝓞 K] M)) *
       (Nat.card {z : (originalDiagonalMap (K := K) M).range |
         (z : CompletedVectorProduct K (K ⊗[𝓞 K] M)) ∈ productBall η 1} : ℝ≥0∞) *
@@ -139,18 +140,18 @@ theorem productBallVolume_le_original_section_count
 formula give the actual arithmetic section-volume estimate. -/
 theorem productBallVolume_le_exp_degree_section_count
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     let L := genericImage (K := K) M
     let hfg := genericImage_fg (K := K) M
     let hspan := genericImage_fullSpan (K := K) M
     let ξ := fullLatticeGaugeFamily L hfg hspan η
-    let hξ := fullLatticeGaugeFamily_isHermitian L hfg hspan η hη
+    let hξ := fullLatticeGaugeFamily_isHermitian L hfg hspan η
     let V := fullLatticeAdelicBundle L hfg hspan η
-    productBallVolume ξ hξ 1 ≤
+    productBallVolume ξ (hξ := hξ) 1 ≤
       2 ^ (Module.finrank ℚ K * Module.finrank K (K ⊗[𝓞 K] M)) *
         (Nat.card (effectiveSections M η) : ℝ≥0∞) *
-          ENNReal.ofReal (Real.exp (-V.degree (Or.inl inferInstance)
-            normalizedNumberFieldArchimedeanCompletions -
+          ENNReal.ofReal (Real.exp (-V.degree
+            -
               (Module.finrank K (K ⊗[𝓞 K] M) : ℝ) *
                 ((InfinitePlace.nrComplexPlaces K : ℝ) * Real.log 2 -
                   Real.log |(NumberField.discr K : ℝ)| / 2))) := by
@@ -158,16 +159,16 @@ theorem productBallVolume_le_exp_degree_section_count
   let hfg := genericImage_fg (K := K) M
   let hspan := genericImage_fullSpan (K := K) M
   let ξ := fullLatticeGaugeFamily L hfg hspan η
-  let hξ := fullLatticeGaugeFamily_isHermitian L hfg hspan η hη
+  let hξ := fullLatticeGaugeFamily_isHermitian L hfg hspan η
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (hξ := hξ)
   let : MeasurableSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := borel _
   let : BorelSpace (CompletedVectorProduct K (K ⊗[𝓞 K] M)) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace
     (E := CompletedVectorProduct K (K ⊗[𝓞 K] M))
-  have h := productBallVolume_le_original_section_count M ξ hξ
-  have hc := originalDiagonal_covolume_eq_exp_neg_degree_sub_chi (K := K) M η hη
+  have h := productBallVolume_le_original_section_count M ξ (hη := hξ)
+  have hc := originalDiagonal_covolume_eq_exp_neg_degree_sub_chi (K := K) M η
   rw [hc, effectiveSections_fullLatticeGaugeFamily] at h
   exact h
 
@@ -175,11 +176,11 @@ theorem productBallVolume_le_exp_degree_section_count
 section bound. The sharper arithmetic duality constant is a separate statement. -/
 theorem degree_sub_discriminant_rank_error_le_logSectionCount
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hη : η.IsHermitian]
     (hn : 0 < Module.finrank K (K ⊗[𝓞 K] M)) :
     let V := fullLatticeAdelicBundle (genericImage (K := K) M)
       (genericImage_fg (K := K) M) (genericImage_fullSpan (K := K) M) η
-    V.degree (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions -
+    V.degree -
         (Module.finrank K (K ⊗[𝓞 K] M) : ℝ) / 2 *
           Real.log |(NumberField.discr K : ℝ)| -
         (Module.finrank ℚ K : ℝ) * (Module.finrank K (K ⊗[𝓞 K] M) : ℝ) / 2 *
@@ -190,17 +191,17 @@ theorem degree_sub_discriminant_rank_error_le_logSectionCount
   let hfg := genericImage_fg (K := K) M
   let hspan := genericImage_fullSpan (K := K) M
   let ξ := fullLatticeGaugeFamily L hfg hspan η
-  let hξ := fullLatticeGaugeFamily_isHermitian L hfg hspan η hη
+  let hξ := fullLatticeGaugeFamily_isHermitian L hfg hspan η
   let V := fullLatticeAdelicBundle L hfg hspan η
-  let D := V.degree (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions
+  let D := V.degree
   let χ := (InfinitePlace.nrComplexPlaces K : ℝ) * Real.log 2 -
     Real.log |(NumberField.discr K : ℝ)| / 2
   have hnR : 0 < (n : ℝ) := by exact_mod_cast hn
   have hs : 0 < Real.sqrt (n : ℝ) := Real.sqrt_pos.mpr hnR
   have hcard : 0 < (Nat.card (effectiveSections M η) : ℝ) :=
     Nat.cast_pos.mpr (card_effectiveSections_pos M η)
-  have hcube := productBallVolume_ge_cube ξ hξ hn (R := 1) zero_le_one
-  have hupper := productBallVolume_le_exp_degree_section_count M η hη
+  have hcube := productBallVolume_ge_cube ξ (hξ := hξ) hn (R := 1) zero_le_one
+  have hupper := productBallVolume_le_exp_degree_section_count M η
   have he := hcube.trans hupper
   change ENNReal.ofReal ((2 : ℝ) ^ (n * Fintype.card (InfinitePlace K)) *
     (1 / Real.sqrt (n : ℝ)) ^ (d * n)) ≤

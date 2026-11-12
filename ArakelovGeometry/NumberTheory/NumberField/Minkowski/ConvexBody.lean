@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.WeightedCovolume
+
 import Mathlib.MeasureTheory.Group.GeometryOfNumbers
 import Mathlib.Topology.Sheaves.Init
 
@@ -28,20 +29,20 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E]
 /-- The canonical ordinary fundamental-domain measure is the actual real covolume. -/
 theorem euclideanVolume_fundamentalDomain
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) :
-    euclideanVolume ξ hξ (diagonalFundamentalDomain M hfg hspan) =
-      ENNReal.ofReal (euclideanCovolume ξ hξ M) := by
+    euclideanVolume ξ (diagonalFundamentalDomain M hfg hspan) =
+      ENNReal.ofReal (euclideanCovolume ξ M) := by
   let : Module ℚ E := Module.compHom E (algebraMap ℚ K)
   let : IsScalarTower ℚ K E := IsScalarTower.of_compHom ℚ K E
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
-  rw [euclideanCovolume_eq_fundamentalDomain ξ hξ M hfg hspan]
+  rw [euclideanCovolume_eq_fundamentalDomain ξ M hfg hspan]
   symm
   apply ENNReal.ofReal_toReal
   change volume (ZSpan.fundamentalDomain (diagonalLatticeBasis M hfg hspan)) ≠ ⊤
@@ -51,20 +52,20 @@ theorem euclideanVolume_fundamentalDomain
 compact symmetric convex body of sufficient ordinary volume. -/
 theorem exists_integral_nonzero_of_convex_volume
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) (hrank : 0 < Module.finrank K E)
     (B : Set (CompletedVectorProduct K E))
     (hcompact : letI := euclideanNormedAddCommGroup ξ; IsCompact B)
     (hconvex : Convex ℝ B) (hsymm : ∀ z ∈ B, -z ∈ B)
-    (hvolume : ENNReal.ofReal (euclideanCovolume ξ hξ M) *
-      2 ^ (Module.finrank ℚ K * Module.finrank K E) ≤ euclideanVolume ξ hξ B) :
+    (hvolume : ENNReal.ofReal (euclideanCovolume ξ M) *
+      2 ^ (Module.finrank ℚ K * Module.finrank K E) ≤ euclideanVolume ξ B) :
     ∃ s : E, s ∈ M ∧ s ≠ 0 ∧ vectorDiagonalMap (K := K) (E := E) s ∈ B := by
   let : Module ℚ E := Module.compHom E (algebraMap ℚ K)
   let : IsScalarTower ℚ K E := IsScalarTower.of_compHom ℚ K E
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
@@ -78,8 +79,8 @@ theorem exists_integral_nonzero_of_convex_volume
     exact ZSpan.isAddFundamentalDomain _ volume
   have hv : volume (ZSpan.fundamentalDomain (diagonalLatticeBasis M hfg hspan)) *
       2 ^ Module.finrank ℝ (CompletedVectorProduct K E) ≤ volume B := by
-    change euclideanVolume ξ hξ (diagonalFundamentalDomain M hfg hspan) *
-      2 ^ Module.finrank ℝ (CompletedVectorProduct K E) ≤ euclideanVolume ξ hξ B
+    change euclideanVolume ξ (diagonalFundamentalDomain M hfg hspan) *
+      2 ^ Module.finrank ℝ (CompletedVectorProduct K E) ≤ euclideanVolume ξ B
     rw [euclideanVolume_fundamentalDomain, vectorDiagonal_dimension]
     exact hvolume
   let : Countable M := (NumberFieldFullLattice.integerBasis M hfg).repr.injective.countable

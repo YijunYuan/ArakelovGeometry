@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Archimedean.Euclidean
 public import Mathlib.Algebra.Module.ZLattice.Covolume
+
 import Mathlib.Topology.Sheaves.Init
 
 /-!
@@ -62,24 +63,24 @@ variable [FiniteDimensional K E]
 
 /-- Covolume for the Euclidean volume of the original Hermitian completed product. -/
 def euclideanCovolume (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) : ℝ := by
   letI := euclideanNormedAddCommGroup ξ
   letI := euclideanNormedSpace ξ
-  letI := euclideanInnerProduct hξ
+  letI := euclideanInnerProduct (ξ := ξ)
   letI : MeasurableSpace (CompletedVectorProduct K E) := borel _
   letI : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   letI := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
   exact ZLattice.covolume (diagonalLattice M)
 
 theorem euclideanCovolume_pos (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M : Submodule (𝓞 K) E) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) :
-    0 < euclideanCovolume ξ hξ M := by
+    0 < euclideanCovolume ξ M := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
@@ -89,15 +90,15 @@ theorem euclideanCovolume_pos (ξ : NormFamily (normalizedNumberFieldAdelicStruc
 
 theorem euclideanCovolume_div_eq_relIndex
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M₀ M : Submodule (𝓞 K) E) (hfg₀ : M₀.FG)
     (hspan₀ : Submodule.span K (M₀ : Set E) = ⊤) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) (h : M₀ ≤ M) :
-    euclideanCovolume ξ hξ M₀ / euclideanCovolume ξ hξ M =
+    euclideanCovolume ξ M₀ / euclideanCovolume ξ M =
       (M₀.toAddSubgroup.relIndex M.toAddSubgroup : ℝ) := by
   let := euclideanNormedAddCommGroup ξ
   let := euclideanNormedSpace ξ
-  let := euclideanInnerProduct hξ
+  let := euclideanInnerProduct (ξ := ξ)
   let : MeasurableSpace (CompletedVectorProduct K E) := borel _
   let : BorelSpace (CompletedVectorProduct K E) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K E)
@@ -111,29 +112,29 @@ theorem euclideanCovolume_div_eq_relIndex
 
 theorem original_relIndex_pos
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M₀ M : Submodule (𝓞 K) E) (hfg₀ : M₀.FG)
     (hspan₀ : Submodule.span K (M₀ : Set E) = ⊤) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) (h : M₀ ≤ M) :
     0 < M₀.toAddSubgroup.relIndex M.toAddSubgroup := by
-  have hpos := div_pos (euclideanCovolume_pos ξ hξ M₀ hfg₀ hspan₀)
-    (euclideanCovolume_pos ξ hξ M hfg hspan)
-  rw [euclideanCovolume_div_eq_relIndex ξ hξ M₀ M hfg₀ hspan₀ hfg hspan h] at hpos
+  have hpos := div_pos (euclideanCovolume_pos ξ M₀ hfg₀ hspan₀)
+    (euclideanCovolume_pos ξ M hfg hspan)
+  rw [euclideanCovolume_div_eq_relIndex ξ M₀ M hfg₀ hspan₀ hfg hspan h] at hpos
   exact_mod_cast hpos
 
 theorem euclideanCovolume_eq_div_relIndex
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (M₀ M : Submodule (𝓞 K) E) (hfg₀ : M₀.FG)
     (hspan₀ : Submodule.span K (M₀ : Set E) = ⊤) (hfg : M.FG)
     (hspan : Submodule.span K (M : Set E) = ⊤) (h : M₀ ≤ M) :
-    euclideanCovolume ξ hξ M = euclideanCovolume ξ hξ M₀ /
+    euclideanCovolume ξ M = euclideanCovolume ξ M₀ /
       (M₀.toAddSubgroup.relIndex M.toAddSubgroup : ℝ) := by
-  have heq := euclideanCovolume_div_eq_relIndex ξ hξ M₀ M hfg₀ hspan₀ hfg hspan h
-  have hm : euclideanCovolume ξ hξ M ≠ 0 :=
-    ne_of_gt (euclideanCovolume_pos ξ hξ M hfg hspan)
+  have heq := euclideanCovolume_div_eq_relIndex ξ M₀ M hfg₀ hspan₀ hfg hspan h
+  have hm : euclideanCovolume ξ M ≠ 0 :=
+    ne_of_gt (euclideanCovolume_pos ξ M hfg hspan)
   have hq : (M₀.toAddSubgroup.relIndex M.toAddSubgroup : ℝ) ≠ 0 := by
-    exact_mod_cast ne_of_gt (original_relIndex_pos ξ hξ M₀ M hfg₀ hspan₀ hfg hspan h)
+    exact_mod_cast ne_of_gt (original_relIndex_pos ξ M₀ M hfg₀ hspan₀ hfg hspan h)
   apply (eq_div_iff hq).2
   simpa only [mul_comm] using ((div_eq_iff hm).1 heq).symm
 
@@ -150,9 +151,9 @@ variable {K E : Type*} [Field K] [NumberField K]
 theorem IsDominated.pure_globalBall_euclideanCovolume_pos
     (hdom : ξ.IsDominated) (hultra : ξ.IsUltrametric)
     (hpure : ξ.IsPureAtFinitePlaces)
-    (hHerm : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
-    0 < euclideanCovolume ξ hHerm (ξ.globalUnitBallModule hultra) :=
-  euclideanCovolume_pos ξ hHerm _
+    (hHerm : ξ.IsHermitian) :
+    0 < euclideanCovolume ξ (ξ.globalUnitBallModule) :=
+  euclideanCovolume_pos ξ _
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hultra hpure).1
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hultra hpure).2.2
 

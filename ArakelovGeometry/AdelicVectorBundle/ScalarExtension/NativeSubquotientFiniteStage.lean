@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.QuotientEquiv
+
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.ComplexQuotient
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.FiniteStage.RestrictionIsometry
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Subspace.ComplexDescent
@@ -109,7 +110,7 @@ variable {k : Type*} [Field k] {l : Type*} [Field l] [Algebra k l]
   {X : Type*} [AddCommGroup X] [Module k X] [FiniteDimensional k X]
 
 private theorem nativeStage_tensorQuotient_norm_eq (ξ : NormFamily T X)
-    (hN : ∀ ω ∈ T.Ωinf, IsRCLikeNormedField (T.ϕ ω).Completion)
+    [hN : T.IsArchimedeanNormalized]
     (hi : ∃ a : k, a ^ 2 = -1) (P : Submodule k X)
     (x : T.ParameterSpaceExtension l) (z : x.abv.Completion ⊗[l] (l ⊗[k] (X ⧸ P))) :
     ((ξ.scalarExtension (L := l)).quotient (P.baseChange l)).norm x
@@ -128,7 +129,7 @@ private theorem nativeStage_tensorQuotient_norm_eq (ξ : NormFamily T X)
     (LinearMap.baseChange_surjective l P.mkQ_surjective)).pushforward_norm_of_injective
     e.toLinearMap e.surjective e.injective ω z
   exact (hc.symm.trans ht).trans
-    (ξ.scalarExtension_pushforward_norm_eq_of_sqrt_neg_one hN hi P.mkQ P.mkQ_surjective x z)
+    (ξ.scalarExtension_pushforward_norm_eq_of_sqrt_neg_one hi P.mkQ P.mkQ_surjective x z)
 
 end QuotientTransport
 
@@ -180,7 +181,7 @@ variable [FiniteDimensional K E]
 completed norm under the actual tower place map. Normalization and the true
 finite-stage square root are explicit; original ultrametricity is unnecessary. -/
 theorem scalarExtension_subquotient_finiteStage_norm_eq (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
     [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] (hi : ∃ a : F, a ^ 2 = -1)
     (P Q : Submodule F (F ⊗[K] E)) (hPQ : P ≤ Q)
@@ -205,10 +206,10 @@ theorem scalarExtension_subquotient_finiteStage_norm_eq (ξ : NormFamily S E)
   have hq := nativeStage_quotient_tower_norm_eq F
     (((ξ.scalarExtension (L := F)).restrict Q).scalarExtension (L := L))
     ((ξ.scalarExtension (L := L)).restrict B) e (C.baseChange L) D hMap x
-    (fun t => scalarExtension_restrict_tower_norm_eq ξ hN hi Q B e.toLinearMap rfl x t)
+    (fun t ↦ scalarExtension_restrict_tower_norm_eq ξ hi Q B e.toLinearMap rfl x t)
     (d.toLinearMap.baseChange x.abv.Completion z)
   have hd := nativeStage_tensorQuotient_norm_eq ((ξ.scalarExtension (L := F)).restrict Q)
-    (AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F) hN) hi C x z
+    hi C x z
   have hv : (finiteStageSubquotientEquiv (L := L) F P Q hPQ).toLinearMap.baseChange
       x.abv.Completion z = q.toLinearMap.baseChange x.abv.Completion
         (d.toLinearMap.baseChange x.abv.Completion z) := by
@@ -238,7 +239,7 @@ abbrev HasScalarExtensionSubquotientIsometry (ξ : NormFamily S E)
 
 /-- Exact scalar-extension images admit a completed subquotient isometry preserving rank. -/
 theorem hasScalarExtensionSubquotientIsometry_of_images (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
     [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] (hi : ∃ a : F, a ^ 2 = -1)
     (P₀ Q₀ : Submodule F (F ⊗[K] E)) (hPQ : P₀ ≤ Q₀)
@@ -252,7 +253,7 @@ theorem hasScalarExtensionSubquotientIsometry_of_images (ξ : NormFamily S E)
   subst P
   refine ⟨finiteStageSubquotientEquiv (L := L) F P₀ Q₀ hPQ, ?_, ?_⟩
   · intro x z
-    exact ξ.scalarExtension_subquotient_finiteStage_norm_eq hN F hi P₀ Q₀ hPQ x z
+    exact ξ.scalarExtension_subquotient_finiteStage_norm_eq F hi P₀ Q₀ hPQ x z
   · rw [← (finiteStageSubquotientEquiv (L := L) F P₀ Q₀ hPQ).finrank_eq,
       Module.finrank_baseChange]
 
@@ -261,7 +262,7 @@ subspaces and their genuine quotient, with exact endpoint images, actual rank,
 and all-completed native norm preservation. -/
 theorem exists_complexFiniteStage_subquotient_isometry [IsAlgClosed L]
     (ξ : NormFamily S E)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hN : S.IsArchimedeanNormalized]
     (P Q : Submodule L (L ⊗[K] E)) (hPQ : P ≤ Q) :
     ∃ F : AdelicStructure.FiniteIntermediateField K L, (∃ a : F, a ^ 2 = -1) ∧
       ∃ P₀ Q₀ : Submodule F (F ⊗[K] E), P₀ ≤ Q₀ ∧
@@ -284,7 +285,7 @@ theorem exists_complexFiniteStage_subquotient_isometry [IsAlgClosed L]
   have h10 : (1 : Fin 2) ≠ 0 := by decide
   simp only [A, h10, ite_false] at h1
   refine ⟨F, hi, B 0, B 1, h01, h0, h1, ?_⟩
-  exact hasScalarExtensionSubquotientIsometry_of_images ξ hN F hi
+  exact hasScalarExtensionSubquotientIsometry_of_images ξ F hi
     (B 0) (B 1) h01 P Q h0 h1
 
 end NormFamily

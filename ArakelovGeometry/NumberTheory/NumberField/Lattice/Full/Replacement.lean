@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.Coherence.Criteria
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.Full.Gauge
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.Norm.Gauge
+
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Norm.GaugeDomination
 import Mathlib.Topology.Sheaves.Init
 
@@ -39,19 +40,19 @@ set_option backward.isDefEq.respectTransparency false in
 theorem HasFiniteNormExceptions.latticeGaugeFamily_eq_fullLatticeGaugeFamily
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
     (hξ : ξ.IsUltrametric) (hc : ξ.HasFiniteNormExceptions)
-    (hfg : (ξ.globalUnitBallModule hξ).FG) :
-    ξ.latticeGaugeFamily hξ =
-      fullLatticeGaugeFamily (ξ.globalUnitBallModule hξ) hfg
-        ((hasFiniteNormExceptions_iff_span_normalizedGlobalUnitBall_eq_top ξ hξ).mp hc) ξ := by
+    (hfg : (ξ.globalUnitBallModule).FG) :
+    ξ.latticeGaugeFamily =
+      fullLatticeGaugeFamily (ξ.globalUnitBallModule) hfg
+        ((hasFiniteNormExceptions_iff_span_normalizedGlobalUnitBall_eq_top ξ).mp hc) ξ := by
   ext ω z
   by_cases hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin
   · obtain ⟨p, rfl⟩ := exists_normalizedPrimeParameter_eq ω hω
-    rw [ξ.latticeGaugeFamily_norm_finite hξ _ (normalizedPrimeParameter_mem_fin p),
+    rw [ξ.latticeGaugeFamily_norm_finite _ (normalizedPrimeParameter_mem_fin p),
       fullLatticeGaugeFamily_norm_prime]
     unfold completedUnitBallGauge
-    rw [← ξ.coe_completedUnitBallModule _ (normalizedPrimeParameter_mem_fin p) hξ,
-      hc.completedUnitBallModule_eq_completedLatticeSpan ξ hξ p]
-  · rw [ξ.latticeGaugeFamily_norm_not_finite hξ ω hω,
+    rw [← ξ.coe_completedUnitBallModule _ (normalizedPrimeParameter_mem_fin p),
+      hc.completedUnitBallModule_eq_completedLatticeSpan ξ p]
+  · rw [ξ.latticeGaugeFamily_norm_not_finite ω hω,
       fullLatticeGaugeFamily_norm_not_finite _ _ _ _ ω hω]
 
 end ArakelovGeometry.NormFamily

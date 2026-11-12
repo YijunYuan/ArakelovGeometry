@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Strong
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Basic
 public import Mathlib.LinearAlgebra.PiTensorProduct.Finite
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.BasisComparison
 import Mathlib.CategoryTheory.Category.Init
@@ -129,10 +130,10 @@ theorem ofBasis_tensor_norm_le_mul_of_dual_bounds [DecidableEq ι] (ω : S.Ω)
 at finite places, are strongly dominated when every factor is dominated.
 This is the common coordinate argument for source Proposition 4.1.19(5). -/
 theorem isStronglyDominated_tensor_of_bounds
-    (τ : NormFamily S (⨂[K] i, E i)) (hu : τ.IsUltrametric)
+    (τ : NormFamily S (⨂[K] i, E i)) [hu : τ.IsUltrametric]
     (hlo : ∀ ω z, (injectiveTensor ξ).norm ω z ≤ τ.norm ω z)
     (hhi : ∀ ω z, τ.norm ω z ≤ (projectiveTensor ξ).norm ω z)
-    (hd : ∀ i, (ξ i).IsDominated) (hfin : S.v S.Ωinf < ⊤) :
+    [hd : ∀ i, (ξ i).IsDominated] (hfin : S.v S.Ωinf < ⊤) :
     τ.IsStronglyDominated := by
   classical
   let b := fun i ↦ Module.finBasis K (E i)
@@ -182,7 +183,7 @@ theorem isStronglyDominated_tensor_of_bounds
     (add_nonneg (add_nonneg (ha0 ω) (hd0 ω)) (hR0 ω))).mpr
   intro z
   constructor
-  · exact (norm_le_mul_of_basis_norm_le B τ hu ω (Real.exp_pos _).le hprimal z).trans
+  · exact (norm_le_mul_of_basis_norm_le B τ ω (Real.exp_pos _).le hprimal z).trans
       (mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr (by linarith [hd0 ω, hR0 ω]))
         ((ofBasisMixed S (⨂[K] i, E i) B).norm_nonneg ω z))
   · have hm : (ofBasisMixed S (⨂[K] i, E i) B).norm ω z ≤
@@ -223,16 +224,17 @@ theorem mixedTensor_norm_le_projectiveTensor_norm (ω : S.Ω)
 strongly dominated, including an empty family or a zero-dimensional factor. -/
 theorem IsDominated.strong_injectiveTensor (hd : ∀ i, (ξ i).IsDominated)
     (hfin : S.v S.Ωinf < ⊤) : (injectiveTensor ξ).IsStronglyDominated :=
-  isStronglyDominated_tensor_of_bounds ξ (injectiveTensor ξ) (injectiveTensor_isUltrametric ξ)
-    (fun _ _ ↦ le_rfl) (injectiveTensor_norm_le_projectiveTensor_norm ξ) hd hfin
+  isStronglyDominated_tensor_of_bounds ξ (injectiveTensor ξ)
+      (hu := (injectiveTensor_isUltrametric ξ))
+    (fun _ _ ↦ le_rfl) (injectiveTensor_norm_le_projectiveTensor_norm ξ) hfin
 
 /-- The actual mixed tensor family of finitely many dominated factors is
 strongly dominated; no measurability or strong domination of factors is assumed. -/
 theorem IsDominated.strong_mixedTensor (hd : ∀ i, (ξ i).IsDominated)
     (hfin : S.v S.Ωinf < ⊤) : (mixedTensor ξ).IsStronglyDominated :=
-  isStronglyDominated_tensor_of_bounds ξ (mixedTensor ξ) (mixedTensor_isUltrametric ξ)
+  isStronglyDominated_tensor_of_bounds ξ (mixedTensor ξ) (hu := (mixedTensor_isUltrametric ξ))
     (injectiveTensor_norm_le_mixedTensor_norm ξ)
-    (mixedTensor_norm_le_projectiveTensor_norm ξ) hd hfin
+    (mixedTensor_norm_le_projectiveTensor_norm ξ) hfin
 
 end
 end ArakelovGeometry.NormFamily

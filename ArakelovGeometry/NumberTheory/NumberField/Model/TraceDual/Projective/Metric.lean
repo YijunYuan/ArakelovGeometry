@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian
 public import ArakelovGeometry.NumberTheory.NumberField.TraceDual.DualizingLine.Basic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import Mathlib.Topology.Sheaves.Init
 
@@ -51,10 +52,10 @@ variable [FiniteDimensional K E]
 is local-degree scaling under canonical completed tensor-unit contraction. -/
 theorem dualizingTensor_norm_infinite
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions)
+    [hξ : ξ.IsHermitian]
     (w : InfinitePlace K) (z : CompletedCoefficient w ⊗[K] E) :
     (ξ.orthogonalTensorPair (dualizingLine K).toNormFamily
-      normalizedNumberFieldArchimedeanCompletions hξ (dualizingLine_isHermitian K)).norm
+      (hη := (dualizingLine_isHermitian K))).norm
         (normalizedInfinitePlacePoint w)
         (LinearEquiv.baseChange K (CompletedCoefficient w) _ _ (TensorProduct.rid K E).symm z) =
           (w.mult : ℝ) * ξ.norm (normalizedInfinitePlacePoint w) z := by
@@ -64,16 +65,16 @@ theorem dualizingTensor_norm_infinite
         (dualizingLine K).norm (normalizedInfinitePlacePoint w)
           ((1 : CompletedCoefficient w) ⊗ₜ[K] (1 : K)) :=
       NormFamily.orthogonalTensorPair_norm_tmul_completed ξ (dualizingLine K).toNormFamily
-        normalizedNumberFieldArchimedeanCompletions hξ (dualizingLine_isHermitian K) _ _ _
+        (hη := (dualizingLine_isHermitian K)) _ _ _
     _ = _ := by rw [dualizingLine_norm_generator, mul_comm]
 
 /-- The prescribed actual Hermitian dual tensor norm on the ordinary generic tensor space. -/
 def prescribedTraceDualFamily
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     NormFamily (normalizedNumberFieldAdelicStructure K) (Module.Dual K E ⊗[K] K) :=
   ξ.dual.orthogonalTensorPair (dualizingLine K).toNormFamily
-    normalizedNumberFieldArchimedeanCompletions hξ.dual (dualizingLine_isHermitian K)
+    (hξ := hξ.dual) (hη := (dualizingLine_isHermitian K))
 
 omit [FiniteDimensional K E] in
 /-- Literal coordinatewise completed tensor-unit contraction, with the existing real actions. -/
@@ -87,17 +88,18 @@ def tensorUnitProductEquiv :
 ordinary trace-dual metric under the canonical tensor-unit equivalence. -/
 def prescribedTraceDualIsometry
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hξ : ξ.IsHermitian] :
     letI := NumberFieldArchimedeanEuclidean.euclideanNormedAddCommGroup
-      (prescribedTraceDualFamily hξ)
-    letI := NumberFieldArchimedeanEuclidean.euclideanNormedSpace (prescribedTraceDualFamily hξ)
+      (prescribedTraceDualFamily (ξ := ξ))
+    letI := NumberFieldArchimedeanEuclidean.euclideanNormedSpace
+      (prescribedTraceDualFamily (ξ := ξ))
     letI := ordinaryTraceDualNormedAddCommGroup ξ
     letI := ordinaryTraceDualNormedSpace ξ
     CompletedVectorProduct K (Module.Dual K E ⊗[K] K) ≃ₗᵢ[ℝ]
       CompletedVectorProduct K (Module.Dual K E) := by
   let := NumberFieldArchimedeanEuclidean.euclideanNormedAddCommGroup
-    (prescribedTraceDualFamily hξ)
-  let := NumberFieldArchimedeanEuclidean.euclideanNormedSpace (prescribedTraceDualFamily hξ)
+    (prescribedTraceDualFamily (ξ := ξ))
+  let := NumberFieldArchimedeanEuclidean.euclideanNormedSpace (prescribedTraceDualFamily (ξ := ξ))
   let := ordinaryTraceDualNormedAddCommGroup ξ
   let := ordinaryTraceDualNormedSpace ξ
   refine { tensorUnitProductEquiv (K := K) (E := Module.Dual K E) with norm_map' := ?_ }
@@ -108,8 +110,8 @@ def prescribedTraceDualIsometry
   intro w _
   let e := LinearEquiv.baseChange K (CompletedCoefficient w) _ _
     (TensorProduct.rid K (Module.Dual K E))
-  have h := dualizingTensor_norm_infinite ξ.dual hξ.dual w (e (z w))
-  change (prescribedTraceDualFamily hξ).norm (normalizedInfinitePlacePoint w)
+  have h := dualizingTensor_norm_infinite ξ.dual (hξ := hξ.dual) w (e (z w))
+  change (prescribedTraceDualFamily (ξ := ξ)).norm (normalizedInfinitePlacePoint w)
     (e.symm (e (z w))) =
       (w.mult : ℝ) * ξ.dual.norm (normalizedInfinitePlacePoint w) (e (z w)) at h
   rw [e.symm_apply_apply] at h

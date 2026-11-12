@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Determinant.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Map
 import ArakelovGeometry.AdelicVectorBundle.Operator.LineHeight
 import ArakelovGeometry.MeasureTheory.Integral.UpperEnvelope
@@ -34,14 +35,14 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 determinants, without regularity of the place space, including rank zero. -/
 theorem degreeOfMeasurableDeterminant_le_of_completed_contraction [S.IsProper]
     (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
-    (hdetV : V.toNormFamily.determinant.IsMeasurable)
-    (hdetW : W.toNormFamily.determinant.IsMeasurable)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hdetV : V.toNormFamily.determinant.IsMeasurable]
+    [hdetW : W.toNormFamily.determinant.IsMeasurable]
+    [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω z, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion z) ≤ V.toNormFamily.norm ω z) :
-    V.degreeOfMeasurableDeterminant hdetV hN ≤ W.degreeOfMeasurableDeterminant hdetW hN := by
-  let DV := V.determinant hdetV hN
-  let DW := W.determinant hdetW hN
+    V.degreeOfMeasurableDeterminant ≤ W.degreeOfMeasurableDeterminant := by
+  let DV := V.determinant
+  let DW := W.determinant
   let d := determinantMap K e.toLinearMap e.finrank_eq
   have hd : d ≠ 0 :=
     determinantMap_ne_zero_of_injective e.toLinearMap e.finrank_eq e.injective
@@ -56,10 +57,10 @@ theorem degreeOfMeasurableDeterminant_le_of_completed_contraction [S.IsProper]
   change lowerEnvelopeIntegral (DV.toNormFamily.localHeight DW.toNormFamily ⟨d, hd⟩) S.v ≤ _
     at hl
   have hm : DV.mapHeight DW d =
-      ((V.degreeOfMeasurableDeterminant hdetV hN -
-        W.degreeOfMeasurableDeterminant hdetW hN : ℝ) : EReal) :=
-    DV.mapHeight_eq_lineDegree_sub DW (V.determinant_isLine hdetV hN)
-      (W.determinant_isLine hdetW hN) hd
+      ((V.degreeOfMeasurableDeterminant -
+        W.degreeOfMeasurableDeterminant : ℝ) : EReal) :=
+    DV.mapHeight_eq_lineDegree_sub DW (hV := (V.determinant_isLine))
+      (hW := (W.determinant_isLine)) hd
   rw [← DV.mapHeight_eq_lowerEnvelopeIntegral DW hd, hm,
     lowerEnvelopeIntegral_eq_integral
       (show Integrable (fun _ : S.Ω ↦ (0 : ℝ)) S.v from integrable_zero S.Ω ℝ S.v),

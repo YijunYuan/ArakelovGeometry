@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HN
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -76,12 +77,12 @@ open Classical in
 /-- The actual finite ball flag produces a finite basis whose coefficient
 supports characterize every actual ball, including the empty basis. -/
 theorem exists_basis_adapted_trivialFiltration
-    (ξ : NormFamily (singleTrivialPlace K) E) (hξ : ξ.IsUltrametric) :
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric] :
     ∃ b : Module.Basis (Fin (Module.finrank K E)) K E,
-      ∀ t x, x ∈ ξ.trivialFiltration hξ t ↔
-        ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration hξ t := by
+      ∀ t x, x ∈ ξ.trivialFiltration t ↔
+        ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration t := by
   obtain ⟨n, U, _, hU, hz, ht, hrange, _⟩ :=
-    ξ.exists_strictMono_flag_and_jumps_trivialFiltration hξ
+    ξ.exists_strictMono_flag_and_jumps_trivialFiltration
   obtain ⟨S, hS, _, hspan, hflag⟩ :=
     exists_independent_generators_of_monotone_flag n U hU.monotone hz
   have htop : ⊤ ≤ Submodule.span K (Set.range (fun x : S ↦ (x : E))) := by
@@ -97,7 +98,7 @@ theorem exists_basis_adapted_trivialFiltration
   have hr : Set.range b = S := (Module.Basis.range_reindex _ _).trans hr₀
   refine ⟨b, ?_⟩
   intro t x
-  obtain ⟨j, hj⟩ : ξ.trivialFiltration hξ t ∈ Set.range U := by
+  obtain ⟨j, hj⟩ : ξ.trivialFiltration t ∈ Set.range U := by
     rw [hrange]
     exact ⟨t, rfl⟩
   have him : b '' {i | b i ∈ U j} = S ∩ (U j : Set E) := by
@@ -124,10 +125,10 @@ open Classical in
 /-- The produced actual adapted basis gives the weighted coordinate
 maximum on every original vector and every genuine completed fibre. -/
 theorem exists_basis_orthogonal_trivialFiltration
-    (ξ : NormFamily (singleTrivialPlace K) E) (hξ : ξ.IsUltrametric) :
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric] :
     ∃ b : Module.Basis (Fin (Module.finrank K E)) K E,
-      (∀ t x, x ∈ ξ.trivialFiltration hξ t ↔
-        ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration hξ t) ∧
+      (∀ t x, x ∈ ξ.trivialFiltration t ↔
+        ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration t) ∧
       (∀ x, ξ.trivialSeminorm x =
         (((b.repr x).support.sup fun i ↦
           ⟨ξ.trivialSeminorm (b i), apply_nonneg ξ.trivialSeminorm (b i)⟩ : NNReal) : ℝ)) ∧
@@ -136,7 +137,7 @@ theorem exists_basis_orthogonal_trivialFiltration
         ξ.norm ω z =
           (((b.repr (trivialCompletedTensorEquiv K E z)).support.sup fun i ↦
             ⟨ξ.trivialSeminorm (b i), apply_nonneg ξ.trivialSeminorm (b i)⟩ : NNReal) : ℝ) := by
-  obtain ⟨b, hb⟩ := ξ.exists_basis_adapted_trivialFiltration hξ
+  obtain ⟨b, hb⟩ := ξ.exists_basis_adapted_trivialFiltration
   have hn : ∀ x, ξ.trivialSeminorm x =
       (((b.repr x).support.sup fun i ↦
         ⟨ξ.trivialSeminorm (b i), apply_nonneg ξ.trivialSeminorm (b i)⟩ : NNReal) : ℝ) := by
@@ -165,7 +166,7 @@ theorem exists_basis_orthogonal_trivialFiltration
       exact ξ.norm_rational_pos PUnit.unit (b.ne_zero i)
     have hM : 0 < (M : ℝ) := hip.trans_le (hs i hi)
     apply le_antisymm
-    · have hm : x ∈ ξ.trivialFiltration hξ (-Real.log (M : ℝ)) := by
+    · have hm : x ∈ ξ.trivialFiltration (-Real.log (M : ℝ)) := by
         apply (hb _ x).mpr
         intro j hj
         change ξ.trivialSeminorm (b j) ≤ Real.exp (-(-Real.log (M : ℝ)))
@@ -173,7 +174,7 @@ theorem exists_basis_orthogonal_trivialFiltration
         exact hs j (Finsupp.mem_support_iff.mpr hj)
       change ξ.trivialSeminorm x ≤ Real.exp (-(-Real.log (M : ℝ))) at hm
       simpa only [neg_neg, Real.exp_log hM] using hm
-    · have hm : x ∈ ξ.trivialFiltration hξ (-Real.log (ξ.trivialSeminorm x)) := by
+    · have hm : x ∈ ξ.trivialFiltration (-Real.log (ξ.trivialSeminorm x)) := by
         change ξ.trivialSeminorm x ≤ Real.exp (-(-Real.log (ξ.trivialSeminorm x)))
         rw [neg_neg, Real.exp_log hp]
       have hsup : M ≤ ⟨ξ.trivialSeminorm x, hp.le⟩ := by
@@ -198,12 +199,12 @@ open Classical in
 /-- The genuine finite actual norm range has a positive attained maximum
 in positive rank; no maximal-radius bound is supplied as an assumption. -/
 theorem exists_nonzero_trivialSeminorm_eq_sSup_range
-    (ξ : NormFamily (singleTrivialPlace K) E) (hξ : ξ.IsUltrametric)
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric]
     (hr : 0 < Module.finrank K E) :
     ∃ x, x ≠ 0 ∧ ξ.trivialSeminorm x = sSup (Set.range ξ.trivialSeminorm) ∧
       0 < sSup (Set.range ξ.trivialSeminorm) ∧
       ∀ y, ξ.trivialSeminorm y ≤ sSup (Set.range ξ.trivialSeminorm) := by
-  have hf := ξ.finite_range_trivialSeminorm hξ
+  have hf := ξ.finite_range_trivialSeminorm
   have hm : sSup (Set.range ξ.trivialSeminorm) ∈ Set.range ξ.trivialSeminorm :=
     (Set.range_nonempty ξ.trivialSeminorm).csSup_mem hf
   let y := Module.finBasis K E ⟨0, hr⟩
@@ -227,29 +228,27 @@ namespace AdelicVectorBundle
 open AdelicStructure
 
 variable (V : AdelicVectorBundle (singleTrivialPlace K) E)
-  (hS : DiscreteMeasurableSpace (singleTrivialPlace K).Ω ∨
-    (singleTrivialPlace K).HasCommonCountableDenseSubfield)
-  (hN : ∀ ω ∈ (singleTrivialPlace K).Ωinf,
-    IsRCLikeNormedField ((singleTrivialPlace K).ϕ ω).Completion)
+  [hS : (singleTrivialPlace K).HasMeasurableBase]
+  [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
 open Classical in
 /-- The actual HN ball identification and whole-space cut give the
 minimal slope as negative log of the genuine largest nonzero-vector norm. -/
 theorem minimalSlope_eq_neg_log_sSup_range_of_isUltrametric
-    (hV : V.toNormFamily.IsUltrametric) (hr : 0 < Module.finrank K E) :
-    V.minimalSlope hS hN = (-Real.log (sSup (Set.range V.toNormFamily.trivialSeminorm)) : ℝ) := by
+    [hV : V.toNormFamily.IsUltrametric] (hr : 0 < Module.finrank K E) :
+    V.minimalSlope = (-Real.log (sSup (Set.range V.toNormFamily.trivialSeminorm)) : ℝ) := by
   obtain ⟨x, _, hx, hR, hmax⟩ :=
-    V.toNormFamily.exists_nonzero_trivialSeminorm_eq_sSup_range hV hr
-  have hcut : ∀ t : ℝ, (t : EReal) ≤ V.minimalSlope hS hN ↔
+    V.toNormFamily.exists_nonzero_trivialSeminorm_eq_sSup_range hr
+  have hcut : ∀ t : ℝ, (t : EReal) ≤ V.minimalSlope ↔
       t ≤ -Real.log (sSup (Set.range V.toNormFamily.trivialSeminorm)) := by
     intro t
-    rw [← V.generalHNFiltration_eq_top_iff hS hN t,
-      V.generalHNFiltration_eq_trivialFiltration hS hN hV t]
-    have hb : V.toNormFamily.trivialFiltration hV t = ⊤ ↔
+    rw [← V.generalHNFiltration_eq_top_iff t,
+      V.generalHNFiltration_eq_trivialFiltration t]
+    have hb : V.toNormFamily.trivialFiltration t = ⊤ ↔
         ∀ y, V.toNormFamily.trivialSeminorm y ≤ Real.exp (-t) := by
       constructor
       · intro he y
-        have hy : y ∈ V.toNormFamily.trivialFiltration hV t := he ▸ Submodule.mem_top
+        have hy : y ∈ V.toNormFamily.trivialFiltration t := he ▸ Submodule.mem_top
         exact hy
       · intro he
         exact top_unique (fun y _ ↦ he y)
@@ -280,14 +279,14 @@ open Classical in
 /-- The actual largest-radius formula retains the genuine positive
 infinity convention in rank zero, on the extended real line. -/
 theorem minimalSlope_eq_if_neg_log_sSup_range_of_isUltrametric
-    (hV : V.toNormFamily.IsUltrametric) :
-    V.minimalSlope hS hN = if Module.finrank K E = 0 then (⊤ : EReal) else
+    [hV : V.toNormFamily.IsUltrametric] :
+    V.minimalSlope = if Module.finrank K E = 0 then (⊤ : EReal) else
       ((-Real.log (sSup (Set.range V.toNormFamily.trivialSeminorm)) : ℝ) : EReal) := by
   by_cases hr : Module.finrank K E = 0
   · rw [ite_eq_left hr]
-    exact V.minimalSlope_eq_top_of_finrank_eq_zero hS hN hr
+    exact V.minimalSlope_eq_top_of_finrank_eq_zero hr
   · rw [ite_eq_right hr]
-    exact V.minimalSlope_eq_neg_log_sSup_range_of_isUltrametric hS hN hV (Nat.pos_of_ne_zero hr)
+    exact V.minimalSlope_eq_neg_log_sSup_range_of_isUltrametric (Nat.pos_of_ne_zero hr)
 
 end AdelicVectorBundle
 

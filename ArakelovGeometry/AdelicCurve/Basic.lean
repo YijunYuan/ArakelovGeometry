@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicCurve.Defs
 public import Mathlib.Analysis.Normed.Field.Instances
 public import Mathlib.Analysis.Normed.Module.Completion
+
 import ArakelovGeometry.Analysis.AbsoluteValue.Basic
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -33,24 +34,24 @@ open MeasureTheory AbsoluteValue
 
 /-- If every place is non-archimedean, the archimedean locus is empty. -/
 theorem Ωinf_eq_empty_of_forall_mem_Ωfin {K : Type*} [Field K] {S : AdelicStructure K}
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) : S.Ωinf = ∅ := by
+    [hS : S.HasOnlyFinitePlaces] : S.Ωinf = ∅ := by
   apply Set.eq_empty_iff_forall_notMem.mpr
   exact fun ω hω ↦ hω (hS ω)
 
 /-- The archimedean locus has measure zero when every place is non-archimedean. -/
 theorem v_Ωinf_eq_zero_of_forall_mem_Ωfin {K : Type*} [Field K] {S : AdelicStructure K}
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) : S.v S.Ωinf = 0 := by
-  rw [Ωinf_eq_empty_of_forall_mem_Ωfin hS, measure_empty]
+    [hS : S.HasOnlyFinitePlaces] : S.v S.Ωinf = 0 := by
+  rw [Ωinf_eq_empty_of_forall_mem_Ωfin, measure_empty]
 
 /-- The archimedean locus has finite measure when every place is non-archimedean. -/
 theorem v_Ωinf_lt_top_of_forall_mem_Ωfin {K : Type*} [Field K] {S : AdelicStructure K}
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) : S.v S.Ωinf < ⊤ := by
-  rw [v_Ωinf_eq_zero_of_forall_mem_Ωfin hS]
+    [hS : S.HasOnlyFinitePlaces] : S.v S.Ωinf < ⊤ := by
+  rw [v_Ωinf_eq_zero_of_forall_mem_Ωfin]
   exact ENNReal.zero_lt_top
 
 /-- Archimedean normalization is vacuous when every place is non-archimedean. -/
 theorem isRCLikeNormedField_of_forall_mem_Ωfin {K : Type*} [Field K] {S : AdelicStructure K}
-    (hS : ∀ ω : S.Ω, ω ∈ S.Ωfin) :
+    [hS : S.HasOnlyFinitePlaces] :
     ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion :=
   fun ω hω ↦ False.elim (hω (hS ω))
 

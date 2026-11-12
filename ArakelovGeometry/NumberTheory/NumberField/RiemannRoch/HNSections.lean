@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Positive.Basic
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.Basic
 public import ArakelovGeometry.NumberTheory.NumberField.RiemannRoch.SectionVanishing
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.PositiveDegree
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.Truncations
@@ -25,25 +26,25 @@ namespace ArakelovGeometry.AdelicVectorBundle
 variable {K E : Type*} [Field K] {S : AdelicStructure K} [S.IsProper]
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (V : AdelicVectorBundle S E)
-  (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-  (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-  (hV : V.toNormFamily.IsHermitian hN)
+  [hS : S.HasMeasurableBase]
+  [hN : S.IsArchimedeanNormalized]
+  [hV : V.toNormFamily.IsHermitian]
 
 /-- Inclusion of the actual zero HN truncation gives an actual bijection of the
 original all-place effective-section sets, without an arithmetic model premise. -/
 def effectiveSectionsEquivHNZero :
     (V.restrictOfMeasurableBase
-      (V.hermitianHNFiltration hS hN hV 0) hS).toNormFamily.effectiveSections ≃
+      (V.hermitianHNFiltration 0)).toNormFamily.effectiveSections ≃
       V.toNormFamily.effectiveSections :=
-  let U := V.hermitianHNFiltration hS hN hV 0
+  let U := V.hermitianHNFiltration 0
   (Equiv.Set.imageOfInjOn U.subtype
-    (V.restrictOfMeasurableBase U hS).toNormFamily.effectiveSections
+    (V.restrictOfMeasurableBase U).toNormFamily.effectiveSections
       (by exact U.subtype_injective.injOn)).trans (Set.equivOfEq (by
-        have hneg : (V.quotientOfMeasurableBase U hS).maximalSlope hS hN < 0 := by
+        have hneg : (V.quotientOfMeasurableBase U).maximalSlope < 0 := by
           simpa only [EReal.coe_zero] using
-            V.maximalSlope_quotient_hermitianHNFiltration_lt hS hN hV 0
+            V.maximalSlope_quotient_hermitianHNFiltration_lt 0
         exact (V.effectiveSections_eq_image_restrict_of_quotient_maximalSlope_neg
-          U hS hN hneg).symm))
+          U hneg).symm))
 
 /-- The actual all-place effective-section count is unchanged at the nonnegative
 HN truncation. The count equality comes from the produced literal bijection. -/
@@ -51,22 +52,22 @@ theorem card_effectiveSections_eq_HNZero :
     Nat.card V.toNormFamily.effectiveSections =
       Nat.card
         (V.restrictOfMeasurableBase
-          (V.hermitianHNFiltration hS hN hV 0) hS).toNormFamily.effectiveSections :=
-  (Nat.card_congr (V.effectiveSectionsEquivHNZero hS hN hV)).symm
+          (V.hermitianHNFiltration 0)).toNormFamily.effectiveSections :=
+  (Nat.card_congr (V.effectiveSectionsEquivHNZero)).symm
 
 /-- Actual HN truncation simultaneously preserves effective-section cardinality,
 realizes positive degree and has nonnegative actual minimal slope. -/
 theorem hnZero_sections_degree_minimalSlope :
     (Nat.card V.toNormFamily.effectiveSections =
       Nat.card (V.restrictOfMeasurableBase
-        (V.hermitianHNFiltration hS hN hV 0) hS).toNormFamily.effectiveSections) ∧
-    V.positiveDegree hS hN =
-      ((V.restrictOfMeasurableBase (V.hermitianHNFiltration hS hN hV 0) hS).degree hS hN : EReal) ∧
+        (V.hermitianHNFiltration 0)).toNormFamily.effectiveSections) ∧
+    V.positiveDegree =
+      ((V.restrictOfMeasurableBase (V.hermitianHNFiltration 0)).degree : EReal) ∧
     0 ≤ (V.restrictOfMeasurableBase
-      (V.hermitianHNFiltration hS hN hV 0) hS).minimalSlope hS hN := by
-  refine ⟨V.card_effectiveSections_eq_HNZero hS hN hV,
-    V.positiveDegree_eq_degree_restrict_hermitianHNFiltration_zero hS hN hV, ?_⟩
-  · simpa only [EReal.coe_zero] using V.le_minimalSlope_restrict_hermitianHNFiltration hS hN hV 0
+      (V.hermitianHNFiltration 0)).minimalSlope := by
+  refine ⟨V.card_effectiveSections_eq_HNZero,
+    V.positiveDegree_eq_degree_restrict_hermitianHNFiltration_zero, ?_⟩
+  · simpa only [EReal.coe_zero] using V.le_minimalSlope_restrict_hermitianHNFiltration 0
 
 end ArakelovGeometry.AdelicVectorBundle
 
@@ -84,28 +85,28 @@ variable {K : Type*} [Field K] [NumberField K]
 whose actual degree is positive degree and whose actual minimal slope is nonnegative. -/
 theorem original_hnZero_sections_degree_minimalSlope
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) (K ⊗[𝓞 K] M))
-    (hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions) :
+    [hη : η.IsHermitian] :
     let L := genericImage (K := K) M
     let hfg := genericImage_fg (K := K) M
     let hspan := genericImage_fullSpan (K := K) M
     let V := fullLatticeAdelicBundle L hfg hspan η
-    let hV : V.toNormFamily.IsHermitian normalizedNumberFieldArchimedeanCompletions :=
-      fullLatticeGaugeFamily_isHermitian L hfg hspan η hη
-    let F := V.hermitianHNFiltration (Or.inl inferInstance)
-      normalizedNumberFieldArchimedeanCompletions hV 0
-    let W := V.restrictOfMeasurableBase F (Or.inl inferInstance)
+    let hV : V.toNormFamily.IsHermitian :=
+      fullLatticeGaugeFamily_isHermitian L hfg hspan η
+    let F := V.hermitianHNFiltration
+      (hV := hV) 0
+    let W := V.restrictOfMeasurableBase F
     (logSectionCount M η = Real.log (Nat.card W.toNormFamily.effectiveSections : ℝ)) ∧
-    V.positiveDegree (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions =
-      (W.degree (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions : EReal) ∧
-    0 ≤ W.minimalSlope (Or.inl inferInstance) normalizedNumberFieldArchimedeanCompletions := by
+    V.positiveDegree =
+      (W.degree : EReal) ∧
+    0 ≤ W.minimalSlope := by
   let L := genericImage (K := K) M
   let hfg := genericImage_fg (K := K) M
   let hspan := genericImage_fullSpan (K := K) M
   let V := fullLatticeAdelicBundle L hfg hspan η
-  have hV : V.toNormFamily.IsHermitian normalizedNumberFieldArchimedeanCompletions :=
-    fullLatticeGaugeFamily_isHermitian L hfg hspan η hη
-  have h := V.hnZero_sections_degree_minimalSlope (Or.inl inferInstance)
-    normalizedNumberFieldArchimedeanCompletions hV
+  have hV : V.toNormFamily.IsHermitian :=
+    fullLatticeGaugeFamily_isHermitian L hfg hspan η
+  have h := V.hnZero_sections_degree_minimalSlope
+    (hV := hV)
   refine ⟨?_, h.2⟩
   rw [logSectionCount_eq_adelic M η, h.1]
 

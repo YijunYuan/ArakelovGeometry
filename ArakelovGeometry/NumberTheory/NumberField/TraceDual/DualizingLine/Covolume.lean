@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Covolume.PrincipalScalar
 public import ArakelovGeometry.NumberTheory.NumberField.TraceDual.DualizingLine.Basic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Line
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Line
@@ -194,19 +195,19 @@ private theorem scalarCovolume_transport
 /-- The actual scalar codifferent, in its independently prescribed dualizing-line
 metric, has reciprocal ordinary integer covolume. -/
 theorem dualizingLine_euclideanCovolume :
-    euclideanCovolume (dualizingLine K).toNormFamily (dualizingLine_isHermitian K)
+    euclideanCovolume (dualizingLine K).toNormFamily (hξ := (dualizingLine_isHermitian K))
       (codifferentModule K) =
         ((2⁻¹ : ℝ) ^ InfinitePlace.nrComplexPlaces K *
           Real.sqrt |(NumberField.discr K : ℝ)|)⁻¹ := by
   let := euclideanNormedAddCommGroup (dualizingLine K).toNormFamily
   let := euclideanNormedSpace (dualizingLine K).toNormFamily
-  let := euclideanInnerProduct (dualizingLine_isHermitian K)
+  let := euclideanInnerProduct (hξ := (dualizingLine_isHermitian K))
   let : MeasurableSpace (CompletedVectorProduct K K) := borel _
   let : BorelSpace (CompletedVectorProduct K K) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K K)
   let := ordinaryTraceDualNormedAddCommGroup (scalarFamily K)
   let := ordinaryTraceDualNormedSpace (scalarFamily K)
-  let := ordinaryTraceDualInnerProduct (basisFamily_hermitian (scalarBasis K))
+  let := ordinaryTraceDualInnerProduct (hξ := (basisFamily_hermitian (scalarBasis K)))
   let : MeasurableSpace (CompletedVectorProduct K (Module.Dual K K)) := borel _
   let : BorelSpace (CompletedVectorProduct K (Module.Dual K K)) := ⟨rfl⟩
   let := measureSpaceOfInnerProductSpace (E := CompletedVectorProduct K (Module.Dual K K))
@@ -219,7 +220,7 @@ theorem dualizingLine_euclideanCovolume :
     (diagonalLattice (integralTraceDual (principalModule (scalarBasis K))))
     (scalarCompletedDualEquiv_diagonal_image K)
   have hi := ordinaryTraceDualCovolume_eq_inv (scalarFamily K)
-    (basisFamily_hermitian (scalarBasis K)) (principalModule (scalarBasis K))
+    (hξ := (basisFamily_hermitian (scalarBasis K))) (principalModule (scalarBasis K))
     (principalModule_fg (scalarBasis K)) (principalModule_full (scalarBasis K))
   have hb := basisEuclideanCovolume (scalarBasis K)
   simp only [Fintype.card_fin, pow_one] at hb
@@ -228,21 +229,21 @@ theorem dualizingLine_euclideanCovolume :
 /-- The raw degree of the actual codifferent line, derived from its actual
 canonical covolume and the accepted full-lattice degree--covolume identity. -/
 theorem dualizingLine_degree_eq_two_log :
-    (dualizingLine K).degree (Or.inl inferInstance)
-      normalizedNumberFieldArchimedeanCompletions =
+    (dualizingLine K).degree
+      =
         2 * Real.log ((2⁻¹ : ℝ) ^ InfinitePlace.nrComplexPlaces K *
           Real.sqrt |(NumberField.discr K : ℝ)|) := by
   let η :=
     (AdelicVectorBundle.scalarLine (normalizedNumberFieldAdelicStructure K)).toNormFamily.scale
     (archimedeanFactor K) (archimedeanFactor_pos K)
-  have hη : η.IsHermitian normalizedNumberFieldArchimedeanCompletions :=
-    η.isHermitian_of_finrank_one (Module.finrank_self K) _
+  have hη : η.IsHermitian :=
+    η.isHermitian_of_finrank_one (Module.finrank_self K)
   have h := NumberFieldFullLattice.fullLattice_log_euclideanCovolume_eq_neg_degree
-    (codifferentModule K) (codifferent_fg K) (codifferent_full K) η hη
+    (codifferentModule K) (codifferent_fg K) (codifferent_full K) η (hη := hη)
   change Real.log (euclideanCovolume (dualizingLine K).toNormFamily
-    (dualizingLine_isHermitian K) (codifferentModule K)) =
-    -(dualizingLine K).degree (Or.inl inferInstance)
-      normalizedNumberFieldArchimedeanCompletions +
+    (hξ := (dualizingLine_isHermitian K)) (codifferentModule K)) =
+    -(dualizingLine K).degree
+      +
       (Module.finrank K K : ℝ) * Real.log
         ((2⁻¹ : ℝ) ^ InfinitePlace.nrComplexPlaces K *
           Real.sqrt |(NumberField.discr K : ℝ)|) at h
@@ -252,8 +253,8 @@ theorem dualizingLine_degree_eq_two_log :
 
 /-- Exact discriminant formula for the raw normalized-curve dualizing-line degree. -/
 theorem dualizingLine_degree :
-    (dualizingLine K).degree (Or.inl inferInstance)
-      normalizedNumberFieldArchimedeanCompletions =
+    (dualizingLine K).degree
+      =
         Real.log |(NumberField.discr K : ℝ)| -
           2 * (InfinitePlace.nrComplexPlaces K : ℝ) * Real.log 2 := by
   rw [dualizingLine_degree_eq_two_log, NumberFieldMinkowskiRadius.log_covolume_constant]

@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Determinant.DualNorm
+
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 
@@ -134,11 +135,11 @@ theorem determinant_norm_mul_dual_le_norm_pairing (ω : S.Ω)
       (eventually_gt_nhds (zero_lt_one : (0 : ℝ) < 1))] with α hα1 hα
   exact hαbound α hα hα1
 
-variable {hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion}
+variable [hS : S.IsArchimedeanNormalized]
 
 /-- The canonical completed determinant pairing has exactly the product of
 the determinant norms for a Hermitian family, including rank zero. -/
-theorem IsHermitian.norm_completedDeterminantPairing_eq (hξ : ξ.IsHermitian hS)
+theorem IsHermitian.norm_completedDeterminantPairing_eq (hξ : ξ.IsHermitian)
     (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K]
       (⋀[K]^(Module.finrank K (Module.Dual K E)) (Module.Dual K E)))
@@ -150,7 +151,7 @@ theorem IsHermitian.norm_completedDeterminantPairing_eq (hξ : ξ.IsHermitian hS
 
 /-- The canonical map from the determinant of the dual to the dual of the
 determinant preserves the actual completed norms of a Hermitian family. -/
-theorem IsHermitian.determinant_dual_norm (hξ : ξ.IsHermitian hS) (ω : S.Ω)
+theorem IsHermitian.determinant_dual_norm (hξ : ξ.IsHermitian) (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K]
       (⋀[K]^(Module.finrank K (Module.Dual K E)) (Module.Dual K E))) :
     ξ.dual.determinant.norm ω z = ξ.determinant.dual.norm ω
@@ -165,7 +166,7 @@ theorem IsHermitian.determinant_dual_norm (hξ : ξ.IsHermitian hS) (ω : S.Ω)
   exact (mul_div_cancel_left₀ _ (ξ.determinant.norm_pos ω (b.ne_zero 0)).ne').symm
 
 /-- Isometric determinant duality as an equality of actual norm families. -/
-theorem IsHermitian.determinant_dual (hξ : ξ.IsHermitian hS) :
+theorem IsHermitian.determinant_dual (hξ : ξ.IsHermitian) :
     ξ.dual.determinant = ξ.determinant.dual.pullback
       (determinantDualEquiv K E).toLinearMap (determinantDualEquiv K E).injective := by
   ext ω z

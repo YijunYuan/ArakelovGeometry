@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.NumberTheory.NumberField.Model.TraceDual.Projective.Basic
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Line
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Full.GlobalBall
@@ -127,12 +128,13 @@ def dualizingLine : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) 
     ((AdelicVectorBundle.scalarLine (normalizedNumberFieldAdelicStructure K)).toNormFamily.scale
       (archimedeanFactor K) (archimedeanFactor_pos K))
 
-theorem dualizingLine_isLine : (dualizingLine K).IsLine := Module.finrank_self K
+@[instance]
+theorem dualizingLine_isLine : (dualizingLine K).IsLine := ⟨Module.finrank_self K⟩
 
 theorem dualizingLine_isHermitian :
-    (dualizingLine K).IsHermitian normalizedNumberFieldArchimedeanCompletions :=
+    (dualizingLine K).IsHermitian :=
   (dualizingLine K).toNormFamily.isHermitian_of_finrank_one (Module.finrank_self K)
-    normalizedNumberFieldArchimedeanCompletions
+
 
 /-- Every finite completed norm is the scalar gauge of the actual codifferent tensor image. -/
 theorem dualizingLine_norm_prime (p : IsDedekindDomain.HeightOneSpectrum (𝓞 K))

@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.AbsoluteInvariants.RegularBase
+
 import ArakelovGeometry.AdelicVectorBundle.Minima.Basis
 import ArakelovGeometry.AdelicVectorBundle.Minima.FiltrationRank
 import Mathlib.CategoryTheory.Category.Init
@@ -30,50 +31,49 @@ variable {K L E : Type*} [Field K] [Field L] [Algebra K L]
   [Algebra.IsAlgebraic K L] [IsAlgClosed L] {S : AdelicStructure K}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (V : AdelicVectorBundle S E)
-  (hreg : S.HasCommonCountableDenseSubfield ∨
-    (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-    (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-  (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+  [hreg : S.HasRegularBase]
+  [hN : S.IsArchimedeanNormalized]
 
 /-- The actual native restriction retains the ambient scalar vector degree. -/
 theorem vectorDegree_scalarExtensionRestrictionOfRegularBase
     (A : Submodule L (L ⊗[K] E)) (s : {x : A // x ≠ 0}) :
-    (V.scalarExtensionRestrictionOfRegularBase hreg hN A).vectorDegree s =
-      (V.ordinaryScalarExtension (L := L) hreg hN).vectorDegree
+    (V.scalarExtensionRestrictionOfRegularBase A).vectorDegree s =
+      (V.ordinaryScalarExtension (L := L)).vectorDegree
         ⟨s.val.val, by intro h; exact s.property (Subtype.ext h)⟩ := rfl
 
 /-- Included native high-degree vectors generate an ambient threshold subspace. -/
 theorem degreeThresholdSpan_nativeRestriction_map_le
     (A : Submodule L (L ⊗[K] E)) (t : ℝ) :
-    ((V.scalarExtensionRestrictionOfRegularBase hreg hN A).degreeThresholdSpan t).map
-      A.subtype ≤ (V.ordinaryScalarExtension (L := L) hreg hN).degreeThresholdSpan t := by
+    ((V.scalarExtensionRestrictionOfRegularBase A).degreeThresholdSpan t).map
+      A.subtype ≤ (V.ordinaryScalarExtension (L := L)).degreeThresholdSpan t := by
   apply Submodule.map_le_iff_le_comap.mpr
   apply Submodule.span_le.mpr
   rintro x ⟨hx, ht⟩
   change (x : L ⊗[K] E) ∈
-    (V.ordinaryScalarExtension (L := L) hreg hN).degreeThresholdSpan t
+    (V.ordinaryScalarExtension (L := L)).degreeThresholdSpan t
   have hne : (x : L ⊗[K] E) ≠ 0 := by
     intro h
     exact hx (Subtype.ext h)
-  apply (V.ordinaryScalarExtension (L := L) hreg hN).mem_degreeThresholdSpan ⟨x.val, hne⟩
-  rw [← V.vectorDegree_scalarExtensionRestrictionOfRegularBase hreg hN A ⟨x, hx⟩]
+  apply (V.ordinaryScalarExtension (L := L)).mem_degreeThresholdSpan ⟨x.val, hne⟩
+  rw [← V.vectorDegree_scalarExtensionRestrictionOfRegularBase A ⟨x, hx⟩]
   exact ht
 
 /-- Included actual native completed cuts lie in the ambient scalar cut. -/
 theorem minimaFiltration_nativeRestriction_map_le
     (A : Submodule L (L ⊗[K] E)) (t : ℝ) :
-    ((V.scalarExtensionRestrictionOfRegularBase hreg hN A).minimaFiltration t).map
-      A.subtype ≤ (V.ordinaryScalarExtension (L := L) hreg hN).minimaFiltration t := by
+    ((V.scalarExtensionRestrictionOfRegularBase A).minimaFiltration t).map
+      A.subtype ≤ (V.ordinaryScalarExtension (L := L)).minimaFiltration t := by
   apply le_iInf
   intro ε
   apply le_iInf
   intro hε
   exact (Submodule.map_mono
     (minimaFiltration_le_degreeThresholdSpan
-      (V.scalarExtensionRestrictionOfRegularBase hreg hN A) t hε)).trans
-        (V.degreeThresholdSpan_nativeRestriction_map_le hreg hN A (t - ε))
+      (V.scalarExtensionRestrictionOfRegularBase A) t hε)).trans
+        (V.degreeThresholdSpan_nativeRestriction_map_le A (t - ε))
 
 omit [IsAlgClosed L] in
+omit hreg hN in
 private theorem nativeMinimaFiltrationThresholdRefinement
     (W : AdelicVectorBundle (S.algebraicExtension L) (L ⊗[K] E))
     (t : ℝ) {ε : ℝ} (hε : 0 < ε) :
@@ -89,12 +89,12 @@ private theorem nativeMinimaFiltrationThresholdRefinement
 actual last minimum is at least the cut, including a zero cut. -/
 theorem coe_le_minimalLogarithmicMinimum_nativeRestriction_minimaFiltration (t : ℝ) :
     (t : EReal) ≤
-      minimalLogarithmicMinimum (V.scalarExtensionRestrictionOfRegularBase hreg hN
-        ((V.ordinaryScalarExtension (L := L) hreg hN).minimaFiltration t)) := by
+      minimalLogarithmicMinimum (V.scalarExtensionRestrictionOfRegularBase
+        ((V.ordinaryScalarExtension (L := L)).minimaFiltration t)) := by
   classical
-  let W := V.ordinaryScalarExtension (L := L) hreg hN
+  let W := V.ordinaryScalarExtension (L := L)
   let A := W.minimaFiltration t
-  let R := V.scalarExtensionRestrictionOfRegularBase hreg hN A
+  let R := V.scalarExtensionRestrictionOfRegularBase A
   apply (R.le_finrank_minimaFiltration_iff (Module.finrank L A) t).mp
   apply (R.le_finrank_minimaFiltration_iff_forall_exists_linearIndependent
     (Module.finrank L A) t).mpr
@@ -114,25 +114,25 @@ theorem coe_le_minimalLogarithmicMinimum_nativeRestriction_minimaFiltration (t :
     exact (s j).property (congrArg Subtype.val h)⟩
   refine ⟨f, hlig, ?_⟩
   intro j
-  rw [V.vectorDegree_scalarExtensionRestrictionOfRegularBase hreg hN]
+  rw [V.vectorDegree_scalarExtensionRestrictionOfRegularBase]
   exact (sub_le_sub_left hδε t).trans (hs j)
 
 /-- The exact scalar cut is the sum of actual native nonzero subspaces with
 native restricted last minimum at least the cut. -/
 theorem minimaFiltration_eq_iSup_nativeRestriction_minimum (t : ℝ) :
-    (V.ordinaryScalarExtension (L := L) hreg hN).minimaFiltration t =
+    (V.ordinaryScalarExtension (L := L)).minimaFiltration t =
       ⨆ (A : Submodule L (L ⊗[K] E)) (_ : A ≠ ⊥)
         (_ : (t : EReal) ≤
-          (V.scalarExtensionRestrictionOfRegularBase hreg hN A).minimalLogarithmicMinimum),
+          (V.scalarExtensionRestrictionOfRegularBase A).minimalLogarithmicMinimum),
           A := by
   classical
   apply le_antisymm
-  · by_cases hΦ : (V.ordinaryScalarExtension (L := L) hreg hN).minimaFiltration t = ⊥
+  · by_cases hΦ : (V.ordinaryScalarExtension (L := L)).minimaFiltration t = ⊥
     · rw [hΦ]
       exact bot_le
-    · exact le_iSup_of_le ((V.ordinaryScalarExtension (L := L) hreg hN).minimaFiltration t)
+    · exact le_iSup_of_le ((V.ordinaryScalarExtension (L := L)).minimaFiltration t)
         (le_iSup_of_le hΦ (le_iSup_of_le
-          (V.coe_le_minimalLogarithmicMinimum_nativeRestriction_minimaFiltration hreg hN t)
+          (V.coe_le_minimalLogarithmicMinimum_nativeRestriction_minimaFiltration t)
           le_rfl))
   · apply iSup_le
     intro A
@@ -141,22 +141,22 @@ theorem minimaFiltration_eq_iSup_nativeRestriction_minimum (t : ℝ) :
     apply iSup_le
     intro hmin
     have htop := (minimaFiltration_eq_top_iff
-      (V.scalarExtensionRestrictionOfRegularBase hreg hN A) t).mpr hmin
-    have hm := V.minimaFiltration_nativeRestriction_map_le hreg hN A t
+      (V.scalarExtensionRestrictionOfRegularBase A) t).mpr hmin
+    have hm := V.minimaFiltration_nativeRestriction_map_le A t
     rw [htop, Submodule.map_subtype_top] at hm
     exact hm
 
 /-- The literal source 4.3.70 intersection of subspace sums holds for the
 actual scalar bundle with native restrictions under original regularity only. -/
 theorem minimaFiltration_eq_iInf_iSup_nativeRestriction_minimum (t : ℝ) :
-    (V.ordinaryScalarExtension (L := L) hreg hN).minimaFiltration t =
+    (V.ordinaryScalarExtension (L := L)).minimaFiltration t =
       ⨅ (ε : ℝ) (_ : 0 < ε),
         ⨆ (A : Submodule L (L ⊗[K] E)) (_ : A ≠ ⊥)
           (_ : ((t - ε : ℝ) : EReal) ≤
-            (V.scalarExtensionRestrictionOfRegularBase hreg hN A).minimalLogarithmicMinimum),
+            (V.scalarExtensionRestrictionOfRegularBase A).minimalLogarithmicMinimum),
           A := by
-  simp_rw [← V.minimaFiltration_eq_iSup_nativeRestriction_minimum hreg hN]
-  let W := V.ordinaryScalarExtension (L := L) hreg hN
+  simp_rw [← V.minimaFiltration_eq_iSup_nativeRestriction_minimum]
+  let W := V.ordinaryScalarExtension (L := L)
   apply le_antisymm
   · apply le_iInf
     intro ε

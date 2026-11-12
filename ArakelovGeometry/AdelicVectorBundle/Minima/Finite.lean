@@ -6,6 +6,7 @@ Authors: Yijun Yuan
 module
 
 public import ArakelovGeometry.AdelicVectorBundle.Minima.Absolute.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Minima.Absolute.FirstSlope
 import ArakelovGeometry.AdelicVectorBundle.Minima.Basis
 import ArakelovGeometry.AdelicVectorBundle.Minima.FiltrationRank
@@ -76,59 +77,51 @@ variable [S.IsProper]
 /-- Actual first-minimum bounds and produced finite native slope suprema
 exclude positive infinity on each of the original regularity alternatives. -/
 theorem absoluteMaximalLogarithmicMinimum_lt_top (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    V.absoluteMaximalLogarithmicMinimum hreg hN < ⊤ := by
-  rcases hreg with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
-  · exact (V.absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlope h hN).trans_lt
-      (V.absoluteMaximalSlope_lt_top h hN)
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized] :
+    V.absoluteMaximalLogarithmicMinimum < ⊤ := by
+  rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
+  · exact (V.absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlope (hcount := h)).trans_lt
+      (V.absoluteMaximalSlope_lt_top (hcount := h))
   · let := hc
     let := hd
     exact (V.absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlopeOfCountableDiscreteBase
-      hN).trans_lt (V.absoluteMaximalSlopeOfCountableDiscreteBase_lt_top hN)
+).trans_lt (V.absoluteMaximalSlopeOfCountableDiscreteBase_lt_top)
   · let := hm
     exact (V.absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlopeOfPositiveAtoms
-      (Or.inr (Or.inr ⟨hm, hp, hf⟩)) hN hp hf).trans_lt
-      (V.toNormFamily.absoluteMaximalSlopeOfPositiveAtoms_lt_top V.isDominated hp hf)
+      (hreg := ⟨(Or.inr (Or.inr ⟨hm, hp, hf⟩))⟩) (hpos := ⟨hp⟩) (hS := ⟨hf⟩)).trans_lt
+      (V.toNormFamily.absoluteMaximalSlopeOfPositiveAtoms_lt_top (hpos := ⟨hp⟩) (hS := ⟨hf⟩))
 
 /-- Every positive ordinary index excludes positive infinity, using the
 actual original-to-absolute comparison on all three regularity branches. -/
 theorem logarithmicMinimum_ne_top (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized]
     {i : ℕ} (hi : 1 ≤ i) : V.logarithmicMinimum i ≠ ⊤ :=
   ((V.logarithmicMinimum_antitone hi).trans
-    (V.maximalLogarithmicMinimum_le_absoluteMaximalLogarithmicMinimum hreg hN)).trans_lt
-      (V.absoluteMaximalLogarithmicMinimum_lt_top hreg hN) |>.ne
+    (V.maximalLogarithmicMinimum_le_absoluteMaximalLogarithmicMinimum)).trans_lt
+      (V.absoluteMaximalLogarithmicMinimum_lt_top) |>.ne
 
 /-- Every valid source index has a produced real ordinary logarithmic minimum. -/
 theorem exists_logarithmicMinimum_eq_coe (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized]
     {i : ℕ} (hi : 1 ≤ i) (hr : i ≤ Module.finrank K E) :
     ∃ c : ℝ, V.logarithmicMinimum i = (c : EReal) :=
   ⟨(V.logarithmicMinimum i).toReal,
-    (EReal.coe_toReal (V.logarithmicMinimum_ne_top hreg hN hi)
+    (EReal.coe_toReal (V.logarithmicMinimum_ne_top hi)
       (V.logarithmicMinimum_ne_bot hr)).symm⟩
 
 /-- A real epsilon below the actual valid minimum admits an independent
 nonzero tuple. The real value is canonical and its finiteness is produced. -/
 theorem exists_linearIndependent_degree_ge_logarithmicMinimum_sub
     (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized]
     {i : ℕ} (hi : 1 ≤ i) (hr : i ≤ Module.finrank K E) {ε : ℝ} (hε : 0 < ε) :
     ∃ s : Fin i → {x : E // x ≠ 0}, LinearIndependent K (fun j => (s j).val) ∧
       ∀ j, (V.logarithmicMinimum i).toReal - ε ≤ V.vectorDegree (s j) := by
-  have hm := EReal.coe_toReal (V.logarithmicMinimum_ne_top hreg hN hi)
+  have hm := EReal.coe_toReal (V.logarithmicMinimum_ne_top hi)
     (V.logarithmicMinimum_ne_bot hr)
   have hlt : (((V.logarithmicMinimum i).toReal - ε : ℝ) : EReal) <
       V.logarithmicMinimum i := by
@@ -140,14 +133,12 @@ theorem exists_linearIndependent_degree_ge_logarithmicMinimum_sub
 /-- Produced finite first minimum separates all sufficiently high actual
 filtration cuts; rank zero uses its genuine zero-filtration convention. -/
 theorem exists_minimaFiltration_eq_bot (V : AdelicVectorBundle S E)
-    (hreg : S.HasCommonCountableDenseSubfield ∨
-      (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
-      (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin))
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hreg : S.HasRegularBase]
+    [hN : S.IsArchimedeanNormalized] :
     ∃ t : ℝ, ∀ u ≥ t, V.minimaFiltration u = ⊥ := by
   by_cases hr : Module.finrank K E = 0
   · exact ⟨0, fun u _ => V.minimaFiltration_eq_bot_of_finrank_eq_zero hr u⟩
-  · obtain ⟨c, hc⟩ := V.exists_logarithmicMinimum_eq_coe hreg hN le_rfl (by omega :
+  · obtain ⟨c, hc⟩ := V.exists_logarithmicMinimum_eq_coe le_rfl (by omega :
       1 ≤ Module.finrank K E)
     refine ⟨c + 1, fun u hu => (V.minimaFiltration_eq_bot_iff u).mpr ?_⟩
     rw [hc]

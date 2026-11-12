@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Measurability.Basic
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Strong
 public import Mathlib.Analysis.Normed.Lp.PiLp
+
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import ArakelovGeometry.Analysis.NormedSpace.CoordinateNorm
@@ -53,7 +54,7 @@ theorem κ_eq_one_of_isRCLike (ω : S.Ω) (hω : ω ∈ S.Ωinf)
 /-- With usual Archimedean norms, the infinite locus has finite measure.
 This uses the accepted integrability theorem for the exponent `κ`. -/
 theorem v_Ωinf_lt_top_of_isRCLike
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) : S.v S.Ωinf < ⊤ := by
+    [hS : S.IsArchimedeanNormalized] : S.v S.Ωinf < ⊤ := by
   apply S.v_Ωinf_lt_top_of_κ_bddBelow
   refine ⟨1, zero_lt_one, ?_⟩
   rintro t ⟨ω, hω, rfl⟩
@@ -214,6 +215,7 @@ theorem ofBasisMixed_norm_rational (ω : S.Ω) (x : E) :
 
 /-- The coordinate supremum family is measurable for every adelic structure. -/
 theorem ofBasis_isMeasurable : (ofBasis S E b).IsMeasurable := by
+  constructor
   intro x
   simp only [ofBasis_norm_rational]
   exact (Measurable.of_eval fun i => S.measurable_absValue (b.equivFun x i)).norm
@@ -221,6 +223,7 @@ theorem ofBasis_isMeasurable : (ofBasis S E b).IsMeasurable := by
 /-- The mixed basis family is measurable; the Archimedean partition is the
 measurable partition supplied by the adelic structure. -/
 theorem ofBasisMixed_isMeasurable : (ofBasisMixed S E b).IsMeasurable := by
+  constructor
   classical
   intro x
   simp only [ofBasisMixed_norm_rational]
@@ -231,6 +234,7 @@ theorem ofBasisMixed_isMeasurable : (ofBasisMixed S E b).IsMeasurable := by
 /-- The coordinate maximum has an integrable upper logarithmic bound for
 every adelic structure. -/
 theorem ofBasis_isUpperDominated : (ofBasis S E b).IsUpperDominated := by
+  constructor
   intro x hx
   refine ⟨fun ω => ∑ i, |Real.log ((S.ϕ ω) (b.equivFun x i))|,
     S.integrable_sum_abs_log (b.equivFun x), Filter.Eventually.of_forall ?_⟩
@@ -246,6 +250,7 @@ theorem ofBasis_isUpperDominated : (ofBasis S E b).IsUpperDominated := by
 on the infinite locus. Thus finite measure of that locus suffices. -/
 theorem ofBasisMixed_isUpperDominated_of_measure_lt_top (hfin : S.v S.Ωinf < ⊤) :
     (ofBasisMixed S E b).IsUpperDominated := by
+  constructor
   classical
   intro x hx
   let N : ℝ := max 1 (Fintype.card ι : ℝ)
@@ -428,27 +433,28 @@ theorem ofBasisMixed_isDominated_of_measure_lt_top (hfin : S.v S.Ωinf < ⊤) :
 /-- Domination of the mixed basis family under the usual Archimedean
 normalization of Example 4.1.5. -/
 theorem ofBasisMixed_isDominated
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     (ofBasisMixed S E b).IsDominated :=
-  ofBasisMixed_isDominated_of_measure_lt_top b (S.v_Ωinf_lt_top_of_isRCLike hS)
+  ofBasisMixed_isDominated_of_measure_lt_top b (S.v_Ωinf_lt_top_of_isRCLike)
 
 /-- Rational logarithmic norms of the mixed family are integrable, including
 the convention `log 0 = 0` for the zero vector. -/
 theorem ofBasisMixed_integrable_logNorm
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) (x : E) :
+    [hS : S.IsArchimedeanNormalized] (x : E) :
     Integrable ((ofBasisMixed S E b).logNorm x) S.v :=
-  (ofBasisMixed_isDominated b hS).integrable_logNorm (ofBasisMixed_isMeasurable b) x
+  (ofBasisMixed_isDominated b).integrable_logNorm (ofBasisMixed_isMeasurable b) x
 
 /-- Rational logarithmic norms of the actual dual mixed family are integrable. -/
 theorem ofBasisMixed_dual_integrable_logNorm
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
+    [hS : S.IsArchimedeanNormalized]
     (ℓ : Module.Dual K E) : Integrable ((ofBasisMixed S E b).dual.logNorm ℓ) S.v :=
-  (ofBasisMixed_isDominated b hS).dual.integrable_logNorm
+  (ofBasisMixed_isDominated b).dual.integrable_logNorm
     (ofBasisMixed_dual_isMeasurable b) ℓ
 
 omit [FiniteDimensional K E] in
 /-- The mixed coordinate family is ultrametric at every finite place. -/
 theorem ofBasisMixed_isUltrametric : (ofBasisMixed S E b).IsUltrametric := by
+  constructor
   intro ω hω x y
   simp only [ofBasisMixed_norm_of_finite b ω hω, ofBasis_norm]
   apply (pi_norm_le_iff_of_nonneg
@@ -461,9 +467,9 @@ theorem ofBasisMixed_isUltrametric : (ofBasisMixed S E b).IsUltrametric := by
 /-- The mixed basis family is strongly dominated under the source's usual
 Archimedean normalization, using actual completed bidual isometry. -/
 theorem ofBasisMixed_isStronglyDominated
-    (hS : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
+    [hS : S.IsArchimedeanNormalized] :
     (ofBasisMixed S E b).IsStronglyDominated :=
   ((ofBasisMixed S E b).isStronglyDominated_iff_isDominated_of_ultrametric
-    (ofBasisMixed_isUltrametric b) hS).mpr (ofBasisMixed_isDominated b hS)
+    (hξ := (ofBasisMixed_isUltrametric b))).mpr (ofBasisMixed_isDominated b)
 
 end ArakelovGeometry.NormFamily

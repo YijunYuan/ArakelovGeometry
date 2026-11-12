@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Basis
 public import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.PrimeIndexing
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.MeasureTheory.Integral.FiniteSupport
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Coherence.Criteria
@@ -85,7 +86,7 @@ theorem integrable_localDist_of_norm_eq_off_finite (ξ η : NormFamily (N) E)
 /-- Finite changes of actual completed norms preserve upper domination. -/
 theorem isUpperDominated_of_norm_eq_off_finite (ξ η : NormFamily (N) E)
     (F : Set (N).Ω) (hF : F.Finite)
-    (heq : ∀ ω ∉ F, ∀ z, ξ.norm ω z = η.norm ω z) (hη : η.IsUpperDominated) :
+    (heq : ∀ ω ∉ F, ∀ z, ξ.norm ω z = η.norm ω z) [hη : η.IsUpperDominated] :
     ξ.IsUpperDominated := by
   apply hη.of_localDist
   exact ⟨η.localDist ξ, integrable_localDist_of_norm_eq_off_finite η ξ F hF
@@ -137,13 +138,13 @@ theorem isDominated_of_basisGauge_eq_off_finite_primes {ι : Type*} [Fintype ι]
     exact ⟨p, fun h => hω (Or.inr ⟨p, h, hp⟩), hp⟩
   constructor
   · apply isUpperDominated_of_norm_eq_off_finite ξ (ofBasis (N) E b) F hF
-      _ (ofBasis_isUpperDominated b)
+      _ (hη := (ofBasis_isUpperDominated b))
     intro ω hω z
     obtain ⟨p, hp, rfl⟩ := hpω ω hω
     exact hmodel p hp z
   · apply isUpperDominated_of_norm_eq_off_finite ξ.dual
       (ofBasis (N) (Module.Dual K E) b.dualBasis) F hF
-      _ (ofBasis_isUpperDominated b.dualBasis)
+      _ (hη := (ofBasis_isUpperDominated b.dualBasis))
     intro ω hω z
     obtain ⟨p, hp, rfl⟩ := hpω ω hω
     exact dual_basisGauge_eq_of_basisGauge_eq ξ b p (hmodel p hp) z
@@ -153,7 +154,7 @@ omit [FiniteDimensional K E] in
 theorem normalizedBasisMixed_hasFiniteNormExceptions {ι : Type*} [Fintype ι]
     (b : Module.Basis ι K E) : (ofBasisMixed (N) E b).HasFiniteNormExceptions := by
   apply hasFiniteNormExceptions_of_span_normalizedGlobalUnitBall_eq_top
-    (ofBasisMixed (N) E b) (ofBasisMixed_isUltrametric b)
+    (ofBasisMixed (N) E b) (hξ := (ofBasisMixed_isUltrametric b))
   apply top_unique
   rw [← b.span_eq]
   apply Submodule.span_mono
@@ -169,6 +170,7 @@ theorem hasFiniteNormExceptions_of_basisGauge_eq_off_finite_primes
     (hmodel : ∀ p ∉ T, ∀ z, ξ.norm (normalizedPrimeParameter p) z =
       (ofBasis (N) E b).norm (normalizedPrimeParameter p) z) :
     ξ.HasFiniteNormExceptions := by
+  constructor
   intro x
   apply ((T.finite_toSet.image normalizedPrimeParameter).union
     (normalizedBasisMixed_hasFiniteNormExceptions b x)).subset

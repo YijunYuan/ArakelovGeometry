@@ -10,6 +10,7 @@ public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Hermitian.Basis
 public import ArakelovGeometry.NumberTheory.NumberField.AdelicCurve.PrimeIndexing
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Normalization.Hermitian
 public import Mathlib.NumberTheory.Padics.HeightOneSpectrum
+
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Rational
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Coherence.Model
@@ -137,6 +138,7 @@ theorem exceptionalSeminorm_add_le_max (p : Nat.Primes) (a : ℤ) (ω : S.Ω)
       (Real.sqrt_nonneg _)
 
 theorem family_isUltrametric (p : Nat.Primes) (a : ℤ) : (family p a).IsUltrametric := by
+  constructor
   intro ω hω z w
   by_cases hp : ω = primePoint p
   · subst ω
@@ -177,10 +179,10 @@ theorem family_norm_infinite (p : Nat.Primes) (a : ℤ) (ω : S.Ω) (hω : ω �
   rfl
 
 theorem family_isHermitian (p : Nat.Primes) (a : ℤ) :
-    (family p a).IsHermitian (normalizedNumberFieldArchimedeanCompletions (K := ℚ)) := by
+    (family p a).IsHermitian (hS := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) := by
   refine ⟨family_isUltrametric p a, fun ω hω => ?_⟩
   obtain ⟨c, hc⟩ := (ofBasisHermitian_isHermitian standardBasis
-    (normalizedNumberFieldArchimedeanCompletions (K := ℚ))).2 ω hω
+    (hS := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩)).2 ω hω
   refine ⟨c, fun z => ?_⟩
   rw [family_norm_off_prime p a ω (fun h => hω (h ▸ primePoint_mem_fin p))]
   exact hc z

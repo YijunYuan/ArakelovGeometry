@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.NumberTheory.NumberField.Lattice.Index.BoundedElement
 public import ArakelovGeometry.NumberTheory.NumberField.Minima.NormFamilyUnitBalancing
 public import ArakelovGeometry.NumberTheory.NumberField.NormFamily.Impurity.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Minima.BasisSupremum
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Line.Basic
 import ArakelovGeometry.NumberTheory.NumberField.Lattice.Line.Index
@@ -54,23 +55,23 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 
 variable (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
 
-theorem globalImpurity_restrict_eq_zero (hξ : ξ.IsUltrametric)
+theorem globalImpurity_restrict_eq_zero [hξ : ξ.IsUltrametric]
     (hσ : ξ.globalImpurity = 0) (F : Submodule K E) :
     (ξ.restrict F).globalImpurity = 0 := by
   apply ((ξ.restrict F).globalImpurity_eq_zero_iff_latticeGaugeFamily_eq
-    (hξ.restrict F)).mpr
-  rw [ξ.latticeGaugeFamily_restrict hξ F,
-    (ξ.globalImpurity_eq_zero_iff_latticeGaugeFamily_eq hξ).mp hσ]
+    (hξ := (hξ.restrict F))).mpr
+  rw [ξ.latticeGaugeFamily_restrict F,
+    (ξ.globalImpurity_eq_zero_iff_latticeGaugeFamily_eq).mp hσ]
 
 omit [FiniteDimensional K E] in
 theorem archimedeanMeanLogNorm_restrict (F : Submodule K E) (x : F) :
     (ξ.restrict F).archimedeanMeanLogNorm x = ξ.archimedeanMeanLogNorm (x : E) := by
   rfl
 
-theorem vectorDegree_restrict (hd : ξ.IsDominated) (hm : ξ.IsMeasurable)
+theorem vectorDegree_restrict [hd : ξ.IsDominated] [hm : ξ.IsMeasurable]
     (F : Submodule K E) (x : {x : F // x ≠ 0}) :
-    (ξ.restrict F).vectorDegree (hd.restrict F) (hm.restrict F) x =
-      ξ.vectorDegree hd hm ⟨x.val.val, fun h => x.property (Subtype.ext h)⟩ := by
+    (ξ.restrict F).vectorDegree (hd := (hd.restrict F)) (hm := (hm.restrict F)) x =
+      ξ.vectorDegree ⟨x.val.val, fun h ↦ x.property (Subtype.ext h)⟩ := by
   rfl
 
 end ArakelovGeometry.NormFamily
@@ -104,9 +105,9 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 variable (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
 
 theorem vectorDegree_eq_of_mem_span_singleton
-    (hd : ξ.IsDominated) (hm : ξ.IsMeasurable)
+    [hd : ξ.IsDominated] [hm : ξ.IsMeasurable]
     (s t : {x : E // x ≠ 0}) (ht : t.val ∈ Submodule.span K {s.val}) :
-    ξ.vectorDegree hd hm t = ξ.vectorDegree hd hm s := by
+    ξ.vectorDegree t = ξ.vectorDegree s := by
   let : (normalizedNumberFieldAdelicStructure K).IsProper :=
     normalizedNumberFieldAdelicStructure_isProper (K := K)
   obtain ⟨a, ha⟩ := Submodule.mem_span_singleton.mp ht
@@ -116,39 +117,40 @@ theorem vectorDegree_eq_of_mem_span_singleton
   let u : Kˣ := Units.mk0 a ha0
   have he : (⟨(u : K) • s.val, smul_ne_zero u.ne_zero s.property⟩ :
       {x : E // x ≠ 0}) = t := Subtype.ext ha
-  simpa only [he] using ξ.vectorDegree_smul_of_proper hd hm u s
+  simpa only [he] using ξ.vectorDegree_smul_of_proper u s
 
 /-- Actual arithmetic produces an integral representative of each rational
 line and bounds its original infinite-place mean. -/
 theorem exists_integral_line_archimedeanMeanLogNorm_bound
-    (hξ : ξ.IsUltrametric) (hc : ξ.HasFiniteNormExceptions)
-    (hd : ξ.IsDominated) (hm : ξ.IsMeasurable) (hσ : ξ.globalImpurity = 0)
+    [hξ : ξ.IsUltrametric] [hc : ξ.HasFiniteNormExceptions]
+    [hd : ξ.IsDominated] [hm : ξ.IsMeasurable] (hσ : ξ.globalImpurity = 0)
     (s : {x : E // x ≠ 0}) :
     ∃ l : E, l ≠ 0 ∧ l ∈ ξ.globalUnitBall ∧ l ∈ Submodule.span K {s.val} ∧
       (Module.finrank ℚ K : ℝ) * ξ.archimedeanMeanLogNorm l ≤
-        Real.log (NumberFieldBoundedIndex.indexBound K) - ξ.vectorDegree hd hm s := by
+        Real.log (NumberFieldBoundedIndex.indexBound K) - ξ.vectorDegree s := by
   classical
   let F := Submodule.span K {s.val}
   have hr : Module.finrank K F = 1 := finrank_span_singleton s.property
   obtain ⟨l, hl, hquot, hcard⟩ :=
-    ξ.exists_normalizedLineGlobalUnitBall_boundedIndex_element hξ hc hd F hr
+    ξ.exists_normalizedLineGlobalUnitBall_boundedIndex_element F hr
   have hlF : l.val ≠ 0 := fun h => hl (Subtype.ext h)
   have hlE : (l.val : E) ≠ 0 := fun h => hlF (Subtype.ext h)
   have hdeg := (ξ.restrict F).normalizedLineGlobalUnitBall_vectorDegree
-    (hξ.restrict F) (hc.restrict F) (hd.restrict F) (hm.restrict F)
-    (ξ.globalImpurity_restrict_eq_zero hξ hσ F) hr l hl
+    (hξ := (hξ.restrict F)) (hfinite := (hc.restrict F)) (hdom := (hd.restrict F))
+        (hm := (hm.restrict F))
+    (ξ.globalImpurity_restrict_eq_zero hσ F) hr l hl
   rw [← (ξ.restrict F).degree_mul_archimedeanMeanLogNorm_eq_integral,
     ξ.archimedeanMeanLogNorm_restrict,
-    ξ.vectorDegree_restrict hd hm F] at hdeg
-  have heq := ξ.vectorDegree_eq_of_mem_span_singleton hd hm s
+    ξ.vectorDegree_restrict F] at hdeg
+  have heq := ξ.vectorDegree_eq_of_mem_span_singleton s
     ⟨(l.val : E), hlE⟩ l.val.property
   rw [heq] at hdeg
   let := hquot
   have hpos : 0 < Nat.card
-      (((ξ.restrict F).globalUnitBallModule (hξ.restrict F)) ⧸
+      (((ξ.restrict F).globalUnitBallModule (hξ := (hξ.restrict F))) ⧸
         Submodule.span (𝓞 K) {l}) := Nat.card_pos
   have hlog := Real.log_le_log (Nat.cast_pos.mpr hpos)
-    (show (Nat.card (((ξ.restrict F).globalUnitBallModule (hξ.restrict F)) ⧸
+    (show (Nat.card (((ξ.restrict F).globalUnitBallModule (hξ := (hξ.restrict F))) ⧸
       Submodule.span (𝓞 K) {l}) : ℝ) ≤ NumberFieldBoundedIndex.indexBound K by
         exact_mod_cast hcard)
   refine ⟨(l.val : E), hlE, l.property, l.val.property, ?_⟩
@@ -167,15 +169,15 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 through bounded-index line representatives and Dirichlet units. -/
 theorem mem_integralBasisThresholds_of_vectorDegree_basis
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsUltrametric) (hc : ξ.HasFiniteNormExceptions)
-    (hd : ξ.IsDominated) (hm : ξ.IsMeasurable) (hσ : ξ.globalImpurity = 0)
+    [hξ : ξ.IsUltrametric] [hc : ξ.HasFiniteNormExceptions]
+    [hd : ξ.IsDominated] [hm : ξ.IsMeasurable] (hσ : ξ.globalImpurity = 0)
     (b : Module.Basis (Fin (Module.finrank K E)) K E) {t : ℝ}
-    (ht : ∀ i, t ≤ ξ.vectorDegree hd hm ⟨b i, b.ne_zero i⟩) :
+    (ht : ∀ i, t ≤ ξ.vectorDegree ⟨b i, b.ne_zero i⟩) :
     (t - NumberFieldLatticeMinimaUpper.comparisonConstant K) /
       (Module.finrank ℚ K : ℝ) ∈ ξ.integralBasisThresholds := by
   classical
   choose l hl hball hline hmean using fun i =>
-    ξ.exists_integral_line_archimedeanMeanLogNorm_bound hξ hc hd hm hσ ⟨b i, b.ne_zero i⟩
+    ξ.exists_integral_line_archimedeanMeanLogNorm_bound hσ ⟨b i, b.ne_zero i⟩
   obtain ⟨c, hc⟩ := NumberFieldLatticeMinimaUpper.exists_basis_of_nonzero_line_representatives
     b l hline hl
   apply ξ.mem_integralBasisThresholds_of_archimedeanMeanLogNorm_le c
@@ -206,7 +208,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 attainment hypotheses and including the empty basis convention. -/
 theorem minimalLogarithmicMinimum_le_degree_mul_latticeLambda_add_constant_of_impurity_zero
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
-    (hV : V.toNormFamily.IsUltrametric) (hc : V.toNormFamily.HasFiniteNormExceptions)
+    [hV : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions]
     (hσ : V.toNormFamily.globalImpurity = 0) :
     V.minimalLogarithmicMinimum ≤
       ((Module.finrank ℚ K : ℝ) : EReal) * V.toNormFamily.latticeLambda +
@@ -217,7 +219,7 @@ theorem minimalLogarithmicMinimum_le_degree_mul_latticeLambda_add_constant_of_im
   intro ht
   obtain ⟨b, hb⟩ := (V.finrank_le_degreeThresholdSpan_iff_exists_basis t).mp ht
   have ha := V.toNormFamily.mem_integralBasisThresholds_of_vectorDegree_basis
-    hV hc V.isDominated V.isMeasurable hσ b hb
+     hσ b hb
   have hlambda : (((t - NumberFieldLatticeMinimaUpper.comparisonConstant K) /
       (Module.finrank ℚ K : ℝ) : ℝ) : EReal) ≤ V.toNormFamily.latticeLambda :=
     le_iSup_of_le _ (le_iSup_of_le ha le_rfl)
@@ -249,7 +251,8 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 theorem HasFiniteNormExceptions.latticeGaugeFamily
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
     (hc : ξ.HasFiniteNormExceptions) (hξ : ξ.IsUltrametric) :
-    (ξ.latticeGaugeFamily hξ).HasFiniteNormExceptions := by
+    (ξ.latticeGaugeFamily).HasFiniteNormExceptions := by
+  constructor
   intro x
   apply (hc x).subset
   intro ω hω
@@ -257,9 +260,9 @@ theorem HasFiniteNormExceptions.latticeGaugeFamily
   refine ⟨hfin, ?_⟩
   apply lt_of_not_ge
   intro hle
-  have hg : (ξ.latticeGaugeFamily hξ).norm ω (1 ⊗ₜ[K] x) ≤ 1 := by
-    change (1 ⊗ₜ[K] x) ∈ (ξ.latticeGaugeFamily hξ).completedUnitBall ω
-    rw [ξ.latticeGaugeFamily_completedUnitBall_eq hξ ω hfin]
+  have hg : (ξ.latticeGaugeFamily).norm ω (1 ⊗ₜ[K] x) ≤ 1 := by
+    change (1 ⊗ₜ[K] x) ∈ (ξ.latticeGaugeFamily).completedUnitBall ω
+    rw [ξ.latticeGaugeFamily_completedUnitBall_eq ω hfin]
     exact hle
   exact (not_le_of_gt hgt) hg
 
@@ -277,18 +280,18 @@ impurity term is the literal source impurity, proved finite by domination
 and coherence, and evaluated in the real line. -/
 theorem minimalLogarithmicMinimum_le_degree_mul_latticeLambda_add_impurity_add_constant
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
-    (hV : V.toNormFamily.IsUltrametric) (hc : V.toNormFamily.HasFiniteNormExceptions) :
+    [hV : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions] :
     V.minimalLogarithmicMinimum ≤
       ((Module.finrank ℚ K : ℝ) : EReal) * V.toNormFamily.latticeLambda +
         (V.toNormFamily.globalImpurity.toReal : EReal) +
         (NumberFieldLatticeMinimaUpper.comparisonConstant K : EReal) := by
   have hp := minimalLogarithmicMinimum_le_degree_mul_latticeLambda_add_constant_of_impurity_zero
-    (V.numberFieldLatticeGauge hV hc)
-      (V.toNormFamily.latticeGaugeFamily_isUltrametric hV) (hc.latticeGaugeFamily hV)
-      (V.numberFieldLatticeGauge_globalImpurity_eq_zero hV hc)
-  rw [V.numberFieldLatticeGauge_latticeLambda_eq hV hc] at hp
+    (V.numberFieldLatticeGauge)
+      (hV := (V.toNormFamily.latticeGaugeFamily_isUltrametric)) (hc := (hc.latticeGaugeFamily hV))
+      (V.numberFieldLatticeGauge_globalImpurity_eq_zero)
+  rw [V.numberFieldLatticeGauge_latticeLambda_eq] at hp
   have h := (V.logarithmicMinimum_le_numberFieldLatticeGauge_add_globalImpurity
-    hV hc (Module.finrank K E)).trans (add_le_add hp le_rfl)
+     (Module.finrank K E)).trans (add_le_add hp le_rfl)
   simpa only [minimalLogarithmicMinimum, add_assoc, add_comm, add_left_comm] using h
 
 end ArakelovGeometry.AdelicVectorBundle
@@ -304,7 +307,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 with a field-only constant and the literal integral invariant and impurity. -/
 theorem numberField_latticeLambda_logarithmicMinimum_comparison
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
-    (hV : V.toNormFamily.IsUltrametric) (hc : V.toNormFamily.HasFiniteNormExceptions) :
+    [hV : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions] :
     ((Module.finrank ℚ K : ℝ) : EReal) * V.toNormFamily.latticeLambda ≤
         V.minimalLogarithmicMinimum ∧
       V.minimalLogarithmicMinimum ≤
@@ -312,6 +315,6 @@ theorem numberField_latticeLambda_logarithmicMinimum_comparison
           (V.toNormFamily.globalImpurity.toReal : EReal) +
           (NumberFieldLatticeMinimaUpper.comparisonConstant K : EReal) :=
   ⟨V.degree_mul_latticeLambda_le_minimalLogarithmicMinimum,
-    V.minimalLogarithmicMinimum_le_degree_mul_latticeLambda_add_impurity_add_constant hV hc⟩
+    V.minimalLogarithmicMinimum_le_degree_mul_latticeLambda_add_impurity_add_constant⟩
 
 end ArakelovGeometry.AdelicVectorBundle

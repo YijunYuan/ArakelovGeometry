@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Countable
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
+
 import ArakelovGeometry.AdelicVectorBundle.Degree.Isometry
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
@@ -78,22 +79,22 @@ variable [FiniteDimensional K E]
 /-- Nested restriction and direct restriction have the same actual degree. -/
 theorem degree_restrict_restrict [S.IsProper] (V : AdelicVectorBundle S E)
     (U W : Submodule K E) (h : U ≤ W)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    ((V.restrictOfMeasurableBase W hS).restrictOfMeasurableBase
-      (U.comap W.subtype) hS).degree hS hN =
-      (V.restrictOfMeasurableBase U hS).degree hS hN := by
-  apply degree_eq_of_completed_isometry _ _ (Submodule.comapSubtypeEquivOfLe h) hS hN
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    ((V.restrictOfMeasurableBase W).restrictOfMeasurableBase
+      (U.comap W.subtype)).degree =
+      (V.restrictOfMeasurableBase U).degree := by
+  apply degree_eq_of_completed_isometry _ _ (Submodule.comapSubtypeEquivOfLe h)
   intro ω z
   simp only [restrictOfMeasurableBase_toNormFamily]
   exact (V.toNormFamily.restrict_restrict_norm_eq U W h ω z).symm
 
 /-- The actual total-subspace restriction has the ambient bundle degree. -/
 theorem degree_restrict_top [S.IsProper] (V : AdelicVectorBundle S E)
-    (hS : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion) :
-    (V.restrictOfMeasurableBase ⊤ hS).degree hS hN = V.degree hS hN := by
-  apply degree_eq_of_completed_isometry _ _ Submodule.topEquiv hS hN
+    [hS : S.HasMeasurableBase]
+    [hN : S.IsArchimedeanNormalized] :
+    (V.restrictOfMeasurableBase ⊤).degree = V.degree := by
+  apply degree_eq_of_completed_isometry _ _ Submodule.topEquiv
   intro ω z
   simp only [restrictOfMeasurableBase_toNormFamily]
   exact (V.toNormFamily.restrict_top_norm_eq ω z).symm

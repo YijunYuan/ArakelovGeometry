@@ -7,6 +7,7 @@ module
 
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Destabilizing
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.HermitianComparison.DeterminantDegree
+
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Galois.MaximalSlope
 import Mathlib.CategoryTheory.Category.Init
 
@@ -36,37 +37,37 @@ local instance hermitianGaloisSemistabilityProper : (S.algebraicExtension L).IsP
 in every rank by the produced determinant degree and basis dimension equalities. -/
 theorem slope_hermitianScalarExtension_of_finiteDimensional
     [FiniteDimensional K L] (V : AdelicVectorBundle S E)
-    (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
-    (V.hermitianScalarExtension (L := L) hcount hN hLN hH).slope hLS hLN =
-      V.slope (Or.inr hcount) hN := by
+    (V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
+      V.slope := by
   intro hLN hLS
   dsimp only [slope]
-  rw [V.degree_hermitianScalarExtension_of_finiteDimensional hcount hN hLN hH,
+  rw [V.degree_hermitianScalarExtension_of_finiteDimensional (hL := ⟨hLN⟩),
     Module.finrank_baseChange]
 
 /-- Source positive-rank semistability is preserved and reflected by actual
 finite Galois Hermitian extension. Both rank-zero bundles fail this predicate. -/
 theorem isMeanSlopeSemistable_hermitianScalarExtension_iff_of_finiteGalois
     [FiniteDimensional K L] [IsGalois K L] (V : AdelicVectorBundle S E)
-    (hcount : S.HasCommonCountableDenseSubfield)
-    (hN : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion)
-    (hH : V.toNormFamily.IsHermitian hN) :
-    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) hN
+    [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized]
+    [hH : V.toNormFamily.IsHermitian] :
+    let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
-    let W := V.hermitianScalarExtension (L := L) hcount hN hLN hH
-    W.IsMeanSlopeSemistable hLS hLN ↔ V.IsMeanSlopeSemistable (Or.inr hcount) hN := by
+    let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
+    W.IsMeanSlopeSemistable (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) ↔ V.IsMeanSlopeSemistable := by
   intro hLN hLS W
   by_cases hr : 0 < Module.finrank K E
   · have hrL : 0 < Module.finrank L (L ⊗[K] E) := by
       rwa [Module.finrank_baseChange]
-    rw [W.isMeanSlopeSemistable_iff_maximalSlope_eq_slope hLS hLN hrL,
-      V.isMeanSlopeSemistable_iff_maximalSlope_eq_slope (Or.inr hcount) hN hr,
-      V.maximalSlope_hermitianScalarExtension_of_finiteGalois hcount hN hH,
-      V.slope_hermitianScalarExtension_of_finiteDimensional hcount hN hH]
+    rw [W.isMeanSlopeSemistable_iff_maximalSlope_eq_slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) hrL,
+      V.isMeanSlopeSemistable_iff_maximalSlope_eq_slope hr,
+      V.maximalSlope_hermitianScalarExtension_of_finiteGalois,
+      V.slope_hermitianScalarExtension_of_finiteDimensional]
   · have hrL : ¬ 0 < Module.finrank L (L ⊗[K] E) := by
       rwa [Module.finrank_baseChange]
     constructor
