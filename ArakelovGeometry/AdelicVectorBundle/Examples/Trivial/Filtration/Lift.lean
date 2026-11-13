@@ -185,6 +185,8 @@ theorem degree_lift_eq_sum
       ofTrivialFiltration (F i) (hF i) (hFbot i) (hFtop i) (hFleft i) := by
     intro i
     apply AdelicVectorBundle.ext
+      (hξ := (V.flagQuotientOfMeasurableBase U i).toIsAdelic)
+      (hη := (ofTrivialFiltration (F i) (hF i) (hFbot i) (hFtop i) (hFleft i)).toIsAdelic)
     exact NormFamily.subquotient_ofTrivialFiltration_eq R hR hRbot hRtop hRleft
       (U i.castSucc) (U i.succ) (F i) (hF i) (hFbot i) (hFtop i) (hFleft i) (hc i)
   exact (V.sum_flagQuotient_degree_eq_of_isHermitian U hU hzero htop (hV := hV)).symm.trans

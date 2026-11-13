@@ -44,20 +44,15 @@ open AdelicStructure
 
 noncomputable section
 
-universe u v
-variable {K : Type u} [Field K] {E V : Type v}
+universe u v v'
+variable {K : Type u} [Field K] {E : Type v} {V : Type v'}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup V] [Module K V] [FiniteDimensional K V]
   (ξ : NormFamily (singleTrivialPlace K) E) (η : NormFamily (singleTrivialPlace K) V)
 
 /-- The actual binary epsilon norm is ultrametric at the trivial place. -/
-theorem injectiveTensorPair_isUltrametric : (ξ.injectiveTensorPair η).IsUltrametric := by
-  constructor
-  intro ω hω x y
-  change (injectiveTensor (tensorPairFactors ξ η)).norm ω
-      ((binaryTensorEquiv K (BinaryTensorFactors E V)).symm.toLinearMap.baseChange _ (x + y)) ≤ _
-  rw [map_add]
-  exact injectiveTensor_isUltrametric (tensorPairFactors ξ η) ω hω _ _
+theorem injectiveTensorPair_isUltrametric : (ξ.injectiveTensorPair η).IsUltrametric :=
+  inferInstance
 
 /-- The actual epsilon norm on rational pure tensors is bounded by the product norm. -/
 theorem trivialSeminorm_injectiveTensorPair_tmul_le (x : E) (y : V) :

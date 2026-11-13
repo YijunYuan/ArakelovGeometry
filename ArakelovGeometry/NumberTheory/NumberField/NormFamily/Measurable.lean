@@ -33,13 +33,16 @@ namespace AdelicVectorBundle
 variable [FiniteDimensional K E]
 
 /-- A dominated standard number-field family gives an actual adelic bundle. -/
-noncomputable def ofDominatedNumberField
+noncomputable abbrev ofDominatedNumberField
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsDominated] :
-    AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E where
+    AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) where
+  carrier := E
   toNormFamily := ξ
-  isMeasurable := ξ.isMeasurable_normalizedNumberField
-  dual_isMeasurable := ξ.dual.isMeasurable_normalizedNumberField
-  isDominated := hξ
+  toIsAdelic := {
+    isMeasurable := ξ.isMeasurable_normalizedNumberField
+    dual_isMeasurable := ξ.dual.isMeasurable_normalizedNumberField
+    isDominated := hξ
+  }
 
 @[simp]
 theorem ofDominatedNumberField_toNormFamily

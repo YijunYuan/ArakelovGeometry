@@ -40,7 +40,7 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
@@ -50,12 +50,12 @@ Rank-nullity proves that its kernel has smaller rank, and its actual
 ordinary degree is bounded through the actual quotient mean. -/
 theorem exists_quotient_maximalSlope_lt_of_minimalSlope_lt
     (c : ℝ) (hc : V.minimalSlope < (c : EReal)) :
-    ∃ U : Submodule K E, 0 < Module.finrank K (E ⧸ U) ∧
-      Module.finrank K U < Module.finrank K E ∧
+    ∃ U : Submodule K V, 0 < Module.finrank K (V ⧸ U) ∧
+      Module.finrank K U < Module.finrank K V ∧
       (V.quotientOfMeasurableBase U).maximalSlope < (c : EReal) ∧
       (V.quotientOfMeasurableBase U).degree ≤
-        (Module.finrank K (E ⧸ U) : ℝ) * c := by
-  change (⨅ U : {U : Submodule K E // 0 < Module.finrank K (E ⧸ U)},
+        (Module.finrank K (V ⧸ U) : ℝ) * c := by
+  change (⨅ U : {U : Submodule K V // 0 < Module.finrank K (V ⧸ U)},
     (V.quotientOfMeasurableBase U.val).maximalSlope) < (c : EReal) at hc
   obtain ⟨U, hU⟩ := iInf_lt_iff.mp hc
   have hr := U.val.finrank_quotient_add_finrank
@@ -69,9 +69,9 @@ theorem exists_quotient_maximalSlope_lt_of_minimalSlope_lt
 /-- Actual restriction slot comparisons and the ambient minimum account
 for every omitted ambient slot by one quotient-rank copy of a real lower bound. -/
 theorem sum_generalHNOrderedSlope_restrict_add_quotient_rank_mul_le
-    (U : Submodule K E) (b : ℝ) (hb : (b : EReal) ≤ V.minimalSlope) :
+    (U : Submodule K V) (b : ℝ) (hb : (b : EReal) ≤ V.minimalSlope) :
     (∑ j, (V.restrictOfMeasurableBase U).generalHNOrderedSlope j) +
-      (Module.finrank K (E ⧸ U) : ℝ) * b ≤ ∑ j, V.generalHNOrderedSlope j := by
+      (Module.finrank K (V ⧸ U) : ℝ) * b ≤ ∑ j, V.generalHNOrderedSlope j := by
   classical
   let e := Fin.castLE U.finrank_le
   have hn : ∀ j, 0 ≤ V.generalHNOrderedSlope j - b := by
@@ -90,25 +90,25 @@ theorem sum_generalHNOrderedSlope_restrict_add_quotient_rank_mul_le
   have hs := hsum.trans hsub
   simp only [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ,
     Fintype.card_fin, nsmul_eq_mul] at hs
-  have hr : (Module.finrank K (E ⧸ U) : ℝ) + (Module.finrank K U : ℝ) =
-      (Module.finrank K E : ℝ) := by exact_mod_cast U.finrank_quotient_add_finrank
+  have hr : (Module.finrank K (V ⧸ U) : ℝ) + (Module.finrank K U : ℝ) =
+      (Module.finrank K V : ℝ) := by exact_mod_cast U.finrank_quotient_add_finrank
   rw [← hr, add_mul] at hs
   linarith
 
 private theorem degree_sub_majorantDiscrepancy_le_sum_generalHNOrderedSlope_aux (r : ℕ) :
-    ∀ {F : Type w} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
-      (W : AdelicVectorBundle S F), Module.finrank K F = r →
+    ∀
+      (W : AdelicVectorBundle.{w} S), Module.finrank K W = r →
       (W.degree : EReal) - W.majorantDiscrepancy ≤
         ((∑ j, W.generalHNOrderedSlope j) : ℝ) := by
   induction r using Nat.strong_induction_on with
   | h r ih =>
-    intro F _ _ _ W hr
-    by_cases hz : Module.finrank K F = 0
-    · let : IsEmpty (Fin (Module.finrank K F)) := by rw [hz]; infer_instance
+    intro W hr
+    by_cases hz : Module.finrank K W = 0
+    · let : IsEmpty (Fin (Module.finrank K W)) := by rw [hz]; infer_instance
       rw [W.degree_eq_zero_of_finrank_eq_zero hz,
         W.majorantDiscrepancy_eq_zero_of_finrank_eq_zero hz]
       simp
-    have hp : 0 < Module.finrank K F := Nat.pos_of_ne_zero hz
+    have hp : 0 < Module.finrank K W := Nat.pos_of_ne_zero hz
     by_cases hD : W.majorantDiscrepancy = ⊤
     · rw [hD, EReal.sub_top]
       exact bot_le
@@ -121,8 +121,8 @@ private theorem degree_sub_majorantDiscrepancy_le_sum_generalHNOrderedSlope_aux 
     obtain ⟨b, hb⟩ := W.exists_minimalSlope_eq_coe hp
     apply le_of_forall_pos_le_add
     intro η hη
-    let ε := η / (Module.finrank K F : ℝ)
-    have hpos : 0 < (Module.finrank K F : ℝ) := Nat.cast_pos.mpr hp
+    let ε := η / (Module.finrank K W : ℝ)
+    have hpos : 0 < (Module.finrank K W : ℝ) := Nat.cast_pos.mpr hp
     have hε : 0 < ε := div_pos hη hpos
     have hc : W.minimalSlope < ((b + ε : ℝ) : EReal) := by
       rw [hb]
@@ -155,15 +155,15 @@ private theorem degree_sub_majorantDiscrepancy_le_sum_generalHNOrderedSlope_aux 
     rw [hd, hdu] at hs
     simp only [← EReal.coe_add, EReal.coe_le_coe_iff] at hs
     have htail := W.sum_generalHNOrderedSlope_restrict_add_quotient_rank_mul_le U b hb.ge
-    have hqle : Module.finrank K (F ⧸ U) ≤ Module.finrank K F := by
+    have hqle : Module.finrank K (W ⧸ U) ≤ Module.finrank K W := by
       have h := U.finrank_quotient_add_finrank
       omega
-    have hqle' : (Module.finrank K (F ⧸ U) : ℝ) ≤ (Module.finrank K F : ℝ) :=
+    have hqle' : (Module.finrank K (W ⧸ U) : ℝ) ≤ (Module.finrank K W : ℝ) :=
       Nat.cast_le.mpr hqle
-    have heq : ε * (Module.finrank K F : ℝ) = η := div_mul_cancel₀ η hpos.ne'
-    have herr : (Module.finrank K (F ⧸ U) : ℝ) * ε ≤ η := by
+    have heq : ε * (Module.finrank K W : ℝ) = η := div_mul_cancel₀ η hpos.ne'
+    have herr : (Module.finrank K (W ⧸ U) : ℝ) * ε ≤ η := by
       calc
-        _ ≤ (Module.finrank K F : ℝ) * ε := mul_le_mul_of_nonneg_right hqle' hε.le
+        _ ≤ (Module.finrank K W : ℝ) * ε := mul_le_mul_of_nonneg_right hqle' hε.le
         _ = η := by rw [mul_comm]; exact heq
     rw [mul_add] at hdegQ
     linarith
@@ -175,7 +175,7 @@ theorem degree_sub_majorantDiscrepancy_le_sum_generalHNOrderedSlope :
     (V.degree : EReal) - V.majorantDiscrepancy ≤
       ((∑ j, V.generalHNOrderedSlope j) : ℝ) :=
   degree_sub_majorantDiscrepancy_le_sum_generalHNOrderedSlope_aux
-    (Module.finrank K E) V rfl
+    (Module.finrank K V) V rfl
 
 /-- Source inequality (4.68) with the actual global capital discrepancy,
 including its positive-infinite branch and the empty rank-zero sum. -/
@@ -197,23 +197,23 @@ theorem degree_le_sum_generalHNOrderedSlope_add_majorantDiscrepancy :
   linarith
 
 private theorem degree_sub_determinantDiscrepancy_le_sum_generalHNOrderedSlope_aux (r : ℕ) :
-    ∀ {F : Type w} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
-      (W : AdelicVectorBundle S F), Module.finrank K F = r → W.IsUltrametric →
+    ∀
+      (W : AdelicVectorBundle.{w} S), Module.finrank K W = r → W.toNormFamily.IsUltrametric →
       W.degree - W.determinantDiscrepancy ≤ ∑ j, W.generalHNOrderedSlope j := by
   induction r using Nat.strong_induction_on with
   | h r ih =>
-    intro F _ _ _ W hr hW
-    by_cases hz : Module.finrank K F = 0
-    · let : IsEmpty (Fin (Module.finrank K F)) := by rw [hz]; infer_instance
+    intro W hr hW
+    by_cases hz : Module.finrank K W = 0
+    · let : IsEmpty (Fin (Module.finrank K W)) := by rw [hz]; infer_instance
       rw [W.degree_eq_zero_of_finrank_eq_zero hz,
         W.determinantDiscrepancy_eq_zero_of_finrank_eq_zero hz]
       simp
-    have hp : 0 < Module.finrank K F := Nat.pos_of_ne_zero hz
+    have hp : 0 < Module.finrank K W := Nat.pos_of_ne_zero hz
     obtain ⟨b, hb⟩ := W.exists_minimalSlope_eq_coe hp
     apply le_of_forall_pos_le_add
     intro η hη
-    let ε := η / (Module.finrank K F : ℝ)
-    have hpos : 0 < (Module.finrank K F : ℝ) := Nat.cast_pos.mpr hp
+    let ε := η / (Module.finrank K W : ℝ)
+    have hpos : 0 < (Module.finrank K W : ℝ) := Nat.cast_pos.mpr hp
     have hε : 0 < ε := div_pos hη hpos
     have hc : W.minimalSlope < ((b + ε : ℝ) : EReal) := by
       rw [hb]
@@ -222,21 +222,21 @@ private theorem degree_sub_determinantDiscrepancy_le_sum_generalHNOrderedSlope_a
     obtain ⟨U, hQ, hU, hmax, hdegQ⟩ :=
       W.exists_quotient_maximalSlope_lt_of_minimalSlope_lt (b + ε) hc
     have hUr : Module.finrank K U < r := by simpa only [hr] using hU
-    have hWU : (W.restrictOfMeasurableBase U).IsUltrametric := by
+    have hWU : (W.restrictOfMeasurableBase U).toNormFamily.IsUltrametric := by
       simpa only [restrictOfMeasurableBase_toNormFamily] using hW.restrict U
     have hi := ih (Module.finrank K U) hUr (W.restrictOfMeasurableBase U) rfl hWU
     have hs := W.degree_sub_determinantDiscrepancy_le_restrict_add_quotient U (hV := hW)
     have hn := (W.quotientOfMeasurableBase U).determinantDiscrepancy_nonneg
     have htail := W.sum_generalHNOrderedSlope_restrict_add_quotient_rank_mul_le U b hb.ge
-    have hqle : Module.finrank K (F ⧸ U) ≤ Module.finrank K F := by
+    have hqle : Module.finrank K (W ⧸ U) ≤ Module.finrank K W := by
       have h := U.finrank_quotient_add_finrank
       omega
-    have hqle' : (Module.finrank K (F ⧸ U) : ℝ) ≤ (Module.finrank K F : ℝ) :=
+    have hqle' : (Module.finrank K (W ⧸ U) : ℝ) ≤ (Module.finrank K W : ℝ) :=
       Nat.cast_le.mpr hqle
-    have heq : ε * (Module.finrank K F : ℝ) = η := div_mul_cancel₀ η hpos.ne'
-    have herr : (Module.finrank K (F ⧸ U) : ℝ) * ε ≤ η := by
+    have heq : ε * (Module.finrank K W : ℝ) = η := div_mul_cancel₀ η hpos.ne'
+    have herr : (Module.finrank K (W ⧸ U) : ℝ) * ε ≤ η := by
       calc
-        _ ≤ (Module.finrank K F : ℝ) * ε := mul_le_mul_of_nonneg_right hqle' hε.le
+        _ ≤ (Module.finrank K W : ℝ) * ε := mul_le_mul_of_nonneg_right hqle' hε.le
         _ = η := by rw [mul_comm]; exact heq
     rw [mul_add] at hdegQ
     linarith
@@ -244,22 +244,22 @@ private theorem degree_sub_determinantDiscrepancy_le_sum_generalHNOrderedSlope_a
 /-- Source inequality (4.69) in corrected form, with the actual
 finite-place ultrametric premise and the actual finite determinant discrepancy. -/
 theorem degree_sub_determinantDiscrepancy_le_sum_generalHNOrderedSlope
-    [hV : V.IsUltrametric] :
+    [hV : V.toNormFamily.IsUltrametric] :
     V.degree - V.determinantDiscrepancy ≤ ∑ j, V.generalHNOrderedSlope j :=
   degree_sub_determinantDiscrepancy_le_sum_generalHNOrderedSlope_aux
-    (Module.finrank K E) V rfl hV
+    (Module.finrank K V) V rfl hV
 
 /-- Actual determinant discrepancy bounds the ordinary degree above
 the full general ordered-slope sum. Zero rank has an empty sum. -/
 theorem degree_le_sum_generalHNOrderedSlope_add_determinantDiscrepancy
-    [hV : V.IsUltrametric] :
+    [hV : V.toNormFamily.IsUltrametric] :
     V.degree ≤ (∑ j, V.generalHNOrderedSlope j) + V.determinantDiscrepancy := by
   have h := V.degree_sub_determinantDiscrepancy_le_sum_generalHNOrderedSlope
   linarith
 
 /-- Every actual restricted ordered sum is bounded by the ambient sum
 of positive parts, by actual slot comparison and nonnegative omitted slots. -/
-theorem sum_generalHNOrderedSlope_restrict_le_sum_max (U : Submodule K E) :
+theorem sum_generalHNOrderedSlope_restrict_le_sum_max (U : Submodule K V) :
     (∑ j, (V.restrictOfMeasurableBase U).generalHNOrderedSlope j) ≤
       ∑ j, max (V.generalHNOrderedSlope j) 0 := by
   classical
@@ -294,13 +294,13 @@ theorem positiveDegree_le_sum_max_generalHNOrderedSlope_add_majorantDiscrepancy 
 /-- Source positive-degree inequality (4.71) with the true finite-place
 ultrametric hypothesis, inherited by every actual restricted norm family. -/
 theorem positiveDegree_le_sum_max_generalHNOrderedSlope_add_determinantDiscrepancy
-    [hV : V.IsUltrametric] :
+    [hV : V.toNormFamily.IsUltrametric] :
     V.positiveDegree ≤
       (((∑ j, max (V.generalHNOrderedSlope j) 0) + V.determinantDiscrepancy) : ℝ) := by
   apply V.positiveDegree_le
   intro U
   apply EReal.coe_le_coe
-  have hVU : (V.restrictOfMeasurableBase U).IsUltrametric := by
+  have hVU : (V.restrictOfMeasurableBase U).toNormFamily.IsUltrametric := by
     simpa only [restrictOfMeasurableBase_toNormFamily] using hV.restrict U
   have hd := degree_le_sum_generalHNOrderedSlope_add_determinantDiscrepancy
     (V.restrictOfMeasurableBase U) (hV := hVU)

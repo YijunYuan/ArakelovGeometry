@@ -32,7 +32,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Dualizing a Hermitian adelic bundle negates its Arakelov degree. -/
-theorem degree_dualOfMeasurableBase [S.IsProper] (V : AdelicVectorBundle S E)
+theorem degree_dualOfMeasurableBase [S.IsProper] (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] :
@@ -42,11 +42,14 @@ theorem degree_dualOfMeasurableBase [S.IsProper] (V : AdelicVectorBundle S E)
   calc
     (V.dualOfMeasurableBase).degree =
         (D.dualLine (hV := hD)).lineDegree (hV := (D.dualLine_isLine (hV := hD))) := by
-      apply lineDegree_eq_of_norm_rational_eq _ _ (determinantDualEquiv K E)
+      apply lineDegree_eq_of_norm_rational_eq
+        V.dualOfMeasurableBase.determinantOfMeasurableBase (D.dualLine (hV := hD))
+        (hV := V.dualOfMeasurableBase.determinantOfMeasurableBase_isLine)
+        (hW := D.dualLine_isLine (hV := hD)) (determinantDualEquiv K V)
       intro ω x
       change V.toNormFamily.dual.determinant.norm ω (1 ⊗ₜ[K] x) =
         V.toNormFamily.determinant.dual.norm ω
-          (1 ⊗ₜ[K] determinantDualEquiv K E x)
+          (1 ⊗ₜ[K] determinantDualEquiv K V x)
       simpa only [LinearMap.baseChange_tmul, LinearEquiv.coe_coe] using
         hV.determinant_dual_norm V.toNormFamily ω (1 ⊗ₜ[K] x)
     _ = -V.degree := lineDegree_dualLine D (hV := hD)

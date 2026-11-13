@@ -46,11 +46,9 @@ omit [IsAlgClosed L] [MeasurableSingletonClass S.Ω] in
 private theorem native_degree_of_tower_isometry [S.IsProper]
     (F : IntermediateField K L)
     [MeasurableSingletonClass (S.algebraicExtension F).Ω]
-    {X Y : Type*} [AddCommGroup X] [Module F X] [FiniteDimensional F X]
-    [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
-    (V₀ : AdelicVectorBundle (S.algebraicExtension F) X)
-    (R : AdelicVectorBundle (S.algebraicExtension L) Y)
-    (e : (L ⊗[F] X) ≃ₗ[L] Y)
+    (V₀ : AdelicVectorBundle (S.algebraicExtension F))
+    (R : AdelicVectorBundle (S.algebraicExtension L))
+    (e : (L ⊗[F] V₀) ≃ₗ[L] R)
     [hpos : (S.algebraicExtension F).HasPositiveAtoms]
     [hS : (S.algebraicExtension F).HasOnlyFinitePlaces]
     (hdet₀ : V₀.toNormFamily.determinant.IsMeasurable)
@@ -58,7 +56,7 @@ private theorem native_degree_of_tower_isometry [S.IsProper]
     [hFN : (S.algebraicExtension F).IsArchimedeanNormalized]
     [hLN : (S.algebraicExtension L).IsArchimedeanNormalized]
     (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
-      (z : x.abv.Completion ⊗[L] (L ⊗[F] X)),
+      (z : x.abv.Completion ⊗[L] (L ⊗[F] V₀)),
       R.toNormFamily.norm (scalarExtensionTowerPlace x)
         (e.toLinearMap.baseChange x.abv.Completion z) =
           (V₀.toNormFamily.scalarExtension (L := L)).norm x z) :
@@ -114,15 +112,13 @@ private theorem nativeAlgebraicSubquotient_degree_of_transport [S.IsProper]
     [hN : S.IsArchimedeanNormalized]
     (F : Type uF) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
     [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] [FiniteDimensional K F]
-    (hd : ∀ {X : Type (max uF uE)} {Y : Type (max uL uE)}
-      [AddCommGroup X] [Module F X] [FiniteDimensional F X]
-      [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
-      (V₀ : AdelicVectorBundle (S.algebraicExtension F) X)
-      (R : AdelicVectorBundle (S.algebraicExtension L) Y) (e : (L ⊗[F] X) ≃ₗ[L] Y)
+    (hd : ∀
+      (V₀ : AdelicVectorBundle.{max uF uE} (S.algebraicExtension F))
+      (R : AdelicVectorBundle.{max uL uE} (S.algebraicExtension L)) (e : (L ⊗[F] V₀) ≃ₗ[L] R)
       (hdet₀ : V₀.toNormFamily.determinant.IsMeasurable)
       (hdetR : R.toNormFamily.determinant.IsMeasurable)
       (_he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
-        (z : x.abv.Completion ⊗[L] (L ⊗[F] X)),
+        (z : x.abv.Completion ⊗[L] (L ⊗[F] V₀)),
         R.toNormFamily.norm (scalarExtensionTowerPlace x)
           (e.toLinearMap.baseChange x.abv.Completion z) =
             (V₀.toNormFamily.scalarExtension (L := L)).norm x z),
@@ -163,7 +159,7 @@ theorem nativeAlgebraicSubquotient_degree_finiteStage [S.IsProper]
     (P Q : Submodule F (F ⊗[K] E)) (hPQ : P ≤ Q) :
     ξ.NativeAlgebraicSubquotientImageDegreeEq (L := L) F P Q := by
   refine nativeAlgebraicSubquotient_degree_of_transport ξ hξ F ?_ hi P Q hPQ
-  intro X Y _ _ _ _ _ _ V₀ R e hdet₀ hdetR he
+  intro V₀ R e hdet₀ hdetR he
   let : MeasurableSingletonClass (S.algebraicExtension F).Ω :=
     AdelicStructure.measurableSingletonClass_algebraicExtension_of_finiteDimensional
       (S := S) (L := F)
@@ -172,7 +168,7 @@ theorem nativeAlgebraicSubquotient_degree_finiteStage [S.IsProper]
     AdelicStructure.Algebraic.singleton_pos_algebraicExtension_of_finiteDimensional S x
   have hFS (x : (S.algebraicExtension F).Ω) : x ∈ (S.algebraicExtension F).Ωfin :=
     (AdelicStructure.mem_Ωfin_algebraicExtension_iff x).mpr (hS x.base)
-  exact native_degree_of_tower_isometry (X := X) (Y := Y) F.toIntermediateField V₀ R e
+  exact native_degree_of_tower_isometry F.toIntermediateField V₀ R e
     (hpos := ⟨hFpos⟩) (hS := ⟨hFS⟩) hdet₀ hdetR he
 
 private theorem nativeAlgebraicSubquotient_degree_of_images [S.IsProper]

@@ -34,11 +34,14 @@ variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
 
 /-- The source mixed completed-basis norm defines an adelic vector bundle
 whenever the Archimedean locus has finite measure. -/
-def ofBasisMixed (hfin : S.v S.Ωinf < ⊤) : AdelicVectorBundle S E where
+abbrev ofBasisMixed (hfin : S.v S.Ωinf < ⊤) : AdelicVectorBundle S where
+  carrier := E
   toNormFamily := NormFamily.ofBasisMixed S E b
-  isMeasurable := NormFamily.ofBasisMixed_isMeasurable b
-  dual_isMeasurable := NormFamily.ofBasisMixed_dual_isMeasurable b
-  isDominated := NormFamily.ofBasisMixed_isDominated_of_measure_lt_top b hfin
+  toIsAdelic := {
+    isMeasurable := NormFamily.ofBasisMixed_isMeasurable b
+    dual_isMeasurable := NormFamily.ofBasisMixed_dual_isMeasurable b
+    isDominated := NormFamily.ofBasisMixed_isDominated_of_measure_lt_top b hfin
+  }
 
 /-- The bundle retains the exact previously constructed completed norm family. -/
 @[simp]
@@ -52,12 +55,15 @@ theorem ofBasisMixed_isStronglyAdelic (hfin : S.v S.Ωinf < ⊤) :
 
 /-- The Euclidean-infinite, maximum-finite construction defines an actual
 adelic vector bundle. Dual measurability uses its exact dual-basis identity. -/
-def ofBasisHermitian
-    [hS : S.IsArchimedeanNormalized] : AdelicVectorBundle S E where
+abbrev ofBasisHermitian
+    [hS : S.IsArchimedeanNormalized] : AdelicVectorBundle S where
+  carrier := E
   toNormFamily := NormFamily.ofBasisHermitian S E b
-  isMeasurable := NormFamily.ofBasisHermitian_isMeasurable b
-  dual_isMeasurable := NormFamily.ofBasisHermitian_dual_isMeasurable b
-  isDominated := NormFamily.ofBasisHermitian_isDominated b
+  toIsAdelic := {
+    isMeasurable := NormFamily.ofBasisHermitian_isMeasurable b
+    dual_isMeasurable := NormFamily.ofBasisHermitian_dual_isMeasurable b
+    isDominated := NormFamily.ofBasisHermitian_isDominated b
+  }
 
 /-- The Hermitian bundle retains the actual completed Euclidean coordinate norms. -/
 @[simp]
@@ -80,15 +86,17 @@ theorem ofBasisHermitian_isStronglyAdelic
 /-- Every finite-dimensional rational space admits an adelic vector bundle
 under finite Archimedean measure, including the zero-dimensional space. -/
 theorem nonempty_of_measure_lt_top (hfin : S.v S.Ωinf < ⊤) :
-    Nonempty (AdelicVectorBundle S E) :=
-  ⟨ofBasisMixed S E (Module.finBasis K E) hfin⟩
+    ∃ ξ : NormFamily S E, ξ.IsAdelic :=
+  ⟨(ofBasisMixed S E (Module.finBasis K E) hfin).toNormFamily,
+    (ofBasisMixed S E (Module.finBasis K E) hfin).toIsAdelic⟩
 
 /-- Dominated Hermitian existence produces a genuine adelic bundle, with
 both measurability fields proved, in every finite dimension. -/
 theorem exists_hermitian
     [hS : S.IsArchimedeanNormalized] :
-    ∃ V : AdelicVectorBundle S E, V.IsHermitian :=
-  ⟨ofBasisHermitian S E (Module.finBasis K E),
+    ∃ ξ : NormFamily S E, ξ.IsAdelic ∧ ξ.IsHermitian :=
+  ⟨(ofBasisHermitian S E (Module.finBasis K E)).toNormFamily,
+    (ofBasisHermitian S E (Module.finBasis K E)).toIsAdelic,
     ofBasisHermitian_isHermitian S E (Module.finBasis K E)⟩
 
 end ArakelovGeometry.AdelicVectorBundle

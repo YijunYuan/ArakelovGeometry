@@ -39,20 +39,20 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 /-- Every actual subspace degree lies below every affine line supplied by
 the actual ranks and means of a complete semistable flag. -/
 theorem degree_restrict_le_supportLine_of_semistableFlag
-    (V : AdelicVectorBundle S E) {n : ℕ} (F : Fin (n + 1) → Submodule K E)
+    (V : AdelicVectorBundle S) {n : ℕ} (F : Fin (n + 1) → Submodule K V)
     (hF : Monotone F) (hzero : F 0 = ⊥) (htop : F (Fin.last n) = ⊤)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian]
     [hsemi : ∀ i, (V.flagQuotientOfMeasurableBase F i).IsMeanSlopeSemistable]
-    (U : Submodule K E) (t : ℝ) :
+    (U : Submodule K V) (t : ℝ) :
     (V.restrictOfMeasurableBase U).degree ≤
       (Module.finrank K U : ℝ) * t + ∑ i : Fin n,
         (Module.finrank K ((F i.succ) ⧸ ((F i.castSucc).comap (F i.succ).subtype)) : ℝ) *
           max ((V.flagQuotientOfMeasurableBase F i).slope - t) 0 := by
   let k : Fin n → ℝ := fun i ↦
-    (Module.finrank K (U ⊓ F i.succ : Submodule K E) -
-      Module.finrank K (U ⊓ F i.castSucc : Submodule K E) : ℕ)
+    (Module.finrank K (U ⊓ F i.succ : Submodule K V) -
+      Module.finrank K (U ⊓ F i.castSucc : Submodule K V) : ℕ)
   have hk : (∑ i, k i) = (Module.finrank K U : ℝ) := by
     dsimp only [k]
     exact_mod_cast sum_intersection_rank_increment_eq F hF hzero htop U
@@ -78,7 +78,7 @@ theorem degree_restrict_le_supportLine_of_semistableFlag
       exact (mul_le_mul_of_nonneg_left (le_max_left _ _) hk0).trans
         (mul_le_mul_of_nonneg_right hkd (le_max_right _ _))
 
-variable (V : AdelicVectorBundle S E)
+variable (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
@@ -92,7 +92,7 @@ def hermitianHNSupportLine (t x : ℝ) : ℝ :=
         max ((V.hermitianHNFactor i).slope - t) 0
 
 /-- Every actual rational subspace lies below each actual HN supporting line. -/
-theorem degree_restrict_le_hermitianHNSupportLine (U : Submodule K E) (t : ℝ) :
+theorem degree_restrict_le_hermitianHNSupportLine (U : Submodule K V) (t : ℝ) :
     (V.restrictOfMeasurableBase U).degree ≤
       V.hermitianHNSupportLine t (Module.finrank K U) := by
   simpa only [hermitianHNSupportLine, V.finrank_hermitianHNFlagQuotient_eq,
@@ -123,7 +123,7 @@ theorem hermitianHNPolygon_le_supportLine
   exact Finset.inf'_le _ (Finset.mem_univ i)
 
 /-- Every actual subspace degree is bounded by the actual finite envelope. -/
-theorem degree_restrict_le_hermitianHNPolygon (U : Submodule K E) :
+theorem degree_restrict_le_hermitianHNPolygon (U : Submodule K V) :
     (V.restrictOfMeasurableBase U).degree ≤
       V.hermitianHNPolygon (Module.finrank K U) := by
   classical
@@ -323,7 +323,7 @@ theorem hermitianHNPolygon_rank_term (m : ℕ)
     subst m
     rw [V.hermitianHNTerm_zero, finrank_bot]
     simp only [hermitianHNPolygon, dite_eq_right hp]
-    exact (degree_eq_zero_of_finrank_eq_zero _ (finrank_bot K E)).symm
+    exact (degree_eq_zero_of_finrank_eq_zero _ (finrank_bot K V)).symm
 
 /-- The actual factor supporting line has the following actual flag degree
 at the following actual flag rank. -/

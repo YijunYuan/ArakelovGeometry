@@ -217,14 +217,14 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- The sharp upper bound in Proposition4.3.10 follows by integrating the
 actual local determinant discrepancy, in every rank. -/
-theorem degree_add_degree_dual_le [S.IsProper] (V : AdelicVectorBundle S E)
+theorem degree_add_degree_dual_le [S.IsProper] (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     V.degree + (V.dualOfMeasurableBase).degree ≤
-      (Module.finrank K E : ℝ) / 2 * Real.log (Module.finrank K E) *
+      (Module.finrank K V : ℝ) / 2 * Real.log (Module.finrank K V) *
         (S.v S.Ωinf).toReal := by
   rw [V.degree_add_degree_dual_eq_integral_log_determinantDiscrepancy]
-  let C := (Module.finrank K E : ℝ) / 2 * Real.log (Module.finrank K E)
+  let C := (Module.finrank K V : ℝ) / 2 * Real.log (Module.finrank K V)
   have hR : Integrable (S.Ωinf.indicator (fun _ ↦ C)) S.v :=
     (integrable_indicator_iff S.measurableSet_Ωinf).mpr
       (integrableOn_const (S.v_Ωinf_lt_top_of_isRCLike).ne)
@@ -241,12 +241,12 @@ theorem degree_add_degree_dual_le [S.IsProper] (V : AdelicVectorBundle S E)
 /-- The last clause of Proposition4.3.10 assumes inner products only at
 infinity, allowing arbitrary finite-place vector norms. -/
 theorem degree_add_degree_dual_eq_zero_of_archimedeanInnerProducts [S.IsProper]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (hI : ∀ (ω : S.Ω) (hω : ω ∈ S.Ωinf),
       letI := IsRCLikeNormedField.rclike (S.ϕ ω).Completion (h := hN ω hω)
-      ∃ c : InnerProductSpace.Core (S.ϕ ω).Completion ((S.ϕ ω).Completion ⊗[K] E),
+      ∃ c : InnerProductSpace.Core (S.ϕ ω).Completion ((S.ϕ ω).Completion ⊗[K] V),
         ∀ x, (V.toNormFamily.norm ω x) ^ 2 = RCLike.re (c.inner x x)) :
     V.degree + (V.dualOfMeasurableBase).degree = 0 := by
   rw [V.degree_add_degree_dual_eq_integral_log_determinantDiscrepancy]

@@ -303,18 +303,24 @@ theorem rationalIntervalThreeFamily_isDominated : rationalIntervalThreeFamily.Is
     (fun x => (intervalThreePiNormBounds x).2)
 
 /-- Both measurability clauses and actual dual domination belong to this rational plane bundle. -/
-def rationalIntervalPlaneBundle : AdelicVectorBundle rationalAdelicStructure (Fin 2 → ℚ) where
+abbrev rationalIntervalPlaneBundle : AdelicVectorBundle rationalAdelicStructure where
+  carrier := (Fin 2 → ℚ)
   toNormFamily := rationalIntervalPlaneFamily
-  isMeasurable := rationalIntervalPlaneFamily.isMeasurable_of_discrete
-  dual_isMeasurable := rationalIntervalPlaneFamily.dual.isMeasurable_of_discrete
-  isDominated := rationalIntervalPlaneFamily_isDominated
+  toIsAdelic := {
+    isMeasurable := rationalIntervalPlaneFamily.isMeasurable_of_discrete
+    dual_isMeasurable := rationalIntervalPlaneFamily.dual.isMeasurable_of_discrete
+    isDominated := rationalIntervalPlaneFamily_isDominated
+  }
 
 /-- The rational rank-three interval bundle on the actual normalized adelic curve. -/
-def rationalIntervalThreeBundle : AdelicVectorBundle rationalAdelicStructure (Fin 3 → ℚ) where
+abbrev rationalIntervalThreeBundle : AdelicVectorBundle rationalAdelicStructure where
+  carrier := (Fin 3 → ℚ)
   toNormFamily := rationalIntervalThreeFamily
-  isMeasurable := rationalIntervalThreeFamily.isMeasurable_of_discrete
-  dual_isMeasurable := rationalIntervalThreeFamily.dual.isMeasurable_of_discrete
-  isDominated := rationalIntervalThreeFamily_isDominated
+  toIsAdelic := {
+    isMeasurable := rationalIntervalThreeFamily.isMeasurable_of_discrete
+    dual_isMeasurable := rationalIntervalThreeFamily.dual.isMeasurable_of_discrete
+    isDominated := rationalIntervalThreeFamily_isDominated
+  }
 
 theorem rationalIntervalPlaneBundle_toNormFamily :
     rationalIntervalPlaneBundle.toNormFamily = rationalIntervalPlaneFamily := rfl

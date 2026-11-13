@@ -212,7 +212,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 /-- Each actual integral-basis threshold supplies a lower threshold for the
 existing last logarithmic minimum, without endpoint finiteness or attainment. -/
 theorem coe_le_minimalLogarithmicMinimum_of_integralBasisThreshold
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     {a : ℝ} (ha : a ∈ V.toNormFamily.integralBasisThresholds) :
     ((Module.finrank ℚ K : ℝ) * a : EReal) ≤ V.minimalLogarithmicMinimum := by
   obtain ⟨b, hb⟩ := ha
@@ -225,7 +225,7 @@ theorem coe_le_minimalLogarithmicMinimum_of_integralBasisThreshold
 /-- The first inequality of source Proposition 4.4.10 in the extended real
 line. Coherence and a finite endpoint are unnecessary for this direction. -/
 theorem degree_mul_latticeLambda_le_minimalLogarithmicMinimum
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E) :
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K)) :
     ((Module.finrank ℚ K : ℝ) : EReal) * V.toNormFamily.latticeLambda ≤
       V.minimalLogarithmicMinimum := by
   let d : ℝ := Module.finrank ℚ K

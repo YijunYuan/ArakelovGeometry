@@ -38,17 +38,17 @@ local instance hermitianGaloisDestabilizingProper : (S.algebraicExtension L).IsP
 /-- The genuine finite-extension largest destabilizer is fixed by every
 coefficient automorphism; regularity and Hermitianity are produced. -/
 theorem destabilizingSubspace_hermitianScalarExtension_algEquiv_of_finiteDimensional
-    [FiniteDimensional K L] (V : AdelicVectorBundle S E)
+    [FiniteDimensional K L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E)
+    [hH : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K V)
     (σ : L ≃ₐ[K] L) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
     let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
-    let hrL : 0 < Module.finrank L (L ⊗[K] E) :=
-      (Module.finrank_baseChange (R := L) (S := K) (M' := E)).symm ▸ hr
+    let hrL : 0 < Module.finrank L (L ⊗[K] V) :=
+      (Module.finrank_baseChange (R := L) (S := K) (M' := V)).symm ▸ hr
     scalarExtensionSubspaceOrderIso σ (W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
         (hV := hLH) hrL) =
       W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL := by
@@ -69,17 +69,17 @@ theorem destabilizingSubspace_hermitianScalarExtension_algEquiv_of_finiteDimensi
 /-- The genuine closed-extension largest destabilizer is fixed by every
 coefficient automorphism, without assuming perfectness or stability. -/
 theorem destabilizingSubspace_hermitianScalarExtension_algEquiv_of_isAlgClosed
-    [IsAlgClosed L] (V : AdelicVectorBundle S E)
+    [IsAlgClosed L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E)
+    [hH : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K V)
     (σ : L ≃ₐ[K] L) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
     let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
-    let hrL : 0 < Module.finrank L (L ⊗[K] E) :=
-      (Module.finrank_baseChange (R := L) (S := K) (M' := E)).symm ▸ hr
+    let hrL : 0 < Module.finrank L (L ⊗[K] V) :=
+      (Module.finrank_baseChange (R := L) (S := K) (M' := V)).symm ▸ hr
     scalarExtensionSubspaceOrderIso σ (W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
         (hV := hLH) hrL) =
       W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL := by
@@ -100,17 +100,17 @@ theorem destabilizingSubspace_hermitianScalarExtension_algEquiv_of_isAlgClosed
 /-- The actual first destabilizer over a finite Galois extension descends
 uniquely, with coefficient stability proved rather than assumed. -/
 theorem existsUnique_baseChange_destabilizingSubspace_hermitianScalarExtension
-    [FiniteDimensional K L] [IsGalois K L] (V : AdelicVectorBundle S E)
+    [FiniteDimensional K L] [IsGalois K L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    [hH : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K V) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
     let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
-    let hrL : 0 < Module.finrank L (L ⊗[K] E) :=
-      (Module.finrank_baseChange (R := L) (S := K) (M' := E)).symm ▸ hr
-    ∃! U : Submodule K E, U.baseChange L = W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
+    let hrL : 0 < Module.finrank L (L ⊗[K] V) :=
+      (Module.finrank_baseChange (R := L) (S := K) (M' := V)).symm ▸ hr
+    ∃! U : Submodule K V, U.baseChange L = W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
         (hV := hLH) hrL := by
   intro hLN hLS W hLH hrL
   let D := W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL

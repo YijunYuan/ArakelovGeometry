@@ -26,7 +26,7 @@ noncomputable section
 universe u v w
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-variable (V : AdelicVectorBundle S E)
+variable (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
@@ -34,20 +34,20 @@ variable (V : AdelicVectorBundle S E)
 /-- The convex hull of all actual rational subspace degree points lies
 in the polygon's hypograph over the genuine rank interval. -/
 theorem convexHull_degreePoints_subset_hermitianHNPolygon_hypograph :
-    convexHull ℝ (Set.range (fun U : Submodule K E ↦
+    convexHull ℝ (Set.range (fun U : Submodule K V ↦
       ((Module.finrank K U : ℝ), (V.restrictOfMeasurableBase U).degree))) ⊆
-        {p : ℝ × ℝ | p.1 ∈ Set.Icc 0 (Module.finrank K E : ℝ) ∧
+        {p : ℝ × ℝ | p.1 ∈ Set.Icc 0 (Module.finrank K V : ℝ) ∧
           p.2 ≤ V.hermitianHNPolygon p.1} := by
   apply convexHull_min
   · rintro p ⟨U, rfl⟩
     exact ⟨⟨Nat.cast_nonneg _, Nat.cast_le.mpr U.finrank_le⟩,
       V.degree_restrict_le_hermitianHNPolygon U⟩
   · exact ((V.concaveOn_hermitianHNPolygon).subset
-      (Set.subset_univ _) (convex_Icc 0 (Module.finrank K E : ℝ))).convex_hypograph
+      (Set.subset_univ _) (convex_Icc 0 (Module.finrank K V : ℝ))).convex_hypograph
 
 /-- On every actual unit rank interval, the polygon has the source's
 actual ordered slope as its affine coefficient. -/
-theorem hermitianHNPolygon_affine_unit (j : Fin (Module.finrank K E)) (x : ℝ)
+theorem hermitianHNPolygon_affine_unit (j : Fin (Module.finrank K V)) (x : ℝ)
     (hx : x ∈ Set.Icc (j.val : ℝ) ((j.val : ℝ) + 1)) :
     V.hermitianHNPolygon x =
       V.hermitianHNPolygon j.val +
@@ -69,7 +69,7 @@ theorem hermitianHNPolygon_affine_unit (j : Fin (Module.finrank K E)) (x : ℝ)
 
 /-- The difference of the actual polygon at consecutive integral ranks
 is exactly the corresponding actual ordered slope. -/
-theorem hermitianHNPolygon_unit_difference (j : Fin (Module.finrank K E)) :
+theorem hermitianHNPolygon_unit_difference (j : Fin (Module.finrank K V)) :
     V.hermitianHNPolygon ((j.val : ℝ) + 1) -
       V.hermitianHNPolygon j.val = V.hermitianHNOrderedSlope j := by
   have h := V.hermitianHNPolygon_affine_unit j ((j.val : ℝ) + 1)
@@ -79,22 +79,22 @@ theorem hermitianHNPolygon_unit_difference (j : Fin (Module.finrank K E)) :
 /-- Every real point of the positive-rank domain lies in an actual
 HN factor's closed rank interval. -/
 theorem exists_hermitianHNFactor_real_rank_interval
-    (hr : 0 < Module.finrank K E) (x : ℝ)
-    (hx : x ∈ Set.Icc 0 (Module.finrank K E : ℝ)) :
+    (hr : 0 < Module.finrank K V) (x : ℝ)
+    (hx : x ∈ Set.Icc 0 (Module.finrank K V : ℝ)) :
     ∃ i : Fin (V.hermitianHNLength),
       x ∈ Set.Icc (Module.finrank K (V.hermitianHNTerm i.val) : ℝ)
         (Module.finrank K (V.hermitianHNTerm (i.val + 1)) : ℝ) := by
   have hp := V.hermitianHNLength_pos_of_finrank_pos hr
   have hzRank : (Module.finrank K (V.hermitianHNTerm 0) : ℝ) = 0 := by
-    have h := congrArg (fun U : Submodule K E ↦ (Module.finrank K U : ℝ))
+    have h := congrArg (fun U : Submodule K V ↦ (Module.finrank K U : ℝ))
       (V.hermitianHNTerm_zero)
-    exact h.trans (by exact_mod_cast (finrank_bot K E))
+    exact h.trans (by exact_mod_cast (finrank_bot K V))
   have hnRank :
       (Module.finrank K (V.hermitianHNTerm
-        (V.hermitianHNLength)) : ℝ) = (Module.finrank K E : ℝ) := by
-    have h := congrArg (fun U : Submodule K E ↦ (Module.finrank K U : ℝ))
+        (V.hermitianHNLength)) : ℝ) = (Module.finrank K V : ℝ) := by
+    have h := congrArg (fun U : Submodule K V ↦ (Module.finrank K U : ℝ))
       (V.hermitianHNTerm_length_eq_top)
-    exact h.trans (by exact_mod_cast (finrank_top K E))
+    exact h.trans (by exact_mod_cast (finrank_top K V))
   by_cases hx0 : x = 0
   · subst x
     refine ⟨⟨0, hp⟩, ?_⟩
@@ -103,7 +103,7 @@ theorem exists_hermitianHNFactor_real_rank_interval
     exact ⟨le_of_eq hzRank, Nat.cast_nonneg _⟩
   · let r : ℕ → ℝ := fun m ↦ Module.finrank K (V.hermitianHNTerm m)
     have h0 : r 0 = 0 := hzRank
-    have hn : r (V.hermitianHNLength) = (Module.finrank K E : ℝ) := hnRank
+    have hn : r (V.hermitianHNLength) = (Module.finrank K V : ℝ) := hnRank
     have hi : x ∈ Set.Ioc (r 0) (r (V.hermitianHNLength)) := by
       rw [h0, hn]
       exact ⟨lt_of_le_of_ne hx.1 (Ne.symm hx0), hx.2⟩
@@ -115,13 +115,13 @@ theorem exists_hermitianHNFactor_real_rank_interval
 /-- Every actual graph point is in the convex hull of genuine
 rational-subspace degree points. -/
 theorem hermitianHNPolygon_graph_mem_convexHull_degreePoints (x : ℝ)
-    (hx : x ∈ Set.Icc 0 (Module.finrank K E : ℝ)) :
+    (hx : x ∈ Set.Icc 0 (Module.finrank K V : ℝ)) :
     (x, V.hermitianHNPolygon x) ∈
-      convexHull ℝ (Set.range (fun U : Submodule K E ↦
+      convexHull ℝ (Set.range (fun U : Submodule K V ↦
         ((Module.finrank K U : ℝ), (V.restrictOfMeasurableBase U).degree))) := by
-  let A : Set (ℝ × ℝ) := Set.range (fun U : Submodule K E ↦
+  let A : Set (ℝ × ℝ) := Set.range (fun U : Submodule K V ↦
     ((Module.finrank K U : ℝ), (V.restrictOfMeasurableBase U).degree))
-  by_cases hr : 0 < Module.finrank K E
+  by_cases hr : 0 < Module.finrank K V
   · obtain ⟨i, hi⟩ := V.exists_hermitianHNFactor_real_rank_interval hr x hx
     let r : ℝ := Module.finrank K (V.hermitianHNTerm i.val)
     let s : ℝ := Module.finrank K (V.hermitianHNTerm (i.val + 1))
@@ -166,12 +166,12 @@ theorem hermitianHNPolygon_graph_mem_convexHull_degreePoints (x : ℝ)
       · exact hc
       · exact haf
     exact heq ▸ hcomb
-  · have hr0 : Module.finrank K E = 0 := Nat.eq_zero_of_not_pos hr
+  · have hr0 : Module.finrank K V = 0 := Nat.eq_zero_of_not_pos hr
     have hx0 : x = 0 := le_antisymm (by simpa only [hr0, Nat.cast_zero] using hx.2) hx.1
     have hzRank : (Module.finrank K (V.hermitianHNTerm 0) : ℝ) = 0 := by
-      have h := congrArg (fun U : Submodule K E ↦ (Module.finrank K U : ℝ))
+      have h := congrArg (fun U : Submodule K V ↦ (Module.finrank K U : ℝ))
         (V.hermitianHNTerm_zero)
-      exact h.trans (by exact_mod_cast (finrank_bot K E))
+      exact h.trans (by exact_mod_cast (finrank_bot K V))
     have hp := V.hermitianHNPolygon_rank_term 0 (Nat.zero_le _)
     have hv : (x, V.hermitianHNPolygon x) =
         ((Module.finrank K (V.hermitianHNTerm 0) : ℝ),
@@ -184,9 +184,9 @@ theorem hermitianHNPolygon_graph_mem_convexHull_degreePoints (x : ℝ)
 /-- The actual polygon is the greatest height of each convex-hull fibre
 over its genuine rank interval. -/
 theorem hermitianHNPolygon_isGreatest_degreePoints_hull_fibre (x : ℝ)
-    (hx : x ∈ Set.Icc 0 (Module.finrank K E : ℝ)) :
+    (hx : x ∈ Set.Icc 0 (Module.finrank K V : ℝ)) :
     IsGreatest {y : ℝ | (x, y) ∈
-      convexHull ℝ (Set.range (fun U : Submodule K E ↦
+      convexHull ℝ (Set.range (fun U : Submodule K V ↦
         ((Module.finrank K U : ℝ), (V.restrictOfMeasurableBase U).degree)))}
       (V.hermitianHNPolygon x) :=
   ⟨V.hermitianHNPolygon_graph_mem_convexHull_degreePoints x hx,
@@ -196,26 +196,26 @@ theorem hermitianHNPolygon_isGreatest_degreePoints_hull_fibre (x : ℝ)
 /-- Away from actual internal HN ranks, the actual polygon agrees with
 an affine function on an open neighbourhood inside its domain. -/
 theorem hermitianHNPolygon_locally_affine_of_not_internal_rank (x : ℝ)
-    (hx : x ∈ Set.Ioo 0 (Module.finrank K E : ℝ))
+    (hx : x ∈ Set.Ioo 0 (Module.finrank K V : ℝ))
     (hnot : ∀ m : ℕ, 0 < m → m < V.hermitianHNLength →
       x ≠ (Module.finrank K (V.hermitianHNTerm m) : ℝ)) :
     ∃ ε : ℝ, 0 < ε ∧ ∃ c b : ℝ, ∀ y ∈ Set.Ioo (x - ε) (x + ε),
       V.hermitianHNPolygon y = c + y * b := by
-  have hr : 0 < Module.finrank K E := by exact_mod_cast (lt_trans hx.1 hx.2)
+  have hr : 0 < Module.finrank K V := by exact_mod_cast (lt_trans hx.1 hx.2)
   obtain ⟨i, hi⟩ := V.exists_hermitianHNFactor_real_rank_interval hr x
     ⟨hx.1.le, hx.2.le⟩
   let r : ℝ := Module.finrank K (V.hermitianHNTerm i.val)
   let s : ℝ := Module.finrank K (V.hermitianHNTerm (i.val + 1))
   have hzRank : (Module.finrank K (V.hermitianHNTerm 0) : ℝ) = 0 := by
-    have h := congrArg (fun U : Submodule K E ↦ (Module.finrank K U : ℝ))
+    have h := congrArg (fun U : Submodule K V ↦ (Module.finrank K U : ℝ))
       (V.hermitianHNTerm_zero)
-    exact h.trans (by exact_mod_cast (finrank_bot K E))
+    exact h.trans (by exact_mod_cast (finrank_bot K V))
   have hnRank :
       (Module.finrank K (V.hermitianHNTerm
-        (V.hermitianHNLength)) : ℝ) = (Module.finrank K E : ℝ) := by
-    have h := congrArg (fun U : Submodule K E ↦ (Module.finrank K U : ℝ))
+        (V.hermitianHNLength)) : ℝ) = (Module.finrank K V : ℝ) := by
+    have h := congrArg (fun U : Submodule K V ↦ (Module.finrank K U : ℝ))
       (V.hermitianHNTerm_length_eq_top)
-    exact h.trans (by exact_mod_cast (finrank_top K E))
+    exact h.trans (by exact_mod_cast (finrank_top K V))
   have hl : r < x := by
     apply lt_of_le_of_ne hi.1
     intro he
@@ -229,7 +229,7 @@ theorem hermitianHNPolygon_locally_affine_of_not_internal_rank (x : ℝ)
     apply lt_of_le_of_ne hi.2
     intro he
     by_cases hie : i.val + 1 = V.hermitianHNLength
-    · have hsi : s = (Module.finrank K E : ℝ) :=
+    · have hsi : s = (Module.finrank K V : ℝ) :=
         (congrArg (fun m : ℕ ↦
           (Module.finrank K (V.hermitianHNTerm m) : ℝ)) hie).trans hnRank
       have hxe := he.trans hsi
@@ -329,7 +329,7 @@ theorem hermitianHNPolygon_not_locally_affine_at_internal_rank
 /-- The literal local-affinity criterion detects exactly the actual
 internal HN flag ranks, within the genuine open rank domain. -/
 theorem hermitianHNPolygon_not_locally_affine_iff_internal_rank (x : ℝ)
-    (hx : x ∈ Set.Ioo 0 (Module.finrank K E : ℝ)) :
+    (hx : x ∈ Set.Ioo 0 (Module.finrank K V : ℝ)) :
     (¬ ∃ ε : ℝ, 0 < ε ∧ ∃ c b : ℝ,
       ∀ y ∈ Set.Ioo (x - ε) (x + ε),
         V.hermitianHNPolygon y = c + y * b) ↔

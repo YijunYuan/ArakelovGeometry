@@ -77,8 +77,8 @@ namespace AdelicVectorBundle
 variable [FiniteDimensional K E]
 
 /-- Nested restriction and direct restriction have the same actual degree. -/
-theorem degree_restrict_restrict [S.IsProper] (V : AdelicVectorBundle S E)
-    (U W : Submodule K E) (h : U ≤ W)
+theorem degree_restrict_restrict [S.IsProper] (V : AdelicVectorBundle S)
+    (U W : Submodule K V) (h : U ≤ W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     ((V.restrictOfMeasurableBase W).restrictOfMeasurableBase
@@ -86,17 +86,15 @@ theorem degree_restrict_restrict [S.IsProper] (V : AdelicVectorBundle S E)
       (V.restrictOfMeasurableBase U).degree := by
   apply degree_eq_of_completed_isometry _ _ (Submodule.comapSubtypeEquivOfLe h)
   intro ω z
-  simp only [restrictOfMeasurableBase_toNormFamily]
   exact (V.toNormFamily.restrict_restrict_norm_eq U W h ω z).symm
 
 /-- The actual total-subspace restriction has the ambient bundle degree. -/
-theorem degree_restrict_top [S.IsProper] (V : AdelicVectorBundle S E)
+theorem degree_restrict_top [S.IsProper] (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.restrictOfMeasurableBase ⊤).degree = V.degree := by
   apply degree_eq_of_completed_isometry _ _ Submodule.topEquiv
   intro ω z
-  simp only [restrictOfMeasurableBase_toNormFamily]
   exact (V.toNormFamily.restrict_top_norm_eq ω z).symm
 
 end AdelicVectorBundle

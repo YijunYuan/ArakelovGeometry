@@ -321,7 +321,7 @@ theorem bundle_vectorDegree_cheap (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (hc1 :
   simp
 
 private theorem maximalLogarithmicMinimum_le_of_vectorDegree_le
-    (V : AdelicVectorBundle countingCurve Plane) (r : ℝ)
+    (V : AdelicVectorBundle countingCurve) (r : ℝ)
     (hV : ∀ x, V.vectorDegree x ≤ r) :
     V.maximalLogarithmicMinimum ≤ (r : EReal) := by
   apply iSup_le
@@ -332,8 +332,9 @@ private theorem maximalLogarithmicMinimum_le_of_vectorDegree_le
   exact EReal.coe_le_coe_iff.mpr ((hx 0).trans (hV (x 0)))
 
 private theorem vectorDegree_le_maximalLogarithmicMinimum
-    (V : AdelicVectorBundle countingCurve Plane) (x : {x : Plane // x ≠ 0}) :
-    (V.vectorDegree x : EReal) ≤ V.maximalLogarithmicMinimum := by
+    (V : AdelicVectorBundle countingCurve) (x : {x : V // x ≠ 0}) :
+    (V.vectorDegree x : EReal) ≤
+      V.maximalLogarithmicMinimum := by
   exact V.coe_le_logarithmicMinimum_of_linearIndependent (fun _ : Fin 1 ↦ x)
     (linearIndependent_unique_iff.mpr x.property) (fun _ ↦ le_rfl)
 
@@ -467,7 +468,7 @@ theorem sourceCost_le_one : Real.exp (-1 : ℝ) ≤ 1 :=
   Real.exp_le_one_iff.mpr (by norm_num)
 
 /-- The actual source-cost finite bundle, retaining all produced analytic fields. -/
-def sourceBundle (s : Finset ℚ) : AdelicVectorBundle countingCurve Plane :=
+abbrev sourceBundle (s : Finset ℚ) : AdelicVectorBundle countingCurve :=
   bundle s (Real.exp (-1)) (Real.exp_pos _) sourceCost_le_one
 
 /-- The source's actual degree is the number of selected counting atoms. -/
@@ -544,8 +545,8 @@ theorem countingCurve_not_minkowski (C : ℝ) :
 universe w
 
 /-- The same actual source bundle in any vector-space universe, via an injective pullback. -/
-def liftedSourceBundle (s : Finset ℚ) :
-    AdelicVectorBundle countingCurve (ULift.{w} Plane) :=
+abbrev liftedSourceBundle (s : Finset ℚ) :
+    AdelicVectorBundle countingCurve :=
   (sourceBundle s).pullback ULift.moduleEquiv.toLinearMap ULift.moduleEquiv.injective
 
 

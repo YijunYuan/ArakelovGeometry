@@ -405,10 +405,10 @@ end Submodule
 
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w w'
+universe u v w wF w'
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
-  {E F : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  {E : Type w} {F : Type wF} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
   {Q : Type w'} [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
 
@@ -416,17 +416,17 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 real level. Its finite flag data also settle levels outside the jump set. -/
 theorem HNVariationLift.filtrationOnGraded_eq
     [S.IsProper]
-    {V : AdelicVectorBundle S E}
+    {V : AdelicVectorBundle S}
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    [hV : V.toNormFamily.IsHermitian] {P : ℝ → Submodule K E}
+    [hV : V.toNormFamily.IsHermitian] {P : ℝ → Submodule K V}
     (L : V.HNVariationLift P) (t : ℝ) :
     Submodule.filtrationOnGraded P L.direction t =
       (V.filtrationGraded P t).hermitianHNFiltration (hV := (hV.filtrationGraded P t)) := by
   classical
   by_cases hm : t ∈ Set.range L.weight
   · obtain ⟨i, rfl⟩ := hm
-    let C (A : Submodule K E × Submodule K E) :=
+    let C (A : Submodule K V × Submodule K V) :=
       ∀ s, ((L.direction s).comap A.1.subtype).map (A.2.comap A.1.subtype).mkQ =
         ((V.restrictOfMeasurableBase A.1).quotientOfMeasurableBase
           (A.2.comap A.1.subtype)).hermitianHNFiltration
@@ -442,48 +442,47 @@ theorem HNVariationLift.filtrationOnGraded_eq
 
 /-- The actual source bundle of a canonical binary graded pair. This is the
 existing Hermitian tensor constructor applied to the actual two grades. -/
-noncomputable def tensorFiltrationGradedSource
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+noncomputable abbrev tensorFiltrationGradedSource
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
-    (P : ℝ → Submodule K E) (R : ℝ → Submodule K F) (t u : ℝ) :
-    AdelicVectorBundle S (Submodule.FiltrationGraded P t ⊗[K] Submodule.FiltrationGraded R u) :=
+    (P : ℝ → Submodule K V) (R : ℝ → Submodule K W) (t u : ℝ) :
+    AdelicVectorBundle S :=
   (V.filtrationGraded P t).orthogonalTensorPair (W.filtrationGraded R u)
     (hV := (hV.filtrationGraded P t)) (hW := (hW.filtrationGraded R u))
 
 instance tensorFiltrationGradedSource_isHermitian
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
-    (P : ℝ → Submodule K E) (R : ℝ → Submodule K F) (t u : ℝ) :
+    (P : ℝ → Submodule K V) (R : ℝ → Submodule K W) (t u : ℝ) :
     (tensorFiltrationGradedSource V W P R t u).toNormFamily.IsHermitian :=
   orthogonalTensorPair_isHermitian _ _
 
 /-- The actual quotient of the original tensor bundle, followed by its
 actual image-filtration grade. The target norm is not induced from a pair. -/
-noncomputable def tensorFiltrationQuotientGraded
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+noncomputable abbrev tensorFiltrationQuotientGraded
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
-    (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q)
-    (P : ℝ → Submodule K E) (R : ℝ → Submodule K F) (γ : ℝ) :
-    AdelicVectorBundle S (Submodule.FiltrationGraded
-      (fun s ↦ (Submodule.tensorFiltration P R s).map q) γ) :=
+    (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q)
+    (P : ℝ → Submodule K V) (R : ℝ → Submodule K W) (γ : ℝ) :
+    AdelicVectorBundle S :=
   let T := V.orthogonalTensorPair W
   (T.pushforward q hq
     (hm := (T.isMeasurable.pushforward_of_discrete_or_countable q hq))).filtrationGraded
     (fun s ↦ (Submodule.tensorFiltration P R s).map q) γ
 
 instance tensorFiltrationQuotientGraded_isHermitian
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
-    (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q)
-    (P : ℝ → Submodule K E) (R : ℝ → Submodule K F) (γ : ℝ) :
+    (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q)
+    (P : ℝ → Submodule K V) (R : ℝ → Submodule K W) (γ : ℝ) :
     (tensorFiltrationQuotientGraded V W q hq P R γ).toNormFamily.IsHermitian := by
   dsimp only [tensorFiltrationQuotientGraded, filtrationGraded]
   apply NormFamily.IsHermitian.quotient
@@ -499,15 +498,15 @@ is assumed: the A5 quotient-surjectivity theorem and the completed pair
 contraction producer discharge both. This is the numerical grade bound of
 the adapted Bost Lemma 7.2 route before identifying secondary HN weights. -/
 theorem tensorFiltrationQuotientGraded_hnImage_degree_ge
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
-    (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q)
-    {P : ℝ → Submodule K E} {R : ℝ → Submodule K F}
+    (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q)
+    {P : ℝ → Submodule K V} {R : ℝ → Submodule K W}
     (hP : Antitone P) (hR : Antitone R)
     {ι κ : Type*} [Finite ι] [Finite κ]
-    (b : Basis ι K E) (c : Basis κ K F) (w : ι → ℝ) (z : κ → ℝ)
+    (b : Basis ι K V) (c : Basis κ K W) (w : ι → ℝ) (z : κ → ℝ)
     (hPw : ∀ t, P t = Submodule.span K (b '' {i | t ≤ w i}))
     (hRz : ∀ u, R u = Submodule.span K (c '' {j | u ≤ z j})) (γ : ℝ) :
     let J := {ij : ι × κ // w ij.1 + z ij.2 = γ}
@@ -534,23 +533,23 @@ boundary, the actual canonical pair images of the tensor-HN secondary
 filtrations satisfy Bost's local weighted degree bound. This theorem does
 not yet identify those images with a chosen ambient HN lifting's cuts. -/
 theorem tensorFiltrationQuotientGraded_secondary_degree_ge
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
-    (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q)
-    {P : ℝ → Submodule K E} {R : ℝ → Submodule K F}
+    (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q)
+    {P : ℝ → Submodule K V} {R : ℝ → Submodule K W}
     (hP : Antitone P) (hR : Antitone R)
     {ι κ : Type*} [Finite ι] [Finite κ]
-    (b : Basis ι K E) (c : Basis κ K F) (w : ι → ℝ) (z : κ → ℝ)
+    (b : Basis ι K V) (c : Basis κ K W) (w : ι → ℝ) (z : κ → ℝ)
     (hPw : ∀ t, P t = Submodule.span K (b '' {i | t ≤ w i}))
     (hRz : ∀ u, R u = Submodule.span K (c '' {j | u ≤ z j})) (γ : ℝ)
     (hsmall : ∀ p : {ij : ι × κ // w ij.1 + z ij.2 = γ},
       finrank K (Submodule.FiltrationGraded P (w p.val.1)) +
-        finrank K (Submodule.FiltrationGraded R (z p.val.2)) < finrank K E + finrank K F)
+        finrank K (Submodule.FiltrationGraded R (z p.val.2)) < finrank K V + finrank K W)
     (hInd : ∀ t u,
       finrank K (Submodule.FiltrationGraded P t) + finrank K (Submodule.FiltrationGraded R u) <
-        finrank K E + finrank K F →
+        finrank K V + finrank K W →
       (tensorFiltrationGradedSource V W P R t u).hermitianHNFiltration
         (hV := (tensorFiltrationGradedSource_isHermitian V W P R t u)) =
       Submodule.tensorFiltration
@@ -585,12 +584,12 @@ theorem tensorFiltrationQuotientGraded_secondary_degree_ge
 /-- The actual secondary image in a primary quotient grade, formed from the
 tensor products of the actual factor-grade HN filtrations. -/
 noncomputable def tensorFiltrationSecondaryImage
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
-    (q : E ⊗[K] F →ₗ[K] Q)
-    {P : ℝ → Submodule K E} {R : ℝ → Submodule K F}
+    (q : V ⊗[K] W →ₗ[K] Q)
+    {P : ℝ → Submodule K V} {R : ℝ → Submodule K W}
     (hP : Antitone P) (hR : Antitone R)
     {ι κ : Type*} (w : ι → ℝ) (z : κ → ℝ) (γ : ℝ) :
     ℝ → Submodule K (Submodule.FiltrationGraded
@@ -609,22 +608,22 @@ quotient. The smaller-rank tensor-HN compatibility is explicit; canonical
 pair contractions, finite spanning, the actual secondary images, and both
 flag degree sums are proved. The eventual variation bound is separate. -/
 theorem tensorFiltrationSecondaryImage_weighted_le_slope
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
-    (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q)
-    {P : ℝ → Submodule K E} {R : ℝ → Submodule K F}
+    (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q)
+    {P : ℝ → Submodule K V} {R : ℝ → Submodule K W}
     (hP : Antitone P) (hR : Antitone R)
     {ι κ : Type*} [Finite ι] [Finite κ]
-    (b : Basis ι K E) (c : Basis κ K F) (w : ι → ℝ) (z : κ → ℝ)
+    (b : Basis ι K V) (c : Basis κ K W) (w : ι → ℝ) (z : κ → ℝ)
     (hPw : ∀ t, P t = Submodule.span K (b '' {i | t ≤ w i}))
     (hRz : ∀ u, R u = Submodule.span K (c '' {j | u ≤ z j}))
     (hsmall : ∀ i j, finrank K (Submodule.FiltrationGraded P (w i)) +
-      finrank K (Submodule.FiltrationGraded R (z j)) < finrank K E + finrank K F)
+      finrank K (Submodule.FiltrationGraded R (z j)) < finrank K V + finrank K W)
     (hInd : ∀ t u,
       finrank K (Submodule.FiltrationGraded P t) + finrank K (Submodule.FiltrationGraded R u) <
-        finrank K E + finrank K F →
+        finrank K V + finrank K W →
       (tensorFiltrationGradedSource V W P R t u).hermitianHNFiltration
         (hV := (tensorFiltrationGradedSource_isHermitian V W P R t u)) =
       Submodule.tensorFiltration
@@ -673,15 +672,15 @@ upper bound. Only strictly smaller-rank tensor-HN compatibility is assumed.
 This one-sided form of Bost pp.30–32 suffices for the A9 lower bound; the
 paper's exact affine identity and full CM (5.13) are not asserted. -/
 theorem tensorFiltrationQuotient_eventual_hn_upper
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
-    (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q)
-    {P : ℝ → Submodule K E} {R : ℝ → Submodule K F}
+    (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q)
+    {P : ℝ → Submodule K V} {R : ℝ → Submodule K W}
     (hP : Antitone P) (hR : Antitone R)
     {ι κ : Type*} [Finite ι] [Finite κ]
-    (b : Basis ι K E) (c : Basis κ K F) (w : ι → ℝ) (z : κ → ℝ)
+    (b : Basis ι K V) (c : Basis κ K W) (w : ι → ℝ) (z : κ → ℝ)
     (hPw : ∀ t, P t = Submodule.span K (b '' {i | t ≤ w i}))
     (hRz : ∀ u, R u = Submodule.span K (c '' {j | u ≤ z j}))
     (L : V.HNVariationLift P) (M : W.HNVariationLift R)
@@ -689,10 +688,10 @@ theorem tensorFiltrationQuotient_eventual_hn_upper
     (hLs : ∀ t, L.direction t = Submodule.span K (b '' {i | t ≤ s i}))
     (hMv : ∀ t, M.direction t = Submodule.span K (c '' {j | t ≤ v j}))
     (hsmall : ∀ i j, finrank K (Submodule.FiltrationGraded P (w i)) +
-      finrank K (Submodule.FiltrationGraded R (z j)) < finrank K E + finrank K F)
+      finrank K (Submodule.FiltrationGraded R (z j)) < finrank K V + finrank K W)
     (hInd : ∀ t u,
       finrank K (Submodule.FiltrationGraded P t) + finrank K (Submodule.FiltrationGraded R u) <
-        finrank K E + finrank K F →
+        finrank K V + finrank K W →
       (tensorFiltrationGradedSource V W P R t u).hermitianHNFiltration
         (hV := (tensorFiltrationGradedSource_isHermitian V W P R t u)) =
       Submodule.tensorFiltration

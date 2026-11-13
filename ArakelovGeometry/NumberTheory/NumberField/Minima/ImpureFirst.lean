@@ -40,7 +40,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 /-- The canonical adelic replacement is the full-lattice bundle of the literal finite
 global ball, with finite generation and full span produced from the original bundle. -/
 theorem latticeGauge_eq_fullLatticeBundle
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hU : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions] :
     V.numberFieldLatticeGauge =
       fullLatticeAdelicBundle (V.toNormFamily.globalUnitBallModule)
@@ -48,13 +48,18 @@ theorem latticeGauge_eq_fullLatticeBundle
         ((NormFamily.hasFiniteNormExceptions_iff_span_normalizedGlobalUnitBall_eq_top
           V.toNormFamily).mp hc) V.toNormFamily := by
   apply AdelicVectorBundle.ext
+    (hξ := V.numberFieldLatticeGauge.toIsAdelic)
+    (hη := (fullLatticeAdelicBundle V.toNormFamily.globalUnitBallModule
+      (V.isDominated.fg_normalizedGlobalUnitBallModule hU)
+      ((NormFamily.hasFiniteNormExceptions_iff_span_normalizedGlobalUnitBall_eq_top
+        V.toNormFamily).mp hc) V.toNormFamily).toIsAdelic)
   exact hc.latticeGaugeFamily_eq_fullLatticeGaugeFamily V.toNormFamily hU
     (V.isDominated.fg_normalizedGlobalUnitBallModule hU)
 
 /-- Purity of the actual produced replacement is inherited from its literal full-lattice
 gauge, rather than supplied as a model hypothesis. -/
 theorem latticeGauge_isPure
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hU : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions] :
     (V.numberFieldLatticeGauge).toNormFamily.IsPureAtFinitePlaces := by
   rw [latticeGauge_eq_fullLatticeBundle V]
@@ -62,7 +67,7 @@ theorem latticeGauge_isPure
 
 /-- The same actual replacement preserves the original Hermitian infinite norms. -/
 theorem latticeGauge_isHermitian
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hU : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions]
     [hH : V.toNormFamily.IsHermitian] :
     (V.numberFieldLatticeGauge).toNormFamily.IsHermitian
@@ -73,10 +78,10 @@ theorem latticeGauge_isHermitian
 /-- Intrinsic finite unit-ball gauges increase the original norms by at most their
 actual completed-fibre distance, and agree at infinity. -/
 theorem latticeGauge_norm_comparison
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hU : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions]
     (ω : (normalizedNumberFieldAdelicStructure K).Ω)
-    (z : ((normalizedNumberFieldAdelicStructure K).ϕ ω).Completion ⊗[K] E) :
+    (z : ((normalizedNumberFieldAdelicStructure K).ϕ ω).Completion ⊗[K] V) :
     V.toNormFamily.norm ω z ≤ (V.numberFieldLatticeGauge).toNormFamily.norm ω z ∧
       (V.numberFieldLatticeGauge).toNormFamily.norm ω z ≤
         Real.exp (V.toNormFamily.localDist
@@ -96,7 +101,7 @@ theorem latticeGauge_norm_comparison
 /-- The produced replacement loses no ordinary minimum in the reverse direction, while
 its actual maximal slope loses at most the literal finite source impurity. -/
 theorem latticeGauge_minima_and_maximalSlope
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hU : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions] :
     (∀ i : ℕ, (V.numberFieldLatticeGauge).logarithmicMinimum i ≤
       V.logarithmicMinimum i) ∧
@@ -110,29 +115,29 @@ theorem latticeGauge_minima_and_maximalSlope
   have hδ : Integrable δ (normalizedNumberFieldAdelicStructure K).v :=
     (V.toNormFamily.globalImpurity_ne_top_iff_integrable_localDist_latticeGaugeFamily).mp hσ
   have hn := latticeGauge_norm_comparison V
-  have hm := logarithmicMinimum_comparison V Q (fun _ => 0) δ
+  have hm := logarithmicMinimum_comparison V Q.toNormFamily (hQ := Q.toIsAdelic) (fun _ => 0) δ
     (integrable_zero _ ℝ _) hδ
     (by simpa only [Real.exp_zero, one_mul] using fun ω z => (hn ω z).1)
     (fun ω z => (hn ω z).2)
-  have hs := maximalSlope_sub_integral_le V Q δ hδ (fun ω z => (hn ω z).2)
+  have hs := maximalSlope_sub_integral_le V Q.toNormFamily (hQ := Q.toIsAdelic) δ hδ
+    (fun ω z => (hn ω z).2)
   refine ⟨fun i => ?_, ?_⟩
   · simpa only [integral_zero, EReal.coe_zero, sub_zero] using (hm i).2
   · dsimp only [δ, Q] at hs
-    rw [AdelicVectorBundle.numberFieldLatticeGauge_toNormFamily,
-      V.toNormFamily.integral_localDist_latticeGaugeFamily_eq_globalImpurity_toReal
+    rw [V.toNormFamily.integral_localDist_latticeGaugeFamily_eq_globalImpurity_toReal
        hσ] at hs
     exact hs
 
 /-- The actual Hermitian first minimum with its literal source impurity cost.
 Finite ultrametricity and coherence are explicit; all replacement properties are proved. -/
 theorem maximalSlope_sub_impurity_hermitian_error_le_firstMinimum
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hU : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions]
     [hH : V.toNormFamily.IsHermitian]
-    (hn : 0 < Module.finrank K E) :
+    (hn : 0 < Module.finrank K V) :
     V.maximalSlope -
       (V.toNormFamily.globalImpurity.toReal : EReal) -
-        (((Module.finrank ℚ K : ℝ) / 2 * Real.log (Module.finrank K E : ℝ) +
+        (((Module.finrank ℚ K : ℝ) / 2 * Real.log (Module.finrank K V : ℝ) +
           Real.log |(NumberField.discr K : ℝ)| / 2 : ℝ) : EReal) ≤
             V.maximalLogarithmicMinimum := by
   have htransfer := latticeGauge_minima_and_maximalSlope V
@@ -145,12 +150,12 @@ theorem maximalSlope_sub_impurity_hermitian_error_le_firstMinimum
 /-- The actual first minimum for arbitrary infinite norms, with its proved finite impurity
 cost and the accepted pure-finite error. No finite-value hypotheses are imposed. -/
 theorem maximalSlope_sub_impurity_error_le_firstMinimum
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hU : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions]
-    (hn : 0 < Module.finrank K E) :
+    (hn : 0 < Module.finrank K V) :
     V.maximalSlope -
       (V.toNormFamily.globalImpurity.toReal : EReal) -
-        (((Module.finrank ℚ K : ℝ) * Real.log (Module.finrank K E : ℝ) +
+        (((Module.finrank ℚ K : ℝ) * Real.log (Module.finrank K V : ℝ) +
           Real.log |(NumberField.discr K : ℝ)| / 2 : ℝ) : EReal) ≤
             V.maximalLogarithmicMinimum := by
   have htransfer := latticeGauge_minima_and_maximalSlope V

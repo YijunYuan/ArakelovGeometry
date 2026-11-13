@@ -175,7 +175,7 @@ namespace AdelicVectorBundle
 
 /-- The entire geometric positive-degree supremum is the existing common-density value. -/
 theorem absolutePositiveDegreeOfPositiveAtoms_eq_common
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     [S.HasCommonCountableDenseSubfield]
     [S.IsArchimedeanNormalized] :
@@ -184,7 +184,7 @@ theorem absolutePositiveDegreeOfPositiveAtoms_eq_common
 
 /-- Actual terms, ranks and index sets also identify the common-density maximal slope. -/
 theorem absoluteMaximalSlopeOfPositiveAtoms_eq_common
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     [S.HasCommonCountableDenseSubfield]
     [S.IsArchimedeanNormalized] :
@@ -194,7 +194,7 @@ theorem absoluteMaximalSlopeOfPositiveAtoms_eq_common
 /-- The geometric positive-degree supremum equals the countable-discrete value on overlap. -/
 theorem absolutePositiveDegreeOfPositiveAtoms_eq_countable_discrete
     [Countable S.Ω] [DiscreteMeasurableSpace S.Ω]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     [S.IsArchimedeanNormalized] :
     V.toNormFamily.absolutePositiveDegreeOfPositiveAtoms =
@@ -203,7 +203,7 @@ theorem absolutePositiveDegreeOfPositiveAtoms_eq_countable_discrete
 /-- The geometric maximal-slope supremum equals the countable-discrete value on overlap. -/
 theorem absoluteMaximalSlopeOfPositiveAtoms_eq_countable_discrete
     [Countable S.Ω] [DiscreteMeasurableSpace S.Ω]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     [S.IsArchimedeanNormalized] :
     V.toNormFamily.absoluteMaximalSlopeOfPositiveAtoms =

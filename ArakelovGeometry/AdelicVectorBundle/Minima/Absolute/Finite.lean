@@ -30,17 +30,17 @@ variable {K E : Type*} [Field K] {S : AdelicStructure K}
 
 /-- The actual closure basis excludes bottom for every index at most original
 rank. Indexzero remains an explicitly auxiliary top-valued convention. -/
-theorem absoluteLogarithmicMinimum_ne_bot (V : AdelicVectorBundle S E)
+theorem absoluteLogarithmicMinimum_ne_bot (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
-    {i : ℕ} (hr : i ≤ Module.finrank K E) :
+    {i : ℕ} (hr : i ≤ Module.finrank K V) :
     V.absoluteLogarithmicMinimum i ≠ ⊥ := by
   apply logarithmicMinimum_ne_bot (V.ordinaryScalarExtension (L := AlgebraicClosure K))
   simpa only [Module.finrank_baseChange] using hr
 
 /-- The actual closure filtration has a whole-space lower endpoint without
 any regularity assumption on the closure place space. -/
-theorem exists_absoluteMinimaFiltration_eq_top (V : AdelicVectorBundle S E)
+theorem exists_absoluteMinimaFiltration_eq_top (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] :
     ∃ a : ℝ, ∀ t ≤ a,
@@ -51,7 +51,7 @@ variable [S.IsProper]
 
 /-- The produced absolute-first-minimum bound excludes top at EVERY positive
 natural index; valid source indices will additionally exclude bottom. -/
-theorem absoluteLogarithmicMinimum_ne_top (V : AdelicVectorBundle S E)
+theorem absoluteLogarithmicMinimum_ne_top (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
     {i : ℕ} (hi : 1 ≤ i) : V.absoluteLogarithmicMinimum i ≠ ⊤ :=
@@ -60,10 +60,10 @@ theorem absoluteLogarithmicMinimum_ne_top (V : AdelicVectorBundle S E)
 
 /-- Every valid source index has a real minimum on the genuine actual closure
 bundle, with both endpoint exclusions produced from original hypotheses. -/
-theorem exists_absoluteLogarithmicMinimum_eq_coe (V : AdelicVectorBundle S E)
+theorem exists_absoluteLogarithmicMinimum_eq_coe (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
-    {i : ℕ} (hi : 1 ≤ i) (hr : i ≤ Module.finrank K E) :
+    {i : ℕ} (hi : 1 ≤ i) (hr : i ≤ Module.finrank K V) :
     ∃ c : ℝ, V.absoluteLogarithmicMinimum i = (c : EReal) :=
   ⟨(V.absoluteLogarithmicMinimum i).toReal,
     (EReal.coe_toReal (V.absoluteLogarithmicMinimum_ne_top hi)
@@ -72,11 +72,11 @@ theorem exists_absoluteLogarithmicMinimum_eq_coe (V : AdelicVectorBundle S E)
 /-- Actual nonzero closure vectors form an independent epsilon-approximation
 tuple for every valid absolute minimum, with no extended-base regularity premise. -/
 theorem exists_linearIndependent_degree_ge_absoluteLogarithmicMinimum_sub
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
-    {i : ℕ} (hi : 1 ≤ i) (hr : i ≤ Module.finrank K E) {ε : ℝ} (hε : 0 < ε) :
-    ∃ s : Fin i → {x : AlgebraicClosure K ⊗[K] E // x ≠ 0},
+    {i : ℕ} (hi : 1 ≤ i) (hr : i ≤ Module.finrank K V) {ε : ℝ} (hε : 0 < ε) :
+    ∃ s : Fin i → {x : AlgebraicClosure K ⊗[K] V // x ≠ 0},
       LinearIndependent (AlgebraicClosure K) (fun j => (s j).val) ∧
       ∀ j, (V.absoluteLogarithmicMinimum i).toReal - ε ≤
         (V.ordinaryScalarExtension (L := AlgebraicClosure K)).vectorDegree (s j) := by
@@ -93,18 +93,18 @@ theorem exists_linearIndependent_degree_ge_absoluteLogarithmicMinimum_sub
 
 /-- Finite actual absolute first minimum separates the true closure filtration,
 with the zero-rank branch controlled by genuine base-change rank preservation. -/
-theorem exists_absoluteMinimaFiltration_eq_bot (V : AdelicVectorBundle S E)
+theorem exists_absoluteMinimaFiltration_eq_bot (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] :
     ∃ b : ℝ, ∀ t ≥ b,
       (V.ordinaryScalarExtension (L := AlgebraicClosure K)).minimaFiltration t = ⊥ := by
   let W := V.ordinaryScalarExtension (L := AlgebraicClosure K)
-  by_cases hr : Module.finrank K E = 0
-  · have hW : Module.finrank (AlgebraicClosure K) (AlgebraicClosure K ⊗[K] E) = 0 := by
+  by_cases hr : Module.finrank K V = 0
+  · have hW : Module.finrank (AlgebraicClosure K) (AlgebraicClosure K ⊗[K] V) = 0 := by
       simpa only [Module.finrank_baseChange] using hr
     exact ⟨0, fun t _ => W.minimaFiltration_eq_bot_of_finrank_eq_zero hW t⟩
   · obtain ⟨c, hc⟩ := V.exists_absoluteLogarithmicMinimum_eq_coe le_rfl (by omega :
-      1 ≤ Module.finrank K E)
+      1 ≤ Module.finrank K V)
     refine ⟨c + 1, fun t ht => (W.minimaFiltration_eq_bot_iff t).mpr ?_⟩
     change V.absoluteLogarithmicMinimum 1 < (t : EReal)
     rw [hc]

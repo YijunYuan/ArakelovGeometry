@@ -59,11 +59,11 @@ variable {K : Type*} [Field K] {S : AdelicStructure K} [S.IsProper]
 /-- A completed isometry maps the actual largest destabilizer into the
 target's actual largest destabilizer by its genuine restricted slope. -/
 theorem map_destabilizingSubspace_le_of_completed_isometry
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
-    (hr : 0 < Module.finrank K E) (hrF : 0 < Module.finrank K F)
+    (hr : 0 < Module.finrank K V) (hrF : 0 < Module.finrank K W)
     (he : ∀ ω z, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion z) = V.toNormFamily.norm ω z) :
     (V.destabilizingSubspace hr).map e.toLinearMap ≤
@@ -84,11 +84,11 @@ theorem map_destabilizingSubspace_le_of_completed_isometry
 
 /-- Actual completed isometries identify the actual largest destabilizers. -/
 theorem map_destabilizingSubspace_eq_of_completed_isometry
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
-    (hr : 0 < Module.finrank K E) (hrF : 0 < Module.finrank K F)
+    (hr : 0 < Module.finrank K V) (hrF : 0 < Module.finrank K W)
     (he : ∀ ω z, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion z) = V.toNormFamily.norm ω z) :
     (V.destabilizingSubspace hr).map e.toLinearMap =
@@ -98,7 +98,7 @@ theorem map_destabilizingSubspace_eq_of_completed_isometry
   have hs : ∀ ω z, V.toNormFamily.norm ω
       (e.symm.toLinearMap.baseChange (S.ϕ ω).Completion z) = W.toNormFamily.norm ω z := by
     intro ω z
-    let eω := e.baseChange K (S.ϕ ω).Completion E F
+    let eω := e.baseChange K (S.ϕ ω).Completion V W
     change V.toNormFamily.norm ω (eω.symm z) = W.toNormFamily.norm ω z
     have h := he ω (eω.symm z)
     change W.toNormFamily.norm ω (eω (eω.symm z)) = V.toNormFamily.norm ω (eω.symm z) at h
@@ -119,9 +119,9 @@ local instance hermitianGaloisHNScalarExtensionProper : (S.algebraicExtension L)
 /-- Every genuine recursive HN step commutes with finite Galois Hermitian
 extension. The terminal step is included without a positive-rank assumption. -/
 theorem hermitianHNStep_baseChange_hermitianScalarExtension_of_finiteGalois
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (U : Submodule K E) :
+    [hH : V.toNormFamily.IsHermitian] (U : Submodule K V) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
@@ -145,8 +145,8 @@ theorem hermitianHNStep_baseChange_hermitianScalarExtension_of_finiteGalois
     let Qext := Q.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩) (hV := (hH.quotient U))
     let hQext := Q.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩) (hV := (hH.quotient U))
     let hr := finrank_quotient_pos_of_ne_top U hU
-    let hrExt : 0 < Module.finrank L (L ⊗[K] (E ⧸ U)) :=
-      (Module.finrank_baseChange (R := L) (S := K) (M' := E ⧸ U)).symm ▸ hr
+    let hrExt : 0 < Module.finrank L (L ⊗[K] (V ⧸ U)) :=
+      (Module.finrank_baseChange (R := L) (S := K) (M' := V ⧸ U)).symm ▸ hr
     let hrL := finrank_quotient_pos_of_ne_top (U.baseChange L) hUL
     let e := tensorQuotientBaseChangeEquiv (L := L) U
     have he : ∀ x z, QL.toNormFamily.norm x
@@ -160,7 +160,7 @@ theorem hermitianHNStep_baseChange_hermitianScalarExtension_of_finiteGalois
     have hmap : ((Q.destabilizingSubspace (hV := (hH.quotient U)) hr).baseChange
         L).map e.toLinearMap = QL.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
             (hV := hQL) hrL :=
-      (congrArg (fun D : Submodule L (L ⊗[K] (E ⧸ U)) ↦ D.map e.toLinearMap) hD).trans
+      (congrArg (fun D : Submodule L (L ⊗[K] (V ⧸ U)) ↦ D.map e.toLinearMap) hD).trans
         (Qext.map_destabilizingSubspace_eq_of_completed_isometry QL e (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
           (hV := hQext) (hW := hQL) hrExt hrL he)
     let T := V.hermitianHNStep U
@@ -182,13 +182,13 @@ theorem hermitianHNStep_baseChange_hermitianScalarExtension_of_finiteGalois
         (hV := hLH) (U.baseChange L)
     conv_rhs => rw [hermitianHNStep, dite_eq_right hUL]
     exact (Submodule.comap_map_eq_self hk).symm.trans
-      (congrArg (fun D : Submodule L ((L ⊗[K] E) ⧸ U.baseChange L) ↦
+      (congrArg (fun D : Submodule L ((L ⊗[K] V) ⧸ U.baseChange L) ↦
         D.comap (U.baseChange L).mkQ) hT)
 
 /-- The entire actual recursive HN sequence commutes with finite Galois
 Hermitian extension, including every repeated terminal term and rank zero. -/
 theorem hermitianHNTerm_baseChange_hermitianScalarExtension_of_finiteGalois
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] (n : ℕ) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
@@ -216,7 +216,7 @@ theorem hermitianHNTerm_baseChange_hermitianScalarExtension_of_finiteGalois
 
 /-- The first terminal index of the actual HN construction is preserved. -/
 theorem hermitianHNLength_hermitianScalarExtension_of_finiteGalois
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
@@ -245,7 +245,7 @@ theorem hermitianHNLength_hermitianScalarExtension_of_finiteGalois
 /-- The actual finite HN flags agree term by term under the produced length
 identification. No target flag or stable-flag certificate is an input. -/
 theorem hermitianHNFlag_baseChange_hermitianScalarExtension_of_finiteGalois
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
@@ -265,9 +265,9 @@ theorem hermitianHNFlag_baseChange_hermitianScalarExtension_of_finiteGalois
 /-- The genuine native actual quotient has the original maximal slope,
 through its canonical completed tensor quotient isometry, in every rank. -/
 theorem maximalSlope_quotient_hermitianScalarExtension_of_finiteGalois
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (U : Submodule K E) :
+    [hH : V.toNormFamily.IsHermitian] (U : Submodule K V) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
@@ -289,7 +289,7 @@ theorem maximalSlope_quotient_hermitianScalarExtension_of_finiteGalois
 /-- The actual scalar extension of every actual original HN factor is
 semistable, by the produced finite-Galois semistability equivalence. -/
 theorem isMeanSlopeSemistable_hermitianScalarExtension_hermitianHNFactor_of_finiteGalois
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian]
     (i : Fin (V.hermitianHNLength)) :

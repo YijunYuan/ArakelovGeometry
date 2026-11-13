@@ -36,7 +36,7 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
@@ -49,7 +49,7 @@ theorem degree_hermitianHNFactor_eq_flagQuotient
       (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag) i).degree := by
   let U := V.hermitianHNTerm i.val
   let W := V.hermitianHNTerm (i.val + 1)
-  let g : W →ₗ[K] E ⧸ U := U.mkQ.comp W.subtype
+  let g : W →ₗ[K] V ⧸ U := U.mkQ.comp W.subtype
   have hUW : U ≤ W := V.hermitianHNTerm_monotone (Nat.le_succ _)
   have hk : g.ker = U.comap W.subtype := by
     simp only [g, LinearMap.ker_comp, Submodule.ker_mkQ]
@@ -63,7 +63,7 @@ theorem degree_hermitianHNFactor_eq_flagQuotient
     exact (V.toNormFamily.quotient_restrict_range_norm_eq W U hUW ω z).symm
   have hkd := congrArg (fun T : Submodule K W ↦
     ((V.restrictOfMeasurableBase W).quotientOfMeasurableBase T).degree) hk
-  have hrd := congrArg (fun T : Submodule K (E ⧸ U) ↦
+  have hrd := congrArg (fun T : Submodule K (V ⧸ U) ↦
     ((V.quotientOfMeasurableBase U).restrictOfMeasurableBase T).degree) hr
   exact (hrd.symm.trans hd.symm).trans hkd
 
@@ -89,7 +89,10 @@ theorem sum_hermitianHNFactor_rank_mul_slope_eq_degree :
       (Module.finrank K ((V.hermitianHNTerm (i.val + 1)).map
         (V.hermitianHNTerm i.val).mkQ) : ℝ) *
         (V.hermitianHNFactor i).slope) = V.degree := by
-  simpa only [← degree_eq_rank_mul_slope] using V.sum_hermitianHNFactor_degree_eq
+  calc
+    _ = ∑ i : Fin (V.hermitianHNLength), (V.hermitianHNFactor i).degree :=
+      Finset.sum_congr rfl (fun i _ ↦ (V.hermitianHNFactor i).degree_eq_rank_mul_slope.symm)
+    _ = V.degree := V.sum_hermitianHNFactor_degree_eq
 
 end
 

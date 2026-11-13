@@ -163,12 +163,15 @@ theorem truncatedFamily_dual_isMeasurable (s : Finset ℚ) (c : ℝ)
   exact measurable_of_countable _
 
 /-- Every finite truncation is an actual adelic bundle with all analytic fields produced. -/
-def bundle (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1) :
-    AdelicVectorBundle countingCurve Plane where
+abbrev bundle (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1) :
+    AdelicVectorBundle countingCurve where
+  carrier := Plane
   toNormFamily := truncatedFamily s c hc hc1
-  isMeasurable := truncatedFamily_isMeasurable s c hc hc1
-  dual_isMeasurable := truncatedFamily_dual_isMeasurable s c hc hc1
-  isDominated := truncatedFamily_isDominated s c hc hc1
+  toIsAdelic := {
+    isMeasurable := truncatedFamily_isMeasurable s c hc hc1
+    dual_isMeasurable := truncatedFamily_dual_isMeasurable s c hc hc1
+    isDominated := truncatedFamily_isDominated s c hc hc1
+  }
 
 @[simp]
 theorem bundle_toNormFamily (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1) :

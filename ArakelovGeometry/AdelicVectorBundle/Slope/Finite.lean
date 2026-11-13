@@ -295,15 +295,15 @@ variable [S.IsProper]
 /-- Integrating the actual determinant coordinate bound removes its
 nonzero rational coefficient by properness. The only error is the accepted
 sharp Archimedean determinant discrepancy, in every subspace rank. -/
-theorem degree_restrict_le_of_dual_basis_norm_bound (V : AdelicVectorBundle S E)
-    (b : Module.Basis (Fin (Module.finrank K E)) K E) (A : S.Ω → ℝ)
+theorem degree_restrict_le_of_dual_basis_norm_bound (V : AdelicVectorBundle.{w} S)
+    (b : Module.Basis (Fin (Module.finrank K V)) K V) (A : S.Ω → ℝ)
     (hA : Integrable A S.v)
-    (hb : ∀ᵐ ω ∂S.v, ∀ (U : Submodule K E) (i : Fin (Module.finrank K E)),
+    (hb : ∀ᵐ ω ∂S.v, ∀ (U : Submodule K V) (i : Fin (Module.finrank K V)),
       (V.toNormFamily.restrict U).dual.norm ω
         ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] U.subtype.dualMap (b.coord i)) ≤ Real.exp (A ω))
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (U : Submodule K E) :
+    (U : Submodule K V) :
     (V.restrictOfMeasurableBase U).degree ≤
       (Module.finrank K U : ℝ) * (∫ ω, A ω ∂S.v) +
         (Module.finrank K U : ℝ) / 2 * Real.log (Module.finrank K U) *
@@ -345,21 +345,21 @@ theorem degree_restrict_le_of_dual_basis_norm_bound (V : AdelicVectorBundle S E)
 /-- Actual dual-basis domination and the proper product formula give a
 single real upper bound for all restricted mean slopes. Equivalently the
 restricted degrees are bounded by rank times one real constant. -/
-theorem exists_degree_restrict_le_rank_mul (V : AdelicVectorBundle S E)
+theorem exists_degree_restrict_le_rank_mul (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
-    ∃ C : ℝ, ∀ U : Submodule K E,
+    ∃ C : ℝ, ∀ U : Submodule K V,
       (V.restrictOfMeasurableBase U).degree ≤ (Module.finrank K U : ℝ) * C := by
-  let b := Module.finBasis K E
+  let b := Module.finBasis K V
   obtain ⟨A, hA, _, hb⟩ :=
     NormFamily.IsDominated.exists_restricted_dual_basis_norm_bound V.toNormFamily b V.isDominated
-  let C := (∫ ω, A ω ∂S.v) + (1 / 2 : ℝ) * Real.log (Module.finrank K E) *
+  let C := (∫ ω, A ω ∂S.v) + (1 / 2 : ℝ) * Real.log (Module.finrank K V) *
     (S.v S.Ωinf).toReal
   refine ⟨C, fun U ↦ ?_⟩
   have hdeg := V.degree_restrict_le_of_dual_basis_norm_bound b A hA hb U
   by_cases hn : Module.finrank K U = 0
   · simpa only [hn, Nat.cast_zero, zero_mul, zero_div, add_zero] using hdeg
-  · have hlog : Real.log (Module.finrank K U : ℝ) ≤ Real.log (Module.finrank K E) :=
+  · have hlog : Real.log (Module.finrank K U : ℝ) ≤ Real.log (Module.finrank K V) :=
       Real.log_le_log (Nat.cast_pos.mpr (Nat.pos_of_ne_zero hn))
         (Nat.cast_le.mpr U.finrank_le)
     have hl := mul_le_mul_of_nonneg_right
@@ -372,7 +372,7 @@ theorem exists_degree_restrict_le_rank_mul (V : AdelicVectorBundle S E)
 
 /-- Source Proposition 4.3.30: the maximal slope is strictly below `⊤`.
 This also includes rank zero, where the maximal slope is `⊥`. -/
-theorem maximalSlope_lt_top (V : AdelicVectorBundle S E)
+theorem maximalSlope_lt_top (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     V.maximalSlope < ⊤ := by
@@ -389,19 +389,19 @@ theorem maximalSlope_lt_top (V : AdelicVectorBundle S E)
 /-- Source Proposition 4.3.30: the source minimal slope is strictly above
 `⊥` in positive rank. Maximal-slope finiteness of the actual dual is now
 proved, discharging the explicit premise of Proposition 4.3.25. -/
-theorem bot_lt_minimalSlope (V : AdelicVectorBundle S E)
+theorem bot_lt_minimalSlope (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : 0 < Module.finrank K E) : ⊥ < V.minimalSlope :=
+    (hr : 0 < Module.finrank K V) : ⊥ < V.minimalSlope :=
   V.bot_lt_minimalSlope_of_maximalSlope_dual_lt_top hr
     ((V.dualOfMeasurableBase).maximalSlope_lt_top)
 
 /-- The positive-rank maximal slope is a finite real number, after both
 extended endpoints have been excluded by proved bounds. -/
-theorem exists_maximalSlope_eq_coe (V : AdelicVectorBundle S E)
+theorem exists_maximalSlope_eq_coe (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     ∃ c : ℝ, V.maximalSlope = (c : EReal) := by
   lift V.maximalSlope to ℝ using
     ⟨(V.maximalSlope_lt_top).ne, (V.bot_lt_maximalSlope hr).ne'⟩ with c
@@ -409,10 +409,10 @@ theorem exists_maximalSlope_eq_coe (V : AdelicVectorBundle S E)
 
 /-- The positive-rank minimal slope is a finite real number. Its upper
 endpoint is excluded by the proved actual quotient-mean formula. -/
-theorem exists_minimalSlope_eq_coe (V : AdelicVectorBundle S E)
+theorem exists_minimalSlope_eq_coe (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     ∃ c : ℝ, V.minimalSlope = (c : EReal) := by
   lift V.minimalSlope to ℝ using
     ⟨(V.minimalSlope_lt_top hr).ne, (V.bot_lt_minimalSlope hr).ne'⟩ with c
@@ -420,10 +420,10 @@ theorem exists_minimalSlope_eq_coe (V : AdelicVectorBundle S E)
 
 /-- The finiteness producer discharges the source's explicit premise in
 Proposition 4.3.25 for every actual positive-rank adelic bundle. -/
-theorem minimalSlope_add_maximalSlope_dual_nonneg (V : AdelicVectorBundle S E)
+theorem minimalSlope_add_maximalSlope_dual_nonneg (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     0 ≤ V.minimalSlope + (V.dualOfMeasurableBase).maximalSlope :=
   V.minimalSlope_add_maximalSlope_dual_nonneg_of_lt_top hr
     ((V.dualOfMeasurableBase).maximalSlope_lt_top)

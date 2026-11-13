@@ -30,7 +30,7 @@ variable {K E : Type*} [Field K] {S : AdelicStructure K} [S.IsProper]
 /-- An actual effective rational section would have nonnegative vector degree,
 contradicting negative actual maximal slope. -/
 theorem effectiveSections_eq_singleton_of_maximalSlope_neg
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (hneg : V.maximalSlope < 0) : V.toNormFamily.effectiveSections = {0} := by
@@ -57,7 +57,7 @@ theorem effectiveSections_eq_singleton_of_maximalSlope_neg
 /-- A quotient with negative actual maximal slope has no nonzero effective image,
 so all actual effective sections come from the literal restricted subspace. -/
 theorem effectiveSections_eq_image_restrict_of_quotient_maximalSlope_neg
-    (V : AdelicVectorBundle S E) (U : Submodule K E)
+    (V : AdelicVectorBundle S) (U : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (hneg : (V.quotientOfMeasurableBase U).maximalSlope < 0) :

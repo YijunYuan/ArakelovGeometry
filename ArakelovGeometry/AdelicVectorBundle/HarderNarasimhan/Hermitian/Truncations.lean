@@ -42,7 +42,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 namespace AdelicVectorBundle
 
-variable [S.IsProper] (V : AdelicVectorBundle S E)
+variable [S.IsProper] (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
@@ -50,7 +50,7 @@ variable [S.IsProper] (V : AdelicVectorBundle S E)
 /-- Actual factors in an initial subspace flag remain semistable and
 have the original factor mean. -/
 theorem nested_restrict_quotient_semistable_slope
-    (A B C : Submodule K E) (hBC : B ≤ C)
+    (A B C : Submodule K V) (hBC : B ≤ C)
     [hsemi : ((V.restrictOfMeasurableBase B).quotientOfMeasurableBase
       (A.comap B.subtype)).IsMeanSlopeSemistable] :
     let R := quotientOfMeasurableBase
@@ -90,7 +90,7 @@ theorem nested_restrict_quotient_semistable_slope
 canonical HN flag of its final restricted subspace, with unchanged factor means. -/
 theorem semistableFlag_initial_eq_hermitianHNTerm
     [hH : V.toNormFamily.IsHermitian] {n : ℕ}
-    (F : Fin (n + 1) → Submodule K E) (hF : StrictMono F) (hzero : F 0 = ⊥)
+    (F : Fin (n + 1) → Submodule K V) (hF : StrictMono F) (hzero : F 0 = ⊥)
     [hsemi : ∀ j, (V.flagQuotientOfMeasurableBase F j).IsMeanSlopeSemistable]
     (hβ : StrictAnti (fun j ↦ (V.flagQuotientOfMeasurableBase F j).slope))
     (k : Fin (n + 1)) :
@@ -167,7 +167,7 @@ theorem semistableFlag_initial_eq_hermitianHNTerm
 canonical HN flag of the quotient by its first term, with unchanged factor means. -/
 theorem semistableFlag_tail_eq_hermitianHNTerm
     [hH : V.toNormFamily.IsHermitian] {n : ℕ}
-    (F : Fin (n + 1) → Submodule K E) (hF : StrictMono F)
+    (F : Fin (n + 1) → Submodule K V) (hF : StrictMono F)
     (htop : F (Fin.last n) = ⊤)
     [hsemi : ∀ j, (V.flagQuotientOfMeasurableBase F j).IsMeanSlopeSemistable]
     (hβ : StrictAnti (fun j ↦ (V.flagQuotientOfMeasurableBase F j).slope))
@@ -177,7 +177,7 @@ theorem semistableFlag_tail_eq_hermitianHNTerm
     let m := n - k.val
     let idx : Fin (m + 1) → Fin (n + 1) := fun j ↦ ⟨j.val + k.val, by omega⟩
     let δ : Fin m → Fin n := fun j ↦ ⟨j.val + k.val, by omega⟩
-    let G : Fin (m + 1) → Submodule K (E ⧸ D) := fun j ↦ (F (idx j)).map D.mkQ
+    let G : Fin (m + 1) → Submodule K (V ⧸ D) := fun j ↦ (F (idx j)).map D.mkQ
     m = Q.hermitianHNLength (hV := (hH.quotient D)) ∧
       (∀ j, G j = Q.hermitianHNTerm (hV := (hH.quotient D)) j.val) ∧
       ∀ j, (Q.flagQuotientOfMeasurableBase G j).slope =
@@ -187,7 +187,7 @@ theorem semistableFlag_tail_eq_hermitianHNTerm
   let m := n - k.val
   let idx : Fin (m + 1) → Fin (n + 1) := fun j ↦ ⟨j.val + k.val, by omega⟩
   let δ : Fin m → Fin n := fun j ↦ ⟨j.val + k.val, by omega⟩
-  let G : Fin (m + 1) → Submodule K (E ⧸ D) := fun j ↦ (F (idx j)).map D.mkQ
+  let G : Fin (m + 1) → Submodule K (V ⧸ D) := fun j ↦ (F (idx j)).map D.mkQ
   have hG : StrictMono G := by
     intro a b hab
     have hl : F (idx a) < F (idx b) := hF (show idx a < idx b by
@@ -201,7 +201,7 @@ theorem semistableFlag_tail_eq_hermitianHNTerm
       omega)
     apply lt_of_le_of_ne (Submodule.map_mono hl.le)
     intro heq
-    have he := congrArg (fun U : Submodule K (E ⧸ D) ↦ U.comap D.mkQ) heq
+    have he := congrArg (fun U : Submodule K (V ⧸ D) ↦ U.comap D.mkQ) heq
     rw [Submodule.comap_map_eq_self (show D.mkQ.ker ≤ F (idx a) by
       rw [Submodule.ker_mkQ]; exact ha),
       Submodule.comap_map_eq_self (show D.mkQ.ker ≤ F (idx b) by
@@ -239,7 +239,7 @@ theorem semistableFlag_tail_eq_hermitianHNTerm
       rfl
     have hp : ((F (δ j).succ).map D.mkQ, (F (δ j).castSucc).map D.mkQ) =
         (G j.succ, G j.castSucc) := Prod.ext hu hl
-    have he := congrArg (fun p : Submodule K (E ⧸ D) × Submodule K (E ⧸ D) ↦
+    have he := congrArg (fun p : Submodule K (V ⧸ D) × Submodule K (V ⧸ D) ↦
       let R := quotientOfMeasurableBase (Q.restrictOfMeasurableBase p.1)
         (p.2.comap p.1.subtype)
       R.IsMeanSlopeSemistable ∧ R.slope =
@@ -365,14 +365,14 @@ theorem slope_hermitianHNFactor_quotient_term_eq
   let hlen := (V.hermitianHN_quotient_tail_flag k).1
   let jQ := Fin.cast hlen j
   let i : Fin (V.hermitianHNLength) := ⟨j.val + k.val, by omega⟩
-  let G : Fin (V.hermitianHNLength - k.val + 1) → Submodule K (E ⧸ D) :=
+  let G : Fin (V.hermitianHNLength - k.val + 1) → Submodule K (V ⧸ D) :=
     fun l ↦ (V.hermitianHNTerm (l.val + k.val)).map D.mkQ
   have ht := (V.hermitianHN_quotient_tail_flag k).2
   have hp : (G j.succ, G j.castSucc) =
       ((Q.hermitianHNFlag (hV := (hH.quotient D))) jQ.succ,
         (Q.hermitianHNFlag (hV := (hH.quotient D))) jQ.castSucc) :=
     Prod.ext (ht j.succ) (ht j.castSucc)
-  have hc := congrArg (fun p : Submodule K (E ⧸ D) × Submodule K (E ⧸ D) ↦
+  have hc := congrArg (fun p : Submodule K (V ⧸ D) × Submodule K (V ⧸ D) ↦
     (quotientOfMeasurableBase (Q.restrictOfMeasurableBase p.1)
       (p.2.comap p.1.subtype)).slope) hp
   have he := V.semistableFlag_tail_eq_hermitianHNTerm
@@ -395,9 +395,9 @@ theorem maximalSlope_quotient_hermitianHNFiltration_lt
   · have hU : V.hermitianHNFiltration t = ⊤ :=
       (congrArg (V.hermitianHNTerm) hc).trans
         (V.hermitianHNTerm_length_eq_top)
-    have hr : Module.finrank K (E ⧸ V.hermitianHNFiltration t) = 0 := by
+    have hr : Module.finrank K (V ⧸ V.hermitianHNFiltration t) = 0 := by
       have h := (V.hermitianHNFiltration t).finrank_quotient_add_finrank
-      have hF := congrArg (fun U : Submodule K E ↦ Module.finrank K U) hU
+      have hF := congrArg (fun U : Submodule K V ↦ Module.finrank K U) hU
       rw [finrank_top] at hF
       omega
     rw [maximalSlope_eq_bot_of_finrank_eq_zero _ hr]
@@ -415,12 +415,12 @@ theorem maximalSlope_quotient_hermitianHNFiltration_lt
 inequality bounds a restricted endpoint by the actual means of semistable factors. -/
 theorem le_minimalSlope_restrict_last_of_semistableFlag
     [hH : V.toNormFamily.IsHermitian] {n : ℕ}
-    (F : Fin (n + 1) → Submodule K E) (hF : Monotone F) (hzero : F 0 = ⊥)
+    (F : Fin (n + 1) → Submodule K V) (hF : Monotone F) (hzero : F 0 = ⊥)
     [hsemi : ∀ i, (V.flagQuotientOfMeasurableBase F i).IsMeanSlopeSemistable]
     (t : ℝ) (hμ : ∀ i, t ≤ (V.flagQuotientOfMeasurableBase F i).slope) :
     (t : EReal) ≤ (V.restrictOfMeasurableBase (F (Fin.last n))).minimalSlope := by
   let A : Fin (n + 1) → Type w := fun i ↦ F i
-  let W : ∀ i, AdelicVectorBundle S (A i) := fun i ↦ V.restrictOfMeasurableBase (F i)
+  let W : ∀ i, AdelicVectorBundle S := fun i ↦ V.restrictOfMeasurableBase (F i)
   let α : ∀ i : Fin n, A i.castSucc →ₗ[K] A i.succ :=
     fun i ↦ Submodule.inclusion (hF (Fin.castSucc_le_succ i))
   have htail : ∀ i : Fin (n + 1), linearChainTailMap A α i =
@@ -453,8 +453,8 @@ theorem le_minimalSlope_restrict_last_of_semistableFlag
         V.toNormFamily.norm ω ((F i).subtype.baseChange (S.ϕ ω).Completion z)
     exact le_of_eq (congrArg (V.toNormFamily.norm ω) hz)
   have h0 : Module.finrank K (A 0) = 0 :=
-    (congrArg (fun U : Submodule K E ↦ Module.finrank K U) hzero).trans (finrank_bot K E)
-  have hc := minimalSlope_linearChain_lowerBound A W α h0
+    (congrArg (fun U : Submodule K V ↦ Module.finrank K U) hzero).trans (finrank_bot K V)
+  have hc := minimalSlope_linearChain_lowerBound W α h0
   refine (le_iInf fun i ↦ ?_).trans hc
   let j := i.val
   let R := (W j.succ).quotientOfMeasurableBase (α j).range
@@ -489,10 +489,10 @@ theorem le_minimalSlope_restrict_hermitianHNFiltration
   · have hU : V.hermitianHNFiltration t = ⊥ :=
       (congrArg (V.hermitianHNTerm) hc).trans (V.hermitianHNTerm_zero)
     have hr : Module.finrank K (V.hermitianHNFiltration t) = 0 :=
-      (congrArg (fun U : Submodule K E ↦ Module.finrank K U) hU).trans (finrank_bot K E)
+      (congrArg (fun U : Submodule K V ↦ Module.finrank K U) hU).trans (finrank_bot K V)
     rw [minimalSlope_eq_top_of_finrank_eq_zero _ hr]
     exact le_top
-  · let F : Fin (c + 1) → Submodule K E := fun j ↦ V.hermitianHNTerm j.val
+  · let F : Fin (c + 1) → Submodule K V := fun j ↦ V.hermitianHNTerm j.val
     let δ : Fin c → Fin (V.hermitianHNLength) := fun j ↦ ⟨j.val, by omega⟩
     have hF : Monotone F := fun _ _ h ↦ V.hermitianHNTerm_monotone h
     have hz : F 0 = ⊥ := V.hermitianHNTerm_zero

@@ -214,12 +214,15 @@ variable [FiniteDimensional K E]
 
 /-- An arbitrary actual norm family at the single trivial place is
 adelic, including its actual completed dual measurability. -/
-def ofSingleTrivialPlace (ξ : NormFamily (singleTrivialPlace K) E) :
-    AdelicVectorBundle (singleTrivialPlace K) E where
+abbrev ofSingleTrivialPlace (ξ : NormFamily (singleTrivialPlace K) E) :
+    AdelicVectorBundle (singleTrivialPlace K) where
+  carrier := E
   toNormFamily := ξ
-  isMeasurable := ξ.isMeasurable_singleTrivialPlace
-  dual_isMeasurable := ξ.dual.isMeasurable_singleTrivialPlace
-  isDominated := ξ.isDominated_singleTrivialPlace
+  toIsAdelic := {
+    isMeasurable := ξ.isMeasurable_singleTrivialPlace
+    dual_isMeasurable := ξ.dual.isMeasurable_singleTrivialPlace
+    isDominated := ξ.isDominated_singleTrivialPlace
+  }
 
 @[simp]
 theorem ofSingleTrivialPlace_toNormFamily (ξ : NormFamily (singleTrivialPlace K) E) :
@@ -228,8 +231,8 @@ theorem ofSingleTrivialPlace_toNormFamily (ξ : NormFamily (singleTrivialPlace K
 open Classical in
 /-- Every finite-dimensional normed space over a trivially valued field
 is an actual adelic bundle on the mass-one curve, without ultrametricity. -/
-def ofTrivialNorm (p : Seminorm (WithAbs (AbsoluteValue.trivial : AbsoluteValue K ℝ)) E)
-    (hp : ∀ x, p x = 0 ↔ x = 0) : AdelicVectorBundle (singleTrivialPlace K) E :=
+abbrev ofTrivialNorm (p : Seminorm (WithAbs (AbsoluteValue.trivial : AbsoluteValue K ℝ)) E)
+    (hp : ∀ x, p x = 0 ↔ x = 0) : AdelicVectorBundle (singleTrivialPlace K) :=
   ofSingleTrivialPlace (NormFamily.ofTrivialNorm p hp)
 
 open Classical in
@@ -294,16 +297,16 @@ open Classical in
 /-- The unit constant norm has genuine determinant volume one and
 therefore actual degree zero, including the empty determinant wedge. -/
 theorem degree_eq_zero_of_trivialSeminorm_eq_one
-    (V : AdelicVectorBundle (singleTrivialPlace K) E)
+    (V : AdelicVectorBundle (singleTrivialPlace K))
     [hS : (singleTrivialPlace K).HasMeasurableBase]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     (h : ∀ x, x ≠ 0 → V.toNormFamily.trivialSeminorm x = 1) :
     V.degree = 0 := by
   let C := (AbsoluteValue.trivial : AbsoluteValue K ℝ).Completion
-  let b := Module.finBasis K E
+  let b := Module.finBasis K V
   let B := b.baseChange C
-  let q : Seminorm C (C ⊗[K] E) := V.toNormFamily.norm PUnit.unit
-  let qd : Seminorm C (C ⊗[K] (⋀[K]^(Module.finrank K E) E)) :=
+  let q : Seminorm C (C ⊗[K] V) := V.toNormFamily.norm PUnit.unit
+  let qd : Seminorm C (C ⊗[K] (⋀[K]^(Module.finrank K V) V)) :=
     V.toNormFamily.determinant.norm PUnit.unit
   have hH : V.toNormFamily.IsHermitian := by
     refine ⟨V.toNormFamily.isUltrametric_of_trivialSeminorm_eq_const h, ?_⟩
@@ -314,13 +317,13 @@ theorem degree_eq_zero_of_trivialSeminorm_eq_one
     exact (V.toNormFamily.norm_eq_const_of_trivialSeminorm_eq_const h _ _
       (B.ne_zero i)).le
   have hf : ∀ i, V.toNormFamily.dual.norm PUnit.unit
-      ((dualBaseChangeEquiv K C E).symm (B.coord i)) ≤ 1 := by
+      ((dualBaseChangeEquiv K C V).symm (B.coord i)) ≤ 1 := by
     intro i
     apply V.toNormFamily.dual_norm_le PUnit.unit _ zero_le_one
     intro x
-    change C ⊗[K] E at x
-    change ‖(dualBaseChangeEquiv K C E
-      ((dualBaseChangeEquiv K C E).symm (B.coord i))) x‖ ≤ 1 * q x
+    change C ⊗[K] V at x
+    change ‖(dualBaseChangeEquiv K C V
+      ((dualBaseChangeEquiv K C V).symm (B.coord i))) x‖ ≤ 1 * q x
     rw [LinearEquiv.apply_symm_apply]
     by_cases hx : x = 0
     · simp [hx]
@@ -334,18 +337,18 @@ theorem degree_eq_zero_of_trivialSeminorm_eq_one
       exact zero_le_one
     · simp only [AbsoluteValue.trivial_apply ha, le_refl]
   have hw := hH.determinant_norm_completedBasis_eq_one V.toNormFamily PUnit.unit B hb hf
-  change qd ((exteriorBaseChangeEquiv K C E _).symm
+  change qd ((exteriorBaseChangeEquiv K C V _).symm
     (_root_.exteriorPower.ιMulti C _ B)) = 1 at hw
-  have he : (exteriorBaseChangeEquiv K C E _).symm
+  have he : (exteriorBaseChangeEquiv K C V _).symm
       (_root_.exteriorPower.ιMulti C _ B) =
       (1 : C) ⊗ₜ[K] _root_.exteriorPower.ιMulti K _ b := by
-    have hB : (B : Fin (Module.finrank K E) → C ⊗[K] E) =
+    have hB : (B : Fin (Module.finrank K V) → C ⊗[K] V) =
         (fun i ↦ (1 : C) ⊗ₜ[K] b i) := funext (b.baseChange_apply C)
     rw [hB]
     simpa only [Finset.prod_const_one] using
-      exteriorBaseChangeEquiv_symm_ιMulti_tmul K C E _ (fun _ ↦ (1 : C)) b
+      exteriorBaseChangeEquiv_symm_ιMulti_tmul K C V _ (fun _ ↦ (1 : C)) b
   rw [he] at hw
-  have hn : _root_.exteriorPower.ιMulti K (Module.finrank K E) b ≠ 0 := by
+  have hn : _root_.exteriorPower.ιMulti K (Module.finrank K V) b ≠ 0 := by
     intro hz
     rw [hz, TensorProduct.tmul_zero,
       show qd 0 = 0 from V.toNormFamily.determinant.norm_zero PUnit.unit] at hw
@@ -358,12 +361,12 @@ open Classical in
 /-- Rescaling the genuine constant norm gives its actual determinant
 degree, in every rank. -/
 theorem degree_eq_neg_finrank_mul_log_of_trivialSeminorm_eq_const
-    (V : AdelicVectorBundle (singleTrivialPlace K) E)
+    (V : AdelicVectorBundle (singleTrivialPlace K))
     [hS : (singleTrivialPlace K).HasMeasurableBase]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     {c : ℝ} (hc : 0 < c)
     (h : ∀ x, x ≠ 0 → V.toNormFamily.trivialSeminorm x = c) :
-    V.degree = -(Module.finrank K E : ℝ) * Real.log c := by
+    V.degree = -(Module.finrank K V : ℝ) * Real.log c := by
   let φ : (singleTrivialPlace K).Ω → ℝ := fun _ ↦ -Real.log c
   have hm : Measurable φ := measurable_const
   have hi : Integrable φ (singleTrivialPlace K).v := integrable_const _
@@ -456,7 +459,7 @@ namespace AdelicVectorBundle
 open AdelicStructure
 
 variable [FiniteDimensional K E]
-  (V : AdelicVectorBundle (singleTrivialPlace K) E)
+  (V : AdelicVectorBundle.{w} (singleTrivialPlace K))
   [hS : (singleTrivialPlace K).HasMeasurableBase]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
@@ -466,8 +469,8 @@ negative logarithm. Rank zero keeps the source zero-mean convention. -/
 theorem slope_eq_neg_log_of_trivialSeminorm_eq_const
     {c : ℝ} (hc : 0 < c)
     (h : ∀ x, x ≠ 0 → V.toNormFamily.trivialSeminorm x = c)
-    (hr : 0 < Module.finrank K E) : V.slope = -Real.log c := by
-  have hn : (Module.finrank K E : ℝ) ≠ 0 := (Nat.cast_pos.mpr hr).ne'
+    (hr : 0 < Module.finrank K V) : V.slope = -Real.log c := by
+  have hn : (Module.finrank K V : ℝ) ≠ 0 := (Nat.cast_pos.mpr hr).ne'
   rw [slope, V.degree_eq_neg_finrank_mul_log_of_trivialSeminorm_eq_const hc h]
   apply (div_eq_iff hn).mpr
   ring
@@ -478,7 +481,7 @@ norm's negative logarithm, without assumed slope finiteness. -/
 theorem minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const
     {c : ℝ} (hc : 0 < c)
     (h : ∀ x, x ≠ 0 → V.toNormFamily.trivialSeminorm x = c)
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     V.minimalSlope = (-Real.log c : ℝ) := by
   apply le_antisymm
   · have he := V.minimalSlope_le_slope hr
@@ -501,7 +504,7 @@ follows from the minimum slope of every genuine restriction. -/
 theorem isSemistable_of_trivialSeminorm_eq_const
     {c : ℝ} (hc : 0 < c)
     (h : ∀ x, x ≠ 0 → V.toNormFamily.trivialSeminorm x = c)
-    (hr : 0 < Module.finrank K E) : V.IsSemistable := by
+    (hr : 0 < Module.finrank K V) : V.IsSemistable := by
   apply (V.isSemistable_iff_minimalSlope_restrict_le hr).mpr
   intro U hU
   have hUr : 0 < Module.finrank K U :=

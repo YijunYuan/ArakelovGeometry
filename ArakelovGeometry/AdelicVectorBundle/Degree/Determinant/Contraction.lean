@@ -34,7 +34,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- Every completed contraction compares the degrees of the actual measurable
 determinants, without regularity of the place space, including rank zero. -/
 theorem degreeOfMeasurableDeterminant_le_of_completed_contraction [S.IsProper]
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
     [hdetV : V.toNormFamily.determinant.IsMeasurable]
     [hdetW : W.toNormFamily.determinant.IsMeasurable]
     [hN : S.IsArchimedeanNormalized]

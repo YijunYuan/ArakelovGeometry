@@ -38,9 +38,8 @@ namespace AdelicVectorBundle
 /-- The degree integral over the nonempty mass-one atom is evaluation of
 its actual completed norm. -/
 theorem vectorDegree_singleTrivialPlace_eq_neg_log
-    {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-    (V : AdelicVectorBundle (AdelicStructure.singleTrivialPlace K) E)
-    (x : {x : E // x ≠ 0}) :
+    (V : AdelicVectorBundle (AdelicStructure.singleTrivialPlace K))
+    (x : {x : V // x ≠ 0}) :
     V.vectorDegree x = -Real.log (V.toNormFamily.trivialSeminorm x.val) := by
   simp only [AdelicVectorBundle.vectorDegree, NormFamily.vectorDegree_eq_neg_integral,
     AdelicStructure.integral_singleTrivialPlace, NormFamily.logNorm,
@@ -54,11 +53,11 @@ inequality at zero, using an actual full basis and the produced norm bound. -/
 theorem singleTrivialPlace_hasStrongMinkowskiPropertyAtLevel_zero (K : Type u) [Field K] :
     (singleTrivialPlace K).HasStrongMinkowskiPropertyAtLevel.{u, 0, w}
       0 := by
-  refine ⟨le_rfl, fun E _ _ _ V hr hV => ?_⟩
+  refine ⟨le_rfl, fun V hr hV => ?_⟩
   obtain ⟨x, hx, he, hR, hbound⟩ :=
     V.toNormFamily.exists_nonzero_trivialSeminorm_eq_sSup_range (hξ := hV) hr
-  let b := Module.finBasis K E
-  let s : Fin (Module.finrank K E) → {x : E // x ≠ 0} :=
+  let b := Module.finBasis K V
+  let s : Fin (Module.finrank K V) → {x : V // x ≠ 0} :=
     fun i => ⟨b i, b.ne_zero i⟩
   have hd : ∀ i, -Real.log (sSup (Set.range V.toNormFamily.trivialSeminorm)) ≤
       V.vectorDegree (s i) := by
@@ -91,32 +90,32 @@ variable {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Equality of the actual last minimum and minimal slope for all ranks. -/
 theorem minimalLogarithmicMinimum_eq_minimalSlope_singleTrivialPlace
-    (V : AdelicVectorBundle (AdelicStructure.singleTrivialPlace K) E)
+    (V : AdelicVectorBundle (AdelicStructure.singleTrivialPlace K))
     [hV : V.toNormFamily.IsUltrametric] :
     V.minimalLogarithmicMinimum = V.minimalSlope
       (hN := ⟨(AdelicStructure.singleTrivialPlace_normalized K)⟩) := by
-  by_cases hz : Module.finrank K E = 0
+  by_cases hz : Module.finrank K V = 0
   · rw [V.minimalLogarithmicMinimum_eq_top_of_finrank_eq_zero hz,
       V.minimalSlope_eq_top_of_finrank_eq_zero
         (hN := ⟨(AdelicStructure.singleTrivialPlace_normalized K)⟩) hz]
   have h := (AdelicStructure.singleTrivialPlace_hasStrongMinkowskiPropertyAtLevel_zero K).2
-    E V (Nat.pos_of_ne_zero hz) hV
+    V (Nat.pos_of_ne_zero hz) hV
   simp only [zero_mul, EReal.coe_zero, sub_zero] at h
   exact le_antisymm (V.minimalLogarithmicMinimum_le_minimalSlope
     (hN := ⟨(AdelicStructure.singleTrivialPlace_normalized K)⟩)) h
 
 /-- Equality of the actual first minimum and maximal slope for all ranks. -/
 theorem maximalLogarithmicMinimum_eq_maximalSlope_singleTrivialPlace
-    (V : AdelicVectorBundle (AdelicStructure.singleTrivialPlace K) E)
+    (V : AdelicVectorBundle (AdelicStructure.singleTrivialPlace K))
     [hV : V.toNormFamily.IsUltrametric] :
     V.maximalLogarithmicMinimum = V.maximalSlope
       (hN := ⟨(AdelicStructure.singleTrivialPlace_normalized K)⟩) := by
-  by_cases hz : Module.finrank K E = 0
+  by_cases hz : Module.finrank K V = 0
   · rw [V.maximalLogarithmicMinimum_eq_bot_of_finrank_eq_zero hz,
       V.maximalSlope_eq_bot_of_finrank_eq_zero
         (hN := ⟨(AdelicStructure.singleTrivialPlace_normalized K)⟩) hz]
   have h := (AdelicStructure.singleTrivialPlace_hasMinkowskiPropertyAtLevel_zero K).2
-    E V (Nat.pos_of_ne_zero hz) hV
+    V (Nat.pos_of_ne_zero hz) hV
   simp only [zero_mul, EReal.coe_zero, sub_zero] at h
   exact le_antisymm (V.maximalLogarithmicMinimum_le_maximalSlope
     (hN := ⟨(AdelicStructure.singleTrivialPlace_normalized K)⟩)) h

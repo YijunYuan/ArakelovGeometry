@@ -147,10 +147,10 @@ local instance hermitianScalarQuotientProper : (S.algebraicExtension L).IsProper
 /-- Finite Hermitian extension preserves actual native quotient degree
 via the genuine canonical quotient tensor isometry. -/
 theorem degree_quotient_hermitianScalarExtension_of_finiteDimensional
-    [FiniteDimensional K L] (V : AdelicVectorBundle S E)
+    [FiniteDimensional K L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (U : Submodule K E) :
+    [hH : V.toNormFamily.IsHermitian] (U : Submodule K V) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
@@ -162,7 +162,9 @@ theorem degree_quotient_hermitianScalarExtension_of_finiteDimensional
   have he : Qext.degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
       (W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩)
           (hN := ⟨hLN⟩) :=
-    Qext.degree_eq_of_completed_isometry _ (tensorQuotientBaseChangeEquiv (L := L) U)
+    Qext.degree_eq_of_completed_isometry
+      (W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩))
+      (tensorQuotientBaseChangeEquiv (L := L) U)
       (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (fun x z =>
           V.toNormFamily.hermitianScalarExtension_quotient_norm_eq
             (hLN := ⟨hLN⟩) U x z)
@@ -172,18 +174,18 @@ theorem degree_quotient_hermitianScalarExtension_of_finiteDimensional
 /-- Native quotient means are preserved in every rank by genuine degree
 isometry and the canonical quotient tensor rank. -/
 theorem slope_quotient_hermitianScalarExtension_of_finiteDimensional
-    [FiniteDimensional K L] (V : AdelicVectorBundle S E)
+    [FiniteDimensional K L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (U : Submodule K E) :
+    [hH : V.toNormFamily.IsHermitian] (U : Submodule K V) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
     (W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
       (V.quotientOfMeasurableBase U).slope := by
   intro hLN hLS W
-  have hr : Module.finrank L ((L ⊗[K] E) ⧸ U.baseChange L) =
-      Module.finrank K (E ⧸ U) :=
+  have hr : Module.finrank L ((L ⊗[K] V) ⧸ U.baseChange L) =
+      Module.finrank K (V ⧸ U) :=
     (tensorQuotientBaseChangeEquiv (L := L) U).finrank_eq.symm.trans Module.finrank_baseChange
   dsimp only [slope]
   rw [V.degree_quotient_hermitianScalarExtension_of_finiteDimensional U, hr]

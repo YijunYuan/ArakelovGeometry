@@ -188,11 +188,14 @@ theorem family_isHermitian (p : Nat.Primes) (a : ℤ) :
   exact hc z
 
 /-- The actual bundle carries both measurable norms and proved domination. -/
-def bundle (p : Nat.Primes) (a : ℤ) : AdelicVectorBundle S Plane where
+abbrev bundle (p : Nat.Primes) (a : ℤ) : AdelicVectorBundle S where
+  carrier := Plane
   toNormFamily := family p a
-  isMeasurable := family_isMeasurable p a
-  dual_isMeasurable := family_dual_isMeasurable p a
-  isDominated := (family_coherent_and_dominated p a).2
+  toIsAdelic := {
+    isMeasurable := family_isMeasurable p a
+    dual_isMeasurable := family_dual_isMeasurable p a
+    isDominated := (family_coherent_and_dominated p a).2
+  }
 
 theorem exceptionalSeminorm_rational (p : Nat.Primes) (a : ℤ) (ω : S.Ω) (x : Plane) :
     exceptionalSeminorm p a ω (1 ⊗ₜ[ℚ] x) =

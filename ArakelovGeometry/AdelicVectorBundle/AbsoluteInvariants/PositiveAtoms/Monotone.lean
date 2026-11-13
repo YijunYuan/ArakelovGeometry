@@ -34,11 +34,11 @@ variable {K L E : Type*} [Field K] [Field L] [Algebra K L]
 /-- The actual tensor inclusion contracts completed norms and compares the
 produced actual determinant degrees, with no extension-place regularity. -/
 theorem degree_restrict_le_nativeAlgebraicRestrictionDegreeOfPositiveAtoms
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hpos : S.HasPositiveAtoms] [hgeo : S.HasOnlyFinitePlaces]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule K E) :
+    (A : Submodule K V) :
     (V.restrictOfMeasurableBase A).degree ≤
       V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveAtoms
         (A.baseChange L) := by
@@ -67,11 +67,11 @@ theorem degree_restrict_le_nativeAlgebraicRestrictionDegreeOfPositiveAtoms
 
 /-- The actual original and native mean degrees compare through unchanged rank. -/
 theorem slope_restrict_le_nativeMeanOfPositiveAtoms
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hpos : S.HasPositiveAtoms] [hgeo : S.HasOnlyFinitePlaces]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule K E) :
+    (A : Submodule K V) :
     (V.restrictOfMeasurableBase A).slope ≤
       V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveAtoms
         (A.baseChange L) /
@@ -86,7 +86,7 @@ theorem slope_restrict_le_nativeMeanOfPositiveAtoms
 
 /-- All original restricted degrees feed the actual geometric absolute supremum. -/
 theorem positiveDegree_le_absolutePositiveDegreeOfPositiveAtoms
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hpos : S.HasPositiveAtoms] [hgeo : S.HasOnlyFinitePlaces]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
@@ -102,7 +102,7 @@ theorem positiveDegree_le_absolutePositiveDegreeOfPositiveAtoms
 
 /-- Positive-rank original subspaces supply actual positive-rank native mean terms. -/
 theorem maximalSlope_le_absoluteMaximalSlopeOfPositiveAtoms
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hpos : S.HasPositiveAtoms] [hgeo : S.HasOnlyFinitePlaces]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
@@ -122,11 +122,11 @@ theorem maximalSlope_le_absoluteMaximalSlopeOfPositiveAtoms
 
 /-- Every actual original restricted degree is bounded by the geometric absolute degree. -/
 theorem degree_restrict_le_absolutePositiveDegreeOfPositiveAtoms
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hpos : S.HasPositiveAtoms] [hgeo : S.HasOnlyFinitePlaces]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule K E) :
+    (A : Submodule K V) :
     ((V.restrictOfMeasurableBase A).degree : EReal) ≤
       V.toNormFamily.absolutePositiveDegreeOfPositiveAtoms :=
   (V.degree_restrict_le_positiveDegree A).trans

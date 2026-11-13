@@ -31,7 +31,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
-variable (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+variable (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
   (ψ : S.Ω → NormShape) (hψ : NormShape.IsMeasurableFamily ψ)
   (U : Set S.Ω) (hU : MeasurableSet U) (hfinU : S.v U < ⊤)
   (hmax : ∀ ω ∉ U,
@@ -40,13 +40,16 @@ variable (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
 
 /-- The adelic bundle on the actual profile direct sum, for source-measurable
 profiles equal to maximum outside a measurable set of finite measure. -/
-noncomputable def directSum : AdelicVectorBundle S (E × F) where
+noncomputable abbrev directSum : AdelicVectorBundle S where
+  carrier := (V × W)
   toNormFamily := V.toNormFamily.directSum W.toNormFamily ψ
-  isMeasurable := by exact V.isMeasurable.directSum W.isMeasurable hψ
-  dual_isMeasurable := by
-    exact V.toNormFamily.directSum_dual_isMeasurable W.toNormFamily ψ
-      hψ
-  isDominated := by exact V.isDominated.directSum W.isDominated ψ U hU hfinU hmax
+  toIsAdelic := {
+    isMeasurable := by exact V.isMeasurable.directSum W.isMeasurable hψ
+    dual_isMeasurable := by
+      exact V.toNormFamily.directSum_dual_isMeasurable W.toNormFamily ψ
+        hψ
+    isDominated := by exact V.isDominated.directSum W.isDominated ψ U hU hfinU hmax
+  }
 
 @[simp]
 theorem directSum_toNormFamily :

@@ -31,8 +31,8 @@ namespace ArakelovGeometry
 open AdelicStructure
 
 /-- The actual global mixed tensor bundle of the rational interval factors. -/
-def rationalIntervalTensorBundle :
-    AdelicVectorBundle rationalAdelicStructure ((Fin 2 → ℚ) ⊗[ℚ] (Fin 3 → ℚ)) :=
+abbrev rationalIntervalTensorBundle :
+    AdelicVectorBundle rationalAdelicStructure :=
   rationalIntervalPlaneBundle.mixedTensorPair rationalIntervalThreeBundle
     (hN := ⟨rationalAdelicStructure_isRCLike⟩)
 

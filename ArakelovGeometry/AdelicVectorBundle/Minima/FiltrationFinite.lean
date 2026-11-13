@@ -31,12 +31,12 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} {E : Type w}
 
 /-- Every actual completed cut has an actual subtype basis with high ambient
 vector degrees at each strictly relaxed threshold. The empty basis is allowed. -/
-theorem exists_basis_minimaFiltration_degree_ge (V : AdelicVectorBundle S E)
+theorem exists_basis_minimaFiltration_degree_ge (V : AdelicVectorBundle S)
     (t : ℝ) {ε : ℝ} (hε : 0 < ε) :
     ∃ b : Module.Basis (Fin (Module.finrank K (V.minimaFiltration t))) K
         (V.minimaFiltration t),
       ∀ j, t - ε ≤ V.vectorDegree
-        ⟨(b j : E), fun h => b.ne_zero j (Subtype.ext h)⟩ := by
+        ⟨(b j : V), fun h => b.ne_zero j (Subtype.ext h)⟩ := by
   classical
   obtain ⟨δ₀, hδ₀, hΦ⟩ := V.exists_minimaFiltration_eq_degreeThresholdSpan t
   let δ := min δ₀ ε
@@ -62,9 +62,9 @@ theorem exists_basis_minimaFiltration_degree_ge (V : AdelicVectorBundle S E)
 
 /-- Agreement of all valid minimum profiles gives equality of the actual
 completed filtration spaces, including rank zero. -/
-theorem minimaFiltration_eq_of_minimum_profile (V : AdelicVectorBundle S E)
+theorem minimaFiltration_eq_of_minimum_profile (V : AdelicVectorBundle S)
     {a b : ℝ}
-    (h : ∀ i : ℕ, 1 ≤ i → i ≤ Module.finrank K E →
+    (h : ∀ i : ℕ, 1 ≤ i → i ≤ Module.finrank K V →
       ((a : EReal) ≤ V.logarithmicMinimum i ↔ (b : EReal) ≤ V.logarithmicMinimum i)) :
     V.minimaFiltration a = V.minimaFiltration b := by
   classical
@@ -82,19 +82,19 @@ theorem minimaFiltration_eq_of_minimum_profile (V : AdelicVectorBundle S E)
 /-- The finite image of valid minimum indices under `EReal.toReal`.
 Under the original finiteness hypotheses these are exactly the real minima;
 the auxiliary index-zero and above-rank endpoint values are excluded. -/
-def logarithmicMinimaJumpSet (V : AdelicVectorBundle S E) : Finset ℝ := by
+def logarithmicMinimaJumpSet (V : AdelicVectorBundle S) : Finset ℝ := by
   classical
-  exact (Finset.Icc 1 (Module.finrank K E)).image (fun i => (V.logarithmicMinimum i).toReal)
+  exact (Finset.Icc 1 (Module.finrank K V)).image (fun i => (V.logarithmicMinimum i).toReal)
 
 variable [S.IsProper]
 
 /-- With produced original finite minima, membership in the finite jump set
 is exactly equality to an actual valid source minimum. -/
-theorem mem_logarithmicMinimaJumpSet_iff (V : AdelicVectorBundle S E)
+theorem mem_logarithmicMinimaJumpSet_iff (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] (c : ℝ) :
     c ∈ V.logarithmicMinimaJumpSet ↔
-      ∃ i : ℕ, 1 ≤ i ∧ i ≤ Module.finrank K E ∧ V.logarithmicMinimum i = (c : EReal) := by
+      ∃ i : ℕ, 1 ≤ i ∧ i ≤ Module.finrank K V ∧ V.logarithmicMinimum i = (c : EReal) := by
   classical
   rw [logarithmicMinimaJumpSet, Finset.mem_image]
   constructor
@@ -108,7 +108,7 @@ theorem mem_logarithmicMinimaJumpSet_iff (V : AdelicVectorBundle S E)
 
 /-- The actual filtration is constant across an interval containing none of
 the produced valid real minima. The controlling interval is `[a,b)`. -/
-theorem minimaFiltration_eq_of_disjoint_jump_interval (V : AdelicVectorBundle S E)
+theorem minimaFiltration_eq_of_disjoint_jump_interval (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
     {a b : ℝ} (hab : a ≤ b)

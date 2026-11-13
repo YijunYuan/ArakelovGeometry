@@ -455,6 +455,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Tensor.OperatorBaseChange
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Pair
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.PairMap
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.PairNorm
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.PairOperator
 public import ArakelovGeometry.AlgebraicGeometry.BaseChange.AffineFibre
 public import ArakelovGeometry.AlgebraicGeometry.BaseChange.AffineModule
 public import ArakelovGeometry.AlgebraicGeometry.BaseChange.AffineSectionTensor

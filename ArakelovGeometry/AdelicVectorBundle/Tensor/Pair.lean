@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Construction.Countable
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Basic
 public import ArakelovGeometry.Analysis.Tensor.Operator
+public import Mathlib.Algebra.Module.ULift
 
 import ArakelovGeometry.AdelicVectorBundle.Construction.Tensor.Countable
 import ArakelovGeometry.AdelicVectorBundle.Tensor.Domination
@@ -27,12 +28,14 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry
 
-universe u v w
+universe u v w w'
 
 /-- The two actual factors of a binary finite tensor product. -/
 abbrev BinaryTensorFactors (E F : Type w) : Unit ⊕ Unit → Type w
   | .inl _ => E
   | .inr _ => F
+
+section SameUniverse
 
 variable {K : Type u} [Field K] {E F : Type w}
 
@@ -55,6 +58,31 @@ instance binaryTensorFactorsFiniteDimensional [AddCommGroup E] [Module K E]
   | .inl _ => inferInstance
   | .inr _ => inferInstance
 
+end SameUniverse
+
+/-- The two factors lifted to the common universe used only by the finite tensor backend. -/
+abbrev LiftedTensorFactors (E : Type w) (F : Type w') : Unit ⊕ Unit → Type (max w w') :=
+  BinaryTensorFactors (ULift.{w'} E) (ULift.{w} F)
+
+variable {K : Type u} [Field K] {E : Type w} {F : Type w'}
+
+section Algebra
+
+variable (K E F) [AddCommGroup E] [Module K E] [AddCommGroup F] [Module K F]
+
+/-- The finite tensor of the lifted factors is canonically the original binary tensor. -/
+def tensorPairEquiv : (⨂[K] i, LiftedTensorFactors E F i) ≃ₗ[K] E ⊗[K] F :=
+  (binaryTensorEquiv K (LiftedTensorFactors E F)).trans
+    (TensorProduct.congr ULift.moduleEquiv ULift.moduleEquiv)
+
+@[simp]
+theorem tensorPairEquiv_tprod (x : ∀ i, LiftedTensorFactors E F i) :
+    tensorPairEquiv K E F (⨂ₜ[K] i, x i) =
+      (x (.inl ())).down ⊗ₜ[K] (x (.inr ())).down := by
+  simp [tensorPairEquiv]
+
+end Algebra
+
 variable {S : AdelicStructure.{u, v} K}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
@@ -62,46 +90,46 @@ variable {S : AdelicStructure.{u, v} K}
 namespace NormFamily
 
 /-- The given two norm families, indexed as a finite family. -/
-def tensorPairFactors (ξ : NormFamily S E) (η : NormFamily S F) :
-    ∀ i, NormFamily S (BinaryTensorFactors E F i)
-  | .inl _ => ξ
-  | .inr _ => η
+noncomputable def tensorPairFactors (ξ : NormFamily S E) (η : NormFamily S F) :
+    ∀ i, NormFamily S (LiftedTensorFactors E F i)
+  | .inl _ => ξ.pullback ULift.moduleEquiv.toLinearMap ULift.moduleEquiv.injective
+  | .inr _ => η.pullback ULift.moduleEquiv.toLinearMap ULift.moduleEquiv.injective
 
 omit [FiniteDimensional K E] [FiniteDimensional K F] in
 instance instIsMeasurableTensorPairFactors (ξ : NormFamily S E) (η : NormFamily S F)
     [hξ : ξ.IsMeasurable] [hη : η.IsMeasurable] (i : Unit ⊕ Unit) :
     (tensorPairFactors ξ η i).IsMeasurable :=
   match i with
-  | .inl _ => hξ
-  | .inr _ => hη
+  | .inl _ => hξ.pullback _ ULift.moduleEquiv.injective
+  | .inr _ => hη.pullback _ ULift.moduleEquiv.injective
 
 instance instIsDominatedTensorPairFactors (ξ : NormFamily S E) (η : NormFamily S F)
     [hξ : ξ.IsDominated] [hη : η.IsDominated] (i : Unit ⊕ Unit) :
     (tensorPairFactors ξ η i).IsDominated :=
   match i with
-  | .inl _ => hξ
-  | .inr _ => hη
+  | .inl _ => hξ.pullback _ ULift.moduleEquiv.injective
+  | .inr _ => hη.pullback _ ULift.moduleEquiv.injective
 
 /-- The injective norm on the ordinary binary tensor product, transported
 from the existing canonical finite tensor norm. -/
 noncomputable def injectiveTensorPair (ξ : NormFamily S E) (η : NormFamily S F) :
     NormFamily S (E ⊗[K] F) :=
   (injectiveTensor (tensorPairFactors ξ η)).pullback
-    (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.toLinearMap
-    (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.injective
+    (tensorPairEquiv K E F).symm.toLinearMap
+    (tensorPairEquiv K E F).symm.injective
 
 instance instIsUltrametricInjectiveTensorPair (ξ : NormFamily S E) (η : NormFamily S F) :
     (ξ.injectiveTensorPair η).IsUltrametric :=
   (injectiveTensor_isUltrametric (tensorPairFactors ξ η)).pullback
-    (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.toLinearMap
-    (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.injective
+    (tensorPairEquiv K E F).symm.toLinearMap
+    (tensorPairEquiv K E F).symm.injective
 
 @[simp]
 theorem injectiveTensorPair_norm_tmul (ξ : NormFamily S E) (η : NormFamily S F)
     (ω : S.Ω) (a : (S.ϕ ω).Completion) (z : E ⊗[K] F) :
     (ξ.injectiveTensorPair η).norm ω (a ⊗ₜ[K] z) =
       (injectiveTensor (tensorPairFactors ξ η)).norm ω
-        (a ⊗ₜ[K] (binaryTensorEquiv K (BinaryTensorFactors E F)).symm z) := rfl
+        (a ⊗ₜ[K] (tensorPairEquiv K E F).symm z) := rfl
 
 /-- Either source base hypothesis proves measurability of the actual binary norm. -/
 theorem IsMeasurable.injectiveTensorPair {ξ : NormFamily S E} {η : NormFamily S F}
@@ -122,18 +150,18 @@ namespace AdelicVectorBundle
 
 /-- The actual binary injective tensor bundle, with norm and dual measurability
 proved under the source alternatives. -/
-noncomputable def injectiveTensorPair (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F)
+noncomputable abbrev injectiveTensorPair (V : AdelicVectorBundle.{w} S)
+    (W : AdelicVectorBundle.{w'} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
-    AdelicVectorBundle S (E ⊗[K] F) :=
+    AdelicVectorBundle S :=
   ofMeasurableDominated (V.toNormFamily.injectiveTensorPair W.toNormFamily)
     (hm := (V.isMeasurable.injectiveTensorPair W.isMeasurable))
     (hd := (V.isDominated.injectiveTensorPair W.isDominated (by exact S.v_Ωinf_lt_top_of_isRCLike)))
 
 @[simp]
-theorem injectiveTensorPair_toNormFamily (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F)
+theorem injectiveTensorPair_toNormFamily (V : AdelicVectorBundle.{w} S)
+    (W : AdelicVectorBundle.{w'} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.injectiveTensorPair W).toNormFamily =

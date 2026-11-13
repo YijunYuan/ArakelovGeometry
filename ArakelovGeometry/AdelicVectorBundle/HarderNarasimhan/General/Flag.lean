@@ -34,14 +34,14 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
 /-- Extract the actual complete strict flag and all its jump data from
 the produced general filtration. No finite flag or finite image is given. -/
 theorem exists_generalHNFlag_and_jumps :
-    ∃ (n : ℕ) (U : Fin (n + 1) → Submodule K E) (b : Fin n → ℝ),
+    ∃ (n : ℕ) (U : Fin (n + 1) → Submodule K V) (b : Fin n → ℝ),
       StrictMono U ∧ U 0 = ⊥ ∧ U (Fin.last n) = ⊤ ∧
       Set.range U = Set.range (V.generalHNFiltration) ∧ StrictAnti b ∧
       (∀ i t, U i.succ ≤ V.generalHNFiltration t ↔ t ≤ b i) ∧
@@ -60,11 +60,11 @@ theorem exists_generalHNFlag_and_jumps :
   rwa [he] at h
 
 private theorem generalHNOrderedSlope_eq_jump_of_rank_interval {n : ℕ}
-    (U : Fin (n + 1) → Submodule K E) (b : Fin n → ℝ) (hU : StrictMono U)
+    (U : Fin (n + 1) → Submodule K V) (b : Fin n → ℝ) (hU : StrictMono U)
     (hrange : Set.range U = Set.range (V.generalHNFiltration))
     (hcut : ∀ i t, U i.succ ≤ V.generalHNFiltration t ↔ t ≤ b i)
     (hat : ∀ i, V.generalHNFiltration (b i) = U i.succ)
-    (i : Fin n) (j : Fin (Module.finrank K E))
+    (i : Fin n) (j : Fin (Module.finrank K V))
     (hlo : Module.finrank K (U i.castSucc) ≤ j.val)
     (hhi : j.val < Module.finrank K (U i.succ)) :
     V.generalHNOrderedSlope j = b i := by
@@ -92,14 +92,14 @@ private theorem generalHNOrderedSlope_eq_jump_of_rank_interval {n : ℕ}
 with its genuine rank-block slopes, nonzero term minima, and every real
 test-function weighted sum using canonical actual quotient ranks. -/
 theorem exists_generalHNFlag_orderedSlope_sum :
-    ∃ (n : ℕ) (U : Fin (n + 1) → Submodule K E) (b : Fin n → ℝ),
+    ∃ (n : ℕ) (U : Fin (n + 1) → Submodule K V) (b : Fin n → ℝ),
       StrictMono U ∧ U 0 = ⊥ ∧ U (Fin.last n) = ⊤ ∧
       Set.range U = Set.range (V.generalHNFiltration) ∧ StrictAnti b ∧
       (∀ i t, U i.succ ≤ V.generalHNFiltration t ↔ t ≤ b i) ∧
       (∀ i, V.generalHNFiltration (b i) = U i.succ) ∧
       (∀ i, (⨆ s : {s : ℝ // b i < s}, V.generalHNFiltration s.val) = U i.castSucc) ∧
       (∀ t, V.generalHNFiltration t = ⨆ (i : Fin n) (_ : t ≤ b i), U i.succ) ∧
-      (∀ (i : Fin n) (j : Fin (Module.finrank K E)),
+      (∀ (i : Fin n) (j : Fin (Module.finrank K V)),
         Module.finrank K (U i.castSucc) ≤ j.val →
         j.val < Module.finrank K (U i.succ) → V.generalHNOrderedSlope j = b i) ∧
       (∀ i, (V.restrictOfMeasurableBase (U i.succ)).minimalSlope = (b i : EReal)) ∧
@@ -115,7 +115,7 @@ theorem exists_generalHNFlag_orderedSlope_sum :
       (b i : EReal) := by
     intro i
     have hstep := Submodule.finrank_lt_finrank_of_lt (hU i.castSucc_lt_succ)
-    let j : Fin (Module.finrank K E) :=
+    let j : Fin (Module.finrank K V) :=
       ⟨Module.finrank K (U i.castSucc), hstep.trans_le (U i.succ).finrank_le⟩
     have he := hblock i j le_rfl hstep
     have hm := V.minimalSlope_restrict_generalHNFiltration_orderedSlope j

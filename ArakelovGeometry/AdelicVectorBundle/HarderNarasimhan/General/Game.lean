@@ -33,13 +33,13 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
 /-- The game's semistable intervals are exactly the actual semistable subquotients.
 Strictness of the interval supplies the positive-rank condition. -/
-theorem isSemistable_subquotient_iff_game (I : StrictIntvl (Submodule K E)) :
+theorem isSemistable_subquotient_iff_game (I : StrictIntvl (Submodule K V)) :
     ((V.restrictOfMeasurableBase I.right).quotientOfMeasurableBase
       (I.left.comap I.right.subtype)).IsSemistable ↔
         ((V.maximalSlopePayoff).restrict I).IsSemistable := by
@@ -51,7 +51,7 @@ theorem isSemistable_subquotient_iff_game (I : StrictIntvl (Submodule K E)) :
 
 /-- On a semistable flag factor, the game value is its actual modified slope. -/
 theorem A_maximalSlopePayoff_flag_eq_modifiedSlope {n : ℕ}
-    (F : Fin (n + 1) → Submodule K E) (hF : StrictMono F) (i : Fin n)
+    (F : Fin (n + 1) → Submodule K V) (hF : StrictMono F) (i : Fin n)
     [hsemi : (V.flagQuotientOfMeasurableBase F i).IsSemistable] :
     (V.maximalSlopePayoff).A
       ⟨F i.castSucc, F i.succ, hF Fin.castSucc_lt_succ⟩ =
@@ -63,7 +63,7 @@ theorem A_maximalSlopePayoff_flag_eq_modifiedSlope {n : ℕ}
 /-- The abstract game's finite-series uniqueness identifies actual adelic flags,
 including the length-zero flag of a zero bundle. -/
 theorem generalHNFlags_eq {n m : ℕ}
-    (F : Fin (n + 1) → Submodule K E) (G : Fin (m + 1) → Submodule K E)
+    (F : Fin (n + 1) → Submodule K V) (G : Fin (m + 1) → Submodule K V)
     (hF : StrictMono F) (hG : StrictMono G)
     (hF0 : F 0 = ⊥) (hG0 : G 0 = ⊥)
     (hFtop : F (Fin.last n) = ⊤) (hGtop : G (Fin.last m) = ⊤)
@@ -71,7 +71,7 @@ theorem generalHNFlags_eq {n m : ℕ}
     [hGsemi : ∀ i, (V.flagQuotientOfMeasurableBase G i).IsSemistable]
     (hFA : StrictAnti fun i ↦ (V.flagQuotientOfMeasurableBase F i).modifiedSlope)
     (hGA : StrictAnti fun i ↦ (V.flagQuotientOfMeasurableBase G i).modifiedSlope) :
-    (⟨n, F⟩ : Σ k : ℕ, Fin (k + 1) → Submodule K E) = ⟨m, G⟩ := by
+    (⟨n, F⟩ : Σ k : ℕ, Fin (k + 1) → Submodule K V) = ⟨m, G⟩ := by
   refine PayoffFunction.finiteFlags_eq (μ := V.maximalSlopePayoff)
     F G hF hG hF0 hG0 hFtop hGtop (hFsemi := ?_) (hGsemi := ?_) ?_ ?_
   · intro i
@@ -92,7 +92,7 @@ theorem generalHNFlags_eq {n m : ℕ}
 
 /-- An actual contractive image in a semistable factor bounds the restricted minimum. -/
 theorem minimalSlope_restrict_le_minimalSlope_semistable_factor
-    (A B M : Submodule K E) (hMB : M ≤ B) (hMA : ¬ M ≤ A)
+    (A B M : Submodule K V) (hMB : M ≤ B) (hMA : ¬ M ≤ A)
     [hQ : ((V.restrictOfMeasurableBase B).quotientOfMeasurableBase
       (A.comap B.subtype)).IsSemistable] :
     (V.restrictOfMeasurableBase M).minimalSlope ≤
@@ -106,7 +106,7 @@ theorem minimalSlope_restrict_le_minimalSlope_semistable_factor
   have hsup : M ⊔ A₀ ≤ B := sup_le hMB inf_le_right
   have hAB : A₀ < B := (right_lt_sup.mpr hnot).trans_le hsup
   have hM : ⊥ < M := bot_lt_iff_ne_bot.mpr (fun he ↦ hMA (he ▸ bot_le))
-  let I : StrictIntvl (Submodule K E) := ⟨A₀, B, hAB⟩
+  let I : StrictIntvl (Submodule K V) := ⟨A₀, B, hAB⟩
   let μ := V.maximalSlopePayoff
   have hs : (μ.restrict I).IsSemistable :=
     (V.isSemistable_subquotient_iff_game I).mp (by
@@ -124,7 +124,7 @@ theorem minimalSlope_restrict_le_minimalSlope_semistable_factor
 
 /-- Every actual exhaustive decreasing semistable flag recovers the genuine filtration. -/
 theorem generalHNFiltration_eq_of_semistableFlag {n : ℕ}
-    (U : Fin (n + 1) → Submodule K E) (hU : StrictMono U) (hz : U 0 = ⊥)
+    (U : Fin (n + 1) → Submodule K V) (hU : StrictMono U) (hz : U 0 = ⊥)
     (ht : U (Fin.last n) = ⊤)
     [hsemi : ∀ i : Fin n, (V.flagQuotientOfMeasurableBase U i).IsSemistable]
     (hb : StrictAnti (fun i : Fin n ↦ (V.flagQuotientOfMeasurableBase U i).modifiedSlope
@@ -185,7 +185,7 @@ theorem generalHNFiltration_eq_of_semistableFlag {n : ℕ}
 
 /-- Source Theorem 4.3.58: the actual exhaustive decreasing semistable flag is unique. -/
 theorem existsUnique_generalHNFlag :
-    ∃! p : Σ n : ℕ, Fin (n + 1) → Submodule K E,
+    ∃! p : Σ n : ℕ, Fin (n + 1) → Submodule K V,
       StrictMono p.2 ∧ p.2 0 = ⊥ ∧ p.2 (Fin.last p.1) = ⊤ ∧
       (∀ i : Fin p.1, (V.flagQuotientOfMeasurableBase p.2 i).IsSemistable) ∧
       StrictAnti (fun i : Fin p.1 ↦

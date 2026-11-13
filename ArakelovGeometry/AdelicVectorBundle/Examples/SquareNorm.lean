@@ -51,14 +51,17 @@ theorem squareFiniteInfiniteMeasure :
   exact ENNReal.one_lt_top
 
 /-- The actual coordinate-maximum adelic bundle at every rational place. -/
-def squareNorm : AdelicVectorBundle rationalAdelicStructure RationalPlane where
+abbrev squareNorm : AdelicVectorBundle rationalAdelicStructure where
+  carrier := RationalPlane
   toNormFamily := NormFamily.ofBasis rationalAdelicStructure RationalPlane squareBasis
-  isMeasurable := NormFamily.ofBasis_isMeasurable squareBasis
-  dual_isMeasurable :=
-    (NormFamily.ofBasis rationalAdelicStructure RationalPlane
-      squareBasis).dual.isMeasurable_of_discrete
-  isDominated := by
-    exact NormFamily.ofBasis_isDominated_of_measure_lt_top squareBasis squareFiniteInfiniteMeasure
+  toIsAdelic := {
+    isMeasurable := NormFamily.ofBasis_isMeasurable squareBasis
+    dual_isMeasurable :=
+      (NormFamily.ofBasis rationalAdelicStructure RationalPlane
+        squareBasis).dual.isMeasurable_of_discrete
+    isDominated := by
+      exact NormFamily.ofBasis_isDominated_of_measure_lt_top squareBasis squareFiniteInfiniteMeasure
+  }
 
 @[simp]
 theorem squareNorm_toNormFamily : squareNorm.toNormFamily =
@@ -75,7 +78,8 @@ theorem squareNorm_norm_coordinates (ω : rationalAdelicStructure.Ω)
 theorem squareNorm_norm_rational (ω : rationalAdelicStructure.Ω) (x : RationalPlane) :
     squareNorm.norm ω ((1 : (rationalAdelicStructure.ϕ ω).Completion) ⊗ₜ[ℚ] x) =
       ‖fun i : Fin 2 ↦ rationalAdelicStructure.ϕ ω (x i)‖ := by
-  rw [squareNorm_toNormFamily, NormFamily.ofBasis_norm_rational]
+  change (NormFamily.ofBasis rationalAdelicStructure RationalPlane squareBasis).norm ω _ = _
+  rw [NormFamily.ofBasis_norm_rational]
   rfl
 
 /-- The true completed maximum family has integrably bounded distance
@@ -211,9 +215,9 @@ theorem squareCompletedDet_norm_le_two (ω : rationalAdelicStructure.Ω)
     rw [squareNorm_norm_coordinates]
     exact norm_le_pi_norm _ _
   have h01 := mul_le_mul (hc 0 0) (hc 1 1) (norm_nonneg _)
-    (squareNorm.norm_nonneg ω _)
+    (squareNorm.toNormFamily.norm_nonneg ω _)
   have h10 := mul_le_mul (hc 1 0) (hc 0 1) (norm_nonneg _)
-    (squareNorm.norm_nonneg ω _)
+    (squareNorm.toNormFamily.norm_nonneg ω _)
   rw [squareCompletedDetFormula]
   have hn := norm_sub_le (c (x (e 0)) 0 * c (x (e 1)) 1)
     (c (x (e 1)) 0 * c (x (e 0)) 1)
@@ -238,9 +242,9 @@ theorem squareCompletedDet_norm_le_finite (ω : rationalAdelicStructure.Ω)
     rw [squareNorm_norm_coordinates]
     exact norm_le_pi_norm _ _
   have h01 := mul_le_mul (hc 0 0) (hc 1 1) (norm_nonneg _)
-    (squareNorm.norm_nonneg ω _)
+    (squareNorm.toNormFamily.norm_nonneg ω _)
   have h10 := mul_le_mul (hc 1 0) (hc 0 1) (norm_nonneg _)
-    (squareNorm.norm_nonneg ω _)
+    (squareNorm.toNormFamily.norm_nonneg ω _)
   rw [squareCompletedDetFormula]
   have hn := rationalAdelicStructure.norm_add_le_max_of_finite ω hω
     (c (x (e 0)) 0 * c (x (e 1)) 1) (-(c (x (e 1)) 0 * c (x (e 0)) 1))
@@ -508,17 +512,17 @@ private theorem squareLineDeterminant_norm {F : Type*} [AddCommGroup F] [Module 
   rw [he] at hc
   exact hc.le
 
-private theorem squareLineDegreeFormula {F : Type*} [AddCommGroup F] [Module ℚ F]
-    [FiniteDimensional ℚ F] (V : AdelicVectorBundle rationalAdelicStructure F)
-    (hr : Module.finrank ℚ F = 1) (x : F) (hx : x ≠ 0) :
+private theorem squareLineDegreeFormula
+     (V : AdelicVectorBundle rationalAdelicStructure)
+    (hr : Module.finrank ℚ V = 1) (x : V) (hx : x ≠ 0) :
     V.degree (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
         (hN := ⟨rationalAdelicStructure_isRCLike⟩) =
-      -(∫ ω, V.logNorm x ω ∂rationalAdelicStructure.v) := by
-  let b : Module.Basis (Fin (Module.finrank ℚ F)) ℚ F :=
+      -(∫ ω, V.toNormFamily.logNorm x ω ∂rationalAdelicStructure.v) := by
+  let b : Module.Basis (Fin (Module.finrank ℚ V)) ℚ V :=
     (FiniteDimensional.basisSingleton (Fin 1) hr x hx).reindex (finCongr hr.symm)
-  have hb (i : Fin (Module.finrank ℚ F)) : b i = x := by
+  have hb (i : Fin (Module.finrank ℚ V)) : b i = x := by
     simp only [b, Module.Basis.reindex_apply, FiniteDimensional.basisSingleton_apply]
-  let t := _root_.exteriorPower.ιMulti ℚ (Module.finrank ℚ F) b
+  let t := _root_.exteriorPower.ιMulti ℚ (Module.finrank ℚ V) b
   have ht : t ≠ 0 := by
     intro hz
     have he : determinantCoordinateEquiv b t = 1 := by
@@ -531,7 +535,7 @@ private theorem squareLineDegreeFormula {F : Type*} [AddCommGroup F] [Module ℚ
   apply integral_congr_ae
   apply Filter.Eventually.of_forall
   intro ω
-  have he : (exteriorBaseChangeEquiv ℚ (rationalAdelicStructure.ϕ ω).Completion F _).symm
+  have he : (exteriorBaseChangeEquiv ℚ (rationalAdelicStructure.ϕ ω).Completion V _).symm
       (_root_.exteriorPower.ιMulti (rationalAdelicStructure.ϕ ω).Completion _
         (fun i ↦ (1 : (rationalAdelicStructure.ϕ ω).Completion) ⊗ₜ[ℚ] b i)) =
       (1 : (rationalAdelicStructure.ϕ ω).Completion) ⊗ₜ[ℚ] t := by
@@ -539,7 +543,7 @@ private theorem squareLineDegreeFormula {F : Type*} [AddCommGroup F] [Module ℚ
   have hn := squareLineDeterminant_norm V.toNormFamily hr ω
     (fun i ↦ (1 : (rationalAdelicStructure.ϕ ω).Completion) ⊗ₜ[ℚ] b i)
   rw [he] at hn
-  have hp : (∏ i : Fin (Module.finrank ℚ F),
+  have hp : (∏ i : Fin (Module.finrank ℚ V),
       V.norm ω ((1 : (rationalAdelicStructure.ϕ ω).Completion) ⊗ₜ[ℚ] b i)) =
       V.norm ω ((1 : (rationalAdelicStructure.ϕ ω).Completion) ⊗ₜ[ℚ] x) := by
     simp only [hb, Finset.prod_const, Finset.card_univ, Fintype.card_fin, hr, pow_one]
@@ -547,14 +551,16 @@ private theorem squareLineDegreeFormula {F : Type*} [AddCommGroup F] [Module ℚ
 
 /-- Every nonzero actual square vector has nonpositive vector degree. -/
 theorem squareNorm_vectorDegree_le_zero (x : {x : RationalPlane // x ≠ 0}) :
-    squareNorm.toNormFamily.vectorDegree x ≤ 0 := by
+    squareNorm.toNormFamily.vectorDegree
+      (hd := squareNorm.isDominated) (hm := squareNorm.isMeasurable) x ≤ 0 := by
   obtain ⟨i, hi⟩ : ∃ i : Fin 2, x.val i ≠ 0 := by
     by_contra h
     apply x.property
     ext i
     exact not_ne_iff.mp (not_exists.mp h i)
   have hn : ∀ ω : rationalAdelicStructure.Ω,
-      Real.log (rationalAdelicStructure.ϕ ω (x.val i)) ≤ squareNorm.logNorm x.val ω := by
+      Real.log (rationalAdelicStructure.ϕ ω (x.val i)) ≤
+        squareNorm.toNormFamily.logNorm x.val ω := by
     intro ω
     apply Real.log_le_log (rationalAdelicStructure.ϕ ω |>.pos hi)
     rw [squareNorm_norm_max_rational]
@@ -580,7 +586,8 @@ theorem squareNorm_degree_restrict_le_zero (U : Submodule ℚ RationalPlane)
     intro h
     exact x.property (Subtype.ext h)
   rw [squareLineDegreeFormula V hr x.val x.property]
-  have he : V.logNorm x.val = squareNorm.logNorm (x.val : RationalPlane) := by
+  have he : V.toNormFamily.logNorm x.val =
+      squareNorm.toNormFamily.logNorm (x.val : RationalPlane) := by
     funext ω
     unfold NormFamily.logNorm
     change Real.log ((squareNorm.toNormFamily.restrict U).norm ω (1 ⊗ₜ[ℚ] x.val)) = _
@@ -658,7 +665,7 @@ theorem squareNorm_degree_quotient_nonneg (U : Submodule ℚ RationalPlane)
   rw [AdelicStructure.IsProper.product_formula _ hi] at hm
   change 0 ≤ ∫ ω, Q.toNormFamily.dual.logNorm ℓ ω ∂rationalAdelicStructure.v at hm
   rw [squareLineDegreeFormula Q hr z.val z.property]
-  have heq : Q.toNormFamily.dual.logNorm ℓ = fun ω ↦ -Q.logNorm z.val ω := by
+  have heq : Q.toNormFamily.dual.logNorm ℓ = fun ω ↦ -Q.toNormFamily.logNorm z.val ω := by
     funext ω
     exact Q.toNormFamily.dual_logNorm_eq_neg hr he ω
   rw [heq, integral_neg] at hm
@@ -685,7 +692,7 @@ theorem squareNorm_degree_coordinateLine (i : Fin 2) :
     exact squareBasis.ne_zero i (congrArg Subtype.val h)
   let V := squareNorm.restrictOfMeasurableBase U (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
   rw [squareLineDegreeFormula V (squareCoordinateLine_finrank i) x hx]
-  have he : V.logNorm x = 0 := by
+  have he : V.toNormFamily.logNorm x = 0 := by
     funext ω
     unfold NormFamily.logNorm
     change Real.log ((squareNorm.toNormFamily.restrict U).norm ω (1 ⊗ₜ[ℚ] x)) = 0
@@ -721,7 +728,7 @@ theorem squareNorm_dual_norm_coordinate (ω : rationalAdelicStructure.Ω) (i : F
     rw [dualBaseChangeEquiv_tmul_apply_tmul, one_mul, one_mul,
       squareCompletedScalar_norm, Module.Basis.coord_apply, Module.Basis.repr_self] at h
     simp only [Finsupp.single_eq_same, map_one] at h
-    rw [squareNorm_toNormFamily, NormFamily.ofBasis_norm_tmul_basis, norm_one, mul_one] at h
+    rw [NormFamily.ofBasis_norm_tmul_basis, norm_one, mul_one] at h
     exact h
 
 /-- The kernel of an actual coordinate quotient. -/
@@ -789,7 +796,7 @@ theorem squareNorm_degree_coordinateQuotient (i : Fin 2) :
     exact zero_ne_one he
   let Q := squareNorm.quotientOfMeasurableBase U (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
   rw [squareLineDegreeFormula Q (squareCoordinateQuotient_finrank i) x hx]
-  have he : Q.logNorm x = 0 := by
+  have he : Q.toNormFamily.logNorm x = 0 := by
     funext ω
     unfold NormFamily.logNorm
     change Real.log ((squareNorm.toNormFamily.quotient (squareCoordinateKernel i)).norm
@@ -848,6 +855,8 @@ theorem squareNorm_minimalSlope :
     intro U hU
     have hdim := U.finrank_quotient_add_finrank
     rw [squareNorm_finrank] at hdim
+    change Module.finrank ℚ (RationalPlane ⧸ U) + Module.finrank ℚ U = 2 at hdim
+    change 0 < Module.finrank ℚ (RationalPlane ⧸ U) at hU
     by_cases hr : Module.finrank ℚ (RationalPlane ⧸ U) = 1
     · have hm : 0 ≤ (squareNorm.quotientOfMeasurableBase U (hS := ⟨hS⟩)).slope
           (hS := ⟨hS⟩) (hN := ⟨rationalAdelicStructure_isRCLike⟩) := by

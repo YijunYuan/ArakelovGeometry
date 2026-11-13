@@ -145,40 +145,40 @@ namespace AdelicVectorBundle
 variable [S.IsProper]
 
 /-- The real mean slope, with the source rank-zero value `0`. -/
-def slope (V : AdelicVectorBundle S E)
+def slope (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] : ℝ :=
-  V.degree / Module.finrank K E
+  V.degree / Module.finrank K V
 
 /-- The extended-real supremum of slopes of all nonzero actual restrictions. -/
-def maximalSlope (V : AdelicVectorBundle S E)
+def maximalSlope (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] : EReal :=
-  ⨆ W : {W : Submodule K E // 0 < Module.finrank K W},
+  ⨆ W : {W : Submodule K V // 0 < Module.finrank K W},
     ((V.restrictOfMeasurableBase W.val).slope : EReal)
 
 /-- Source equation (4.45): the infimum of maximal slopes of all nonzero
 actual quotients. Every quotient can be represented by its rational kernel. -/
-def minimalSlope (V : AdelicVectorBundle S E)
+def minimalSlope (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] : EReal :=
-  ⨅ W : {W : Submodule K E // 0 < Module.finrank K (E ⧸ W)},
+  ⨅ W : {W : Submodule K V // 0 < Module.finrank K (V ⧸ W)},
     (V.quotientOfMeasurableBase W.val).maximalSlope
 
 /-- The zero-rank mean slope is zero as in the source convention. -/
-theorem slope_eq_zero_of_finrank_eq_zero (V : AdelicVectorBundle S E)
+theorem slope_eq_zero_of_finrank_eq_zero (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : Module.finrank K E = 0) : V.slope = 0 := by
+    (hr : Module.finrank K V = 0) : V.slope = 0 := by
   simp only [slope, hr, Nat.cast_zero, div_zero]
 
 /-- There are no nonzero subspaces of a zero-rank bundle, so the supremum
 is minus infinity. -/
-theorem maximalSlope_eq_bot_of_finrank_eq_zero (V : AdelicVectorBundle S E)
+theorem maximalSlope_eq_bot_of_finrank_eq_zero (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : Module.finrank K E = 0) : V.maximalSlope = ⊥ := by
-  let : IsEmpty {W : Submodule K E // 0 < Module.finrank K W} := ⟨fun W ↦ by
+    (hr : Module.finrank K V = 0) : V.maximalSlope = ⊥ := by
+  let : IsEmpty {W : Submodule K V // 0 < Module.finrank K W} := ⟨fun W ↦ by
     have hle := W.val.finrank_le
     rw [hr] at hle
     exact (not_lt_of_ge hle) W.property⟩
@@ -186,29 +186,29 @@ theorem maximalSlope_eq_bot_of_finrank_eq_zero (V : AdelicVectorBundle S E)
 
 /-- There are no nonzero quotients of a zero-rank bundle, so the infimum
 is plus infinity. -/
-theorem minimalSlope_eq_top_of_finrank_eq_zero (V : AdelicVectorBundle S E)
+theorem minimalSlope_eq_top_of_finrank_eq_zero (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : Module.finrank K E = 0) : V.minimalSlope = ⊤ := by
-  let : IsEmpty {W : Submodule K E // 0 < Module.finrank K (E ⧸ W)} := ⟨fun W ↦ by
+    (hr : Module.finrank K V = 0) : V.minimalSlope = ⊤ := by
+  let : IsEmpty {W : Submodule K V // 0 < Module.finrank K (V ⧸ W)} := ⟨fun W ↦ by
     have h := W.val.finrank_quotient_add_finrank
     rw [hr] at h
-    have hz : Module.finrank K (E ⧸ W.val) = 0 := by omega
+    have hz : Module.finrank K (V ⧸ W.val) = 0 := by omega
     exact (ne_of_gt W.property) hz⟩
   exact iInf_of_empty _
 
 /-- Degree is rank times mean slope, also at rank zero. -/
-theorem degree_eq_rank_mul_slope (V : AdelicVectorBundle S E)
+theorem degree_eq_rank_mul_slope (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
-    V.degree = (Module.finrank K E : ℝ) * V.slope := by
-  by_cases hr : Module.finrank K E = 0
+    V.degree = (Module.finrank K V : ℝ) * V.slope := by
+  by_cases hr : Module.finrank K V = 0
   · rw [V.degree_eq_zero_of_finrank_eq_zero hr, hr, Nat.cast_zero, zero_mul]
   · rw [slope, mul_div_cancel₀ _ (Nat.cast_ne_zero.mpr hr)]
 
 /-- Actual completed isometries preserve the real mean slope. -/
-theorem slope_eq_of_completed_isometry (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+theorem slope_eq_of_completed_isometry (V : AdelicVectorBundle.{w} S)
+    (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
@@ -217,25 +217,25 @@ theorem slope_eq_of_completed_isometry (V : AdelicVectorBundle S E)
   rw [slope, slope, V.degree_eq_of_completed_isometry W e he, e.finrank_eq]
 
 /-- Every nonzero actual restricted slope is bounded by the maximal slope. -/
-theorem slope_restrict_le_maximalSlope (V : AdelicVectorBundle S E)
-    (W : Submodule K E) (hW : 0 < Module.finrank K W)
+theorem slope_restrict_le_maximalSlope (V : AdelicVectorBundle S)
+    (W : Submodule K V) (hW : 0 < Module.finrank K W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     ((V.restrictOfMeasurableBase W).slope : EReal) ≤ V.maximalSlope :=
-  le_iSup (fun U : {W : Submodule K E // 0 < Module.finrank K W} ↦
+  le_iSup (fun U : {W : Submodule K V // 0 < Module.finrank K W} ↦
     ((V.restrictOfMeasurableBase U.val).slope : EReal)) ⟨W, hW⟩
 
 /-- A bound for every nonzero actual restriction bounds the maximal slope. -/
-theorem maximalSlope_le (V : AdelicVectorBundle S E)
+theorem maximalSlope_le (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] {a : EReal}
-    (ha : ∀ W : Submodule K E, 0 < Module.finrank K W →
+    (ha : ∀ W : Submodule K V, 0 < Module.finrank K W →
       ((V.restrictOfMeasurableBase W).slope : EReal) ≤ a) :
     V.maximalSlope ≤ a :=
   iSup_le (fun W ↦ ha W.val W.property)
 
 /-- The total actual restriction has the ambient mean slope. -/
-theorem slope_restrict_top (V : AdelicVectorBundle S E)
+theorem slope_restrict_top (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.restrictOfMeasurableBase ⊤).slope = V.slope := by
@@ -243,46 +243,46 @@ theorem slope_restrict_top (V : AdelicVectorBundle S E)
 
 /-- For nonzero bundles, the identity subspace gives mean slope at most
 maximal slope. The dimensional qualification is essential at rank zero. -/
-theorem slope_le_maximalSlope (V : AdelicVectorBundle S E)
+theorem slope_le_maximalSlope (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : 0 < Module.finrank K E) : (V.slope : EReal) ≤ V.maximalSlope := by
-  have ht : 0 < Module.finrank K (⊤ : Submodule K E) := by
+    (hr : 0 < Module.finrank K V) : (V.slope : EReal) ≤ V.maximalSlope := by
+  have ht : 0 < Module.finrank K (⊤ : Submodule K V) := by
     rw [Submodule.topEquiv.finrank_eq]
     exact hr
   simpa only [V.slope_restrict_top] using V.slope_restrict_le_maximalSlope ⊤ ht
 
 /-- A nonzero bundle's maximal slope cannot equal minus infinity. -/
-theorem bot_lt_maximalSlope (V : AdelicVectorBundle S E)
+theorem bot_lt_maximalSlope (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : 0 < Module.finrank K E) : ⊥ < V.maximalSlope :=
+    (hr : 0 < Module.finrank K V) : ⊥ < V.maximalSlope :=
   (EReal.bot_lt_coe _).trans_le (V.slope_le_maximalSlope hr)
 
 /-- The source minimal slope is bounded by the maximal slope of every
 nonzero actual quotient. -/
-theorem minimalSlope_le_maximalSlope_quotient (V : AdelicVectorBundle S E)
-    (W : Submodule K E) (hW : 0 < Module.finrank K (E ⧸ W))
+theorem minimalSlope_le_maximalSlope_quotient (V : AdelicVectorBundle S)
+    (W : Submodule K V) (hW : 0 < Module.finrank K (V ⧸ W))
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     V.minimalSlope ≤ (V.quotientOfMeasurableBase W).maximalSlope :=
-  iInf_le (fun U : {W : Submodule K E // 0 < Module.finrank K (E ⧸ W)} ↦
+  iInf_le (fun U : {W : Submodule K V // 0 < Module.finrank K (V ⧸ W)} ↦
     (V.quotientOfMeasurableBase U.val).maximalSlope) ⟨W, hW⟩
 
 /-- A lower bound for every nonzero actual quotient maximal slope bounds
 the source minimal slope from below. -/
-theorem le_minimalSlope (V : AdelicVectorBundle S E)
+theorem le_minimalSlope (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] {a : EReal}
-    (ha : ∀ W : Submodule K E, 0 < Module.finrank K (E ⧸ W) →
+    (ha : ∀ W : Submodule K V, 0 < Module.finrank K (V ⧸ W) →
       a ≤ (V.quotientOfMeasurableBase W).maximalSlope) :
     a ≤ V.minimalSlope :=
   le_iInf (fun W ↦ ha W.val W.property)
 
 /-- The slope supremum is functorial under an actual completed isometry:
 each source subspace transports to its actual image subspace. -/
-theorem maximalSlope_le_of_completed_isometry (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+theorem maximalSlope_le_of_completed_isometry (V : AdelicVectorBundle.{w} S)
+    (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
@@ -295,15 +295,14 @@ theorem maximalSlope_le_of_completed_isometry (V : AdelicVectorBundle S E)
       (W.restrictOfMeasurableBase (U.map e.toLinearMap)).slope := by
     apply slope_eq_of_completed_isometry _ _ (e.submoduleMap U)
     intro ω z
-    simp only [restrictOfMeasurableBase_toNormFamily]
     exact V.toNormFamily.restrict_map_equiv_norm_eq W.toNormFamily e U ω (he ω) z
   rw [hu]
   exact W.slope_restrict_le_maximalSlope (U.map e.toLinearMap) (hr ▸ hU)
 
 /-- Actual completed isometries preserve maximal slopes, including both
 infinite values and the zero-bundle convention. -/
-theorem maximalSlope_eq_of_completed_isometry (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+theorem maximalSlope_eq_of_completed_isometry (V : AdelicVectorBundle.{w} S)
+    (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
@@ -312,7 +311,7 @@ theorem maximalSlope_eq_of_completed_isometry (V : AdelicVectorBundle S E)
   apply le_antisymm (V.maximalSlope_le_of_completed_isometry W e he)
   apply W.maximalSlope_le_of_completed_isometry V e.symm
   intro ω y
-  let eω := e.baseChange K (S.ϕ ω).Completion E F
+  let eω := e.baseChange K (S.ϕ ω).Completion V W
   change V.toNormFamily.norm ω (eω.symm y) = W.toNormFamily.norm ω y
   have h := he ω (eω.symm y)
   change W.toNormFamily.norm ω (eω (eω.symm y)) = V.toNormFamily.norm ω (eω.symm y) at h
@@ -320,13 +319,13 @@ theorem maximalSlope_eq_of_completed_isometry (V : AdelicVectorBundle S E)
 
 /-- The actual quotient by zero has the original maximal slope, so the
 identity quotient used in source equation (4.45) is present. -/
-theorem maximalSlope_quotient_bot (V : AdelicVectorBundle S E)
+theorem maximalSlope_quotient_bot (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.quotientOfMeasurableBase ⊥).maximalSlope = V.maximalSlope := by
   symm
-  let e : E ≃ₗ[K] E ⧸ (⊥ : Submodule K E) :=
-    LinearEquiv.ofBijective (⊥ : Submodule K E).mkQ
+  let e : V ≃ₗ[K] V ⧸ (⊥ : Submodule K V) :=
+    LinearEquiv.ofBijective (⊥ : Submodule K V).mkQ
       ⟨LinearMap.ker_eq_bot.mp (Submodule.ker_mkQ ⊥), Submodule.mkQ_surjective ⊥⟩
   apply maximalSlope_eq_of_completed_isometry _ _ e
   intro ω z
@@ -334,56 +333,58 @@ theorem maximalSlope_quotient_bot (V : AdelicVectorBundle S E)
 
 /-- For a nonzero bundle the identity quotient gives source minimal slope
 at most maximal slope. The zero-bundle qualification remains visible. -/
-theorem minimalSlope_le_maximalSlope (V : AdelicVectorBundle S E)
+theorem minimalSlope_le_maximalSlope (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : 0 < Module.finrank K E) : V.minimalSlope ≤ V.maximalSlope := by
-  have hq : 0 < Module.finrank K (E ⧸ (⊥ : Submodule K E)) := by
-    have h := (⊥ : Submodule K E).finrank_quotient_add_finrank
+    (hr : 0 < Module.finrank K V) : V.minimalSlope ≤ V.maximalSlope := by
+  have hq : 0 < Module.finrank K (V ⧸ (⊥ : Submodule K V)) := by
+    have h := (⊥ : Submodule K V).finrank_quotient_add_finrank
     rw [finrank_bot, add_zero] at h
     rwa [h]
   simpa only [V.maximalSlope_quotient_bot] using
     V.minimalSlope_le_maximalSlope_quotient ⊥ hq
 
 /-- Mean slope agrees with degree in rank one. -/
-theorem slope_eq_degree_of_finrank_one (V : AdelicVectorBundle S E)
+theorem slope_eq_degree_of_finrank_one (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : Module.finrank K E = 1) : V.slope = V.degree := by
+    (hr : Module.finrank K V = 1) : V.slope = V.degree := by
   simp only [slope, hr, Nat.cast_one, div_one]
 
 /-- Every actual surjective quotient has the mean slope of the canonical
 quotient by its kernel. -/
-theorem slope_pushforward_eq_quotient_ker (V : AdelicVectorBundle S E)
-    (π : E →ₗ[K] F) (hπ : Function.Surjective π)
+theorem slope_pushforward_eq_quotient_ker (V : AdelicVectorBundle.{w} S)
+    (π : V →ₗ[K] F) (hπ : Function.Surjective π)
     [hm : (V.toNormFamily.pushforward π hπ).IsMeasurable]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.pushforward π hπ).slope =
       (V.quotientOfMeasurableBase π.ker).slope := by
   symm
-  apply slope_eq_of_completed_isometry _ _ (π.quotKerEquivOfSurjective hπ)
+  apply slope_eq_of_completed_isometry (V.quotientOfMeasurableBase π.ker)
+    (V.pushforward π hπ) (π.quotKerEquivOfSurjective hπ)
   intro ω z
   exact V.toNormFamily.quotient_ker_equiv_norm_eq π hπ ω z
 
 /-- Every actual surjective quotient has the maximal slope of the canonical
 quotient by its kernel, independently of the chosen target vector space. -/
-theorem maximalSlope_pushforward_eq_quotient_ker (V : AdelicVectorBundle S E)
-    (π : E →ₗ[K] F) (hπ : Function.Surjective π)
+theorem maximalSlope_pushforward_eq_quotient_ker (V : AdelicVectorBundle.{w} S)
+    (π : V →ₗ[K] F) (hπ : Function.Surjective π)
     [hm : (V.toNormFamily.pushforward π hπ).IsMeasurable]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.pushforward π hπ).maximalSlope =
       (V.quotientOfMeasurableBase π.ker).maximalSlope := by
   symm
-  apply maximalSlope_eq_of_completed_isometry _ _ (π.quotKerEquivOfSurjective hπ)
+  apply maximalSlope_eq_of_completed_isometry (V.quotientOfMeasurableBase π.ker)
+    (V.pushforward π hπ) (π.quotKerEquivOfSurjective hπ)
   intro ω z
   exact V.toNormFamily.quotient_ker_equiv_norm_eq π hπ ω z
 
 /-- Canonical kernel indexing in (4.45) includes every nonzero source quotient
 with its actual quotient norm, including targets in another universe. -/
-theorem minimalSlope_le_maximalSlope_pushforward (V : AdelicVectorBundle S E)
-    (π : E →ₗ[K] F) (hπ : Function.Surjective π)
+theorem minimalSlope_le_maximalSlope_pushforward (V : AdelicVectorBundle.{w} S)
+    (π : V →ₗ[K] F) (hπ : Function.Surjective π)
     [hm : (V.toNormFamily.pushforward π hπ).IsMeasurable]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
@@ -395,8 +396,8 @@ theorem minimalSlope_le_maximalSlope_pushforward (V : AdelicVectorBundle S E)
 
 /-- Transporting every nonzero kernel quotient along an actual isometry
 bounds the target minimal slope by the source minimal slope. -/
-theorem minimalSlope_ge_of_completed_isometry (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+theorem minimalSlope_ge_of_completed_isometry (V : AdelicVectorBundle.{w} S)
+    (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
@@ -416,8 +417,8 @@ theorem minimalSlope_ge_of_completed_isometry (V : AdelicVectorBundle S E)
 
 /-- Actual completed isometries preserve the source minimal slope, retaining
 all extended-real values and the plus-infinity zero-bundle convention. -/
-theorem minimalSlope_eq_of_completed_isometry (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+theorem minimalSlope_eq_of_completed_isometry (V : AdelicVectorBundle.{w} S)
+    (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
@@ -426,7 +427,7 @@ theorem minimalSlope_eq_of_completed_isometry (V : AdelicVectorBundle S E)
   apply le_antisymm _ (V.minimalSlope_ge_of_completed_isometry W e he)
   apply W.minimalSlope_ge_of_completed_isometry V e.symm
   intro ω y
-  let eω := e.baseChange K (S.ϕ ω).Completion E F
+  let eω := e.baseChange K (S.ϕ ω).Completion V W
   change V.toNormFamily.norm ω (eω.symm y) = W.toNormFamily.norm ω y
   have h := he ω (eω.symm y)
   change W.toNormFamily.norm ω (eω (eω.symm y)) = V.toNormFamily.norm ω (eω.symm y) at h

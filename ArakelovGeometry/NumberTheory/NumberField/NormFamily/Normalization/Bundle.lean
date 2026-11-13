@@ -28,17 +28,20 @@ open AdelicStructure
 variable {K : Type*} [Field K] [NumberField K]
 variable {E : Type*} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
-variable (V : AdelicVectorBundle (numberFieldAdelicStructure K) E)
+variable (V : AdelicVectorBundle (numberFieldAdelicStructure K))
 variable [hV : V.toNormFamily.IsUltrametric]
 
 /-- The actual completed normalization, with domination and both measurability
 clauses proved for the new family. -/
-noncomputable def numberFieldNormalize :
-    AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E where
+noncomputable abbrev numberFieldNormalize :
+    AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) where
+  carrier := V
   toNormFamily := V.toNormFamily.numberFieldNormalize
-  isMeasurable := (V.toNormFamily.numberFieldNormalize).isMeasurable_of_discrete
-  dual_isMeasurable := (V.toNormFamily.numberFieldNormalize).dual.isMeasurable_of_discrete
-  isDominated := by exact V.isDominated.numberFieldNormalize hV
+  toIsAdelic := {
+    isMeasurable := (V.toNormFamily.numberFieldNormalize).isMeasurable_of_discrete
+    dual_isMeasurable := (V.toNormFamily.numberFieldNormalize).dual.isMeasurable_of_discrete
+    isDominated := by exact V.isDominated.numberFieldNormalize hV
+  }
 
 /-- The bundle uses the canonical actual normalized completed norm family. -/
 theorem numberFieldNormalize_toNormFamily :

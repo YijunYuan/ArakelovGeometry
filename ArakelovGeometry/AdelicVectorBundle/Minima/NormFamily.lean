@@ -492,54 +492,54 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- The intrinsic actual threshold span is definitionally the bundle threshold span. -/
-theorem degreeThresholdSpan_toNormFamily (V : AdelicVectorBundle S E) (t : ℝ) :
+theorem degreeThresholdSpan_toNormFamily (V : AdelicVectorBundle S) (t : ℝ) :
     V.toNormFamily.degreeThresholdSpan t =
       V.degreeThresholdSpan t := rfl
 
 /-- The intrinsic extended minimum is definitionally the existing bundle minimum. -/
-theorem logarithmicMinimum_toNormFamily (V : AdelicVectorBundle S E) (i : ℕ) :
+theorem logarithmicMinimum_toNormFamily (V : AdelicVectorBundle S) (i : ℕ) :
     V.toNormFamily.logarithmicMinimum i =
       V.logarithmicMinimum i := rfl
 
 /-- The intrinsic first minimum agrees with the existing first minimum. -/
-theorem maximalLogarithmicMinimum_toNormFamily (V : AdelicVectorBundle S E) :
+theorem maximalLogarithmicMinimum_toNormFamily (V : AdelicVectorBundle S) :
     V.toNormFamily.maximalLogarithmicMinimum =
       V.maximalLogarithmicMinimum := rfl
 
 /-- The intrinsic last minimum agrees with the existing last minimum. -/
-theorem minimalLogarithmicMinimum_toNormFamily (V : AdelicVectorBundle S E) :
+theorem minimalLogarithmicMinimum_toNormFamily (V : AdelicVectorBundle S) :
     V.toNormFamily.minimalLogarithmicMinimum =
       V.minimalLogarithmicMinimum := rfl
 
 /-- The intrinsic completed filtration agrees with the existing bundle filtration. -/
-theorem minimaFiltration_toNormFamily (V : AdelicVectorBundle S E) (t : ℝ) :
+theorem minimaFiltration_toNormFamily (V : AdelicVectorBundle S) (t : ℝ) :
     V.toNormFamily.minimaFiltration t =
       V.minimaFiltration t := rfl
 
 /-- Any available genuine restriction has the same intrinsic threshold span. -/
-theorem degreeThresholdSpan_restrict_toNormFamily (V : AdelicVectorBundle S E)
-    (U : Submodule K E) [(V.toNormFamily.restrict U).dual.IsMeasurable] (t : ℝ) :
+theorem degreeThresholdSpan_restrict_toNormFamily (V : AdelicVectorBundle S)
+    (U : Submodule K V) [(V.toNormFamily.restrict U).dual.IsMeasurable] (t : ℝ) :
     (V.toNormFamily.restrict U).degreeThresholdSpan
       (hd := (V.isDominated.restrict U)) (hm := (V.isMeasurable.restrict U)) t =
         (V.restrict U).degreeThresholdSpan t := rfl
 
 /-- Any available genuine restriction has the same intrinsic ordinary minima. -/
-theorem logarithmicMinimum_restrict_toNormFamily (V : AdelicVectorBundle S E)
-    (U : Submodule K E) [(V.toNormFamily.restrict U).dual.IsMeasurable] (i : ℕ) :
+theorem logarithmicMinimum_restrict_toNormFamily (V : AdelicVectorBundle S)
+    (U : Submodule K V) [(V.toNormFamily.restrict U).dual.IsMeasurable] (i : ℕ) :
     (V.toNormFamily.restrict U).logarithmicMinimum
       (hd := (V.isDominated.restrict U)) (hm := (V.isMeasurable.restrict U)) i =
         (V.restrict U).logarithmicMinimum i := rfl
 
 /-- Any available genuine restriction has the same intrinsic last minimum. -/
-theorem minimalLogarithmicMinimum_restrict_toNormFamily (V : AdelicVectorBundle S E)
-    (U : Submodule K E) [(V.toNormFamily.restrict U).dual.IsMeasurable] :
+theorem minimalLogarithmicMinimum_restrict_toNormFamily (V : AdelicVectorBundle S)
+    (U : Submodule K V) [(V.toNormFamily.restrict U).dual.IsMeasurable] :
     (V.toNormFamily.restrict U).minimalLogarithmicMinimum
       (hd := (V.isDominated.restrict U)) (hm := (V.isMeasurable.restrict U)) =
         (V.restrict U).minimalLogarithmicMinimum := rfl
 
 /-- Any available genuine restriction has the same intrinsic completed filtration. -/
-theorem minimaFiltration_restrict_toNormFamily (V : AdelicVectorBundle S E)
-    (U : Submodule K E) [(V.toNormFamily.restrict U).dual.IsMeasurable] (t : ℝ) :
+theorem minimaFiltration_restrict_toNormFamily (V : AdelicVectorBundle S)
+    (U : Submodule K V) [(V.toNormFamily.restrict U).dual.IsMeasurable] (t : ℝ) :
     (V.toNormFamily.restrict U).minimaFiltration
       (hd := (V.isDominated.restrict U)) (hm := (V.isMeasurable.restrict U)) t =
         (V.restrict U).minimaFiltration t := rfl
@@ -547,10 +547,10 @@ theorem minimaFiltration_restrict_toNormFamily (V : AdelicVectorBundle S E)
 /-- The original actual bundle filtration has the full intrinsic restriction
 formula without any measurable-base or restricted-dual constructor hypothesis. -/
 theorem minimaFiltration_eq_iInf_iSup_intrinsic_restrict_minimalLogarithmicMinimum
-    (V : AdelicVectorBundle S E) (t : ℝ) :
+    (V : AdelicVectorBundle S) (t : ℝ) :
     V.minimaFiltration t =
       ⨅ (ε : ℝ) (_ : 0 < ε),
-        ⨆ (U : Submodule K E) (_ : U ≠ ⊥)
+        ⨆ (U : Submodule K V) (_ : U ≠ ⊥)
           (_ : ((t - ε : ℝ) : EReal) ≤
             (V.toNormFamily.restrict U).minimalLogarithmicMinimum
               (hd := (V.isDominated.restrict U)) (hm := (V.isMeasurable.restrict U))), U :=

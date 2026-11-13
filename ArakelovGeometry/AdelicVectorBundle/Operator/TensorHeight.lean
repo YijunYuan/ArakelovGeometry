@@ -8,7 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Degree.Vector
 public import ArakelovGeometry.AdelicVectorBundle.Operator.Height
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.OperatorBaseChange
-public import ArakelovGeometry.AdelicVectorBundle.Tensor.Pair
+public import ArakelovGeometry.AdelicVectorBundle.Tensor.PairOperator
 
 import ArakelovGeometry.AdelicVectorBundle.Dual.Bidual
 import ArakelovGeometry.AdelicVectorBundle.Operator.Comparison
@@ -51,6 +51,13 @@ theorem binaryTensorToHom_dual_comp_eval
   | smul_tprod a y => simp
   | add z t hz ht => simp_all only [map_add, LinearMap.add_apply, LinearMap.comp_apply]
 
+section IndependentFactors
+
+universe w'
+
+variable {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E]
+  [FiniteDimensional K E] [AddCommGroup F] [Module K F] [FiniteDimensional K F]
+
 /-- The nonzero tensor representing a nonzero map under the standard
 dual-tensor/Hom equivalence. -/
 def linearMapTensor (f : {f : E →ₗ[K] F // f ≠ 0}) :
@@ -74,14 +81,13 @@ theorem injectiveTensorPair_dual_norm_eq_bidual_operatorNorm (ξ : NormFamily S 
       (ξ.dual.dual.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K)).operatorNorm
         (η.dual.dual.pullback (Module.Dual.eval K F) (Module.eval_apply_injective K))
         ω (dualTensorHom K E F z) := by
-  rw [injectiveTensorPair_norm_tmul, injectiveTensor_norm_eq_operatorNorm]
+  rw [injectiveTensorPair_norm_eq_operatorNorm]
   have h := ξ.dual.dual.operatorNorm_comp_equiv
     (η.dual.dual.pullback (Module.Dual.eval K F) (Module.eval_apply_injective K))
     (Module.evalEquiv K E)
-    (binaryTensorToHom K (BinaryTensorFactors (Module.Dual K E) F)
-      ((binaryTensorEquiv K (BinaryTensorFactors (Module.Dual K E) F)).symm z)) ω
+    (tensorPairToHomEquiv K (Module.Dual K E) F z) ω
   simp only [Module.evalEquiv_toLinearMap] at h
-  rw [binaryTensorToHom_dual_comp_eval, LinearEquiv.apply_symm_apply] at h
+  rw [tensorPairToHomEquiv_dual_comp_eval] at h
   exact h.symm
 
 /-- At the source's ultrametric/normalized norms, both biduals are the original
@@ -111,15 +117,16 @@ namespace AdelicVectorBundle
 
 /-- Source Definition4.3.17: with ultrametric finite-place norms, map height
 is minus the vector degree in the actual injective dual tensor bundle. -/
-theorem mapHeight_eq_neg_tensor_vectorDegree (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F) [hV : V.toNormFamily.IsUltrametric]
+theorem mapHeight_eq_neg_tensor_vectorDegree (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S) [hV : V.toNormFamily.IsUltrametric]
     [hW : W.toNormFamily.IsUltrametric]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (f : {f : E →ₗ[K] F // f ≠ 0}) :
+    (f : {f : V →ₗ[K] W // f ≠ 0}) :
     let T := (V.dualOfMeasurableBase).injectiveTensorPair W
     V.mapHeight W f.val =
-      (-(T.toNormFamily.vectorDegree (linearMapTensor f)) : ℝ) := by
+      (-(T.toNormFamily.vectorDegree (hd := T.isDominated) (hm := T.isMeasurable)
+        (linearMapTensor f)) : ℝ) := by
   intro T
   have he (ω : S.Ω) : V.toNormFamily.localHeight W.toNormFamily f ω =
       T.toNormFamily.logNorm (linearMapTensor f).val ω :=
@@ -133,6 +140,8 @@ theorem mapHeight_eq_neg_tensor_vectorDegree (V : AdelicVectorBundle S E)
   exact Filter.Eventually.of_forall he
 
 end AdelicVectorBundle
+
+end IndependentFactors
 
 end
 

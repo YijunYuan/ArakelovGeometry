@@ -40,22 +40,22 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 
 /-- An injective contraction cannot decrease maximal slope. -/
 theorem maximalSlope_le_of_completed_contraction
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (f : E →ₗ[K] F) (hf : Function.Injective f)
+    (f : V →ₗ[K] W) (hf : Function.Injective f)
     (hcontract : ∀ ω z, W.norm ω (f.baseChange (S.ϕ ω).Completion z) ≤ V.norm ω z) :
     V.maximalSlope ≤ W.maximalSlope := by
   have hheight := V.mapHeight_le_zero_of_completed_contraction W f hcontract
   exact (V.maximalSlope_le_maximalSlope_add_mapHeight_of_injective W f hf).trans
     (by simpa only [add_zero] using add_le_add le_rfl hheight)
 
-variable (V : AdelicVectorBundle S E)
+variable (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
 /-- The maximal-slope payoff of the actual normed subquotient of an interval. -/
-def maximalSlopePayoff : PayoffFunction (Submodule K E) EReal :=
+def maximalSlopePayoff : PayoffFunction (Submodule K V) EReal :=
   ⟨fun I ↦ ((V.restrictOfMeasurableBase I.right).quotientOfMeasurableBase
     (I.left.comap I.right.subtype)).maximalSlope⟩
 
@@ -71,7 +71,7 @@ instance maximalSlopePayoff_isConvex : (V.maximalSlopePayoff).IsConvex where
     exact V.toNormFamily.quotientInfEquivSupQuotient_norm_le U W
 
 /-- Enlarging the upper subspace embeds one normed subquotient into another. -/
-theorem maximalSlope_subquotient_mono (A B C : Submodule K E) (hBC : B ≤ C) :
+theorem maximalSlope_subquotient_mono (A B C : Submodule K V) (hBC : B ≤ C) :
     ((V.restrictOfMeasurableBase B).quotientOfMeasurableBase
       (A.comap B.subtype)).maximalSlope ≤
     ((V.restrictOfMeasurableBase C).quotientOfMeasurableBase
@@ -106,7 +106,7 @@ theorem maximalSlope_subquotient_mono (A B C : Submodule K E) (hBC : B ≤ C) :
     LinearMap.comp_apply, hiω] using h
 
 /-- The maximal-slope payoff is already fixed by the game's `max` operation. -/
-theorem max_maximalSlopePayoff (I : StrictIntvl (Submodule K E)) :
+theorem max_maximalSlopePayoff (I : StrictIntvl (Submodule K V)) :
     (V.maximalSlopePayoff).max I = V.maximalSlopePayoff I := by
   apply le_antisymm _ PayoffFunction.apply_le_max
   apply PayoffFunction.max_le
@@ -114,16 +114,16 @@ theorem max_maximalSlopePayoff (I : StrictIntvl (Submodule K E)) :
   exact V.maximalSlope_subquotient_mono I.left U I.right hU.2
 
 /-- The game's first-player value is an infimum over actual intermediate quotients. -/
-theorem A_maximalSlopePayoff (I : StrictIntvl (Submodule K E)) :
+theorem A_maximalSlopePayoff (I : StrictIntvl (Submodule K V)) :
     (V.maximalSlopePayoff).A I =
-      ⨅ (U : Submodule K E) (_ : I.left ≤ U ∧ U < I.right),
+      ⨅ (U : Submodule K V) (_ : I.left ≤ U ∧ U < I.right),
         ((V.restrictOfMeasurableBase I.right).quotientOfMeasurableBase
           (U.comap I.right.subtype)).maximalSlope := by
   simp only [PayoffFunction.A_apply, V.max_maximalSlopePayoff]
   rfl
 
 /-- Player A's value is the minimal slope of the actual normed subquotient. -/
-theorem A_maximalSlopePayoff_eq_minimalSlope (I : StrictIntvl (Submodule K E)) :
+theorem A_maximalSlopePayoff_eq_minimalSlope (I : StrictIntvl (Submodule K V)) :
     (V.maximalSlopePayoff).A I =
       ((V.restrictOfMeasurableBase I.right).quotientOfMeasurableBase
         (I.left.comap I.right.subtype)).minimalSlope := by
@@ -136,7 +136,7 @@ theorem A_maximalSlopePayoff_eq_minimalSlope (I : StrictIntvl (Submodule K E)) :
     intro Z hZ
     rw [W.maximalSlope_quotient_quotient_eq_quotient_ker T Z]
     let R : Submodule K I.right := (Z.mkQ.comp T.mkQ).ker
-    let U : Submodule K E := R.map I.right.subtype
+    let U : Submodule K V := R.map I.right.subtype
     have hTR : T ≤ R := by
       simpa only [R, LinearMap.ker_comp, Submodule.ker_mkQ] using T.le_comap_mkQ Z
     have hleft : I.left ≤ U := by
@@ -154,7 +154,7 @@ theorem A_maximalSlopePayoff_eq_minimalSlope (I : StrictIntvl (Submodule K E)) :
       omega
     have hright : U < I.right := by
       have h := I.right.mapIic.strictMono (lt_top_iff_ne_top.mpr hRtop)
-      change (I.right.mapIic R : Submodule K E) < I.right.mapIic ⊤ at h
+      change (I.right.mapIic R : Submodule K V) < I.right.mapIic ⊤ at h
       simpa only [Submodule.coe_mapIic_apply, Submodule.map_subtype_top] using h
     have hcomap : U.comap I.right.subtype = R :=
       Submodule.comap_map_eq_of_injective I.right.subtype_injective R
@@ -183,7 +183,7 @@ theorem A_maximalSlopePayoff_eq_minimalSlope (I : StrictIntvl (Submodule K E)) :
     exact h
 
 /-- On an initial interval, player A's value is exactly the existing minimal slope. -/
-theorem A_maximalSlopePayoff_bot (B : Submodule K E) (hB : ⊥ < B) :
+theorem A_maximalSlopePayoff_bot (B : Submodule K V) (hB : ⊥ < B) :
     (V.maximalSlopePayoff).A ⟨⊥, B, hB⟩ =
       (V.restrictOfMeasurableBase B).minimalSlope := by
   rw [V.A_maximalSlopePayoff_eq_minimalSlope, Submodule.comap_bot, Submodule.ker_subtype]

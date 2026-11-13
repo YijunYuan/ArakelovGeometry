@@ -26,7 +26,7 @@ namespace ArakelovGeometry.AdelicVectorBundle
 
 variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
   [FiniteDimensional K E] {S : AdelicStructure K} [S.IsProper]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
@@ -95,7 +95,7 @@ theorem expectation_hermitianHNFiltration_eq_slope :
 /-- Lift the actual HN filtrations on all adjacent quotients. The witnesses retain
 all quotient bases, their unchanged weights, every induced cut, and both paper identities. -/
 theorem exists_hermitianHN_quotient_lift
-    {n : ℕ} (U : Fin (n + 1) → Submodule K E) (hU : Monotone U)
+    {n : ℕ} (U : Fin (n + 1) → Submodule K V) (hU : Monotone U)
     (hzero : U 0 = ⊥) (htop : U (Fin.last n) = ⊤) :
     let F := fun i : Fin n ↦ (V.flagQuotientOfMeasurableBase U i).hermitianHNFiltration
       (hV := ((hV.restrict (U i.succ)).quotient ((U i.castSucc).comap (U i.succ).subtype)))
@@ -106,8 +106,8 @@ theorem exists_hermitianHN_quotient_lift
         ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype)) → ℝ)
       (B : Basis
         (Σ i : Fin n, Fin (finrank K ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype)))
-        K E)
-      (hB : ∀ i j, B ⟨i, j⟩ ∈ U i.succ) (R : ℝ → Submodule K E),
+        K V)
+      (hB : ∀ i j, B ⟨i, j⟩ ∈ U i.succ) (R : ℝ → Submodule K V),
       (∀ i t, F i t = Submodule.span K (b i '' {j | t ≤ w i j})) ∧
       (∀ i j, ((U i.castSucc).comap (U i.succ).subtype).mkQ
         ⟨B ⟨i, j⟩, hB i j⟩ = b i j) ∧
@@ -119,7 +119,7 @@ theorem exists_hermitianHN_quotient_lift
         ((U i.castSucc).comap (U i.succ).subtype).mkQ = F i t) ∧
       Submodule.filtrationExpectation R = V.slope ∧
       ∀ a : Fin n → ℝ, Antitone a →
-        (finrank K E : ℝ) * Submodule.filtrationPairing
+        (finrank K V : ℝ) * Submodule.filtrationPairing
           (fun t ↦ ⨆ (i : Fin n) (_ : t ≤ a i), U i.succ) R =
             ∑ i, a i * (V.flagQuotientOfMeasurableBase U i).degree := by
   classical
@@ -145,7 +145,7 @@ theorem exists_hermitianHN_quotient_lift
   obtain ⟨b, w, B, hB, R, hb, hquot, hspan, hRspan, hR, hRbot, hRtop, hRleft, hc⟩ :=
     Submodule.exists_lift_prescribed_filtrations U hU hzero htop F hF hFbot hFtop hFleft
   refine ⟨b, w, B, hB, R, hb, hquot, hspan, hRspan, hR, hRbot, hRtop, hRleft, hc, ?_, ?_⟩
-  · have he : (finrank K E : ℝ) * Submodule.filtrationExpectation R = V.degree := by
+  · have he : (finrank K V : ℝ) * Submodule.filtrationExpectation R = V.degree := by
       rw [Submodule.filtrationExpectation_eq_sum_weights B _ hRspan]
       have hw (i : Fin n) : (∑ j, w i j) = (Q i).degree := by
         rw [← Submodule.finsum_weight_mul_finrank_filtrationGraded (b i) (w i) (hb i)]
@@ -156,10 +156,10 @@ theorem exists_hermitianHN_quotient_lift
         rw [Fintype.sum_sigma]
         simp_rw [hw]
         exact V.sum_flagQuotient_degree_eq_of_isHermitian U hU hzero htop
-      by_cases hz : finrank K E = 0
+      by_cases hz : finrank K V = 0
       · rw [V.degree_eq_zero_of_finrank_eq_zero hz, hz, Nat.cast_zero, zero_mul]
       · rw [mul_div_cancel₀ _ (Nat.cast_ne_zero.mpr hz), hs]
-    by_cases hz : finrank K E = 0
+    by_cases hz : finrank K V = 0
     · simp only [Submodule.filtrationExpectation, slope, hz, Nat.cast_zero, div_zero]
     · rw [slope]
       exact (eq_div_iff (Nat.cast_ne_zero.mpr hz)).mpr (by simpa [mul_comm] using he)
@@ -173,7 +173,7 @@ theorem exists_hermitianHN_quotient_lift
         Fin (finrank K ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype)),
         a j.1 * w j.1 j.2) = ∑ i, a i * (Q i).degree := by
       simp only [Fintype.sum_sigma, ← Finset.mul_sum, hw]
-    by_cases hz : finrank K E = 0
+    by_cases hz : finrank K V = 0
     · have hc : Fintype.card (Σ i : Fin n,
           Fin (finrank K ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype))) = 0 := by
         rw [← finrank_eq_card_basis B, hz]

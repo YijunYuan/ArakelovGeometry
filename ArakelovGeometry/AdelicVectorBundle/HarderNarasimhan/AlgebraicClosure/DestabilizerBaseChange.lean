@@ -38,22 +38,22 @@ local instance hermitianClosedDestabilizerBaseChangeProper :
 /-- The actual largest destabilizer commutes with closed Hermitian
 extension. Its descent, coefficient stability and maximal slope are produced. -/
 theorem destabilizingSubspace_baseChange_hermitianScalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    [hH : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K V) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
     let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
-    let hrL : 0 < Module.finrank L (L ⊗[K] E) :=
-      (Module.finrank_baseChange (R := L) (S := K) (M' := E)).symm ▸ hr
+    let hrL : 0 < Module.finrank L (L ⊗[K] V) :=
+      (Module.finrank_baseChange (R := L) (S := K) (M' := V)).symm ▸ hr
     (V.destabilizingSubspace hr).baseChange L =
       W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL := by
   intro hLN hLS W hLH hrL
   let D := V.destabilizingSubspace hr
   let DL := W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL
-  have hdim (U : Submodule K E) :
+  have hdim (U : Submodule K V) :
       Module.finrank L (U.baseChange L) = Module.finrank K U :=
     (Submodule.toBaseChange.toLinearEquiv L U).finrank_eq.symm.trans Module.finrank_baseChange
   have hmax := V.maximalSlope_hermitianScalarExtension_of_isAlgClosed
@@ -98,17 +98,17 @@ theorem destabilizingSubspace_baseChange_hermitianScalarExtension_of_isAlgClosed
 /-- A native original subspace extends to the actual target destabilizer
 exactly when it is the actual original destabilizer. -/
 theorem baseChange_eq_destabilizingSubspace_hermitianScalarExtension_iff_of_isAlgClosed
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E)
-    (U : Submodule K E) :
+    [hH : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K V)
+    (U : Submodule K V) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
     let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
-    let hrL : 0 < Module.finrank L (L ⊗[K] E) :=
-      (Module.finrank_baseChange (R := L) (S := K) (M' := E)).symm ▸ hr
+    let hrL : 0 < Module.finrank L (L ⊗[K] V) :=
+      (Module.finrank_baseChange (R := L) (S := K) (M' := V)).symm ▸ hr
     U.baseChange L = W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL ↔
       U = V.destabilizingSubspace hr := by
   intro hLN hLS W hLH hrL

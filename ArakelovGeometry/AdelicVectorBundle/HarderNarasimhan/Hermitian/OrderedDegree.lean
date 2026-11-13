@@ -33,7 +33,7 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
@@ -59,7 +59,7 @@ theorem finrank_hermitianHNFactor_eq_sub
 /-- Each ordered slot belongs to exactly the actual rank interval of its
 factor, in both directions. -/
 theorem hermitianHNFactorIndex_eq_iff_rank_interval
-    (j : Fin (Module.finrank K E)) (i : Fin (V.hermitianHNLength)) :
+    (j : Fin (Module.finrank K V)) (i : Fin (V.hermitianHNLength)) :
     V.hermitianHNFactorIndex j = i ↔
       Module.finrank K (V.hermitianHNTerm i.val) ≤ j.val ∧
         j.val < Module.finrank K (V.hermitianHNTerm (i.val + 1)) := by
@@ -73,15 +73,15 @@ rank, including the final interval ending at the ambient rank. -/
 theorem card_hermitianHNFactorIndex_fiber
     (i : Fin (V.hermitianHNLength)) :
     (Finset.univ.filter
-      (fun j : Fin (Module.finrank K E) ↦ V.hermitianHNFactorIndex j = i)).card =
+      (fun j : Fin (Module.finrank K V) ↦ V.hermitianHNFactorIndex j = i)).card =
       Module.finrank K ((V.hermitianHNTerm (i.val + 1)).map
         (V.hermitianHNTerm i.val).mkQ) := by
   classical
   let a := Module.finrank K (V.hermitianHNTerm i.val)
   let b := Module.finrank K (V.hermitianHNTerm (i.val + 1))
-  have hb : b ≤ Module.finrank K E := Submodule.finrank_le _
+  have hb : b ≤ Module.finrank K V := Submodule.finrank_le _
   have hc : (Finset.univ.filter
-      (fun j : Fin (Module.finrank K E) ↦ V.hermitianHNFactorIndex j = i)).card =
+      (fun j : Fin (Module.finrank K V) ↦ V.hermitianHNFactorIndex j = i)).card =
       (Finset.Ico a b).card := by
     apply Finset.card_bij (fun j _ ↦ j.val)
     · intro j hj
@@ -92,7 +92,7 @@ theorem card_hermitianHNFactorIndex_fiber
       exact Fin.ext hjk
     · intro k hk
       have hk' := Finset.mem_Ico.mp hk
-      let j : Fin (Module.finrank K E) := ⟨k, hk'.2.trans_le hb⟩
+      let j : Fin (Module.finrank K V) := ⟨k, hk'.2.trans_le hb⟩
       refine ⟨j, Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩, rfl⟩
       exact (V.hermitianHNFactorIndex_eq_iff_rank_interval j i).mpr hk'
   rw [Nat.card_Ico] at hc
@@ -101,13 +101,13 @@ theorem card_hermitianHNFactorIndex_fiber
 /-- Summing any real function of the actual ordered slopes repeats each
 actual factor mean with exactly its actual rank multiplicity. -/
 theorem sum_hermitianHNOrderedSlope_apply (f : ℝ → ℝ) :
-    (∑ j : Fin (Module.finrank K E), f (V.hermitianHNOrderedSlope j)) =
+    (∑ j : Fin (Module.finrank K V), f (V.hermitianHNOrderedSlope j)) =
       ∑ i : Fin (V.hermitianHNLength),
         (Module.finrank K ((V.hermitianHNTerm (i.val + 1)).map
           (V.hermitianHNTerm i.val).mkQ) : ℝ) *
             f ((V.hermitianHNFactor i).slope) := by
   classical
-  have hs := Finset.sum_fiberwise' (Finset.univ : Finset (Fin (Module.finrank K E)))
+  have hs := Finset.sum_fiberwise' (Finset.univ : Finset (Fin (Module.finrank K V)))
     (V.hermitianHNFactorIndex)
     (fun i ↦ f ((V.hermitianHNFactor i).slope))
   simpa only [Finset.sum_const, nsmul_eq_mul,
@@ -115,7 +115,7 @@ theorem sum_hermitianHNOrderedSlope_apply (f : ℝ → ℝ) :
 
 /-- The actual ordered HN slopes sum to the original ordinary degree. -/
 theorem sum_hermitianHNOrderedSlope_eq_degree :
-    (∑ j : Fin (Module.finrank K E), V.hermitianHNOrderedSlope j) =
+    (∑ j : Fin (Module.finrank K V), V.hermitianHNOrderedSlope j) =
       V.degree :=
   (V.sum_hermitianHNOrderedSlope_apply id).trans
     (V.sum_hermitianHNFactor_rank_mul_slope_eq_degree)
@@ -123,7 +123,7 @@ theorem sum_hermitianHNOrderedSlope_eq_degree :
 /-- The positive parts of all actual ordered HN slopes sum to actual
 positive degree; rank zero gives the genuine empty sum. -/
 theorem positiveDegree_eq_sum_max_hermitianHNOrderedSlope :
-    V.positiveDegree = ((∑ j : Fin (Module.finrank K E),
+    V.positiveDegree = ((∑ j : Fin (Module.finrank K V),
       max (V.hermitianHNOrderedSlope j) 0 : ℝ) : EReal) :=
   (V.positiveDegree_eq_sum_hermitianHNFactor_rank_mul_max_slope).trans
     (congrArg (fun x : ℝ ↦ (x : EReal))

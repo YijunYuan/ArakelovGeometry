@@ -34,18 +34,18 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- Degrees agree under a rational isomorphism which preserves every actual
 completed-fibre norm, including in rank zero. -/
 theorem degree_eq_of_completed_isometry [S.IsProper]
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = V.toNormFamily.norm ω x) :
     V.degree = W.degree := by
   let D := determinantEquiv K e
-  have hr : Module.finrank K (⋀[K]^(Module.finrank K E) E) = 1 :=
+  have hr : Module.finrank K (⋀[K]^(Module.finrank K V) V) = 1 :=
     NormFamily.determinant_finrank
-  let : Nontrivial (⋀[K]^(Module.finrank K E) E) :=
+  let : Nontrivial (⋀[K]^(Module.finrank K V) V) :=
     Module.nontrivial_of_finrank_pos (by rw [hr]; exact zero_lt_one)
-  obtain ⟨z, hz⟩ := exists_ne (0 : ⋀[K]^(Module.finrank K E) E)
+  obtain ⟨z, hz⟩ := exists_ne (0 : ⋀[K]^(Module.finrank K V) V)
   have hDz : D z ≠ 0 := by
     intro h
     exact hz (D.injective (h.trans D.map_zero.symm))

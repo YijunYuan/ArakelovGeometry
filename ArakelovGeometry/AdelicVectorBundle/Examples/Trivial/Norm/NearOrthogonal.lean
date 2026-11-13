@@ -115,7 +115,7 @@ namespace AdelicVectorBundle
 
 open AdelicStructure
 
-variable (V : AdelicVectorBundle (singleTrivialPlace K) E)
+variable (V : AdelicVectorBundle.{w} (singleTrivialPlace K))
   [hS : (singleTrivialPlace K).HasMeasurableBase]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
@@ -124,7 +124,7 @@ open Classical in
 basis, constructed from the original small vectors. -/
 theorem exists_basis_orthogonal_of_isSemistable [hV : V.IsSemistable]
     {α : ℝ} (hα : 0 < α) (hα1 : α < 1) :
-    ∃ b : Module.Basis (Fin (Module.finrank K E)) K E,
+    ∃ b : Module.Basis (Fin (Module.finrank K V)) K V,
       (∀ i, V.toNormFamily.trivialSeminorm (b i) ≤ Real.exp (-V.slope) / α) ∧
       ∀ x i, b.repr x i ≠ 0 →
         α * V.toNormFamily.trivialSeminorm (b i) ≤ V.toNormFamily.trivialSeminorm x := by
@@ -139,7 +139,7 @@ open Classical in
 /-- Every genuine nearly orthogonal basis satisfies the stronger bound
 `-log α`, and hence the universal source estimate (4.79). -/
 theorem abs_log_trivialSeminorm_basis_sub_le_of_isSemistable
-    [hV : V.IsSemistable] {ι : Type v} (b : Module.Basis ι K E)
+    [hV : V.IsSemistable] {ι : Type v} (b : Module.Basis ι K V)
     {α : ℝ} (hα : 0 < α) (hα1 : α < 1)
     (horth : ∀ x i, b.repr x i ≠ 0 →
       α * V.toNormFamily.trivialSeminorm (b i) ≤ V.toNormFamily.trivialSeminorm x)
@@ -148,7 +148,7 @@ theorem abs_log_trivialSeminorm_basis_sub_le_of_isSemistable
       Real.log (V.toNormFamily.trivialSeminorm (b j))| ≤ -Real.log α ∧
     |Real.log (V.toNormFamily.trivialSeminorm (b i)) -
       Real.log (V.toNormFamily.trivialSeminorm (b j))| ≤
-        -(Module.finrank K E : ℝ) * Real.log α := by
+        -(Module.finrank K V : ℝ) * Real.log α := by
   obtain ⟨c, hc, h⟩ := (V.isSemistable_iff_exists_trivialSeminorm_bidual_eq_const
     hV.1).mp hV
   obtain ⟨hi₀, hi₁⟩ := V.toNormFamily.trivialSeminorm_basis_bounds_of_bidual_eq_const
@@ -165,7 +165,7 @@ theorem abs_log_trivialSeminorm_basis_sub_le_of_isSemistable
     apply abs_le.mpr
     constructor <;> linarith
   refine ⟨hstrong, hstrong.trans ?_⟩
-  have hr : (1 : ℝ) ≤ (Module.finrank K E : ℝ) := by
+  have hr : (1 : ℝ) ≤ (Module.finrank K V : ℝ) := by
     exact_mod_cast hV.1
   have hlog : Real.log α ≤ 0 := Real.log_nonpos hα.le hα1.le
   nlinarith
@@ -174,18 +174,18 @@ open Classical in
 /-- Actual bidual constancy gives zero variation on every basis,
 and therefore the universal source estimate (4.80). -/
 theorem abs_log_bidual_basis_sub_eq_zero_of_isSemistable
-    [hV : V.IsSemistable] {ι : Type v} (b : Module.Basis ι K E)
+    [hV : V.IsSemistable] {ι : Type v} (b : Module.Basis ι K V)
     {α : ℝ} (hα : 0 < α) (hα1 : α < 1) (i j : ι) :
     |Real.log ((V.bidualOfMeasurableBase).toNormFamily.trivialSeminorm (b i)) -
       Real.log ((V.bidualOfMeasurableBase).toNormFamily.trivialSeminorm (b j))| = 0 ∧
     |Real.log ((V.bidualOfMeasurableBase).toNormFamily.trivialSeminorm (b i)) -
       Real.log ((V.bidualOfMeasurableBase).toNormFamily.trivialSeminorm (b j))| ≤
-        -((Module.finrank K E : ℝ) + 1) * Real.log α := by
+        -((Module.finrank K V : ℝ) + 1) * Real.log α := by
   obtain ⟨c, _, h⟩ := (V.isSemistable_iff_exists_trivialSeminorm_bidual_eq_const
     hV.1).mp hV
   rw [h (b i) (b.ne_zero i), h (b j) (b.ne_zero j), sub_self, abs_zero]
   refine ⟨rfl, ?_⟩
-  have hr : (0 : ℝ) ≤ (Module.finrank K E : ℝ) := Nat.cast_nonneg _
+  have hr : (0 : ℝ) ≤ (Module.finrank K V : ℝ) := Nat.cast_nonneg _
   have hlog : Real.log α ≤ 0 := Real.log_nonpos hα.le hα1.le
   nlinarith
 
@@ -194,7 +194,7 @@ open Classical in
 source error is exactly zero: logarithm plus the actual ordinary mean. -/
 theorem log_bidual_norm_add_slope_eq_zero_of_isSemistable
     [hV : V.IsSemistable] (ω : (singleTrivialPlace K).Ω)
-    (z : ((singleTrivialPlace K).ϕ ω).Completion ⊗[K] E) (hz : z ≠ 0) :
+    (z : ((singleTrivialPlace K).ϕ ω).Completion ⊗[K] V) (hz : z ≠ 0) :
     Real.log ((V.bidualOfMeasurableBase).toNormFamily.norm ω z) + V.slope = 0 := by
   obtain ⟨c, hc, h⟩ := (V.isSemistable_iff_exists_trivialSeminorm_bidual_eq_const
     hV.1).mp hV

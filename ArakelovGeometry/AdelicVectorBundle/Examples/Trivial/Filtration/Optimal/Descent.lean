@@ -155,6 +155,28 @@ noncomputable def tensorQuotientBaseChange (q : E ⊗[K] V →ₗ[K] Q) :
   (q.baseChange L).comp
     (TensorProduct.AlgebraTensorModule.distribBaseChange K L E V).symm.toLinearMap
 
+private theorem tensorBaseChangeEquiv_binaryFactors :
+    (binaryTensorEquiv L (fun i ↦ L ⊗[K] BinaryTensorFactors E V i)).toLinearMap ∘ₗ
+      (tensorBaseChangeEquiv K L (BinaryTensorFactors E V)).toLinearMap =
+    (TensorProduct.AlgebraTensorModule.distribBaseChange K L E V).toLinearMap ∘ₗ
+      (binaryTensorEquiv K (BinaryTensorFactors E V)).toLinearMap.baseChange L := by
+  apply LinearMap.restrictScalars_injective K
+  apply TensorProduct.ext
+  apply LinearMap.ext
+  intro a
+  apply PiTensorProduct.ext
+  apply MultilinearMap.ext
+  intro x
+  change binaryTensorEquiv L (fun i ↦ L ⊗[K] BinaryTensorFactors E V i)
+      (tensorBaseChangeEquiv K L (BinaryTensorFactors E V) (a ⊗ₜ[K] (⨂ₜ[K] i, x i))) =
+    TensorProduct.AlgebraTensorModule.distribBaseChange K L E V
+      ((binaryTensorEquiv K (BinaryTensorFactors E V)).toLinearMap.baseChange L
+        (a ⊗ₜ[K] (⨂ₜ[K] i, x i)))
+  simp only [tensorBaseChangeEquiv_tmul_tprod, map_smul, binaryTensorEquiv_tprod,
+    LinearMap.baseChange_tmul, LinearEquiv.coe_coe,
+    TensorProduct.AlgebraTensorModule.distribBaseChange_tmul]
+  rw [TensorProduct.smul_tmul', TensorProduct.smul_tmul', smul_eq_mul, mul_one]
+
 /-- The internal two-factor quotient is exactly the ordinary binary quotient base change.
 This is compatibility of the prescribed maps, rather than a replacement quotient. -/
 theorem piTensorQuotientBaseChange_binary (q : E ⊗[K] V →ₗ[K] Q) :
@@ -167,7 +189,8 @@ theorem piTensorQuotientBaseChange_binary (q : E ⊗[K] V →ₗ[K] Q) :
   obtain ⟨y, rfl⟩ := (tensorBaseChangeEquiv K L (BinaryTensorFactors E V)).surjective z
   simp only [piTensorQuotientBaseChange, tensorQuotientBaseChange, LinearMap.comp_apply,
     LinearEquiv.coe_coe, LinearEquiv.symm_apply_apply]
-  have he := DFunLike.congr_fun (tensorBaseChangeEquiv_binary K L E V) y
+  have he := DFunLike.congr_fun
+    (tensorBaseChangeEquiv_binaryFactors (K := K) (L := L) (E := E) (V := V)) y
   change binaryTensorEquiv L (fun i ↦ L ⊗[K] BinaryTensorFactors E V i)
       (tensorBaseChangeEquiv K L (BinaryTensorFactors E V) y) =
     TensorProduct.AlgebraTensorModule.distribBaseChange K L E V

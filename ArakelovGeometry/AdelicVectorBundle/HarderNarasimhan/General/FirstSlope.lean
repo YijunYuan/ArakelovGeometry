@@ -36,7 +36,7 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
@@ -44,12 +44,12 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 bound every positive-rank restricted mean by the actual ambient first
 ordered slope and the sharp logarithmic rank error. -/
 theorem slope_restrict_le_generalHNOrderedSlope_zero_add_log_rank
-    [hV : V.IsUltrametric] (hr : 0 < Module.finrank K E)
-    (U : Submodule K E) (hU : 0 < Module.finrank K U) :
+    [hV : V.toNormFamily.IsUltrametric] (hr : 0 < Module.finrank K V)
+    (U : Submodule K V) (hU : 0 < Module.finrank K U) :
     (V.restrictOfMeasurableBase U).slope ≤
       V.generalHNOrderedSlope ⟨0, hr⟩ +
-        Real.log (Module.finrank K E) / 2 * (S.v S.Ωinf).toReal := by
-  have hVU : (V.restrictOfMeasurableBase U).IsUltrametric := by
+        Real.log (Module.finrank K V) / 2 * (S.v S.Ωinf).toReal := by
+  have hVU : (V.restrictOfMeasurableBase U).toNormFamily.IsUltrametric := by
     simpa only [restrictOfMeasurableBase_toNormFamily] using hV.restrict U
   have hd := degree_le_sum_generalHNOrderedSlope_add_determinantDiscrepancy
     (V.restrictOfMeasurableBase U) (hV := hVU)
@@ -61,7 +61,7 @@ theorem slope_restrict_le_generalHNOrderedSlope_zero_add_log_rank
         intro j _
         exact (V.generalHNOrderedSlope_restrict_le U j).trans
           (V.generalHNOrderedSlope_antitone (show
-            (⟨0, hr⟩ : Fin (Module.finrank K E)) ≤ Fin.castLE U.finrank_le j from Nat.zero_le _))
+            (⟨0, hr⟩ : Fin (Module.finrank K V)) ≤ Fin.castLE U.finrank_le j from Nat.zero_le _))
       _ = _ := by simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   have hδ := (V.restrictOfMeasurableBase U).degree_add_degree_dual_le
   rw [← determinantDiscrepancy_eq_degree_add_degree_dual
@@ -70,11 +70,11 @@ theorem slope_restrict_le_generalHNOrderedSlope_zero_add_log_rank
   have hl := Real.log_le_log hm (Nat.cast_le.mpr U.finrank_le)
   have hδ' : (V.restrictOfMeasurableBase U).determinantDiscrepancy ≤
       (Module.finrank K U : ℝ) *
-        (Real.log (Module.finrank K E) / 2 * (S.v S.Ωinf).toReal) := by
+        (Real.log (Module.finrank K V) / 2 * (S.v S.Ωinf).toReal) := by
     calc
       _ ≤ (Module.finrank K U : ℝ) / 2 * Real.log (Module.finrank K U) *
           (S.v S.Ωinf).toReal := hδ
-      _ ≤ (Module.finrank K U : ℝ) / 2 * Real.log (Module.finrank K E) *
+      _ ≤ (Module.finrank K U : ℝ) / 2 * Real.log (Module.finrank K V) *
           (S.v S.Ωinf).toReal := mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left hl (div_nonneg (Nat.cast_nonneg _) (by norm_num)))
         ENNReal.toReal_nonneg
@@ -88,10 +88,10 @@ theorem slope_restrict_le_generalHNOrderedSlope_zero_add_log_rank
 the actual first general ordered slope plus the sharp logarithmic rank
 error, with a positive-rank guard before the first slot is formed. -/
 theorem maximalSlope_le_generalHNOrderedSlope_zero_add_log_rank
-    [hV : V.IsUltrametric] (hr : 0 < Module.finrank K E) :
+    [hV : V.toNormFamily.IsUltrametric] (hr : 0 < Module.finrank K V) :
     V.maximalSlope ≤
       ((V.generalHNOrderedSlope ⟨0, hr⟩ +
-        Real.log (Module.finrank K E) / 2 * (S.v S.Ωinf).toReal) : ℝ) := by
+        Real.log (Module.finrank K V) / 2 * (S.v S.Ωinf).toReal) : ℝ) := by
   apply V.maximalSlope_le
   intro U hU
   exact EReal.coe_le_coe_iff.mpr
@@ -102,12 +102,12 @@ supremum and explicit rank-zero convention. Its positive part is formed
 on the extended real line before multiplication by the true rank. -/
 theorem positiveDegree_le_rank_mul_max_maximalSlope :
     V.positiveDegree ≤
-      (Module.finrank K E : ℝ) * max (V.maximalSlope) 0 := by
-  by_cases hz : Module.finrank K E = 0
+      (Module.finrank K V : ℝ) * max (V.maximalSlope) 0 := by
+  by_cases hz : Module.finrank K V = 0
   · rw [V.positiveDegree_eq_zero_of_finrank_eq_zero hz,
       V.maximalSlope_eq_bot_of_finrank_eq_zero hz, max_eq_right bot_le]
     simp only [hz, Nat.cast_zero, EReal.coe_zero, zero_mul, le_refl]
-  have hp : 0 < Module.finrank K E := Nat.pos_of_ne_zero hz
+  have hp : 0 < Module.finrank K V := Nat.pos_of_ne_zero hz
   obtain ⟨c, hc⟩ := V.exists_maximalSlope_eq_coe hp
   have he : max (c : EReal) 0 = ((max c 0 : ℝ) : EReal) := by
     by_cases h : c ≤ 0
@@ -135,7 +135,7 @@ forces positive actual maximal slope by the accepted vanishing criterion,
 so the positive-part bound becomes the true rank times that maximal slope. -/
 theorem positiveDegree_le_rank_mul_maximalSlope_of_pos
     (hV : 0 < V.positiveDegree) :
-    V.positiveDegree ≤ (Module.finrank K E : ℝ) * V.maximalSlope := by
+    V.positiveDegree ≤ (Module.finrank K V : ℝ) * V.maximalSlope := by
   have hm : 0 < V.maximalSlope := lt_of_not_ge fun h ↦ by
     have hz := (V.positiveDegree_eq_zero_iff_maximalSlope_nonpos).mpr h
     rw [hz] at hV

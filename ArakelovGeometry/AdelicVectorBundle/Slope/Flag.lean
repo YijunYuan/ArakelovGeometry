@@ -26,25 +26,28 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
 /-- The actual extension minimum bound for two nested ambient restrictions. -/
-theorem min_minimalSlope_restrict_le_of_le (A B : Submodule K E) (hAB : A ≤ B) :
+theorem min_minimalSlope_restrict_le_of_le (A B : Submodule K V) (hAB : A ≤ B) :
     min ((V.restrictOfMeasurableBase A).minimalSlope)
       (((V.restrictOfMeasurableBase B).quotientOfMeasurableBase
         (A.comap B.subtype)).minimalSlope) ≤
     (V.restrictOfMeasurableBase B).minimalSlope := by
   have h := min_minimalSlope_restrict_le_minimalSlope_preimage
     (V.restrictOfMeasurableBase B) (A.comap B.subtype) ⊤
-  simp only [Submodule.comap_top, minimalSlope_restrict_top] at h
+  simp only [Submodule.comap_top] at h
+  rw [((V.restrictOfMeasurableBase B).quotientOfMeasurableBase
+    (A.comap B.subtype)).minimalSlope_restrict_top,
+    (V.restrictOfMeasurableBase B).minimalSlope_restrict_top] at h
   rw [V.minimalSlope_restrict_restrict A B hAB] at h
   exact h
 
 /-- Decreasing actual factor minima bound every nonzero initial flag term. -/
 theorem le_minimalSlope_restrict_flag_of_factor_minima {n : ℕ}
-    (U : Fin (n + 1) → Submodule K E) (b : Fin n → ℝ)
+    (U : Fin (n + 1) → Submodule K V) (b : Fin n → ℝ)
     (hU : Monotone U) (hz : U 0 = ⊥) (hb : Antitone b)
     (hQ : ∀ i, (b i : EReal) ≤
       (V.flagQuotientOfMeasurableBase U i).minimalSlope) :
@@ -60,7 +63,7 @@ theorem le_minimalSlope_restrict_flag_of_factor_minima {n : ℕ}
         (hU (Fin.zero_le _))
       rw [hz] at he
       have hm := minimalSlope_eq_top_of_finrank_eq_zero
-        (V.restrictOfMeasurableBase (⊥ : Submodule K E)) (finrank_bot K E)
+        (V.restrictOfMeasurableBase (⊥ : Submodule K V)) (finrank_bot K V)
       rw [hm, min_top_left] at he
       have hq := hQ 0
       change (b 0 : EReal) ≤ minimalSlope

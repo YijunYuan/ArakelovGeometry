@@ -31,11 +31,11 @@ variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
 /-- Compute the actual degree from a flag whose steps and strict predecessors
 are literal norm balls. Every quotient carries the actual induced norm. -/
 theorem degree_eq_sum_trivialFiltration_flag
-    (V : AdelicVectorBundle (singleTrivialPlace K) E)
+    (V : AdelicVectorBundle (singleTrivialPlace K))
     [hS : (singleTrivialPlace K).HasMeasurableBase]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsUltrametric]
-    {n : ℕ} (U : Fin (n + 1) → Submodule K E) (a : Fin n → ℝ)
+    {n : ℕ} (U : Fin (n + 1) → Submodule K V) (a : Fin n → ℝ)
     (hU : Monotone U) (hz : U 0 = ⊥) (ht : U (Fin.last n) = ⊤)
     (hlevel : ∀ i, V.toNormFamily.trivialFiltration (a i) = U i.succ)
     (hright : ∀ i, (⨆ s : {s : ℝ // a i < s},
@@ -59,7 +59,7 @@ theorem degree_eq_sum_trivialFiltration_flag
 /-- The degree of an arbitrary actual ultrametric norm at the trivial place is
 the intrinsic dimension-weighted sum of its literal graded quotients. -/
 theorem degree_eq_finsum_trivialFiltration
-    (V : AdelicVectorBundle (singleTrivialPlace K) E)
+    (V : AdelicVectorBundle (singleTrivialPlace K))
     [hS : (singleTrivialPlace K).HasMeasurableBase]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsUltrametric] :
@@ -73,7 +73,7 @@ theorem degree_eq_finsum_trivialFiltration
 
 /-- The intrinsic expectation is the existing slope, not a new arithmetic slope. -/
 theorem slope_eq_filtrationExpectation_trivialFiltration
-    (V : AdelicVectorBundle (singleTrivialPlace K) E)
+    (V : AdelicVectorBundle (singleTrivialPlace K))
     [hS : (singleTrivialPlace K).HasMeasurableBase]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsUltrametric] :

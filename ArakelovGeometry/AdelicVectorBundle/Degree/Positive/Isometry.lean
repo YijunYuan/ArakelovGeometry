@@ -36,7 +36,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 /-- Actual completed isometries transport every subspace degree into the
 target positive degree. The zero subspace is included. -/
 theorem positiveDegree_le_of_completed_isometry
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
@@ -48,7 +48,6 @@ theorem positiveDegree_le_of_completed_isometry
       (W.restrictOfMeasurableBase (U.map e.toLinearMap)).degree := by
     apply degree_eq_of_completed_isometry _ _ (e.submoduleMap U)
     intro ω z
-    simp only [restrictOfMeasurableBase_toNormFamily]
     exact V.toNormFamily.restrict_map_equiv_norm_eq W.toNormFamily e U ω (he ω) z
   rw [hu]
   exact W.degree_restrict_le_positiveDegree (U.map e.toLinearMap)
@@ -56,7 +55,7 @@ theorem positiveDegree_le_of_completed_isometry
 /-- Actual completed isometries preserve the positive-degree supremum,
 including rank zero, without requiring a maximizing subspace. -/
 theorem positiveDegree_eq_of_completed_isometry
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
@@ -65,7 +64,7 @@ theorem positiveDegree_eq_of_completed_isometry
   apply le_antisymm (V.positiveDegree_le_of_completed_isometry W e he)
   apply W.positiveDegree_le_of_completed_isometry V e.symm
   intro ω y
-  let eω := e.baseChange K (S.ϕ ω).Completion E F
+  let eω := e.baseChange K (S.ϕ ω).Completion V W
   change V.toNormFamily.norm ω (eω.symm y) = W.toNormFamily.norm ω y
   have h := he ω (eω.symm y)
   change W.toNormFamily.norm ω (eω (eω.symm y)) = V.toNormFamily.norm ω (eω.symm y) at h
@@ -74,7 +73,7 @@ theorem positiveDegree_eq_of_completed_isometry
 /-- Pushforward along a genuine surjection has the positive degree of the
 actual kernel quotient under the canonical first-isomorphism map. -/
 theorem positiveDegree_pushforward_eq_quotient_ker
-    (V : AdelicVectorBundle S E) (π : E →ₗ[K] F) (hπ : Function.Surjective π)
+    (V : AdelicVectorBundle.{w} S) (π : V →ₗ[K] F) (hπ : Function.Surjective π)
     [hm : (V.toNormFamily.pushforward π hπ).IsMeasurable]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
@@ -88,8 +87,8 @@ theorem positiveDegree_pushforward_eq_quotient_ker
 /-- The actual left end of any source norm-exact sequence has the positive
 degree of the restriction to the middle kernel. -/
 theorem positiveDegree_exactSequence_left
-    (V : AdelicVectorBundle S E) (L : AdelicVectorBundle S F) (R : AdelicVectorBundle S G)
-    (i : F →ₗ[K] E) (p : E →ₗ[K] G)
+    (V : AdelicVectorBundle.{w} S) (L : AdelicVectorBundle.{w'} S) (R : AdelicVectorBundle.{w''} S)
+    (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
@@ -107,14 +106,14 @@ theorem positiveDegree_exactSequence_left
       (e.toLinearMap.baseChange (S.ϕ ω).Completion z)) =
     V.toNormFamily.norm ω (i.baseChange (S.ϕ ω).Completion z)
   simpa only [LinearMap.baseChange_comp, LinearMap.comp_apply] using
-    congrArg (fun f : F →ₗ[K] E ↦ V.toNormFamily.norm ω
+    congrArg (fun f : L →ₗ[K] V ↦ V.toNormFamily.norm ω
       (f.baseChange (S.ϕ ω).Completion z)) hc
 
 /-- The actual right end of a source norm-exact sequence has the positive
 degree of the middle kernel quotient, on its original target vector space. -/
 theorem positiveDegree_exactSequence_right
-    (V : AdelicVectorBundle S E) (L : AdelicVectorBundle S F) (R : AdelicVectorBundle S G)
-    (i : F →ₗ[K] E) (p : E →ₗ[K] G)
+    (V : AdelicVectorBundle.{w} S) (L : AdelicVectorBundle.{w'} S) (R : AdelicVectorBundle.{w''} S)
+    (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :

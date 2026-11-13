@@ -28,10 +28,10 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w
+universe u v w w'
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
-  {E F : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 namespace NormFamily
@@ -44,8 +44,8 @@ theorem IsHermitian.tensorPairFactors {ξ : NormFamily S E} {η : NormFamily S F
     (hξ : ξ.IsHermitian) (hη : η.IsHermitian) :
     ∀ i, (tensorPairFactors ξ η i).IsHermitian := by
   rintro (i | i)
-  · exact hξ
-  · exact hη
+  · exact hξ.pullback _ ULift.moduleEquiv.injective
+  · exact hη.pullback _ ULift.moduleEquiv.injective
 
 omit [FiniteDimensional K E] [FiniteDimensional K F] in
 instance instIsHermitianTensorPairFactors (ξ : NormFamily S E) (η : NormFamily S F)
@@ -59,8 +59,8 @@ def orthogonalTensorPair (ξ : NormFamily S E) (η : NormFamily S F)
     [hξ : ξ.IsHermitian] [hη : η.IsHermitian] :
     NormFamily S (E ⊗[K] F) :=
   (orthogonalTensor (tensorPairFactors ξ η)).pullback
-    (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.toLinearMap
-    (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.injective
+    (tensorPairEquiv K E F).symm.toLinearMap
+    (tensorPairEquiv K E F).symm.injective
 
 @[inherit_doc ArakelovGeometry.NormFamily.orthogonalTensorPair]
 scoped[TensorProduct] infixl:100 " ⊗ʰ " => ArakelovGeometry.NormFamily.orthogonalTensorPair
@@ -117,21 +117,29 @@ theorem orthogonalTensorPair_norm_tmul_completed (ξ : NormFamily S E) (η : Nor
     (ξ ⊗ʰ η).norm ω
       ((TensorProduct.AlgebraTensorModule.distribBaseChange K (S.ϕ ω).Completion E F).symm
         (x ⊗ₜ[(S.ϕ ω).Completion] y)) = ξ.norm ω x * η.norm ω y := by
-  let X : ∀ i, (S.ϕ ω).Completion ⊗[K] BinaryTensorFactors E F i :=
-    fun i ↦ match i with | .inl _ => x | .inr _ => y
-  have hz : (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.toLinearMap.baseChange
+  let X : ∀ i, (S.ϕ ω).Completion ⊗[K] LiftedTensorFactors E F i :=
+    fun i ↦ match i with
+      | .inl _ => (ULift.moduleEquiv.baseChange K (S.ϕ ω).Completion _ _).symm x
+      | .inr _ => (ULift.moduleEquiv.baseChange K (S.ϕ ω).Completion _ _).symm y
+  have hz : (tensorPairEquiv K E F).symm.toLinearMap.baseChange
       (S.ϕ ω).Completion
       ((TensorProduct.AlgebraTensorModule.distribBaseChange K (S.ϕ ω).Completion E F).symm
         (x ⊗ₜ[(S.ϕ ω).Completion] y)) =
-      (tensorBaseChangeEquiv K (S.ϕ ω).Completion (BinaryTensorFactors E F)).symm
+      (tensorBaseChangeEquiv K (S.ϕ ω).Completion (LiftedTensorFactors E F)).symm
         (⨂ₜ[(S.ϕ ω).Completion] i, X i) := by
-    apply (tensorBaseChangeEquiv K (S.ϕ ω).Completion (BinaryTensorFactors E F)).injective
+    apply (tensorBaseChangeEquiv K (S.ϕ ω).Completion (LiftedTensorFactors E F)).injective
     rw [LinearEquiv.apply_symm_apply]
     exact tensorBaseChangeEquiv_binary_symm_tmul K (S.ϕ ω).Completion E F x y
   change (orthogonalTensor (tensorPairFactors ξ η)).norm ω _ = _
   rw [hz]
   have h := orthogonalTensor_norm_tprod (tensorPairFactors ξ η) ω X
-  simpa only [Fintype.prod_sum_type, Fintype.prod_unique, tensorPairFactors, X] using h
+  simp only [Fintype.prod_sum_type, Fintype.prod_unique, tensorPairFactors, X,
+    pullback_norm] at h
+  change _ = ξ.norm ω ((ULift.moduleEquiv.baseChange K (S.ϕ ω).Completion _ _)
+      ((ULift.moduleEquiv.baseChange K (S.ϕ ω).Completion _ _).symm x)) *
+    η.norm ω ((ULift.moduleEquiv.baseChange K (S.ϕ ω).Completion _ _)
+      ((ULift.moduleEquiv.baseChange K (S.ϕ ω).Completion _ _).symm y)) at h
+  simpa only [LinearEquiv.apply_symm_apply] using h
 
 /-- The actual dual tensor measurability is produced, rather than assumed. -/
 theorem IsMeasurable.orthogonalTensorPair_dual {ξ : NormFamily S E} {η : NormFamily S F}
@@ -159,19 +167,19 @@ namespace AdelicVectorBundle
 
 /-- The actual binary Hermitian tensor bundle, with its analytic properties
 produced from the factors and the source measurability alternatives. -/
-def orthogonalTensorPair (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+abbrev orthogonalTensorPair (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hW : W.IsHermitian] :
-    AdelicVectorBundle S (E ⊗[K] F) :=
+    AdelicVectorBundle S :=
   ofMeasurableDominated (V.toNormFamily ⊗ʰ W.toNormFamily)
 
 @[inherit_doc ArakelovGeometry.AdelicVectorBundle.orthogonalTensorPair]
 scoped[TensorProduct] infixl:100 " ⊗ʰ " => ArakelovGeometry.AdelicVectorBundle.orthogonalTensorPair
 
 @[simp]
-theorem orthogonalTensorPair_toNormFamily (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F)
+theorem orthogonalTensorPair_toNormFamily (V : AdelicVectorBundle.{w} S)
+    (W : AdelicVectorBundle.{w'} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hW : W.IsHermitian] :
@@ -179,8 +187,8 @@ theorem orthogonalTensorPair_toNormFamily (V : AdelicVectorBundle S E)
       V.toNormFamily.orthogonalTensorPair W.toNormFamily := rfl
 
 /-- The canonical tensor bundle is strongly adelic in its actual norms. -/
-theorem orthogonalTensorPair_isStronglyAdelic (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F)
+theorem orthogonalTensorPair_isStronglyAdelic (V : AdelicVectorBundle.{w} S)
+    (W : AdelicVectorBundle.{w'} S)
     [S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hW : W.IsHermitian] :
@@ -188,8 +196,8 @@ theorem orthogonalTensorPair_isStronglyAdelic (V : AdelicVectorBundle S E)
   V.isDominated.strong_orthogonalTensorPair W.isDominated
 
 /-- The actual binary tensor bundle has the orthogonal product inner norm. -/
-theorem orthogonalTensorPair_isHermitian (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F)
+theorem orthogonalTensorPair_isHermitian (V : AdelicVectorBundle.{w} S)
+    (W : AdelicVectorBundle.{w'} S)
     [S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hW : W.IsHermitian] :

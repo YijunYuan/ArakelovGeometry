@@ -38,26 +38,25 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 
 /-- Exact Hermitian extremal duality, including the zero-space conventions. -/
 theorem maximalSlope_dual_eq_neg_minimalSlope
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle.{u} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] :
     (V.dualOfMeasurableBase).maximalSlope = -V.minimalSlope := by
-  by_cases hr : Module.finrank K E = 0
+  by_cases hr : Module.finrank K V = 0
   · rw [(V.dualOfMeasurableBase).maximalSlope_eq_bot_of_finrank_eq_zero
       (Subspace.dual_finrank_eq.trans hr), V.minimalSlope_eq_top_of_finrank_eq_zero hr]
     rfl
-  have hrpos : 0 < Module.finrank K E := Nat.pos_of_ne_zero hr
+  have hrpos : 0 < Module.finrank K V := Nat.pos_of_ne_zero hr
   let D := V.dualOfMeasurableBase
-  have hrD : 0 < Module.finrank K (Module.Dual K E) := by
+  have hrD : 0 < Module.finrank K (Module.Dual K V) := by
     rwa [Subspace.dual_finrank_eq]
   have hbidual : (D.dualOfMeasurableBase).minimalSlope =
       V.minimalSlope := by
     symm
-    apply V.minimalSlope_eq_of_completed_isometry _ (Module.evalEquiv K E)
+    apply V.minimalSlope_eq_of_completed_isometry _ (Module.evalEquiv K V)
     intro ω z
-    simp only [AdelicVectorBundle.dualOfMeasurableBase_toNormFamily,
-      Module.evalEquiv_toLinearMap]
+    simp only [Module.evalEquiv_toLinearMap]
     by_cases hω : ω ∈ S.Ωfin
     · exact hV.1.dual_dual_norm_eval ω hω z
     · exact V.toNormFamily.dual_dual_norm_eval_eq_of_isRCLike ω (hN ω hω) z
@@ -73,22 +72,23 @@ theorem maximalSlope_dual_eq_neg_minimalSlope
 
 /-- Tensoring with an actual scalar line shifts maximal slope by its degree. -/
 theorem maximalSlope_orthogonalTensor_scalarLine
-    (V : AdelicVectorBundle S E) (L : AdelicVectorBundle S K)
+    (V : AdelicVectorBundle.{u} S) (ξ : NormFamily S K) [hξ : ξ.IsAdelic]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    [hV : V.IsHermitian] [hL : L.IsHermitian] :
-    (V ⊗ʰ L).maximalSlope =
-      V.maximalSlope + (L.degree : EReal) := by
+    [hV : V.IsHermitian] [hL : ξ.IsHermitian] :
+    (V ⊗ʰ ξ.toAdelicVectorBundle).maximalSlope =
+      V.maximalSlope + (ξ.toAdelicVectorBundle.degree : EReal) := by
+  let L := ξ.toAdelicVectorBundle
   let φ := L.toNormFamily.logNorm (1 : K)
   let hm := L.isMeasurable.logNorm (1 : K)
   let hi := L.integrable_logNorm (1 : K)
   let R := V.scaleExp φ hm hi
   let P := V.orthogonalTensorPair L
   have he : R.maximalSlope = P.maximalSlope := by
-    apply R.maximalSlope_eq_of_completed_isometry P (TensorProduct.rid K E).symm
+    apply R.maximalSlope_eq_of_completed_isometry P (TensorProduct.rid K V).symm
     intro ω z
     change (V.toNormFamily ⊗ʰ L.toNormFamily).norm ω
-        (LinearEquiv.baseChange K (S.ϕ ω).Completion _ _ (TensorProduct.rid K E).symm z) =
+        (LinearEquiv.baseChange K (S.ϕ ω).Completion _ _ (TensorProduct.rid K V).symm z) =
       Real.exp (φ ω) * V.norm ω z
     rw [NumberFieldProjectiveTraceDualMetric.tensorUnitBaseChange_symm]
     erw [NormFamily.orthogonalTensorPair_norm_tmul_completed]
@@ -309,6 +309,7 @@ theorem originalPrescribedTraceDualFamily_isDominated
     (genericImage_fullSpan M) η
   let D := V.dualOfMeasurableBase
   let : D.IsHermitian := hV.dual
+  let : (dualizingLine K).IsHermitian := dualizingLine_isHermitian K
   have hd := D.isDominated.strong_orthogonalTensorPair (dualizingLine K).isDominated
   exact hd.isDominated.pullback (traceTensorGenericPairEquiv M).toLinearMap
     (traceTensorGenericPairEquiv M).injective
@@ -390,7 +391,8 @@ theorem originalPrescribedTraceDual_maximalSlope
     rw [hW]
     rfl
   change W.maximalSlope (hS := ⟨hS⟩) (hN := ⟨hN⟩) = _
-  rw [hs, maximalSlope_orthogonalTensor_scalarLine D Q (hS := ⟨hS⟩) (hN := ⟨hN⟩) (hV := hV.dual)
+  rw [hs, maximalSlope_orthogonalTensor_scalarLine D Q.toNormFamily (hξ := Q.toIsAdelic)
+      (hS := ⟨hS⟩) (hN := ⟨hN⟩) (hV := hV.dual)
       (hL := hQ)]
   rw [maximalSlope_dual_eq_neg_minimalSlope V (hS := ⟨hS⟩) (hN := ⟨hN⟩) (hV := hV)]
   rw [NumberFieldTraceDualizingLineCovolume.dualizingLine_degree]

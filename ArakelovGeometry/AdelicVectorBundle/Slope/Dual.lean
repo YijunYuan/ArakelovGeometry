@@ -36,7 +36,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 
 /-- The nonnegative actual degree-duality defect gives nonnegative sum of
 mean slopes, including the explicit zero-rank mean-slope conventions. -/
-theorem slope_add_slope_dual_nonneg (V : AdelicVectorBundle S E)
+theorem slope_add_slope_dual_nonneg (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     0 ≤ V.slope + (V.dualOfMeasurableBase).slope := by
@@ -48,8 +48,8 @@ theorem slope_add_slope_dual_nonneg (V : AdelicVectorBundle S E)
 
 /-- The actual quotient-dual annihilator isometry identifies mean slopes,
 not merely comparable degrees, on the canonical source subspace. -/
-theorem slope_dual_quotient_eq_slope_restrict_annihilator (V : AdelicVectorBundle S E)
-    (W : Submodule K E)
+theorem slope_dual_quotient_eq_slope_restrict_annihilator (V : AdelicVectorBundle S)
+    (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     ((V.quotientOfMeasurableBase W).dualOfMeasurableBase).slope =
@@ -57,14 +57,12 @@ theorem slope_dual_quotient_eq_slope_restrict_annihilator (V : AdelicVectorBundl
         := by
   apply slope_eq_of_completed_isometry _ _ W.dualQuotEquivDualAnnihilator
   intro ω z
-  simp only [dualOfMeasurableBase_toNormFamily, quotientOfMeasurableBase_toNormFamily,
-    restrictOfMeasurableBase_toNormFamily]
   exact (V.toNormFamily.quotient_dual_annihilator_norm_eq W ω z).symm
 
 /-- Every nonzero quotient dual has mean slope bounded by the actual ambient
 dual maximal slope, through the completed annihilator isometry. -/
-theorem slope_dual_quotient_le_maximalSlope_dual (V : AdelicVectorBundle S E)
-    (W : Submodule K E) (hW : 0 < Module.finrank K (E ⧸ W))
+theorem slope_dual_quotient_le_maximalSlope_dual (V : AdelicVectorBundle S)
+    (W : Submodule K V) (hW : 0 < Module.finrank K (V ⧸ W))
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (((V.quotientOfMeasurableBase W).dualOfMeasurableBase).slope : EReal) ≤
@@ -77,8 +75,8 @@ theorem slope_dual_quotient_le_maximalSlope_dual (V : AdelicVectorBundle S E)
 /-- Each nonzero actual quotient satisfies the local input to source(4.46).
 The source minimal slope remains the infimum of these quotient maximal slopes. -/
 theorem maximalSlope_quotient_add_maximalSlope_dual_nonneg
-    (V : AdelicVectorBundle S E) (W : Submodule K E)
-    (hW : 0 < Module.finrank K (E ⧸ W))
+    (V : AdelicVectorBundle S) (W : Submodule K V)
+    (hW : 0 < Module.finrank K (V ⧸ W))
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     0 ≤ (V.quotientOfMeasurableBase W).maximalSlope +
@@ -94,14 +92,14 @@ theorem maximalSlope_quotient_add_maximalSlope_dual_nonneg
 
 /-- The finite dual maximal slope in source4.3.25 gives a finite lower bound
 for the actual source minimal slope. The finiteness premise is retained. -/
-theorem neg_maximalSlope_dual_le_minimalSlope_of_lt_top (V : AdelicVectorBundle S E)
+theorem neg_maximalSlope_dual_le_minimalSlope_of_lt_top (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : 0 < Module.finrank K E)
+    (hr : 0 < Module.finrank K V)
     (hfin : (V.dualOfMeasurableBase).maximalSlope < ⊤) :
     -(V.dualOfMeasurableBase).maximalSlope ≤ V.minimalSlope := by
   have hq := V.maximalSlope_quotient_add_maximalSlope_dual_nonneg
-  have hrD : 0 < Module.finrank K (Module.Dual K E) := by
+  have hrD : 0 < Module.finrank K (Module.Dual K V) := by
     rwa [Subspace.dual_finrank_eq]
   have hb := (V.dualOfMeasurableBase).bot_lt_maximalSlope hrD
   lift (V.dualOfMeasurableBase).maximalSlope to ℝ using
@@ -114,14 +112,14 @@ theorem neg_maximalSlope_dual_le_minimalSlope_of_lt_top (V : AdelicVectorBundle 
 /-- Source Proposition4.3.25 and equation(4.46), with the source's explicitly
 stated finite-dual-maximal-slope hypothesis still visible. -/
 theorem minimalSlope_add_maximalSlope_dual_nonneg_of_lt_top
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : 0 < Module.finrank K E)
+    (hr : 0 < Module.finrank K V)
     (hfin : (V.dualOfMeasurableBase).maximalSlope < ⊤) :
     0 ≤ V.minimalSlope + (V.dualOfMeasurableBase).maximalSlope := by
   have h := V.neg_maximalSlope_dual_le_minimalSlope_of_lt_top hr hfin
-  have hrD : 0 < Module.finrank K (Module.Dual K E) := by
+  have hrD : 0 < Module.finrank K (Module.Dual K V) := by
     rwa [Subspace.dual_finrank_eq]
   have hb := (V.dualOfMeasurableBase).bot_lt_maximalSlope hrD
   lift (V.dualOfMeasurableBase).maximalSlope to ℝ using
@@ -131,14 +129,14 @@ theorem minimalSlope_add_maximalSlope_dual_nonneg_of_lt_top
 
 /-- Under source4.3.25's finite-dual-max premise, the minimal slope cannot
 be minus infinity. Its upper finiteness remains a separate producer. -/
-theorem bot_lt_minimalSlope_of_maximalSlope_dual_lt_top (V : AdelicVectorBundle S E)
+theorem bot_lt_minimalSlope_of_maximalSlope_dual_lt_top (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : 0 < Module.finrank K E)
+    (hr : 0 < Module.finrank K V)
     (hfin : (V.dualOfMeasurableBase).maximalSlope < ⊤) :
     ⊥ < V.minimalSlope := by
   have h := V.neg_maximalSlope_dual_le_minimalSlope_of_lt_top hr hfin
-  have hrD : 0 < Module.finrank K (Module.Dual K E) := by
+  have hrD : 0 < Module.finrank K (Module.Dual K V) := by
     rwa [Subspace.dual_finrank_eq]
   have hb := (V.dualOfMeasurableBase).bot_lt_maximalSlope hrD
   lift (V.dualOfMeasurableBase).maximalSlope to ℝ using

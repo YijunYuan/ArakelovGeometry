@@ -10,6 +10,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Minima.Absolute.Basic
 
 import ArakelovGeometry.AdelicVectorBundle.Degree.Determinant.Isometry
 import ArakelovGeometry.AdelicVectorBundle.Degree.IsometryDual
+import ArakelovGeometry.AdelicVectorBundle.Dual.Map
 import ArakelovGeometry.AdelicVectorBundle.Minima.Basis
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Tower.Basic
 import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Tower.Transport
@@ -96,18 +97,21 @@ namespace AdelicVectorBundle
 variable [FiniteDimensional M X]
 
 /-- A genuine direct bundle gives a genuine bundle on the actual iterated curve. -/
-def compatibleTowerPullback (V : AdelicVectorBundle (S.algebraicExtension M) X) :
-    AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M) X where
+abbrev compatibleTowerPullback (V : AdelicVectorBundle (S.algebraicExtension M)) :
+    AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M) where
+  carrier := V
   toNormFamily := V.toNormFamily.compatibleTowerPullback (L := L)
-  isMeasurable := V.isMeasurable.compatibleTowerPullback
-  dual_isMeasurable := by
-    rw [NormFamily.compatibleTowerPullback_dual]
-    exact V.dual_isMeasurable.compatibleTowerPullback
-  isDominated := V.isDominated.compatibleTowerPullback
+  toIsAdelic := {
+    isMeasurable := V.isMeasurable.compatibleTowerPullback
+    dual_isMeasurable := by
+      rw [NormFamily.compatibleTowerPullback_dual]
+      exact V.dual_isMeasurable.compatibleTowerPullback
+    isDominated := V.isDominated.compatibleTowerPullback
+  }
 
 /-- The actual norm family of the genuine bundle is definitionally the transported family. -/
 @[simp] theorem compatibleTowerPullback_toNormFamily
-    (V : AdelicVectorBundle (S.algebraicExtension M) X) :
+    (V : AdelicVectorBundle (S.algebraicExtension M)) :
     (V.compatibleTowerPullback (L := L)).toNormFamily =
       V.toNormFamily.compatibleTowerPullback (L := L) := rfl
 
@@ -139,11 +143,10 @@ def compatibleTowerNonzeroVector
 end NormFamily
 namespace AdelicVectorBundle
 
-private def compatibleAssociatorBundle
-    (W : AdelicVectorBundle (S.algebraicExtension M) (M ⊗[K] E)) :
-    AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M)
-      (M ⊗[L] (L ⊗[K] E)) := by
-  let T := W.compatibleTowerPullback (L := L)
+private abbrev compatibleAssociatorBundle
+    (W : NormFamily (S.algebraicExtension M) (M ⊗[K] E)) [hW : W.IsAdelic] :
+    AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M) := by
+  let T := W.toAdelicVectorBundle.compatibleTowerPullback (L := L)
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
   refine T.pullback c.toLinearMap c.injective (hm := ?_)
   apply NormFamily.IsMeasurable.of_completed_isometry T.toNormFamily.dual
@@ -155,26 +158,31 @@ private def compatibleAssociatorBundle
 
 /-- The genuine nested scalar bundle has the prescribed actual nested norm
 family; all analytic fields are produced from the original direct bundle. -/
-def ordinaryCompatibleTower (V : AdelicVectorBundle S E)
+abbrev ordinaryCompatibleTower (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] :
-    AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M)
-      (M ⊗[L] (L ⊗[K] E)) where
+    AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M) where
+  carrier := (M ⊗[L] (L ⊗[K] V))
   toNormFamily := (V.toNormFamily.scalarExtension (L := L)).scalarExtension (L := M)
-  isMeasurable := by
-    rw [← V.toNormFamily.scalarExtension_compatibleTower_pullback (L := L)]
-    exact (compatibleAssociatorBundle (L := L)
-      (V.ordinaryScalarExtension (L := M))).isMeasurable
-  dual_isMeasurable := by
-    rw [← V.toNormFamily.scalarExtension_compatibleTower_pullback (L := L)]
-    exact (compatibleAssociatorBundle (L := L)
-      (V.ordinaryScalarExtension (L := M))).dual_isMeasurable
-  isDominated := by
-    rw [← V.toNormFamily.scalarExtension_compatibleTower_pullback (L := L)]
-    exact (compatibleAssociatorBundle (L := L)
-      (V.ordinaryScalarExtension (L := M))).isDominated
+  toIsAdelic := {
+    isMeasurable := by
+      rw [← V.toNormFamily.scalarExtension_compatibleTower_pullback (L := L)]
+      exact (compatibleAssociatorBundle (L := L)
+        (V.ordinaryScalarExtension (L := M)).toNormFamily
+        (hW := (V.ordinaryScalarExtension (L := M)).toIsAdelic)).isMeasurable
+    dual_isMeasurable := by
+      rw [← V.toNormFamily.scalarExtension_compatibleTower_pullback (L := L)]
+      exact (compatibleAssociatorBundle (L := L)
+        (V.ordinaryScalarExtension (L := M)).toNormFamily
+        (hW := (V.ordinaryScalarExtension (L := M)).toIsAdelic)).dual_isMeasurable
+    isDominated := by
+      rw [← V.toNormFamily.scalarExtension_compatibleTower_pullback (L := L)]
+      exact (compatibleAssociatorBundle (L := L)
+        (V.ordinaryScalarExtension (L := M)).toNormFamily
+        (hW := (V.ordinaryScalarExtension (L := M)).toIsAdelic)).isDominated
+  }
 
-variable (V : AdelicVectorBundle S E)
+variable (V : AdelicVectorBundle.{wE} S)
   [hreg : S.HasRegularBase]
   [hN : S.IsArchimedeanNormalized]
 
@@ -187,7 +195,7 @@ theorem ordinaryCompatibleTower_toNormFamily :
 /-- The genuine canonical associator preserves actual rational vector degree
 through the true tower measure, without regularity assumptions on S_L. -/
 theorem ordinaryCompatibleTower_vectorDegree
-    (s : {x : M ⊗[L] (L ⊗[K] E) // x ≠ 0}) :
+    (s : {x : M ⊗[L] (L ⊗[K] V) // x ≠ 0}) :
     (V.ordinaryCompatibleTower (L := L) (M := M)).vectorDegree s =
       (V.ordinaryScalarExtension (L := M)).vectorDegree
         (NormFamily.compatibleTowerNonzeroVector (L := L) s) := by
@@ -203,7 +211,7 @@ theorem ordinaryCompatibleTower_vectorDegree
         ((1 : x.abv.Completion) ⊗ₜ[M] s.val) =
           (V.toNormFamily.scalarExtension (L := M)).norm (scalarExtensionTowerPlace x)
             ((1 : x.abv.Completion) ⊗ₜ[M]
-              (TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E s.val))
+              (TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M V s.val))
       apply (V.toNormFamily.scalarExtension_trans x
         ((1 : x.abv.Completion) ⊗ₜ[M] s.val)).trans
       apply congrArg ((V.toNormFamily.scalarExtension (L := M)).norm (scalarExtensionTowerPlace x))
@@ -219,9 +227,9 @@ theorem ordinaryCompatibleTower_vectorDegree
 actual direct threshold span, with equality of generating section degrees. -/
 theorem ordinaryCompatibleTower_degreeThresholdSpan_map (t : ℝ) :
     ((V.ordinaryCompatibleTower (L := L) (M := M)).degreeThresholdSpan t).map
-      (TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E).toLinearMap =
+      (TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M V).toLinearMap =
       (V.ordinaryScalarExtension (L := M)).degreeThresholdSpan t := by
-  let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
+  let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M V
   unfold degreeThresholdSpan
   rw [← Submodule.span_image]
   apply congrArg (Submodule.span M)
@@ -231,7 +239,7 @@ theorem ordinaryCompatibleTower_degreeThresholdSpan_map (t : ℝ) :
     refine ⟨c.map_eq_zero_iff.not.mpr hx, ?_⟩
     exact (V.ordinaryCompatibleTower_vectorDegree (L := L) (M := M) ⟨x, hx⟩) ▸ hd
   · rintro ⟨hy, hd⟩
-    let s : {x : M ⊗[L] (L ⊗[K] E) // x ≠ 0} :=
+    let s : {x : M ⊗[L] (L ⊗[K] V) // x ≠ 0} :=
       ⟨c.symm y, c.symm.map_eq_zero_iff.not.mpr hy⟩
     refine ⟨s.val, ⟨s.property, ?_⟩, c.apply_symm_apply y⟩
     change t ≤ (V.ordinaryCompatibleTower (L := L) (M := M)).vectorDegree s
@@ -244,14 +252,15 @@ theorem ordinaryCompatibleTower_degreeThresholdSpan_map (t : ℝ) :
 /-- Attained independent high-degree families exist on one side exactly when
 they exist on the other. This statement does not assert supremum attainment. -/
 theorem ordinaryCompatibleTower_independent_degree_ge_iff (i : ℕ) (t : ℝ) :
-    (∃ s : Fin i → {x : M ⊗[L] (L ⊗[K] E) // x ≠ 0},
+    (∃ s : Fin i → {x : M ⊗[L] (L ⊗[K] V) // x ≠ 0},
       LinearIndependent M (fun j => (s j).val) ∧
         ∀ j, t ≤ (V.ordinaryCompatibleTower (L := L) (M := M)).vectorDegree (s j)) ↔
-    (∃ s : Fin i → {x : M ⊗[K] E // x ≠ 0},
+    (∃ s : Fin i → {x : M ⊗[K] V // x ≠ 0},
       LinearIndependent M (fun j => (s j).val) ∧
         ∀ j, t ≤ (V.ordinaryScalarExtension (L := M)).vectorDegree (s j)) := by
-  rw [← le_finrank_degreeThresholdSpan_iff, ← le_finrank_degreeThresholdSpan_iff]
-  have hr := (TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E).finrank_map_eq
+  rw [← (V.ordinaryCompatibleTower (L := L) (M := M)).le_finrank_degreeThresholdSpan_iff,
+    ← (V.ordinaryScalarExtension (L := M)).le_finrank_degreeThresholdSpan_iff]
+  have hr := (TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M V).finrank_map_eq
     ((V.ordinaryCompatibleTower (L := L) (M := M)).degreeThresholdSpan t)
   rw [V.ordinaryCompatibleTower_degreeThresholdSpan_map (L := L) (M := M) t] at hr
   rw [hr]
@@ -264,7 +273,7 @@ theorem ordinaryCompatibleTower_logarithmicMinimum (i : ℕ) :
   unfold logarithmicMinimum
   apply iSup_congr
   intro t
-  have hr := (TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E).finrank_map_eq
+  have hr := (TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M V).finrank_map_eq
     ((V.ordinaryCompatibleTower (L := L) (M := M)).degreeThresholdSpan t)
   rw [V.ordinaryCompatibleTower_degreeThresholdSpan_map (L := L) (M := M) t] at hr
   rw [hr]
@@ -282,7 +291,7 @@ theorem ordinaryCompatibleTower_minimalLogarithmicMinimum :
       (V.ordinaryScalarExtension (L := M)).minimalLogarithmicMinimum := by
   unfold minimalLogarithmicMinimum
   rw [V.ordinaryCompatibleTower_logarithmicMinimum (L := L) (M := M)]
-  rw [(TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E).finrank_eq]
+  rw [(TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M V).finrank_eq]
 
 end AdelicVectorBundle
 end ArakelovGeometry

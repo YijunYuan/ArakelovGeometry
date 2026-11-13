@@ -75,10 +75,10 @@ variable [S.IsProper]
 /-- Determinant-map height is exactly source degree minus target degree.
 The sign is the one in source(4.31), correcting its final proof line(4.33). -/
 theorem determinantMap_mapHeight_eq_degree_sub
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (e : E ≃ₗ[K] F) :
+    (e : V ≃ₗ[K] W) :
     (V.determinantOfMeasurableBase).mapHeight
         (W.determinantOfMeasurableBase) (determinantMap K e.toLinearMap e.finrank_eq) =
       ((V.degree - W.degree : ℝ) : EReal) :=
@@ -90,10 +90,10 @@ theorem determinantMap_mapHeight_eq_degree_sub
 
 /-- In rank zero the actual determinant is a unit-line map of height zero. -/
 theorem determinantMap_mapHeight_eq_zero_of_finrank_eq_zero
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (e : E ≃ₗ[K] F) (hz : Module.finrank K E = 0) :
+    (e : V ≃ₗ[K] W) (hz : Module.finrank K V = 0) :
     (V.determinantOfMeasurableBase).mapHeight
         (W.determinantOfMeasurableBase)
         (determinantMap K e.toLinearMap e.finrank_eq) = 0 := by
@@ -105,19 +105,19 @@ theorem determinantMap_mapHeight_eq_zero_of_finrank_eq_zero
 /-- The full degree-map inequality uses the actual lower-integral height,
 including a possibly infinite height and the rank-zero determinant convention. -/
 theorem degree_le_degree_add_rank_mul_mapHeight
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (e : E ≃ₗ[K] F) :
+    (e : V ≃ₗ[K] W) :
     (V.degree : EReal) ≤ (W.degree : EReal) +
-      (Module.finrank K E : EReal) * V.mapHeight W e.toLinearMap := by
-  by_cases hz : Module.finrank K E = 0
-  · have hzF : Module.finrank K F = 0 := e.finrank_eq.symm.trans hz
+      (Module.finrank K V : EReal) * V.mapHeight W e.toLinearMap := by
+  by_cases hz : Module.finrank K V = 0
+  · have hzF : Module.finrank K W = 0 := e.finrank_eq.symm.trans hz
     rw [V.degree_eq_zero_of_finrank_eq_zero hz,
       W.degree_eq_zero_of_finrank_eq_zero hzF, hz]
     simp only [Nat.cast_zero, EReal.coe_zero, zero_mul, add_zero, le_refl]
-  · have hp : 0 < Module.finrank K E := Nat.pos_of_ne_zero hz
-    let : Nontrivial E := Module.nontrivial_of_finrank_pos hp
+  · have hp : 0 < Module.finrank K V := Nat.pos_of_ne_zero hz
+    let : Nontrivial V := Module.nontrivial_of_finrank_pos hp
     have hf : e.toLinearMap ≠ 0 := LinearMap.ne_zero_of_injective e.injective
     have hd := determinantMap_ne_zero_of_injective e.toLinearMap e.finrank_eq e.injective
     have hl := lowerEnvelopeIntegral_mono (μ := S.v) (Eventually.of_forall

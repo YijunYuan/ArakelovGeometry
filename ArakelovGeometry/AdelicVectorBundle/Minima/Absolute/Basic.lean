@@ -40,35 +40,38 @@ namespace AdelicVectorBundle
 
 /-- An actual ordinary scalar bundle from the explicit three regularity
 alternatives. Its norm family is always the prescribed ordinary extension. -/
-def ordinaryScalarExtension (V : AdelicVectorBundle S E)
+abbrev ordinaryScalarExtension (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] :
-    AdelicVectorBundle (S.algebraicExtension L) (L ⊗[K] E) where
+    AdelicVectorBundle (S.algebraicExtension L) where
+  carrier := (L ⊗[K] V)
   toNormFamily := V.toNormFamily.scalarExtension
-  isMeasurable := by
-    rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
-    · exact (V.scalarExtension (L := L) (hS := h)).isMeasurable
-    · let := hc
-      let := hd
-      exact (V.scalarExtensionOfCountableDiscreteBase (L := L)).isMeasurable
-    · let := hm
-      exact (V.toNormFamily.algebraicScalarBundleOfPositiveAtoms (hpos := ⟨hp⟩)
-          (hS := ⟨hf⟩)).isMeasurable
-  dual_isMeasurable := by
-    rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
-    · exact (V.scalarExtension (L := L) (hS := h)).dual_isMeasurable
-    · let := hc
-      let := hd
-      exact (V.scalarExtensionOfCountableDiscreteBase (L := L)).dual_isMeasurable
-    · let := hm
-      exact (V.toNormFamily.algebraicScalarBundleOfPositiveAtoms
-        (hpos := ⟨hp⟩) (hS := ⟨hf⟩)).dual_isMeasurable
-  isDominated := by
-    exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
-      V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)).isDominated
+  toIsAdelic := {
+    isMeasurable := by
+      rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
+      · exact (V.scalarExtension (L := L) (hS := h)).isMeasurable
+      · let := hc
+        let := hd
+        exact (V.scalarExtensionOfCountableDiscreteBase (L := L)).isMeasurable
+      · let := hm
+        exact (V.toNormFamily.algebraicScalarBundleOfPositiveAtoms (hpos := ⟨hp⟩)
+            (hS := ⟨hf⟩)).isMeasurable
+    dual_isMeasurable := by
+      rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
+      · exact (V.scalarExtension (L := L) (hS := h)).dual_isMeasurable
+      · let := hc
+        let := hd
+        exact (V.scalarExtensionOfCountableDiscreteBase (L := L)).dual_isMeasurable
+      · let := hm
+        exact (V.toNormFamily.algebraicScalarBundleOfPositiveAtoms
+          (hpos := ⟨hp⟩) (hS := ⟨hf⟩)).dual_isMeasurable
+    isDominated := by
+      exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
+        V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)).isDominated
+  }
 
 @[simp]
-theorem ordinaryScalarExtension_toNormFamily (V : AdelicVectorBundle S E)
+theorem ordinaryScalarExtension_toNormFamily (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.ordinaryScalarExtension (L := L)).toNormFamily =
@@ -120,7 +123,7 @@ end NormFamily
 namespace AdelicVectorBundle
 
 /-- Coherence with the existing common-density ordinary scalar bundle. -/
-theorem ordinaryScalarExtension_eq_common (V : AdelicVectorBundle S E)
+theorem ordinaryScalarExtension_eq_common (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
     [S.HasCommonCountableDenseSubfield] :
@@ -128,7 +131,7 @@ theorem ordinaryScalarExtension_eq_common (V : AdelicVectorBundle S E)
 
 /-- Coherence with the existing countable-discrete ordinary scalar bundle. -/
 theorem ordinaryScalarExtension_eq_discrete [Countable S.Ω] [DiscreteMeasurableSpace S.Ω]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] :
     V.ordinaryScalarExtension (L := L) =
@@ -136,7 +139,7 @@ theorem ordinaryScalarExtension_eq_discrete [Countable S.Ω] [DiscreteMeasurable
 
 /-- Coherence with the genuine all-finite positive-atomic scalar bundle. -/
 theorem ordinaryScalarExtension_eq_positiveAtoms [MeasurableSingletonClass S.Ω]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
     [S.HasPositiveAtoms] [S.HasOnlyFinitePlaces] :
@@ -144,10 +147,10 @@ theorem ordinaryScalarExtension_eq_positiveAtoms [MeasurableSingletonClass S.Ω]
       V.toNormFamily.algebraicScalarBundleOfPositiveAtoms := rfl
 
 /-- Actual rational sections gain degree in every produced regularity branch. -/
-theorem vectorDegree_le_ordinaryScalarExtension (V : AdelicVectorBundle S E)
+theorem vectorDegree_le_ordinaryScalarExtension (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
-    (s : {x : E // x ≠ 0}) :
+    (s : {x : V // x ≠ 0}) :
     V.vectorDegree s ≤ (V.ordinaryScalarExtension (L := L)).vectorDegree
       (NormFamily.scalarExtensionNonzeroVector (L := L) s) :=
   V.toNormFamily.vectorDegree_le_scalarExtension
@@ -175,7 +178,7 @@ private theorem originalSections_linearIndependent {ι : Type*} {s : ι → E}
 
 /-- All extended-real minima increase under actual algebraic scalar extension.
 No supremum attainment or finiteness is used. -/
-theorem logarithmicMinimum_le_ordinaryScalarExtension (V : AdelicVectorBundle S E)
+theorem logarithmicMinimum_le_ordinaryScalarExtension (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
     (i : ℕ) :
@@ -196,28 +199,28 @@ theorem logarithmicMinimum_le_ordinaryScalarExtension (V : AdelicVectorBundle S 
 
 /-- Source Definition 4.3.69's absolute minimum uses the actual ordinary
 closure bundle. Natural indices outside the source range are auxiliary. -/
-def absoluteLogarithmicMinimum (V : AdelicVectorBundle S E)
+def absoluteLogarithmicMinimum (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
     (i : ℕ) : EReal :=
   (V.ordinaryScalarExtension (L := AlgebraicClosure K)).logarithmicMinimum i
 
 /-- The actual first absolute minimum, with value bottom in rank zero. -/
-def absoluteMaximalLogarithmicMinimum (V : AdelicVectorBundle S E)
+def absoluteMaximalLogarithmicMinimum (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] : EReal :=
   V.absoluteLogarithmicMinimum 1
 
 /-- The actual last absolute minimum. Base change preserves its rank index,
 and rank zero has the source value top. -/
-def absoluteMinimalLogarithmicMinimum (V : AdelicVectorBundle S E)
+def absoluteMinimalLogarithmicMinimum (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] : EReal :=
-  V.absoluteLogarithmicMinimum (Module.finrank K E)
+  V.absoluteLogarithmicMinimum (Module.finrank K V)
 
 /-- The inequality clause of source Proposition 4.3.71, extended to the
 auxiliary natural indices. Absolute invariance is a separate assertion. -/
-theorem logarithmicMinimum_le_absoluteLogarithmicMinimum (V : AdelicVectorBundle S E)
+theorem logarithmicMinimum_le_absoluteLogarithmicMinimum (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
     (i : ℕ) : V.logarithmicMinimum i ≤ V.absoluteLogarithmicMinimum i :=
@@ -225,7 +228,7 @@ theorem logarithmicMinimum_le_absoluteLogarithmicMinimum (V : AdelicVectorBundle
 
 /-- The actual first ordinary minimum is at most its absolute version. -/
 theorem maximalLogarithmicMinimum_le_absoluteMaximalLogarithmicMinimum
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] :
     V.maximalLogarithmicMinimum ≤ V.absoluteMaximalLogarithmicMinimum :=
@@ -233,14 +236,14 @@ theorem maximalLogarithmicMinimum_le_absoluteMaximalLogarithmicMinimum
 
 /-- The last comparison retains the source top convention in rank zero. -/
 theorem minimalLogarithmicMinimum_le_absoluteMinimalLogarithmicMinimum
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] :
     V.minimalLogarithmicMinimum ≤ V.absoluteMinimalLogarithmicMinimum :=
-  V.logarithmicMinimum_le_absoluteLogarithmicMinimum (Module.finrank K E)
+  V.logarithmicMinimum_le_absoluteLogarithmicMinimum (Module.finrank K V)
 
 /-- Extended absolute minima decrease with their index. -/
-theorem absoluteLogarithmicMinimum_antitone (V : AdelicVectorBundle S E)
+theorem absoluteLogarithmicMinimum_antitone (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] :
     Antitone (V.absoluteLogarithmicMinimum) :=
@@ -249,17 +252,17 @@ theorem absoluteLogarithmicMinimum_antitone (V : AdelicVectorBundle S E)
 
 /-- Index zero is an auxiliary empty-family convention, distinct from the
 source's valid positive indices. -/
-theorem absoluteLogarithmicMinimum_zero (V : AdelicVectorBundle S E)
+theorem absoluteLogarithmicMinimum_zero (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] :
     V.absoluteLogarithmicMinimum 0 = ⊤ :=
   logarithmicMinimum_zero (V.ordinaryScalarExtension (L := AlgebraicClosure K))
 
 /-- Auxiliary indices above original rank have empty threshold cuts. -/
-theorem absoluteLogarithmicMinimum_eq_bot_of_finrank_lt (V : AdelicVectorBundle S E)
+theorem absoluteLogarithmicMinimum_eq_bot_of_finrank_lt (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
-    {i : ℕ} (hi : Module.finrank K E < i) :
+    {i : ℕ} (hi : Module.finrank K V < i) :
     V.absoluteLogarithmicMinimum i = ⊥ := by
   apply logarithmicMinimum_eq_bot_of_finrank_lt
     (V.ordinaryScalarExtension (L := AlgebraicClosure K))
@@ -267,19 +270,19 @@ theorem absoluteLogarithmicMinimum_eq_bot_of_finrank_lt (V : AdelicVectorBundle 
 
 /-- Source absolute first-minimum convention for the actual zero bundle. -/
 theorem absoluteMaximalLogarithmicMinimum_eq_bot_of_finrank_eq_zero
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : Module.finrank K E = 0) :
+    (hr : Module.finrank K V = 0) :
     V.absoluteMaximalLogarithmicMinimum = ⊥ :=
   V.absoluteLogarithmicMinimum_eq_bot_of_finrank_lt (by omega)
 
 /-- Source absolute last-minimum convention for the actual zero bundle. -/
 theorem absoluteMinimalLogarithmicMinimum_eq_top_of_finrank_eq_zero
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : Module.finrank K E = 0) :
+    (hr : Module.finrank K V = 0) :
     V.absoluteMinimalLogarithmicMinimum = ⊤ := by
   unfold absoluteMinimalLogarithmicMinimum
   rw [hr, V.absoluteLogarithmicMinimum_zero]

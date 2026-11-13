@@ -35,9 +35,9 @@ namespace AdelicVectorBundle
 /-- Actual measurable determinant degree in rank one is the generator's
 vector degree, without a base place-space regularity premise. -/
 theorem degreeOfMeasurableDeterminant_eq_vectorDegree_of_finrank_one
-    (V : AdelicVectorBundle S E) [hdet : V.toNormFamily.determinant.IsMeasurable]
+    (V : AdelicVectorBundle S) [hdet : V.toNormFamily.determinant.IsMeasurable]
     [hN : S.IsArchimedeanNormalized]
-    (hr : Module.finrank K E = 1) (s : {x : E // x ≠ 0}) :
+    (hr : Module.finrank K V = 1) (s : {x : V // x ≠ 0}) :
     V.degreeOfMeasurableDeterminant = V.vectorDegree s := by
   rw [V.degreeOfMeasurableDeterminant_eq_neg_integral
     ⟨_, determinant_single_wedge_ne_zero hr s.property⟩,
@@ -123,7 +123,7 @@ variable [MeasurableSingletonClass S.Ω]
 /-- The geometric absolute inequality in source Proposition4.3.72 on the
 actual closure bundle, without any intermediate regularity premise. -/
 theorem absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlopeOfPositiveAtoms
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
     [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :

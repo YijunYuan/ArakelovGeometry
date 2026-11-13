@@ -59,7 +59,7 @@ end NormFamily
 
 namespace AdelicVectorBundle
 
-variable (V : AdelicVectorBundle S E)
+variable (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
@@ -67,10 +67,12 @@ include hN
 
 /-- The actual adelic constructors commute because their completed norm
 families agree, rather than through a supplied quotient-isometry certificate. -/
-theorem quotient_bidualOfMeasurableBase (U : Submodule K E) :
+theorem quotient_bidualOfMeasurableBase (U : Submodule K V) :
     (V.bidualOfMeasurableBase).quotientOfMeasurableBase U =
       (V.quotientOfMeasurableBase U).bidualOfMeasurableBase := by
-  apply ext
+  apply AdelicVectorBundle.ext
+    (hξ := (V.bidualOfMeasurableBase.quotientOfMeasurableBase U).toIsAdelic)
+    (hη := (V.quotientOfMeasurableBase U).bidualOfMeasurableBase.toIsAdelic)
   exact (V.toNormFamily.dual_dual_pullback_quotient U).symm
 
 /-- Bidualization preserves the actual infimum of nonzero quotient means,

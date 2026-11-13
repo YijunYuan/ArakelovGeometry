@@ -39,7 +39,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 /-- Every actual subspace degree is bounded by the positive parts of the
 actual semistable flag means, weighted by the actual factor ranks. -/
 theorem positiveDegree_le_sum_rank_mul_max_slope_of_semistableFlag
-    (V : AdelicVectorBundle S E) {n : ℕ} (F : Fin (n + 1) → Submodule K E)
+    (V : AdelicVectorBundle S) {n : ℕ} (F : Fin (n + 1) → Submodule K V)
     (hF : Monotone F) (hzero : F 0 = ⊥) (htop : F (Fin.last n) = ⊤)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
@@ -59,7 +59,7 @@ theorem positiveDegree_le_sum_rank_mul_max_slope_of_semistableFlag
     (mul_le_mul_of_nonneg_right
       (Nat.cast_le.mpr (intersection_rank_increment_le F hF U i)) (le_max_right _ _))
 
-variable (V : AdelicVectorBundle S E)
+variable (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
@@ -165,7 +165,7 @@ theorem sum_hermitianHNFactor_degree_prefix (m : ℕ)
   induction m with
   | zero =>
       rw [Fin.sum_univ_zero, V.hermitianHNTerm_zero]
-      exact (degree_eq_zero_of_finrank_eq_zero _ (finrank_bot K E)).symm
+      exact (degree_eq_zero_of_finrank_eq_zero _ (finrank_bot K V)).symm
   | succ m ih =>
       have hm' : m ≤ V.hermitianHNLength := by omega
       rw [Fin.sum_univ_castSucc]

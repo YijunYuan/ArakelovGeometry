@@ -37,32 +37,32 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 /-- A rational generator of a line, chosen from its finite basis. -/
-noncomputable def lineGenerator (V : AdelicVectorBundle S E) [hV : V.IsLine] :
-    {x : E // x ≠ 0} := by
-  have hr : Module.finrank K E = 1 := hV.rank_eq_one
-  let i : Fin (Module.finrank K E) := ⟨0, by omega⟩
-  exact ⟨Module.finBasis K E i, (Module.finBasis K E).ne_zero i⟩
+noncomputable def lineGenerator (V : AdelicVectorBundle S) [hV : V.IsLine] :
+    {x : V // x ≠ 0} := by
+  have hr : Module.finrank K V = 1 := hV.rank_eq_one
+  let i : Fin (Module.finrank K V) := ⟨0, by omega⟩
+  exact ⟨Module.finBasis K V i, (Module.finBasis K V).ne_zero i⟩
 
 /-- The Arakelov degree of an adelic line over a proper curve. -/
-noncomputable def lineDegree [S.IsProper] (V : AdelicVectorBundle S E) [hV : V.IsLine] : ℝ :=
+noncomputable def lineDegree [S.IsProper] (V : AdelicVectorBundle S) [hV : V.IsLine] : ℝ :=
   V.toNormFamily.vectorDegree (V.lineGenerator)
 
 /-- Every nonzero rational generator computes the same line degree. -/
-theorem lineDegree_eq_vectorDegree [S.IsProper] (V : AdelicVectorBundle S E)
-    [hV : V.IsLine] (s : {x : E // x ≠ 0}) :
+theorem lineDegree_eq_vectorDegree [S.IsProper] (V : AdelicVectorBundle S)
+    [hV : V.IsLine] (s : {x : V // x ≠ 0}) :
     V.lineDegree = V.toNormFamily.vectorDegree s :=
   V.toNormFamily.vectorDegree_eq_of_finrank_one hV.rank_eq_one _ s
 
 /-- The degree formula for an arbitrary rational generator. -/
-theorem lineDegree_eq_neg_integral [S.IsProper] (V : AdelicVectorBundle S E)
-    [hV : V.IsLine] (s : {x : E // x ≠ 0}) :
+theorem lineDegree_eq_neg_integral [S.IsProper] (V : AdelicVectorBundle S)
+    [hV : V.IsLine] (s : {x : V // x ≠ 0}) :
     V.lineDegree = -(∫ ω, V.toNormFamily.logNorm s.val ω ∂S.v) := by
   rw [lineDegree_eq_vectorDegree V s, NormFamily.vectorDegree_eq_neg_integral]
 
 /-- A rational linear isomorphism preserving completed norms preserves line degree. -/
 theorem lineDegree_eq_of_norm_rational_eq [S.IsProper]
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
-    [hV : V.IsLine] [hW : W.IsLine] (e : E ≃ₗ[K] F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    [hV : V.IsLine] [hW : W.IsLine] (e : V ≃ₗ[K] W)
     (he : ∀ ω x, V.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] x) =
       W.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] e x)) :
     V.lineDegree = W.lineDegree := by
@@ -78,8 +78,8 @@ theorem lineDegree_eq_of_norm_rational_eq [S.IsProper]
   exact Filter.Eventually.of_forall fun ω ↦ congrArg Real.log (he ω x.val)
 
 /-- A line with a rational generator of norm one everywhere has degree zero. -/
-theorem lineDegree_eq_zero_of_norm_eq_one [S.IsProper] (V : AdelicVectorBundle S E)
-    [hV : V.IsLine] (s : {x : E // x ≠ 0})
+theorem lineDegree_eq_zero_of_norm_eq_one [S.IsProper] (V : AdelicVectorBundle S)
+    [hV : V.IsLine] (s : {x : V // x ≠ 0})
     (hs : ∀ ω, V.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] s.val) = 1) :
     V.lineDegree = 0 := by
   rw [lineDegree_eq_neg_integral V s]
@@ -89,12 +89,12 @@ theorem lineDegree_eq_zero_of_norm_eq_one [S.IsProper] (V : AdelicVectorBundle S
 @[simp]
 theorem lineDegree_scalarLine [S.IsProper] :
     (scalarLine S).lineDegree (hV := (scalarLine_isLine S)) = 0 := by
-  apply lineDegree_eq_zero_of_norm_eq_one _ ⟨1, one_ne_zero⟩
+  apply lineDegree_eq_zero_of_norm_eq_one _ ⟨(1 : K), one_ne_zero⟩
   intro ω
-  simp only [scalarLine_norm_tmul_one, norm_one]
+  exact (scalarLine_norm_tmul_one S ω (1 : (S.ϕ ω).Completion)).trans (norm_one)
 
 /-- Dualizing an adelic line negates its degree. -/
-theorem lineDegree_dualLine [S.IsProper] (V : AdelicVectorBundle S E) [hV : V.IsLine] :
+theorem lineDegree_dualLine [S.IsProper] (V : AdelicVectorBundle S) [hV : V.IsLine] :
     (V.dualLine).lineDegree (hV := (V.dualLine_isLine)) = -V.lineDegree := by
   let x := V.lineGenerator
   obtain ⟨ℓ, hℓ⟩ := Module.Projective.exists_dual_eq_one K x.property
@@ -111,7 +111,7 @@ variable {ι : Type wι} [Fintype ι]
 
 /-- Finite tensor products of adelic lines have additive degree, including the empty family.
 The bundle carries the actual equal projective, injective and mixed tensor norms. -/
-theorem lineDegree_tensorLines [S.IsProper] (V : ∀ i, AdelicVectorBundle S (G i))
+theorem lineDegree_tensorLines [S.IsProper] (V : ι → AdelicVectorBundle S)
     [hV : ∀ i, (V i).IsLine] :
     (tensorLines V).lineDegree (hV := (tensorLines_isLine V)) = ∑ i, (V i).lineDegree
         (hV := (hV i)) := by
@@ -120,8 +120,12 @@ theorem lineDegree_tensorLines [S.IsProper] (V : ∀ i, AdelicVectorBundle S (G 
   have hx : ∀ i, x i ≠ 0 := fun i ↦ ((V i).lineGenerator (hV := (hV i))).property
   rw [lineDegree_eq_neg_integral _
     ⟨⨂ₜ[K] i, x i, NormFamily.tensor_generators_ne_zero (fun i ↦ (hV i).rank_eq_one) x hx⟩]
-  simp_rw [tensorLines_toNormFamily_eq_injectiveTensor,
-    NormFamily.injectiveTensor_logNorm_generators _ (fun i ↦ (hV i).rank_eq_one) x hx]
+  change -(∫ ω, (NormFamily.mixedTensor (fun i ↦ (V i).toNormFamily)).logNorm
+    (⨂ₜ[K] i, x i) ω ∂S.v) = _
+  rw [NormFamily.mixedTensor_eq_injectiveTensor_of_finrank_one
+    (fun i ↦ (V i).toNormFamily) (fun i ↦ (hV i).rank_eq_one)]
+  simp_rw [NormFamily.injectiveTensor_logNorm_generators
+    (fun i ↦ (V i).toNormFamily) (fun i ↦ (hV i).rank_eq_one) x hx]
   rw [integral_finsetSum _ (fun i _ ↦ (V i).integrable_logNorm (x i))]
   rw [← Finset.sum_neg_distrib]
   apply Finset.sum_congr rfl
@@ -131,7 +135,7 @@ theorem lineDegree_tensorLines [S.IsProper] (V : ∀ i, AdelicVectorBundle S (G 
 /-- Orthogonal tensor lines have the same additive degree, using their proved equality
 with the actual mixed tensor bundle. -/
 theorem lineDegree_orthogonalTensorLines [S.IsProper]
-    (V : ∀ i, AdelicVectorBundle S (G i)) [hV : ∀ i, (V i).IsLine]
+    (V : ι → AdelicVectorBundle S) [hV : ∀ i, (V i).IsLine]
     [hS : S.IsArchimedeanNormalized] :
     (orthogonalTensorLines V).lineDegree (hV := (orthogonalTensorLines_isLine V)) =
       ∑ i, (V i).lineDegree (hV := (hV i)) := by

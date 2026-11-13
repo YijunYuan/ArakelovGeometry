@@ -74,9 +74,9 @@ theorem IsDominated.scalarExtension_restrict_dual_isMeasurable_of_positive_atoms
 
 /-- The genuine native restriction on the actual subspace, with its produced
 regularities and the existing canonical adelic-bundle structure. -/
-def nativeAlgebraicRestrictionOfPositiveAtoms (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+abbrev nativeAlgebraicRestrictionOfPositiveAtoms (ξ : NormFamily S E) [hξ : ξ.IsDominated]
     [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
-    (A : Submodule L (L ⊗[K] E)) : AdelicVectorBundle (S.algebraicExtension L) A :=
+    (A : Submodule L (L ⊗[K] E)) : AdelicVectorBundle (S.algebraicExtension L) :=
   (ξ.algebraicScalarBundleOfPositiveAtoms (L := L)).restrict A
     (hm := (hξ.scalarExtension_restrict_dual_isMeasurable_of_positive_atoms_of_isAlgClosed ξ A))
 
@@ -105,27 +105,27 @@ namespace AdelicVectorBundle
 /-- The geometric and common-density restrictions have literally the same
 completed norm family, hence the same canonical adelic bundle. -/
 theorem nativeAlgebraicRestrictionOfPositiveAtoms_eq_common
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule L (L ⊗[K] E)) :
+    (A : Submodule L (L ⊗[K] V)) :
     V.toNormFamily.nativeAlgebraicRestrictionOfPositiveAtoms A =
-      (V.scalarExtension (L := L)).restrictOfMeasurableBase A
+      (V.scalarExtension (L := L) (hN := hN)).restrictOfMeasurableBase A
         (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩) :=
-  AdelicVectorBundle.ext rfl
+  rfl
 
 /-- The geometric and countable-discrete native restrictions coincide on
 their common domain, without a new extension regularity assumption. -/
 theorem nativeAlgebraicRestrictionOfPositiveAtoms_eq_countable_discrete
     [Countable S.Ω] [DiscreteMeasurableSpace S.Ω]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule L (L ⊗[K] E)) :
+    (A : Submodule L (L ⊗[K] V)) :
     V.toNormFamily.nativeAlgebraicRestrictionOfPositiveAtoms A =
-      V.scalarExtensionRestrictionOfCountableDiscreteBase (L := L) A :=
-  AdelicVectorBundle.ext rfl
+      V.scalarExtensionRestrictionOfCountableDiscreteBase (L := L) (hN := hN) A :=
+  rfl
 
 end AdelicVectorBundle
 end ArakelovGeometry

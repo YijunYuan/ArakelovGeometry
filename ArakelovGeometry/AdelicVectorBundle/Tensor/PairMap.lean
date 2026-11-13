@@ -165,32 +165,40 @@ end TensorMapBaseChange
 
 section BinaryTensorMap
 
-universe wB
+universe wB wC wD wE
 
 variable (K : Type*) [Field K]
-  {E F G H : Type wB} [AddCommGroup E] [Module K E] [AddCommGroup F] [Module K F]
+  {E : Type wB} {F : Type wC} {G : Type wD} {H : Type wE}
+  [AddCommGroup E] [Module K E] [AddCommGroup F] [Module K F]
   [AddCommGroup G] [Module K G] [AddCommGroup H] [Module K H]
+
+/-- Factor maps transported between the two common-universe indexing families. -/
+def tensorPairMap (f : E →ₗ[K] G) (g : F →ₗ[K] H) :
+    ∀ i, LiftedTensorFactors E F i →ₗ[K] LiftedTensorFactors G H i
+  | .inl _ => ULift.moduleEquiv.symm.toLinearMap.comp (f.comp ULift.moduleEquiv.toLinearMap)
+  | .inr _ => ULift.moduleEquiv.symm.toLinearMap.comp (g.comp ULift.moduleEquiv.toLinearMap)
 
 /-- The ordinary binary tensor map agrees with the canonical finite tensor map. -/
 theorem binaryTensorEquiv_map (f : E →ₗ[K] G) (g : F →ₗ[K] H) :
-    (binaryTensorEquiv K (BinaryTensorFactors G H)).toLinearMap.comp
-      (PiTensorProduct.map (fun i ↦ match i with | .inl _ => f | .inr _ => g)) =
-      (TensorProduct.map f g).comp (binaryTensorEquiv K (BinaryTensorFactors E F)).toLinearMap := by
+    (tensorPairEquiv K G H).toLinearMap.comp
+      (PiTensorProduct.map (tensorPairMap K f g)) =
+      (TensorProduct.map f g).comp (tensorPairEquiv K E F).toLinearMap := by
   apply PiTensorProduct.ext
   apply MultilinearMap.ext
   intro x
   simp only [LinearMap.compMultilinearMap_apply, LinearMap.comp_apply,
-    PiTensorProduct.map_tprod, binaryTensorEquiv_tprod, LinearEquiv.coe_coe,
+    PiTensorProduct.map_tprod, tensorPairEquiv_tprod, LinearEquiv.coe_coe,
     TensorProduct.map_tmul]
+  rfl
 
 end BinaryTensorMap
 
-universe u v w wι
+universe u v w w' wG wH wι
 
 namespace NormFamily
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
-  {ι : Type wι} [Fintype ι] {X Y : ι → Type w}
+  {ι : Type wι} [Fintype ι] {X : ι → Type w} {Y : ι → Type w'}
   [∀ i, AddCommGroup (X i)] [∀ i, Module K (X i)] [∀ i, FiniteDimensional K (X i)]
   [∀ i, AddCommGroup (Y i)] [∀ i, Module K (Y i)] [∀ i, FiniteDimensional K (Y i)]
   (ξ : ∀ i, NormFamily S (X i)) (η : ∀ i, NormFamily S (Y i))
@@ -245,7 +253,7 @@ end NormFamily
 namespace NormFamily
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
-  {ι : Type wι} [Fintype ι] {X Y : ι → Type w}
+  {ι : Type wι} [Fintype ι] {X : ι → Type w} {Y : ι → Type w'}
   [∀ i, AddCommGroup (X i)] [∀ i, Module K (X i)] [∀ i, FiniteDimensional K (X i)]
   [∀ i, AddCommGroup (Y i)] [∀ i, Module K (Y i)] [∀ i, FiniteDimensional K (Y i)]
 
@@ -291,7 +299,7 @@ end NormFamily
 namespace NormFamily
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
-  {E F G H : Type w}
+  {E : Type w} {F : Type w'} {G : Type wG} {H : Type wH}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
   [AddCommGroup G] [Module K G] [FiniteDimensional K G]
@@ -309,10 +317,10 @@ theorem mixedTensorPair_map_norm_le
       ((TensorProduct.map f g).baseChange (S.ϕ ω).Completion z) ≤
       (ξ.mixedTensorPair η).norm ω z := by
   let L := (S.ϕ ω).Completion
-  let ff : ∀ i, BinaryTensorFactors E F i →ₗ[K] BinaryTensorFactors G H i :=
-    fun i ↦ match i with | .inl _ => f | .inr _ => g
-  let B₁ := binaryTensorEquiv K (BinaryTensorFactors E F)
-  let B₂ := binaryTensorEquiv K (BinaryTensorFactors G H)
+  let ff : ∀ i, LiftedTensorFactors E F i →ₗ[K] LiftedTensorFactors G H i :=
+    tensorPairMap K f g
+  let B₁ := tensorPairEquiv K E F
+  let B₂ := tensorPairEquiv K G H
   have hc : B₂.symm.toLinearMap.comp (TensorProduct.map f g) =
       (PiTensorProduct.map ff).comp B₁.symm.toLinearMap := by
     apply LinearMap.ext
@@ -329,8 +337,16 @@ theorem mixedTensorPair_map_norm_le
   rw [hz]
   apply mixedTensor_map_norm_le (tensorPairFactors ξ η) (tensorPairFactors ζ θ) ff ω
   rintro (i | i) x
-  · exact hf x
-  · exact hg x
+  · change ζ.norm ω _ ≤ ξ.norm ω _
+    simpa only [ff, tensorPairMap, LinearMap.baseChange_comp, LinearMap.comp_apply,
+      ← LinearEquiv.coe_baseChange, LinearEquiv.coe_coe, LinearEquiv.baseChange_symm,
+      LinearEquiv.apply_symm_apply] using hf
+        ((ULift.moduleEquiv.baseChange K L _ _) x)
+  · change θ.norm ω _ ≤ η.norm ω _
+    simpa only [ff, tensorPairMap, LinearMap.baseChange_comp, LinearMap.comp_apply,
+      ← LinearEquiv.coe_baseChange, LinearEquiv.coe_coe, LinearEquiv.baseChange_symm,
+      LinearEquiv.apply_symm_apply] using hg
+        ((ULift.moduleEquiv.baseChange K L _ _) x)
 
 /-- The actual rational tensor inclusion of two subspaces contracts every
 completed vector for their mixed restricted tensor norm. -/
@@ -362,10 +378,10 @@ theorem orthogonalTensorPair_map_norm_le_of_norm_eq
         ((TensorProduct.map f g).baseChange (S.ϕ ω).Completion z) ≤
       (ξ ⊗ʰ η).norm ω z := by
   let L := (S.ϕ ω).Completion
-  let ff : ∀ i, BinaryTensorFactors E F i →ₗ[K] BinaryTensorFactors G H i :=
-    fun i ↦ match i with | .inl _ => f | .inr _ => g
-  let B₁ := binaryTensorEquiv K (BinaryTensorFactors E F)
-  let B₂ := binaryTensorEquiv K (BinaryTensorFactors G H)
+  let ff : ∀ i, LiftedTensorFactors E F i →ₗ[K] LiftedTensorFactors G H i :=
+    tensorPairMap K f g
+  let B₁ := tensorPairEquiv K E F
+  let B₂ := tensorPairEquiv K G H
   have hc : B₂.symm.toLinearMap.comp (TensorProduct.map f g) =
       (PiTensorProduct.map ff).comp B₁.symm.toLinearMap := by
     apply LinearMap.ext
@@ -384,8 +400,16 @@ theorem orthogonalTensorPair_map_norm_le_of_norm_eq
   apply orthogonalTensor_map_norm_le_of_norm_eq (tensorPairFactors ξ η)
     (tensorPairFactors ζ θ) ff ω
   rintro (i | i) x
-  · exact hf x
-  · exact hg x
+  · change ζ.norm ω _ = ξ.norm ω _
+    simpa only [ff, tensorPairMap, LinearMap.baseChange_comp, LinearMap.comp_apply,
+      ← LinearEquiv.coe_baseChange, LinearEquiv.coe_coe, LinearEquiv.baseChange_symm,
+      LinearEquiv.apply_symm_apply] using hf
+        ((ULift.moduleEquiv.baseChange K L _ _) x)
+  · change θ.norm ω _ = η.norm ω _
+    simpa only [ff, tensorPairMap, LinearMap.baseChange_comp, LinearMap.comp_apply,
+      ← LinearEquiv.coe_baseChange, LinearEquiv.coe_coe, LinearEquiv.baseChange_symm,
+      LinearEquiv.apply_symm_apply] using hg
+        ((ULift.moduleEquiv.baseChange K L _ _) x)
 
 /-- The actual rational tensor inclusion of Hermitian restricted factors
 contracts their full completed orthogonal tensor norm. -/

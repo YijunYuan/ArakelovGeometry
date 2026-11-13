@@ -33,8 +33,8 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- The two end lower integrals sum to at most the middle lower integral,
 also when one or more of these genuine global discrepancies are infinite. -/
-theorem majorantDiscrepancy_restrict_add_quotient_le (V : AdelicVectorBundle S E)
-    (W : Submodule K E)
+theorem majorantDiscrepancy_restrict_add_quotient_le (V : AdelicVectorBundle S)
+    (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.restrictOfMeasurableBase W).majorantDiscrepancy +
@@ -55,8 +55,8 @@ theorem majorantDiscrepancy_restrict_add_quotient_le (V : AdelicVectorBundle S E
     (lowerEnvelopeIntegral_mono (Filter.Eventually.of_forall hfg))
 
 /-- Restriction cannot increase the actual global majorant discrepancy. -/
-theorem majorantDiscrepancy_restrict_le (V : AdelicVectorBundle S E)
-    (W : Submodule K E)
+theorem majorantDiscrepancy_restrict_le (V : AdelicVectorBundle S)
+    (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.restrictOfMeasurableBase W).majorantDiscrepancy ≤
@@ -67,8 +67,8 @@ theorem majorantDiscrepancy_restrict_le (V : AdelicVectorBundle S E)
       (V.toNormFamily.majorantDiscrepancy_restrict_le W ω)
 
 /-- Quotienting cannot increase the actual global majorant discrepancy. -/
-theorem majorantDiscrepancy_quotient_le (V : AdelicVectorBundle S E)
-    (W : Submodule K E)
+theorem majorantDiscrepancy_quotient_le (V : AdelicVectorBundle S)
+    (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.quotientOfMeasurableBase W).majorantDiscrepancy ≤

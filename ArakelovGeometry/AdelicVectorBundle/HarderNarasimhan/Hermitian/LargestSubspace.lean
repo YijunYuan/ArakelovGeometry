@@ -40,7 +40,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 namespace AdelicVectorBundle
 
-variable [S.IsProper] (V : AdelicVectorBundle S E)
+variable [S.IsProper] (V : AdelicVectorBundle.{max u w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
@@ -74,7 +74,7 @@ theorem hermitianHNFiltration_eq_top_of_le_minimalSlope (t : ℝ)
 
 /-- Every actual restricted subspace with minimal slope at least the
 threshold lies in the actual HN threshold subspace. -/
-theorem le_hermitianHNFiltration_of_le_minimalSlope_restrict (U : Submodule K E) (t : ℝ)
+theorem le_hermitianHNFiltration_of_le_minimalSlope_restrict (U : Submodule K V) (t : ℝ)
     (ht : (t : EReal) ≤ (V.restrictOfMeasurableBase U).minimalSlope) :
     U ≤ V.hermitianHNFiltration t := by
   by_cases hf : U.subtype = 0
@@ -94,7 +94,7 @@ theorem le_hermitianHNFiltration_of_le_minimalSlope_restrict (U : Submodule K E)
 /-- The actual HN threshold subspace is the greatest rational subspace
 with actual restricted minimal slope at least the threshold. -/
 theorem isGreatest_hermitianHNFiltration (t : ℝ) :
-    IsGreatest {U : Submodule K E |
+    IsGreatest {U : Submodule K V |
       (t : EReal) ≤ (V.restrictOfMeasurableBase U).minimalSlope}
       (V.hermitianHNFiltration t) := by
   refine ⟨V.le_minimalSlope_restrict_hermitianHNFiltration t, ?_⟩
@@ -105,7 +105,7 @@ theorem isGreatest_hermitianHNFiltration (t : ℝ) :
 whose actual restricted minimal slope is at least the threshold. -/
 theorem hermitianHNFiltration_eq_iSup_minimalSlope (t : ℝ) :
     V.hermitianHNFiltration t =
-      ⨆ (U : Submodule K E)
+      ⨆ (U : Submodule K V)
         (_ : (t : EReal) ≤ (V.restrictOfMeasurableBase U).minimalSlope), U := by
   apply le_antisymm
   · exact le_iSup_of_le (V.hermitianHNFiltration t)
@@ -117,7 +117,7 @@ theorem hermitianHNFiltration_eq_iSup_minimalSlope (t : ℝ) :
 threshold subspace. An empty eligible family contributes the zero subspace. -/
 theorem hermitianHNFiltration_eq_iSup_nonzero_minimalSlope (t : ℝ) :
     V.hermitianHNFiltration t =
-      ⨆ (U : Submodule K E) (_ : U ≠ ⊥)
+      ⨆ (U : Submodule K V) (_ : U ≠ ⊥)
         (_ : (t : EReal) ≤ (V.restrictOfMeasurableBase U).minimalSlope), U := by
   apply le_antisymm
   · by_cases hzero : V.hermitianHNFiltration t = ⊥

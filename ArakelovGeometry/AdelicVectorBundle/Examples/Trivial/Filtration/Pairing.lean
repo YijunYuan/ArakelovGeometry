@@ -62,18 +62,18 @@ variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
   [FiniteDimensional K E]
 
 /-- The actual `F`-grade, carrying the norm induced from the specified bundle `V`. -/
-noncomputable def filtrationGradedBundle (V : AdelicVectorBundle (singleTrivialPlace K) E)
-    (F : ℝ → Submodule K E) (s : ℝ)
+noncomputable abbrev filtrationGradedBundle (V : AdelicVectorBundle (singleTrivialPlace K))
+    (F : ℝ → Submodule K V) (s : ℝ)
     [hS : (singleTrivialPlace K).HasMeasurableBase] :
-    AdelicVectorBundle (singleTrivialPlace K) (FiltrationGraded F s) :=
+    AdelicVectorBundle (singleTrivialPlace K) :=
   (V.restrictOfMeasurableBase (F s)).quotientOfMeasurableBase
     ((filtrationRightLimit F s).comap (F s).subtype)
 
-variable (V : AdelicVectorBundle (singleTrivialPlace K) E)
+variable (V : AdelicVectorBundle (singleTrivialPlace K))
   [hS : (singleTrivialPlace K).HasMeasurableBase]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsUltrametric]
-  (F : ℝ → Submodule K E)
+  (F : ℝ → Submodule K V)
 
 omit hN in
 /-- Literal balls on the actual subquotient are the induced cuts on the shared grade carrier. -/
@@ -89,7 +89,7 @@ theorem trivialFiltration_filtrationGradedBundle (s t : ℝ) :
     classical
     ext x
     change (V.toNormFamily.restrict (F s)).trivialSeminorm x ≤ Real.exp (-t) ↔
-      V.toNormFamily.trivialSeminorm (x : E) ≤ Real.exp (-t)
+      V.toNormFamily.trivialSeminorm (x : V) ≤ Real.exp (-t)
     simp only [NormFamily.trivialSeminorm_apply]
     rfl
   rw [hr] at he
@@ -108,7 +108,7 @@ theorem degree_filtrationGradedBundle_eq_jointMultiplicity (hF : Antitone F) (s 
 
 /-- Compute each actual graded degree in any common adapted basis. -/
 theorem degree_filtrationGradedBundle_eq_sum_weights (hF : Antitone F)
-    {ι : Type*} [Fintype ι] (b : Basis ι K E) (a c : ι → ℝ)
+    {ι : Type*} [Fintype ι] (b : Basis ι K V) (a c : ι → ℝ)
     (hFa : ∀ t, F t = span K (b '' {i | t ≤ a i}))
     (hGc : ∀ t, V.toNormFamily.trivialFiltration t = span K (b '' {i | t ≤ c i}))
     (s : ℝ) :
@@ -119,11 +119,11 @@ theorem degree_filtrationGradedBundle_eq_sum_weights (hF : Antitone F)
 
 /-- The graded degree sum equals the intrinsic pairing; each grade uses the norm from `V`. -/
 theorem filtrationPairing_eq_finsum_graded_degree_of_common_basis (hF : Antitone F)
-    {ι : Type*} [Finite ι] (b : Basis ι K E) (a c : ι → ℝ)
+    {ι : Type*} [Finite ι] (b : Basis ι K V) (a c : ι → ℝ)
     (hFa : ∀ t, F t = span K (b '' {i | t ≤ a i}))
     (hGc : ∀ t, V.toNormFamily.trivialFiltration t = span K (b '' {i | t ≤ c i})) :
     filtrationPairing F (V.toNormFamily.trivialFiltration) =
-      (∑ᶠ s : ℝ, s * (V.filtrationGradedBundle F s).degree) / finrank K E := by
+      (∑ᶠ s : ℝ, s * (V.filtrationGradedBundle F s).degree) / finrank K V := by
   classical
   let : Fintype ι := Fintype.ofFinite ι
   rw [filtrationPairing_eq_sum_weights b a c hFa hGc]
@@ -150,7 +150,7 @@ theorem filtrationPairing_eq_finsum_graded_degree_of_common_basis (hF : Antitone
 
 omit V hV in
 /-- CM Proposition 5.4.1 with normalized pairing and the OTHER filtration's actual norm. -/
-theorem filtrationPairing_eq_finsum_graded_degree
+theorem filtrationPairing_eq_finsum_graded_degree (F : ℝ → Submodule K E)
     (hF : Antitone F) (hFbot : ∃ t, F t = ⊥) (hFtop : ∃ t, F t = ⊤)
     (hFleft : ∀ t, ∃ ε > 0, ∀ u, t - ε < u → u ≤ t → F u = F t)
     (G : ℝ → Submodule K E)

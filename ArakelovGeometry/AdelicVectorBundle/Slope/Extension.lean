@@ -61,14 +61,14 @@ variable [S.IsProper]
 /-- The subtraction form of the actual nonzero-map slope comparison.
 The target maximal slope is a finite real; the map height may be `⊤`. -/
 theorem minimalSlope_sub_mapHeight_le_maximalSlope_of_ne_zero
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (f : E →ₗ[K] F) (hf : f ≠ 0) :
+    (f : V →ₗ[K] W) (hf : f ≠ 0) :
     V.minimalSlope - V.mapHeight W f ≤ W.maximalSlope := by
   have hr : 0 < Module.finrank K f.range := Nat.pos_of_ne_zero (fun hz ↦
     hf (LinearMap.range_eq_bot.mp (Submodule.finrank_eq_zero.mp hz)))
-  have hF : 0 < Module.finrank K F := hr.trans_le f.range.finrank_le
+  have hF : 0 < Module.finrank K W := hr.trans_le f.range.finrank_le
   apply (EReal.sub_le_iff_le_add
     (Or.inr (W.maximalSlope_lt_top).ne)
     (Or.inr (W.bot_lt_maximalSlope hF).ne')).mpr
@@ -77,8 +77,8 @@ theorem minimalSlope_sub_mapHeight_le_maximalSlope_of_ne_zero
 /-- A larger quotient kernel gives an actual quotient of the smaller-kernel
 quotient. Its maximal slope bounds that bundle's source minimal slope. -/
 theorem minimalSlope_quotient_le_maximalSlope_quotient_of_le
-    (V : AdelicVectorBundle S E) (U W : Submodule K E) (h : U ≤ W)
-    (hW : 0 < Module.finrank K (E ⧸ W))
+    (V : AdelicVectorBundle S) (U W : Submodule K V) (h : U ≤ W)
+    (hW : 0 < Module.finrank K (V ⧸ W))
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.quotientOfMeasurableBase U).minimalSlope ≤
@@ -91,10 +91,10 @@ theorem minimalSlope_quotient_le_maximalSlope_quotient_of_le
     (Submodule.factor_surjective h) (hm := hm) hW
   have he : (P.pushforward π (Submodule.factor_surjective h) (hm := hm)).maximalSlope =
       (V.quotientOfMeasurableBase W).maximalSlope := by
-    apply maximalSlope_eq_of_completed_isometry _ _ (LinearEquiv.refl K (E ⧸ W))
+    apply maximalSlope_eq_of_completed_isometry _ _ (LinearEquiv.refl K (V ⧸ W))
     intro ω z
     change (V.toNormFamily.quotient W).norm ω
-      ((LinearEquiv.refl K (E ⧸ W)).toLinearMap.baseChange (S.ϕ ω).Completion z) =
+      ((LinearEquiv.refl K (V ⧸ W)).toLinearMap.baseChange (S.ϕ ω).Completion z) =
       ((V.toNormFamily.quotient U).pushforward π (Submodule.factor_surjective h)).norm ω z
     simpa only [LinearEquiv.refl_toLinearMap, LinearMap.baseChange_id, LinearMap.id_apply] using
       (V.toNormFamily.pushforward_factor_norm_eq U W h ω z).symm
@@ -103,10 +103,10 @@ theorem minimalSlope_quotient_le_maximalSlope_quotient_of_le
 /-- Source (4.51), proved for every actual linear map and thus for every
 injective extension. The cokernel has the actual quotient norm family. -/
 theorem minimalSlope_extension_lowerBound
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (f : E →ₗ[K] F) :
+    (f : V →ₗ[K] W) :
     min (V.minimalSlope - V.mapHeight W f)
         ((W.quotientOfMeasurableBase f.range).minimalSlope) ≤
       W.minimalSlope := by
@@ -134,10 +134,10 @@ theorem minimalSlope_extension_lowerBound
 /-- Source Proposition 4.3.32's equality criterion, with the actual
 cokernel minimum and without excluding a zero cokernel by assumption. -/
 theorem minimalSlope_eq_cokernel_of_minimalSlope_sub_mapHeight_ge
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (f : E →ₗ[K] F)
+    (f : V →ₗ[K] W)
     (hgap : (W.quotientOfMeasurableBase f.range).minimalSlope ≤
       V.minimalSlope - V.mapHeight W f) :
     W.minimalSlope = (W.quotientOfMeasurableBase f.range).minimalSlope := by
@@ -147,13 +147,13 @@ theorem minimalSlope_eq_cokernel_of_minimalSlope_sub_mapHeight_ge
 
 /-- The actual quotient by zero preserves the source minimal slope,
 including its positive-infinite rank-zero convention. -/
-theorem minimalSlope_quotient_bot (V : AdelicVectorBundle S E)
+theorem minimalSlope_quotient_bot (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.quotientOfMeasurableBase ⊥).minimalSlope = V.minimalSlope := by
   symm
-  let e : E ≃ₗ[K] E ⧸ (⊥ : Submodule K E) :=
-    LinearEquiv.ofBijective (⊥ : Submodule K E).mkQ
+  let e : V ≃ₗ[K] V ⧸ (⊥ : Submodule K V) :=
+    LinearEquiv.ofBijective (⊥ : Submodule K V).mkQ
       ⟨LinearMap.ker_eq_bot.mp (Submodule.ker_mkQ ⊥), Submodule.mkQ_surjective ⊥⟩
   apply minimalSlope_eq_of_completed_isometry _ _ e
   intro ω z
@@ -163,10 +163,10 @@ omit [FiniteDimensional K E] in
 /-- If the extension map is zero, its actual cokernel is the original
 target isometrically. This covers the source's zero-domain case. -/
 theorem minimalSlope_cokernel_eq_of_zero
-    (W : AdelicVectorBundle S F)
+    (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (f : E →ₗ[K] F) (hf : f = 0) :
+    (f : E →ₗ[K] W) (hf : f = 0) :
     (W.quotientOfMeasurableBase f.range).minimalSlope = W.minimalSlope := by
   rw [hf, LinearMap.range_zero]
   exact W.minimalSlope_quotient_bot
@@ -174,10 +174,10 @@ theorem minimalSlope_cokernel_eq_of_zero
 /-- The source's zero-domain branch, expressed with its actual dimension:
 the cokernel has the original target minimum, also when both spaces vanish. -/
 theorem minimalSlope_cokernel_eq_of_source_finrank_eq_zero
-    (W : AdelicVectorBundle S F)
+    (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (f : E →ₗ[K] F) (hE : Module.finrank K E = 0) :
+    (f : E →ₗ[K] W) (hE : Module.finrank K E = 0) :
     (W.quotientOfMeasurableBase f.range).minimalSlope = W.minimalSlope := by
   let : Subsingleton E := Module.finrank_zero_iff.mp hE
   apply W.minimalSlope_cokernel_eq_of_zero f

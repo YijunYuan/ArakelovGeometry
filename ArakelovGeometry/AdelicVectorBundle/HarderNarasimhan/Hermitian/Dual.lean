@@ -211,11 +211,11 @@ variable {S : AdelicStructure.{u, v} K} [S.IsProper]
 
 /-- An actual semistable Hermitian subquotient gives a semistable factor of
 the reversed annihilator flag, with the negative actual mean slope. -/
-theorem annihilatorSubquotient_semistable_slope (V : AdelicVectorBundle S E)
+theorem annihilatorSubquotient_semistable_slope (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian]
-    (U W : Submodule K E) (hUW : U ≤ W)
+    (U W : Submodule K V) (hUW : U ≤ W)
     [hsemi : ((V.restrictOfMeasurableBase W).quotientOfMeasurableBase
       (U.comap W.subtype)).IsMeanSlopeSemistable] :
     (((V.dualOfMeasurableBase).restrictOfMeasurableBase
@@ -253,11 +253,11 @@ theorem annihilatorSubquotient_semistable_slope (V : AdelicVectorBundle S E)
 
 /-- The actual factors of a reversed annihilator flag are semistable with
 the reversed negative primal means. No factor norm identification is assumed. -/
-theorem reverseAnnihilatorFlag_semistable_slope (V : AdelicVectorBundle S E)
+theorem reverseAnnihilatorFlag_semistable_slope (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian]
-    {n : ℕ} (F : Fin (n + 1) → Submodule K E) (hF : Monotone F)
+    {n : ℕ} (F : Fin (n + 1) → Submodule K V) (hF : Monotone F)
     [hsemi : ∀ i, (V.flagQuotientOfMeasurableBase F i).IsMeanSlopeSemistable]
     (i : Fin n) :
     ((V.dualOfMeasurableBase).flagQuotientOfMeasurableBase
@@ -287,7 +287,7 @@ theorem reverseAnnihilatorFlag_semistable_slope (V : AdelicVectorBundle S E)
 /-- The actual Hermitian dual HN flag is the reversed annihilator flag.
 The proof supplies its factor semistability and strict decrease from the
 completed factor isometry before invoking finite-flag uniqueness. -/
-theorem hermitianHN_dual_flag (V : AdelicVectorBundle S E)
+theorem hermitianHN_dual_flag (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :
@@ -335,7 +335,7 @@ theorem hermitianHN_dual_flag (V : AdelicVectorBundle S E)
 
 /-- Each actual dual HN factor has the reversed negative primal mean.
 The length cast is supplied by actual dual-flag uniqueness. -/
-theorem slope_hermitianHNFactor_dual (V : AdelicVectorBundle S E)
+theorem slope_hermitianHNFactor_dual (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian]
@@ -351,7 +351,7 @@ theorem slope_hermitianHNFactor_dual (V : AdelicVectorBundle S E)
       (D.hermitianHNTerm (hV := hV.dual) i.val,
         D.hermitianHNTerm (hV := hV.dual) (i.val + 1)) :=
     Prod.ext (hflag.2 i.castSucc) (hflag.2 i.succ)
-  let mean (p : Submodule K (Module.Dual K E) × Submodule K (Module.Dual K E)) : ℝ :=
+  let mean (p : Submodule K (Module.Dual K V) × Submodule K (Module.Dual K V)) : ℝ :=
     ((D.restrictOfMeasurableBase p.2).quotientOfMeasurableBase
       (p.1.comap p.2.subtype)).slope
   have hm := congrArg mean hpair
@@ -377,7 +377,7 @@ theorem slope_hermitianHNFactor_dual (V : AdelicVectorBundle S E)
 
 /-- The actual canonical dual HN flag factors are isometric on every
 completed vector to the actual duals of the reversed primal flag factors. -/
-theorem exists_hermitianHNFlag_dual_factor_isometry (V : AdelicVectorBundle S E)
+theorem exists_hermitianHNFlag_dual_factor_isometry (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian]
@@ -407,7 +407,7 @@ theorem exists_hermitianHNFlag_dual_factor_isometry (V : AdelicVectorBundle S E)
   have hU : D.hermitianHNTerm (hV := hV.dual) (i.val + 1) = U.dualAnnihilator :=
     (hflag.2 i.succ).symm.trans
       (congrArg (fun j => (F j).dualAnnihilator) (Fin.rev_succ i))
-  let P (p : Submodule K (Module.Dual K E) × Submodule K (Module.Dual K E)) : Prop :=
+  let P (p : Submodule K (Module.Dual K V) × Submodule K (Module.Dual K V)) : Prop :=
     ∃ e : (p.2 ⧸ p.1.comap p.2.subtype) ≃ₗ[K] Module.Dual K (W ⧸ U.comap W.subtype),
       ∀ ω z, ((V.toNormFamily.restrict W).quotient (U.comap W.subtype)).dual.norm ω
         (e.toLinearMap.baseChange (S.ϕ ω).Completion z) =
@@ -425,10 +425,10 @@ theorem exists_hermitianHNFlag_dual_factor_isometry (V : AdelicVectorBundle S E)
 
 /-- Actual Hermitian ordered slopes reverse and negate under duality.
 The rank cast uses the canonical finite-dimensional dual rank equality. -/
-theorem hermitianHNOrderedSlope_dual (V : AdelicVectorBundle S E)
+theorem hermitianHNOrderedSlope_dual (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    [hV : V.toNormFamily.IsHermitian] (j : Fin (Module.finrank K E)) :
+    [hV : V.toNormFamily.IsHermitian] (j : Fin (Module.finrank K V)) :
     (V.dualOfMeasurableBase).hermitianHNOrderedSlope (hV := hV.dual)
       (Fin.cast Subspace.dual_finrank_eq.symm j) =
         -V.hermitianHNOrderedSlope j.rev := by
@@ -442,9 +442,9 @@ theorem hermitianHNOrderedSlope_dual (V : AdelicVectorBundle S E)
   have hl : V.hermitianHNFlag k.succ.rev =
       V.hermitianHNTerm i.val := by
     simp only [k, Fin.rev_succ, Fin.rev_rev, hermitianHNFlag, Fin.val_castSucc]
-  have hlow := congrArg (fun U : Submodule K (Module.Dual K E) => Module.finrank K U)
+  have hlow := congrArg (fun U : Submodule K (Module.Dual K V) => Module.finrank K U)
     ((congrArg Submodule.dualAnnihilator hu).symm.trans (hflag.2 k.castSucc))
-  have hupp := congrArg (fun U : Submodule K (Module.Dual K E) => Module.finrank K U)
+  have hupp := congrArg (fun U : Submodule K (Module.Dual K V) => Module.finrank K U)
     ((congrArg Submodule.dualAnnihilator hl).symm.trans (hflag.2 k.succ))
   have hpi := V.hermitianHNFactorIndex_rank_interval j.rev
   have hdimU := Subspace.finrank_add_finrank_dualAnnihilator_eq
@@ -463,7 +463,7 @@ theorem hermitianHNOrderedSlope_dual (V : AdelicVectorBundle S E)
     rw [← hlow, ← hupp]
     change Module.finrank K (V.hermitianHNTerm i.val) ≤ j.rev.val ∧
       j.rev.val < Module.finrank K (V.hermitianHNTerm (i.val + 1)) at hpi
-    have hj : j.rev.val = Module.finrank K E - 1 - j.val := by
+    have hj : j.rev.val = Module.finrank K V - 1 - j.val := by
       simp only [Fin.rev]
       omega
     have hjlt := j.isLt
@@ -475,20 +475,20 @@ theorem hermitianHNOrderedSlope_dual (V : AdelicVectorBundle S E)
 
 /-- The last actual ordered Hermitian slope is the extended-real minimum.
 Positive rank excludes the empty source list. -/
-theorem hermitianHNOrderedSlope_last_eq_minimalSlope (V : AdelicVectorBundle S E)
+theorem hermitianHNOrderedSlope_last_eq_minimalSlope (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
-    (V.hermitianHNOrderedSlope (⟨0, hr⟩ : Fin (Module.finrank K E)).rev : EReal) =
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K V) :
+    (V.hermitianHNOrderedSlope (⟨0, hr⟩ : Fin (Module.finrank K V)).rev : EReal) =
       V.minimalSlope := by
   let D := V.dualOfMeasurableBase
-  have hrD : 0 < Module.finrank K (Module.Dual K E) := by
+  have hrD : 0 < Module.finrank K (Module.Dual K V) := by
     rwa [Subspace.dual_finrank_eq]
   have hb : (D.dualOfMeasurableBase).minimalSlope = V.minimalSlope := by
     symm
-    apply V.minimalSlope_eq_of_completed_isometry _ (Module.evalEquiv K E)
+    apply V.minimalSlope_eq_of_completed_isometry _ (Module.evalEquiv K V)
     intro ω x
-    simp only [dualOfMeasurableBase_toNormFamily, Module.evalEquiv_toLinearMap]
+    simp only [Module.evalEquiv_toLinearMap]
     by_cases hω : ω ∈ S.Ωfin
     · exact hV.1.dual_dual_norm_eval ω hω x
     · exact V.toNormFamily.dual_dual_norm_eval_eq_of_isRCLike ω (hN ω hω) x
@@ -499,22 +499,22 @@ theorem hermitianHNOrderedSlope_last_eq_minimalSlope (V : AdelicVectorBundle S E
   have hfirst := D.hermitianHNOrderedSlope_zero_eq_maximalSlope hrD
   have hreverse := V.hermitianHNOrderedSlope_dual ⟨0, hr⟩
   change D.hermitianHNOrderedSlope ⟨0, hrD⟩ =
-    -V.hermitianHNOrderedSlope (⟨0, hr⟩ : Fin (Module.finrank K E)).rev at hreverse
+    -V.hermitianHNOrderedSlope (⟨0, hr⟩ : Fin (Module.finrank K V)).rev at hreverse
   rw [ha, ← hfirst, ← EReal.coe_add, ← EReal.coe_zero, EReal.coe_eq_coe_iff] at hext
   have he : a = V.hermitianHNOrderedSlope
-      (⟨0, hr⟩ : Fin (Module.finrank K E)).rev := by linarith
+      (⟨0, hr⟩ : Fin (Module.finrank K V)).rev := by linarith
   exact (congrArg (fun x : ℝ => (x : EReal)) he).symm.trans ha.symm
 
 /-- The final actual HN factor itself has mean equal to the ambient minimum. -/
-theorem slope_hermitianHNFactor_last_eq_minimalSlope (V : AdelicVectorBundle S E)
+theorem slope_hermitianHNFactor_last_eq_minimalSlope (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K V) :
     ((V.hermitianHNFactor
       (⟨0, V.hermitianHNLength_pos_of_finrank_pos hr⟩ :
         Fin (V.hermitianHNLength)).rev).slope : EReal) =
       V.minimalSlope := by
-  let j : Fin (Module.finrank K E) := ⟨0, hr⟩
+  let j : Fin (Module.finrank K V) := ⟨0, hr⟩
   let i : Fin (V.hermitianHNLength) :=
     (⟨0, V.hermitianHNLength_pos_of_finrank_pos hr⟩ :
       Fin (V.hermitianHNLength)).rev
@@ -522,7 +522,7 @@ theorem slope_hermitianHNFactor_last_eq_minimalSlope (V : AdelicVectorBundle S E
     simp only [i, Fin.val_rev]
     have hn := V.hermitianHNLength_pos_of_finrank_pos hr
     omega
-  have hj : j.rev.val + 1 = Module.finrank K E := by
+  have hj : j.rev.val + 1 = Module.finrank K V := by
     simp only [j, Fin.val_rev]
     omega
   have hlt := V.hermitianHNTerm_lt i.val (i.val + 1) (by omega) (by omega)

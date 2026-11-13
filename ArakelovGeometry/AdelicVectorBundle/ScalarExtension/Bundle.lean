@@ -142,21 +142,24 @@ namespace AdelicVectorBundle
 
 /-- The actual ordinary scalar extension, with primal and dual measurability
 and domination proved from the original bundle rather than assumed. -/
-def scalarExtension (V : AdelicVectorBundle S E)
+abbrev scalarExtension (V : AdelicVectorBundle S)
     [hS : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
-    AdelicVectorBundle (S.algebraicExtension L) (L ⊗[K] E) where
+    AdelicVectorBundle (S.algebraicExtension L) where
+  carrier := (L ⊗[K] V)
   toNormFamily := V.toNormFamily.scalarExtension (L := L)
-  isMeasurable := by
-    exact V.isMeasurable.scalarExtension_of_common_countable_dense_subfield hS
-  dual_isMeasurable :=
-    V.isMeasurable.scalarExtension_dual_of_common_countable_dense_subfield hS
-  isDominated := by
-    exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
-      V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)).isDominated
+  toIsAdelic := {
+    isMeasurable := by
+      exact V.isMeasurable.scalarExtension_of_common_countable_dense_subfield hS
+    dual_isMeasurable :=
+      V.isMeasurable.scalarExtension_dual_of_common_countable_dense_subfield hS
+    isDominated := by
+      exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
+        V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)).isDominated
+  }
 
 @[simp]
-theorem scalarExtension_toNormFamily (V : AdelicVectorBundle S E)
+theorem scalarExtension_toNormFamily (V : AdelicVectorBundle S)
     [hS : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     (V.scalarExtension (L := L)).toNormFamily =
@@ -164,7 +167,7 @@ theorem scalarExtension_toNormFamily (V : AdelicVectorBundle S E)
 
 /-- Ordinary scalar extension is strongly adelic even for arbitrary original
 finite-place vector norms. -/
-theorem scalarExtension_isStronglyAdelic (V : AdelicVectorBundle S E)
+theorem scalarExtension_isStronglyAdelic (V : AdelicVectorBundle S)
     [S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     (V.scalarExtension (L := L)).IsStronglyAdelic :=
@@ -172,30 +175,32 @@ theorem scalarExtension_isStronglyAdelic (V : AdelicVectorBundle S E)
     V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)
 
 /-- The finite-place norms of the actual extended bundle are ultrametric. -/
-theorem scalarExtension_isUltrametric (V : AdelicVectorBundle S E)
+theorem scalarExtension_isUltrametric (V : AdelicVectorBundle S)
     [S.HasCommonCountableDenseSubfield]
     [S.IsArchimedeanNormalized] :
     (V.scalarExtension (L := L)).toNormFamily.IsUltrametric :=
   V.toNormFamily.scalarExtension_isUltrametric
 
 /-- Extension preserves the actual rational rank, including zero. -/
-theorem scalarExtension_rank (V : AdelicVectorBundle S E)
+theorem scalarExtension_rank (V : AdelicVectorBundle S)
     [S.HasCommonCountableDenseSubfield]
     [S.IsArchimedeanNormalized] :
     (V.scalarExtension (L := L)).rank = V.rank := Module.finrank_baseChange
 
 /-- The canonical arbitrary-rank and existing line constructions agree. -/
-theorem scalarExtension_eq_scalarExtensionLine (V : AdelicVectorBundle S E)
+theorem scalarExtension_eq_scalarExtensionLine (V : AdelicVectorBundle S)
     [hV : V.IsLine] [hS : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     V.scalarExtension (L := L) = V.scalarExtensionLine (L := L) := by
   apply AdelicVectorBundle.ext
+    (hξ := (V.scalarExtension (L := L)).toIsAdelic)
+    (hη := (V.scalarExtensionLine (L := L)).toIsAdelic)
   rfl
 
 /-- The actual finite scalar-extended bundle has the original vector degree.
 Both extended normalization and extended common density are produced. -/
 theorem degree_scalarExtension_of_finiteDimensional [S.IsProper] [FiniteDimensional K L]
-    (V : AdelicVectorBundle S E) [hS : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hS : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     (V.scalarExtension (L := L)).degree
@@ -209,6 +214,9 @@ theorem degree_scalarExtension_of_finiteDimensional [S.IsProper] [FiniteDimensio
   have he : (V.scalarExtension (L := L)).determinantOfMeasurableBase
       (hN := ⟨hNL⟩) = V.scalarExtensionDeterminant (L := L) := by
     apply AdelicVectorBundle.ext
+      (hξ := ((V.scalarExtension (L := L)).determinantOfMeasurableBase
+        (hN := ⟨hNL⟩)).toIsAdelic)
+      (hη := (V.scalarExtensionDeterminant (L := L)).toIsAdelic)
     rfl
   change (V.scalarExtension (L := L)).degree (hN := ⟨hNL⟩) = _
   simpa only [degree, he] using V.lineDegree_scalarExtensionDeterminant (L := L)

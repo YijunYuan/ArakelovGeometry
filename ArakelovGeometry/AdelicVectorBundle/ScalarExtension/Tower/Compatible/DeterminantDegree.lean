@@ -104,7 +104,7 @@ variable [FiniteDimensional M X]
 /-- The actual canonical determinant degree is transported through arbitrary
 compatible external fields. Target measurability and normalization are produced. -/
 theorem degreeOfMeasurableDeterminant_compatibleTowerPullback [S.IsProper]
-    (V : AdelicVectorBundle (S.algebraicExtension M) X)
+    (V : AdelicVectorBundle (S.algebraicExtension M))
     [hdet : V.toNormFamily.determinant.IsMeasurable]
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S M

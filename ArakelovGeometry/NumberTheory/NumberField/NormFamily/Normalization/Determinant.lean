@@ -392,7 +392,7 @@ end NormFamily
 
 namespace AdelicVectorBundle
 
-variable (V : AdelicVectorBundle (numberFieldAdelicStructure K) E)
+variable (V : AdelicVectorBundle (numberFieldAdelicStructure K))
   [hV : V.toNormFamily.IsUltrametric]
 
 /-- The native actual normalized determinant degree equals the old native degree;
@@ -422,7 +422,7 @@ theorem numberFieldNormalize_degree :
 
 /-- The actual normalized rank-zero bundle retains its native degree zero. -/
 theorem numberFieldNormalize_degree_eq_zero_of_finrank_eq_zero
-    (hr : Module.finrank K E = 0) :
+    (hr : Module.finrank K V = 0) :
     (V.numberFieldNormalize).degree
         (hS := ⟨(Or.inl (inferInstanceAs (DiscreteMeasurableSpace
           {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K})))⟩)

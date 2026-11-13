@@ -26,14 +26,14 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
 
 /-- Every candidate term is attained at its actual factor modified mean. -/
 theorem semistableFlag_succ_eq_generalHNFiltration {n : ℕ}
-    (U : Fin (n + 1) → Submodule K E) (hU : StrictMono U) (hz : U 0 = ⊥)
+    (U : Fin (n + 1) → Submodule K V) (hU : StrictMono U) (hz : U 0 = ⊥)
     (ht : U (Fin.last n) = ⊤)
     [hsemi : ∀ i : Fin n, (V.flagQuotientOfMeasurableBase U i).IsSemistable]
     (hb : StrictAnti (fun i : Fin n ↦ (V.flagQuotientOfMeasurableBase U i).modifiedSlope
@@ -56,7 +56,7 @@ theorem semistableFlag_succ_eq_generalHNFiltration {n : ℕ}
 
 /-- The complete actual filtration levels are exactly the candidate flag terms. -/
 theorem range_generalHNFiltration_eq_of_semistableFlag {n : ℕ}
-    (U : Fin (n + 1) → Submodule K E) (hU : StrictMono U) (hz : U 0 = ⊥)
+    (U : Fin (n + 1) → Submodule K V) (hU : StrictMono U) (hz : U 0 = ⊥)
     (ht : U (Fin.last n) = ⊤)
     [hsemi : ∀ i : Fin n, (V.flagQuotientOfMeasurableBase U i).IsSemistable]
     (hb : StrictAnti (fun i : Fin n ↦ (V.flagQuotientOfMeasurableBase U i).modifiedSlope

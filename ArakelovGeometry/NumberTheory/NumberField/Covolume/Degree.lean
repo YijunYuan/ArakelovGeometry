@@ -38,11 +38,11 @@ variable {K E : Type*} [Field K] [NumberField K]
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- The canonical adelic bundle from the already constructed actual full-lattice norm family. -/
-def fullLatticeAdelicBundle
+abbrev fullLatticeAdelicBundle
     (L : Submodule (𝓞 K) E) (hfg : L.FG)
     (hspan : Submodule.span K (L : Set E) = ⊤)
     (η : NormFamily (normalizedNumberFieldAdelicStructure K) E) :
-    AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E :=
+    AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) :=
   AdelicVectorBundle.ofMeasurableDominated (fullLatticeGaugeFamily L hfg hspan η)
     (hm := (NormFamily.isMeasurable_of_discrete _))
     (hd := (fullLatticeGaugeFamily_coherent_and_dominated L hfg hspan η).2)

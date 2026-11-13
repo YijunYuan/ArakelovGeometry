@@ -156,14 +156,14 @@ theorem orthogonalTensor_norm_tmulEquivDep
     orthogonalTensor_norm_of_finite _ ω hfin b
   change σ.norm ω (G z) = τ.norm ω z
   apply le_antisymm
-  · let Y i := L ⊗[K] BinaryTensorFactors Pl Pr i
+  · let Y i := L ⊗[K] LiftedTensorFactors Pl Pr i
     let : ∀ i, NormedAddCommGroup (Y i) :=
       fun i ↦ (tensorPairFactors ξl ξr i).fibreNormedAddCommGroup ω
     let : ∀ i, NormedSpace L (Y i) :=
       fun i ↦ (tensorPairFactors ξl ξr i).fibreNormedSpace ω
-    let B := binaryTensorEquiv K (BinaryTensorFactors Pl Pr)
-    let P := binaryTensorEquiv L Y
-    let q := tensorBaseChangeEquiv K L (BinaryTensorFactors Pl Pr)
+    let B := tensorPairEquiv K Pl Pr
+    let P := tensorPairFibreEquiv K L Pl Pr
+    let q := tensorBaseChangeEquiv K L (LiftedTensorFactors Pl Pr)
       (B.symm.toLinearMap.baseChange L z)
     have hq : P q = A z := by
       have he := DFunLike.congr_fun (tensorBaseChangeEquiv_binary K L Pl Pr)
@@ -173,16 +173,19 @@ theorem orthogonalTensor_norm_tmulEquivDep
     let f := G.toLinearMap ∘ₗ A.symm.toLinearMap ∘ₗ P.toLinearMap
     have hp (x : ∀ i, Y i) : ‖f (⨂ₜ[L] i, x i)‖ ≤ ∏ i, ‖x i‖ := by
       change σ.norm ω (G (A.symm (P (⨂ₜ[L] i, x i)))) ≤ _
-      rw [hσ, binaryTensorEquiv_tprod]
+      rw [hσ, tensorPairFibreEquiv_tprod]
       change ArakelovGeometry.injectiveTensorSeminorm
-        (Q (A.symm (x (.inl ()) ⊗ₜ[L] x (.inr ())))) ≤ _
+        (Q (A.symm (((ULift.moduleEquiv.baseChange K L _ _) (x (.inl ()))) ⊗ₜ[L]
+          ((ULift.moduleEquiv.baseChange K L _ _) (x (.inr ())))))) ≤ _
       rw [hc]
       have h := injectiveTensorSeminorm_tmulEquivDep_le (k := L) (V := X)
-        (Tl (x (.inl ()))) (Tr (x (.inr ())))
+        (Tl ((ULift.moduleEquiv.baseChange K L _ _) (x (.inl ()))))
+        (Tr ((ULift.moduleEquiv.baseChange K L _ _) (x (.inr ()))))
       rw [← hl', ← hr'] at h
       simp only [Fintype.prod_sum_type, Fintype.prod_unique]
       change ArakelovGeometry.injectiveTensorSeminorm _ ≤
-        ξl.norm ω (x (.inl ())) * ξr.norm ω (x (.inr ()))
+        ξl.norm ω ((ULift.moduleEquiv.baseChange K L _ _) (x (.inl ()))) *
+          ξr.norm ω ((ULift.moduleEquiv.baseChange K L _ _) (x (.inr ())))
       exact h
     have h := norm_linearMap_le_injective_of_ultrametric_factors f
       (orthogonalTensor_isUltrametric ξ ω hfin) hp q

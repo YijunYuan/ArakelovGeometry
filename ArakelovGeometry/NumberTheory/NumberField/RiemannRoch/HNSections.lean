@@ -25,7 +25,7 @@ namespace ArakelovGeometry.AdelicVectorBundle
 
 variable {K E : Type*} [Field K] {S : AdelicStructure K} [S.IsProper]
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]

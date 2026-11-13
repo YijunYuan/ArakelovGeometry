@@ -31,13 +31,13 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 namespace AdelicVectorBundle
 
-variable [S.IsProper] (V : AdelicVectorBundle S E)
+variable [S.IsProper] (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
 
 /-- The actual real rank cut is nonempty because the filtration attains top. -/
-theorem generalHNRankCut_nonempty (j : Fin (Module.finrank K E)) :
+theorem generalHNRankCut_nonempty (j : Fin (Module.finrank K V)) :
     Set.Nonempty {t : ℝ | j.val < Module.finrank K (V.generalHNFiltration t)} := by
   obtain ⟨t, ht⟩ := V.exists_generalHNFiltration_eq_top
   refine ⟨t, ?_⟩
@@ -46,7 +46,7 @@ theorem generalHNRankCut_nonempty (j : Fin (Module.finrank K E)) :
   exact j.isLt
 
 /-- The actual real rank cut is bounded above because the filtration attains zero. -/
-theorem generalHNRankCut_bddAbove (j : Fin (Module.finrank K E)) :
+theorem generalHNRankCut_bddAbove (j : Fin (Module.finrank K V)) :
     BddAbove {t : ℝ | j.val < Module.finrank K (V.generalHNFiltration t)} := by
   obtain ⟨b, hb⟩ := V.exists_generalHNFiltration_eq_bot
   refine ⟨b, fun t ht ↦ ?_⟩
@@ -59,11 +59,11 @@ theorem generalHNRankCut_bddAbove (j : Fin (Module.finrank K E)) :
 
 /-- Source Definition 4.3.47, with a zero-based slot and the literal actual
 rank-threshold supremum. No surrogate flag or supplied jump is used. -/
-def generalHNOrderedSlope (j : Fin (Module.finrank K E)) : ℝ :=
+def generalHNOrderedSlope (j : Fin (Module.finrank K V)) : ℝ :=
   sSup {t : ℝ | j.val < Module.finrank K (V.generalHNFiltration t)}
 
 /-- Left constancy of the actual epsilon filtration makes each supremum attained. -/
-theorem lt_finrank_generalHNFiltration_orderedSlope (j : Fin (Module.finrank K E)) :
+theorem lt_finrank_generalHNFiltration_orderedSlope (j : Fin (Module.finrank K V)) :
     j.val < Module.finrank K
       (V.generalHNFiltration (V.generalHNOrderedSlope j)) := by
   let c := V.generalHNOrderedSlope j
@@ -77,7 +77,7 @@ theorem lt_finrank_generalHNFiltration_orderedSlope (j : Fin (Module.finrank K E
 
 /-- The actual rank cuts are precisely the closed rays below the produced slopes. -/
 theorem le_generalHNOrderedSlope_iff_lt_filtration_finrank (t : ℝ)
-    (j : Fin (Module.finrank K E)) :
+    (j : Fin (Module.finrank K V)) :
     t ≤ V.generalHNOrderedSlope j ↔
       j.val < Module.finrank K (V.generalHNFiltration t) := by
   constructor
@@ -96,15 +96,15 @@ theorem generalHNOrderedSlope_antitone : Antitone (V.generalHNOrderedSlope) := b
 
 /-- The last source supremum is the actual minimal slope, with a positive-rank
  guard so that the zero-bundle top endpoint is never cast to a real number. -/
-theorem generalHNOrderedSlope_last_eq_minimalSlope (hr : 0 < Module.finrank K E) :
-    (V.generalHNOrderedSlope (⟨0, hr⟩ : Fin (Module.finrank K E)).rev : EReal) =
+theorem generalHNOrderedSlope_last_eq_minimalSlope (hr : 0 < Module.finrank K V) :
+    (V.generalHNOrderedSlope (⟨0, hr⟩ : Fin (Module.finrank K V)).rev : EReal) =
       V.minimalSlope := by
-  let j : Fin (Module.finrank K E) := (⟨0, hr⟩ : Fin (Module.finrank K E)).rev
+  let j : Fin (Module.finrank K V) := (⟨0, hr⟩ : Fin (Module.finrank K V)).rev
   have htop : V.generalHNFiltration (V.generalHNOrderedSlope j) = ⊤ := by
     apply Submodule.eq_top_of_finrank_eq
     have hj := V.lt_finrank_generalHNFiltration_orderedSlope j
     have hle := (V.generalHNFiltration (V.generalHNOrderedSlope j)).finrank_le
-    change Module.finrank K E - (0 + 1) < _ at hj
+    change Module.finrank K V - (0 + 1) < _ at hj
     omega
   apply le_antisymm ((V.generalHNFiltration_eq_top_iff _).mp htop)
   obtain ⟨c, hc⟩ := V.exists_minimalSlope_eq_coe hr
@@ -120,15 +120,15 @@ theorem generalHNOrderedSlope_last_eq_minimalSlope (hr : 0 < Module.finrank K E)
 ordered slopes above the real threshold, including an empty list. -/
 theorem generalHNFiltration_finrank_eq_card (t : ℝ) :
     Module.finrank K (V.generalHNFiltration t) =
-      (Finset.univ.filter (fun j : Fin (Module.finrank K E) ↦
+      (Finset.univ.filter (fun j : Fin (Module.finrank K V) ↦
         t ≤ V.generalHNOrderedSlope j)).card := by
   classical
   have hle := (V.generalHNFiltration t).finrank_le
   calc
     Module.finrank K (V.generalHNFiltration t) =
-        min (Module.finrank K E) (Module.finrank K (V.generalHNFiltration t)) :=
+        min (Module.finrank K V) (Module.finrank K (V.generalHNFiltration t)) :=
       (min_eq_right hle).symm
-    _ = (Finset.univ.filter (fun j : Fin (Module.finrank K E) ↦
+    _ = (Finset.univ.filter (fun j : Fin (Module.finrank K V) ↦
         j.val < Module.finrank K (V.generalHNFiltration t))).card :=
       Fin.card_filter_val_lt.symm
     _ = _ := by
@@ -138,9 +138,9 @@ theorem generalHNFiltration_finrank_eq_card (t : ℝ) :
         V.le_generalHNOrderedSlope_iff_lt_filtration_finrank]
 
 /-- Every general ordered slope is bounded by the actual ambient maximum. -/
-theorem generalHNOrderedSlope_le_maximalSlope (j : Fin (Module.finrank K E)) :
+theorem generalHNOrderedSlope_le_maximalSlope (j : Fin (Module.finrank K V)) :
     (V.generalHNOrderedSlope j : EReal) ≤ V.maximalSlope := by
-  have hr : 0 < Module.finrank K E := (Nat.zero_le j.val).trans_lt j.isLt
+  have hr : 0 < Module.finrank K V := (Nat.zero_le j.val).trans_lt j.isLt
   obtain ⟨c, hc⟩ := V.exists_maximalSlope_eq_coe hr
   rw [hc]
   apply EReal.coe_le_coe
@@ -153,13 +153,13 @@ theorem generalHNOrderedSlope_le_maximalSlope (j : Fin (Module.finrank K E)) :
   exact Nat.not_lt_zero j.val hj
 
 /-- Every actual general ordered slope is at least the actual minimal slope. -/
-theorem minimalSlope_le_generalHNOrderedSlope (j : Fin (Module.finrank K E)) :
+theorem minimalSlope_le_generalHNOrderedSlope (j : Fin (Module.finrank K V)) :
     V.minimalSlope ≤ (V.generalHNOrderedSlope j : EReal) := by
-  have hr : 0 < Module.finrank K E := (Nat.zero_le j.val).trans_lt j.isLt
+  have hr : 0 < Module.finrank K V := (Nat.zero_le j.val).trans_lt j.isLt
   rw [← V.generalHNOrderedSlope_last_eq_minimalSlope hr]
   apply EReal.coe_le_coe
   apply V.generalHNOrderedSlope_antitone
-  change j.val ≤ Module.finrank K E - (0 + 1)
+  change j.val ≤ Module.finrank K V - (0 + 1)
   have hj := j.isLt
   omega
 
@@ -167,7 +167,7 @@ theorem minimalSlope_le_generalHNOrderedSlope (j : Fin (Module.finrank K E)) :
 /-- Every nonzero actual restricted minimum is bounded by the first general
 ordered jump, whose criterion is positive actual filtration rank. -/
 theorem minimalSlope_restrict_le_generalHNOrderedSlope_zero
-    (hr : 0 < Module.finrank K E) (U : Submodule K E) (hU : U ≠ ⊥) :
+    (hr : 0 < Module.finrank K V) (U : Submodule K V) (hU : U ≠ ⊥) :
     (V.restrictOfMeasurableBase U).minimalSlope ≤
       (V.generalHNOrderedSlope ⟨0, hr⟩ : EReal) := by
   have hrU : 0 < Module.finrank K U := Nat.pos_of_ne_zero
@@ -182,8 +182,8 @@ theorem minimalSlope_restrict_le_generalHNOrderedSlope_zero
 /-- The first actual ordered jump is the greatest restricted minimal slope,
 attained by its produced nonzero actual threshold subspace. -/
 theorem isGreatest_minimalSlope_restrict_generalHNOrderedSlope_zero
-    (hr : 0 < Module.finrank K E) :
-    IsGreatest {m : EReal | ∃ U : Submodule K E, U ≠ ⊥ ∧
+    (hr : 0 < Module.finrank K V) :
+    IsGreatest {m : EReal | ∃ U : Submodule K V, U ≠ ⊥ ∧
       (V.restrictOfMeasurableBase U).minimalSlope = m}
       (V.generalHNOrderedSlope ⟨0, hr⟩ : EReal) := by
   let U := V.generalHNFiltration (V.generalHNOrderedSlope ⟨0, hr⟩)
@@ -204,12 +204,12 @@ theorem isGreatest_minimalSlope_restrict_generalHNOrderedSlope_zero
 section HermitianComparison
 
 variable {E' : Type (max u w)} [AddCommGroup E'] [Module K E']
-  [FiniteDimensional K E'] (W : AdelicVectorBundle S E')
+  [FiniteDimensional K E'] (W : AdelicVectorBundle.{max u w} S)
 
 /-- The literal general ordered list agrees with the already produced actual
 Hermitian list because their actual filtration rank cuts agree. -/
 theorem generalHNOrderedSlope_eq_hermitianHNOrderedSlope
-    [hW : W.toNormFamily.IsHermitian] (j : Fin (Module.finrank K E')) :
+    [hW : W.toNormFamily.IsHermitian] (j : Fin (Module.finrank K W)) :
     W.generalHNOrderedSlope j = W.hermitianHNOrderedSlope j := by
   have hcut : ∀ t : ℝ, t ≤ W.generalHNOrderedSlope j ↔
       t ≤ W.hermitianHNOrderedSlope j := by

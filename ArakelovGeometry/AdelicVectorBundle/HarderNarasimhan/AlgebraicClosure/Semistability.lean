@@ -41,12 +41,12 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 /-- The actual source semistability predicate and actual mean semistability
 agree for a Hermitian bundle, preserving both positive-rank conditions. -/
 theorem isSemistable_iff_isMeanSlopeSemistable_of_isHermitian
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle.{max u w} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
     V.IsSemistable ↔ V.IsMeanSlopeSemistable := by
-  by_cases hr : 0 < Module.finrank K E
+  by_cases hr : 0 < Module.finrank K V
   · rw [V.isSemistable_iff_modifiedSlope_eq_minimalSlope hr,
       V.modifiedSlope_eq_slope_of_isHermitian,
       V.isMeanSlopeSemistable_iff_minimalSlope_eq_slope_of_isHermitian hr]
@@ -71,7 +71,7 @@ local instance hermitianClosedSemistabilityProper : (S.algebraicExtension L).IsP
 /-- Source positive-rank semistability is preserved and reflected by actual
 closed Hermitian extension. Both rank-zero bundles fail this predicate. -/
 theorem isMeanSlopeSemistable_hermitianScalarExtension_iff_of_isAlgClosed
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
@@ -80,14 +80,14 @@ theorem isMeanSlopeSemistable_hermitianScalarExtension_iff_of_isAlgClosed
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
     W.IsMeanSlopeSemistable (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) ↔ V.IsMeanSlopeSemistable := by
   intro hLN hLS W
-  by_cases hr : 0 < Module.finrank K E
-  · have hrL : 0 < Module.finrank L (L ⊗[K] E) := by
+  by_cases hr : 0 < Module.finrank K V
+  · have hrL : 0 < Module.finrank L (L ⊗[K] V) := by
       rwa [Module.finrank_baseChange]
     rw [W.isMeanSlopeSemistable_iff_maximalSlope_eq_slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) hrL,
       V.isMeanSlopeSemistable_iff_maximalSlope_eq_slope hr,
       V.maximalSlope_hermitianScalarExtension_of_isAlgClosed,
       V.slope_hermitianScalarExtension_of_isAlgClosed]
-  · have hrL : ¬ 0 < Module.finrank L (L ⊗[K] E) := by
+  · have hrL : ¬ 0 < Module.finrank L (L ⊗[K] V) := by
       rwa [Module.finrank_baseChange]
     constructor
     · intro hs
@@ -111,7 +111,7 @@ local instance hermitianClosedSourceSemistabilityProper :
 /-- The actual source semistability condition is preserved and reflected by
 closed Hermitian extension of a perfect field, through the produced mean bridge. -/
 theorem isSemistable_hermitianScalarExtension_iff_of_isAlgClosed
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle.{max u w} S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)

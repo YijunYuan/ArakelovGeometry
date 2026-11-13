@@ -31,7 +31,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- Each actual left-completed cut is an actual relaxed threshold span.
 This is subspace stabilization, not attainment of degrees at the cut itself. -/
-theorem exists_minimaFiltration_eq_degreeThresholdSpan (V : AdelicVectorBundle S E)
+theorem exists_minimaFiltration_eq_degreeThresholdSpan (V : AdelicVectorBundle S)
     (t : ℝ) : ∃ ε : ℝ, 0 < ε ∧ V.minimaFiltration t = V.degreeThresholdSpan (t - ε) := by
   classical
   let : Nonempty {ε : ℝ // 0 < ε} := ⟨⟨1, zero_lt_one⟩⟩
@@ -54,7 +54,7 @@ theorem exists_minimaFiltration_eq_degreeThresholdSpan (V : AdelicVectorBundle S
 
 /-- Actual completed filtration rank is characterized by the extended supremum
 minimum. The natural-index endpoint extensions are also covered. -/
-theorem le_finrank_minimaFiltration_iff (V : AdelicVectorBundle S E) (i : ℕ) (t : ℝ) :
+theorem le_finrank_minimaFiltration_iff (V : AdelicVectorBundle S) (i : ℕ) (t : ℝ) :
     i ≤ Module.finrank K (V.minimaFiltration t) ↔ (t : EReal) ≤ V.logarithmicMinimum i := by
   constructor
   · intro hi
@@ -82,9 +82,9 @@ theorem le_finrank_minimaFiltration_iff (V : AdelicVectorBundle S E) (i : ℕ) (
 /-- The actual completed rank is detected by independent high-degree families
 at every relaxed threshold. These families may depend on the relaxation. -/
 theorem le_finrank_minimaFiltration_iff_forall_exists_linearIndependent
-    (V : AdelicVectorBundle S E) (i : ℕ) (t : ℝ) :
+    (V : AdelicVectorBundle S) (i : ℕ) (t : ℝ) :
     i ≤ Module.finrank K (V.minimaFiltration t) ↔
-      ∀ ε : ℝ, 0 < ε → ∃ s : Fin i → {x : E // x ≠ 0},
+      ∀ ε : ℝ, 0 < ε → ∃ s : Fin i → {x : V // x ≠ 0},
         LinearIndependent K (fun j => (s j).val) ∧
         ∀ j, t - ε ≤ V.vectorDegree (s j) := by
   constructor
@@ -97,12 +97,12 @@ theorem le_finrank_minimaFiltration_iff_forall_exists_linearIndependent
     exact (V.le_finrank_degreeThresholdSpan_iff i (t - ε)).mpr (h ε hε)
 
 /-- The actual filtration rank counts only valid source minimum indices. -/
-theorem finrank_minimaFiltration_eq_card (V : AdelicVectorBundle S E) (t : ℝ) :
+theorem finrank_minimaFiltration_eq_card (V : AdelicVectorBundle S) (t : ℝ) :
     Module.finrank K (V.minimaFiltration t) =
-      ((Finset.Icc 1 (Module.finrank K E)).filter
+      ((Finset.Icc 1 (Module.finrank K V)).filter
         (fun i => (t : EReal) ≤ V.logarithmicMinimum i)).card := by
   classical
-  have hset : (Finset.Icc 1 (Module.finrank K E)).filter
+  have hset : (Finset.Icc 1 (Module.finrank K V)).filter
       (fun i => (t : EReal) ≤ V.logarithmicMinimum i) =
       Finset.Icc 1 (Module.finrank K (V.minimaFiltration t)) := by
     ext i
@@ -118,7 +118,7 @@ theorem finrank_minimaFiltration_eq_card (V : AdelicVectorBundle S E) (t : ℝ) 
 
 /-- A real filtration cut is zero exactly when it is above the first minimum.
 This also holds for the rank-zero first-minimum convention. -/
-theorem minimaFiltration_eq_bot_iff (V : AdelicVectorBundle S E) (t : ℝ) :
+theorem minimaFiltration_eq_bot_iff (V : AdelicVectorBundle S) (t : ℝ) :
     V.minimaFiltration t = ⊥ ↔ V.logarithmicMinimum 1 < (t : EReal) := by
   constructor
   · intro hΦ
@@ -136,20 +136,20 @@ theorem minimaFiltration_eq_bot_iff (V : AdelicVectorBundle S E) (t : ℝ) :
 
 /-- A real filtration cut is the whole space exactly when it is at most the
 last minimum, including the rank-zero last-minimum convention. -/
-theorem minimaFiltration_eq_top_iff (V : AdelicVectorBundle S E) (t : ℝ) :
+theorem minimaFiltration_eq_top_iff (V : AdelicVectorBundle S) (t : ℝ) :
     V.minimaFiltration t = ⊤ ↔
-      (t : EReal) ≤ V.logarithmicMinimum (Module.finrank K E) := by
+      (t : EReal) ≤ V.logarithmicMinimum (Module.finrank K V) := by
   constructor
   · intro hΦ
-    apply (V.le_finrank_minimaFiltration_iff (Module.finrank K E) t).mp
+    apply (V.le_finrank_minimaFiltration_iff (Module.finrank K V) t).mp
     rw [hΦ, finrank_top]
   · intro ht
-    have hr := (V.le_finrank_minimaFiltration_iff (Module.finrank K E) t).mpr ht
+    have hr := (V.le_finrank_minimaFiltration_iff (Module.finrank K V) t).mpr ht
     exact Submodule.eq_top_of_finrank_eq (Nat.le_antisymm (Submodule.finrank_le _) hr)
 
 /-- Source page 4.3.69's completed-filtration supremum formula, with auxiliary
 natural-index endpoints also covered. -/
-theorem logarithmicMinimum_eq_iSup_finrank_minimaFiltration (V : AdelicVectorBundle S E)
+theorem logarithmicMinimum_eq_iSup_finrank_minimaFiltration (V : AdelicVectorBundle S)
     (i : ℕ) :
     V.logarithmicMinimum i =
       ⨆ (t : ℝ) (_ : i ≤ Module.finrank K (V.minimaFiltration t)), (t : EReal) := by

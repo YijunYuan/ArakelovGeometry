@@ -5,6 +5,8 @@ Authors: Yijun Yuan
 -/
 module
 
+public import ArakelovGeometry.LinearAlgebra.Filtration.Equiv
+
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.QuotientDegree
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Variation
 public import Mathlib.Algebra.Order.GroupWithZero.Finset
@@ -561,7 +563,7 @@ local notation "CenteredV" => (fun G : ℝ → Submodule K V ↦
 
 /-- The direct ordinary binary tensor interface: an actual centered negative
 candidate gives an actual centered unit global minimum. -/
-theorem exists_normalized_tensor_quotient_optimizer
+private theorem exists_normalized_tensor_quotient_optimizer_sameUniverse
     (q : E ⊗[K] V →ₗ[K] Q) (hq : Function.Surjective q)
     (hE : 0 < finrank K E) (hV : 0 < finrank K V)
     (F₀ : ℝ → Submodule K E) (G₀ : ℝ → Submodule K V)
@@ -613,5 +615,81 @@ theorem exists_normalized_tensor_quotient_optimizer
   simpa only [Fintype.sum_sum_type, Fintype.sum_unique] using hh
 
 end Binary
+
+section BinaryAcrossUniverses
+
+universe wE wV
+
+variable {K : Type*} [Field K] {E : Type wE} {V : Type wV} {Q : Type*}
+  [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  [AddCommGroup V] [Module K V] [FiniteDimensional K V]
+  [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
+
+set_option quotPrecheck false in
+local notation "CenteredE" => (fun F : ℝ → Submodule K E ↦
+  Antitone F ∧ (∃ t, F t = ⊥) ∧ (∃ t, F t = ⊤) ∧
+  (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t) ∧ filtrationExpectation F = 0)
+set_option quotPrecheck false in
+local notation "CenteredV" => (fun G : ℝ → Submodule K V ↦
+  Antitone G ∧ (∃ t, G t = ⊥) ∧ (∃ t, G t = ⊤) ∧
+  (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → G s = G t) ∧ filtrationExpectation G = 0)
+
+/-- A centered negative candidate gives an actual centered unit global minimum,
+for factors in independent universes. -/
+theorem exists_normalized_tensor_quotient_optimizer
+    (q : E ⊗[K] V →ₗ[K] Q) (hq : Function.Surjective q)
+    (hE : 0 < finrank K E) (hV : 0 < finrank K V)
+    (F₀ : ℝ → Submodule K E) (G₀ : ℝ → Submodule K V)
+    (hF₀ : CenteredE F₀) (hG₀ : CenteredV G₀)
+    (hneg₀ : filtrationExpectation (fun t ↦ (tensorFiltration F₀ G₀ t).map q) < 0) :
+    ∃ (P : ℝ → Submodule K E) (R : ℝ → Submodule K V),
+      CenteredE P ∧ CenteredV R ∧ filtrationPairing P P + filtrationPairing R R = 1 ∧
+      filtrationExpectation (fun t ↦ (tensorFiltration P R t).map q) < 0 ∧
+      ∀ (F : ℝ → Submodule K E) (G : ℝ → Submodule K V),
+        CenteredE F → CenteredV G → 0 < filtrationPairing F F + filtrationPairing G G →
+        filtrationExpectation (fun t ↦ (tensorFiltration P R t).map q) ≤
+          filtrationExpectation (fun t ↦ (tensorFiltration F G t).map q) /
+            Real.sqrt (filtrationPairing F F + filtrationPairing G G) := by
+  let e : ULift.{wV} E ≃ₗ[K] E := ULift.moduleEquiv
+  let d : ULift.{wE} V ≃ₗ[K] V := ULift.moduleEquiv
+  let q' := q.comp (TensorProduct.congr e d).toLinearMap
+  have hvalue (F : ℝ → Submodule K (ULift.{wV} E))
+      (G : ℝ → Submodule K (ULift.{wE} V)) :
+      filtrationExpectation (fun t ↦ (tensorFiltration F G t).map q') =
+        filtrationExpectation (fun t ↦ (tensorFiltration
+          (fun s ↦ (F s).map e.toLinearMap) (fun s ↦ (G s).map d.toLinearMap) t).map q) := by
+    congr 1
+    funext t
+    change (tensorFiltration F G t).map (q.comp (TensorProduct.map e.toLinearMap d.toLinearMap)) = _
+    rw [map_comp, tensorFiltration_map]
+  have he (F : ℝ → Submodule K E) :
+      (fun t ↦ ((F t).map e.symm.toLinearMap).map e.toLinearMap) = F := by
+    funext t
+    rw [← map_comp, e.comp_symm, map_id]
+  have hd (G : ℝ → Submodule K V) :
+      (fun t ↦ ((G t).map d.symm.toLinearMap).map d.toLinearMap) = G := by
+    funext t
+    rw [← map_comp, d.comp_symm, map_id]
+  obtain ⟨P, R, hP, hR, hunit, hneg, hmin⟩ :=
+    exists_normalized_tensor_quotient_optimizer_sameUniverse q'
+      (hq.comp (TensorProduct.congr e d).surjective)
+      (by simpa only [e.finrank_eq] using hE) (by simpa only [d.finrank_eq] using hV)
+      (fun t ↦ (F₀ t).map e.symm.toLinearMap) (fun t ↦ (G₀ t).map d.symm.toLinearMap)
+      (centered_filtration_map_equiv e.symm F₀ hF₀)
+      (centered_filtration_map_equiv d.symm G₀ hG₀)
+      (by rw [hvalue, he, hd]; exact hneg₀)
+  refine ⟨fun t ↦ (P t).map e.toLinearMap, fun t ↦ (R t).map d.toLinearMap,
+    centered_filtration_map_equiv e P hP, centered_filtration_map_equiv d R hR,
+    ?_, (hvalue P R).symm.trans_lt hneg, ?_⟩
+  · simpa only [filtrationPairing_map_equiv] using hunit
+  · intro F G hF hG hpos
+    have hh := hmin (fun t ↦ (F t).map e.symm.toLinearMap)
+      (fun t ↦ (G t).map d.symm.toLinearMap)
+      (centered_filtration_map_equiv e.symm F hF)
+      (centered_filtration_map_equiv d.symm G hG)
+      (by simpa only [filtrationPairing_map_equiv] using hpos)
+    simpa only [hvalue, he, hd, filtrationPairing_map_equiv] using hh
+
+end BinaryAcrossUniverses
 
 end Submodule

@@ -83,7 +83,7 @@ variable [FiniteDimensional K E] [FiniteDimensional K F]
 /-- A completed contraction has nonpositive actual lower-integral height,
 including the zero map, whose height is `⊥`. -/
 theorem mapHeight_le_zero_of_completed_contraction
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (f : E →ₗ[K] F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (f : V →ₗ[K] W)
     (hf : ∀ ω x, W.norm ω (f.baseChange (S.ϕ ω).Completion x) ≤ V.norm ω x) :
     V.mapHeight W f ≤ 0 := by
   by_cases hz : f = 0
@@ -105,7 +105,7 @@ variable [S.IsProper]
 /-- An equal-rank completed contraction compares actual real degrees.
 The determinant argument also applies in rank zero. -/
 theorem degree_le_of_completed_contraction
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.norm ω (e.toLinearMap.baseChange (S.ϕ ω).Completion x) ≤ V.norm ω x) :
@@ -134,8 +134,8 @@ theorem degree_le_of_completed_contraction
 
 /-- The actual quotient degrees in the second isomorphism theorem are ordered
 in the direction induced by its completed contraction. -/
-theorem degree_quotientInf_le_degree_supQuotient (V : AdelicVectorBundle S E)
-    (U W : Submodule K E)
+theorem degree_quotientInf_le_degree_supQuotient (V : AdelicVectorBundle S)
+    (U W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     ((V.restrictOfMeasurableBase U).quotientOfMeasurableBase
@@ -147,8 +147,8 @@ theorem degree_quotientInf_le_degree_supQuotient (V : AdelicVectorBundle S E)
   exact V.toNormFamily.quotientInfEquivSupQuotient_norm_le U W
 
 /-- Actual Hermitian degree is supermodular on all rational subspaces. -/
-theorem degree_restrict_inf_add_sup_ge_of_isHermitian (V : AdelicVectorBundle S E)
-    (U W : Submodule K E)
+theorem degree_restrict_inf_add_sup_ge_of_isHermitian (V : AdelicVectorBundle S)
+    (U W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :

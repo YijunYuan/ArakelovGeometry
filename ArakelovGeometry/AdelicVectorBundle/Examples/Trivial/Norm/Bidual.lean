@@ -151,7 +151,7 @@ namespace AdelicVectorBundle
 
 open AdelicStructure
 
-variable (V : AdelicVectorBundle (singleTrivialPlace K) E)
+variable (V : AdelicVectorBundle.{w} (singleTrivialPlace K))
   [hS : (singleTrivialPlace K).HasMeasurableBase]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
@@ -184,7 +184,7 @@ theorem le_minimalSlope_iff_trivialSeminorm_bidual_le (t : ℝ) :
   rw [← V.minimalSlope_bidualOfMeasurableBase]
   exact (V.bidualOfMeasurableBase).le_minimalSlope_iff_trivialSeminorm_le
     (hV := (V.toNormFamily.dual.dual_isUltrametric.pullback
-      (Module.Dual.eval K E) (Module.eval_apply_injective K))) t
+      (Module.Dual.eval K V) (Module.eval_apply_injective K))) t
 
 open Classical in
 /-- A positive-rank actual constant bidual has equal ordinary, modified,
@@ -192,7 +192,7 @@ and minimal slopes for the original arbitrary norm. -/
 theorem slopes_eq_neg_log_of_trivialSeminorm_bidual_eq_const
     {c : ℝ} (hc : 0 < c)
     (h : ∀ x, x ≠ 0 → (V.bidualOfMeasurableBase).toNormFamily.trivialSeminorm x = c)
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     V.slope = -Real.log c ∧ V.modifiedSlope = -Real.log c ∧
       V.minimalSlope = (-Real.log c : ℝ) := by
   have hm : V.minimalSlope = (-Real.log c : ℝ) := by
@@ -200,7 +200,7 @@ theorem slopes_eq_neg_log_of_trivialSeminorm_bidual_eq_const
     exact (V.bidualOfMeasurableBase).minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const
       hc h hr
   have hs : V.slope = -Real.log c := by
-    change V.degree / (Module.finrank K E : ℝ) = _
+    change V.degree / (Module.finrank K V : ℝ) = _
     rw [← V.degree_bidualOfMeasurableBase]
     exact (V.bidualOfMeasurableBase).slope_eq_neg_log_of_trivialSeminorm_eq_const
       hc h hr
@@ -216,7 +216,7 @@ open Classical in
 /-- Source4.3.61 with its necessary positive-rank scope: the original
 arbitrary norm is semistable exactly when its actual bidual is constant. -/
 theorem isSemistable_iff_exists_trivialSeminorm_bidual_eq_const
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     V.IsSemistable ↔ ∃ c : ℝ, 0 < c ∧
       ∀ x, x ≠ 0 → (V.bidualOfMeasurableBase).toNormFamily.trivialSeminorm x = c := by
   constructor

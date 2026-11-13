@@ -37,7 +37,7 @@ local instance hermitianGaloisHNFactorScalarExtensionProper :
 /-- Corresponding actual canonical HN factors have identical real mean
 slopes. The target index bound is produced from the actual length equality. -/
 theorem slope_hermitianHNFactor_hermitianScalarExtension_of_finiteGalois
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] (i : ℕ)
     (hi : i < V.hermitianHNLength) :
@@ -63,7 +63,7 @@ theorem slope_hermitianHNFactor_hermitianScalarExtension_of_finiteGalois
             (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) ⟨i, hj⟩
     _ = (W.quotientOfMeasurableBase
         ((V.hermitianHNTerm i).baseChange L) (hS := ⟨hLS⟩)).maximalSlope
-          (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := congrArg (fun U : Submodule L (L ⊗[K] E) ↦
+          (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := congrArg (fun U : Submodule L (L ⊗[K] V) ↦
             (W.quotientOfMeasurableBase U (hS := ⟨hLS⟩)).maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩))
               (V.hermitianHNTerm_baseChange_hermitianScalarExtension_of_finiteGalois
                  i).symm
@@ -79,7 +79,7 @@ theorem slope_hermitianHNFactor_hermitianScalarExtension_of_finiteGalois
 /-- The actual real threshold cut indices agree, including the empty factor
 set and the empty retained set, through produced canonical factor means. -/
 theorem hermitianHNCut_hermitianScalarExtension_of_finiteGalois
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] (t : ℝ) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
@@ -121,7 +121,7 @@ theorem hermitianHNCut_hermitianScalarExtension_of_finiteGalois
 /-- The genuine canonical real HN filtration commutes with finite Galois
 Hermitian extension at every real threshold, in every rank. -/
 theorem hermitianHNFiltration_baseChange_hermitianScalarExtension_of_finiteGalois
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] (t : ℝ) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)

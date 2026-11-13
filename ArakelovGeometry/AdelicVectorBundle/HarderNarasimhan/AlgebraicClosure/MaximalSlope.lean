@@ -39,17 +39,17 @@ local instance hermitianClosedMaximalSlopeProper : (S.algebraicExtension L).IsPr
 /-- The actual first destabilizer over a closed extension descends
 uniquely, with coefficient stability proved rather than assumed. -/
 theorem existsUnique_baseChange_destabilizingSubspace_hermitianScalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    [hH : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K V) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
     let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
-    let hrL : 0 < Module.finrank L (L ⊗[K] E) :=
-      (Module.finrank_baseChange (R := L) (S := K) (M' := E)).symm ▸ hr
-    ∃! U : Submodule K E, U.baseChange L = W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
+    let hrL : 0 < Module.finrank L (L ⊗[K] V) :=
+      (Module.finrank_baseChange (R := L) (S := K) (M' := V)).symm ▸ hr
+    ∃! U : Submodule K V, U.baseChange L = W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
         (hV := hLH) hrL := by
   intro hLN hLS W hLH hrL
   let D := W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL
@@ -65,7 +65,7 @@ theorem existsUnique_baseChange_destabilizingSubspace_hermitianScalarExtension_o
 /-- Actual closed Hermitian extension preserves maximal slope in
 every rank, using the produced destabilizer descent and genuine restriction. -/
 theorem maximalSlope_hermitianScalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
@@ -74,16 +74,16 @@ theorem maximalSlope_hermitianScalarExtension_of_isAlgClosed
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
     W.maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) = V.maximalSlope := by
   intro hLN hLS W
-  have hdim (U : Submodule K E) :
+  have hdim (U : Submodule K V) :
       Module.finrank L (U.baseChange L) = Module.finrank K U :=
     (Submodule.toBaseChange.toLinearEquiv L U).finrank_eq.symm.trans Module.finrank_baseChange
   apply le_antisymm
-  · by_cases hz : Module.finrank K E = 0
+  · by_cases hz : Module.finrank K V = 0
     · rw [W.maximalSlope_eq_bot_of_finrank_eq_zero (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
         (Module.finrank_baseChange.trans hz)]
       exact bot_le
-    · have hr : 0 < Module.finrank K E := Nat.pos_of_ne_zero hz
-      have hrL : 0 < Module.finrank L (L ⊗[K] E) := by
+    · have hr : 0 < Module.finrank K V := Nat.pos_of_ne_zero hz
+      have hrL : 0 < Module.finrank L (L ⊗[K] V) := by
         rwa [Module.finrank_baseChange]
       let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
       let D := W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL

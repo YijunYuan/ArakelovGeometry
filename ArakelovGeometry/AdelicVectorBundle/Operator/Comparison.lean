@@ -94,4 +94,28 @@ theorem operatorNorm_comp_equiv {E' : Type w''} [AddCommGroup E'] [Module K E']
     simpa only [pullback_norm, LinearMap.baseChange_comp, LinearMap.comp_apply,
       ← LinearEquiv.coe_toLinearMap, LinearEquiv.coe_baseChange] using hx
 
+omit [FiniteDimensional K F] in
+/-- Pulling back the target norm composes the target map on each completed fibre. -/
+theorem operatorNorm_pullback_target {F' : Type*} [AddCommGroup F'] [Module K F']
+    (ξ : NormFamily S E) (η : NormFamily S F)
+    (d : F' →ₗ[K] F) (hd : Function.Injective d) (f : E →ₗ[K] F') (ω : S.Ω) :
+    ξ.operatorNorm (η.pullback d hd) ω f = ξ.operatorNorm η ω (d.comp f) := by
+  simp only [operatorNorm_eq_sSup, pullback_norm,
+    LinearMap.baseChange_comp, LinearMap.comp_apply]
+
+omit [FiniteDimensional K F] in
+/-- Simultaneous change of coordinates in both factors preserves the operator norm. -/
+theorem operatorNorm_pullback_equiv
+    {E' F' : Type*} [AddCommGroup E'] [Module K E'] [FiniteDimensional K E']
+    [AddCommGroup F'] [Module K F']
+    (ξ : NormFamily S E) (η : NormFamily S F) (e : E' ≃ₗ[K] E) (d : F' ≃ₗ[K] F)
+    (f : E →ₗ[K] F) (ω : S.Ω) :
+    (ξ.pullback e.toLinearMap e.injective).operatorNorm
+      (η.pullback d.toLinearMap d.injective) ω
+      (d.symm.toLinearMap.comp (f.comp e.toLinearMap)) = ξ.operatorNorm η ω f := by
+  rw [operatorNorm_pullback_target]
+  have hc : d.toLinearMap.comp (d.symm.toLinearMap.comp (f.comp e.toLinearMap)) =
+      f.comp e.toLinearMap := by ext x; simp
+  rw [hc, operatorNorm_comp_equiv]
+
 end ArakelovGeometry.NormFamily

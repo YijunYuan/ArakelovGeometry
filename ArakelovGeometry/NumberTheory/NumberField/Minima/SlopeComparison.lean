@@ -32,18 +32,19 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 /-- Integrating the given bound on actual completed vectors gives the original vector-degree
 shift; no vector-degree comparison is assumed. -/
 theorem vectorDegree_sub_integral_le
-    (P Q : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (P : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
+    (Q : NormFamily (normalizedNumberFieldAdelicStructure K) P) [hQ : Q.IsAdelic]
     (b : (normalizedNumberFieldAdelicStructure K).Ω → ℝ)
     (hb : Integrable b (normalizedNumberFieldAdelicStructure K).v)
-    (h : ∀ ω z, Q.toNormFamily.norm ω z ≤ Real.exp (b ω) * P.toNormFamily.norm ω z)
-    (s : {x : E // x ≠ 0}) :
+    (h : ∀ ω z, Q.norm ω z ≤ Real.exp (b ω) * P.toNormFamily.norm ω z)
+    (s : {x : P // x ≠ 0}) :
     P.vectorDegree s - (∫ ω, b ω ∂(normalizedNumberFieldAdelicStructure K).v) ≤
-      Q.vectorDegree s := by
+      Q.toAdelicVectorBundle.vectorDegree s := by
   have hp := P.integrable_logNorm s.val
-  have hq := Q.integrable_logNorm s.val
+  have hq := Q.toAdelicVectorBundle.integrable_logNorm s.val
   have hl (ω : (normalizedNumberFieldAdelicStructure K).Ω) :
-      Q.toNormFamily.logNorm s.val ω ≤ b ω + P.toNormFamily.logNorm s.val ω := by
-    have he := Real.log_le_log (Q.toNormFamily.norm_rational_pos ω s.property)
+      Q.logNorm s.val ω ≤ b ω + P.toNormFamily.logNorm s.val ω := by
+    have he := Real.log_le_log (Q.norm_rational_pos ω s.property)
       (h ω (1 ⊗ₜ[K] s.val))
     rwa [Real.log_mul (Real.exp_ne_zero _) (P.toNormFamily.norm_rational_pos ω s.property).ne',
       Real.log_exp] at he
@@ -56,14 +57,15 @@ theorem vectorDegree_sub_integral_le
 /-- Actual independent threshold families give the same finite translation of every
 ordinary logarithmic minimum, including zero and above-rank indices. -/
 theorem logarithmicMinimum_sub_integral_le
-    (P Q : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (P : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
+    (Q : NormFamily (normalizedNumberFieldAdelicStructure K) P) [hQ : Q.IsAdelic]
     (b : (normalizedNumberFieldAdelicStructure K).Ω → ℝ)
     (hb : Integrable b (normalizedNumberFieldAdelicStructure K).v)
-    (h : ∀ ω z, Q.toNormFamily.norm ω z ≤ Real.exp (b ω) * P.toNormFamily.norm ω z)
+    (h : ∀ ω z, Q.norm ω z ≤ Real.exp (b ω) * P.toNormFamily.norm ω z)
     (i : ℕ) :
     P.logarithmicMinimum i -
       ((∫ ω, b ω ∂(normalizedNumberFieldAdelicStructure K).v : ℝ) : EReal) ≤
-        Q.logarithmicMinimum i := by
+        Q.toAdelicVectorBundle.logarithmicMinimum i := by
   apply (EReal.sub_le_iff_le_add (Or.inl (EReal.coe_ne_bot _))
     (Or.inl (EReal.coe_ne_top _))).mpr
   apply iSup_le
@@ -72,10 +74,10 @@ theorem logarithmicMinimum_sub_integral_le
   intro ht
   obtain ⟨s, hli, hs⟩ := (P.le_finrank_degreeThresholdSpan_iff i t).mp ht
   have hlower : ((t - ∫ ω, b ω ∂(normalizedNumberFieldAdelicStructure K).v : ℝ) : EReal) ≤
-      Q.logarithmicMinimum i := by
-    apply Q.coe_le_logarithmicMinimum_of_linearIndependent s hli
+      Q.toAdelicVectorBundle.logarithmicMinimum i := by
+    apply Q.toAdelicVectorBundle.coe_le_logarithmicMinimum_of_linearIndependent s hli
     intro j
-    have hd := vectorDegree_sub_integral_le P Q b hb h (s j)
+    have hd := vectorDegree_sub_integral_le P (Q.toAdelicVectorBundle) b hb h (s j)
     linarith [hs j]
   rw [EReal.coe_sub] at hlower
   exact (EReal.sub_le_iff_le_add (Or.inl (EReal.coe_ne_bot _))
@@ -84,27 +86,28 @@ theorem logarithmicMinimum_sub_integral_le
 /-- Two literal pointwise completed-norm inequalities give the source two-sided ordinary
 minimum comparison. Every natural index retains its existing extended endpoint. -/
 theorem logarithmicMinimum_comparison
-    (P Q : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (P : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
+    (Q : NormFamily (normalizedNumberFieldAdelicStructure K) P) [hQ : Q.IsAdelic]
     (a b : (normalizedNumberFieldAdelicStructure K).Ω → ℝ)
     (ha : Integrable a (normalizedNumberFieldAdelicStructure K).v)
     (hb : Integrable b (normalizedNumberFieldAdelicStructure K).v)
-    (hlower : ∀ ω z, Real.exp (a ω) * P.toNormFamily.norm ω z ≤ Q.toNormFamily.norm ω z)
-    (hupper : ∀ ω z, Q.toNormFamily.norm ω z ≤ Real.exp (b ω) * P.toNormFamily.norm ω z)
+    (hlower : ∀ ω z, Real.exp (a ω) * P.toNormFamily.norm ω z ≤ Q.norm ω z)
+    (hupper : ∀ ω z, Q.norm ω z ≤ Real.exp (b ω) * P.toNormFamily.norm ω z)
     (i : ℕ) :
     P.logarithmicMinimum i -
         ((∫ ω, b ω ∂(normalizedNumberFieldAdelicStructure K).v : ℝ) : EReal) ≤
-      Q.logarithmicMinimum i ∧
-    Q.logarithmicMinimum i ≤ P.logarithmicMinimum i -
+      Q.toAdelicVectorBundle.logarithmicMinimum i ∧
+    Q.toAdelicVectorBundle.logarithmicMinimum i ≤ P.logarithmicMinimum i -
       ((∫ ω, a ω ∂(normalizedNumberFieldAdelicStructure K).v : ℝ) : EReal) := by
-  refine ⟨logarithmicMinimum_sub_integral_le P Q b hb hupper i, ?_⟩
+  refine ⟨logarithmicMinimum_sub_integral_le P (Q.toAdelicVectorBundle) b hb hupper i, ?_⟩
   have hreverse (ω : (normalizedNumberFieldAdelicStructure K).Ω) (z) :
-      P.toNormFamily.norm ω z ≤ Real.exp (-a ω) * Q.toNormFamily.norm ω z := by
+      P.toNormFamily.norm ω z ≤ Real.exp (-a ω) * Q.norm ω z := by
     calc
       _ = Real.exp (-a ω) * (Real.exp (a ω) * P.toNormFamily.norm ω z) := by
         rw [← mul_assoc, ← Real.exp_add]
         simp
       _ ≤ _ := mul_le_mul_of_nonneg_left (hlower ω z) (Real.exp_pos _).le
-  have h := logarithmicMinimum_sub_integral_le Q P (-a) ha.neg hreverse i
+  have h := logarithmicMinimum_sub_integral_le (Q.toAdelicVectorBundle) P (-a) ha.neg hreverse i
   simp only [Pi.neg_apply] at h
   rw [integral_neg] at h
   have he := (EReal.sub_le_iff_le_add (Or.inl (EReal.coe_ne_bot _))
@@ -114,23 +117,24 @@ theorem logarithmicMinimum_comparison
 /-- Enlarging every actual completed norm decreases the actual maximal slope. The proof
 uses determinant-degree monotonicity on every genuine completed restriction. -/
 theorem maximalSlope_antitone_norm
-    (P Q : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
-    (h : P.toNormFamily ≤ Q.toNormFamily) :
-    Q.maximalSlope ≤
+    (P : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
+    (Q : NormFamily (normalizedNumberFieldAdelicStructure K) P) [hQ : Q.IsAdelic]
+    (h : P.toNormFamily ≤ Q) :
+    Q.toAdelicVectorBundle.maximalSlope ≤
       P.maximalSlope := by
-  apply Q.maximalSlope_le
+  apply Q.toAdelicVectorBundle.maximalSlope_le
   intro F hF
   have hrestrict :
       (P.restrictOfMeasurableBase F).toNormFamily ≤
-        (Q.restrictOfMeasurableBase F).toNormFamily := by
+        (Q.toAdelicVectorBundle.restrictOfMeasurableBase F).toNormFamily := by
     intro ω z
     exact h ω (F.subtype.baseChange _ z)
   have hd := AdelicVectorBundle.degree_antitone
     (P.restrictOfMeasurableBase F)
-    (Q.restrictOfMeasurableBase F)
-    hrestrict
+    (Q.toAdelicVectorBundle.restrictOfMeasurableBase F).toNormFamily
+    (hW := (Q.toAdelicVectorBundle.restrictOfMeasurableBase F).toIsAdelic) hrestrict
   have hs :
-      (Q.restrictOfMeasurableBase F).slope
+      (Q.toAdelicVectorBundle.restrictOfMeasurableBase F).slope
           ≤
         (P.restrictOfMeasurableBase F).slope
           :=
@@ -141,14 +145,17 @@ theorem maximalSlope_antitone_norm
 /-- Actual exponential rescaling and norm antitonicity give the maximal-slope shift from
 an upper completed-norm bound, including the zero-space convention. -/
 theorem maximalSlope_sub_integral_le
-    (P Q : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (P : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
+    (Q : NormFamily (normalizedNumberFieldAdelicStructure K) P) [hQ : Q.IsAdelic]
     (b : (normalizedNumberFieldAdelicStructure K).Ω → ℝ)
     (hb : Integrable b (normalizedNumberFieldAdelicStructure K).v)
-    (h : ∀ ω z, Q.toNormFamily.norm ω z ≤ Real.exp (b ω) * P.toNormFamily.norm ω z) :
+    (h : ∀ ω z, Q.norm ω z ≤ Real.exp (b ω) * P.toNormFamily.norm ω z) :
     P.maximalSlope -
       ((∫ ω, b ω ∂(normalizedNumberFieldAdelicStructure K).v : ℝ) : EReal) ≤
-        Q.maximalSlope := by
-  have he := maximalSlope_antitone_norm Q (P.scaleExp b Measurable.of_discrete hb)
+        Q.toAdelicVectorBundle.maximalSlope := by
+  have he := maximalSlope_antitone_norm Q.toAdelicVectorBundle
+    (P.scaleExp b Measurable.of_discrete hb).toNormFamily
+    (hQ := (P.scaleExp b Measurable.of_discrete hb).toIsAdelic)
     (by intro ω z; exact h ω z)
   rwa [P.maximalSlope_scaleExp b Measurable.of_discrete hb
    ] at he
@@ -156,19 +163,20 @@ theorem maximalSlope_sub_integral_le
 /-- The source two-sided actual maximal-slope comparison, derived from the completed-norm
 inequalities and the integrable exponents alone. -/
 theorem maximalSlope_comparison
-    (P Q : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (P : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
+    (Q : NormFamily (normalizedNumberFieldAdelicStructure K) P) [hQ : Q.IsAdelic]
     (a b : (normalizedNumberFieldAdelicStructure K).Ω → ℝ)
     (ha : Integrable a (normalizedNumberFieldAdelicStructure K).v)
     (hb : Integrable b (normalizedNumberFieldAdelicStructure K).v)
-    (hlower : ∀ ω z, Real.exp (a ω) * P.toNormFamily.norm ω z ≤ Q.toNormFamily.norm ω z)
-    (hupper : ∀ ω z, Q.toNormFamily.norm ω z ≤ Real.exp (b ω) * P.toNormFamily.norm ω z) :
+    (hlower : ∀ ω z, Real.exp (a ω) * P.toNormFamily.norm ω z ≤ Q.norm ω z)
+    (hupper : ∀ ω z, Q.norm ω z ≤ Real.exp (b ω) * P.toNormFamily.norm ω z) :
     P.maximalSlope -
         ((∫ ω, b ω ∂(normalizedNumberFieldAdelicStructure K).v : ℝ) : EReal) ≤
-      Q.maximalSlope ∧
-    Q.maximalSlope ≤
+      Q.toAdelicVectorBundle.maximalSlope ∧
+    Q.toAdelicVectorBundle.maximalSlope ≤
       P.maximalSlope -
         ((∫ ω, a ω ∂(normalizedNumberFieldAdelicStructure K).v : ℝ) : EReal) := by
-  refine ⟨maximalSlope_sub_integral_le P Q b hb hupper, ?_⟩
+  refine ⟨maximalSlope_sub_integral_le P (Q.toAdelicVectorBundle) b hb hupper, ?_⟩
   have he := maximalSlope_antitone_norm (P.scaleExp a Measurable.of_discrete ha) Q
     (by intro ω z; exact hlower ω z)
   rwa [P.maximalSlope_scaleExp a Measurable.of_discrete ha
@@ -177,28 +185,29 @@ theorem maximalSlope_comparison
 /-- The actual integrable completed-fibre distance bounds all ordinary minima and the
 actual maximal slope by the given real integral bound. -/
 theorem minima_and_maximalSlope_of_integral_localDist_le
-    (P Q : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
-    (hδ : Integrable (P.toNormFamily.localDist Q.toNormFamily)
+    (P : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
+    (Q : NormFamily (normalizedNumberFieldAdelicStructure K) P) [hQ : Q.IsAdelic]
+    (hδ : Integrable (P.toNormFamily.localDist Q)
       (normalizedNumberFieldAdelicStructure K).v)
-    {ε : ℝ} (hε : (∫ ω, P.toNormFamily.localDist Q.toNormFamily ω
+    {ε : ℝ} (hε : (∫ ω, P.toNormFamily.localDist Q ω
       ∂(normalizedNumberFieldAdelicStructure K).v) ≤ ε) :
-    (∀ i : ℕ, P.logarithmicMinimum i - (ε : EReal) ≤ Q.logarithmicMinimum i ∧
-      Q.logarithmicMinimum i ≤ P.logarithmicMinimum i + (ε : EReal)) ∧
+    (∀ i : ℕ, P.logarithmicMinimum i - (ε : EReal) ≤ Q.toAdelicVectorBundle.logarithmicMinimum i ∧
+      Q.toAdelicVectorBundle.logarithmicMinimum i ≤ P.logarithmicMinimum i + (ε : EReal)) ∧
     P.maximalSlope -
         (ε : EReal) ≤
-      Q.maximalSlope ∧
-    Q.maximalSlope ≤
+      Q.toAdelicVectorBundle.maximalSlope ∧
+    Q.toAdelicVectorBundle.maximalSlope ≤
       P.maximalSlope +
         (ε : EReal) := by
-  let δ := P.toNormFamily.localDist Q.toNormFamily
+  let δ := P.toNormFamily.localDist Q
   have hnorm (ω : (normalizedNumberFieldAdelicStructure K).Ω) (z) :
-      Real.exp (-δ ω) * P.toNormFamily.norm ω z ≤ Q.toNormFamily.norm ω z ∧
-        Q.toNormFamily.norm ω z ≤ Real.exp (δ ω) * P.toNormFamily.norm ω z :=
-    ((P.toNormFamily.localDist_le_iff Q.toNormFamily ω
-      (P.toNormFamily.localDist_nonneg Q.toNormFamily ω)).mp le_rfl) z
-  have hm := logarithmicMinimum_comparison P Q (-δ) δ hδ.neg hδ
+      Real.exp (-δ ω) * P.toNormFamily.norm ω z ≤ Q.norm ω z ∧
+        Q.norm ω z ≤ Real.exp (δ ω) * P.toNormFamily.norm ω z :=
+    ((P.toNormFamily.localDist_le_iff Q ω
+      (P.toNormFamily.localDist_nonneg Q ω)).mp le_rfl) z
+  have hm := logarithmicMinimum_comparison P (Q.toAdelicVectorBundle) (-δ) δ hδ.neg hδ
     (fun ω z => (hnorm ω z).1) (fun ω z => (hnorm ω z).2)
-  have hs := maximalSlope_comparison P Q (-δ) δ hδ.neg hδ
+  have hs := maximalSlope_comparison P (Q.toAdelicVectorBundle) (-δ) δ hδ.neg hδ
     (fun ω z => (hnorm ω z).1) (fun ω z => (hnorm ω z).2)
   simp only [Pi.neg_apply, integral_neg, EReal.coe_neg, sub_eq_add_neg, neg_neg] at hm hs
   refine ⟨fun i => ⟨?_, ?_⟩, ?_, ?_⟩

@@ -30,7 +30,7 @@ universe u v w
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} {E : Type w}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
-variable (V : AdelicVectorBundle S E)
+variable (V : AdelicVectorBundle.{w} S)
   [hreg : S.HasRegularBase]
   [hN : S.IsArchimedeanNormalized]
 
@@ -43,7 +43,7 @@ abbrev absoluteLogarithmicMinimaJumpSet : Finset ℝ :=
 valid indices under the actual absolute minimum's real-value projection. -/
 theorem absoluteLogarithmicMinimaJumpSet_eq_image :
     V.absoluteLogarithmicMinimaJumpSet =
-      (Finset.Icc 1 (Module.finrank K E)).image
+      (Finset.Icc 1 (Module.finrank K V)).image
         (fun i ↦ (V.absoluteLogarithmicMinimum i).toReal) := by
   classical
   unfold absoluteLogarithmicMinimaJumpSet logarithmicMinimaJumpSet
@@ -55,7 +55,7 @@ indices; the ordinary actual rank theorem supplies the whole statement. -/
 theorem finrank_absoluteMinimaFiltration_eq_card (t : ℝ) :
     Module.finrank (AlgebraicClosure K)
         ((V.ordinaryScalarExtension (L := AlgebraicClosure K)).minimaFiltration t) =
-      ((Finset.Icc 1 (Module.finrank K E)).filter
+      ((Finset.Icc 1 (Module.finrank K V)).filter
         (fun i ↦ (t : EReal) ≤ V.absoluteLogarithmicMinimum i)).card := by
   classical
   rw [finrank_minimaFiltration_eq_card
@@ -71,7 +71,7 @@ theorem exists_basis_absoluteMinimaFiltration_degree_ge (t : ℝ)
     ∃ b : Module.Basis (Fin (Module.finrank (AlgebraicClosure K) (W.minimaFiltration t)))
         (AlgebraicClosure K) (W.minimaFiltration t),
       ∀ j, t - ε ≤ W.vectorDegree
-        ⟨(b j : AlgebraicClosure K ⊗[K] E), fun h => b.ne_zero j (Subtype.ext h)⟩ :=
+        ⟨(b j : AlgebraicClosure K ⊗[K] V), fun h => b.ne_zero j (Subtype.ext h)⟩ :=
   exists_basis_minimaFiltration_degree_ge
     (V.ordinaryScalarExtension (L := AlgebraicClosure K)) t hε
 
@@ -81,7 +81,7 @@ variable [S.IsProper]
 absolute minima at valid original indices. No closure regularity is assumed. -/
 theorem mem_absoluteLogarithmicMinimaJumpSet_iff (c : ℝ) :
     c ∈ V.absoluteLogarithmicMinimaJumpSet ↔
-      ∃ i : ℕ, 1 ≤ i ∧ i ≤ Module.finrank K E ∧
+      ∃ i : ℕ, 1 ≤ i ∧ i ≤ Module.finrank K V ∧
         V.absoluteLogarithmicMinimum i = (c : EReal) := by
   classical
   rw [V.absoluteLogarithmicMinimaJumpSet_eq_image, Finset.mem_image]
@@ -102,7 +102,7 @@ theorem absoluteMinimaFiltration_eq_of_disjoint_jump_interval {a b : ℝ} (hab :
       (V.ordinaryScalarExtension (L := AlgebraicClosure K)).minimaFiltration b := by
   apply minimaFiltration_eq_of_minimum_profile
   intro i hi hr
-  have hir : i ≤ Module.finrank K E := by
+  have hir : i ≤ Module.finrank K V := by
     simpa only [Module.finrank_baseChange] using hr
   obtain ⟨c, hc⟩ := V.exists_absoluteLogarithmicMinimum_eq_coe hi hir
   change (a : EReal) ≤ V.absoluteLogarithmicMinimum i ↔

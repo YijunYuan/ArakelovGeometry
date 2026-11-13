@@ -32,8 +32,8 @@ variable {K : Type*} [Field K] {S : AdelicStructure K} [S.IsProper]
 
 /-- A quotient by a submodule proved to be zero has the original degree
 through its canonical completed isometry. -/
-theorem degree_quotient_of_eq_bot (V : AdelicVectorBundle S E)
-    (P : Submodule K E) (hP : P = ⊥)
+theorem degree_quotient_of_eq_bot (V : AdelicVectorBundle S)
+    (P : Submodule K V) (hP : P = ⊥)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.quotientOfMeasurableBase P).degree = V.degree := by
@@ -41,14 +41,13 @@ theorem degree_quotient_of_eq_bot (V : AdelicVectorBundle S E)
   apply degree_eq_of_completed_isometry _ _
     (P.quotEquivOfEqBot hP).symm
   intro ω z
-  simp only [quotientOfMeasurableBase_toNormFamily,
-    Submodule.coe_quotEquivOfEqBot_symm]
+  simp only [Submodule.coe_quotEquivOfEqBot_symm]
   apply V.toNormFamily.pushforward_norm_of_injective
   apply LinearMap.ker_eq_bot.mp
   exact (Submodule.ker_mkQ P).trans hP
 
 /-- The actual quotient by zero has the original degree. -/
-theorem degree_quotient_bot (V : AdelicVectorBundle S E)
+theorem degree_quotient_bot (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.quotientOfMeasurableBase ⊥).degree = V.degree :=
@@ -60,15 +59,15 @@ variable {L M : Type*} [Field L] [Field M] [Algebra K L] [Algebra K M]
 /-- The actual native subquotient degree transport compares restrictions by
 taking lower endpoint zero, without replacing their norm families. -/
 theorem degree_restrict_scalarExtension_algEquiv
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    (σ : L ≃ₐ[K] M) (B : Submodule L (L ⊗[K] E)) :
+    (σ : L ≃ₐ[K] M) (B : Submodule L (L ⊗[K] V)) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := L)
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := M)
     ((V.scalarExtension (L := M)).restrictOfMeasurableBase
-      (scalarExtensionSubspaceOrderIso (E := E) σ B)).degree
+      (scalarExtensionSubspaceOrderIso (E := V) σ B)).degree
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M))⟩) =
     ((V.scalarExtension (L := L)).restrictOfMeasurableBase B).degree
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) := by
@@ -80,12 +79,12 @@ theorem degree_restrict_scalarExtension_algEquiv
   let hM := hcount.algebraicExtension_of_isAlgClosed (L := M)
   let R := (V.scalarExtension (L := L)).restrictOfMeasurableBase B
   let T := (V.scalarExtension (L := M)).restrictOfMeasurableBase
-    (scalarExtensionSubspaceOrderIso (E := E) σ B)
-  have hbot : ((⊥ : Submodule L (L ⊗[K] E)).comap B.subtype) = ⊥ :=
+    (scalarExtensionSubspaceOrderIso (E := V) σ B)
+  have hbot : ((⊥ : Submodule L (L ⊗[K] V)).comap B.subtype) = ⊥ :=
     (Submodule.comap_bot _).trans (Submodule.ker_subtype B)
-  have htbot : ((scalarExtensionSubspaceOrderIso (E := E) σ ⊥).comap
-      (scalarExtensionSubspaceOrderIso (E := E) σ B).subtype) = ⊥ := by
-    rw [(scalarExtensionSubspaceOrderIso (E := E) σ).map_bot,
+  have htbot : ((scalarExtensionSubspaceOrderIso (E := V) σ ⊥).comap
+      (scalarExtensionSubspaceOrderIso (E := V) σ B).subtype) = ⊥ := by
+    rw [(scalarExtensionSubspaceOrderIso (E := V) σ).map_bot,
       Submodule.comap_bot, Submodule.ker_subtype]
   exact (T.degree_quotient_of_eq_bot _ htbot
     (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M))⟩)).symm.trans
@@ -95,15 +94,15 @@ theorem degree_restrict_scalarExtension_algEquiv
 /-- The transported actual restriction has the same mean degree in every
 rank, including the existing real division convention in rank zero. -/
 theorem slope_restrict_scalarExtension_algEquiv
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    (σ : L ≃ₐ[K] M) (B : Submodule L (L ⊗[K] E)) :
+    (σ : L ≃ₐ[K] M) (B : Submodule L (L ⊗[K] V)) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := L)
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := M)
     ((V.scalarExtension (L := M)).restrictOfMeasurableBase
-      (scalarExtensionSubspaceOrderIso (E := E) σ B)).slope
+      (scalarExtensionSubspaceOrderIso (E := V) σ B)).slope
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M))⟩) =
     ((V.scalarExtension (L := L)).restrictOfMeasurableBase B).slope
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) := by
@@ -116,7 +115,7 @@ theorem slope_restrict_scalarExtension_algEquiv
 /-- All actual subspace degrees transport; taking both suprema proves
 positive-degree invariance without assuming a maximizing subspace. -/
 theorem positiveDegree_scalarExtension_algEquiv
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     (σ : L ≃ₐ[K] M) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
@@ -139,18 +138,18 @@ theorem positiveDegree_scalarExtension_algEquiv
     have hd := V.degree_restrict_scalarExtension_algEquiv σ.symm B
     exact (EReal.coe_le_coe_iff.mpr hd.symm.le).trans
       ((V.scalarExtension (L := L)).degree_restrict_le_positiveDegree
-        (hN := ⟨hLN⟩) (scalarExtensionSubspaceOrderIso (E := E) σ.symm B))
+        (hN := ⟨hLN⟩) (scalarExtensionSubspaceOrderIso (E := V) σ.symm B))
   · apply positiveDegree_le _ (hN := ⟨hLN⟩)
     intro B
     have hd := V.degree_restrict_scalarExtension_algEquiv σ B
     exact (EReal.coe_le_coe_iff.mpr hd.symm.le).trans
       ((V.scalarExtension (L := M)).degree_restrict_le_positiveDegree
-        (hN := ⟨hMN⟩) (scalarExtensionSubspaceOrderIso (E := E) σ B))
+        (hN := ⟨hMN⟩) (scalarExtensionSubspaceOrderIso (E := V) σ B))
 
 /-- Actual positive-rank subspaces and their means transport in both
 directions, preserving maximal slope and its empty-supremum convention. -/
 theorem maximalSlope_scalarExtension_algEquiv
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     (σ : L ≃ₐ[K] M) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
@@ -174,13 +173,13 @@ theorem maximalSlope_scalarExtension_algEquiv
     have hr := scalarExtensionSubspaceOrderIso_finrank σ.symm B
     exact (EReal.coe_le_coe_iff.mpr hd.symm.le).trans
       ((V.scalarExtension (L := L)).slope_restrict_le_maximalSlope
-        (scalarExtensionSubspaceOrderIso (E := E) σ.symm B) (hr.symm ▸ hB) (hN := ⟨hLN⟩))
+        (scalarExtensionSubspaceOrderIso (E := V) σ.symm B) (hr.symm ▸ hB) (hN := ⟨hLN⟩))
   · apply maximalSlope_le _ (hN := ⟨hLN⟩)
     intro B hB
     have hd := V.slope_restrict_scalarExtension_algEquiv σ B
     have hr := scalarExtensionSubspaceOrderIso_finrank σ B
     exact (EReal.coe_le_coe_iff.mpr hd.symm.le).trans
       ((V.scalarExtension (L := M)).slope_restrict_le_maximalSlope
-        (scalarExtensionSubspaceOrderIso (E := E) σ B) (hr.symm ▸ hB) (hN := ⟨hMN⟩))
+        (scalarExtensionSubspaceOrderIso (E := V) σ B) (hr.symm ▸ hB) (hN := ⟨hMN⟩))
 
 end ArakelovGeometry.AdelicVectorBundle

@@ -60,12 +60,14 @@ theorem localHeight_dual_bidual_bounds {E : Unit ⊕ Unit → Type w}
   rw [injectiveTensor_norm_eq_operatorNorm, he]
   rfl
 
+section SameUniverse
+
 variable {E F : Type (max u w)} [AddCommGroup E] [Module K E]
   [FiniteDimensional K E] [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 /-- Every map between canonical bidual norm families has integrable logarithmic
 bounds. The tensor representing it is supplied by a proved linear equivalence. -/
-theorem localHeight_bidual_bounds (ξ : NormFamily S E) (η : NormFamily S F)
+private theorem localHeight_bidual_bounds (ξ : NormFamily S E) (η : NormFamily S F)
     [hξ : ξ.IsDominated] [hη : η.IsDominated] (hfin : S.v S.Ωinf < ⊤)
     (f : {f : E →ₗ[K] F // f ≠ 0}) :
     HasIntegrableBounds
@@ -108,7 +110,7 @@ theorem localHeight_bidual_bounds (ξ : NormFamily S E) (η : NormFamily S F)
 
 /-- The bidual tensor bound and the two actual local distances prove domination
 of local heights for strongly dominated source and target families. -/
-theorem IsStronglyDominated.localHeight_bounds {ξ : NormFamily S E} {η : NormFamily S F}
+private theorem localHeight_bounds_sameUniverse {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsStronglyDominated) (hη : η.IsStronglyDominated)
     (hfin : S.v S.Ωinf < ⊤) (f : {f : E →ₗ[K] F // f ≠ 0}) :
     HasIntegrableBounds (ξ.localHeight η f) S.v := by
@@ -129,6 +131,37 @@ theorem IsStronglyDominated.localHeight_bounds {ξ : NormFamily S E} {η : NormF
     _ ≤ |ξ.localHeight η f ω - ξbb.localHeight ηbb f ω| + |ξbb.localHeight ηbb f ω| :=
       abs_add_le _ _
     _ ≤ _ := by linarith
+
+end SameUniverse
+
+universe w'
+
+variable {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E]
+  [FiniteDimensional K E] [AddCommGroup F] [Module K F] [FiniteDimensional K F]
+
+/-- Strong domination gives integrable local height bounds for independently sized factors. -/
+theorem IsStronglyDominated.localHeight_bounds {ξ : NormFamily S E} {η : NormFamily S F}
+    (hξ : ξ.IsStronglyDominated) (hη : η.IsStronglyDominated)
+    (hfin : S.v S.Ωinf < ⊤) (f : {f : E →ₗ[K] F // f ≠ 0}) :
+    HasIntegrableBounds (ξ.localHeight η f) S.v := by
+  let e : ULift.{max u w'} E ≃ₗ[K] E := ULift.moduleEquiv
+  let d : ULift.{max u w} F ≃ₗ[K] F := ULift.moduleEquiv
+  let g := d.symm.toLinearMap.comp (f.val.comp e.toLinearMap)
+  have hg : g ≠ 0 := by
+    intro hz
+    apply f.property
+    ext x
+    have h := DFunLike.congr_fun hz (e.symm x)
+    have hh := congrArg d h
+    simpa only [g, LinearMap.comp_apply, LinearEquiv.coe_coe,
+      LinearEquiv.apply_symm_apply, LinearMap.zero_apply, map_zero] using hh
+  have hb := localHeight_bounds_sameUniverse.{u, v, max w w'}
+    (hξ.pullbackEquiv e) (hη.pullbackEquiv d)
+    hfin ⟨g, hg⟩
+  apply hb.congr
+  apply Eventually.of_forall
+  intro ω
+  exact congrArg Real.log (ξ.operatorNorm_pullback_equiv η e d f.val ω)
 
 /-- Under either source measurability alternative, the two proved bounds
 give an integrable local map height. -/
@@ -155,22 +188,22 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- Source Proposition4.3.16: local map height is integrable for strongly
 adelic bundles. Normalization proves the required finite Archimedean measure. -/
-theorem integrable_localHeight_of_isStronglyAdelic (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F) [hV : V.IsStronglyAdelic] [hW : W.IsStronglyAdelic]
+theorem integrable_localHeight_of_isStronglyAdelic (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S) [hV : V.IsStronglyAdelic] [hW : W.IsStronglyAdelic]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (f : {f : E →ₗ[K] F // f ≠ 0}) :
+    (f : {f : V →ₗ[K] W // f ≠ 0}) :
     Integrable (V.toNormFamily.localHeight W.toNormFamily f) S.v :=
   hV.integrable_localHeight hW V.isMeasurable W.isMeasurable
     (S.v_Ωinf_lt_top_of_isRCLike) f
 
 /-- The actual lower-integral map height is a finite real integral for a
 nonzero map between strongly adelic bundles. -/
-theorem mapHeight_eq_integral_of_isStronglyAdelic (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F) [hV : V.IsStronglyAdelic] [hW : W.IsStronglyAdelic]
+theorem mapHeight_eq_integral_of_isStronglyAdelic (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S) [hV : V.IsStronglyAdelic] [hW : W.IsStronglyAdelic]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    {f : E →ₗ[K] F} (hf : f ≠ 0) :
+    {f : V →ₗ[K] W} (hf : f ≠ 0) :
     V.mapHeight W f = ((∫ ω, V.toNormFamily.localHeight W.toNormFamily ⟨f, hf⟩ ω ∂S.v) : ℝ) :=
   V.mapHeight_eq_integral W hf
     (V.integrable_localHeight_of_isStronglyAdelic W ⟨f, hf⟩)

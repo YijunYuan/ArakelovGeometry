@@ -30,38 +30,36 @@ open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w
+universe u v w wF
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
-  {E F : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  {E : Type w} {F : Type wF} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 /-- The true minimum of the double dual equals the original minimum,
 without equality of the original norm family with its bidual. -/
-theorem minimalSlope_dual_dual_eq (V : AdelicVectorBundle S E)
+theorem minimalSlope_dual_dual_eq (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     ((V.dualOfMeasurableBase).dualOfMeasurableBase).minimalSlope =
       V.minimalSlope := by
   have hi := (V.bidualOfMeasurableBase).minimalSlope_eq_of_completed_isometry
-    ((V.dualOfMeasurableBase).dualOfMeasurableBase) (Module.evalEquiv K E)
+    ((V.dualOfMeasurableBase).dualOfMeasurableBase) (Module.evalEquiv K V)
     (by
       intro ω x
-      simp only [bidualOfMeasurableBase_toNormFamily,
-        dualOfMeasurableBase_toNormFamily, NormFamily.pullback_norm,
-        Module.evalEquiv_toLinearMap])
+      simp only [NormFamily.pullback_norm, Module.evalEquiv_toLinearMap])
   rw [V.minimalSlope_bidualOfMeasurableBase] at hi
   exact hi.symm
 
 /-- Apply the sharp dual slope defect to the actual dual, then use bidual
 minimal-slope invariance. The original norms need not be ultrametric. -/
-theorem minimalSlope_add_maximalSlope_dual_le_half_log_rank (V : AdelicVectorBundle S E)
+theorem minimalSlope_add_maximalSlope_dual_le_half_log_rank (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     V.minimalSlope + (V.dualOfMeasurableBase).maximalSlope ≤
-      ((1 / 2 : ℝ) * Real.log (Module.finrank K E) * (S.v S.Ωinf).toReal : EReal) := by
-  have hrD : 0 < Module.finrank K (Module.Dual K E) := by
+      ((1 / 2 : ℝ) * Real.log (Module.finrank K V) * (S.v S.Ωinf).toReal : EReal) := by
+  have hrD : 0 < Module.finrank K (Module.Dual K V) := by
     rwa [Subspace.dual_finrank_eq]
   have h := (V.dualOfMeasurableBase).minimalSlope_dual_add_maximalSlope_le_half_log_rank
     hrD
@@ -70,40 +68,39 @@ theorem minimalSlope_add_maximalSlope_dual_le_half_log_rank (V : AdelicVectorBun
 /-- Actual completed mixed-tensor duality transports the true maximal slope
 through the canonical algebraic dual distribution equivalence. -/
 theorem maximalSlope_dual_mixedTensorPair_eq_injective_dual
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     ((V.mixedTensorPair W).dualOfMeasurableBase).maximalSlope =
       ((V.dualOfMeasurableBase).injectiveTensorPair (W.dualOfMeasurableBase)
 ).maximalSlope := by
   symm
-  apply maximalSlope_eq_of_completed_isometry _ _ (TensorProduct.dualDistribEquiv K E F)
+  apply maximalSlope_eq_of_completed_isometry _ _ (TensorProduct.dualDistribEquiv K V W)
   intro ω x
-  simp only [dualOfMeasurableBase_toNormFamily, mixedTensorPair_toNormFamily,
-    injectiveTensorPair_toNormFamily, TensorProduct.toLinearMap_dualDistribEquiv]
+  simp only [TensorProduct.toLinearMap_dualDistribEquiv]
   exact V.toNormFamily.mixedTensorPair_dual_norm_eq_injective W.toNormFamily ω x
 
 /-- Source Corollary 4.3.76(2), on arbitrary positive-rank actual factors.
 Only the actual dual families must be ultrametric, and this is produced.
 The ordinary global Minkowski predicate is applied to their actual tensor,
-in the containing universe `max u w` of the scalar field and factor spaces. -/
+in the containing universe `max u w wF` of the scalar field and factor spaces. -/
 theorem minimalSlope_mixedTensorPair_ge_of_minkowski
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    {C : ℝ} (hM : S.HasMinkowskiPropertyAtLevel.{u, v, max u w} C)
-    (hE : 0 < Module.finrank K E) (hF : 0 < Module.finrank K F) :
+    {C : ℝ} (hM : S.HasMinkowskiPropertyAtLevel.{u, v, max u w wF} C)
+    (hE : 0 < Module.finrank K V) (hF : 0 < Module.finrank K W) :
     V.minimalSlope + W.minimalSlope -
       ((C + (S.v S.Ωinf).toReal / 2) *
-        Real.log ((Module.finrank K E : ℝ) * Module.finrank K F) : ℝ) ≤
+        Real.log ((Module.finrank K V : ℝ) * Module.finrank K W) : ℝ) ≤
           (V.mixedTensorPair W).minimalSlope := by
   let T := V.mixedTensorPair W
-  have hrT : 0 < Module.finrank K (E ⊗[K] F) := by
+  have hrT : 0 < Module.finrank K (V ⊗[K] W) := by
     rw [Module.finrank_tensorProduct]
     exact Nat.mul_pos hE hF
-  have hrE : 0 < Module.finrank K (Module.Dual K E) := by
+  have hrE : 0 < Module.finrank K (Module.Dual K V) := by
     rwa [Subspace.dual_finrank_eq]
-  have hrF : 0 < Module.finrank K (Module.Dual K F) := by
+  have hrF : 0 < Module.finrank K (Module.Dual K W) := by
     rwa [Subspace.dual_finrank_eq]
   have hmax := maximalSlope_injectiveTensorPair_le_of_minkowski
     (V.dualOfMeasurableBase) (W.dualOfMeasurableBase)
@@ -119,7 +116,7 @@ theorem minimalSlope_mixedTensorPair_ge_of_minkowski
   obtain ⟨c, hc⟩ := T.exists_minimalSlope_eq_coe hrT
   obtain ⟨d, hd⟩ := (V.dualOfMeasurableBase).exists_maximalSlope_eq_coe hrE
   obtain ⟨e, he⟩ := (W.dualOfMeasurableBase).exists_maximalSlope_eq_coe hrF
-  have hrTD : 0 < Module.finrank K (Module.Dual K (E ⊗[K] F)) := by
+  have hrTD : 0 < Module.finrank K (Module.Dual K (V ⊗[K] W)) := by
     rwa [Subspace.dual_finrank_eq]
   obtain ⟨f, hf⟩ := (T.dualOfMeasurableBase).exists_maximalSlope_eq_coe hrTD
   change (T.dualOfMeasurableBase).maximalSlope ≤ _ at hmax
@@ -137,20 +134,20 @@ theorem minimalSlope_mixedTensorPair_ge_of_minkowski
 /-- A zero left factor has zero tensor rank, so its actual minimum is top.
 This uses no global Minkowski property or positive-rank logarithm. -/
 theorem minimalSlope_mixedTensorPair_eq_top_of_left_finrank_eq_zero
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hE : Module.finrank K E = 0) :
+    (hE : Module.finrank K V = 0) :
     (V.mixedTensorPair W).minimalSlope = ⊤ := by
   apply minimalSlope_eq_top_of_finrank_eq_zero
   simp only [Module.finrank_tensorProduct, hE, zero_mul]
 
 /-- The opposite zero-factor orientation has the same actual top minimum. -/
 theorem minimalSlope_mixedTensorPair_eq_top_of_right_finrank_eq_zero
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hF : Module.finrank K F = 0) :
+    (hF : Module.finrank K W = 0) :
     (V.mixedTensorPair W).minimalSlope = ⊤ := by
   apply minimalSlope_eq_top_of_finrank_eq_zero
   simp only [Module.finrank_tensorProduct, hF, mul_zero]

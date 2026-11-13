@@ -101,7 +101,7 @@ namespace AdelicVectorBundle
 /-- Translating by the actual integrable determinant log norms proves the
 two-step capital-discrepancy degree estimate without subtracting infinities. -/
 theorem degree_add_majorantDiscrepancy_restrict_add_quotient_le [S.IsProper]
-    (V : AdelicVectorBundle S E) (W : Submodule K E)
+    (V : AdelicVectorBundle S) (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.degree : EReal) +
@@ -112,12 +112,12 @@ theorem degree_add_majorantDiscrepancy_restrict_add_quotient_le [S.IsProper]
         V.majorantDiscrepancy := by
   let z : {z : ⋀[K]^(Module.finrank K W) W // z ≠ 0} :=
     ⟨determinantGenerator, determinantGenerator_ne_zero⟩
-  let q : {q : ⋀[K]^(Module.finrank K (E ⧸ W)) (E ⧸ W) // q ≠ 0} :=
+  let q : {q : ⋀[K]^(Module.finrank K (V ⧸ W)) (V ⧸ W) // q ≠ 0} :=
     ⟨determinantGenerator, determinantGenerator_ne_zero⟩
   let e := determinantSequenceEquiv W (z.val ⊗ₜ[K] q.val)
   have he : e ≠ 0 := by
     let DW := ⋀[K]^(Module.finrank K W) W
-    let DQ := ⋀[K]^(Module.finrank K (E ⧸ W)) (E ⧸ W)
+    let DQ := ⋀[K]^(Module.finrank K (V ⧸ W)) (V ⧸ W)
     let x : ∀ i, BinaryTensorFactors DW DQ i := fun i ↦ match i with
       | .inl _ => z.val
       | .inr _ => q.val
@@ -208,7 +208,7 @@ theorem degree_add_majorantDiscrepancy_restrict_add_quotient_le [S.IsProper]
 The infinite middle discrepancy is handled first; otherwise the genuine
 end discrepancies are finite by their already proved global bounds. -/
 theorem degree_sub_majorantDiscrepancy_le_restrict_add_quotient [S.IsProper]
-    (V : AdelicVectorBundle S E) (W : Submodule K E)
+    (V : AdelicVectorBundle S) (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.degree : EReal) - V.majorantDiscrepancy ≤

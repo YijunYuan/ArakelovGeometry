@@ -32,7 +32,7 @@ open NumberFieldInvertibleGeneric (genericInclusion genericImage genericImage_fu
 universe u
 variable {K E : Type u} [Field K] [NumberField K]
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+  (V : AdelicVectorBundle.{u} (normalizedNumberFieldAdelicStructure K))
   [hV : V.toNormFamily.IsHermitian]
   [hpure : V.toNormFamily.IsPureAtFinitePlaces]
 
@@ -52,7 +52,7 @@ theorem integralModel_projective :
 /-- Canonical scalar extension of the literal finite global lattice, with its
 actual inclusion into the rational space. -/
 def integralModelGenericEquiv :
-    K ⊗[𝓞 K] (V.toNormFamily.globalUnitBallModule (hξ := hV.1)) ≃ₗ[K] E :=
+    K ⊗[𝓞 K] (V.toNormFamily.globalUnitBallModule (hξ := hV.1)) ≃ₗ[K] V :=
   genericTensorEquiv _
     (V.isDominated.pure_normalizedGlobalUnitBall_finite_projective_span hV.1 hpure).2.2
 
@@ -61,7 +61,7 @@ theorem integralModelGenericEquiv_original
     (m : V.toNormFamily.globalUnitBallModule (hξ := hV.1)) :
     integralModelGenericEquiv V
       (genericInclusion (K := K) (V.toNormFamily.globalUnitBallModule
-          (hξ := hV.1)) m) = (m : E) := by
+          (hξ := hV.1)) m) = (m : V) := by
   change genericTensorEquiv _ _ ((1 : K) ⊗ₜ[𝓞 K] m) = _
   erw [genericTensorEquiv_tmul, one_smul]
 

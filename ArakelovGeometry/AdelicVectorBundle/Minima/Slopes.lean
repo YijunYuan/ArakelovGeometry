@@ -36,10 +36,10 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} {E : Type w}
 
 /-- Actual completed quotient contraction increases the degree of each
 nonzero rational section with nonzero quotient image. -/
-theorem vectorDegree_le_quotientOfMeasurableBase (V : AdelicVectorBundle S E)
-    (U : Submodule K E)
+theorem vectorDegree_le_quotientOfMeasurableBase (V : AdelicVectorBundle S)
+    (U : Submodule K V)
     [hS : S.HasMeasurableBase]
-    (s : {x : E // x ≠ 0}) (hq : U.mkQ s.val ≠ 0) :
+    (s : {x : V // x ≠ 0}) (hq : U.mkQ s.val ≠ 0) :
     V.vectorDegree s ≤
       (V.quotientOfMeasurableBase U).vectorDegree ⟨U.mkQ s.val, hq⟩ := by
   let Q := V.quotientOfMeasurableBase U
@@ -55,8 +55,8 @@ theorem vectorDegree_le_quotientOfMeasurableBase (V : AdelicVectorBundle S E)
 
 /-- Images of actual high-degree generators belong to the genuine quotient
 threshold span, including those whose quotient image is zero. -/
-theorem degreeThresholdSpan_quotient_map_le (V : AdelicVectorBundle S E)
-    (U : Submodule K E)
+theorem degreeThresholdSpan_quotient_map_le (V : AdelicVectorBundle S)
+    (U : Submodule K V)
     [hS : S.HasMeasurableBase] (t : ℝ) :
     (V.degreeThresholdSpan t).map U.mkQ ≤
       (V.quotientOfMeasurableBase U).degreeThresholdSpan t := by
@@ -72,13 +72,13 @@ theorem degreeThresholdSpan_quotient_map_le (V : AdelicVectorBundle S E)
 
 /-- Integrating actual completed Hadamard bounds the sum of the actual
 basis-vector degrees by the actual determinant degree, also in rank zero. -/
-theorem sum_vectorDegree_basis_le_degree [S.IsProper] (V : AdelicVectorBundle S E)
+theorem sum_vectorDegree_basis_le_degree [S.IsProper] (V : AdelicVectorBundle.{w} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (b : Module.Basis (Fin (Module.finrank K E)) K E) :
+    (b : Module.Basis (Fin (Module.finrank K V)) K V) :
     (∑ j, V.vectorDegree ⟨b j, b.ne_zero j⟩) ≤ V.degree := by
   classical
-  let w := exteriorPower.ιMulti K (Module.finrank K E) b
+  let w := exteriorPower.ιMulti K (Module.finrank K V) b
   have hw : w ≠ 0 := by
     intro hz
     have he := congrArg (determinantCoordinateEquiv b) hz
@@ -103,10 +103,10 @@ theorem sum_vectorDegree_basis_le_degree [S.IsProper] (V : AdelicVectorBundle S 
 /-- A full actual ambient threshold span produces a genuine quotient basis
 with every actual quotient vector degree above the same threshold. -/
 theorem exists_basis_quotient_degree_ge_of_thresholdSpan_eq_top
-    (V : AdelicVectorBundle S E) (U : Submodule K E)
+    (V : AdelicVectorBundle S) (U : Submodule K V)
     [hS : S.HasMeasurableBase]
     {t : ℝ} (hspan : V.degreeThresholdSpan t = ⊤) :
-    ∃ b : Module.Basis (Fin (Module.finrank K (E ⧸ U))) K (E ⧸ U),
+    ∃ b : Module.Basis (Fin (Module.finrank K (V ⧸ U))) K (V ⧸ U),
       ∀ j, t ≤ (V.quotientOfMeasurableBase U).vectorDegree ⟨b j, b.ne_zero j⟩ := by
   classical
   let Q := V.quotientOfMeasurableBase U
@@ -114,8 +114,9 @@ theorem exists_basis_quotient_degree_ge_of_thresholdSpan_eq_top
   rw [hspan, Submodule.map_top, LinearMap.range_eq_top.mpr U.mkQ_surjective] at hmap
   have hQ : Q.degreeThresholdSpan t = ⊤ := top_unique hmap
   obtain ⟨s, hli, hs⟩ := (Q.le_finrank_degreeThresholdSpan_iff
-    (Module.finrank K (E ⧸ U)) t).mp (by rw [hQ, finrank_top])
-  let b := basisOfLinearIndependentOfCardEqFinrank' (fun j => (s j).val) hli (by simp)
+    (Module.finrank K (V ⧸ U)) t).mp (by rw [hQ, finrank_top])
+  let b := basisOfLinearIndependentOfCardEqFinrank' (fun j => (s j).val) hli
+    (by simp only [Fintype.card_fin]; rfl)
   refine ⟨b, ?_⟩
   intro j
   simpa only [b, coe_basisOfLinearIndependentOfCardEqFinrank'] using hs j
@@ -123,16 +124,16 @@ theorem exists_basis_quotient_degree_ge_of_thresholdSpan_eq_top
 /-- The actual determinant degree of every quotient is at least its rank
 times an actual full-span threshold of the original bundle. -/
 theorem rank_mul_le_degree_quotient_of_thresholdSpan_eq_top [S.IsProper]
-    (V : AdelicVectorBundle S E) (U : Submodule K E)
+    (V : AdelicVectorBundle S) (U : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     {t : ℝ} (hspan : V.degreeThresholdSpan t = ⊤) :
-    (Module.finrank K (E ⧸ U) : ℝ) * t ≤
+    (Module.finrank K (V ⧸ U) : ℝ) * t ≤
       (V.quotientOfMeasurableBase U).degree := by
   classical
   obtain ⟨b, hb⟩ := V.exists_basis_quotient_degree_ge_of_thresholdSpan_eq_top U hspan
   calc
-    (Module.finrank K (E ⧸ U) : ℝ) * t = ∑ _j : Fin (Module.finrank K (E ⧸ U)), t := by simp
+    (Module.finrank K (V ⧸ U) : ℝ) * t = ∑ _j : Fin (Module.finrank K (V ⧸ U)), t := by simp
     _ ≤ ∑ j, (V.quotientOfMeasurableBase U).vectorDegree ⟨b j, b.ne_zero j⟩ :=
       Finset.sum_le_sum (fun j _ => hb j)
     _ ≤ (V.quotientOfMeasurableBase U).degree :=
@@ -141,10 +142,10 @@ theorem rank_mul_le_degree_quotient_of_thresholdSpan_eq_top [S.IsProper]
 /-- Positive-rank actual quotient mean slopes dominate each actual full-span
 threshold; the degree bound supplies the conclusion rather than a premise. -/
 theorem le_slope_quotient_of_thresholdSpan_eq_top [S.IsProper]
-    (V : AdelicVectorBundle S E) (U : Submodule K E)
+    (V : AdelicVectorBundle S) (U : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hU : 0 < Module.finrank K (E ⧸ U))
+    (hU : 0 < Module.finrank K (V ⧸ U))
     {t : ℝ} (hspan : V.degreeThresholdSpan t = ⊤) :
     t ≤ (V.quotientOfMeasurableBase U).slope := by
   have hd := V.rank_mul_le_degree_quotient_of_thresholdSpan_eq_top U hspan
@@ -155,7 +156,7 @@ theorem le_slope_quotient_of_thresholdSpan_eq_top [S.IsProper]
 The rank-zero natural-index convention also holds, with both sides `⊤`.
 No finite-value or attained-basis premise at the last minimum is used. -/
 theorem minimalLogarithmicMinimum_le_minimalSlope [S.IsProper]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     V.minimalLogarithmicMinimum ≤ V.minimalSlope := by

@@ -29,17 +29,17 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- Source Definition 4.3.69's attained-threshold characterization. The source
 indices are positive and at most rank; `i = 0` also allows the empty family. -/
-theorem le_finrank_degreeThresholdSpan_iff (V : AdelicVectorBundle S E)
+theorem le_finrank_degreeThresholdSpan_iff (V : AdelicVectorBundle S)
     (i : ℕ) (t : ℝ) :
     i ≤ Module.finrank K (V.degreeThresholdSpan t) ↔
-      ∃ s : Fin i → {x : E // x ≠ 0},
+      ∃ s : Fin i → {x : V // x ≠ 0},
         LinearIndependent K (fun j => (s j).val) ∧
         ∀ j, t ≤ V.vectorDegree (s j) := by
   classical
   constructor
   · intro hi
     obtain ⟨f, hf, _, hli⟩ := Submodule.exists_fun_fin_finrank_span_eq K
-      {x : E | ∃ hx : x ≠ 0, t ≤ V.vectorDegree ⟨x, hx⟩}
+      {x : V | ∃ hx : x ≠ 0, t ≤ V.vectorDegree ⟨x, hx⟩}
     choose hn hd using fun j : Fin i => hf (Fin.castLE hi j)
     refine ⟨fun j => ⟨f (Fin.castLE hi j), hn j⟩, ?_, hd⟩
     exact hli.comp (Fin.castLE hi) (Fin.castLE_injective hi)
@@ -56,8 +56,8 @@ theorem le_finrank_degreeThresholdSpan_iff (V : AdelicVectorBundle S E)
 
 /-- An attained independent high-degree family gives a lower bound on the
 supremum minimum. The converse would require a separate attainment argument. -/
-theorem coe_le_logarithmicMinimum_of_linearIndependent (V : AdelicVectorBundle S E)
-    {i : ℕ} {t : ℝ} (s : Fin i → {x : E // x ≠ 0})
+theorem coe_le_logarithmicMinimum_of_linearIndependent (V : AdelicVectorBundle S)
+    {i : ℕ} {t : ℝ} (s : Fin i → {x : V // x ≠ 0})
     (hli : LinearIndependent K (fun j => (s j).val))
     (hs : ∀ j, t ≤ V.vectorDegree (s j)) :
     (t : EReal) ≤ V.logarithmicMinimum i :=
@@ -65,15 +65,15 @@ theorem coe_le_logarithmicMinimum_of_linearIndependent (V : AdelicVectorBundle S
     ((V.le_finrank_degreeThresholdSpan_iff i t).mpr ⟨s, hli, hs⟩)
 
 /-- Auxiliary index-zero convention: the empty high-degree family always exists. -/
-theorem exists_linearIndependent_degree_ge_zero (V : AdelicVectorBundle S E) (t : ℝ) :
-    ∃ s : Fin 0 → {x : E // x ≠ 0},
+theorem exists_linearIndependent_degree_ge_zero (V : AdelicVectorBundle S) (t : ℝ) :
+    ∃ s : Fin 0 → {x : V // x ≠ 0},
       LinearIndependent K (fun j => (s j).val) ∧ ∀ j, t ≤ V.vectorDegree (s j) :=
   (V.le_finrank_degreeThresholdSpan_iff 0 t).mp (Nat.zero_le _)
 
 /-- In rank zero, only the auxiliary empty family can meet an attained threshold. -/
 theorem exists_linearIndependent_degree_ge_iff_eq_zero_of_finrank_eq_zero
-    (V : AdelicVectorBundle S E) (hr : Module.finrank K E = 0) (i : ℕ) (t : ℝ) :
-    (∃ s : Fin i → {x : E // x ≠ 0},
+    (V : AdelicVectorBundle S) (hr : Module.finrank K V = 0) (i : ℕ) (t : ℝ) :
+    (∃ s : Fin i → {x : V // x ≠ 0},
       LinearIndependent K (fun j => (s j).val) ∧ ∀ j, t ≤ V.vectorDegree (s j)) ↔ i = 0 := by
   rw [← V.le_finrank_degreeThresholdSpan_iff i t,
     V.degreeThresholdSpan_eq_bot_of_finrank_eq_zero hr t]

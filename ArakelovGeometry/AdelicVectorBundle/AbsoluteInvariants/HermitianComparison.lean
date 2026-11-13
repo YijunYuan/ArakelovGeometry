@@ -43,9 +43,9 @@ local instance hermitianOrdinaryAbsoluteProper : (S.algebraicExtension L).IsProp
 /-- The actual ordinary native restriction to an original extended subspace
 preserves genuine degree. This does not require a perfect original field. -/
 theorem degree_restrict_scalarExtension_of_isHermitian_of_isAlgClosed
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (A : Submodule K E) :
+    [hH : V.toNormFamily.IsHermitian] (A : Submodule K V) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let P := V.scalarExtension (L := L)
@@ -61,9 +61,9 @@ theorem degree_restrict_scalarExtension_of_isHermitian_of_isAlgClosed
 /-- Actual ordinary native original subspaces preserve real mean in every
 rank by genuine degree equality and the canonical tensor subspace rank. -/
 theorem slope_restrict_scalarExtension_of_isHermitian_of_isAlgClosed
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (A : Submodule K E) :
+    [hH : V.toNormFamily.IsHermitian] (A : Submodule K V) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let P := V.scalarExtension (L := L)
@@ -82,7 +82,7 @@ variable [PerfectField K]
 /-- The actual ordinary extension to any algebraic closed field preserves
 canonical positive degree over a perfect common-density original base. -/
 theorem positiveDegree_scalarExtension_of_isHermitian_of_isAlgClosed
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
@@ -99,7 +99,7 @@ theorem positiveDegree_scalarExtension_of_isHermitian_of_isAlgClosed
 /-- The actual ordinary closed maximal slope is the original maximum over
 a perfect common-density base, including the empty rank-zero supremum. -/
 theorem maximalSlope_scalarExtension_of_isHermitian_of_isAlgClosed
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
@@ -116,7 +116,7 @@ theorem maximalSlope_scalarExtension_of_isHermitian_of_isAlgClosed
 /-- The canonical actual ordinary absolute positive degree equals original
 positive degree for Hermitian bundles on a perfect common-density base. -/
 theorem absolutePositiveDegree_eq_of_isHermitian
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
     V.absolutePositiveDegree = V.positiveDegree :=
@@ -126,7 +126,7 @@ theorem absolutePositiveDegree_eq_of_isHermitian
 /-- The canonical actual ordinary absolute maximum equals the genuine original
 maximum for Hermitian bundles on a perfect common-density base, in all ranks. -/
 theorem absoluteMaximalSlope_eq_of_isHermitian
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
     V.absoluteMaximalSlope = V.maximalSlope :=

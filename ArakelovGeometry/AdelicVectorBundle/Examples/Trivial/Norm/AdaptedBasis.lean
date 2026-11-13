@@ -227,7 +227,7 @@ namespace AdelicVectorBundle
 
 open AdelicStructure
 
-variable (V : AdelicVectorBundle (singleTrivialPlace K) E)
+variable (V : AdelicVectorBundle.{w} (singleTrivialPlace K))
   [hS : (singleTrivialPlace K).HasMeasurableBase]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
@@ -235,7 +235,7 @@ open Classical in
 /-- The actual HN ball identification and whole-space cut give the
 minimal slope as negative log of the genuine largest nonzero-vector norm. -/
 theorem minimalSlope_eq_neg_log_sSup_range_of_isUltrametric
-    [hV : V.toNormFamily.IsUltrametric] (hr : 0 < Module.finrank K E) :
+    [hV : V.toNormFamily.IsUltrametric] (hr : 0 < Module.finrank K V) :
     V.minimalSlope = (-Real.log (sSup (Set.range V.toNormFamily.trivialSeminorm)) : ℝ) := by
   obtain ⟨x, _, hx, hR, hmax⟩ :=
     V.toNormFamily.exists_nonzero_trivialSeminorm_eq_sSup_range hr
@@ -280,9 +280,9 @@ open Classical in
 infinity convention in rank zero, on the extended real line. -/
 theorem minimalSlope_eq_if_neg_log_sSup_range_of_isUltrametric
     [hV : V.toNormFamily.IsUltrametric] :
-    V.minimalSlope = if Module.finrank K E = 0 then (⊤ : EReal) else
+    V.minimalSlope = if Module.finrank K V = 0 then (⊤ : EReal) else
       ((-Real.log (sSup (Set.range V.toNormFamily.trivialSeminorm)) : ℝ) : EReal) := by
-  by_cases hr : Module.finrank K E = 0
+  by_cases hr : Module.finrank K V = 0
   · rw [ite_eq_left hr]
     exact V.minimalSlope_eq_top_of_finrank_eq_zero hr
   · rw [ite_eq_right hr]

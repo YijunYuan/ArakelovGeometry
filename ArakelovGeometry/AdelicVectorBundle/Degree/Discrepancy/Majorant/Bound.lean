@@ -238,7 +238,7 @@ namespace AdelicVectorBundle
 /-- Proposition4.3.11 for the actual majorant discrepancy of a strongly
 adelic bundle, including rank zero. -/
 theorem IsStronglyAdelic.log_majorantDiscrepancy_hasIntegrableBounds
-    {V : AdelicVectorBundle S E} (hV : V.IsStronglyAdelic)
+    {V : AdelicVectorBundle S} (hV : V.IsStronglyAdelic)
     [hN : S.IsArchimedeanNormalized] :
     HasIntegrableBounds (fun ω ↦ Real.log (V.toNormFamily.majorantDiscrepancy ω)) S.v :=
   NormFamily.IsStronglyDominated.log_majorantDiscrepancy_hasIntegrableBounds hV

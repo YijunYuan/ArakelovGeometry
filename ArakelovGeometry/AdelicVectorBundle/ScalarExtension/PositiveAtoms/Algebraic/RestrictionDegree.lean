@@ -179,11 +179,11 @@ variable [S.IsProper]
 
 /-- Native geometric and common-density degrees agree on the same actual subspace. -/
 theorem nativeAlgebraicRestrictionDegreeOfPositiveAtoms_eq_common_degree
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     [hcount : S.HasCommonCountableDenseSubfield]
     [S.IsArchimedeanNormalized]
-    (A : Submodule L (L ⊗[K] E)) :
+    (A : Submodule L (L ⊗[K] V)) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A =
       ((V.scalarExtension (L := L)).restrictOfMeasurableBase A
@@ -194,10 +194,10 @@ theorem nativeAlgebraicRestrictionDegreeOfPositiveAtoms_eq_common_degree
 /-- The geometric and countable-discrete canonical degrees have identical actual norms. -/
 theorem nativeAlgebraicRestrictionDegreeOfPositiveAtoms_eq_countable_discrete_degree
     [Countable S.Ω] [DiscreteMeasurableSpace S.Ω]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     [S.IsArchimedeanNormalized]
-    (A : Submodule L (L ⊗[K] E)) :
+    (A : Submodule L (L ⊗[K] V)) :
     V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A =
       V.nativeRestrictionDegreeOfCountableDiscreteBase A := rfl
 

@@ -112,7 +112,7 @@ variable {K : Type*} [Field K] (AS : AdelicStructure K)
 variable (L : Type*) [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
 
 /-- The bundled form of the algebraic-extension morphism. -/
-noncomputable abbrev algebraicExtension :
+noncomputable def algebraicExtension :
     Hom (AS ⊗[K] L).toAdelicCurve AS.toAdelicCurve :=
   AdelicStructure.Hom.algebraicExtension AS L
 

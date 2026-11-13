@@ -80,22 +80,22 @@ variable {K E : Type*} [Field K] {S : AdelicStructure K}
 /-- Ordinary logarithmic minima change by at most the actual distance integral,
 including the auxiliary zero and above-rank indices. -/
 theorem logarithmicMinimum_le_add_integral_localDist
-    (V W : AdelicVectorBundle S E)
-    (hδ : Integrable (V.toNormFamily.localDist W.toNormFamily) S.v) (i : ℕ) :
-    V.logarithmicMinimum i ≤ W.logarithmicMinimum i +
-      ((∫ ω, V.toNormFamily.localDist W.toNormFamily ω ∂S.v : ℝ) : EReal) := by
+    (V : AdelicVectorBundle S) (W : NormFamily S V) [hW : W.IsAdelic]
+    (hδ : Integrable (V.toNormFamily.localDist W) S.v) (i : ℕ) :
+    V.logarithmicMinimum i ≤ W.toAdelicVectorBundle.logarithmicMinimum i +
+      ((∫ ω, V.toNormFamily.localDist W ω ∂S.v : ℝ) : EReal) := by
   apply iSup_le
   intro t
   apply iSup_le
   intro ht
   obtain ⟨x, hli, hx⟩ := (V.le_finrank_degreeThresholdSpan_iff i t).mp ht
-  let D : ℝ := ∫ ω, V.toNormFamily.localDist W.toNormFamily ω ∂S.v
-  have hb : ((t - D : ℝ) : EReal) ≤ W.logarithmicMinimum i := by
-    apply W.coe_le_logarithmicMinimum_of_linearIndependent x hli
+  let D : ℝ := ∫ ω, V.toNormFamily.localDist W ω ∂S.v
+  have hb : ((t - D : ℝ) : EReal) ≤ W.toAdelicVectorBundle.logarithmicMinimum i := by
+    apply W.toAdelicVectorBundle.coe_le_logarithmicMinimum_of_linearIndependent x hli
     intro j
-    have h := V.toNormFamily.vectorDegree_le_add_integral_localDist W.toNormFamily
+    have h := V.toNormFamily.vectorDegree_le_add_integral_localDist W
       hδ (x j)
-    change V.vectorDegree (x j) ≤ W.vectorDegree (x j) + D at h
+    change V.vectorDegree (x j) ≤ W.toAdelicVectorBundle.vectorDegree (x j) + D at h
     linarith [hx j]
   have h := add_le_add_right hb (D : EReal)
   have he : (D : EReal) + ((t - D : ℝ) : EReal) = (t : EReal) := by
@@ -111,10 +111,10 @@ open AdelicStructure NormFamily
 
 /-- The genuine source gauge replacement, with actual regularity produced
 from discrete measurability and coherent lattice domination. -/
-def numberFieldLatticeGauge
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+abbrev numberFieldLatticeGauge
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hV : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions] :
-    AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E :=
+    AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) :=
   ofMeasurableDominated (V.toNormFamily.latticeGaugeFamily)
     (hm := (V.toNormFamily.latticeGaugeFamily).isMeasurable_of_discrete)
     (hd := (by
@@ -124,18 +124,18 @@ def numberFieldLatticeGauge
 
 @[simp]
 theorem numberFieldLatticeGauge_toNormFamily
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hV : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions] :
     (V.numberFieldLatticeGauge).toNormFamily = V.toNormFamily.latticeGaugeFamily := rfl
 
 theorem numberFieldLatticeGauge_globalImpurity_eq_zero
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hV : V.toNormFamily.IsUltrametric] [V.toNormFamily.HasFiniteNormExceptions] :
     (V.numberFieldLatticeGauge).toNormFamily.globalImpurity = 0 :=
   V.toNormFamily.latticeGaugeFamily_globalImpurity_eq_zero
 
 theorem numberFieldLatticeGauge_latticeLambda_eq
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hV : V.toNormFamily.IsUltrametric] [V.toNormFamily.HasFiniteNormExceptions] :
     (V.numberFieldLatticeGauge).toNormFamily.latticeLambda = V.toNormFamily.latticeLambda :=
   V.toNormFamily.latticeGaugeFamily_latticeLambda_eq
@@ -143,16 +143,19 @@ theorem numberFieldLatticeGauge_latticeLambda_eq
 /-- The original ordinary minimum is bounded by the produced gauge minimum
 plus the literal source impurity, with no zero-cost transfer asserted. -/
 theorem logarithmicMinimum_le_numberFieldLatticeGauge_add_globalImpurity
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hV : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions] (i : ℕ) :
     V.logarithmicMinimum i ≤ (V.numberFieldLatticeGauge).logarithmicMinimum i +
       (V.toNormFamily.globalImpurity.toReal : EReal) := by
   have hσ := V.isDominated.globalImpurity_ne_top V.toNormFamily hc
   have hδ :=
     (V.toNormFamily.globalImpurity_ne_top_iff_integrable_localDist_latticeGaugeFamily).mp hσ
-  have h := V.logarithmicMinimum_le_add_integral_localDist (V.numberFieldLatticeGauge) hδ i
-  rw [numberFieldLatticeGauge_toNormFamily,
-    V.toNormFamily.integral_localDist_latticeGaugeFamily_eq_globalImpurity_toReal hσ] at h
+  have h := V.logarithmicMinimum_le_add_integral_localDist V.numberFieldLatticeGauge.toNormFamily
+    (hW := V.numberFieldLatticeGauge.toIsAdelic) hδ i
+  change V.logarithmicMinimum i ≤ V.numberFieldLatticeGauge.logarithmicMinimum i +
+    ((∫ ω, V.toNormFamily.localDist V.toNormFamily.latticeGaugeFamily ω
+      ∂(normalizedNumberFieldAdelicStructure K).v : ℝ) : EReal) at h
+  rw [V.toNormFamily.integral_localDist_latticeGaugeFamily_eq_globalImpurity_toReal hσ] at h
   exact h
 
 end ArakelovGeometry.AdelicVectorBundle

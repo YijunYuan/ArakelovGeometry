@@ -33,34 +33,34 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- The actual bidual family on the original rational space, with its
 measurability supplied by the exact base alternatives. -/
-noncomputable def bidualOfMeasurableBase (V : AdelicVectorBundle S E)
+noncomputable abbrev bidualOfMeasurableBase (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase] :
-    AdelicVectorBundle S E :=
+    AdelicVectorBundle S :=
   ((V.dualOfMeasurableBase).dualOfMeasurableBase).pullback
-    (Module.Dual.eval K E) (Module.eval_apply_injective K) (hm := (by
-      change (V.toNormFamily.dual.dual.pullback (Module.Dual.eval K E)
+    (Module.Dual.eval K V) (Module.eval_apply_injective K) (hm := (by
+      change (V.toNormFamily.dual.dual.pullback (Module.Dual.eval K V)
         (Module.eval_apply_injective K)).dual.IsMeasurable
       rw [V.toNormFamily.dual_dual_pullback_dual_eq]
       exact V.dual_isMeasurable))
 
 @[simp]
-theorem bidualOfMeasurableBase_toNormFamily (V : AdelicVectorBundle S E)
+theorem bidualOfMeasurableBase_toNormFamily (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase] :
     (V.bidualOfMeasurableBase).toNormFamily =
-      V.toNormFamily.dual.dual.pullback (Module.Dual.eval K E)
+      V.toNormFamily.dual.dual.pullback (Module.Dual.eval K V)
         (Module.eval_apply_injective K) := rfl
 
 /-- The canonical bidual of any adelic bundle is strongly adelic. -/
-theorem bidualOfMeasurableBase_isStronglyAdelic (V : AdelicVectorBundle S E)
+theorem bidualOfMeasurableBase_isStronglyAdelic (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.bidualOfMeasurableBase).IsStronglyAdelic :=
   ((V.dualOfMeasurableBase).dualOfMeasurableBase_isStronglyAdelic).pullback
-    (Module.Dual.eval K E) (Module.eval_apply_injective K) _
+    (Module.Dual.eval K V) (Module.eval_apply_injective K) _
 
 /-- Source equation(4.23), proved by equality of the actual completed
 projective determinant norms, with no ultrametricity assumption on the original. -/
-theorem degree_bidualOfMeasurableBase [S.IsProper] (V : AdelicVectorBundle S E)
+theorem degree_bidualOfMeasurableBase [S.IsProper] (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.bidualOfMeasurableBase).degree = V.degree := by

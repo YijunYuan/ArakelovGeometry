@@ -35,16 +35,16 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Actual restricted threshold spans map into the ambient actual threshold span. -/
-theorem degreeThresholdSpan_restrict_map_le (V : AdelicVectorBundle S E)
-    (U : Submodule K E)
+theorem degreeThresholdSpan_restrict_map_le (V : AdelicVectorBundle S)
+    (U : Submodule K V)
     [hS : S.HasMeasurableBase] (t : ℝ) :
     ((V.restrictOfMeasurableBase U).degreeThresholdSpan t).map U.subtype ≤
       V.degreeThresholdSpan t := by
   apply Submodule.map_le_iff_le_comap.mpr
   apply Submodule.span_le.mpr
   rintro x ⟨hx, ht⟩
-  change (x : E) ∈ V.degreeThresholdSpan t
-  have hne : (x : E) ≠ 0 := by
+  change (x : V) ∈ V.degreeThresholdSpan t
+  have hne : (x : V) ≠ 0 := by
     intro h
     exact hx (Subtype.ext h)
   apply V.mem_degreeThresholdSpan ⟨x.val, hne⟩
@@ -52,8 +52,8 @@ theorem degreeThresholdSpan_restrict_map_le (V : AdelicVectorBundle S E)
   exact ht
 
 /-- Actual restricted completed minima filtrations map into the ambient filtration. -/
-theorem minimaFiltration_restrict_map_le (V : AdelicVectorBundle S E)
-    (U : Submodule K E)
+theorem minimaFiltration_restrict_map_le (V : AdelicVectorBundle S)
+    (U : Submodule K V)
     [hS : S.HasMeasurableBase] (t : ℝ) :
     ((V.restrictOfMeasurableBase U).minimaFiltration t).map U.subtype ≤
       V.minimaFiltration t := by
@@ -65,7 +65,7 @@ theorem minimaFiltration_restrict_map_le (V : AdelicVectorBundle S E)
     ((V.restrictOfMeasurableBase U).minimaFiltration_le_degreeThresholdSpan t hε)).trans
       (V.degreeThresholdSpan_restrict_map_le U (t - ε))
 
-private theorem ordinaryMinimaFiltrationThresholdRefinement (V : AdelicVectorBundle S E)
+private theorem ordinaryMinimaFiltrationThresholdRefinement (V : AdelicVectorBundle S)
     (t : ℝ) {ε : ℝ} (hε : 0 < ε) :
     ∃ δ : ℝ, 0 < δ ∧ δ ≤ ε ∧ V.minimaFiltration t = V.degreeThresholdSpan (t - δ) := by
   obtain ⟨δ₀, hδ₀, hΦ⟩ := V.exists_minimaFiltration_eq_degreeThresholdSpan t
@@ -77,7 +77,7 @@ private theorem ordinaryMinimaFiltrationThresholdRefinement (V : AdelicVectorBun
 /-- The genuine restriction to an actual completed minima filtration space has
 last minimum at least the cut, including the zero-space last-minimum convention. -/
 theorem coe_le_minimalLogarithmicMinimum_restrict_minimaFiltration
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase] (t : ℝ) :
     (t : EReal) ≤
       (V.restrictOfMeasurableBase (V.minimaFiltration t)).minimalLogarithmicMinimum := by
@@ -90,7 +90,7 @@ theorem coe_le_minimalLogarithmicMinimum_restrict_minimaFiltration
   intro ε hε
   obtain ⟨δ, hδ, hδε, hΦ⟩ := ordinaryMinimaFiltrationThresholdRefinement V t hε
   have hr : Module.finrank K U ≤ Module.finrank K (V.degreeThresholdSpan (t - δ)) :=
-    (congrArg (fun F : Submodule K E => Module.finrank K F) hΦ).le
+    (congrArg (fun F : Submodule K V => Module.finrank K F) hΦ).le
   obtain ⟨s, hli, hs⟩ := (V.le_finrank_degreeThresholdSpan_iff
     (Module.finrank K U) (t - δ)).mp hr
   let g : Fin (Module.finrank K U) → U := fun j => ⟨(s j).val, by
@@ -109,10 +109,10 @@ theorem coe_le_minimalLogarithmicMinimum_restrict_minimaFiltration
 /-- The actual completed cut is the sum of genuine nonzero subspaces whose
 ordinary restricted last minimum is at least the cut. -/
 theorem minimaFiltration_eq_iSup_restrict_minimalLogarithmicMinimum
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase] (t : ℝ) :
     V.minimaFiltration t =
-      ⨆ (U : Submodule K E) (_ : U ≠ ⊥)
+      ⨆ (U : Submodule K V) (_ : U ≠ ⊥)
         (_ : (t : EReal) ≤ (V.restrictOfMeasurableBase U).minimalLogarithmicMinimum), U := by
   classical
   apply le_antisymm
@@ -135,11 +135,11 @@ theorem minimaFiltration_eq_iSup_restrict_minimalLogarithmicMinimum
 /-- Source Proposition 4.3.70, equation (4.82), with actual ordinary restriction
 bundles under the explicit measurable-base hypothesis, including rank zero. -/
 theorem minimaFiltration_eq_iInf_iSup_restrict_minimalLogarithmicMinimum
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase] (t : ℝ) :
     V.minimaFiltration t =
       ⨅ (ε : ℝ) (_ : 0 < ε),
-        ⨆ (U : Submodule K E) (_ : U ≠ ⊥)
+        ⨆ (U : Submodule K V) (_ : U ≠ ⊥)
           (_ : ((t - ε : ℝ) : EReal) ≤
             (V.restrictOfMeasurableBase U).minimalLogarithmicMinimum), U := by
   simp_rw [← V.minimaFiltration_eq_iSup_restrict_minimalLogarithmicMinimum]

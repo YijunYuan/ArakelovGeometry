@@ -33,15 +33,17 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E) (φ : S.Ω → ℝ) (hm : Measurable φ) (hi : Integrable φ S.v)
+  (V : AdelicVectorBundle.{w} S) (φ : S.Ω → ℝ) (hm : Measurable φ) (hi : Integrable φ S.v)
   [hS : S.HasMeasurableBase]
 
 /-- The actual quotient bundle commutes with exponential rescaling, using
 the equality of the defining infima of completed lift norms. -/
-theorem quotient_scaleExp (U : Submodule K E) :
+theorem quotient_scaleExp (U : Submodule K V) :
     (V.scaleExp φ hm hi).quotientOfMeasurableBase U =
       (V.quotientOfMeasurableBase U).scaleExp φ hm hi := by
   apply AdelicVectorBundle.ext
+    (hξ := ((V.scaleExp φ hm hi).quotientOfMeasurableBase U).toIsAdelic)
+    (hη := ((V.quotientOfMeasurableBase U).scaleExp φ hm hi).toIsAdelic)
   exact V.toNormFamily.scale_quotient (fun ω ↦ Real.exp (φ ω))
     (fun _ ↦ Real.exp_pos _) U
 
@@ -50,15 +52,15 @@ variable [S.IsProper]
 
 /-- Positive-rank mean slopes shift by the integral of the exponent.
 The rank guard excludes the zero bundle's mean convention. -/
-theorem slope_scaleExp (hE : 0 < Module.finrank K E) :
+theorem slope_scaleExp (hE : 0 < Module.finrank K V) :
     (V.scaleExp φ hm hi).slope = V.slope - ∫ ω, φ ω ∂S.v := by
-  have he : (Module.finrank K E : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (ne_of_gt hE)
+  have he : (Module.finrank K V : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (ne_of_gt hE)
   unfold slope
   rw [V.degree_scaleExp φ hm hi]
   field_simp
 
 /-- Every nonzero actual subspace has the same slope shift. -/
-theorem slope_restrict_scaleExp (U : Submodule K E) (hU : 0 < Module.finrank K U) :
+theorem slope_restrict_scaleExp (U : Submodule K V) (hU : 0 < Module.finrank K U) :
     ((V.scaleExp φ hm hi).restrictOfMeasurableBase U).slope =
       (V.restrictOfMeasurableBase U).slope - ∫ ω, φ ω ∂S.v := by
   rw [V.restrict_scaleExp φ hm hi U]

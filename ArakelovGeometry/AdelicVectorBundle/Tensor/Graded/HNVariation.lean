@@ -40,12 +40,10 @@ universe u
 
 section Conditional
 
-variable {K : Type*} [Field K] {E F : Type u} {Q : Type*}
-  [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  [AddCommGroup F] [Module K F] [FiniteDimensional K F]
+variable {K : Type*} [Field K] {Q : Type*}
   [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
   {S : AdelicStructure K} [S.IsProper]
-  (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+  (V : AdelicVectorBundle.{u} S) (W : AdelicVectorBundle S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
@@ -58,16 +56,16 @@ one-sided upper bound on the same data suffices; full CM (5.13) is not asserted.
 The original quotient norm is retained. Geometric production of the candidate is separate. -/
 theorem slope_sum_le_tensor_quotient_of_negative_candidate
     [hsemiV : V.IsMeanSlopeSemistable] [hsemiW : W.IsMeanSlopeSemistable]
-    (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)
-    (hInd : ∀ (P : ℝ → Submodule K E) (R : ℝ → Submodule K F) (t u : ℝ),
+    (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)
+    (hInd : ∀ (P : ℝ → Submodule K V) (R : ℝ → Submodule K W) (t u : ℝ),
       finrank K (FiltrationGraded P t) + finrank K (FiltrationGraded R u) <
-        finrank K E + finrank K F →
+        finrank K V + finrank K W →
       (tensorFiltrationGradedSource V W P R t u).hermitianHNFiltration
         (hV := (tensorFiltrationGradedSource_isHermitian V W P R t u)) =
       tensorFiltration
         ((V.filtrationGraded P t).hermitianHNFiltration (hV := (hV.filtrationGraded P t)))
         ((W.filtrationGraded R u).hermitianHNFiltration (hV := (hW.filtrationGraded R u))))
-    (P₀ : ℝ → Submodule K E) (R₀ : ℝ → Submodule K F)
+    (P₀ : ℝ → Submodule K V) (R₀ : ℝ → Submodule K W)
     (hP₀ : Antitone P₀ ∧ (∃ t, P₀ t = ⊥) ∧ (∃ t, P₀ t = ⊤) ∧
       (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → P₀ s = P₀ t) ∧
       filtrationExpectation P₀ = 0)
@@ -84,7 +82,7 @@ theorem slope_sum_le_tensor_quotient_of_negative_candidate
       P₀ R₀ hP₀ hR₀ hneg₀
   have hsmall (t u : ℝ) :
       finrank K (FiltrationGraded P t) + finrank K (FiltrationGraded R u) <
-        finrank K E + finrank K F :=
+        finrank K V + finrank K W :=
     finrank_filtrationGraded_add_lt_of_centered b c a d hPb hRc
       hP.2.2.2.2 hR.2.2.2.2 (by rw [hunit]; exact one_ne_zero) t u
   obtain ⟨hδ, hupper⟩ := tensorFiltrationQuotient_eventual_hn_upper V W
@@ -99,11 +97,12 @@ section Geometric
 open ArakelovGeometry.InvariantTheory
 
 variable {K E F Q : Type u} [Field K] [CharZero K]
-  [AddCommGroup E] [Module K E] [FiniteDimensional K E] [Nontrivial E]
-  [AddCommGroup F] [Module K F] [FiniteDimensional K F] [Nontrivial F]
+  [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  [AddCommGroup F] [Module K F] [FiniteDimensional K F]
   [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q] [Nontrivial Q]
   {S : AdelicStructure K} [S.IsProper]
-  (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+  (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
+  [Nontrivial V] [Nontrivial W]
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
@@ -118,17 +117,17 @@ retained, including trivial valuations. Only the binary HN variation is needed;
 full CM (5.13), the full HN induction, Section 6 and Bost Theorem 1.1 are not asserted. -/
 theorem slope_sum_le_tensor_quotient_of_not_geometricallySemistable
     [hsemiV : V.IsMeanSlopeSemistable] [hsemiW : W.IsMeanSlopeSemistable]
-    (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)
-    (hInd : ∀ (P : ℝ → Submodule K E) (R : ℝ → Submodule K F) (t u : ℝ),
+    (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)
+    (hInd : ∀ (P : ℝ → Submodule K V) (R : ℝ → Submodule K W) (t u : ℝ),
       finrank K (FiltrationGraded P t) + finrank K (FiltrationGraded R u) <
-        finrank K E + finrank K F →
+        finrank K V + finrank K W →
       (tensorFiltrationGradedSource V W P R t u).hermitianHNFiltration
         (hV := (tensorFiltrationGradedSource_isHermitian V W P R t u)) =
       tensorFiltration
         ((V.filtrationGraded P t).hermitianHNFiltration (hV := (hV.filtrationGraded P t)))
         ((W.filtrationGraded R u).hermitianHNFiltration (hV := (hW.filtrationGraded R u))))
-    (hns : ¬ IsGeometricallySemistableTensorQuotient (BoolTensorFactors E F)
-      (q.comp (boolTensorEquiv K (BoolTensorFactors E F)).toLinearMap)) :
+    (hns : ¬ IsGeometricallySemistableTensorQuotient (LiftedBoolTensorFactors V W)
+      (q.comp (boolTensorPairEquiv K V W).toLinearMap)) :
     let T := V.orthogonalTensorPair W
     let B := T.pushforward q hq (hm := (T.isMeasurable.pushforward_of_discrete_or_countable q hq))
     V.slope + W.slope ≤ B.slope := by

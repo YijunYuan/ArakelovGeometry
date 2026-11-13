@@ -44,10 +44,10 @@ private theorem modifiedFlag_coe_sum {n : ℕ} (f : Fin n → ℝ) :
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
-  {n : ℕ} (F : Fin (n + 1) → Submodule K E)
+  {n : ℕ} (F : Fin (n + 1) → Submodule K V)
 
 /-- Genuine modified factor degrees are bounded by the ambient ordinary degree. -/
 theorem sum_flagQuotient_modifiedDegree_le
@@ -73,13 +73,13 @@ theorem degree_sub_majorantDiscrepancy_le_sum_flagQuotient_modifiedDegree
 /-- The actual determinant-discrepancy version under finite-place ultrametricity. -/
 theorem degree_sub_determinantDiscrepancy_le_sum_flagQuotient_modifiedDegree
     (hF : Monotone F) (hzero : F 0 = ⊥) (htop : F (Fin.last n) = ⊤)
-    [hV : V.IsUltrametric] : V.degree - V.determinantDiscrepancy ≤
+    [hV : V.toNormFamily.IsUltrametric] : V.degree - V.determinantDiscrepancy ≤
     ∑ i : Fin n, (V.flagQuotientOfMeasurableBase F i).modifiedDegree := by
   apply (V.degree_sub_determinantDiscrepancy_le_sum_flagQuotient
     F hF hzero htop).trans
   apply Finset.sum_le_sum
   intro i _
-  have hQ : (V.flagQuotientOfMeasurableBase F i).IsUltrametric := by
+  have hQ : (V.flagQuotientOfMeasurableBase F i).toNormFamily.IsUltrametric := by
     simpa only [flagQuotientOfMeasurableBase, quotientOfMeasurableBase_toNormFamily,
       restrictOfMeasurableBase_toNormFamily] using
       (hV.restrict (F i.succ)).quotient ((F i.castSucc).comap (F i.succ).subtype)

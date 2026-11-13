@@ -30,44 +30,48 @@ namespace ArakelovGeometry.AdelicVectorBundle
 variable {K L E : Type*} [Field K] [Field L] [Algebra K L]
   [Algebra.IsAlgebraic K L] [IsAlgClosed L] {S : AdelicStructure K}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle S)
   [hreg : S.HasRegularBase]
   [hN : S.IsArchimedeanNormalized]
 
 /-- The actual native restriction, with regularity produced in each original branch. -/
-def scalarExtensionRestrictionOfRegularBase (A : Submodule L (L ⊗[K] E)) :
-    AdelicVectorBundle (S.algebraicExtension L) A where
+abbrev scalarExtensionRestrictionOfRegularBase (A : Submodule L (L ⊗[K] V)) :
+    AdelicVectorBundle (S.algebraicExtension L) where
+  carrier := A
   toNormFamily := (V.toNormFamily.scalarExtension (L := L)).restrict A
-  isMeasurable := by
-    rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
-    · exact (V.scalarExtensionRestrictionOfOrdinaryBase (hreg := ⟨(Or.inl h)⟩) A).isMeasurable
-    · exact (V.scalarExtensionRestrictionOfOrdinaryBase
-        (hreg := ⟨(Or.inr ⟨hc, hd⟩)⟩) A).isMeasurable
-    · let := hm
-      exact (V.toNormFamily.nativeAlgebraicRestrictionOfPositiveAtoms
-        (hpos := ⟨hp⟩) (hS := ⟨hf⟩) A).isMeasurable
-  dual_isMeasurable := by
-    rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
-    · exact (V.scalarExtensionRestrictionOfOrdinaryBase (hreg := ⟨(Or.inl h)⟩) A).dual_isMeasurable
-    · exact (V.scalarExtensionRestrictionOfOrdinaryBase
-        (hreg := ⟨(Or.inr ⟨hc, hd⟩)⟩) A).dual_isMeasurable
-    · let := hm
-      exact (V.toNormFamily.nativeAlgebraicRestrictionOfPositiveAtoms
-        (hpos := ⟨hp⟩) (hS := ⟨hf⟩) A).dual_isMeasurable
-  isDominated := by
-    exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
-      V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)).isDominated.restrict A
+  toIsAdelic := {
+    isMeasurable := by
+      rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
+      · exact (V.scalarExtensionRestrictionOfOrdinaryBase (hreg := ⟨(Or.inl h)⟩) A).isMeasurable
+      · exact (V.scalarExtensionRestrictionOfOrdinaryBase
+          (hreg := ⟨(Or.inr ⟨hc, hd⟩)⟩) A).isMeasurable
+      · let := hm
+        exact (V.toNormFamily.nativeAlgebraicRestrictionOfPositiveAtoms
+          (hpos := ⟨hp⟩) (hS := ⟨hf⟩) A).isMeasurable
+    dual_isMeasurable := by
+      rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
+      · exact (V.scalarExtensionRestrictionOfOrdinaryBase
+          (hreg := ⟨(Or.inl h)⟩) A).dual_isMeasurable
+      · exact (V.scalarExtensionRestrictionOfOrdinaryBase
+          (hreg := ⟨(Or.inr ⟨hc, hd⟩)⟩) A).dual_isMeasurable
+      · let := hm
+        exact (V.toNormFamily.nativeAlgebraicRestrictionOfPositiveAtoms
+          (hpos := ⟨hp⟩) (hS := ⟨hf⟩) A).dual_isMeasurable
+    isDominated := by
+      exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
+        V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)).isDominated.restrict A
+  }
 
 @[simp]
 theorem scalarExtensionRestrictionOfRegularBase_toNormFamily
-    (A : Submodule L (L ⊗[K] E)) :
+    (A : Submodule L (L ⊗[K] V)) :
     (V.scalarExtensionRestrictionOfRegularBase A).toNormFamily =
       (V.toNormFamily.scalarExtension (L := L)).restrict A := rfl
 
 open NormFamily.IsDominated in
 /-- Accepted native determinant producers cover the same three original alternatives. -/
 theorem scalarExtensionRestrictionOfRegularBase_determinant_isMeasurable
-    (A : Submodule L (L ⊗[K] E)) :
+    (A : Submodule L (L ⊗[K] V)) :
     (V.scalarExtensionRestrictionOfRegularBase A).toNormFamily.determinant.IsMeasurable :=
     by
   rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
@@ -82,7 +86,7 @@ theorem scalarExtensionRestrictionOfRegularBase_determinant_isMeasurable
 variable [S.IsProper]
 
 /-- Canonical degree of the genuine native bundle and its actual determinant. -/
-def nativeRestrictionDegreeOfRegularBase (A : Submodule L (L ⊗[K] E)) : ℝ :=
+def nativeRestrictionDegreeOfRegularBase (A : Submodule L (L ⊗[K] V)) : ℝ :=
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   (V.scalarExtensionRestrictionOfRegularBase A).degreeOfMeasurableDeterminant
     (hdet := (V.scalarExtensionRestrictionOfRegularBase_determinant_isMeasurable A))
@@ -90,33 +94,33 @@ def nativeRestrictionDegreeOfRegularBase (A : Submodule L (L ⊗[K] E)) : ℝ :=
 
 /-- Exact common-density coherence on the same native subspace, for any regularity proof. -/
 theorem nativeRestrictionDegreeOfRegularBase_eq_common
-    [hc : S.HasCommonCountableDenseSubfield] (A : Submodule L (L ⊗[K] E)) :
+    [hc : S.HasCommonCountableDenseSubfield] (A : Submodule L (L ⊗[K] V)) :
     V.nativeRestrictionDegreeOfRegularBase A =
       V.nativeRestrictionDegreeOfOrdinaryBase (hreg := ⟨(Or.inl hc)⟩) A := rfl
 
 /-- Exact discrete coherence, with no closure discreteness premise. -/
 theorem nativeRestrictionDegreeOfRegularBase_eq_discrete
-    [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] (A : Submodule L (L ⊗[K] E)) :
+    [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] (A : Submodule L (L ⊗[K] V)) :
     V.nativeRestrictionDegreeOfRegularBase A =
       V.nativeRestrictionDegreeOfCountableDiscreteBase A := rfl
 
 /-- Exact positive-atomic coherence on the actual native determinant. -/
 theorem nativeRestrictionDegreeOfRegularBase_eq_positiveAtoms
     [MeasurableSingletonClass S.Ω] [S.HasPositiveAtoms] [S.HasOnlyFinitePlaces]
-    (A : Submodule L (L ⊗[K] E)) :
+    (A : Submodule L (L ⊗[K] V)) :
     V.nativeRestrictionDegreeOfRegularBase A =
       V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A := rfl
 
 omit [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L] in
 /-- Absolute positive degree uses every actual native closure subspace. -/
 def absolutePositiveDegreeOfRegularBase : EReal :=
-  ⨆ A : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] E),
+  ⨆ A : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] V),
     (V.nativeRestrictionDegreeOfRegularBase A : EReal)
 
 omit [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L] in
 /-- Absolute maximal slope uses every actual positive-rank native closure mean. -/
 def absoluteMaximalSlopeOfRegularBase : EReal :=
-  ⨆ A : {A : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] E) //
+  ⨆ A : {A : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] V) //
       0 < Module.finrank (AlgebraicClosure K) A},
     (V.nativeRestrictionDegreeOfRegularBase A.val /
       (Module.finrank (AlgebraicClosure K) A.val : ℝ) : EReal)
@@ -203,7 +207,7 @@ theorem exists_absolutePositiveDegreeOfRegularBase_eq_coe :
 
 omit [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L] in
 /-- Positive original rank gives an actual real absolute maximal slope in all branches. -/
-theorem exists_absoluteMaximalSlopeOfRegularBase_eq_coe (hr : 0 < Module.finrank K E) :
+theorem exists_absoluteMaximalSlopeOfRegularBase_eq_coe (hr : 0 < Module.finrank K V) :
     ∃ a : ℝ, V.absoluteMaximalSlopeOfRegularBase = (a : EReal) := by
   rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
   · exact V.exists_absoluteMaximalSlope_eq_coe (hcount := h) hr
@@ -217,7 +221,7 @@ theorem exists_absoluteMaximalSlopeOfRegularBase_eq_coe (hr : 0 < Module.finrank
 omit [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L] in
 /-- Every actual native degree vanishes in ambient rank zero. -/
 theorem absolutePositiveDegreeOfRegularBase_eq_zero_of_finrank_eq_zero
-    (hr : Module.finrank K E = 0) : V.absolutePositiveDegreeOfRegularBase = 0 := by
+    (hr : Module.finrank K V = 0) : V.absolutePositiveDegreeOfRegularBase = 0 := by
   rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
   · exact V.absolutePositiveDegree_eq_zero_of_finrank_eq_zero (hcount := h) hr
   · let := hc
@@ -230,7 +234,7 @@ theorem absolutePositiveDegreeOfRegularBase_eq_zero_of_finrank_eq_zero
 omit [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L] in
 /-- Rank zero has no positive-rank native subspace, so the actual mean supremum is bottom. -/
 theorem absoluteMaximalSlopeOfRegularBase_eq_bot_of_finrank_eq_zero
-    (hr : Module.finrank K E = 0) : V.absoluteMaximalSlopeOfRegularBase = ⊥ := by
+    (hr : Module.finrank K V = 0) : V.absoluteMaximalSlopeOfRegularBase = ⊥ := by
   rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
   · exact V.absoluteMaximalSlope_eq_bot_of_finrank_eq_zero (hcount := h) hr
   · let := hc

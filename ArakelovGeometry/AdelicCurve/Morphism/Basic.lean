@@ -190,7 +190,7 @@ theorem map_measure (f : Hom C D) : Measure.map f.baseMap C.v = D.v :=
   AdelicStructure.Hom.map_measure f
 
 /-- Pullback along a bundled morphism. -/
-noncomputable abbrev pullback (f : Hom C D) : Lp ℝ 1 D.v →ₗᵢ[ℝ] Lp ℝ 1 C.v :=
+noncomputable def pullback (f : Hom C D) : Lp ℝ 1 D.v →ₗᵢ[ℝ] Lp ℝ 1 C.v :=
   AdelicStructure.Hom.pullback f
 
 theorem coeFn_pullback (f : Hom C D) (g : Lp ℝ 1 D.v) :
@@ -210,11 +210,11 @@ theorem integral_comp (f : Hom C D) {g : D.Ω → ℝ} (hg : Integrable g D.v) :
   AdelicStructure.Hom.integral_comp f hg
 
 /-- The identity morphism of a bundled curve. -/
-noncomputable abbrev id (C : AdelicCurve.{u₁, v₁}) : Hom C C :=
+noncomputable def id (C : AdelicCurve.{u₁, v₁}) : Hom C C :=
   AdelicStructure.Hom.id C.AS
 
 /-- Composition of bundled morphisms. -/
-noncomputable abbrev comp (g : Hom D E) (f : Hom C D) : Hom C E :=
+noncomputable def comp (g : Hom D E) (f : Hom C D) : Hom C E :=
   AdelicStructure.Hom.comp g f
 
 theorem id_comp (f : Hom C D) : (id D).comp f = f :=

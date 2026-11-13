@@ -39,15 +39,15 @@ variable [S.IsProper]
 height is allowed: the target minimum is strictly above `⊥` by the proved
 finiteness theorem, so its sum with `⊤` is `⊤`. -/
 theorem minimalSlope_le_minimalSlope_add_mapHeight_of_surjective
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (f : E →ₗ[K] F) (hs : Function.Surjective f) (hf : f ≠ 0) :
+    (f : V →ₗ[K] W) (hs : Function.Surjective f) (hf : f ≠ 0) :
     V.minimalSlope ≤ W.minimalSlope + V.mapHeight W f := by
   by_cases ht : V.mapHeight W f = ⊤
   · have hr : 0 < Module.finrank K f.range := Nat.pos_of_ne_zero (fun hz ↦
       hf (LinearMap.range_eq_bot.mp (Submodule.finrank_eq_zero.mp hz)))
-    have hF : 0 < Module.finrank K F := hr.trans_le f.range.finrank_le
+    have hF : 0 < Module.finrank K W := hr.trans_le f.range.finrank_le
     rw [ht, EReal.add_top_of_ne_bot (W.bot_lt_minimalSlope hF).ne']
     exact le_top
   · exact V.minimalSlope_le_minimalSlope_add_mapHeight_of_surjective_of_ne_top
@@ -57,12 +57,12 @@ theorem minimalSlope_le_minimalSlope_add_mapHeight_of_surjective
 target has rank zero and minimal slope `⊤`. No extended-real sum involving
 the height of the zero map is needed for its automatic bound. -/
 theorem minimalSlope_target_eq_top_of_zero_surjective
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (f : E →ₗ[K] F) (hs : Function.Surjective f) (hf : f = 0) :
+    (f : V →ₗ[K] W) (hs : Function.Surjective f) (hf : f = 0) :
     W.minimalSlope = ⊤ ∧ V.minimalSlope ≤ W.minimalSlope := by
-  let : Subsingleton F := ⟨fun y z ↦ by
+  let : Subsingleton W := ⟨fun y z ↦ by
     obtain ⟨x, rfl⟩ := hs y
     obtain ⟨x', rfl⟩ := hs z
     simp only [hf, LinearMap.zero_apply]⟩

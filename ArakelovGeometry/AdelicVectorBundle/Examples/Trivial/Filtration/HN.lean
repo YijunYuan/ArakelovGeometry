@@ -180,7 +180,7 @@ namespace AdelicVectorBundle
 open AdelicStructure
 
 variable [FiniteDimensional K E]
-  (V : AdelicVectorBundle (singleTrivialPlace K) E)
+  (V : AdelicVectorBundle.{w} (singleTrivialPlace K))
   [hS : (singleTrivialPlace K).HasMeasurableBase]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
@@ -189,7 +189,7 @@ open Classical in
 factors are constant, semistable, and have their genuine jumps as means. -/
 theorem exists_strictMono_trivialFiltration_semistableFlag
     [hV : V.toNormFamily.IsUltrametric] :
-    ∃ (n : ℕ) (U : Fin (n + 1) → Submodule K E) (b : Fin n → ℝ),
+    ∃ (n : ℕ) (U : Fin (n + 1) → Submodule K V) (b : Fin n → ℝ),
       StrictMono U ∧ U 0 = ⊥ ∧ U (Fin.last n) = ⊤ ∧ StrictAnti b ∧
       (∀ t, V.toNormFamily.trivialFiltration t =
         ⨆ (i : Fin n) (_ : t ≤ b i), U i.succ) ∧

@@ -39,7 +39,7 @@ local instance hermitianClosedDegreeProper : (S.algebraicExtension L).IsProper :
 
 /-- The actual canonical degree of the Hermitian extension to an algebraically
 closed algebraic field is the original degree. Target context is produced. -/
-theorem degree_hermitianScalarExtension_of_isAlgClosed (V : AdelicVectorBundle S E)
+theorem degree_hermitianScalarExtension_of_isAlgClosed (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
@@ -60,7 +60,7 @@ theorem degree_hermitianScalarExtension_of_isAlgClosed (V : AdelicVectorBundle S
 
 /-- Genuine closed Hermitian extension preserves the ambient real mean slope,
 including the existing real zero-rank convention. -/
-theorem slope_hermitianScalarExtension_of_isAlgClosed (V : AdelicVectorBundle S E)
+theorem slope_hermitianScalarExtension_of_isAlgClosed (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
@@ -76,9 +76,9 @@ theorem slope_hermitianScalarExtension_of_isAlgClosed (V : AdelicVectorBundle S 
 /-- Every native restriction after actual closed Hermitian extension has
 the genuine original restricted degree, through the completed isometry. -/
 theorem degree_restrict_hermitianScalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (U : Submodule K E) :
+    [hH : V.toNormFamily.IsHermitian] (U : Submodule K V) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
@@ -90,7 +90,9 @@ theorem degree_restrict_hermitianScalarExtension_of_isAlgClosed
   have he : Rext.degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
       (W.restrictOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩)
           (hN := ⟨hLN⟩) :=
-    Rext.degree_eq_of_completed_isometry _ (Submodule.toBaseChange.toLinearEquiv L U)
+    Rext.degree_eq_of_completed_isometry
+      (W.restrictOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩))
+      (Submodule.toBaseChange.toLinearEquiv L U)
       (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (fun x z ↦
           V.toNormFamily.hermitianScalarExtension_restrict_norm_eq
             (hLN := ⟨hLN⟩) U x z)
@@ -100,9 +102,9 @@ theorem degree_restrict_hermitianScalarExtension_of_isAlgClosed
 /-- Native closed Hermitian restriction preserves the genuine original mean
 slope in every rank; no square root of minus one is assumed. -/
 theorem slope_restrict_hermitianScalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (U : Submodule K E) :
+    [hH : V.toNormFamily.IsHermitian] (U : Submodule K V) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)

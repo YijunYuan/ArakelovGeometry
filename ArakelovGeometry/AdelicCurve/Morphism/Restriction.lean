@@ -55,7 +55,7 @@ namespace ArakelovGeometry.AdelicCurve.Hom
 open MeasureTheory
 
 /-- The bundled form of the subfield-restriction morphism. -/
-noncomputable abbrev fRestriction (C : AdelicCurve) (F : Subfield C.K) :
+noncomputable def fRestriction (C : AdelicCurve) (F : Subfield C.K) :
     Hom C (C.fRestriction F) :=
   AdelicStructure.Hom.fRestriction C.AS F
 

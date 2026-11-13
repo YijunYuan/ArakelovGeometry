@@ -77,20 +77,23 @@ namespace AdelicVectorBundle
 
 /-- Source Proposition 4.1.32(4): the actual orthogonal tensor bundle, retaining
 exactly its two measurability premises and proving its domination. -/
-def orthogonalTensor (V : ∀ i, AdelicVectorBundle S (E i))
+abbrev orthogonalTensor (V : ι → AdelicVectorBundle S)
     [hS : S.IsArchimedeanNormalized]
     [hV : ∀ i, (V i).IsHermitian]
     [hm : (NormFamily.orthogonalTensor (fun i ↦ (V i).toNormFamily)).IsMeasurable]
     [hdm : (NormFamily.orthogonalTensor (fun i ↦ (V i).toNormFamily)).dual.IsMeasurable] :
-    AdelicVectorBundle S (⨂[K] i, E i) where
+    AdelicVectorBundle S where
+  carrier := (⨂[K] i, (V i).carrier)
   toNormFamily := NormFamily.orthogonalTensor (fun i ↦ (V i).toNormFamily)
-  isMeasurable := hm
-  dual_isMeasurable := hdm
-  isDominated := (NormFamily.IsDominated.strong_orthogonalTensor _
-    (fun i => (V i).isDominated)).isDominated
+  toIsAdelic := {
+    isMeasurable := hm
+    dual_isMeasurable := hdm
+    isDominated := (NormFamily.IsDominated.strong_orthogonalTensor _
+      (fun i => (V i).isDominated)).isDominated
+  }
 
 @[simp]
-theorem orthogonalTensor_toNormFamily (V : ∀ i, AdelicVectorBundle S (E i))
+theorem orthogonalTensor_toNormFamily (V : ι → AdelicVectorBundle S)
     [hS : S.IsArchimedeanNormalized]
     [hV : ∀ i, (V i).IsHermitian]
     [hm : (NormFamily.orthogonalTensor (fun i ↦ (V i).toNormFamily)).IsMeasurable]
@@ -99,7 +102,7 @@ theorem orthogonalTensor_toNormFamily (V : ∀ i, AdelicVectorBundle S (E i))
       NormFamily.orthogonalTensor (fun i ↦ (V i).toNormFamily) := rfl
 
 /-- The constructed orthogonal tensor bundle is strongly adelic. -/
-instance orthogonalTensor_isStronglyAdelic (V : ∀ i, AdelicVectorBundle S (E i))
+instance orthogonalTensor_isStronglyAdelic (V : ι → AdelicVectorBundle S)
     [hS : S.IsArchimedeanNormalized]
     [hV : ∀ i, (V i).IsHermitian]
     [(NormFamily.orthogonalTensor (fun i ↦ (V i).toNormFamily)).IsMeasurable]
@@ -108,7 +111,7 @@ instance orthogonalTensor_isStronglyAdelic (V : ∀ i, AdelicVectorBundle S (E i
   NormFamily.IsDominated.strong_orthogonalTensor _ (fun i ↦ (V i).isDominated)
 
 /-- The constructed orthogonal tensor bundle preserves the actual Hermitian property. -/
-instance orthogonalTensor_isHermitian (V : ∀ i, AdelicVectorBundle S (E i))
+instance orthogonalTensor_isHermitian (V : ι → AdelicVectorBundle S)
     [hS : S.IsArchimedeanNormalized]
     [hV : ∀ i, (V i).IsHermitian]
     [(NormFamily.orthogonalTensor (fun i ↦ (V i).toNormFamily)).IsMeasurable]
@@ -118,10 +121,10 @@ instance orthogonalTensor_isHermitian (V : ∀ i, AdelicVectorBundle S (E i))
 
 /-- Source Corollary 4.1.33: the actual orthogonal tensor of adelic lines,
 with both measurability clauses proved from the factors. -/
-def orthogonalTensorLines (V : ∀ i, AdelicVectorBundle S (E i))
+abbrev orthogonalTensorLines (V : ι → AdelicVectorBundle S)
     [hV : ∀ i, (V i).IsLine]
     [hS : S.IsArchimedeanNormalized] :
-    AdelicVectorBundle S (⨂[K] i, E i) :=
+    AdelicVectorBundle S :=
   orthogonalTensor V (hV := (fun i ↦ (hV i).isHermitian))
     (hm := (NormFamily.IsMeasurable.orthogonalTensor_of_finrank_one (fun i ↦ (V i).isMeasurable)
       (fun i ↦ (hV i).isHermitian) (fun i ↦ (hV i).rank_eq_one)))
@@ -131,7 +134,7 @@ def orthogonalTensorLines (V : ∀ i, AdelicVectorBundle S (E i))
           (NormFamily.tensor_finrank_one (fun i ↦ (hV i).rank_eq_one))))
 
 @[simp]
-theorem orthogonalTensorLines_toNormFamily (V : ∀ i, AdelicVectorBundle S (E i))
+theorem orthogonalTensorLines_toNormFamily (V : ι → AdelicVectorBundle S)
     [hV : ∀ i, (V i).IsLine]
     [hS : S.IsArchimedeanNormalized] :
     (orthogonalTensorLines V).toNormFamily =
@@ -139,37 +142,40 @@ theorem orthogonalTensorLines_toNormFamily (V : ∀ i, AdelicVectorBundle S (E i
         (hξ := (fun i ↦ (hV i).isHermitian)) := rfl
 
 /-- The constructed orthogonal tensor remains a line, including the empty family. -/
-instance orthogonalTensorLines_isLine (V : ∀ i, AdelicVectorBundle S (E i))
+instance orthogonalTensorLines_isLine (V : ι → AdelicVectorBundle S)
     [hV : ∀ i, (V i).IsLine]
     [hS : S.IsArchimedeanNormalized] :
     (orthogonalTensorLines V).IsLine :=
   ⟨NormFamily.tensor_finrank_one (fun i ↦ (hV i).rank_eq_one)⟩
 
 /-- Orthogonal tensor lines are strongly adelic by the actual tensor construction. -/
-theorem orthogonalTensorLines_isStronglyAdelic (V : ∀ i, AdelicVectorBundle S (E i))
+theorem orthogonalTensorLines_isStronglyAdelic (V : ι → AdelicVectorBundle S)
     [hV : ∀ i, (V i).IsLine]
     [hS : S.IsArchimedeanNormalized] :
     (orthogonalTensorLines V).IsStronglyAdelic :=
   (orthogonalTensorLines_isLine V).isStronglyAdelic
 
 /-- Orthogonal tensor lines are Hermitian for the same completed normalization. -/
-theorem orthogonalTensorLines_isHermitian (V : ∀ i, AdelicVectorBundle S (E i))
+theorem orthogonalTensorLines_isHermitian (V : ι → AdelicVectorBundle S)
     [hV : ∀ i, (V i).IsLine]
     [hS : S.IsArchimedeanNormalized] :
     (orthogonalTensorLines V).IsHermitian :=
   (orthogonalTensorLines_isLine V).isHermitian
 
 /-- The actual orthogonal and mixed tensor line bundles are equal. -/
-theorem orthogonalTensorLines_eq_tensorLines (V : ∀ i, AdelicVectorBundle S (E i))
+theorem orthogonalTensorLines_eq_tensorLines (V : ι → AdelicVectorBundle S)
     [hV : ∀ i, (V i).IsLine]
     [hS : S.IsArchimedeanNormalized] :
     orthogonalTensorLines V = tensorLines V := by
   apply AdelicVectorBundle.ext
-  exact NormFamily.orthogonalTensor_eq_mixedTensor_of_finrank_one _ (fun i ↦ (hV i).rank_eq_one)
+    (hξ := (orthogonalTensorLines V).toIsAdelic)
+    (hη := (tensorLines V).toIsAdelic)
+  exact NormFamily.orthogonalTensor_eq_mixedTensor_of_finrank_one
+    (fun i ↦ (V i).toNormFamily) (fun i ↦ (hV i).rank_eq_one)
 
 /-- The established tensor line bundle carries precisely the orthogonal norm. -/
 theorem tensorLines_toNormFamily_eq_orthogonalTensor
-    (V : ∀ i, AdelicVectorBundle S (E i)) [hV : ∀ i, (V i).IsLine]
+    (V : ι → AdelicVectorBundle S) [hV : ∀ i, (V i).IsLine]
     [hS : S.IsArchimedeanNormalized] :
     (tensorLines V).toNormFamily =
       NormFamily.orthogonalTensor (fun i ↦ (V i).toNormFamily)

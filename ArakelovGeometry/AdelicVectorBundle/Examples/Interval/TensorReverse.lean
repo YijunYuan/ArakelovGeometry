@@ -10,6 +10,7 @@ public import ArakelovGeometry.AdelicVectorBundle.Degree.Basic
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Interval.Determinant
 public import ArakelovGeometry.Analysis.Examples.Interval.TensorDeterminant
 
+import ArakelovGeometry.AdelicVectorBundle.Dual.Map
 import ArakelovGeometry.AdelicCurve.Basic
 import ArakelovGeometry.AdelicCurve.Extension.Algebraic.Construction
 import ArakelovGeometry.AdelicVectorBundle.Examples.Interval.Degrees
@@ -46,8 +47,8 @@ theorem rationalIntervalThreeBundle_isStronglyAdelic :
     rationalIntervalThreeFamily_isDominated
 
 /-- The actual mixed tensor in the three-by-two order of the original example. -/
-def rationalIntervalReverseTensorBundle :
-    AdelicVectorBundle rationalAdelicStructure ((Fin 3 → ℚ) ⊗[ℚ] (Fin 2 → ℚ)) :=
+abbrev rationalIntervalReverseTensorBundle :
+    AdelicVectorBundle rationalAdelicStructure :=
   rationalIntervalThreeBundle.mixedTensorPair rationalIntervalPlaneBundle
     (hN := ⟨rationalAdelicStructure_isRCLike⟩)
 
@@ -293,6 +294,21 @@ private theorem reverseTensorBasisIndex_injective : Function.Injective reverseTe
   apply (finProdFinEquiv : Fin 3 × Fin 2 ≃ Fin 6).symm.injective
   exact Prod.ext (congrFun h (.inl ())) (congrFun h (.inr ()))
 
+private theorem dual_norm_map_basis {K E F ι : Type*} [Field K]
+    {S : AdelicStructure K} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+    [AddCommGroup F] [Module K F] [FiniteDimensional K F] [Finite ι] [DecidableEq ι]
+    (ξ : NormFamily S E) (e : F ≃ₗ[K] E) (b : Basis ι K E) (ω : S.Ω) (i : ι) :
+    (ξ.pullback e.toLinearMap e.injective).dual.norm ω
+      ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] (b.map e.symm).dualBasis i) =
+        ξ.dual.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] b.dualBasis i) := by
+  have h : (b.map e.symm).dualBasis i = e.dualMap (b.dualBasis i) := by
+    ext x
+    simp [LinearEquiv.dualMap_apply, Basis.map]
+  rw [h]
+  simpa only [LinearMap.baseChange_tmul, LinearEquiv.coe_coe] using
+    (ξ.pullback e.toLinearMap e.injective).dualEquiv_norm_eq_of_completed_isometry
+      ξ ω e (fun _ ↦ rfl) ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] b.dualBasis i)
+
 /-- Every genuine completed tensor coordinate is bounded by the actual finite mixed norm. -/
 theorem rationalIntervalReverseTensorFamily_coordinate_norm_le_prime (q : Nat.Primes)
     (i : Fin 6)
@@ -305,21 +321,22 @@ theorem rationalIntervalReverseTensorFamily_coordinate_norm_le_prime (q : Nat.Pr
   let C := (rationalAdelicStructure.ϕ (.inl q)).Completion
   let ξ := NormFamily.tensorPairFactors rationalIntervalThreeFamily rationalIntervalPlaneFamily
   let b : ∀ j, Basis (ReverseTensorIndices j) ℚ
-      (BinaryTensorFactors (Fin 3 → ℚ) (Fin 2 → ℚ) j) := fun j => match j with
-    | .inl _ => Pi.basisFun ℚ (Fin 3)
-    | .inr _ => Pi.basisFun ℚ (Fin 2)
+      (LiftedTensorFactors (Fin 3 → ℚ) (Fin 2 → ℚ) j) := fun j => match j with
+    | .inl _ => (Pi.basisFun ℚ (Fin 3)).map ULift.moduleEquiv.symm
+    | .inr _ => (Pi.basisFun ℚ (Fin 2)).map ULift.moduleEquiv.symm
   let : ∀ j, Fintype (ReverseTensorIndices j) := fun j => by cases j <;> infer_instance
   let : ∀ j, DecidableEq (ReverseTensorIndices j) := fun j => by cases j <;> infer_instance
-  let B := binaryTensorEquiv ℚ (BinaryTensorFactors (Fin 3 → ℚ) (Fin 2 → ℚ))
+  let B := tensorPairEquiv ℚ (Fin 3 → ℚ) (Fin 2 → ℚ)
   let bπ := Basis.piTensorProduct b
   let t := B.symm.toLinearMap.baseChange C z
   have hb (k : Fin 6) : B.symm (rationalIntervalReverseTensorBasis k) =
       bπ (reverseTensorBasisIndex k) := by
     apply B.injective
     simp only [LinearEquiv.apply_symm_apply, bπ, Basis.piTensorProduct_apply,
-      B, binaryTensorEquiv_tprod]
+      B, tensorPairEquiv_tprod]
     simp only [rationalIntervalReverseTensorBasis, Basis.reindex_apply,
-      Basis.tensorProduct_apply', reverseTensorBasisIndex, b]
+      Basis.tensorProduct_apply', reverseTensorBasisIndex, b, Basis.map_apply,
+      ULift.moduleEquiv_symm_apply, ULift.down_up]
   have hc : (bπ.baseChange C).coord (reverseTensorBasisIndex i) ∘ₗ
       B.symm.toLinearMap.baseChange C =
         (rationalIntervalReverseTensorBasis.baseChange C).coord i := by
@@ -335,6 +352,9 @@ theorem rationalIntervalReverseTensorFamily_coordinate_norm_le_prime (q : Nat.Pr
     cases j with
     | inl u =>
       cases u
+      change (rationalIntervalThreeFamily.pullback ULift.moduleEquiv.toLinearMap
+        ULift.moduleEquiv.injective).dual.norm _ _ ≤ _
+      rw [dual_norm_map_basis]
       apply rationalIntervalThreeFamily.dual_norm_le _ _ zero_le_one
       intro x
       rw [NormFamily.dualBaseChange_one_dualBasis_apply, one_mul,
@@ -342,6 +362,9 @@ theorem rationalIntervalReverseTensorFamily_coordinate_norm_le_prime (q : Nat.Pr
       exact norm_le_pi_norm _ k
     | inr u =>
       cases u
+      change (rationalIntervalPlaneFamily.pullback ULift.moduleEquiv.toLinearMap
+        ULift.moduleEquiv.injective).dual.norm _ _ ≤ _
+      rw [dual_norm_map_basis]
       apply rationalIntervalPlaneFamily.dual_norm_le _ _ zero_le_one
       intro x
       rw [NormFamily.dualBaseChange_one_dualBasis_apply, one_mul,

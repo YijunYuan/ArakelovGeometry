@@ -42,9 +42,9 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 measurability produced from the original countable discrete base. -/
 def nativeRestrictionDegreeOfCountableDiscreteBase
     {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule L (L ⊗[K] E)) : ℝ :=
+    (A : Submodule L (L ⊗[K] V)) : ℝ :=
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   (V.scalarExtensionRestrictionOfCountableDiscreteBase A).degreeOfMeasurableDeterminant
     (hdet :=
@@ -52,16 +52,16 @@ def nativeRestrictionDegreeOfCountableDiscreteBase
 
 /-- Absolute positive degree is the supremum of ALL actual native closure
 restriction degrees, with no regularity premise on the closure place space. -/
-def absolutePositiveDegreeOfCountableDiscreteBase (V : AdelicVectorBundle S E)
+def absolutePositiveDegreeOfCountableDiscreteBase (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] : EReal :=
-  ⨆ A : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] E),
+  ⨆ A : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] V),
     (V.nativeRestrictionDegreeOfCountableDiscreteBase A : EReal)
 
 /-- Absolute maximal slope uses the actual positive-rank closure subspaces.
 The zero bundle retains the existing empty supremum convention. -/
-def absoluteMaximalSlopeOfCountableDiscreteBase (V : AdelicVectorBundle S E)
+def absoluteMaximalSlopeOfCountableDiscreteBase (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] : EReal :=
-  ⨆ A : {A : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] E) //
+  ⨆ A : {A : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] V) //
       0 < Module.finrank (AlgebraicClosure K) A},
     (V.nativeRestrictionDegreeOfCountableDiscreteBase A.val /
       (Module.finrank (AlgebraicClosure K) A.val : ℝ) : EReal)
@@ -70,9 +70,9 @@ def absoluteMaximalSlopeOfCountableDiscreteBase (V : AdelicVectorBundle S E)
 existing usual degree of the SAME actual closure subspace. -/
 theorem nativeRestrictionDegreeOfCountableDiscreteBase_eq_degree
     {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L]
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule L (L ⊗[K] E)) :
+    (A : Submodule L (L ⊗[K] V)) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     V.nativeRestrictionDegreeOfCountableDiscreteBase A =
       ((V.scalarExtension).restrictOfMeasurableBase A
@@ -83,7 +83,7 @@ theorem nativeRestrictionDegreeOfCountableDiscreteBase_eq_degree
 /-- The entire positive-degree supremum is coherent with the existing
 absolute invariant, rather than merely bounded by it. -/
 theorem absolutePositiveDegreeOfCountableDiscreteBase_eq_absolutePositiveDegree
-    (V : AdelicVectorBundle S E) [S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     V.absolutePositiveDegreeOfCountableDiscreteBase =
       V.absolutePositiveDegree := rfl
@@ -91,7 +91,7 @@ theorem absolutePositiveDegreeOfCountableDiscreteBase_eq_absolutePositiveDegree
 /-- The maximal-slope supremum has identical terms, ranks and index set
 on the common-density overlap, including the rank-zero empty convention. -/
 theorem absoluteMaximalSlopeOfCountableDiscreteBase_eq_absoluteMaximalSlope
-    (V : AdelicVectorBundle S E) [S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     V.absoluteMaximalSlopeOfCountableDiscreteBase =
       V.absoluteMaximalSlope := rfl
@@ -99,9 +99,9 @@ theorem absoluteMaximalSlopeOfCountableDiscreteBase_eq_absoluteMaximalSlope
 /-- The actual empty determinant generator has norm one in rank zero. -/
 theorem nativeRestrictionDegreeOfCountableDiscreteBase_eq_zero
     {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule L (L ⊗[K] E)) (hr : Module.finrank L A = 0) :
+    (A : Submodule L (L ⊗[K] V)) (hr : Module.finrank L A = 0) :
     V.nativeRestrictionDegreeOfCountableDiscreteBase A = 0 := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let W := V.scalarExtensionRestrictionOfCountableDiscreteBase A
@@ -117,17 +117,17 @@ theorem nativeRestrictionDegreeOfCountableDiscreteBase_eq_zero
 /-- Every actual native restriction contributes a term to the absolute
 positive degree, with no finite-stage-only restriction on the index set. -/
 theorem nativeRestrictionDegree_le_absolutePositiveDegreeOfCountableDiscreteBase
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] E)) :
+    (A : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] V)) :
     (V.nativeRestrictionDegreeOfCountableDiscreteBase A : EReal) ≤
       V.absolutePositiveDegreeOfCountableDiscreteBase :=
-  le_iSup (fun B : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] E) ↦
+  le_iSup (fun B : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] V) ↦
     (V.nativeRestrictionDegreeOfCountableDiscreteBase B : EReal)) A
 
 /-- The actual zero subspace supplies nonnegativity in every rank. -/
 theorem absolutePositiveDegreeOfCountableDiscreteBase_nonneg
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     0 ≤ V.absolutePositiveDegreeOfCountableDiscreteBase := by
   have h := V.nativeRestrictionDegree_le_absolutePositiveDegreeOfCountableDiscreteBase ⊥
@@ -138,9 +138,9 @@ theorem absolutePositiveDegreeOfCountableDiscreteBase_nonneg
 /-- Every actual closure subspace is zero in rank zero, so the supremum
 of its genuine determinant degrees is zero. -/
 theorem absolutePositiveDegreeOfCountableDiscreteBase_eq_zero_of_finrank_eq_zero
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (hr : Module.finrank K E = 0) :
+    (hr : Module.finrank K V = 0) :
     V.absolutePositiveDegreeOfCountableDiscreteBase = 0 := by
   apply le_antisymm _ (V.absolutePositiveDegreeOfCountableDiscreteBase_nonneg)
   apply iSup_le
@@ -153,9 +153,9 @@ theorem absolutePositiveDegreeOfCountableDiscreteBase_eq_zero_of_finrank_eq_zero
 
 /-- No positive-rank actual closure subspace exists in rank zero. -/
 theorem absoluteMaximalSlopeOfCountableDiscreteBase_eq_bot_of_finrank_eq_zero
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (hr : Module.finrank K E = 0) :
+    (hr : Module.finrank K V = 0) :
     V.absoluteMaximalSlopeOfCountableDiscreteBase = ⊥ := by
   apply le_antisymm _ bot_le
   apply iSup_le
@@ -167,17 +167,17 @@ theorem absoluteMaximalSlopeOfCountableDiscreteBase_eq_bot_of_finrank_eq_zero
 
 private theorem nativeDiscrete_degree_le_of_dual_basis_norm_bound
     {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle.{w} S)
     [hN : S.IsArchimedeanNormalized]
-    (b : Module.Basis (Fin (Module.finrank L (L ⊗[K] E))) L (L ⊗[K] E))
+    (b : Module.Basis (Fin (Module.finrank L (L ⊗[K] V))) L (L ⊗[K] V))
     (H : (S.algebraicExtension L).Ω → ℝ)
     (hH : Integrable H (S.algebraicExtension L).v)
     (hb : ∀ᵐ ω ∂(S.algebraicExtension L).v,
-      ∀ (A : Submodule L (L ⊗[K] E)) (i : Fin (Module.finrank L (L ⊗[K] E))),
+      ∀ (A : Submodule L (L ⊗[K] V)) (i : Fin (Module.finrank L (L ⊗[K] V))),
         ((V.toNormFamily.scalarExtension (L := L)).restrict A).dual.norm ω
           ((1 : ((S.algebraicExtension L).ϕ ω).Completion) ⊗ₜ[L]
             A.subtype.dualMap (b.coord i)) ≤ Real.exp (H ω))
-    (A : Submodule L (L ⊗[K] E)) :
+    (A : Submodule L (L ⊗[K] V)) :
     V.nativeRestrictionDegreeOfCountableDiscreteBase A ≤
       (Module.finrank L A : ℝ) * (∫ ω, H ω ∂(S.algebraicExtension L).v) +
         (Module.finrank L A : ℝ) / 2 * Real.log (Module.finrank L A) *
@@ -226,25 +226,25 @@ private theorem nativeDiscrete_degree_le_of_dual_basis_norm_bound
 bound for ALL native restrictions, without target place-space regularity. -/
 theorem exists_nativeRestrictionDegreeOfCountableDiscreteBase_le_rank_mul
     {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
-    ∃ C : ℝ, ∀ A : Submodule L (L ⊗[K] E),
+    ∃ C : ℝ, ∀ A : Submodule L (L ⊗[K] V),
       V.nativeRestrictionDegreeOfCountableDiscreteBase A ≤ (Module.finrank L A : ℝ) * C := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let W := V.scalarExtensionOfCountableDiscreteBase (L := L)
-  let b := Module.finBasis L (L ⊗[K] E)
+  let b := Module.finBasis L (L ⊗[K] V)
   let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
   obtain ⟨H, hH, _, hb⟩ :=
     NormFamily.IsDominated.exists_restricted_dual_basis_norm_bound W.toNormFamily b W.isDominated
   let C := (∫ ω, H ω ∂(S.algebraicExtension L).v) +
-    (1 / 2 : ℝ) * Real.log (Module.finrank L (L ⊗[K] E)) *
+    (1 / 2 : ℝ) * Real.log (Module.finrank L (L ⊗[K] V)) *
       ((S.algebraicExtension L).v (S.algebraicExtension L).Ωinf).toReal
   refine ⟨C, fun A ↦ ?_⟩
   have hdeg := nativeDiscrete_degree_le_of_dual_basis_norm_bound V b H hH hb A
   by_cases hn : Module.finrank L A = 0
   · simpa only [hn, Nat.cast_zero, zero_mul, zero_div, add_zero] using hdeg
   · have hlog : Real.log (Module.finrank L A : ℝ) ≤
-        Real.log (Module.finrank L (L ⊗[K] E)) :=
+        Real.log (Module.finrank L (L ⊗[K] V)) :=
       Real.log_le_log (Nat.cast_pos.mpr (Nat.pos_of_ne_zero hn))
         (Nat.cast_le.mpr A.finrank_le)
     have hl := mul_le_mul_of_nonneg_right
@@ -258,18 +258,18 @@ theorem exists_nativeRestrictionDegreeOfCountableDiscreteBase_le_rank_mul
 
 /-- Produced uniform rank-degree control excludes positive infinity. -/
 theorem absolutePositiveDegreeOfCountableDiscreteBase_lt_top
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     V.absolutePositiveDegreeOfCountableDiscreteBase < ⊤ := by
   obtain ⟨C, hC⟩ :=
     V.exists_nativeRestrictionDegreeOfCountableDiscreteBase_le_rank_mul
       (L := AlgebraicClosure K)
   have hb : V.absolutePositiveDegreeOfCountableDiscreteBase ≤
-      ((Module.finrank K E : ℝ) * max C 0 : ℝ) := by
+      ((Module.finrank K V : ℝ) * max C 0 : ℝ) := by
     apply iSup_le
     intro A
     apply EReal.coe_le_coe_iff.mpr
-    have hr : Module.finrank (AlgebraicClosure K) A ≤ Module.finrank K E := by
+    have hr : Module.finrank (AlgebraicClosure K) A ≤ Module.finrank K V := by
       simpa only [Module.finrank_baseChange] using A.finrank_le
     exact (hC A).trans ((mul_le_mul_of_nonneg_left (le_max_left C 0)
       (Nat.cast_nonneg _)).trans (mul_le_mul_of_nonneg_right
@@ -279,21 +279,21 @@ theorem absolutePositiveDegreeOfCountableDiscreteBase_lt_top
 /-- Every positive-rank native mean contributes its actual value to the
 maximal-slope supremum. -/
 theorem nativeMean_le_absoluteMaximalSlopeOfCountableDiscreteBase
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] E))
+    (A : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] V))
     (hr : 0 < Module.finrank (AlgebraicClosure K) A) :
     (V.nativeRestrictionDegreeOfCountableDiscreteBase A /
       (Module.finrank (AlgebraicClosure K) A : ℝ) : EReal) ≤
       V.absoluteMaximalSlopeOfCountableDiscreteBase :=
-  le_iSup (fun B : {B : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] E) //
+  le_iSup (fun B : {B : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] V) //
       0 < Module.finrank (AlgebraicClosure K) B} ↦
     (V.nativeRestrictionDegreeOfCountableDiscreteBase B.val /
       (Module.finrank (AlgebraicClosure K) B.val : ℝ) : EReal)) ⟨A, hr⟩
 
 /-- All actual positive-rank closure means have a produced finite upper bound. -/
 theorem absoluteMaximalSlopeOfCountableDiscreteBase_lt_top
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     V.absoluteMaximalSlopeOfCountableDiscreteBase < ⊤ := by
   obtain ⟨C, hC⟩ :=
@@ -309,7 +309,7 @@ theorem absoluteMaximalSlopeOfCountableDiscreteBase_lt_top
 
 /-- Both extended endpoints are excluded, including in rank zero. -/
 theorem exists_absolutePositiveDegreeOfCountableDiscreteBase_eq_coe
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     ∃ c : ℝ, V.absolutePositiveDegreeOfCountableDiscreteBase = (c : EReal) := by
   lift V.absolutePositiveDegreeOfCountableDiscreteBase to ℝ using
@@ -320,12 +320,12 @@ theorem exists_absolutePositiveDegreeOfCountableDiscreteBase_eq_coe
 
 /-- Positive original rank makes the true closure maximal slope a finite real. -/
 theorem exists_absoluteMaximalSlopeOfCountableDiscreteBase_eq_coe
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     ∃ c : ℝ, V.absoluteMaximalSlopeOfCountableDiscreteBase = (c : EReal) := by
   have hA : 0 < Module.finrank (AlgebraicClosure K)
-      (⊤ : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] E)) := by
+      (⊤ : Submodule (AlgebraicClosure K) ((AlgebraicClosure K) ⊗[K] V)) := by
     simpa only [finrank_top, Module.finrank_baseChange] using hr
   have hbot : ⊥ < V.absoluteMaximalSlopeOfCountableDiscreteBase :=
     (EReal.bot_lt_coe _).trans_le

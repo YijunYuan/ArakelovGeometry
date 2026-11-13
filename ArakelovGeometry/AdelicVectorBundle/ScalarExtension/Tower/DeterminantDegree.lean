@@ -69,8 +69,7 @@ omit [FiniteDimensional L X]
 /-- Determinant degree is preserved by the measure-preserving tower map, with
 measurability and Archimedean normalization supplied on both curves. -/
 theorem degreeOfMeasurableDeterminant_towerPullback [S.IsProper]
-    {X : Type*} [AddCommGroup X] [Module L X] [FiniteDimensional L X]
-    (V : AdelicVectorBundle (S.algebraicExtension L) X) (F : IntermediateField K L)
+    (V : AdelicVectorBundle (S.algebraicExtension L)) (F : IntermediateField K L)
     [hdetD : V.toNormFamily.determinant.IsMeasurable]
     [hdetT : (V.towerPullback F).toNormFamily.determinant.IsMeasurable]
     [hND : (S.algebraicExtension L).IsArchimedeanNormalized]
@@ -86,8 +85,8 @@ theorem degreeOfMeasurableDeterminant_towerPullback [S.IsProper]
   change (V.towerPullback F).degreeOfMeasurableDeterminant =
     V.degreeOfMeasurableDeterminant
   let s := (V.determinant).lineGenerator (hV := (V.determinant_isLine))
-  rw [degreeOfMeasurableDeterminant_eq_neg_integral _ s,
-    degreeOfMeasurableDeterminant_eq_neg_integral _ s]
+  rw [degreeOfMeasurableDeterminant_eq_neg_integral (V.towerPullback F) s,
+    degreeOfMeasurableDeterminant_eq_neg_integral V s]
   change -(∫ x, (V.toNormFamily.towerPullback F).determinant.logNorm s.val x
       ∂((S.algebraicExtension F).algebraicExtension L).v) =
     -(∫ x, V.toNormFamily.determinant.logNorm s.val x ∂(S.algebraicExtension L).v)
@@ -99,16 +98,14 @@ theorem degreeOfMeasurableDeterminant_towerPullback [S.IsProper]
 /-- A completed isometry over a measure-preserving place tower preserves determinant degree. -/
 theorem degreeOfMeasurableDeterminant_eq_of_tower_isometry [S.IsProper]
     (F : IntermediateField K L)
-    {X Y : Type*} [AddCommGroup X] [Module L X] [FiniteDimensional L X]
-    [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
-    (W : AdelicVectorBundle ((S.algebraicExtension F).algebraicExtension L) X)
-    (R : AdelicVectorBundle (S.algebraicExtension L) Y) (e : X ≃ₗ[L] Y)
+    (W : AdelicVectorBundle ((S.algebraicExtension F).algebraicExtension L))
+    (R : AdelicVectorBundle (S.algebraicExtension L)) (e : W ≃ₗ[L] R)
     [hdetW : W.toNormFamily.determinant.IsMeasurable]
     [hdetR : R.toNormFamily.determinant.IsMeasurable]
     [hND : (S.algebraicExtension L).IsArchimedeanNormalized]
     [hNT : ((S.algebraicExtension F).algebraicExtension L).IsArchimedeanNormalized]
     (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
-      (z : x.abv.Completion ⊗[L] X), R.toNormFamily.norm (scalarExtensionTowerPlace x)
+      (z : x.abv.Completion ⊗[L] W), R.toNormFamily.norm (scalarExtensionTowerPlace x)
         (e.toLinearMap.baseChange x.abv.Completion z) = W.toNormFamily.norm x z) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S F

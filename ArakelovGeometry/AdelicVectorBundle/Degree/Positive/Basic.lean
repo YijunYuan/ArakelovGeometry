@@ -34,31 +34,31 @@ namespace AdelicVectorBundle
 
 /-- Source positive degree, initially as the extended supremum over all
 actual subspace degrees. Its finiteness is proved below. -/
-def positiveDegree (V : AdelicVectorBundle S E)
+def positiveDegree (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] : EReal :=
-  ⨆ U : Submodule K E, ((V.restrictOfMeasurableBase U).degree : EReal)
+  ⨆ U : Submodule K V, ((V.restrictOfMeasurableBase U).degree : EReal)
 
 /-- Every actual restricted degree is among the terms of positive degree. -/
-theorem degree_restrict_le_positiveDegree (V : AdelicVectorBundle S E)
+theorem degree_restrict_le_positiveDegree (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (U : Submodule K E) :
+    (U : Submodule K V) :
     ((V.restrictOfMeasurableBase U).degree : EReal) ≤
       V.positiveDegree := le_iSup
-        (fun T : Submodule K E ↦ ((V.restrictOfMeasurableBase T).degree : EReal)) U
+        (fun T : Submodule K V ↦ ((V.restrictOfMeasurableBase T).degree : EReal)) U
 
 /-- The zero subspace supplies nonnegativity, even in rank zero. -/
-theorem positiveDegree_nonneg (V : AdelicVectorBundle S E)
+theorem positiveDegree_nonneg (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     0 ≤ V.positiveDegree := by
   have h := V.degree_restrict_le_positiveDegree ⊥
-  rw [degree_eq_zero_of_finrank_eq_zero _ (finrank_bot K E), EReal.coe_zero] at h
+  rw [degree_eq_zero_of_finrank_eq_zero _ (finrank_bot K V), EReal.coe_zero] at h
   exact h
 
 /-- The total actual restriction shows degree is at most positive degree. -/
-theorem degree_le_positiveDegree (V : AdelicVectorBundle S E)
+theorem degree_le_positiveDegree (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.degree : EReal) ≤ V.positiveDegree := by
@@ -66,18 +66,18 @@ theorem degree_le_positiveDegree (V : AdelicVectorBundle S E)
     V.degree_restrict_le_positiveDegree ⊤
 
 /-- Any bound on all actual restricted degrees bounds their supremum. -/
-theorem positiveDegree_le (V : AdelicVectorBundle S E)
+theorem positiveDegree_le (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] {a : EReal}
-    (ha : ∀ U : Submodule K E,
+    (ha : ∀ U : Submodule K V,
       ((V.restrictOfMeasurableBase U).degree : EReal) ≤ a) :
     V.positiveDegree ≤ a := iSup_le ha
 
 /-- The zero bundle's positive degree is zero, rather than an empty supremum. -/
-theorem positiveDegree_eq_zero_of_finrank_eq_zero (V : AdelicVectorBundle S E)
+theorem positiveDegree_eq_zero_of_finrank_eq_zero (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : Module.finrank K E = 0) : V.positiveDegree = 0 := by
+    (hr : Module.finrank K V = 0) : V.positiveDegree = 0 := by
   apply le_antisymm _ (V.positiveDegree_nonneg)
   apply V.positiveDegree_le
   intro U
@@ -88,24 +88,26 @@ theorem positiveDegree_eq_zero_of_finrank_eq_zero (V : AdelicVectorBundle S E)
 
 /-- Increasing the actual norms decreases every restricted degree and hence
 positive degree. -/
-theorem positiveDegree_antitone (V W : AdelicVectorBundle S E)
+theorem positiveDegree_antitone (V : AdelicVectorBundle S) (W : NormFamily S V) [W.IsAdelic]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (h : V.toNormFamily ≤ W.toNormFamily) :
-    W.positiveDegree ≤ V.positiveDegree := by
-  apply W.positiveDegree_le
+    (h : V.toNormFamily ≤ W) :
+    W.toAdelicVectorBundle.positiveDegree ≤ V.positiveDegree := by
+  apply W.toAdelicVectorBundle.positiveDegree_le
   intro U
   have hU : (V.restrictOfMeasurableBase U).toNormFamily ≤
-      (W.restrictOfMeasurableBase U).toNormFamily := fun ω z ↦ h ω _
-  exact (EReal.coe_le_coe_iff.mpr (degree_antitone _ _ hU)).trans
+      (W.toAdelicVectorBundle.restrictOfMeasurableBase U).toNormFamily := fun ω z ↦ h ω _
+  exact (EReal.coe_le_coe_iff.mpr (degree_antitone (V.restrictOfMeasurableBase U)
+    (W.toAdelicVectorBundle.restrictOfMeasurableBase U).toNormFamily
+    (hW := (W.toAdelicVectorBundle.restrictOfMeasurableBase U).toIsAdelic) hU)).trans
     (V.degree_restrict_le_positiveDegree U)
 
 /-- Positive degree of an actual restriction is bounded by ambient positive
 degree, using the canonical nested restriction degree isometry. -/
-theorem positiveDegree_restrict_le (V : AdelicVectorBundle S E)
+theorem positiveDegree_restrict_le (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (W : Submodule K E) :
+    (W : Submodule K V) :
     (V.restrictOfMeasurableBase W).positiveDegree ≤ V.positiveDegree := by
   apply positiveDegree_le _
   intro U
@@ -122,13 +124,13 @@ theorem positiveDegree_restrict_le (V : AdelicVectorBundle S E)
 
 /-- The produced uniform rank-degree bound makes positive degree finite.
 No maximizing subspace, caller-supplied bound or HN object is required. -/
-theorem positiveDegree_lt_top (V : AdelicVectorBundle S E)
+theorem positiveDegree_lt_top (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     V.positiveDegree < ⊤ := by
   obtain ⟨C, hC⟩ := V.exists_degree_restrict_le_rank_mul
   have hb : V.positiveDegree ≤
-      ((Module.finrank K E : ℝ) * max C 0 : ℝ) := by
+      ((Module.finrank K V : ℝ) * max C 0 : ℝ) := by
     apply V.positiveDegree_le
     intro U
     apply EReal.coe_le_coe_iff.mpr
@@ -139,7 +141,7 @@ theorem positiveDegree_lt_top (V : AdelicVectorBundle S E)
 
 /-- Both extended endpoints are excluded before positive degree is represented
 by a real number. This includes the zero bundle. -/
-theorem exists_positiveDegree_eq_coe (V : AdelicVectorBundle S E)
+theorem exists_positiveDegree_eq_coe (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     ∃ c : ℝ, V.positiveDegree = (c : EReal) := by
@@ -150,10 +152,10 @@ theorem exists_positiveDegree_eq_coe (V : AdelicVectorBundle S E)
 
 /-- Positive degree vanishes precisely when every actual subspace degree is
 nonpositive. The zero subspace supplies the reverse inequality. -/
-theorem positiveDegree_eq_zero_iff (V : AdelicVectorBundle S E)
+theorem positiveDegree_eq_zero_iff (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
-    V.positiveDegree = 0 ↔ ∀ U : Submodule K E,
+    V.positiveDegree = 0 ↔ ∀ U : Submodule K V,
       (V.restrictOfMeasurableBase U).degree ≤ 0 := by
   constructor
   · intro h U
@@ -166,7 +168,7 @@ theorem positiveDegree_eq_zero_iff (V : AdelicVectorBundle S E)
 
 /-- The actual maximal slope detects vanishing positive degree, including the
 rank-zero maximal slope convention. -/
-theorem positiveDegree_eq_zero_iff_maximalSlope_nonpos (V : AdelicVectorBundle S E)
+theorem positiveDegree_eq_zero_iff_maximalSlope_nonpos (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     V.positiveDegree = 0 ↔ V.maximalSlope ≤ 0 := by

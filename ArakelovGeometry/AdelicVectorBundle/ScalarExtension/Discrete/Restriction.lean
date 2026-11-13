@@ -67,18 +67,18 @@ variable {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- The genuine native target restriction bundle, constructed from its actual
 primal and produced dual measurability; target discreteness is unnecessary. -/
-def scalarExtensionRestrictionOfCountableDiscreteBase
-    (V : AdelicVectorBundle S E)
+abbrev scalarExtensionRestrictionOfCountableDiscreteBase
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule L (L ⊗[K] E)) : AdelicVectorBundle (S.algebraicExtension L) A :=
+    (A : Submodule L (L ⊗[K] V)) : AdelicVectorBundle (S.algebraicExtension L) :=
   (V.scalarExtensionOfCountableDiscreteBase (L := L)).restrict A
     (hm := (V.toNormFamily.scalarExtension_restrict_dual_isMeasurable_of_countable_discrete A))
 
 @[simp]
 theorem scalarExtensionRestrictionOfCountableDiscreteBase_toNormFamily
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule L (L ⊗[K] E)) :
+    (A : Submodule L (L ⊗[K] V)) :
     (V.scalarExtensionRestrictionOfCountableDiscreteBase (L := L) A).toNormFamily =
       (V.toNormFamily.scalarExtension (L := L)).restrict A := rfl
 

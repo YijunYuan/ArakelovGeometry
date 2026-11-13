@@ -86,6 +86,25 @@ theorem binaryTensorToHom_baseChange (z : ⨂[K] i, E i)
       simp_all only [TensorProduct.tmul_add, map_add, LinearMap.add_apply,
         LinearMap.baseChange_add]
 
+section BinaryPair
+
+variable (R : Type*) [Field R] (V : Type*) (W : Type*)
+  [AddCommGroup V] [Module R V] [FiniteDimensional R V]
+  [AddCommGroup W] [Module R W] [FiniteDimensional R W]
+
+/-- Evaluation identifies the binary tensor with maps from the first dual,
+with no common-universe restriction on its factors. -/
+def tensorPairToHomEquiv : (V ⊗[R] W) ≃ₗ[R] (Module.Dual R V →ₗ[R] W) :=
+  (TensorProduct.congr (Module.evalEquiv R V) (LinearEquiv.refl R W)).trans
+    (dualTensorHomEquiv R (Module.Dual R V) W)
+
+omit [FiniteDimensional R W] in
+@[simp]
+theorem tensorPairToHomEquiv_tmul (x : V) (y : W) (f : Module.Dual R V) :
+    tensorPairToHomEquiv R V W (x ⊗ₜ[R] y) f = f x • y := rfl
+
+end BinaryPair
+
 end
 
 end ArakelovGeometry

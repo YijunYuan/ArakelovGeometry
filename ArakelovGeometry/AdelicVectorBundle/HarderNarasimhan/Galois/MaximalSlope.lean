@@ -36,7 +36,7 @@ local instance hermitianGaloisMaximalSlopeProper : (S.algebraicExtension L).IsPr
 /-- Actual finite Galois Hermitian extension preserves maximal slope in
 every rank, using the produced destabilizer descent and genuine restriction. -/
 theorem maximalSlope_hermitianScalarExtension_of_finiteGalois
-    [FiniteDimensional K L] [IsGalois K L] (V : AdelicVectorBundle S E)
+    [FiniteDimensional K L] [IsGalois K L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
@@ -45,16 +45,16 @@ theorem maximalSlope_hermitianScalarExtension_of_finiteGalois
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
     W.maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) = V.maximalSlope := by
   intro hLN hLS W
-  have hdim (U : Submodule K E) :
+  have hdim (U : Submodule K V) :
       Module.finrank L (U.baseChange L) = Module.finrank K U :=
     (Submodule.toBaseChange.toLinearEquiv L U).finrank_eq.symm.trans Module.finrank_baseChange
   apply le_antisymm
-  · by_cases hz : Module.finrank K E = 0
+  · by_cases hz : Module.finrank K V = 0
     · rw [W.maximalSlope_eq_bot_of_finrank_eq_zero (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
         (Module.finrank_baseChange.trans hz)]
       exact bot_le
-    · have hr : 0 < Module.finrank K E := Nat.pos_of_ne_zero hz
-      have hrL : 0 < Module.finrank L (L ⊗[K] E) := by
+    · have hr : 0 < Module.finrank K V := Nat.pos_of_ne_zero hz
+      have hrL : 0 < Module.finrank L (L ⊗[K] V) := by
         rwa [Module.finrank_baseChange]
       let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
       let D := W.destabilizingSubspace (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) hrL

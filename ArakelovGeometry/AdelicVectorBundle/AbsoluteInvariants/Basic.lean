@@ -32,7 +32,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Positive degree of the actual ordinary algebraic-closure bundle. -/
-def absolutePositiveDegree (V : AdelicVectorBundle S E)
+def absolutePositiveDegree (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] : EReal :=
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S (AlgebraicClosure K)
@@ -42,7 +42,7 @@ def absolutePositiveDegree (V : AdelicVectorBundle S E)
 
 /-- Maximal slope of the actual ordinary algebraic-closure bundle; the zero
 bundle has the existing empty-supremum value `⊥`. -/
-def absoluteMaximalSlope (V : AdelicVectorBundle S E)
+def absoluteMaximalSlope (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] : EReal :=
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S (AlgebraicClosure K)
@@ -51,7 +51,7 @@ def absoluteMaximalSlope (V : AdelicVectorBundle S E)
     (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := AlgebraicClosure K))⟩)
 
 /-- The actual zero subspace makes absolute positive degree nonnegative. -/
-theorem absolutePositiveDegree_nonneg (V : AdelicVectorBundle S E)
+theorem absolutePositiveDegree_nonneg (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     0 ≤ V.absolutePositiveDegree := by
@@ -59,7 +59,7 @@ theorem absolutePositiveDegree_nonneg (V : AdelicVectorBundle S E)
   exact (V.scalarExtension (L := AlgebraicClosure K)).positiveDegree_nonneg
 
 /-- A produced actual rank-degree bound excludes positive infinity. -/
-theorem absolutePositiveDegree_lt_top (V : AdelicVectorBundle S E)
+theorem absolutePositiveDegree_lt_top (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     V.absolutePositiveDegree < ⊤ := by
@@ -67,7 +67,7 @@ theorem absolutePositiveDegree_lt_top (V : AdelicVectorBundle S E)
   exact (V.scalarExtension (L := AlgebraicClosure K)).positiveDegree_lt_top
 
 /-- Absolute maximal slope has a finite upper bound in every rank. -/
-theorem absoluteMaximalSlope_lt_top (V : AdelicVectorBundle S E)
+theorem absoluteMaximalSlope_lt_top (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     V.absoluteMaximalSlope < ⊤ := by
@@ -76,7 +76,7 @@ theorem absoluteMaximalSlope_lt_top (V : AdelicVectorBundle S E)
 
 /-- Both endpoints are excluded before representing absolute positive degree
 by a real value, including in rank zero. -/
-theorem exists_absolutePositiveDegree_eq_coe (V : AdelicVectorBundle S E)
+theorem exists_absolutePositiveDegree_eq_coe (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     ∃ c : ℝ, V.absolutePositiveDegree = (c : EReal) := by
@@ -84,53 +84,55 @@ theorem exists_absolutePositiveDegree_eq_coe (V : AdelicVectorBundle S E)
   exact (V.scalarExtension (L := AlgebraicClosure K)).exists_positiveDegree_eq_coe
 
 /-- Positive original rank produces a finite real absolute maximal slope. -/
-theorem exists_absoluteMaximalSlope_eq_coe (V : AdelicVectorBundle S E)
+theorem exists_absoluteMaximalSlope_eq_coe (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     ∃ c : ℝ, V.absoluteMaximalSlope = (c : EReal) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S (AlgebraicClosure K)
   apply (V.scalarExtension (L := AlgebraicClosure K)).exists_maximalSlope_eq_coe
   simpa only [Module.finrank_baseChange] using hr
 
 /-- The actual zero bundle has absolute positive degree zero. -/
-theorem absolutePositiveDegree_eq_zero_of_finrank_eq_zero (V : AdelicVectorBundle S E)
+theorem absolutePositiveDegree_eq_zero_of_finrank_eq_zero (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    (hr : Module.finrank K E = 0) : V.absolutePositiveDegree = 0 := by
+    (hr : Module.finrank K V = 0) : V.absolutePositiveDegree = 0 := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S (AlgebraicClosure K)
   let W := V.scalarExtension (L := AlgebraicClosure K)
   apply W.positiveDegree_eq_zero_of_finrank_eq_zero
+  change Module.finrank (AlgebraicClosure K) (TensorProduct K (AlgebraicClosure K) V) = 0
   simpa only [Module.finrank_baseChange] using hr
 
 /-- There is no positive-rank algebraic-closure subspace in rank zero. -/
-theorem absoluteMaximalSlope_eq_bot_of_finrank_eq_zero (V : AdelicVectorBundle S E)
+theorem absoluteMaximalSlope_eq_bot_of_finrank_eq_zero (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    (hr : Module.finrank K E = 0) : V.absoluteMaximalSlope = ⊥ := by
+    (hr : Module.finrank K V = 0) : V.absoluteMaximalSlope = ⊥ := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S (AlgebraicClosure K)
   let W := V.scalarExtension (L := AlgebraicClosure K)
   apply W.maximalSlope_eq_bot_of_finrank_eq_zero
+  change Module.finrank (AlgebraicClosure K) (TensorProduct K (AlgebraicClosure K) V) = 0
   simpa only [Module.finrank_baseChange] using hr
 
 /-- Source 4.3.67's positive-degree inequality for the actual closure bundle. -/
-theorem positiveDegree_le_absolutePositiveDegree (V : AdelicVectorBundle S E)
+theorem positiveDegree_le_absolutePositiveDegree (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     V.positiveDegree ≤ V.absolutePositiveDegree :=
   V.positiveDegree_le_scalarExtension_of_isAlgClosed (L := AlgebraicClosure K)
 
 /-- Source 4.3.67's maximal-slope inequality, including the zero convention. -/
-theorem maximalSlope_le_absoluteMaximalSlope (V : AdelicVectorBundle S E)
+theorem maximalSlope_le_absoluteMaximalSlope (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     V.maximalSlope ≤ V.absoluteMaximalSlope :=
   V.maximalSlope_le_scalarExtension_of_isAlgClosed (L := AlgebraicClosure K)
 
 /-- Every actual original restricted degree is bounded by absolute positive degree. -/
-theorem degree_restrict_le_absolutePositiveDegree (V : AdelicVectorBundle S E)
+theorem degree_restrict_le_absolutePositiveDegree (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
-    [hN : S.IsArchimedeanNormalized] (A : Submodule K E) :
+    [hN : S.IsArchimedeanNormalized] (A : Submodule K V) :
     ((V.restrictOfMeasurableBase A).degree : EReal) ≤
       V.absolutePositiveDegree :=
   (V.degree_restrict_le_positiveDegree A).trans

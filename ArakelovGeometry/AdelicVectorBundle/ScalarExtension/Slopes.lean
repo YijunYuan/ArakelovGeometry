@@ -37,9 +37,9 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 /-- The original restricted degree is at most the degree of the actual native
 restriction after ordinary extension, without original ultrametricity. -/
 theorem degree_le_restrict_scalarExtension
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule K E) :
+    (A : Submodule K V) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     (V.restrictOfMeasurableBase A).degree ≤
     ((V.scalarExtension (L := L)).restrictOfMeasurableBase
@@ -62,9 +62,9 @@ theorem degree_le_restrict_scalarExtension
 
 /-- Mean slopes of actual native restrictions increase, including rank zero. -/
 theorem slope_le_restrict_scalarExtension
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule K E) :
+    (A : Submodule K V) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     (V.restrictOfMeasurableBase A).slope ≤
     ((V.scalarExtension (L := L)).restrictOfMeasurableBase
@@ -82,7 +82,7 @@ theorem slope_le_restrict_scalarExtension
 /-- Every original subspace gives an actual extended subspace, so positive
  degree increases under ordinary extension to an algebraically closed target. -/
 theorem positiveDegree_le_scalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     V.positiveDegree ≤
@@ -100,7 +100,7 @@ theorem positiveDegree_le_scalarExtension_of_isAlgClosed
 /-- The actual maximal slope increases on algebraic closure, with the empty
 positive-rank supremum convention in rank zero. -/
 theorem maximalSlope_le_scalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     V.maximalSlope ≤

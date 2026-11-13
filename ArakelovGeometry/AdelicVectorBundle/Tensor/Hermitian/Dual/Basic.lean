@@ -169,7 +169,7 @@ end BinaryCoherenceBaseChange
 
 namespace NormFamily
 
-universe u v w wι
+universe u v w w' wι
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {ι : Type wι} [Fintype ι] {E : ι → Type w}
@@ -313,31 +313,14 @@ theorem orthogonalTensor_norm_reindex {J : Type*} [Fintype J]
 
 end NormFamily
 
-section BinaryEvaluation
 
-variable {L : Type*} [Field L] {X : Unit ⊕ Unit → Type*}
-  [∀ i, AddCommGroup (X i)] [∀ i, Module L (X i)]
-
-/-- Finite and binary canonical dual evaluations agree on all dual tensors. -/
-theorem piDualDistrib_binary_tprod (z : ⨂[L] i, Module.Dual L (X i)) (x : ∀ i, X i) :
-    PiTensorProduct.dualDistrib z (⨂ₜ[L] i, x i) =
-      dualTensorHom L (X (.inl ())) (Module.Dual L (X (.inr ())))
-        (binaryTensorEquiv L (fun i ↦ Module.Dual L (X i)) z) (x (.inl ())) (x (.inr ())) := by
-  induction z using PiTensorProduct.induction_on with
-  | smul_tprod a f =>
-    simp only [map_smul, LinearMap.smul_apply, PiTensorProduct.dualDistrib_apply,
-      binaryTensorEquiv_tprod, dualTensorHom_apply, Fintype.prod_sum_type, Fintype.prod_unique,
-      smul_eq_mul]
-  | add z t hz ht => simp only [map_add, LinearMap.add_apply, hz, ht]
-
-end BinaryEvaluation
 
 namespace NormFamily
 
-universe u v w
+universe u v w w'
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
-  {E F : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 /-- At an infinite place the actual binary norm is Mathlib's Hilbert tensor
@@ -360,26 +343,42 @@ theorem orthogonalTensorPair_norm_eq_hilbert
   let L := (S.ϕ ω).Completion
   let := hN ω hω
   let := IsRCLikeNormedField.rclike L
-  let X i := L ⊗[K] BinaryTensorFactors E F i
+  let X i := L ⊗[K] LiftedTensorFactors E F i
   let : ∀ i, NormedAddCommGroup (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedAddCommGroup ω
   let : ∀ i, NormedSpace L (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedSpace ω
   let : ∀ i, InnerProductSpace L (X i) := fun i ↦
     (tensorPairFactors ξ η i).fiberInnerProductSpace ω hω
-  let B := binaryTensorEquiv K (BinaryTensorFactors E F)
+  let := ξ.fibreNormedAddCommGroup ω
+  let := ξ.fibreNormedSpace ω
+  let := ξ.fiberInnerProductSpace ω hω
+  let := η.fibreNormedAddCommGroup ω
+  let := η.fibreNormedSpace ω
+  let := η.fiberInnerProductSpace ω hω
+  let eE : X (.inl ()) ≃ₗᵢ[L] (L ⊗[K] E) :=
+    { toLinearEquiv := ULift.moduleEquiv.baseChange K L _ _, norm_map' := fun _ ↦ rfl }
+  let eF : X (.inr ()) ≃ₗᵢ[L] (L ⊗[K] F) :=
+    { toLinearEquiv := ULift.moduleEquiv.baseChange K L _ _, norm_map' := fun _ ↦ rfl }
+  let B := tensorPairEquiv K E F
   change (orthogonalTensor (tensorPairFactors ξ η)).norm ω _ = _
   rw [orthogonalTensor_norm_of_infinite _ ω hω]
   change ArakelovGeometry.orthogonalTensorSeminorm
     (fun i ↦ stdOrthonormalBasis L (X i))
-    (tensorBaseChangeEquiv K L (BinaryTensorFactors E F) (B.symm.toLinearMap.baseChange L z)) = _
+    (tensorBaseChangeEquiv K L (LiftedTensorFactors E F) (B.symm.toLinearMap.baseChange L z)) = _
   rw [orthogonalTensorSeminorm_binary]
   have he := DFunLike.congr_fun (tensorBaseChangeEquiv_binary K L E F)
     (B.symm.toLinearMap.baseChange L z)
-  change binaryTensorEquiv L X
-    (tensorBaseChangeEquiv K L (BinaryTensorFactors E F) (B.symm.toLinearMap.baseChange L z)) =
+  change tensorPairFibreEquiv K L E F
+    (tensorBaseChangeEquiv K L (LiftedTensorFactors E F) (B.symm.toLinearMap.baseChange L z)) =
     TensorProduct.AlgebraTensorModule.distribBaseChange K L E F
       ((B.baseChange K L _ _) ((B.baseChange K L _ _).symm z)) at he
-  congr 1
-  simpa only [LinearEquiv.apply_symm_apply] using he
+  calc
+    _ = ‖tensorPairFibreEquiv K L E F
+        (tensorBaseChangeEquiv K L (LiftedTensorFactors E F)
+          (B.symm.toLinearMap.baseChange L z))‖ :=
+      ((TensorProduct.congrIsometry eE eF).norm_map _).symm
+    _ = _ := by
+      congr 1
+      simpa only [LinearEquiv.apply_symm_apply] using he
 
 /-- Canonical binary dual distribution is isometric on all completed vectors. -/
 theorem orthogonalTensorPair_dual_norm
@@ -394,8 +393,8 @@ theorem orthogonalTensorPair_dual_norm
   · let L := (S.ϕ ω).Completion
     let := hN ω hω
     let := IsRCLikeNormedField.rclike L
-    let X i := L ⊗[K] BinaryTensorFactors E F i
-    let D i := L ⊗[K] BinaryTensorFactors (Module.Dual K E) (Module.Dual K F) i
+    let X i := L ⊗[K] LiftedTensorFactors E F i
+    let D i := L ⊗[K] LiftedTensorFactors (Module.Dual K E) (Module.Dual K F) i
     let : ∀ i, NormedAddCommGroup (X i) :=
       fun i ↦ (tensorPairFactors ξ η i).fibreNormedAddCommGroup ω
     let : ∀ i, NormedSpace L (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedSpace ω
@@ -409,45 +408,37 @@ theorem orthogonalTensorPair_dual_norm
       fun i ↦ (tensorPairFactors ξ.dual η.dual i).fiberInnerProductSpace ω hω
     let b := fun i ↦ stdOrthonormalBasis L (X i)
     let c := fun i ↦ stdOrthonormalBasis L (D i)
-    let e : ∀ i, D i ≃ₗ[L] Module.Dual L (X i) := fun i ↦ match i with
-      | .inl _ => dualBaseChangeEquiv K L E
-      | .inr _ => dualBaseChangeEquiv K L F
+    let := ξ.fibreNormedAddCommGroup ω
+    let := ξ.fibreNormedSpace ω
+    let := η.fibreNormedAddCommGroup ω
+    let := η.fibreNormedSpace ω
+    let eE : X (.inl ()) ≃ₗᵢ[L] (L ⊗[K] E) :=
+      { toLinearEquiv := ULift.moduleEquiv.baseChange K L _ _, norm_map' := fun _ ↦ rfl }
+    let eF : X (.inr ()) ≃ₗᵢ[L] (L ⊗[K] F) :=
+      { toLinearEquiv := ULift.moduleEquiv.baseChange K L _ _, norm_map' := fun _ ↦ rfl }
+    let e := tensorPairDualFibreEquiv K L E F
     have he : ∀ i x, ‖x‖ = linearMapOperatorSeminorm (e i x) := by
-      rintro (i | i) x <;> rfl
-    let B := binaryTensorEquiv K (BinaryTensorFactors E F)
-    let BD := binaryTensorEquiv K (BinaryTensorFactors (Module.Dual K E) (Module.Dual K F))
+      rintro (i | i) x
+      · exact (linearMapOperatorSeminorm_comp_isometryEquiv eE
+          (dualBaseChangeEquiv K L E ((ULift.moduleEquiv.baseChange K L _ _) x))).symm
+      · exact (linearMapOperatorSeminorm_comp_isometryEquiv eF
+          (dualBaseChangeEquiv K L F ((ULift.moduleEquiv.baseChange K L _ _) x))).symm
+    let B := tensorPairEquiv K E F
+    let BD := tensorPairEquiv K (Module.Dual K E) (Module.Dual K F)
     let A := TensorProduct.AlgebraTensorModule.distribBaseChange K L E F
-    let P := binaryTensorEquiv L X
-    let T := (B.baseChange K L _ _).symm.trans (tensorBaseChangeEquiv K L (BinaryTensorFactors E F))
-    let t := tensorBaseChangeEquiv K L (BinaryTensorFactors (Module.Dual K E) (Module.Dual K F))
+    let P := tensorPairFibreEquiv K L E F
+    let T := (B.baseChange K L _ _).symm.trans (tensorBaseChangeEquiv K L (LiftedTensorFactors E F))
+    let t := tensorBaseChangeEquiv K L (LiftedTensorFactors (Module.Dual K E) (Module.Dual K F))
       (BD.symm.toLinearMap.baseChange L z)
     let q := PiTensorProduct.congr e t
     let f := dualBaseChangeEquiv K L (E ⊗[K] F) ((TensorProduct.dualDistrib K E F).baseChange L z)
-    have hp : binaryTensorEquiv L D t =
-        TensorProduct.AlgebraTensorModule.distribBaseChange K L
-          (Module.Dual K E) (Module.Dual K F) z := by
-      have h := DFunLike.congr_fun
-        (tensorBaseChangeEquiv_binary K L (Module.Dual K E) (Module.Dual K F))
-        (BD.symm.toLinearMap.baseChange L z)
-      change binaryTensorEquiv L D t =
-        TensorProduct.AlgebraTensorModule.distribBaseChange K L
-          (Module.Dual K E) (Module.Dual K F)
-          ((BD.baseChange K L _ _) ((BD.baseChange K L _ _).symm z)) at h
-      simpa only [LinearEquiv.apply_symm_apply] using h
     have hp' (x : L ⊗[K] (E ⊗[K] F)) : P (T x) = A x := by
       have h := DFunLike.congr_fun (tensorBaseChangeEquiv_binary K L E F)
         ((B.baseChange K L _ _).symm x)
       change P (T x) = A ((B.baseChange K L _ _) ((B.baseChange K L _ _).symm x)) at h
       simpa only [LinearEquiv.apply_symm_apply] using h
-    have hev (s : ⨂[L] i, X i) : PiTensorProduct.dualDistrib q s = f (A.symm (P s)) := by
-      induction s using PiTensorProduct.induction_on with
-      | smul_tprod a x =>
-        simp only [map_smul, piDualDistrib_binary_tprod, P, binaryTensorEquiv_tprod]
-        congr 1
-        change dualTensorHom L _ _ (binaryTensorEquiv L _ (PiTensorProduct.congr e t)) _ _ = _
-        rw [binaryTensorEquiv_congr, hp]
-        exact (dualDistrib_baseChange_bilinear_apply K L E F z (x (.inl ())) (x (.inr ()))).symm
-      | add s t hs ht => simp only [map_add, hs, ht]
+    have hev (s : ⨂[L] i, X i) : PiTensorProduct.dualDistrib q s = f (A.symm (P s)) :=
+      tensorPairDualFibre_evaluate K L E F z s
     rw [dual_norm_eq_sSup]
     change _ = (orthogonalTensor (tensorPairFactors ξ.dual η.dual)).norm ω _
     rw [orthogonalTensor_norm_of_infinite _ ω hω]

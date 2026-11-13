@@ -88,8 +88,8 @@ theorem exponent_integrable :
     · exact summable_geometric_two_encode
 
 /-- The canonical scalar bundle rescaled by this produced integrable function. -/
-def bundle (K : Type*) [Field K] [NumberField K] :
-    AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) K :=
+abbrev bundle (K : Type*) [Field K] [NumberField K] :
+    AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) :=
   (AdelicVectorBundle.scalarLine (normalizedNumberFieldAdelicStructure K)).scaleExp
     exponent (Measurable.of_discrete) exponent_integrable
 
@@ -153,7 +153,8 @@ theorem not_coherent : ¬ (bundle K).toNormFamily.HasFiniteNormExceptions := by
   intro hc
   have h := (NormFamily.hasFiniteNormExceptions_iff_span_normalizedGlobalUnitBall_eq_top
     (bundle K).toNormFamily (hξ := isUltrametric)).mp hc
-  simp only [globalUnitBall_eq_singleton_zero, Submodule.span_singleton_eq_bot.mpr rfl] at h
+  change Submodule.span K (bundle K).toNormFamily.globalUnitBall = ⊤ at h
+  rw [globalUnitBall_eq_singleton_zero, Submodule.span_singleton_eq_bot.mpr rfl] at h
   exact bot_ne_top h
 
 end ArakelovGeometry.NumberFieldZeroGlobalBall

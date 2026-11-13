@@ -20,12 +20,12 @@ open scoped TensorProduct
 
 noncomputable section
 
-universe w
+universe w w'
 
 variable {K : Type*} [Field K] {S : AdelicStructure K}
-  {E F : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
-  (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+  (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
 
 example [DiscreteMeasurableSpace S.Ω] : S.HasMeasurableBase := inferInstance
 example [S.HasCommonCountableDenseSubfield] : S.HasMeasurableBase := inferInstance
@@ -60,8 +60,8 @@ example : True := by
 
 example : (V.orthogonalTensorPair W).IsStronglyAdelic := inferInstance
 example : ((V.orthogonalTensorPair W).orthogonalTensorPair V).IsHermitian := inferInstance
-example (P : Submodule K E) : (V.restrictOfMeasurableBase P).IsHermitian := inferInstance
-example (P : Submodule K E) : (V.quotientOfMeasurableBase P).IsHermitian := inferInstance
+example (P : Submodule K V) : (V.restrictOfMeasurableBase P).IsHermitian := inferInstance
+example (P : Submodule K V) : (V.quotientOfMeasurableBase P).IsHermitian := inferInstance
 example : V.dualOfMeasurableBase.IsHermitian := inferInstance
 example : V.determinantOfMeasurableBase.IsLine := inferInstance
 
@@ -74,10 +74,10 @@ example [S.IsArchimedeanNormalized] (ξ : NormFamily S E) (η : NormFamily S F)
     [ξ.IsHermitian] [η.IsHermitian] : (ξ ⊗ʰ η ⊗ʰ ξ).IsHermitian := inferInstance
 
 example [S.HasMeasurableBase] [S.IsArchimedeanNormalized] [V.IsStronglyAdelic]
-    (P : Submodule K E) : (V.restrictOfMeasurableBase P).IsStronglyAdelic := inferInstance
+    (P : Submodule K V) : (V.restrictOfMeasurableBase P).IsStronglyAdelic := inferInstance
 
 example [S.HasMeasurableBase] [S.IsArchimedeanNormalized] [V.IsStronglyAdelic]
-    (P : Submodule K E) : (V.quotientOfMeasurableBase P).IsStronglyAdelic := inferInstance
+    (P : Submodule K V) : (V.quotientOfMeasurableBase P).IsStronglyAdelic := inferInstance
 
 example [S.IsProper] [S.HasMeasurableBase] [S.IsArchimedeanNormalized] [V.IsLine] :
     V.IsSemistable := inferInstance
@@ -107,7 +107,7 @@ section IndexedTensor
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι] {G : ι → Type w}
   [∀ i, AddCommGroup (G i)] [∀ i, Module K (G i)] [∀ i, FiniteDimensional K (G i)]
-  (U : ∀ i, AdelicVectorBundle S (G i)) [S.IsArchimedeanNormalized]
+  (U : ι → AdelicVectorBundle.{w} S) [S.IsArchimedeanNormalized]
 
 example [S.HasMeasurableBase] [∀ i, (U i).IsHermitian] :
     (AdelicVectorBundle.orthogonalTensorOfMeasurableBase U).IsHermitian := inferInstance
@@ -120,14 +120,14 @@ end IndexedTensor
 section Arithmetic
 
 variable [NumberField K]
-  (ξ : NormFamily (AdelicStructure.normalizedNumberFieldAdelicStructure K) E)
+  (ξ : NormFamily (AdelicStructure.normalizedNumberFieldAdelicStructure K) V)
 
-example [ξ.IsPureAtFinitePlaces] (P : Submodule K E) :
+example [ξ.IsPureAtFinitePlaces] (P : Submodule K V) :
     (ξ.restrict P).IsPureAtFinitePlaces := inferInstance
 
 example [ξ.IsPureAtFinitePlaces] : ξ.dual.IsPureAtFinitePlaces := inferInstance
 
-example [ξ.IsPureAtFinitePlaces] (P : Submodule K E) :
+example [ξ.IsPureAtFinitePlaces] (P : Submodule K V) :
     (ξ.quotient P).IsPureAtFinitePlaces := inferInstance
 
 example [ξ.IsClassical] : ξ.IsStronglyDominated := inferInstance

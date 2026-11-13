@@ -52,15 +52,15 @@ theorem rank_quotient_scalarExtension_finiteStage
 /-- The genuine native closure quotient has its actual complexifying
 finite-stage degree through the canonical completed quotient isometry. -/
 theorem degree_quotient_scalarExtension_finiteStage [S.IsProper]
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     (F : AdelicStructure.FiniteIntermediateField K L) (hi : ∃ a : F, a ^ 2 = -1)
-    (B : Submodule F (F ⊗[K] E)) :
+    (B : Submodule F (F ⊗[K] V)) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
     let _ := hcount.algebraicExtension_of_finiteDimensional (L := F)
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := L)
-    let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E
+    let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L V
     ((V.scalarExtension (L := L)).quotientOfMeasurableBase
       ((B.baseChange L).map c.toLinearMap)).degree
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
@@ -76,7 +76,7 @@ theorem degree_quotient_scalarExtension_finiteStage [S.IsProper]
   let hFN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := F)
   let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
   let hTN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) (hS := ⟨hFN⟩)
-  let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E
+  let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L V
   let e := finiteStageQuotientEquiv (L := L) F B
   let Q₀ := (V.scalarExtension (L := F)).quotientOfMeasurableBase B
   let W := Q₀.scalarExtension (L := L) (hS := hF) (hN := ⟨hFN⟩)
@@ -91,15 +91,15 @@ theorem degree_quotient_scalarExtension_finiteStage [S.IsProper]
 /-- One produced complexifying finite field preserves the native restricted
 and quotient degrees and ranks of every actual finite family. -/
 theorem exists_complexFiniteStage_native_subspace_quotient_degrees [S.IsProper]
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    {ι : Type*} [Finite ι] (A : ι → Submodule L (L ⊗[K] E)) :
+    {ι : Type*} [Finite ι] (A : ι → Submodule L (L ⊗[K] V)) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := L)
     ∃ F : AdelicStructure.FiniteIntermediateField K L, (∃ a : F, a ^ 2 = -1) ∧
-      ∃ B : ι → Submodule F (F ⊗[K] E),
+      ∃ B : ι → Submodule F (F ⊗[K] V),
         (∀ i, Submodule.map
-          (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E).toLinearMap
+          (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L V).toLinearMap
           ((B i).baseChange L) = A i) ∧
         (∀ i, Module.finrank F (B i) = Module.finrank L (A i)) ∧
         (∀ i j, B i ≤ B j ↔ A i ≤ A j) ∧
@@ -118,8 +118,8 @@ theorem exists_complexFiniteStage_native_subspace_quotient_degrees [S.IsProper]
           ((V.scalarExtension (L := F)).quotientOfMeasurableBase
             (B i)).degree
             (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩)) ∧
-          Module.finrank L ((L ⊗[K] E) ⧸ A i) =
-            Module.finrank F ((F ⊗[K] E) ⧸ B i) := by
+          Module.finrank L ((L ⊗[K] V) ⧸ A i) =
+            Module.finrank F ((F ⊗[K] V) ⧸ B i) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   dsimp only
   obtain ⟨F, hi, B, hB, hr, hinc, hd⟩ :=

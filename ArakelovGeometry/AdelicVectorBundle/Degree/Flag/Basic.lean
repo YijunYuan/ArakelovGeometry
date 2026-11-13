@@ -35,17 +35,17 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 namespace AdelicVectorBundle
 
 /-- The actual successive quotient bundle of a finite rational flag. -/
-noncomputable def flagQuotientOfMeasurableBase (V : AdelicVectorBundle S E)
-    {n : ℕ} (F : Fin (n + 1) → Submodule K E)
+noncomputable abbrev flagQuotientOfMeasurableBase (V : AdelicVectorBundle S)
+    {n : ℕ} (F : Fin (n + 1) → Submodule K V)
     [hS : S.HasMeasurableBase] (i : Fin n) :
-    AdelicVectorBundle S ((F i.succ) ⧸ ((F i.castSucc).comap (F i.succ).subtype)) :=
+    AdelicVectorBundle S :=
   (V.restrictOfMeasurableBase (F i.succ)).quotientOfMeasurableBase
     ((F i.castSucc).comap (F i.succ).subtype)
 
 /-- Successive quotient degrees are bounded by the degree of the final
 restricted bundle for every finite monotone flag starting at zero. -/
-theorem sum_flagQuotient_degree_le_restrict [S.IsProper] (V : AdelicVectorBundle S E)
-    {n : ℕ} (F : Fin (n + 1) → Submodule K E) (hF : Monotone F) (hzero : F 0 = ⊥)
+theorem sum_flagQuotient_degree_le_restrict [S.IsProper] (V : AdelicVectorBundle S)
+    {n : ℕ} (F : Fin (n + 1) → Submodule K V) (hF : Monotone F) (hzero : F 0 = ⊥)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (∑ i : Fin n, (V.flagQuotientOfMeasurableBase F i).degree) ≤
@@ -55,14 +55,14 @@ theorem sum_flagQuotient_degree_le_restrict [S.IsProper] (V : AdelicVectorBundle
       have hz : F (Fin.last 0) = ⊥ := hzero
       have hr : Module.finrank K (F (Fin.last 0)) = 0 := by
         rw [hz]
-        exact finrank_bot K E
+        exact finrank_bot K V
       have hd := degree_eq_zero_of_finrank_eq_zero
         (V.restrictOfMeasurableBase (F (Fin.last 0))) hr
       simp only [Fin.sum_univ_zero, hd, le_refl]
   | succ n ih =>
-      let G : Fin (n + 1) → Submodule K E := fun i ↦ F i.castSucc
-      let U : Submodule K E := F (Fin.last n).castSucc
-      let W : Submodule K E := F (Fin.last (n + 1))
+      let G : Fin (n + 1) → Submodule K V := fun i ↦ F i.castSucc
+      let U : Submodule K V := F (Fin.last n).castSucc
+      let W : Submodule K V := F (Fin.last (n + 1))
       have hG : Monotone G := hF.comp Fin.strictMono_castSucc.monotone
       have hzG : G 0 = ⊥ := hzero
       have hprefix := ih G hG hzG
@@ -81,8 +81,8 @@ theorem sum_flagQuotient_degree_le_restrict [S.IsProper] (V : AdelicVectorBundle
 
 /-- The lower degree inequality for a complete finite flag, with no strictness
 or positive-rank assumption on its successive quotients. -/
-theorem sum_flagQuotient_degree_le [S.IsProper] (V : AdelicVectorBundle S E)
-    {n : ℕ} (F : Fin (n + 1) → Submodule K E) (hF : Monotone F) (hzero : F 0 = ⊥)
+theorem sum_flagQuotient_degree_le [S.IsProper] (V : AdelicVectorBundle S)
+    {n : ℕ} (F : Fin (n + 1) → Submodule K V) (hF : Monotone F) (hzero : F 0 = ⊥)
     (htop : F (Fin.last n) = ⊤)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :

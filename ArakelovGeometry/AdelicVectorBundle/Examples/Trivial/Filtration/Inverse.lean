@@ -254,10 +254,10 @@ variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E] [FiniteDimensiona
 
 /-- The inverse real filtration gives the actual adelic bundle with
 automatically produced one-point measurability and domination. -/
-def ofTrivialFiltration (F : ℝ → Submodule K E) (hF : Antitone F)
+abbrev ofTrivialFiltration (F : ℝ → Submodule K E) (hF : Antitone F)
     (hbot : ∃ t, F t = ⊥) (htop : ∃ t, F t = ⊤)
     (hleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t) :
-    AdelicVectorBundle (singleTrivialPlace K) E :=
+    AdelicVectorBundle (singleTrivialPlace K) :=
   ofSingleTrivialPlace (NormFamily.ofTrivialFiltration F hF hbot htop hleft)
 
 @[simp]

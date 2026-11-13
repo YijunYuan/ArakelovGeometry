@@ -75,10 +75,10 @@ namespace NormFamily
 
 section BinaryCoherence
 
-universe u₁ v₁ w₁
+universe u₁ v₁ w₁ wF wG
 
 variable {K : Type u₁} [Field K] {S : AdelicStructure.{u₁, v₁} K}
-  {E F : Type w₁} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  {E : Type w₁} {F : Type wF} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 /-- At a finite place a pure-tensor bound into an ultrametric target extends
@@ -96,13 +96,13 @@ theorem norm_linearMap_le_orthogonalTensorPair_of_finite
     (z : (S.ϕ ω).Completion ⊗[K] (E ⊗[K] F)) :
     ‖f z‖ ≤ C * (ξ ⊗ʰ η).norm ω z := by
   let L := (S.ϕ ω).Completion
-  let X i := L ⊗[K] BinaryTensorFactors E F i
+  let X i := L ⊗[K] LiftedTensorFactors E F i
   let : ∀ i, NormedAddCommGroup (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedAddCommGroup ω
   let : ∀ i, NormedSpace L (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedSpace ω
   let A := TensorProduct.AlgebraTensorModule.distribBaseChange K L E F
-  let B := (binaryTensorEquiv K (BinaryTensorFactors E F)).baseChange K L _ _
-  let P := binaryTensorEquiv L X
-  let t := tensorBaseChangeEquiv K L (BinaryTensorFactors E F) (B.symm z)
+  let B := (tensorPairEquiv K E F).baseChange K L _ _
+  let P := tensorPairFibreEquiv K L E F
+  let t := tensorBaseChangeEquiv K L (LiftedTensorFactors E F) (B.symm z)
   have hp : P t = A z := by
     have he := DFunLike.congr_fun (tensorBaseChangeEquiv_binary K L E F) (B.symm z)
     change P t = A (B (B.symm z)) at he
@@ -110,10 +110,12 @@ theorem norm_linearMap_le_orthogonalTensorPair_of_finite
   let g := f ∘ₗ A.symm.toLinearMap ∘ₗ P.toLinearMap
   have hg (x : ∀ i, X i) : ‖g (⨂ₜ[L] i, x i)‖ ≤ C * ∏ i, ‖x i‖ := by
     simp only [g, LinearMap.comp_apply, LinearEquiv.coe_coe, P,
-      binaryTensorEquiv_tprod, Fintype.prod_sum_type, Fintype.prod_unique]
-    change ‖f (A.symm (x (.inl ()) ⊗ₜ[L] x (.inr ())))‖ ≤
-      C * (ξ.norm ω (x (.inl ())) * η.norm ω (x (.inr ())))
-    exact hf (x (.inl ())) (x (.inr ()))
+      tensorPairFibreEquiv_tprod, Fintype.prod_sum_type, Fintype.prod_unique]
+    change ‖f (A.symm (((ULift.moduleEquiv.baseChange K L _ _) (x (.inl ()))) ⊗ₜ[L]
+      ((ULift.moduleEquiv.baseChange K L _ _) (x (.inr ())))))‖ ≤
+      C * (ξ.norm ω ((ULift.moduleEquiv.baseChange K L _ _) (x (.inl ()))) *
+        η.norm ω ((ULift.moduleEquiv.baseChange K L _ _) (x (.inr ()))))
+    exact hf _ _
   have h := norm_linearMap_le_mul_injective_of_ultrametric_factors g hW hC hg t
   change ‖f (A.symm (P t))‖ ≤ C * ArakelovGeometry.injectiveTensorSeminorm t at h
   rw [hp, LinearEquiv.symm_apply_apply] at h
@@ -179,7 +181,7 @@ theorem orthogonalTensorPair_norm_comm
     rw [LinearEquiv.symm_apply_apply] at h
     exact h
 
-variable {G : Type w₁} [AddCommGroup G] [Module K G] [FiniteDimensional K G]
+variable {G : Type wG} [AddCommGroup G] [Module K G] [FiniteDimensional K G]
 
 /-- A bound on completed triple pure tensors extends to all left-associated
 vectors at a finite place. -/
@@ -434,10 +436,8 @@ end EvaluationCoherence
 
 section BinaryEvaluationBaseChange
 
-universe w₂
-
 variable (K L : Type*) [Field K] [Field L] [Algebra K L]
-  (E F : Type w₂) [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  (E F : Type*) [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 /-- Binary dual distribution commutes with scalar extension on arbitrary dual

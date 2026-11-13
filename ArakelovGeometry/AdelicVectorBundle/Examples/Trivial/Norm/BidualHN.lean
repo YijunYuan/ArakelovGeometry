@@ -174,7 +174,7 @@ namespace AdelicVectorBundle
 
 open AdelicStructure
 
-variable (V : AdelicVectorBundle (singleTrivialPlace K) E)
+variable (V : AdelicVectorBundle.{w} (singleTrivialPlace K))
   [hS : (singleTrivialPlace K).HasMeasurableBase]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
@@ -185,12 +185,12 @@ theorem generalHNFiltration_eq_bidual_trivialFiltration (t : ℝ) :
     V.generalHNFiltration t =
       (V.bidualOfMeasurableBase).toNormFamily.trivialFiltration
         (hξ := (V.toNormFamily.dual.dual_isUltrametric.pullback
-          (Module.Dual.eval K E) (Module.eval_apply_injective K))) t := by
+          (Module.Dual.eval K V) (Module.eval_apply_injective K))) t := by
   let β := V.bidualOfMeasurableBase
   have hβ : β.toNormFamily.IsUltrametric := V.toNormFamily.dual.dual_isUltrametric.pullback
-    (Module.Dual.eval K E) (Module.eval_apply_injective K)
+    (Module.Dual.eval K V) (Module.eval_apply_injective K)
   apply le_antisymm
-  · by_cases hi : (LinearMap.id : E →ₗ[K] E) = 0
+  · by_cases hi : (LinearMap.id : V →ₗ[K] V) = 0
     · intro x _
       have hx : x = 0 := by
         have he := DFunLike.congr_fun hi x
@@ -198,13 +198,13 @@ theorem generalHNFiltration_eq_bidual_trivialFiltration (t : ℝ) :
       change β.toNormFamily.trivialSeminorm x ≤ Real.exp (-t)
       rw [hx, map_zero]
       exact (Real.exp_pos _).le
-    · have hh : V.mapHeight β (LinearMap.id : E →ₗ[K] E) ≤ (0 : EReal) := by
+    · have hh : V.mapHeight β (LinearMap.id : V →ₗ[K] V) ≤ (0 : EReal) := by
         apply V.mapHeight_le_zero_of_completed_contraction β
         intro ω x
         rw [LinearMap.baseChange_id, LinearMap.id_apply]
         exact V.toNormFamily.dual_dual_norm_eval_le ω x
       have hm := V.map_generalHNFiltration_le_of_mapHeight_le β
-        (LinearMap.id : E →ₗ[K] E) hi 0 hh t
+        (LinearMap.id : V →ₗ[K] V) hi 0 hh t
       simp only [Submodule.map_id, sub_zero] at hm
       rw [β.generalHNFiltration_eq_trivialFiltration (hV := hβ) t] at hm
       exact hm
@@ -261,7 +261,7 @@ theorem generalHNFiltration_bidualOfMeasurableBase (t : ℝ) :
   rw [V.generalHNFiltration_eq_bidual_trivialFiltration t]
   exact (V.bidualOfMeasurableBase).generalHNFiltration_eq_trivialFiltration
     (hV := (V.toNormFamily.dual.dual_isUltrametric.pullback
-      (Module.Dual.eval K E) (Module.eval_apply_injective K))) t
+      (Module.Dual.eval K V) (Module.eval_apply_injective K))) t
 
 open Classical in
 /-- The actual extended filtration also keeps the source's two infinite
@@ -272,26 +272,26 @@ theorem generalHNFiltrationExtended_bidualOfMeasurableBase (t : EReal) :
   have he : (V.bidualOfMeasurableBase).generalHNFiltration =
       V.generalHNFiltration :=
     funext (V.generalHNFiltration_bidualOfMeasurableBase)
-  exact congrArg (fun g : ℝ → Submodule K E ↦
-    (EReal.rec ⊤ g ⊥ t : Submodule K E)) he
+  exact congrArg (fun g : ℝ → Submodule K V ↦
+    (EReal.rec ⊤ g ⊥ t : Submodule K V)) he
 
 open Classical in
 /-- The literal supremum defining every actual ordered slot is preserved
 because the actual filtration rank cuts agree. -/
-theorem generalHNOrderedSlope_bidualOfMeasurableBase (j : Fin (Module.finrank K E)) :
+theorem generalHNOrderedSlope_bidualOfMeasurableBase (j : Fin (Module.finrank K V)) :
     (V.bidualOfMeasurableBase).generalHNOrderedSlope j =
       V.generalHNOrderedSlope j := by
   have he : (V.bidualOfMeasurableBase).generalHNFiltration =
       V.generalHNFiltration :=
     funext (V.generalHNFiltration_bidualOfMeasurableBase)
-  exact congrArg (fun g : ℝ → Submodule K E ↦
+  exact congrArg (fun g : ℝ → Submodule K V ↦
     sSup {t : ℝ | j.val < Module.finrank K (g t)}) he
 
 open Classical in
 /-- The actual HN flag is produced for both bundles and identified by its
 true filtration range; no flag or factor semistability is supplied. -/
 theorem exists_common_generalHNFlag_bidualOfMeasurableBase :
-    ∃ n : ℕ, ∃ U : Fin (n + 1) → Submodule K E,
+    ∃ n : ℕ, ∃ U : Fin (n + 1) → Submodule K V,
       StrictMono U ∧ U 0 = ⊥ ∧ U (Fin.last n) = ⊤ ∧
       (∀ i : Fin n, (V.flagQuotientOfMeasurableBase U i).IsSemistable ∧
         ((V.bidualOfMeasurableBase).flagQuotientOfMeasurableBase U i).IsSemistable) ∧
@@ -310,7 +310,7 @@ theorem exists_common_generalHNFlag_bidualOfMeasurableBase :
         (β.range_generalHNFiltration_eq_of_semistableFlag F hF hFz hFt (hsemi := hFsemi) hFb))
   have hcU := Nat.card_congr (Equiv.ofInjective U hU.injective)
   have hcF := Nat.card_congr (Equiv.ofInjective F hF.injective)
-  have hcRange := congrArg (fun Z : Set (Submodule K E) ↦ Nat.card Z) hRange
+  have hcRange := congrArg (fun Z : Set (Submodule K V) ↦ Nat.card Z) hRange
   simp only [Nat.card_fin] at hcU hcF
   have hmn : m = n := by omega
   subst m

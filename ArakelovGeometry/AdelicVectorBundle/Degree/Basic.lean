@@ -52,37 +52,38 @@ instance NormFamily.instIsMeasurableDeterminant (ξ : NormFamily S E)
 namespace AdelicVectorBundle
 
 /-- The canonical determinant adelic line with its measurability proved automatically. -/
-noncomputable def determinantOfMeasurableBase (V : AdelicVectorBundle S E)
+noncomputable abbrev determinantOfMeasurableBase (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
-    AdelicVectorBundle S (⋀[K]^(Module.finrank K E) E) :=
+    AdelicVectorBundle S :=
   V.determinant
 
 @[simp]
-theorem determinantOfMeasurableBase_toNormFamily (V : AdelicVectorBundle S E)
+theorem determinantOfMeasurableBase_toNormFamily (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.determinantOfMeasurableBase).toNormFamily = V.toNormFamily.determinant := rfl
 
-instance determinantOfMeasurableBase_isLine (V : AdelicVectorBundle S E)
+instance determinantOfMeasurableBase_isLine (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.determinantOfMeasurableBase).IsLine := ⟨NormFamily.determinant_finrank⟩
 
 /-- The Arakelov degree is the degree of the actual determinant adelic line. -/
-noncomputable def degree [S.IsProper] (V : AdelicVectorBundle S E)
+noncomputable def degree [S.IsProper] (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] : ℝ :=
   (V.determinantOfMeasurableBase).lineDegree
     (hV := (V.determinantOfMeasurableBase_isLine))
 
 /-- Any nonzero rational determinant vector computes the same degree. -/
-theorem degree_eq_neg_integral [S.IsProper] (V : AdelicVectorBundle S E)
+theorem degree_eq_neg_integral [S.IsProper] (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (s : {x : ⋀[K]^(Module.finrank K E) E // x ≠ 0}) :
+    (s : {x : ⋀[K]^(Module.finrank K V) V // x ≠ 0}) :
     V.degree = -(∫ ω, V.toNormFamily.determinant.logNorm s.val ω ∂S.v) :=
-  lineDegree_eq_neg_integral _ s
+  lineDegree_eq_neg_integral V.determinantOfMeasurableBase
+    (hV := V.determinantOfMeasurableBase_isLine) s
 
 omit [FiniteDimensional K E] in
 /-- In rank zero the empty determinant wedge has nonzero rational coordinate. -/
@@ -96,28 +97,30 @@ theorem determinant_empty_ne_zero (h : Module.finrank K E = 0) :
   exact hz _ h
 
 /-- The zero bundle has degree zero; its determinant is the scalar unit line. -/
-theorem degree_eq_zero_of_finrank_eq_zero [S.IsProper] (V : AdelicVectorBundle S E)
+theorem degree_eq_zero_of_finrank_eq_zero [S.IsProper] (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (hr : Module.finrank K E = 0) : V.degree = 0 := by
-  apply lineDegree_eq_zero_of_norm_eq_one _
+    (hr : Module.finrank K V = 0) : V.degree = 0 := by
+  apply lineDegree_eq_zero_of_norm_eq_one V.determinantOfMeasurableBase
+    (hV := V.determinantOfMeasurableBase_isLine)
     ⟨_, determinant_empty_ne_zero hr⟩
   intro ω
   change V.toNormFamily.determinant.norm ω _ = 1
   simpa only [norm_one] using V.toNormFamily.determinant_norm_empty_tmul hr ω 1 (fun _ ↦ 0)
 
 /-- Enlarging every completed norm decreases degree. -/
-theorem degree_antitone [S.IsProper] (V W : AdelicVectorBundle S E)
+theorem degree_antitone [S.IsProper] (V : AdelicVectorBundle S)
+    (W : NormFamily S V) [hW : W.IsAdelic]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (h : V.toNormFamily ≤ W.toNormFamily) : W.degree ≤ V.degree := by
+    (h : V.toNormFamily ≤ W) : W.toAdelicVectorBundle.degree ≤ V.degree := by
   let s := (V.determinantOfMeasurableBase).lineGenerator
     (hV := (V.determinantOfMeasurableBase_isLine))
-  rw [V.degree_eq_neg_integral s, W.degree_eq_neg_integral s]
+  rw [V.degree_eq_neg_integral s, W.toAdelicVectorBundle.degree_eq_neg_integral s]
   apply neg_le_neg
   apply integral_mono_ae
     ((V.determinantOfMeasurableBase).integrable_logNorm s.val)
-    ((W.determinantOfMeasurableBase).integrable_logNorm s.val)
+    ((W.toAdelicVectorBundle.determinantOfMeasurableBase).integrable_logNorm s.val)
   exact Filter.Eventually.of_forall fun ω ↦ Real.log_le_log
     (V.toNormFamily.determinant.norm_rational_pos ω s.property)
     (NormFamily.determinant_mono h ω _)

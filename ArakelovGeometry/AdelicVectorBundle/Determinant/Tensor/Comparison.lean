@@ -27,10 +27,10 @@ namespace ArakelovGeometry.NormFamily
 
 noncomputable section
 
-universe u v w
+universe u v w w'
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
-  {E F : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 /-- The completed determinant tensor map contracts scalar-weighted wedges.

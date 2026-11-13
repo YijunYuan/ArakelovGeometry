@@ -140,50 +140,52 @@ variable {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Actual finite scalar extension over a countable discrete base, with both
 measurability clauses and domination produced. -/
-def scalarExtensionOfCountableDiscrete (V : AdelicVectorBundle S E)
+abbrev scalarExtensionOfCountableDiscrete (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
-    AdelicVectorBundle (S.algebraicExtension L) (L ⊗[K] E) where
+    AdelicVectorBundle (S.algebraicExtension L) where
+  carrier := (L ⊗[K] V)
   toNormFamily := V.toNormFamily.scalarExtension (L := L)
-  isMeasurable :=
-    V.toNormFamily.scalarExtension_isMeasurable_of_finiteDimensional_of_countable_discrete
-  dual_isMeasurable :=
-    V.toNormFamily.scalarExtension_dual_isMeasurable_of_finiteDimensional_of_countable_discrete
-  isDominated := by
-    exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
-      V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)).isDominated
+  toIsAdelic := {
+    isMeasurable :=
+      V.toNormFamily.scalarExtension_isMeasurable_of_finiteDimensional_of_countable_discrete
+    dual_isMeasurable :=
+      V.toNormFamily.scalarExtension_dual_isMeasurable_of_finiteDimensional_of_countable_discrete
+    isDominated := by
+      exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
+        V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)).isDominated
+  }
 
 @[simp]
-theorem scalarExtensionOfCountableDiscrete_toNormFamily (V : AdelicVectorBundle S E)
+theorem scalarExtensionOfCountableDiscrete_toNormFamily (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     (V.scalarExtensionOfCountableDiscrete (L := L)).toNormFamily =
       V.toNormFamily.scalarExtension (L := L) := rfl
 
 /-- The constructed finite extended bundle is strongly adelic. -/
-theorem scalarExtensionOfCountableDiscrete_isStronglyAdelic (V : AdelicVectorBundle S E)
+theorem scalarExtensionOfCountableDiscrete_isStronglyAdelic (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     (V.scalarExtensionOfCountableDiscrete (L := L)).IsStronglyAdelic :=
   NormFamily.IsDominated.scalarExtension_isStronglyDominated
     V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)
 
 /-- The construction preserves rank, including zero. -/
-theorem scalarExtensionOfCountableDiscrete_rank (V : AdelicVectorBundle S E)
+theorem scalarExtensionOfCountableDiscrete_rank (V : AdelicVectorBundle S)
     [S.IsArchimedeanNormalized] :
     (V.scalarExtensionOfCountableDiscrete (L := L)).rank = V.rank :=
   Module.finrank_baseChange
 
 /-- On overlapping hypotheses the finite discrete and common-density constructors agree. -/
 theorem scalarExtensionOfCountableDiscrete_eq_scalarExtension
-    (V : AdelicVectorBundle S E) [hS : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hS : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     V.scalarExtensionOfCountableDiscrete (L := L) =
-      V.scalarExtension (L := L) := by
-  apply AdelicVectorBundle.ext
+      V.scalarExtension (L := L) (hS := hS) := by
   rfl
 
 /-- The actual finite extended bundle preserves degree with extended discreteness
 and extended Archimedean normalization both derived. -/
 theorem degree_scalarExtensionOfCountableDiscrete [S.IsProper]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     (V.scalarExtensionOfCountableDiscrete (L := L)).degree
@@ -200,8 +202,7 @@ theorem degree_scalarExtensionOfCountableDiscrete [S.IsProper]
   have he : (V.scalarExtensionOfCountableDiscrete (L := L)).determinantOfMeasurableBase
       (hS := ⟨(Or.inl hLS)⟩) (hN := ⟨hNL⟩) =
         V.scalarExtensionDeterminant (L := L) := by
-    apply AdelicVectorBundle.ext
-    rfl
+      rfl
   change (V.scalarExtensionOfCountableDiscrete (L := L)).degree (hS := ⟨(Or.inl hLS)⟩)
       (hN := ⟨hNL⟩) = _
   simpa only [degree, he] using V.lineDegree_scalarExtensionDeterminant (L := L)

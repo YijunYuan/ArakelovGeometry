@@ -43,7 +43,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- The usual vector degree of the actual ordinary extension to an algebraic
 closure equals the original degree; target common density is proved. -/
 theorem degree_scalarExtension_of_isAlgClosed [S.IsProper]
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     (V.scalarExtension (L := L)).degree
@@ -59,10 +59,10 @@ theorem degree_scalarExtension_of_isAlgClosed [S.IsProper]
 /-- Native restriction after ordinary scalar extension has the original
 restricted degree under the actual completed tensor equivalence. -/
 theorem degree_restrict_scalarExtension_of_sqrt_neg_one [S.IsProper]
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsUltrametric] (hi : ∃ a : K, a ^ 2 = -1)
-    (A : Submodule K E) :
+    (A : Submodule K V) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     ((V.scalarExtension (L := L)).restrictOfMeasurableBase
       (A.baseChange L) (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed
@@ -89,8 +89,8 @@ theorem degree_restrict_scalarExtension_of_sqrt_neg_one [S.IsProper]
 /-- The native base-changed subbundle has precisely the original restricted
 rank, through the same canonical tensor equivalence, including rank zero. -/
 theorem rank_restrict_scalarExtension
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
-    [hN : S.IsArchimedeanNormalized] (A : Submodule K E) :
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
+    [hN : S.IsArchimedeanNormalized] (A : Submodule K V) :
     ((V.scalarExtension (L := L)).restrictOfMeasurableBase
       (A.baseChange L) (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed
           (L := L)))⟩)).rank =

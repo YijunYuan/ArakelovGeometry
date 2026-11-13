@@ -114,10 +114,10 @@ local instance hermitianScalarRestrictionProper : (S.algebraicExtension L).IsPro
 /-- Finite Hermitian extension preserves the actual canonical degree of
 each native restriction, through its genuine completed isometry. -/
 theorem degree_restrict_hermitianScalarExtension_of_finiteDimensional
-    [FiniteDimensional K L] (V : AdelicVectorBundle S E)
+    [FiniteDimensional K L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (U : Submodule K E) :
+    [hH : V.toNormFamily.IsHermitian] (U : Submodule K V) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
@@ -129,7 +129,9 @@ theorem degree_restrict_hermitianScalarExtension_of_finiteDimensional
   have he : Rext.degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
       (W.restrictOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩)
           (hN := ⟨hLN⟩) :=
-    Rext.degree_eq_of_completed_isometry _ (Submodule.toBaseChange.toLinearEquiv L U)
+    Rext.degree_eq_of_completed_isometry
+      (W.restrictOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩))
+      (Submodule.toBaseChange.toLinearEquiv L U)
       (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (fun x z =>
           V.toNormFamily.hermitianScalarExtension_restrict_norm_eq
             (hLN := ⟨hLN⟩) U x z)
@@ -139,10 +141,10 @@ theorem degree_restrict_hermitianScalarExtension_of_finiteDimensional
 /-- The same genuine native restrictions preserve mean slope in every
 rank, including the existing real zero-rank quotient convention. -/
 theorem slope_restrict_hermitianScalarExtension_of_finiteDimensional
-    [FiniteDimensional K L] (V : AdelicVectorBundle S E)
+    [FiniteDimensional K L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (U : Submodule K E) :
+    [hH : V.toNormFamily.IsHermitian] (U : Submodule K V) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)

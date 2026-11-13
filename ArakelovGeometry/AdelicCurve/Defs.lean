@@ -174,13 +174,13 @@ abbrev v (C : AdelicCurve) := C.AS.v
 abbrev ϕ (C : AdelicCurve) := C.AS.ϕ
 
 /-- The archimedean exponent of an adelic curve. -/
-noncomputable abbrev κ (C : AdelicCurve) := C.AS.κ
+noncomputable def κ (C : AdelicCurve) := C.AS.κ
 
 /-- The nonarchimedean locus of an adelic curve. -/
-abbrev Ωfin (C : AdelicCurve) := C.AS.Ωfin
+def Ωfin (C : AdelicCurve) := C.AS.Ωfin
 
 /-- The archimedean locus of an adelic curve. -/
-abbrev Ωinf (C : AdelicCurve) := C.AS.Ωinf
+def Ωinf (C : AdelicCurve) := C.AS.Ωinf
 
 /-- Properness of a bundled adelic curve is properness of its underlying structure. -/
 abbrev IsProper (C : AdelicCurve) : Prop := C.AS.IsProper

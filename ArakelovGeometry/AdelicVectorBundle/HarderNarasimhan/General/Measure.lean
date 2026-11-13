@@ -37,7 +37,7 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
@@ -59,7 +59,7 @@ private theorem generalHN_integral_indicator_Iic_Ici (a b : ℝ) :
 half-line indicators of all actual ordered slots. -/
 theorem generalHNFiltration_finrank_eq_sum_indicator (t : ℝ) :
     (Module.finrank K (V.generalHNFiltration t) : ℝ) =
-      ∑ j : Fin (Module.finrank K E),
+      ∑ j : Fin (Module.finrank K V),
         (Set.Iic (V.generalHNOrderedSlope j)).indicator
           (fun _ : ℝ ↦ (1 : ℝ)) t := by
   classical
@@ -83,7 +83,7 @@ finite sum of the positive parts of the shifted actual ordered slopes. -/
 theorem integral_generalHNFiltration_finrank_Ici (a : ℝ) :
     (∫ t in Set.Ici a,
       (Module.finrank K (V.generalHNFiltration t) : ℝ)) =
-        ∑ j : Fin (Module.finrank K E),
+        ∑ j : Fin (Module.finrank K V),
           max (V.generalHNOrderedSlope j - a) 0 := by
   classical
   simp_rw [V.generalHNFiltration_finrank_eq_sum_indicator]
@@ -98,14 +98,14 @@ positive parts of the actual general ordered slopes. -/
 theorem integral_generalHNFiltration_finrank_Ici_zero :
     (∫ t in Set.Ici (0 : ℝ),
       (Module.finrank K (V.generalHNFiltration t) : ℝ)) =
-        ∑ j : Fin (Module.finrank K E), max (V.generalHNOrderedSlope j) 0 := by
+        ∑ j : Fin (Module.finrank K V), max (V.generalHNOrderedSlope j) 0 := by
   rw [V.integral_generalHNFiltration_finrank_Ici 0]
   simp only [sub_zero]
 
 /-- The positive atomic jump measure has one atom for each actual ordered
 slot, retaining the actual rank multiplicities when slopes repeat. -/
 def generalHNJumpMeasure : Measure ℝ :=
-  ∑ j : Fin (Module.finrank K E), Measure.dirac (V.generalHNOrderedSlope j)
+  ∑ j : Fin (Module.finrank K V), Measure.dirac (V.generalHNOrderedSlope j)
 
 instance isFiniteMeasure_generalHNJumpMeasure :
     IsFiniteMeasure (V.generalHNJumpMeasure) := by
@@ -124,7 +124,7 @@ theorem integrable_generalHNJumpMeasure (f : ℝ → ℝ) :
 actual ordered slopes, with their actual multiplicities. -/
 theorem integral_generalHNJumpMeasure (f : ℝ → ℝ) :
     (∫ t, f t ∂V.generalHNJumpMeasure) =
-      ∑ j : Fin (Module.finrank K E), f (V.generalHNOrderedSlope j) := by
+      ∑ j : Fin (Module.finrank K V), f (V.generalHNOrderedSlope j) := by
   unfold generalHNJumpMeasure
   rw [integral_finsetSum_measure (fun j _ ↦ integrable_dirac (by finiteness))]
   simp only [integral_dirac]
@@ -164,7 +164,7 @@ theorem generalHNSignedJumpMeasure_Ico (a b : ℝ) (hab : a ≤ b) :
 slots, by the canonical Bochner-to-signed-measure integration bridge. -/
 theorem integral_generalHNSignedJumpMeasure (f : ℝ → ℝ) :
     (∫ᵛ t, f t ∂<•V.generalHNSignedJumpMeasure) =
-      -∑ j : Fin (Module.finrank K E), f (V.generalHNOrderedSlope j) := by
+      -∑ j : Fin (Module.finrank K V), f (V.generalHNOrderedSlope j) := by
   unfold generalHNSignedJumpMeasure
   rw [VectorMeasure.integral_neg_vectorMeasure, VectorMeasure.integral_toSignedMeasure,
     V.integral_generalHNJumpMeasure]
@@ -173,12 +173,12 @@ theorem integral_generalHNSignedJumpMeasure (f : ℝ → ℝ) :
 minus the sum of all actual general ordered slopes, including rank zero. -/
 theorem integral_id_generalHNSignedJumpMeasure :
     (∫ᵛ t, t ∂<•V.generalHNSignedJumpMeasure) =
-      -∑ j : Fin (Module.finrank K E), V.generalHNOrderedSlope j :=
+      -∑ j : Fin (Module.finrank K V), V.generalHNOrderedSlope j :=
   V.integral_generalHNSignedJumpMeasure (fun t ↦ t)
 
 private theorem generalHN_rank_mul_eq_sum_indicator (g : ℝ → ℝ) :
     (fun t ↦ (Module.finrank K (V.generalHNFiltration t) : ℝ) * g t) =
-      fun t ↦ ∑ j : Fin (Module.finrank K E),
+      fun t ↦ ∑ j : Fin (Module.finrank K V),
         (Set.Iic (V.generalHNOrderedSlope j)).indicator g t := by
   classical
   funext t
@@ -206,7 +206,7 @@ supported continuously differentiable test derivative. -/
 theorem integral_generalHNFiltration_finrank_mul_deriv
     (φ : ℝ → ℝ) (hφ : ContDiff ℝ 1 φ) (hc : HasCompactSupport φ) :
     (∫ t : ℝ, (Module.finrank K (V.generalHNFiltration t) : ℝ) * deriv φ t) =
-      ∑ j : Fin (Module.finrank K E), φ (V.generalHNOrderedSlope j) := by
+      ∑ j : Fin (Module.finrank K V), φ (V.generalHNOrderedSlope j) := by
   classical
   rw [V.generalHN_rank_mul_eq_sum_indicator]
   have hd : Integrable (deriv φ) volume :=

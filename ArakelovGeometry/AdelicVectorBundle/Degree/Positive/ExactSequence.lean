@@ -43,14 +43,14 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 
 /-- The actual quotient of a restriction contracts into its ambient quotient
 image, so its degree is bounded by ambient quotient positive degree. -/
-theorem degree_quotient_restrict_le_positiveDegree_quotient (V : AdelicVectorBundle S E)
-    (U W : Submodule K E)
+theorem degree_quotient_restrict_le_positiveDegree_quotient (V : AdelicVectorBundle S)
+    (U W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (((V.restrictOfMeasurableBase U).quotientOfMeasurableBase
       (W.mkQ.comp U.subtype).ker).degree : EReal) ≤
       (V.quotientOfMeasurableBase W).positiveDegree := by
-  let g : U →ₗ[K] E ⧸ W := W.mkQ.comp U.subtype
+  let g : U →ₗ[K] V ⧸ W := W.mkQ.comp U.subtype
   have hd := degree_le_of_completed_contraction
     ((V.restrictOfMeasurableBase U).quotientOfMeasurableBase g.ker)
     ((V.quotientOfMeasurableBase W).restrictOfMeasurableBase g.range)
@@ -60,8 +60,8 @@ theorem degree_quotient_restrict_le_positiveDegree_quotient (V : AdelicVectorBun
     ((V.quotientOfMeasurableBase W).degree_restrict_le_positiveDegree g.range)
 
 /-- The intersection degree is a genuine restricted degree inside `W`. -/
-theorem degree_restrict_inf_le_positiveDegree_restrict (V : AdelicVectorBundle S E)
-    (U W : Submodule K E)
+theorem degree_restrict_inf_le_positiveDegree_restrict (V : AdelicVectorBundle S)
+    (U W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     ((V.restrictOfMeasurableBase (U ⊓ W)).degree : EReal) ≤
@@ -74,8 +74,8 @@ theorem degree_restrict_inf_le_positiveDegree_restrict (V : AdelicVectorBundle S
 omit [S.IsProper] in
 /-- Actual determinant discrepancy decreases under restriction when the
 original norms are ultrametric outside infinity. -/
-theorem determinantDiscrepancy_restrict_le (V : AdelicVectorBundle S E)
-    (U : Submodule K E)
+theorem determinantDiscrepancy_restrict_le (V : AdelicVectorBundle S)
+    (U : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsUltrametric] :
@@ -95,7 +95,7 @@ theorem determinantDiscrepancy_restrict_le (V : AdelicVectorBundle S E)
 The two real end degrees make the extended subtraction-to-addition step valid
 even if one of the genuine capital discrepancies is positive infinity. -/
 theorem degree_restrict_le_positiveDegree_restrict_add_quotient_add_majorantDiscrepancy
-    (V : AdelicVectorBundle S E) (U W : Submodule K E)
+    (V : AdelicVectorBundle S) (U W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     ((V.restrictOfMeasurableBase U).degree : EReal) ≤
@@ -137,7 +137,7 @@ theorem degree_restrict_le_positiveDegree_restrict_add_quotient_add_majorantDisc
 /-- Source (4.36) for the actual restriction-quotient sequence, with all
 ambient subspaces and infinite capital discrepancy retained. -/
 theorem positiveDegree_le_restrict_add_quotient_add_majorantDiscrepancy
-    (V : AdelicVectorBundle S E) (W : Submodule K E)
+    (V : AdelicVectorBundle S) (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     V.positiveDegree ≤ (V.restrictOfMeasurableBase W).positiveDegree +
@@ -150,7 +150,7 @@ theorem positiveDegree_le_restrict_add_quotient_add_majorantDiscrepancy
 /-- The finite determinant-discrepancy variant controls each actual
 restricted degree under the source ultrametric-outside-infinity hypothesis. -/
 theorem degree_restrict_le_positiveDegree_restrict_add_quotient_add_determinantDiscrepancy
-    (V : AdelicVectorBundle S E) (U W : Submodule K E)
+    (V : AdelicVectorBundle S) (U W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsUltrametric] :
@@ -190,7 +190,7 @@ theorem degree_restrict_le_positiveDegree_restrict_add_quotient_add_determinantD
 /-- Source (4.37), with actual determinant discrepancy and no attained
 positive-degree supremum as a premise. -/
 theorem positiveDegree_le_restrict_add_quotient_add_determinantDiscrepancy
-    (V : AdelicVectorBundle S E) (W : Submodule K E)
+    (V : AdelicVectorBundle S) (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsUltrametric] :
@@ -205,7 +205,7 @@ theorem positiveDegree_le_restrict_add_quotient_add_determinantDiscrepancy
 /-- Hermitian vanishing of the actual discrepancy removes the exact-sequence
 error term in the positive-degree bound. -/
 theorem positiveDegree_le_restrict_add_quotient_of_isHermitian
-    (V : AdelicVectorBundle S E) (W : Submodule K E)
+    (V : AdelicVectorBundle S) (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :

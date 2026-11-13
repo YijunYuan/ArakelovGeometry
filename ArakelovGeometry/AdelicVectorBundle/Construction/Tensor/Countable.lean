@@ -93,10 +93,10 @@ end NormFamily
 namespace AdelicVectorBundle
 
 /-- The canonical injective tensor bundle with both measurability clauses proved. -/
-def injectiveTensorOfMeasurableBase (V : ∀ i, AdelicVectorBundle S (E i))
+abbrev injectiveTensorOfMeasurableBase (V : ι → AdelicVectorBundle S)
     [hB : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
-    AdelicVectorBundle S (⨂[K] i, E i) :=
+    AdelicVectorBundle S :=
   injectiveTensor V
     (hm := (NormFamily.IsMeasurable.injectiveTensor_of_discrete_or_countable _
       (fun i ↦ (V i).isMeasurable)))
@@ -106,24 +106,24 @@ def injectiveTensorOfMeasurableBase (V : ∀ i, AdelicVectorBundle S (E i))
     (S.v_Ωinf_lt_top_of_isRCLike)
 
 @[simp]
-theorem injectiveTensorOfMeasurableBase_toNormFamily (V : ∀ i, AdelicVectorBundle S (E i))
+theorem injectiveTensorOfMeasurableBase_toNormFamily (V : ι → AdelicVectorBundle S)
     [hB : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (injectiveTensorOfMeasurableBase V).toNormFamily =
       NormFamily.injectiveTensor (fun i => (V i).toNormFamily) := rfl
 
 /-- The automatically measurable injective tensor is strongly adelic. -/
-instance injectiveTensorOfMeasurableBase_isStronglyAdelic (V : ∀ i, AdelicVectorBundle S (E i))
+instance injectiveTensorOfMeasurableBase_isStronglyAdelic (V : ι → AdelicVectorBundle S)
     [hB : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (injectiveTensorOfMeasurableBase V).IsStronglyAdelic :=
   injectiveTensor_isStronglyAdelic V _
 
 /-- The canonical mixed tensor bundle with both measurability clauses proved. -/
-def mixedTensorOfMeasurableBase (V : ∀ i, AdelicVectorBundle S (E i))
+abbrev mixedTensorOfMeasurableBase (V : ι → AdelicVectorBundle S)
     [hB : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
-    AdelicVectorBundle S (⨂[K] i, E i) :=
+    AdelicVectorBundle S :=
   mixedTensor V
     (hm := (NormFamily.IsMeasurable.mixedTensor_of_discrete_or_countable _
       (fun i ↦ (V i).isMeasurable)))
@@ -133,24 +133,24 @@ def mixedTensorOfMeasurableBase (V : ∀ i, AdelicVectorBundle S (E i))
     (S.v_Ωinf_lt_top_of_isRCLike)
 
 @[simp]
-theorem mixedTensorOfMeasurableBase_toNormFamily (V : ∀ i, AdelicVectorBundle S (E i))
+theorem mixedTensorOfMeasurableBase_toNormFamily (V : ι → AdelicVectorBundle S)
     [hB : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (mixedTensorOfMeasurableBase V).toNormFamily =
       NormFamily.mixedTensor (fun i => (V i).toNormFamily) := rfl
 
 /-- The automatically measurable mixed tensor is strongly adelic. -/
-instance mixedTensorOfMeasurableBase_isStronglyAdelic (V : ∀ i, AdelicVectorBundle S (E i))
+instance mixedTensorOfMeasurableBase_isStronglyAdelic (V : ι → AdelicVectorBundle S)
     [hB : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (mixedTensorOfMeasurableBase V).IsStronglyAdelic :=
   mixedTensor_isStronglyAdelic V _
 
 /-- The canonical orthogonal tensor bundle with automatic norm and dual measurability. -/
-def orthogonalTensorOfMeasurableBase (V : ∀ i, AdelicVectorBundle S (E i))
+abbrev orthogonalTensorOfMeasurableBase (V : ι → AdelicVectorBundle S)
     [hB : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    [hH : ∀ i, (V i).IsHermitian] : AdelicVectorBundle S (⨂[K] i, E i) :=
+    [hH : ∀ i, (V i).IsHermitian] : AdelicVectorBundle S :=
   orthogonalTensor V
     (hm := (NormFamily.IsMeasurable.orthogonalTensor_of_discrete_or_countable _ hH
       (fun i ↦ (V i).isMeasurable)))
@@ -159,7 +159,7 @@ def orthogonalTensorOfMeasurableBase (V : ∀ i, AdelicVectorBundle S (E i))
         (fun i ↦ (V i).isMeasurable)).dual_of_discrete_or_countable))
 
 @[simp]
-theorem orthogonalTensorOfMeasurableBase_toNormFamily (V : ∀ i, AdelicVectorBundle S (E i))
+theorem orthogonalTensorOfMeasurableBase_toNormFamily (V : ι → AdelicVectorBundle S)
     [hB : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hH : ∀ i, (V i).IsHermitian] :
@@ -167,7 +167,7 @@ theorem orthogonalTensorOfMeasurableBase_toNormFamily (V : ∀ i, AdelicVectorBu
       NormFamily.orthogonalTensor (fun i ↦ (V i).toNormFamily) := rfl
 
 /-- The automatically measurable orthogonal tensor is strongly adelic. -/
-instance orthogonalTensorOfMeasurableBase_isStronglyAdelic (V : ∀ i, AdelicVectorBundle S (E i))
+instance orthogonalTensorOfMeasurableBase_isStronglyAdelic (V : ι → AdelicVectorBundle S)
     [hB : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hH : ∀ i, (V i).IsHermitian] :
@@ -175,7 +175,7 @@ instance orthogonalTensorOfMeasurableBase_isStronglyAdelic (V : ∀ i, AdelicVec
   orthogonalTensor_isStronglyAdelic V
 
 /-- The automatic orthogonal tensor retains the genuine completed Hermitian norms. -/
-instance orthogonalTensorOfMeasurableBase_isHermitian (V : ∀ i, AdelicVectorBundle S (E i))
+instance orthogonalTensorOfMeasurableBase_isHermitian (V : ι → AdelicVectorBundle S)
     [hB : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hH : ∀ i, (V i).IsHermitian] :
@@ -184,33 +184,40 @@ instance orthogonalTensorOfMeasurableBase_isHermitian (V : ∀ i, AdelicVectorBu
 
 /-- The actual determinant degree reverses the injective-to-mixed norm comparison. -/
 theorem degree_mixedTensor_le_injectiveTensor [S.IsProper]
-    (V : ∀ i, AdelicVectorBundle S (E i))
+    (V : ι → AdelicVectorBundle S)
     [hB : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (mixedTensorOfMeasurableBase V).degree ≤
       (injectiveTensorOfMeasurableBase V).degree :=
-  degree_antitone _ _ (NormFamily.injectiveTensor_norm_le_mixedTensor_norm _)
+  degree_antitone (injectiveTensorOfMeasurableBase V)
+    (mixedTensorOfMeasurableBase V).toNormFamily
+    (hW := (mixedTensorOfMeasurableBase V).toIsAdelic)
+    (NormFamily.injectiveTensor_norm_le_mixedTensor_norm _)
 
 /-- Orthogonal tensor determinant degree is bounded above by the injective one. -/
 theorem degree_orthogonalTensor_le_injectiveTensor [S.IsProper]
-    (V : ∀ i, AdelicVectorBundle S (E i))
+    (V : ι → AdelicVectorBundle S)
     [hB : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hH : ∀ i, (V i).IsHermitian] :
     (orthogonalTensorOfMeasurableBase V).degree ≤
       (injectiveTensorOfMeasurableBase V).degree :=
-  degree_antitone _ _ (fun ω z =>
+  degree_antitone (injectiveTensorOfMeasurableBase V)
+    (orthogonalTensorOfMeasurableBase V).toNormFamily
+    (hW := (orthogonalTensorOfMeasurableBase V).toIsAdelic) (fun ω z =>
     (NormFamily.orthogonalTensor_norm_bounds _ ω z).1)
 
 /-- Orthogonal tensor determinant degree is bounded below by the mixed one. -/
 theorem degree_mixedTensor_le_orthogonalTensor [S.IsProper]
-    (V : ∀ i, AdelicVectorBundle S (E i))
+    (V : ι → AdelicVectorBundle S)
     [hB : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hH : ∀ i, (V i).IsHermitian] :
     (mixedTensorOfMeasurableBase V).degree ≤
       (orthogonalTensorOfMeasurableBase V).degree := by
-  apply degree_antitone _ _
+  apply degree_antitone (orthogonalTensorOfMeasurableBase V)
+    (mixedTensorOfMeasurableBase V).toNormFamily
+    (hW := (mixedTensorOfMeasurableBase V).toIsAdelic)
   intro ω z
   change (NormFamily.orthogonalTensor _).norm ω z ≤
     (NormFamily.mixedTensor _).norm ω z

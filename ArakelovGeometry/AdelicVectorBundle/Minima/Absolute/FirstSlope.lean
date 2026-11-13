@@ -33,7 +33,7 @@ variable {K E : Type*} [Field K] {S : AdelicStructure K} [S.IsProper]
 
 /-- Source4.3.72's absolute inequality under original common countable density. -/
 theorem absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlope
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     V.absoluteMaximalLogarithmicMinimum (hreg := ⟨(Or.inl hcount)⟩) ≤
       V.absoluteMaximalSlope := by
@@ -51,9 +51,9 @@ variable [Countable S.Ω] [DiscreteMeasurableSpace S.Ω]
 has its ambient vector degree, using the produced measurable determinant. -/
 theorem nativeRestrictionDegreeOfCountableDiscreteBase_span_singleton
     {L : Type*} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (s : {x : L ⊗[K] E // x ≠ 0}) :
+    (s : {x : L ⊗[K] V // x ≠ 0}) :
     V.nativeRestrictionDegreeOfCountableDiscreteBase (L ∙ s.val) =
       (V.scalarExtensionOfCountableDiscreteBase).vectorDegree s := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
@@ -73,9 +73,9 @@ theorem nativeRestrictionDegreeOfCountableDiscreteBase_span_singleton
 /-- Every nonzero actual closure vector supplies a rank-one term of the
 native maximal-slope supremum. -/
 theorem vectorDegree_discreteScalarBundle_le_absoluteMaximalSlopeOfCountableDiscreteBase
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (s : {x : AlgebraicClosure K ⊗[K] E // x ≠ 0}) :
+    (s : {x : AlgebraicClosure K ⊗[K] V // x ≠ 0}) :
     ((V.scalarExtensionOfCountableDiscreteBase).vectorDegree s : EReal) ≤
       V.absoluteMaximalSlopeOfCountableDiscreteBase := by
   have h := V.nativeMean_le_absoluteMaximalSlopeOfCountableDiscreteBase
@@ -88,7 +88,7 @@ theorem vectorDegree_discreteScalarBundle_le_absoluteMaximalSlopeOfCountableDisc
 native means, with bottom conventions in ambient rank zero. -/
 theorem
     maximalLogarithmicMinimum_discreteScalarBundle_le_absoluteMaximalSlopeOfCountableDiscreteBase
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     (V.scalarExtensionOfCountableDiscreteBase (L := AlgebraicClosure K)
 ).maximalLogarithmicMinimum ≤ V.absoluteMaximalSlopeOfCountableDiscreteBase := by
@@ -104,7 +104,7 @@ theorem
 /-- The countable-discrete absolute inequality of source4.3.72 uses the
 actual original absolute minimum and the full native closure supremum. -/
 theorem absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlopeOfCountableDiscreteBase
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     V.absoluteMaximalLogarithmicMinimum
       (hreg := ⟨(Or.inr (Or.inl ⟨inferInstance, inferInstance⟩))⟩) ≤

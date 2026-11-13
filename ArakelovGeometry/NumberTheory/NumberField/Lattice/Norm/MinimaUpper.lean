@@ -207,7 +207,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 /-- The pure case of source Proposition4.4.10, without finite-endpoint or
 attainment hypotheses and including the empty basis convention. -/
 theorem minimalLogarithmicMinimum_le_degree_mul_latticeLambda_add_constant_of_impurity_zero
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hV : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions]
     (hσ : V.toNormFamily.globalImpurity = 0) :
     V.minimalLogarithmicMinimum ≤
@@ -279,7 +279,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 impurity term is the literal source impurity, proved finite by domination
 and coherence, and evaluated in the real line. -/
 theorem minimalLogarithmicMinimum_le_degree_mul_latticeLambda_add_impurity_add_constant
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hV : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions] :
     V.minimalLogarithmicMinimum ≤
       ((Module.finrank ℚ K : ℝ) : EReal) * V.toNormFamily.latticeLambda +
@@ -291,7 +291,7 @@ theorem minimalLogarithmicMinimum_le_degree_mul_latticeLambda_add_impurity_add_c
       (V.numberFieldLatticeGauge_globalImpurity_eq_zero)
   rw [V.numberFieldLatticeGauge_latticeLambda_eq] at hp
   have h := (V.logarithmicMinimum_le_numberFieldLatticeGauge_add_globalImpurity
-     (Module.finrank K E)).trans (add_le_add hp le_rfl)
+     (Module.finrank K V)).trans (add_le_add hp le_rfl)
   simpa only [minimalLogarithmicMinimum, add_assoc, add_comm, add_left_comm] using h
 
 end ArakelovGeometry.AdelicVectorBundle
@@ -306,7 +306,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 /-- Source Proposition4.4.10 for the actual normalized number-field bundle,
 with a field-only constant and the literal integral invariant and impurity. -/
 theorem numberField_latticeLambda_logarithmicMinimum_comparison
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hV : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions] :
     ((Module.finrank ℚ K : ℝ) : EReal) * V.toNormFamily.latticeLambda ≤
         V.minimalLogarithmicMinimum ∧

@@ -33,7 +33,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- The actual quotient dual and the actual annihilator restriction have
 equal degrees under their canonical rational isomorphism. -/
 theorem degree_dual_quotient_eq_degree_restrict_annihilator [S.IsProper]
-    (V : AdelicVectorBundle S E) (W : Submodule K E)
+    (V : AdelicVectorBundle S) (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     ((V.quotientOfMeasurableBase W).dualOfMeasurableBase).degree =
@@ -41,14 +41,12 @@ theorem degree_dual_quotient_eq_degree_restrict_annihilator [S.IsProper]
         := by
   apply degree_eq_of_completed_isometry _ _ W.dualQuotEquivDualAnnihilator
   intro ω z
-  simp only [dualOfMeasurableBase_toNormFamily, quotientOfMeasurableBase_toNormFamily,
-    restrictOfMeasurableBase_toNormFamily]
   exact (V.toNormFamily.quotient_dual_annihilator_norm_eq W ω z).symm
 
 /-- Quotienting the actual dual by the rational annihilator gives the degree
 of the actual restricted-space dual under the source local hypotheses. -/
 theorem degree_dual_quotient_annihilator_eq_degree_dual_restrict [S.IsProper]
-    (V : AdelicVectorBundle S E) (W : Submodule K E)
+    (V : AdelicVectorBundle S) (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsUltrametric] :
@@ -57,14 +55,12 @@ theorem degree_dual_quotient_annihilator_eq_degree_dual_restrict [S.IsProper]
       ((V.restrictOfMeasurableBase W).dualOfMeasurableBase).degree := by
   apply degree_eq_of_completed_isometry _ _ (Subspace.quotAnnihilatorEquiv W)
   intro ω z
-  simp only [dualOfMeasurableBase_toNormFamily, quotientOfMeasurableBase_toNormFamily,
-    restrictOfMeasurableBase_toNormFamily]
   exact (V.toNormFamily.dual_quotient_annihilator_norm_eq W ω z).symm
 
 /-- The actual degree minus determinant discrepancy is subadditive for the
 restriction and quotient of an ultrametric-outside-infinity bundle. -/
 theorem degree_sub_determinantDiscrepancy_le_restrict_add_quotient [S.IsProper]
-    (V : AdelicVectorBundle S E) (W : Submodule K E)
+    (V : AdelicVectorBundle S) (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsUltrametric] :
@@ -85,7 +81,7 @@ theorem degree_sub_determinantDiscrepancy_le_restrict_add_quotient [S.IsProper]
 /-- Vanishing ambient Hermitian discrepancy and nonnegative end discrepancies
 give the reverse of the ordinary two-step degree lower bound. -/
 theorem degree_le_restrict_add_degree_quotient_of_isHermitian [S.IsProper]
-    (V : AdelicVectorBundle S E) (W : Submodule K E)
+    (V : AdelicVectorBundle S) (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :
@@ -100,7 +96,7 @@ theorem degree_le_restrict_add_degree_quotient_of_isHermitian [S.IsProper]
 /-- Exact additivity of the genuine restriction and quotient degrees for
 a Hermitian bundle, including zero ambient spaces and zero ends. -/
 theorem degree_restrict_add_degree_quotient_eq_of_isHermitian [S.IsProper]
-    (V : AdelicVectorBundle S E) (W : Submodule K E)
+    (V : AdelicVectorBundle S) (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :

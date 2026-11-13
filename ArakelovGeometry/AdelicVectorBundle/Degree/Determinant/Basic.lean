@@ -34,7 +34,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- Vector degree is the degree of the canonical actual determinant line
 whenever its actual norm family is measurable. -/
-def degreeOfMeasurableDeterminant [S.IsProper] (V : AdelicVectorBundle S E)
+def degreeOfMeasurableDeterminant [S.IsProper] (V : AdelicVectorBundle S)
     [hdet : V.toNormFamily.determinant.IsMeasurable]
     [hN : S.IsArchimedeanNormalized] : ℝ :=
   (V.determinant).lineDegree (hV := (V.determinant_isLine))
@@ -42,7 +42,7 @@ def degreeOfMeasurableDeterminant [S.IsProper] (V : AdelicVectorBundle S E)
 /-- The usual degree context produces determinant measurability and the
 same degree; the canonical determinant adelic line is unchanged. -/
 theorem degreeOfMeasurableDeterminant_eq_degree [S.IsProper]
-    (V : AdelicVectorBundle S E) [hdet : V.toNormFamily.determinant.IsMeasurable]
+    (V : AdelicVectorBundle S) [hdet : V.toNormFamily.determinant.IsMeasurable]
     [S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     V.degreeOfMeasurableDeterminant = V.degree := rfl
@@ -50,12 +50,12 @@ theorem degreeOfMeasurableDeterminant_eq_degree [S.IsProper]
 /-- Every nonzero actual rational determinant generator computes the
 degree from the integral of its actual determinant log norm. -/
 theorem degreeOfMeasurableDeterminant_eq_neg_integral [S.IsProper]
-    (V : AdelicVectorBundle S E) [hdet : V.toNormFamily.determinant.IsMeasurable]
+    (V : AdelicVectorBundle S) [hdet : V.toNormFamily.determinant.IsMeasurable]
     [hN : S.IsArchimedeanNormalized]
-    (s : {x : ⋀[K]^(Module.finrank K E) E // x ≠ 0}) :
+    (s : {x : ⋀[K]^(Module.finrank K V) V // x ≠ 0}) :
     V.degreeOfMeasurableDeterminant =
       -(∫ ω, V.toNormFamily.determinant.logNorm s.val ω ∂S.v) :=
-  lineDegree_eq_neg_integral _ s
+  lineDegree_eq_neg_integral V.determinant (hV := V.determinant_isLine) s
 
 end
 

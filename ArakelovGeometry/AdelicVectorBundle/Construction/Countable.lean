@@ -83,14 +83,17 @@ namespace AdelicVectorBundle
 
 /-- A dominated measurable norm family is adelic under either source base hypothesis;
 dual measurability is proved by the countable norm formula or discreteness. -/
-def ofMeasurableDominated (ξ : NormFamily S E) [hm : ξ.IsMeasurable]
+abbrev ofMeasurableDominated (ξ : NormFamily S E) [hm : ξ.IsMeasurable]
     [hd : ξ.IsDominated]
     [hS : S.HasMeasurableBase] :
-    AdelicVectorBundle S E where
+    AdelicVectorBundle S where
+  carrier := E
   toNormFamily := ξ
-  isMeasurable := hm
-  dual_isMeasurable := hm.dual_of_discrete_or_countable
-  isDominated := hd
+  toIsAdelic := {
+    isMeasurable := hm
+    dual_isMeasurable := hm.dual_of_discrete_or_countable
+    isDominated := hd
+  }
 
 @[simp]
 theorem ofMeasurableDominated_toNormFamily (ξ : NormFamily S E) [hm : ξ.IsMeasurable]
@@ -99,84 +102,84 @@ theorem ofMeasurableDominated_toNormFamily (ξ : NormFamily S E) [hm : ξ.IsMeas
     (ofMeasurableDominated ξ).toNormFamily = ξ := rfl
 
 /-- Automatic dual bundle, using the established canonical dual constructor. -/
-noncomputable def dualOfMeasurableBase (V : AdelicVectorBundle S E)
+noncomputable abbrev dualOfMeasurableBase (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase] :
-    AdelicVectorBundle S (Module.Dual K E) :=
+    AdelicVectorBundle S :=
   V.dual (hm := (V.dual_isMeasurable.dual_of_discrete_or_countable))
 
 @[simp]
-theorem dualOfMeasurableBase_toNormFamily (V : AdelicVectorBundle S E)
+theorem dualOfMeasurableBase_toNormFamily (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase] :
     (V.dualOfMeasurableBase).toNormFamily = V.toNormFamily.dual := rfl
 
-theorem dualOfMeasurableBase_isStronglyAdelic (V : AdelicVectorBundle S E)
+theorem dualOfMeasurableBase_isStronglyAdelic (V : AdelicVectorBundle S)
     [S.HasMeasurableBase] :
     (V.dualOfMeasurableBase).IsStronglyAdelic := V.isDominated.strong_dual
 
 /-- Automatic rational subbundle with the actual completed restriction norm. -/
-noncomputable def restrictOfMeasurableBase (V : AdelicVectorBundle S E) (F : Submodule K E)
+noncomputable abbrev restrictOfMeasurableBase (V : AdelicVectorBundle.{w} S) (F : Submodule K V)
     [hS : S.HasMeasurableBase] :
-    AdelicVectorBundle S F :=
+    AdelicVectorBundle S :=
   V.restrict F (hm := ((V.isMeasurable.restrict F).dual_of_discrete_or_countable))
 
 @[simp]
-theorem restrictOfMeasurableBase_toNormFamily (V : AdelicVectorBundle S E)
-    (F : Submodule K E)
+theorem restrictOfMeasurableBase_toNormFamily (V : AdelicVectorBundle.{w} S)
+    (F : Submodule K V)
     [hS : S.HasMeasurableBase] :
     (V.restrictOfMeasurableBase F).toNormFamily = V.toNormFamily.restrict F := rfl
 
 /-- Automatic rational quotient bundle with the actual completed quotient norm. -/
-noncomputable def quotientOfMeasurableBase (V : AdelicVectorBundle S E) (F : Submodule K E)
+noncomputable abbrev quotientOfMeasurableBase (V : AdelicVectorBundle.{w} S) (F : Submodule K V)
     [hS : S.HasMeasurableBase] :
-    AdelicVectorBundle S (E ⧸ F) :=
+    AdelicVectorBundle S :=
   V.quotient F (hm := (V.isMeasurable.pushforward_of_discrete_or_countable
     F.mkQ F.mkQ_surjective))
 
 @[simp]
-theorem quotientOfMeasurableBase_toNormFamily (V : AdelicVectorBundle S E)
-    (F : Submodule K E)
+theorem quotientOfMeasurableBase_toNormFamily (V : AdelicVectorBundle.{w} S)
+    (F : Submodule K V)
     [hS : S.HasMeasurableBase] :
     (V.quotientOfMeasurableBase F).toNormFamily = V.toNormFamily.quotient F := rfl
 
 /-- Strong adelicity descends to the automatic rational subbundle. -/
-theorem IsStronglyAdelic.restrictOfMeasurableBase {V : AdelicVectorBundle S E}
-    (hV : V.IsStronglyAdelic) (F : Submodule K E)
+theorem IsStronglyAdelic.restrictOfMeasurableBase {V : AdelicVectorBundle.{w} S}
+    (hV : V.IsStronglyAdelic) (F : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.restrictOfMeasurableBase F).IsStronglyAdelic :=
   hV.restrict F _
 
 /-- Strong adelicity descends to the automatic rational quotient. -/
-theorem IsStronglyAdelic.quotientOfMeasurableBase {V : AdelicVectorBundle S E}
-    (hV : V.IsStronglyAdelic) (F : Submodule K E)
+theorem IsStronglyAdelic.quotientOfMeasurableBase {V : AdelicVectorBundle.{w} S}
+    (hV : V.IsStronglyAdelic) (F : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.quotientOfMeasurableBase F).IsStronglyAdelic :=
   hV.quotient F _
 
-instance instIsHermitianRestrictOfMeasurableBase (V : AdelicVectorBundle S E)
+instance instIsHermitianRestrictOfMeasurableBase (V : AdelicVectorBundle S)
     [S.HasMeasurableBase] [S.IsArchimedeanNormalized] [hV : V.IsHermitian]
-    (P : Submodule K E) : (V.restrictOfMeasurableBase P).IsHermitian :=
+    (P : Submodule K V) : (V.restrictOfMeasurableBase P).IsHermitian :=
   NormFamily.IsHermitian.restrict hV P
 
-instance instIsHermitianQuotientOfMeasurableBase (V : AdelicVectorBundle S E)
+instance instIsHermitianQuotientOfMeasurableBase (V : AdelicVectorBundle S)
     [S.HasMeasurableBase] [S.IsArchimedeanNormalized] [hV : V.IsHermitian]
-    (P : Submodule K E) : (V.quotientOfMeasurableBase P).IsHermitian :=
+    (P : Submodule K V) : (V.quotientOfMeasurableBase P).IsHermitian :=
   NormFamily.IsHermitian.quotient hV P
 
-instance instIsHermitianDualOfMeasurableBase (V : AdelicVectorBundle S E)
+instance instIsHermitianDualOfMeasurableBase (V : AdelicVectorBundle S)
     [S.HasMeasurableBase] [S.IsArchimedeanNormalized] [hV : V.IsHermitian] :
     V.dualOfMeasurableBase.IsHermitian :=
   NormFamily.IsHermitian.dual hV
 
-instance instIsStronglyAdelicRestrictOfMeasurableBase (V : AdelicVectorBundle S E)
+instance instIsStronglyAdelicRestrictOfMeasurableBase (V : AdelicVectorBundle S)
     [S.HasMeasurableBase] [S.IsArchimedeanNormalized] [hV : V.IsStronglyAdelic]
-    (P : Submodule K E) : (V.restrictOfMeasurableBase P).IsStronglyAdelic :=
+    (P : Submodule K V) : (V.restrictOfMeasurableBase P).IsStronglyAdelic :=
   IsStronglyAdelic.restrictOfMeasurableBase hV P
 
-instance instIsStronglyAdelicQuotientOfMeasurableBase (V : AdelicVectorBundle S E)
+instance instIsStronglyAdelicQuotientOfMeasurableBase (V : AdelicVectorBundle S)
     [S.HasMeasurableBase] [S.IsArchimedeanNormalized] [hV : V.IsStronglyAdelic]
-    (P : Submodule K E) : (V.quotientOfMeasurableBase P).IsStronglyAdelic :=
+    (P : Submodule K V) : (V.quotientOfMeasurableBase P).IsStronglyAdelic :=
   IsStronglyAdelic.quotientOfMeasurableBase hV P
 
 end AdelicVectorBundle

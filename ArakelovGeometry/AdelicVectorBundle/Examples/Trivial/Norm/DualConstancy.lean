@@ -113,7 +113,7 @@ namespace AdelicVectorBundle
 
 open AdelicStructure
 
-variable (V : AdelicVectorBundle (singleTrivialPlace K) E)
+variable (V : AdelicVectorBundle.{w} (singleTrivialPlace K))
   [hS : (singleTrivialPlace K).HasMeasurableBase]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
@@ -121,7 +121,7 @@ open Classical in
 /-- The actual source dual-constancy characterization retains the true
 positive-rank semistability scope and allows arbitrary original norms. -/
 theorem isSemistable_iff_exists_trivialSeminorm_dual_eq_const
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     V.IsSemistable ↔ ∃ d : ℝ, 0 < d ∧
       ∀ ℓ, ℓ ≠ 0 → V.toNormFamily.dual.trivialSeminorm ℓ = d := by
   rw [V.isSemistable_iff_exists_trivialSeminorm_bidual_eq_const hr]
@@ -138,9 +138,9 @@ open Classical in
 the source expression requires degree divided by positive rank. -/
 theorem neg_log_dual_norm_eq_neg_degree_div_of_isSemistable
     [hV : V.IsSemistable] (ω : (singleTrivialPlace K).Ω)
-    (z : ((singleTrivialPlace K).ϕ ω).Completion ⊗[K] Module.Dual K E) (hz : z ≠ 0) :
+    (z : ((singleTrivialPlace K).ϕ ω).Completion ⊗[K] Module.Dual K V) (hz : z ≠ 0) :
     -Real.log (V.toNormFamily.dual.norm ω z) =
-      -(V.degree / (Module.finrank K E : ℝ)) := by
+      -(V.degree / (Module.finrank K V : ℝ)) := by
   obtain ⟨c, hc, h⟩ := (V.isSemistable_iff_exists_trivialSeminorm_bidual_eq_const
     hV.1).mp hV
   have hd : ∀ ℓ, ℓ ≠ 0 → V.toNormFamily.dual.trivialSeminorm ℓ = c⁻¹ :=
@@ -158,10 +158,10 @@ omit hN in
 /-- A genuine actual rank-two bundle refutes the printed missing-rank
 divisor in Remark4.3.62, over any field including characteristic two. -/
 theorem exists_rank_two_dual_formula_counterexample :
-    ∃ V : AdelicVectorBundle (singleTrivialPlace K) (Fin 2 → K),
+    ∃ V : AdelicVectorBundle.{u} (singleTrivialPlace K), V.rank = 2 ∧
       V.IsSemistable (hN := ⟨(singleTrivialPlace_normalized K)⟩) ∧
       V.degree (hN := ⟨(singleTrivialPlace_normalized K)⟩) = -2 ∧
-      ∃ ℓ : Module.Dual K (Fin 2 → K), ℓ ≠ 0 ∧
+      ∃ ℓ : Module.Dual K V, ℓ ≠ 0 ∧
         -Real.log (V.toNormFamily.dual.trivialSeminorm ℓ) = 1 ∧
         -Real.log (V.toNormFamily.dual.trivialSeminorm ℓ) ≠
           -V.degree (hN := ⟨(singleTrivialPlace_normalized K)⟩) := by
@@ -222,7 +222,7 @@ theorem exists_rank_two_dual_formula_counterexample :
   have hl : -Real.log (V.toNormFamily.dual.trivialSeminorm ℓ) = 1 := by
     rw [V.toNormFamily.trivialSeminorm_dual_eq_inv_of_trivialSeminorm_eq_const
       (Real.exp_pos _) h ℓ hℓ, Real.log_inv, Real.log_exp, neg_neg]
-  refine ⟨V, hV, hd, ℓ, hℓ, hl, ?_⟩
+  refine ⟨V, hdim, hV, hd, ℓ, hℓ, hl, ?_⟩
   rw [hl, hd]
   norm_num
 

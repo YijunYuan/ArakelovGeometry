@@ -26,13 +26,13 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
 /-- The initial subintervals of the game describe all actual restrictions
 of its subquotient. Hence game semistability is the existing minimal-slope criterion. -/
-theorem isSemistable_restrict_maximalSlopePayoff_iff (I : StrictIntvl (Submodule K E)) :
+theorem isSemistable_restrict_maximalSlopePayoff_iff (I : StrictIntvl (Submodule K V)) :
     ((V.maximalSlopePayoff).restrict I).IsSemistable ↔
       ∀ Z : Submodule K (I.right ⧸ I.left.comap I.right.subtype), Z ≠ ⊥ →
         ((((V.restrictOfMeasurableBase I.right).quotientOfMeasurableBase
@@ -40,7 +40,7 @@ theorem isSemistable_restrict_maximalSlopePayoff_iff (I : StrictIntvl (Submodule
         ((V.restrictOfMeasurableBase I.right).quotientOfMeasurableBase
           (I.left.comap I.right.subtype)).minimalSlope := by
   have hcriterion : ((V.maximalSlopePayoff).restrict I).IsSemistable ↔
-      ∀ U : Submodule K E, I.left < U → U ≤ I.right →
+      ∀ U : Submodule K V, I.left < U → U ≤ I.right →
         ((V.restrictOfMeasurableBase U).quotientOfMeasurableBase
           (I.left.comap U.subtype)).minimalSlope ≤
         ((V.restrictOfMeasurableBase I.right).quotientOfMeasurableBase

@@ -8,11 +8,12 @@ module
 import ArakelovGeometry
 
 /-!
-# Norm-family construction interfaces
+# Bundled vector spaces and norm-family construction interfaces
 
 Run with `lake env lean test/ObjectAPI.lean` after `lake build`.
-These examples select different norm families on the same vector space explicitly,
-infer their property assumptions, and exercise preservation through tensor and subspace operations.
+These examples use bundles as vector spaces, retain the carriers of their constructions,
+and select different norm families on a fixed vector space explicitly. They also infer property
+assumptions and exercise preservation through tensor and subspace operations.
 -/
 
 open ArakelovGeometry
@@ -25,8 +26,91 @@ noncomputable section
 
 universe u v
 
+section Bundled
+
+variable (C : AdelicCurve) (V : C.AdelicVectorBundle) (W : C.AdelicVectorBundle)
+
+example (x y : V) (a : C.K) : V := a • x + y
+example (f : V →ₗ[C.K] W) (x : V) : W := f x
+example : FiniteDimensional C.K V := inferInstance
+example : V.toNormFamily.IsAdelic := inferInstance
+example : V.toNormFamily.toAdelicVectorBundle = V := rfl
+example : V.rank = Module.finrank C.K V := rfl
+
+example [C.IsProper] [C.AS.HasMeasurableBase] [C.AS.IsArchimedeanNormalized] : ℝ :=
+  V.degree
+
+example [C.AS.HasMeasurableBase] (P : Submodule C.K V) :
+    (V.restrictOfMeasurableBase P).carrier = P := rfl
+
+example [C.AS.HasMeasurableBase] (P : Submodule C.K V) :
+    (V.quotientOfMeasurableBase P).carrier = (V ⧸ P) := rfl
+
+example [C.AS.HasMeasurableBase] [C.AS.IsArchimedeanNormalized]
+    [V.IsHermitian] [W.IsHermitian] :
+    (V ⊗ʰ W).carrier = (V ⊗[C.K] W) := rfl
+
+end Bundled
+
+section CarrierUniverse
+
+universe w
+variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
+
+example (V : AdelicVectorBundle.{w} S) : Type w := V
+example (C : AdelicCurve.{u, v}) (V : C.AdelicVectorBundle.{w}) : Type w := V
+
+end CarrierUniverse
+
+section IndependentUniverses
+
+universe w₁ w₂ w₃
+variable (C : AdelicCurve.{u, v})
+  (V : C.AdelicVectorBundle.{w₁}) (W : C.AdelicVectorBundle.{w₂})
+  (Z : C.AdelicVectorBundle.{w₃})
+  [C.AS.HasMeasurableBase] [C.AS.IsArchimedeanNormalized]
+
+example : (V.injectiveTensorPair W).carrier = (V ⊗[C.K] W) := rfl
+example : (V.mixedTensorPair W).carrier = (V ⊗[C.K] W) := rfl
+
+example [V.IsHermitian] [W.IsHermitian] [Z.IsHermitian] :
+    (V ⊗ʰ (W ⊗ʰ Z)).carrier = (V ⊗[C.K] (W ⊗[C.K] Z)) := rfl
+
+example (f : V →ₗ[C.K] W) : EReal := V.mapHeight W f
+
+example [C.IsProper] (e : V ≃ₗ[C.K] W)
+    (he : ∀ ω x, W.norm ω (e.toLinearMap.baseChange (C.AS.ϕ ω).Completion x) = V.norm ω x) :
+    V.degree = W.degree := V.degree_eq_of_completed_isometry W e he
+
+example [C.IsProper] [V.IsHermitian] [W.IsHermitian] :
+    (V ⊗ʰ W).degree = (W.rank : ℝ) * V.degree + (V.rank : ℝ) * W.degree :=
+  V.degree_orthogonalTensorPair W
+
+example [C.IsProper] [V.IsHermitian] [W.IsHermitian]
+    (f : V →ₗ[C.K] W) (hf : f ≠ 0) (t : ℝ) :
+    (V.hermitianHNFiltration t).map f ≤
+      W.hermitianHNFiltration (t - (V.mapHeight W f).toReal) :=
+  V.map_hermitianHNFiltration_le W f hf t
+
+end IndependentUniverses
+
 variable {K : Type u} {E : Type (max u v)} [Field K] [AddCommGroup E] [Module K E]
   [FiniteDimensional K E]
+
+section Packaging
+
+variable {S : AdelicStructure K} (ξ η : NormFamily S E) [ξ.IsAdelic] [η.IsAdelic]
+
+example : S.toAdelicCurve.AdelicVectorBundle := ξ.toAdelicVectorBundle
+example : (ξ.toAdelicVectorBundle : Type (max u v)) = E := rfl
+example : ξ.toAdelicVectorBundle.toNormFamily = ξ := rfl
+example : η.toAdelicVectorBundle.toNormFamily = η := rfl
+
+example : AdelicVectorBundle S where
+  carrier := E
+  toNormFamily := ξ
+
+end Packaging
 
 section Hermitian
 
@@ -51,7 +135,7 @@ example (ω : S.Ω) (hω : ω ∈ S.Ωinf) :
 
 example : ∀ i, (NormFamily.tensorPairFactors ξ η i).IsHermitian := inferInstance
 
-example : NormFamily S (⨂[K] i, BinaryTensorFactors E E i) :=
+example : NormFamily S (⨂[K] i, LiftedTensorFactors E E i) :=
   NormFamily.orthogonalTensor (NormFamily.tensorPairFactors ξ η)
 
 example [ξ.IsDominated] [η.IsDominated] :

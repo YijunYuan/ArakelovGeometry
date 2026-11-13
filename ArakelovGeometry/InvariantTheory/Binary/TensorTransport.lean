@@ -81,6 +81,23 @@ theorem tensorBaseChangeEquiv_bool (L : Type*) [Field L] [Algebra K L] :
     TensorProduct.AlgebraTensorModule.distribBaseChange_tmul]
   rw [TensorProduct.smul_tmul', TensorProduct.smul_tmul', smul_eq_mul, mul_one]
 
+section IndependentPair
+
+universe wE wF
+
+variable (R : Type*) [Field R] (V : Type wE) (W : Type wF)
+  [AddCommGroup V] [Module R V] [AddCommGroup W] [Module R W]
+
+/-- Independently sized factors in the common universe required by a Bool family. -/
+abbrev LiftedBoolTensorFactors := BoolTensorFactors (ULift.{wF} V) (ULift.{wE} W)
+
+/-- The Bool tensor of lifted factors is the original ordinary binary tensor. -/
+def boolTensorPairEquiv : (⨂[R] j, LiftedBoolTensorFactors V W j) ≃ₗ[R] V ⊗[R] W :=
+  (boolTensorEquiv R (LiftedBoolTensorFactors V W)).trans
+    (TensorProduct.congr ULift.moduleEquiv ULift.moduleEquiv)
+
+end IndependentPair
+
 end ArakelovGeometry
 
 namespace Submodule

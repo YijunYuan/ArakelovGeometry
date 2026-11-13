@@ -82,6 +82,9 @@ theorem fullLatticeAdelicBundle_twistFamily [FiniteDimensional K E]
         (twistExponent_measurable K t) (twistExponent_integrable K t) := by
   classical
   apply AdelicVectorBundle.ext
+    (hξ := (fullLatticeAdelicBundle L hfg hspan (twistFamily η t)).toIsAdelic)
+    (hη := ((fullLatticeAdelicBundle L hfg hspan η).scaleExp (twistExponent K t)
+      (twistExponent_measurable K t) (twistExponent_integrable K t)).toIsAdelic)
   ext ω z
   by_cases hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin
   · obtain ⟨p, rfl⟩ := exists_normalizedPrimeParameter_eq ω hω

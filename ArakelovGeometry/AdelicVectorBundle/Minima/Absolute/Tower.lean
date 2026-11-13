@@ -28,7 +28,7 @@ universe u v wL wE
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{wE} S)
   [hreg : S.HasRegularBase]
   [hN : S.IsArchimedeanNormalized]
 

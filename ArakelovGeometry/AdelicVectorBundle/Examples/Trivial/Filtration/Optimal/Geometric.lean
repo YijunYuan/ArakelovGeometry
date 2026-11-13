@@ -32,7 +32,7 @@ namespace Submodule
 
 universe u
 
-variable {K E F Q : Type u} [Field K] [CharZero K]
+variable {K : Type u} {E F Q : Type*} [Field K] [CharZero K]
   [AddCommGroup E] [Module K E] [FiniteDimensional K E] [Nontrivial E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F] [Nontrivial F]
   [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q] [Nontrivial Q]
@@ -44,8 +44,8 @@ The comparison ranges over all actual centered finite real filtrations over the
 original characteristic-zero field, not only over one coordinate presentation. -/
 theorem exists_normalized_tensor_quotient_optimizer_of_not_geometricallySemistable
     (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)
-    (hns : ¬ IsGeometricallySemistableTensorQuotient (BoolTensorFactors E F)
-      (q.comp (boolTensorEquiv K (BoolTensorFactors E F)).toLinearMap)) :
+    (hns : ¬ IsGeometricallySemistableTensorQuotient (LiftedBoolTensorFactors E F)
+      (q.comp (boolTensorPairEquiv K E F).toLinearMap)) :
     ∃ (P : ℝ → Submodule K E) (R : ℝ → Submodule K F),
       (Antitone P ∧ (∃ t, P t = ⊥) ∧ (∃ t, P t = ⊤) ∧
         (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → P s = P t) ∧

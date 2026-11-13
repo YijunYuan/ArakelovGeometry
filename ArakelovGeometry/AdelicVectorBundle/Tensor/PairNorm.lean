@@ -26,20 +26,34 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w
+universe u v w w'
 
 section Algebra
 
 variable (K L : Type*) [Field K] [Field L] [Algebra K L]
-  (E F : Type w) [AddCommGroup E] [Module K E] [AddCommGroup F] [Module K F]
+  (E : Type w) (F : Type w') [AddCommGroup E] [Module K E] [AddCommGroup F] [Module K F]
 
-/-- Finite tensor base change and binary tensor base change commute with
-the existing canonical binary equivalence. -/
+/-- The completed finite tensor of lifted factors is the ordinary completed binary tensor. -/
+def tensorPairFibreEquiv :
+    (⨂[L] i, L ⊗[K] LiftedTensorFactors E F i) ≃ₗ[L]
+      (L ⊗[K] E) ⊗[L] (L ⊗[K] F) :=
+  (binaryTensorEquiv L (fun i ↦ L ⊗[K] LiftedTensorFactors E F i)).trans
+    (TensorProduct.congr (ULift.moduleEquiv.baseChange K L _ _)
+      (ULift.moduleEquiv.baseChange K L _ _))
+
+@[simp]
+theorem tensorPairFibreEquiv_tprod (x : ∀ i, L ⊗[K] LiftedTensorFactors E F i) :
+    tensorPairFibreEquiv K L E F (⨂ₜ[L] i, x i) =
+      (ULift.moduleEquiv.baseChange K L _ _) (x (.inl ())) ⊗ₜ[L]
+        (ULift.moduleEquiv.baseChange K L _ _) (x (.inr ())) := by
+  simp [tensorPairFibreEquiv]
+
+/-- Finite and binary tensor base change commute with the canonical lifting equivalence. -/
 theorem tensorBaseChangeEquiv_binary :
-    (binaryTensorEquiv L (fun i ↦ L ⊗[K] BinaryTensorFactors E F i)).toLinearMap ∘ₗ
-      (tensorBaseChangeEquiv K L (BinaryTensorFactors E F)).toLinearMap =
+    (tensorPairFibreEquiv K L E F).toLinearMap ∘ₗ
+      (tensorBaseChangeEquiv K L (LiftedTensorFactors E F)).toLinearMap =
     (TensorProduct.AlgebraTensorModule.distribBaseChange K L E F).toLinearMap ∘ₗ
-      (binaryTensorEquiv K (BinaryTensorFactors E F)).toLinearMap.baseChange L := by
+      (tensorPairEquiv K E F).toLinearMap.baseChange L := by
   apply LinearMap.restrictScalars_injective K
   apply TensorProduct.ext
   apply LinearMap.ext
@@ -47,42 +61,43 @@ theorem tensorBaseChangeEquiv_binary :
   apply PiTensorProduct.ext
   apply MultilinearMap.ext
   intro x
-  change binaryTensorEquiv L (fun i ↦ L ⊗[K] BinaryTensorFactors E F i)
-      (tensorBaseChangeEquiv K L (BinaryTensorFactors E F) (a ⊗ₜ[K] (⨂ₜ[K] i, x i))) =
+  change tensorPairFibreEquiv K L E F
+      (tensorBaseChangeEquiv K L (LiftedTensorFactors E F) (a ⊗ₜ[K] (⨂ₜ[K] i, x i))) =
     TensorProduct.AlgebraTensorModule.distribBaseChange K L E F
-      ((binaryTensorEquiv K (BinaryTensorFactors E F)).toLinearMap.baseChange L
-        (a ⊗ₜ[K] (⨂ₜ[K] i, x i)))
-  simp only [tensorBaseChangeEquiv_tmul_tprod, map_smul, binaryTensorEquiv_tprod,
-    LinearMap.baseChange_tmul, LinearEquiv.coe_coe,
+      ((tensorPairEquiv K E F).toLinearMap.baseChange L (a ⊗ₜ[K] (⨂ₜ[K] i, x i)))
+  simp only [LinearEquiv.coe_coe,
+    tensorBaseChangeEquiv_tmul_tprod, map_smul, tensorPairFibreEquiv_tprod,
+    tensorPairEquiv_tprod, LinearMap.baseChange_tmul, LinearEquiv.baseChange_tmul,
     TensorProduct.AlgebraTensorModule.distribBaseChange_tmul]
   rw [TensorProduct.smul_tmul', TensorProduct.smul_tmul', smul_eq_mul, mul_one]
+  rfl
 
-/-- A pure tensor of completed vectors corresponds to the canonical finite
-pure tensor after the actual completed binary pullback. -/
+/-- A pure tensor of completed vectors lifts to the corresponding finite pure tensor. -/
 theorem tensorBaseChangeEquiv_binary_symm_tmul
     (x : L ⊗[K] E) (y : L ⊗[K] F) :
-    tensorBaseChangeEquiv K L (BinaryTensorFactors E F)
-      ((binaryTensorEquiv K (BinaryTensorFactors E F)).symm.toLinearMap.baseChange L
+    tensorBaseChangeEquiv K L (LiftedTensorFactors E F)
+      ((tensorPairEquiv K E F).symm.toLinearMap.baseChange L
         ((TensorProduct.AlgebraTensorModule.distribBaseChange K L E F).symm
           (x ⊗ₜ[L] y))) =
-      (⨂ₜ[L] i, match i with | .inl _ => x | .inr _ => y) := by
+      (⨂ₜ[L] i, match i with
+        | .inl _ => (ULift.moduleEquiv.baseChange K L _ _).symm x
+        | .inr _ => (ULift.moduleEquiv.baseChange K L _ _).symm y) := by
   let A := TensorProduct.AlgebraTensorModule.distribBaseChange K L E F
-  let B := (binaryTensorEquiv K (BinaryTensorFactors E F)).baseChange K L _ _
-  let P := binaryTensorEquiv L (fun i ↦ L ⊗[K] BinaryTensorFactors E F i)
+  let B := (tensorPairEquiv K E F).baseChange K L _ _
+  let P := tensorPairFibreEquiv K L E F
   have he := DFunLike.congr_fun (tensorBaseChangeEquiv_binary K L E F)
     (B.symm (A.symm (x ⊗ₜ[L] y)))
   apply P.injective
-  change P (tensorBaseChangeEquiv K L (BinaryTensorFactors E F)
-    (B.symm (A.symm (x ⊗ₜ[L] y)))) =
-      P (⨂ₜ[L] i, match i with | .inl _ => x | .inr _ => y)
-  change P (tensorBaseChangeEquiv K L (BinaryTensorFactors E F)
+  change P (tensorBaseChangeEquiv K L (LiftedTensorFactors E F)
+    (B.symm (A.symm (x ⊗ₜ[L] y)))) = _
+  change P (tensorBaseChangeEquiv K L (LiftedTensorFactors E F)
     (B.symm (A.symm (x ⊗ₜ[L] y)))) = A (B (B.symm (A.symm (x ⊗ₜ[L] y)))) at he
-  simpa only [LinearEquiv.apply_symm_apply, P, binaryTensorEquiv_tprod] using he
+  simpa only [LinearEquiv.apply_symm_apply, P, tensorPairFibreEquiv_tprod] using he
 
 end Algebra
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
-  {E F : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 namespace NormFamily
@@ -91,15 +106,15 @@ namespace NormFamily
 def projectiveTensorPair (ξ : NormFamily S E) (η : NormFamily S F) :
     NormFamily S (E ⊗[K] F) :=
   (projectiveTensor (tensorPairFactors ξ η)).pullback
-    (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.toLinearMap
-    (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.injective
+    (tensorPairEquiv K E F).symm.toLinearMap
+    (tensorPairEquiv K E F).symm.injective
 
 /-- The actual mixed norm on the ordinary binary tensor product. -/
 def mixedTensorPair (ξ : NormFamily S E) (η : NormFamily S F) :
     NormFamily S (E ⊗[K] F) :=
   (mixedTensor (tensorPairFactors ξ η)).pullback
-    (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.toLinearMap
-    (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.injective
+    (tensorPairEquiv K E F).symm.toLinearMap
+    (tensorPairEquiv K E F).symm.injective
 
 /-- The completed projective binary tensor contracts pure tensors by the
 product of the actual completed factor norms. -/
@@ -109,21 +124,29 @@ theorem projectiveTensorPair_norm_tmul_completed_le
     (ξ.projectiveTensorPair η).norm ω
       ((TensorProduct.AlgebraTensorModule.distribBaseChange K (S.ϕ ω).Completion E F).symm
         (x ⊗ₜ[(S.ϕ ω).Completion] y)) ≤ ξ.norm ω x * η.norm ω y := by
-  let X : ∀ i, (S.ϕ ω).Completion ⊗[K] BinaryTensorFactors E F i :=
-    fun i ↦ match i with | .inl _ => x | .inr _ => y
-  have hz : (binaryTensorEquiv K (BinaryTensorFactors E F)).symm.toLinearMap.baseChange
+  let X : ∀ i, (S.ϕ ω).Completion ⊗[K] LiftedTensorFactors E F i :=
+    fun i ↦ match i with
+      | .inl _ => (ULift.moduleEquiv.baseChange K (S.ϕ ω).Completion _ _).symm x
+      | .inr _ => (ULift.moduleEquiv.baseChange K (S.ϕ ω).Completion _ _).symm y
+  have hz : (tensorPairEquiv K E F).symm.toLinearMap.baseChange
       (S.ϕ ω).Completion
       ((TensorProduct.AlgebraTensorModule.distribBaseChange K (S.ϕ ω).Completion E F).symm
         (x ⊗ₜ[(S.ϕ ω).Completion] y)) =
-      (tensorBaseChangeEquiv K (S.ϕ ω).Completion (BinaryTensorFactors E F)).symm
+      (tensorBaseChangeEquiv K (S.ϕ ω).Completion (LiftedTensorFactors E F)).symm
         (⨂ₜ[(S.ϕ ω).Completion] i, X i) := by
-    apply (tensorBaseChangeEquiv K (S.ϕ ω).Completion (BinaryTensorFactors E F)).injective
+    apply (tensorBaseChangeEquiv K (S.ϕ ω).Completion (LiftedTensorFactors E F)).injective
     rw [LinearEquiv.apply_symm_apply]
     exact tensorBaseChangeEquiv_binary_symm_tmul K (S.ϕ ω).Completion E F x y
   change (projectiveTensor (tensorPairFactors ξ η)).norm ω _ ≤ _
   rw [hz]
   have hb := projectiveTensor_norm_tprod_le (tensorPairFactors ξ η) ω X
-  simpa only [Fintype.prod_sum_type, Fintype.prod_unique, tensorPairFactors, X] using hb
+  simp only [Fintype.prod_sum_type, Fintype.prod_unique, tensorPairFactors, X,
+    pullback_norm] at hb
+  change _ ≤ ξ.norm ω ((ULift.moduleEquiv.baseChange K (S.ϕ ω).Completion _ _)
+      ((ULift.moduleEquiv.baseChange K (S.ϕ ω).Completion _ _).symm x)) *
+    η.norm ω ((ULift.moduleEquiv.baseChange K (S.ϕ ω).Completion _ _)
+      ((ULift.moduleEquiv.baseChange K (S.ϕ ω).Completion _ _).symm y)) at hb
+  simpa only [LinearEquiv.apply_symm_apply] using hb
 
 /-- The actual injective binary tensor norm is bounded by the projective one. -/
 theorem injectiveTensorPair_norm_le_projectiveTensorPair_norm

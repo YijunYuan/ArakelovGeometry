@@ -36,7 +36,7 @@ local instance hermitianGaloisSemistabilityProper : (S.algebraicExtension L).IsP
 /-- Actual finite Hermitian scalar extension preserves the real mean slope
 in every rank by the produced determinant degree and basis dimension equalities. -/
 theorem slope_hermitianScalarExtension_of_finiteDimensional
-    [FiniteDimensional K L] (V : AdelicVectorBundle S E)
+    [FiniteDimensional K L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
@@ -52,7 +52,7 @@ theorem slope_hermitianScalarExtension_of_finiteDimensional
 /-- Source positive-rank semistability is preserved and reflected by actual
 finite Galois Hermitian extension. Both rank-zero bundles fail this predicate. -/
 theorem isMeanSlopeSemistable_hermitianScalarExtension_iff_of_finiteGalois
-    [FiniteDimensional K L] [IsGalois K L] (V : AdelicVectorBundle S E)
+    [FiniteDimensional K L] [IsGalois K L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
@@ -61,14 +61,14 @@ theorem isMeanSlopeSemistable_hermitianScalarExtension_iff_of_finiteGalois
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
     W.IsMeanSlopeSemistable (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) ↔ V.IsMeanSlopeSemistable := by
   intro hLN hLS W
-  by_cases hr : 0 < Module.finrank K E
-  · have hrL : 0 < Module.finrank L (L ⊗[K] E) := by
+  by_cases hr : 0 < Module.finrank K V
+  · have hrL : 0 < Module.finrank L (L ⊗[K] V) := by
       rwa [Module.finrank_baseChange]
     rw [W.isMeanSlopeSemistable_iff_maximalSlope_eq_slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) hrL,
       V.isMeanSlopeSemistable_iff_maximalSlope_eq_slope hr,
       V.maximalSlope_hermitianScalarExtension_of_finiteGalois,
       V.slope_hermitianScalarExtension_of_finiteDimensional]
-  · have hrL : ¬ 0 < Module.finrank L (L ⊗[K] E) := by
+  · have hrL : ¬ 0 < Module.finrank L (L ⊗[K] V) := by
       rwa [Module.finrank_baseChange]
     constructor
     · intro hs

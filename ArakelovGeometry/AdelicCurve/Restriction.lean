@@ -72,7 +72,7 @@ end AdelicStructure
 namespace AdelicCurve
 
 /-- The restriction of an adelic curve to a subfield of its base field. -/
-abbrev fRestriction (AC : AdelicCurve) (F : Subfield AC.K) : AdelicCurve :=
+def fRestriction (AC : AdelicCurve) (F : Subfield AC.K) : AdelicCurve :=
   (AC.AS.fRestriction F).toAdelicCurve
 
 /-- Properness of a bundled curve is inherited by restriction to a subfield. -/
@@ -81,7 +81,7 @@ theorem isProper_fRestriction {AC : AdelicCurve} [IsProper AC] (F : Subfield AC.
   AdelicStructure.isProper_fRestriction (AS := AC.AS) F
 
 /-- The restriction of an adelic curve to a measurable subset of its index space. -/
-noncomputable abbrev sRestriction (AC : AdelicCurve) (Ω₀ : Set AC.AS.Ω)
+noncomputable def sRestriction (AC : AdelicCurve) (Ω₀ : Set AC.AS.Ω)
     (hΩ₀ : MeasurableSet Ω₀) : AdelicCurve :=
   (AC.AS.sRestriction Ω₀ hΩ₀).toAdelicCurve
 

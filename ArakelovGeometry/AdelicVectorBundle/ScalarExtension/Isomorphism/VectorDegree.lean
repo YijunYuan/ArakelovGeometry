@@ -112,7 +112,7 @@ theorem scalarExtension_linearIndependent_algEquiv (σ : L ≃ₐ[K] M)
   independent_semilinear_iff σ.toRingEquiv (scalarExtensionSemilinearEquiv (E := E) σ) s
 
 namespace AdelicVectorBundle
-variable (V : AdelicVectorBundle S E)
+variable (V : AdelicVectorBundle.{wE} S)
   [hreg : S.HasRegularBase]
   [hN : S.IsArchimedeanNormalized]
   (σ : L ≃ₐ[K] M)
@@ -120,7 +120,7 @@ variable (V : AdelicVectorBundle S E)
 /-- Original-produced genuine scalar bundles have equal actual section degrees
 under coefficient transport, with no regularity premise on S_L or S_M. -/
 theorem ordinaryScalarExtension_vectorDegree_algEquiv
-    (s : {x : L ⊗[K] E // x ≠ 0}) :
+    (s : {x : L ⊗[K] V // x ≠ 0}) :
     (V.ordinaryScalarExtension (L := M)).vectorDegree
       (NormFamily.scalarExtensionIsomorphismNonzeroVector σ s) =
       (V.ordinaryScalarExtension (L := L)).vectorDegree s :=
@@ -133,12 +133,12 @@ theorem ordinaryScalarExtension_vectorDegree_algEquiv
 /-- The actual semilinear subspace map sends each genuine degree-threshold
 span exactly onto its counterpart over the transported coefficient field. -/
 theorem ordinaryScalarExtension_degreeThresholdSpan_algEquiv (t : ℝ) :
-    scalarExtensionSubspaceOrderIso (E := E) σ
+    scalarExtensionSubspaceOrderIso (E := V) σ
       ((V.ordinaryScalarExtension (L := L)).degreeThresholdSpan t) =
       (V.ordinaryScalarExtension (L := M)).degreeThresholdSpan t := by
   let := RingHomInvPair.of_ringEquiv σ.toRingEquiv
   let := RingHomInvPair.of_ringEquiv_symm σ.toRingEquiv
-  let c := scalarExtensionSemilinearEquiv (E := E) σ
+  let c := scalarExtensionSemilinearEquiv (E := V) σ
   change Submodule.map c.toLinearMap _ = _
   unfold degreeThresholdSpan
   rw [← Submodule.span_image]
@@ -152,7 +152,7 @@ theorem ordinaryScalarExtension_degreeThresholdSpan_algEquiv (t : ℝ) :
     rw [V.ordinaryScalarExtension_vectorDegree_algEquiv σ]
     exact hd
   · rintro ⟨hy, hd⟩
-    let s : {x : L ⊗[K] E // x ≠ 0} :=
+    let s : {x : L ⊗[K] V // x ≠ 0} :=
       ⟨c.symm y, c.symm.map_eq_zero_iff.not.mpr hy⟩
     refine ⟨s.val, ⟨s.property, ?_⟩, c.apply_symm_apply y⟩
     change t ≤ (V.ordinaryScalarExtension (L := L)).vectorDegree s
@@ -167,13 +167,14 @@ include σ
 /-- Exact attained independent thresholds transport in both directions;
 supremum attainment is not assumed or concluded. -/
 theorem ordinaryScalarExtension_independent_degree_ge_algEquiv (i : ℕ) (t : ℝ) :
-    (∃ s : Fin i → {x : M ⊗[K] E // x ≠ 0},
+    (∃ s : Fin i → {x : M ⊗[K] V // x ≠ 0},
       LinearIndependent M (fun j => (s j).val) ∧
         ∀ j, t ≤ (V.ordinaryScalarExtension (L := M)).vectorDegree (s j)) ↔
-    (∃ s : Fin i → {x : L ⊗[K] E // x ≠ 0},
+    (∃ s : Fin i → {x : L ⊗[K] V // x ≠ 0},
       LinearIndependent L (fun j => (s j).val) ∧
         ∀ j, t ≤ (V.ordinaryScalarExtension (L := L)).vectorDegree (s j)) := by
-  rw [← le_finrank_degreeThresholdSpan_iff, ← le_finrank_degreeThresholdSpan_iff]
+  rw [← (V.ordinaryScalarExtension (L := M)).le_finrank_degreeThresholdSpan_iff,
+    ← (V.ordinaryScalarExtension (L := L)).le_finrank_degreeThresholdSpan_iff]
   have hr := scalarExtensionSubspaceOrderIso_finrank σ
     ((V.ordinaryScalarExtension (L := L)).degreeThresholdSpan t)
   rw [V.ordinaryScalarExtension_degreeThresholdSpan_algEquiv σ t] at hr

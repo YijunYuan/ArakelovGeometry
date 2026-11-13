@@ -38,8 +38,8 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 /-- Source (4.36)'s lower bound for the original end space of any actual
 norm-exact sequence, including the zero end. -/
 theorem positiveDegree_left_le_of_isExactSequence
-    (V : AdelicVectorBundle S E) (L : AdelicVectorBundle S F) (R : AdelicVectorBundle S G)
-    (i : F →ₗ[K] E) (p : E →ₗ[K] G)
+    (V : AdelicVectorBundle.{w} S) (L : AdelicVectorBundle.{w'} S) (R : AdelicVectorBundle.{w''} S)
+    (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
@@ -50,8 +50,8 @@ theorem positiveDegree_left_le_of_isExactSequence
 /-- Source (4.36)'s capital-discrepancy upper bound for arbitrary original
 exact maps. The genuine capital discrepancy is allowed to be infinite. -/
 theorem positiveDegree_le_add_majorantDiscrepancy_of_isExactSequence
-    (V : AdelicVectorBundle S E) (L : AdelicVectorBundle S F) (R : AdelicVectorBundle S G)
-    (i : F →ₗ[K] E) (p : E →ₗ[K] G)
+    (V : AdelicVectorBundle.{w} S) (L : AdelicVectorBundle.{w'} S) (R : AdelicVectorBundle.{w''} S)
+    (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
@@ -64,8 +64,8 @@ theorem positiveDegree_le_add_majorantDiscrepancy_of_isExactSequence
 /-- Source (4.37) for arbitrary exact maps, with the actual determinant
 discrepancy and the original outside-infinity ultrametric hypothesis. -/
 theorem positiveDegree_le_add_determinantDiscrepancy_of_isExactSequence
-    (V : AdelicVectorBundle S E) (L : AdelicVectorBundle S F) (R : AdelicVectorBundle S G)
-    (i : F →ₗ[K] E) (p : E →ₗ[K] G)
+    (V : AdelicVectorBundle.{w} S) (L : AdelicVectorBundle.{w'} S) (R : AdelicVectorBundle.{w''} S)
+    (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
@@ -79,8 +79,8 @@ theorem positiveDegree_le_add_determinantDiscrepancy_of_isExactSequence
 /-- Actual Hermitian norm-exact sequences have the same upper bound with
 zero discrepancy, on the original end spaces. -/
 theorem positiveDegree_le_add_of_isExactSequence_isHermitian
-    (V : AdelicVectorBundle S E) (L : AdelicVectorBundle S F) (R : AdelicVectorBundle S G)
-    (i : F →ₗ[K] E) (p : E →ₗ[K] G)
+    (V : AdelicVectorBundle.{w} S) (L : AdelicVectorBundle.{w'} S) (R : AdelicVectorBundle.{w''} S)
+    (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]

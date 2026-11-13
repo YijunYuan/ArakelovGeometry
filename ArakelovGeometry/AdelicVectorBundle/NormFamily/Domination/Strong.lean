@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Basic
 
 import ArakelovGeometry.AdelicVectorBundle.Dual.Bidual
+import ArakelovGeometry.AdelicVectorBundle.Dual.Map
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 
@@ -66,6 +67,17 @@ theorem isStronglyDominated_iff_hasIntegrableUpperBound (ξ : NormFamily S E) :
   refine and_congr_right fun _ ↦ ?_
   exact ⟨And.left, fun h ↦ ⟨h, 0, integrable_zero S.Ω ℝ S.v,
     Filter.Eventually.of_forall fun ω ↦ ξ.localDist_nonneg _ ω⟩⟩
+
+/-- Strong domination is invariant under equivalence pullback, without normalization. -/
+theorem IsStronglyDominated.pullbackEquiv {ξ : NormFamily S E}
+    (hξ : ξ.IsStronglyDominated) {F : Type*} [AddCommGroup F] [Module K F]
+    [FiniteDimensional K F] (e : F ≃ₗ[K] E) :
+    (ξ.pullback e.toLinearMap e.injective).IsStronglyDominated := by
+  apply (isStronglyDominated_iff_hasIntegrableUpperBound _).mpr
+  refine ⟨hξ.1.pullback e.toLinearMap e.injective, ?_⟩
+  rw [ξ.pullbackEquiv_bidual e]
+  exact hξ.2.1.mono (Filter.Eventually.of_forall fun ω ↦
+    ξ.localDist_pullback_le _ e.toLinearMap e.injective ω)
 
 theorem IsStronglyDominated.isDominated {ξ : NormFamily S E}
     (hξ : ξ.IsStronglyDominated) : ξ.IsDominated := hξ.1

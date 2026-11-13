@@ -102,20 +102,26 @@ theorem dualizingLine_infinite_integral :
       2 * (InfinitePlace.nrComplexPlaces K : ℝ) * Real.log 2 := by
   classical
   rw [normalized_infinite_integral_eq_sum]
-  simp only [NormFamily.logNorm, dualizingLine_norm_generator]
-  have hs : (∑ w : InfinitePlace K, (w.mult : ℝ) * Real.log (w.mult : ℝ)) =
-      ∑ w : InfinitePlace K, if w.IsComplex then 2 * Real.log 2 else 0 := by
-    apply Finset.sum_congr rfl
-    intro w _
-    by_cases hw : w.IsComplex
-    · simp [hw, hw.mult_eq_two]
-    · have hr := InfinitePlace.not_isComplex_iff_isReal.mp hw
-      simp [hw, hr.mult_eq_one]
-  rw [hs, ← Finset.sum_filter]
-  simp only [Finset.sum_const, nsmul_eq_mul]
-  rw [← Fintype.card_subtype]
-  change (InfinitePlace.nrComplexPlaces K : ℝ) * (2 * Real.log 2) = _
-  ring
+  calc
+    _ = ∑ w : InfinitePlace K, (w.mult : ℝ) * Real.log (w.mult : ℝ) := by
+      apply Finset.sum_congr rfl
+      intro w _
+      exact congrArg (fun r : ℝ ↦ (w.mult : ℝ) * Real.log r)
+        (dualizingLine_norm_generator K w)
+    _ = _ := by
+      have hs : (∑ w : InfinitePlace K, (w.mult : ℝ) * Real.log (w.mult : ℝ)) =
+          ∑ w : InfinitePlace K, if w.IsComplex then 2 * Real.log 2 else 0 := by
+        apply Finset.sum_congr rfl
+        intro w _
+        by_cases hw : w.IsComplex
+        · simp [hw, hw.mult_eq_two]
+        · have hr := InfinitePlace.not_isComplex_iff_isReal.mp hw
+          simp [hw, hr.mult_eq_one]
+      rw [hs, ← Finset.sum_filter]
+      simp only [Finset.sum_const, nsmul_eq_mul]
+      rw [← Fintype.card_subtype]
+      change (InfinitePlace.nrComplexPlaces K : ℝ) * (2 * Real.log 2) = _
+      ring
 
 /-- The actual native O_K-quotient cardinal logarithm equals the absolute
 number-field discriminant logarithm, derived from actual degree and generator gauges. -/

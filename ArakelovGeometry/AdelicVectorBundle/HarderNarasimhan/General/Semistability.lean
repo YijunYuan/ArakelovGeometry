@@ -36,7 +36,7 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
@@ -45,12 +45,12 @@ general ordered-slope list. Rank zero is excluded rather than accepted
 through a vacuously constant empty list. -/
 class IsSemistable : Prop where
   /-- Semistability excludes the zero bundle. -/
-  rank_pos : 0 < Module.finrank K E
+  rank_pos : 0 < Module.finrank K V
   /-- All entries of the ordered slope list have the same value. -/
   constant_slopes : ∃ b : ℝ, ∀ j, V.generalHNOrderedSlope j = b
 
 /-- The source nonzero convention excludes the zero bundle. -/
-theorem not_isSemistable_of_finrank_eq_zero (hr : Module.finrank K E = 0) :
+theorem not_isSemistable_of_finrank_eq_zero (hr : Module.finrank K V = 0) :
     ¬ V.IsSemistable := by
   intro h
   have hp := h.1
@@ -58,9 +58,9 @@ theorem not_isSemistable_of_finrank_eq_zero (hr : Module.finrank K E = 0) :
 
 /-- Every actual rank-one bundle has a singleton ordered list and is
 semistable, without a Hermitianity or characteristic assumption. -/
-theorem isSemistable_of_finrank_eq_one (hr : Module.finrank K E = 1) :
+theorem isSemistable_of_finrank_eq_one (hr : Module.finrank K V = 1) :
     V.IsSemistable := by
-  have hp : 0 < Module.finrank K E := by omega
+  have hp : 0 < Module.finrank K V := by omega
   refine ⟨hp, V.generalHNOrderedSlope ⟨0, hp⟩, ?_⟩
   intro j
   have hj : j = ⟨0, hp⟩ := Fin.ext (by have hj := j.isLt; omega)
@@ -72,7 +72,7 @@ instance isSemistable_of_isLine [hV : V.IsLine] : V.IsSemistable :=
 /-- A constant actual list has the actual minimum as its common value,
 because its last entry is the true minimal slope. -/
 theorem isSemistable_iff_generalHNOrderedSlope_eq_minimalSlope
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     V.IsSemistable ↔
       ∀ j, (V.generalHNOrderedSlope j : EReal) = V.minimalSlope := by
   constructor
@@ -80,7 +80,7 @@ theorem isSemistable_iff_generalHNOrderedSlope_eq_minimalSlope
     have hm := V.generalHNOrderedSlope_last_eq_minimalSlope hp
     simpa only [hb] using hm
   · intro h
-    let j := (⟨0, hr⟩ : Fin (Module.finrank K E)).rev
+    let j := (⟨0, hr⟩ : Fin (Module.finrank K V)).rev
     refine ⟨hr, V.generalHNOrderedSlope j, ?_⟩
     intro i
     exact_mod_cast (h i).trans (h j).symm
@@ -88,7 +88,7 @@ theorem isSemistable_iff_generalHNOrderedSlope_eq_minimalSlope
 /-- In positive rank, the source predicate is equivalent to the actual
 filtration having one included jump and no other intermediate subspace. -/
 theorem isSemistable_iff_exists_generalHNFiltration_eq_ite
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     V.IsSemistable ↔ ∃ b : ℝ, ∀ t,
       V.generalHNFiltration t = if t ≤ b then ⊤ else ⊥ := by
   classical
@@ -117,8 +117,8 @@ theorem isSemistable_iff_exists_generalHNFiltration_eq_ite
 /-- Source condition (2): semistability is equivalent to bounding the true
 minimum of every actual nonzero restriction by the true ambient minimum.
 The reverse implication consumes the produced first threshold subspace. -/
-theorem isSemistable_iff_minimalSlope_restrict_le (hr : 0 < Module.finrank K E) :
-    V.IsSemistable ↔ ∀ U : Submodule K E, U ≠ ⊥ →
+theorem isSemistable_iff_minimalSlope_restrict_le (hr : 0 < Module.finrank K V) :
+    V.IsSemistable ↔ ∀ U : Submodule K V, U ≠ ⊥ →
       (V.restrictOfMeasurableBase U).minimalSlope ≤ V.minimalSlope := by
   constructor
   · intro h U hU
@@ -139,14 +139,14 @@ theorem isSemistable_iff_minimalSlope_restrict_le (hr : 0 < Module.finrank K E) 
 /-- Source condition (3): in positive rank the actual modified mean equals
 the true minimal slope exactly when the actual ordered list is constant.
 The true minimum is proved finite before any real comparison. -/
-theorem isSemistable_iff_modifiedSlope_eq_minimalSlope (hr : 0 < Module.finrank K E) :
+theorem isSemistable_iff_modifiedSlope_eq_minimalSlope (hr : 0 < Module.finrank K V) :
     V.IsSemistable ↔ (V.modifiedSlope : EReal) = V.minimalSlope := by
   classical
   constructor
   · rintro ⟨hp, b, hb⟩
     have hm : (b : EReal) = V.minimalSlope := by
       simpa only [hb] using V.generalHNOrderedSlope_last_eq_minimalSlope hp
-    have he : V.modifiedDegree = (Module.finrank K E : ℝ) * b := by
+    have he : V.modifiedDegree = (Module.finrank K V : ℝ) * b := by
       simp only [modifiedDegree, hb, Finset.sum_const, Finset.card_univ,
         Fintype.card_fin, nsmul_eq_mul]
     have hs : V.modifiedSlope = b := by
@@ -157,11 +157,11 @@ theorem isSemistable_iff_modifiedSlope_eq_minimalSlope (hr : 0 < Module.finrank 
     obtain ⟨b, hb⟩ := V.exists_minimalSlope_eq_coe hr
     have hs : V.modifiedSlope = b := by exact_mod_cast h.trans hb
     have he : (∑ j, V.generalHNOrderedSlope j) =
-        ∑ _j : Fin (Module.finrank K E), b := by
+        ∑ _j : Fin (Module.finrank K V), b := by
       change V.modifiedDegree = _
       rw [V.modifiedDegree_eq_rank_mul_modifiedSlope, hs]
       simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-    have hj : ∀ j ∈ (Finset.univ : Finset (Fin (Module.finrank K E))),
+    have hj : ∀ j ∈ (Finset.univ : Finset (Fin (Module.finrank K V))),
         b ≤ V.generalHNOrderedSlope j := by
       intro j _
       have ht := V.minimalSlope_le_generalHNOrderedSlope j
@@ -174,7 +174,7 @@ theorem isSemistable_iff_modifiedSlope_eq_minimalSlope (hr : 0 < Module.finrank 
 restriction: every intrinsic slot is squeezed between its true minimum
 and the ambient first slot through the actual restriction comparison. -/
 theorem isSemistable_restrict_generalHNFiltration_orderedSlope_zero
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     (V.restrictOfMeasurableBase
       (V.generalHNFiltration (V.generalHNOrderedSlope ⟨0, hr⟩))).IsSemistable
         := by
@@ -193,7 +193,7 @@ theorem isSemistable_restrict_generalHNFiltration_orderedSlope_zero
 /-- The actual first-threshold restriction has modified mean equal to
 the actual ambient first slope, with no assumed factor semistability. -/
 theorem modifiedSlope_restrict_generalHNFiltration_orderedSlope_zero
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     (V.restrictOfMeasurableBase
       (V.generalHNFiltration (V.generalHNOrderedSlope ⟨0, hr⟩))).modifiedSlope
         = V.generalHNOrderedSlope ⟨0, hr⟩ := by
@@ -207,8 +207,8 @@ theorem modifiedSlope_restrict_generalHNFiltration_orderedSlope_zero
 /-- Source Proposition 4.3.59, the actual nonzero-subspace modified-mean
 criterion. The converse uses the produced first threshold, rather than
 an assumed semistable flag. -/
-theorem isSemistable_iff_modifiedSlope_restrict_le (hr : 0 < Module.finrank K E) :
-    V.IsSemistable ↔ ∀ U : Submodule K E, U ≠ ⊥ →
+theorem isSemistable_iff_modifiedSlope_restrict_le (hr : 0 < Module.finrank K V) :
+    V.IsSemistable ↔ ∀ U : Submodule K V, U ≠ ⊥ →
       (V.restrictOfMeasurableBase U).modifiedSlope ≤ V.modifiedSlope := by
   classical
   constructor
@@ -235,11 +235,11 @@ theorem isSemistable_iff_modifiedSlope_restrict_le (hr : 0 < Module.finrank K E)
     have hm : V.modifiedSlope = V.generalHNOrderedSlope ⟨0, hr⟩ :=
       le_antisymm (V.modifiedSlope_le_generalHNOrderedSlope_zero hr) hl
     have he : (∑ j, V.generalHNOrderedSlope j) =
-        ∑ _j : Fin (Module.finrank K E), V.generalHNOrderedSlope ⟨0, hr⟩ := by
+        ∑ _j : Fin (Module.finrank K V), V.generalHNOrderedSlope ⟨0, hr⟩ := by
       change V.modifiedDegree = _
       rw [V.modifiedDegree_eq_rank_mul_modifiedSlope, hm]
       simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-    have hj : ∀ j ∈ (Finset.univ : Finset (Fin (Module.finrank K E))),
+    have hj : ∀ j ∈ (Finset.univ : Finset (Fin (Module.finrank K V))),
         V.generalHNOrderedSlope j ≤ V.generalHNOrderedSlope ⟨0, hr⟩ :=
       fun j _ ↦ V.generalHNOrderedSlope_antitone (Nat.zero_le _)
     have hall := (Finset.sum_eq_sum_iff_of_le hj).mp he
@@ -249,8 +249,8 @@ theorem isSemistable_iff_modifiedSlope_restrict_le (hr : 0 < Module.finrank K E)
 /-- Source Proposition 4.3.59, the actual positive-rank quotient
 modified-mean criterion. The reverse implication consumes a genuine
 near-minimal quotient from the defining infimum, with no factor hypothesis. -/
-theorem isSemistable_iff_modifiedSlope_le_quotient (hr : 0 < Module.finrank K E) :
-    V.IsSemistable ↔ ∀ U : Submodule K E, 0 < Module.finrank K (E ⧸ U) →
+theorem isSemistable_iff_modifiedSlope_le_quotient (hr : 0 < Module.finrank K V) :
+    V.IsSemistable ↔ ∀ U : Submodule K V, 0 < Module.finrank K (V ⧸ U) →
       V.modifiedSlope ≤ (V.quotientOfMeasurableBase U).modifiedSlope := by
   constructor
   · intro h U hU

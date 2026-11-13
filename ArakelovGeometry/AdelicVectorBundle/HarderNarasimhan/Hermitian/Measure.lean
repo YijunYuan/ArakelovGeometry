@@ -38,7 +38,7 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
@@ -61,7 +61,7 @@ private theorem integral_indicator_Iic_Ici (a b : ℝ) :
 half-line indicators of all actual ordered slots. -/
 theorem hermitianHNFiltration_finrank_eq_sum_indicator (t : ℝ) :
     (Module.finrank K (V.hermitianHNFiltration t) : ℝ) =
-      ∑ j : Fin (Module.finrank K E),
+      ∑ j : Fin (Module.finrank K V),
         (Set.Iic (V.hermitianHNOrderedSlope j)).indicator
           (fun _ : ℝ ↦ (1 : ℝ)) t := by
   classical
@@ -85,7 +85,7 @@ finite sum of the positive parts of the shifted actual ordered slopes. -/
 theorem integral_hermitianHNFiltration_finrank_Ici (a : ℝ) :
     (∫ t in Set.Ici a,
       (Module.finrank K (V.hermitianHNFiltration t) : ℝ)) =
-        ∑ j : Fin (Module.finrank K E),
+        ∑ j : Fin (Module.finrank K V),
           max (V.hermitianHNOrderedSlope j - a) 0 := by
   classical
   simp_rw [V.hermitianHNFiltration_finrank_eq_sum_indicator]
@@ -107,7 +107,7 @@ theorem positiveDegree_eq_integral_hermitianHNFiltration_finrank :
 /-- The positive atomic jump measure has one atom for each actual ordered
 slot, retaining the actual rank multiplicities when slopes repeat. -/
 def hermitianHNJumpMeasure : Measure ℝ :=
-  ∑ j : Fin (Module.finrank K E), Measure.dirac (V.hermitianHNOrderedSlope j)
+  ∑ j : Fin (Module.finrank K V), Measure.dirac (V.hermitianHNOrderedSlope j)
 
 instance isFiniteMeasure_hermitianHNJumpMeasure :
     IsFiniteMeasure (V.hermitianHNJumpMeasure) := by
@@ -126,7 +126,7 @@ theorem integrable_hermitianHNJumpMeasure (f : ℝ → ℝ) :
 actual ordered slopes, with their actual multiplicities. -/
 theorem integral_hermitianHNJumpMeasure (f : ℝ → ℝ) :
     (∫ t, f t ∂V.hermitianHNJumpMeasure) =
-      ∑ j : Fin (Module.finrank K E), f (V.hermitianHNOrderedSlope j) := by
+      ∑ j : Fin (Module.finrank K V), f (V.hermitianHNOrderedSlope j) := by
   unfold hermitianHNJumpMeasure
   rw [integral_finsetSum_measure (fun j _ ↦ integrable_dirac (by finiteness))]
   simp only [integral_dirac]
@@ -166,7 +166,7 @@ theorem hermitianHNSignedJumpMeasure_Ico (a b : ℝ) (hab : a ≤ b) :
 slots, by the canonical Bochner-to-signed-measure integration bridge. -/
 theorem integral_hermitianHNSignedJumpMeasure (f : ℝ → ℝ) :
     (∫ᵛ t, f t ∂<•V.hermitianHNSignedJumpMeasure) =
-      -∑ j : Fin (Module.finrank K E), f (V.hermitianHNOrderedSlope j) := by
+      -∑ j : Fin (Module.finrank K V), f (V.hermitianHNOrderedSlope j) := by
   unfold hermitianHNSignedJumpMeasure
   rw [VectorMeasure.integral_neg_vectorMeasure, VectorMeasure.integral_toSignedMeasure,
     V.integral_hermitianHNJumpMeasure]

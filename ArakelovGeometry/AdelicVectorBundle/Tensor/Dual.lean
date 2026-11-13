@@ -8,6 +8,7 @@ module
 public import ArakelovGeometry.AdelicVectorBundle.Tensor.Pair
 import ArakelovGeometry.AdelicVectorBundle.Tensor.PairNorm
 import ArakelovGeometry.Analysis.Determinant.Basic
+import ArakelovGeometry.Analysis.Tensor.Bilinear
 import Mathlib.CategoryTheory.Category.Init
 import Mathlib.Combinatorics.Matroid.Init
 
@@ -29,10 +30,10 @@ noncomputable section
 
 section Algebra
 
-universe wA
+universe wA wB
 
 variable (K L : Type*) [Field K] [Field L] [Algebra K L]
-  (E F : Type wA) [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  (E : Type wA) (F : Type wB) [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 /-- The canonical tensor-dual map has the product pairing on arbitrary
@@ -68,10 +69,10 @@ theorem dualDistrib_baseChange_apply
 
 end Algebra
 
-universe u v w
+universe u v w w'
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
-  {E F : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 namespace NormFamily
@@ -89,19 +90,27 @@ theorem injectiveTensorPair_dual_norm_tmul_le
             (α ⊗ₜ[(S.ϕ ω).Completion] β))) ≤
       ξ.dual.norm ω α * η.dual.norm ω β := by
   let L := (S.ϕ ω).Completion
-  let X := fun i ↦ L ⊗[K] BinaryTensorFactors E F i
+  let X := fun i ↦ L ⊗[K] LiftedTensorFactors E F i
   let : ∀ i, NormedAddCommGroup (X i) :=
     fun i ↦ (tensorPairFactors ξ η i).fibreNormedAddCommGroup ω
   let : ∀ i, NormedSpace L (X i) := fun i ↦ (tensorPairFactors ξ η i).fibreNormedSpace ω
+  let := ξ.fibreNormedAddCommGroup ω
+  let := ξ.fibreNormedSpace ω
+  let := η.fibreNormedAddCommGroup ω
+  let := η.fibreNormedSpace ω
+  let eE : X (.inl ()) ≃ₗᵢ[L] (L ⊗[K] E) :=
+    { toLinearEquiv := ULift.moduleEquiv.baseChange K L _ _, norm_map' := fun _ ↦ rfl }
+  let eF : X (.inr ()) ≃ₗᵢ[L] (L ⊗[K] F) :=
+    { toLinearEquiv := ULift.moduleEquiv.baseChange K L _ _, norm_map' := fun _ ↦ rfl }
   let φ : ∀ i, X i →ₗ[L] L := fun i ↦ match i with
-    | .inl _ => dualBaseChangeEquiv K L E α
-    | .inr _ => dualBaseChangeEquiv K L F β
+    | .inl _ => (dualBaseChangeEquiv K L E α).comp eE.toLinearEquiv.toLinearMap
+    | .inr _ => (dualBaseChangeEquiv K L F β).comp eF.toLinearEquiv.toLinearMap
   let q := (TensorProduct.dualDistrib K E F).baseChange L
     ((TensorProduct.AlgebraTensorModule.distribBaseChange K L
       (Module.Dual K E) (Module.Dual K F)).symm (α ⊗ₜ[L] β))
   let A := TensorProduct.AlgebraTensorModule.distribBaseChange K L E F
-  let B := (binaryTensorEquiv K (BinaryTensorFactors E F)).baseChange K L _ _
-  let P := binaryTensorEquiv L X
+  let B := (tensorPairEquiv K E F).baseChange K L _ _
+  let P := tensorPairFibreEquiv K L E F
   have heval : (dualBaseChangeEquiv K L (E ⊗[K] F) q).comp
       (A.symm.toLinearMap.comp P.toLinearMap) = tensorDualEval φ := by
     apply PiTensorProduct.ext
@@ -109,13 +118,13 @@ theorem injectiveTensorPair_dual_norm_tmul_le
     intro x
     change dualBaseChangeEquiv K L (E ⊗[K] F) q
       (A.symm (P (⨂ₜ[L] i, x i))) = tensorDualEval φ (⨂ₜ[L] i, x i)
-    simp only [P, binaryTensorEquiv_tprod, A, q, tensorDualEval_tprod, φ,
-      Fintype.prod_sum_type, Fintype.prod_unique]
-    exact dualDistrib_baseChange_apply K L E F α β (x (.inl ())) (x (.inr ()))
+    simp only [P, tensorPairFibreEquiv_tprod, A, q, tensorDualEval_tprod, φ,
+      Fintype.prod_sum_type, Fintype.prod_unique, LinearMap.comp_apply]
+    exact dualDistrib_baseChange_apply K L E F α β (eE (x (.inl ()))) (eF (x (.inr ())))
   apply (ξ.injectiveTensorPair η).dual_norm_le ω q
     (mul_nonneg (ξ.dual.norm_nonneg ω α) (η.dual.norm_nonneg ω β))
   intro u
-  let v := tensorBaseChangeEquiv K L (BinaryTensorFactors E F) (B.symm u)
+  let v := tensorBaseChangeEquiv K L (LiftedTensorFactors E F) (B.symm u)
   have hP : P v = A u := by
     have h := DFunLike.congr_fun (tensorBaseChangeEquiv_binary K L E F) (B.symm u)
     change P v = A (B (B.symm u)) at h
@@ -126,7 +135,8 @@ theorem injectiveTensorPair_dual_norm_tmul_le
   rw [he]
   have hprod : (∏ i, linearMapOperatorSeminorm (φ i)) =
       ξ.dual.norm ω α * η.dual.norm ω β := by
-    simp only [Fintype.prod_sum_type, Fintype.prod_unique, φ]
+    simp only [Fintype.prod_sum_type, Fintype.prod_unique, φ,
+      linearMapOperatorSeminorm_comp_isometryEquiv]
     rfl
   have h := norm_tensorDualEval_le_injective φ v
   rw [hprod] at h

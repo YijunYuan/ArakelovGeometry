@@ -44,14 +44,14 @@ theorem finrank_quotient_pos_of_ne_top (U : Submodule K E) (hU : U ≠ ⊤) :
   have hl := Submodule.finrank_lt hU
   omega
 
-variable (V : AdelicVectorBundle S E)
+variable (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
 
 /-- One canonical HN step: pull back the actual quotient's produced largest
 destabilizing subspace. The full subspace is a fixed point. -/
-def hermitianHNStep (U : Submodule K E) : Submodule K E :=
+def hermitianHNStep (U : Submodule K V) : Submodule K V :=
   if hU : U = ⊤ then U else
     ((V.quotientOfMeasurableBase U).destabilizingSubspace
       (hV := (hV.quotient U)) (finrank_quotient_pos_of_ne_top U hU)).comap U.mkQ
@@ -61,7 +61,7 @@ def hermitianHNStep (U : Submodule K E) : Submodule K E :=
   rw [hermitianHNStep, dite_eq_left rfl]
 
 /-- Every nonterminal step is a strict increase of actual rational subspaces. -/
-theorem lt_hermitianHNStep (U : Submodule K E) (hU : U ≠ ⊤) :
+theorem lt_hermitianHNStep (U : Submodule K V) (hU : U ≠ ⊤) :
     U < V.hermitianHNStep U := by
   rw [hermitianHNStep, dite_eq_right hU]
   have hp := (V.quotientOfMeasurableBase U).destabilizingSubspace_finrank_pos
@@ -76,7 +76,7 @@ theorem lt_hermitianHNStep (U : Submodule K E) (hU : U ≠ ⊤) :
   simpa only [Submodule.comap_bot, Submodule.ker_mkQ] using h
 
 /-- Steps preserve the current subspace, including the terminal step. -/
-theorem le_hermitianHNStep (U : Submodule K E) : U ≤ V.hermitianHNStep U := by
+theorem le_hermitianHNStep (U : Submodule K V) : U ≤ V.hermitianHNStep U := by
   by_cases hU : U = ⊤
   · subst U
     rw [V.hermitianHNStep_top]
@@ -84,7 +84,7 @@ theorem le_hermitianHNStep (U : Submodule K E) : U ≤ V.hermitianHNStep U := by
 
 /-- The canonical quotient image of a nonterminal step is exactly the
 produced destabilizing subspace, rather than a chosen isomorphic proxy. -/
-theorem hermitianHNStep_map_mkQ (U : Submodule K E) (hU : U ≠ ⊤) :
+theorem hermitianHNStep_map_mkQ (U : Submodule K V) (hU : U ≠ ⊤) :
     (V.hermitianHNStep U).map U.mkQ =
       (V.quotientOfMeasurableBase U).destabilizingSubspace
         (hV := (hV.quotient U)) (finrank_quotient_pos_of_ne_top U hU) := by
@@ -93,7 +93,7 @@ theorem hermitianHNStep_map_mkQ (U : Submodule K E) (hU : U ≠ ⊤) :
 
 /-- The actual subquotient selected at each nonterminal step is semistable.
 Its norm is the restriction of the ambient actual quotient norm. -/
-theorem isMeanSlopeSemistable_hermitianHNStep_factor (U : Submodule K E) (hU : U ≠ ⊤) :
+theorem isMeanSlopeSemistable_hermitianHNStep_factor (U : Submodule K V) (hU : U ≠ ⊤) :
     ((V.quotientOfMeasurableBase U).restrictOfMeasurableBase
       ((V.hermitianHNStep U).map U.mkQ)).IsMeanSlopeSemistable := by
   rw [V.hermitianHNStep_map_mkQ U hU]
@@ -102,7 +102,7 @@ theorem isMeanSlopeSemistable_hermitianHNStep_factor (U : Submodule K E) (hU : U
 
 /-- The actual subquotient selected at each step attains the quotient's
 maximal slope. -/
-theorem slope_hermitianHNStep_factor_eq_maximalSlope (U : Submodule K E) (hU : U ≠ ⊤) :
+theorem slope_hermitianHNStep_factor_eq_maximalSlope (U : Submodule K V) (hU : U ≠ ⊤) :
     (((V.quotientOfMeasurableBase U).restrictOfMeasurableBase
       ((V.hermitianHNStep U).map U.mkQ)).slope : EReal) =
         (V.quotientOfMeasurableBase U).maximalSlope := by
@@ -112,7 +112,7 @@ theorem slope_hermitianHNStep_factor_eq_maximalSlope (U : Submodule K E) (hU : U
 
 /-- The actual rational HN sequence, continued constantly after it reaches
 the full space. No filtration or slope certificate is supplied as input. -/
-def hermitianHNTerm : ℕ → Submodule K E :=
+def hermitianHNTerm : ℕ → Submodule K V :=
   Nat.rec ⊥ (fun _ U ↦ V.hermitianHNStep U)
 
 @[simp] theorem hermitianHNTerm_zero : V.hermitianHNTerm 0 = ⊥ := rfl
@@ -148,26 +148,26 @@ theorem le_finrank_hermitianHNTerm (n : ℕ)
 /-- Strict rank growth forces the actual construction to terminate by the
 ambient rank. The zero bundle terminates at its initial zero subspace. -/
 theorem hermitianHNTerm_finrank_eq_top :
-    V.hermitianHNTerm (Module.finrank K E) = ⊤ := by
+    V.hermitianHNTerm (Module.finrank K V) = ⊤ := by
   by_contra hn
-  have hi := V.le_finrank_hermitianHNTerm (Module.finrank K E) hn
+  have hi := V.le_finrank_hermitianHNTerm (Module.finrank K V) hn
   have hr := Submodule.finrank_lt hn
   omega
 
 /-- The first terminal index of the actual recursive construction. -/
 def hermitianHNLength : ℕ :=
   Nat.find (p := fun n ↦ V.hermitianHNTerm n = ⊤)
-    ⟨Module.finrank K E, V.hermitianHNTerm_finrank_eq_top⟩
+    ⟨Module.finrank K V, V.hermitianHNTerm_finrank_eq_top⟩
 
 /-- The length is bounded by the actual bundle rank. -/
-theorem hermitianHNLength_le_finrank : V.hermitianHNLength ≤ Module.finrank K E :=
+theorem hermitianHNLength_le_finrank : V.hermitianHNLength ≤ Module.finrank K V :=
   Nat.find_min' _ (V.hermitianHNTerm_finrank_eq_top)
 
 /-- The final term is the full space. -/
 theorem hermitianHNTerm_length_eq_top :
     V.hermitianHNTerm (V.hermitianHNLength) = ⊤ :=
   Nat.find_spec (p := fun n ↦ V.hermitianHNTerm n = ⊤)
-    ⟨Module.finrank K E, V.hermitianHNTerm_finrank_eq_top⟩
+    ⟨Module.finrank K V, V.hermitianHNTerm_finrank_eq_top⟩
 
 /-- Every earlier term is proper, making its next actual quotient nonzero. -/
 theorem hermitianHNTerm_ne_top_of_lt_length (n : ℕ) (hn : n < V.hermitianHNLength) :
@@ -181,7 +181,7 @@ theorem hermitianHNTerm_lt (i j : ℕ) (hij : i < j) (hj : j ≤ V.hermitianHNLe
     (V.hermitianHNTerm_monotone (Nat.succ_le_of_lt hij))
 
 /-- Source's finite rational HN flag, with both endpoints included. -/
-def hermitianHNFlag : Fin (V.hermitianHNLength + 1) → Submodule K E :=
+def hermitianHNFlag : Fin (V.hermitianHNLength + 1) → Submodule K V :=
   fun i ↦ V.hermitianHNTerm i.val
 
 @[simp] theorem hermitianHNFlag_zero : V.hermitianHNFlag 0 = ⊥ := rfl
@@ -197,16 +197,15 @@ theorem hermitianHNFlag_strictMono : StrictMono (V.hermitianHNFlag) := by
   exact V.hermitianHNTerm_lt i.val j.val hij (Nat.le_of_lt_succ j.isLt)
 
 /-- In rank zero the finite flag has length zero. -/
-theorem hermitianHNLength_eq_zero_of_finrank_eq_zero (hE : Module.finrank K E = 0) :
+theorem hermitianHNLength_eq_zero_of_finrank_eq_zero (hE : Module.finrank K V = 0) :
     V.hermitianHNLength = 0 := by
   have h := V.hermitianHNLength_le_finrank
   omega
 
 /-- The actual normed HN factor is the restriction of the actual quotient
 norm to the next flag term's canonical quotient image. -/
-def hermitianHNFactor (i : Fin (V.hermitianHNLength)) :
-    AdelicVectorBundle S ((V.hermitianHNTerm (i.val + 1)).map
-      (V.hermitianHNTerm i.val).mkQ) :=
+abbrev hermitianHNFactor (i : Fin (V.hermitianHNLength)) :
+    AdelicVectorBundle S :=
   (V.quotientOfMeasurableBase (V.hermitianHNTerm i.val)).restrictOfMeasurableBase
     ((V.hermitianHNTerm (i.val + 1)).map
       (V.hermitianHNTerm i.val).mkQ)
@@ -240,7 +239,7 @@ theorem slope_hermitianHNFactor_eq_maximalSlope_quotient
 /-- A subspace strictly larger than the produced largest destabilizer has
 strictly smaller actual mean slope. Equality would force containment in it. -/
 theorem slope_restrict_lt_slope_destabilizingSubspace_of_lt
-    (hr : 0 < Module.finrank K E) (P : Submodule K E)
+    (hr : 0 < Module.finrank K V) (P : Submodule K V)
     (hDP : V.destabilizingSubspace hr < P) :
     (V.restrictOfMeasurableBase P).slope <
       (V.restrictOfMeasurableBase (V.destabilizingSubspace hr)).slope := by
@@ -257,7 +256,7 @@ theorem slope_restrict_lt_slope_destabilizingSubspace_of_lt
 /-- The actual quotient of a larger restricted subspace by the destabilizer
 has strictly smaller mean. Hermitian exact degree additivity is load-bearing. -/
 theorem slope_quotient_restrict_destabilizingSubspace_lt
-    (hr : 0 < Module.finrank K E) (P : Submodule K E)
+    (hr : 0 < Module.finrank K V) (P : Submodule K V)
     (hDP : V.destabilizingSubspace hr < P) :
     ((V.restrictOfMeasurableBase P).quotientOfMeasurableBase
       ((V.destabilizingSubspace hr).comap P.subtype)).slope <
@@ -306,15 +305,15 @@ theorem slope_quotient_restrict_destabilizingSubspace_lt
 /-- Removing the actual largest destabilizer strictly lowers the remaining
 quotient's maximal slope. The zero quotient has maximum `⊥` and is included. -/
 theorem maximalSlope_quotient_destabilizingSubspace_lt_slope
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     (V.quotientOfMeasurableBase (V.destabilizingSubspace hr)).maximalSlope <
       ((V.restrictOfMeasurableBase (V.destabilizingSubspace hr)).slope
         : EReal) := by
   let D := V.destabilizingSubspace hr
   let Q := V.quotientOfMeasurableBase D
   by_cases hD : D = ⊤
-  · have hzero : Module.finrank K (E ⧸ D) = 0 := by
-      let : Subsingleton (E ⧸ D) := Submodule.Quotient.subsingleton_iff.mpr hD
+  · have hzero : Module.finrank K (V ⧸ D) = 0 := by
+      let : Subsingleton (V ⧸ D) := Submodule.Quotient.subsingleton_iff.mpr hD
       exact Module.finrank_zero_of_subsingleton
     rw [Q.maximalSlope_eq_bot_of_finrank_eq_zero hzero]
     exact EReal.bot_lt_coe _
@@ -346,7 +345,7 @@ theorem maximalSlope_quotient_destabilizingSubspace_lt_slope
       exact (V.toNormFamily.quotient_restrict_range_norm_eq P D hDP.le ω z).symm
     have hkermean := congrArg (fun I : Submodule K P ↦
       ((V.restrictOfMeasurableBase P).quotientOfMeasurableBase I).slope) hgker
-    have hrangemean := congrArg (fun U : Submodule K (E ⧸ D) ↦
+    have hrangemean := congrArg (fun U : Submodule K (V ⧸ D) ↦
       (Q.restrictOfMeasurableBase U).slope) hgrange
     have hPmean := V.slope_quotient_restrict_destabilizingSubspace_lt hr P hDP
     have hTmean := (hs.trans hrangemean).symm.trans_lt (hkermean.trans_lt hPmean)
@@ -355,7 +354,7 @@ theorem maximalSlope_quotient_destabilizingSubspace_lt_slope
 
 /-- Every nonterminal canonical HN step strictly lowers the remaining
 actual quotient's maximum. Quotient composition preserves its actual norms. -/
-theorem maximalSlope_quotient_hermitianHNStep_lt (U : Submodule K E) (hU : U ≠ ⊤) :
+theorem maximalSlope_quotient_hermitianHNStep_lt (U : Submodule K V) (hU : U ≠ ⊤) :
     (V.quotientOfMeasurableBase (V.hermitianHNStep U)).maximalSlope <
       (V.quotientOfMeasurableBase U).maximalSlope := by
   let Q := V.quotientOfMeasurableBase U
@@ -367,7 +366,7 @@ theorem maximalSlope_quotient_hermitianHNStep_lt (U : Submodule K E) (hU : U ≠
   have hk : (D.mkQ.comp U.mkQ).ker = V.hermitianHNStep U := by
     rw [LinearMap.ker_comp, Submodule.ker_mkQ, hermitianHNStep, dite_eq_right hU]
   have he := (V.maximalSlope_quotient_quotient_eq_quotient_ker U D).trans
-    (congrArg (fun W : Submodule K E ↦ (V.quotientOfMeasurableBase W).maximalSlope) hk)
+    (congrArg (fun W : Submodule K V ↦ (V.quotientOfMeasurableBase W).maximalSlope) hk)
   exact he.symm.trans_lt hdrop
 
 /-- Consecutive actual HN factors have strictly decreasing real slopes. -/
@@ -382,7 +381,7 @@ theorem slope_hermitianHNFactor_lt_of_succ
       V.hermitianHNStep (V.hermitianHNTerm i.val) := by
     rw [← hij, V.hermitianHNTerm_succ]
   have hj := (V.slope_hermitianHNFactor_eq_maximalSlope_quotient j).trans
-    (congrArg (fun U : Submodule K E ↦ (V.quotientOfMeasurableBase U).maximalSlope)
+    (congrArg (fun U : Submodule K V ↦ (V.quotientOfMeasurableBase U).maximalSlope)
       hterms)
   have hi := V.slope_hermitianHNFactor_eq_maximalSlope_quotient i
   exact EReal.coe_lt_coe_iff.mp (hj.trans_lt (hdrop.trans_eq hi.symm))
@@ -410,7 +409,7 @@ theorem hermitianHNFactor_slope_strictAnti :
 
 /-- The actual flag rank intervals partition all ambient rank positions.
 The zero bundle has an empty position type. -/
-theorem exists_unique_hermitianHNFactor_rank_interval (j : Fin (Module.finrank K E)) :
+theorem exists_unique_hermitianHNFactor_rank_interval (j : Fin (Module.finrank K V)) :
     ∃! i : Fin (V.hermitianHNLength),
       Module.finrank K (V.hermitianHNTerm i.val) ≤ j.val ∧
         j.val < Module.finrank K (V.hermitianHNTerm (i.val + 1)) := by
@@ -449,12 +448,12 @@ theorem exists_unique_hermitianHNFactor_rank_interval (j : Fin (Module.finrank K
     · omega
 
 /-- The unique factor containing an actual ambient rank position. -/
-def hermitianHNFactorIndex (j : Fin (Module.finrank K E)) :
+def hermitianHNFactorIndex (j : Fin (Module.finrank K V)) :
     Fin (V.hermitianHNLength) :=
   Classical.choose (V.exists_unique_hermitianHNFactor_rank_interval j)
 
 /-- The produced index lies in the actual flag's corresponding rank interval. -/
-theorem hermitianHNFactorIndex_rank_interval (j : Fin (Module.finrank K E)) :
+theorem hermitianHNFactorIndex_rank_interval (j : Fin (Module.finrank K V)) :
     Module.finrank K (V.hermitianHNTerm
       (V.hermitianHNFactorIndex j).val) ≤ j.val ∧
         j.val < Module.finrank K (V.hermitianHNTerm
@@ -462,7 +461,7 @@ theorem hermitianHNFactorIndex_rank_interval (j : Fin (Module.finrank K E)) :
   (Classical.choose_spec (V.exists_unique_hermitianHNFactor_rank_interval j)).1
 
 /-- Actual rank intervals characterize the factor index. -/
-theorem hermitianHNFactorIndex_eq_of_rank_interval (j : Fin (Module.finrank K E))
+theorem hermitianHNFactorIndex_eq_of_rank_interval (j : Fin (Module.finrank K V))
     (i : Fin (V.hermitianHNLength))
     (hi : Module.finrank K (V.hermitianHNTerm i.val) ≤ j.val ∧
       j.val < Module.finrank K (V.hermitianHNTerm (i.val + 1))) :
@@ -488,12 +487,12 @@ theorem hermitianHNFactorIndex_monotone : Monotone (V.hermitianHNFactorIndex) :=
 
 /-- Source Definition 4.3.39: the factor mean repeated across its actual
 rank interval, indexed by the ambient rank. Rank zero gives an empty list. -/
-def hermitianHNOrderedSlope (j : Fin (Module.finrank K E)) : ℝ :=
+def hermitianHNOrderedSlope (j : Fin (Module.finrank K V)) : ℝ :=
   (V.hermitianHNFactor (V.hermitianHNFactorIndex j)).slope
 
 /-- The ordered slope at an actual rank position is the actual factor mean
 specified by the source's rank-interval rule. -/
-theorem hermitianHNOrderedSlope_eq_of_rank_interval (j : Fin (Module.finrank K E))
+theorem hermitianHNOrderedSlope_eq_of_rank_interval (j : Fin (Module.finrank K V))
     (i : Fin (V.hermitianHNLength))
     (hi : Module.finrank K (V.hermitianHNTerm i.val) ≤ j.val ∧
       j.val < Module.finrank K (V.hermitianHNTerm (i.val + 1))) :
@@ -508,18 +507,18 @@ theorem hermitianHNOrderedSlope_antitone : Antitone (V.hermitianHNOrderedSlope) 
     (V.hermitianHNFactorIndex_monotone hjk)
 
 /-- A positive-rank bundle has at least one actual HN factor. -/
-theorem hermitianHNLength_pos_of_finrank_pos (hr : 0 < Module.finrank K E) :
+theorem hermitianHNLength_pos_of_finrank_pos (hr : 0 < Module.finrank K V) :
     0 < V.hermitianHNLength := by
   by_contra h
   have hn := Nat.eq_zero_of_not_pos h
   have ht := V.hermitianHNTerm_length_eq_top
   rw [hn, V.hermitianHNTerm_zero] at ht
-  have hd := congrArg (fun U : Submodule K E ↦ Module.finrank K U) ht
+  have hd := congrArg (fun U : Submodule K V ↦ Module.finrank K U) ht
   rw [finrank_bot, finrank_top] at hd
   omega
 
 /-- The first ambient rank position belongs to the first actual factor. -/
-theorem hermitianHNFactorIndex_zero (hr : 0 < Module.finrank K E) :
+theorem hermitianHNFactorIndex_zero (hr : 0 < Module.finrank K V) :
     V.hermitianHNFactorIndex ⟨0, hr⟩ =
       ⟨0, V.hermitianHNLength_pos_of_finrank_pos hr⟩ := by
   apply V.hermitianHNFactorIndex_eq_of_rank_interval
@@ -533,7 +532,7 @@ theorem hermitianHNFactorIndex_zero (hr : 0 < Module.finrank K E) :
     exact hd
 
 /-- Source Definition 4.3.39's first slope is the actual bundle maximum. -/
-theorem hermitianHNOrderedSlope_zero_eq_maximalSlope (hr : 0 < Module.finrank K E) :
+theorem hermitianHNOrderedSlope_zero_eq_maximalSlope (hr : 0 < Module.finrank K V) :
     (V.hermitianHNOrderedSlope ⟨0, hr⟩ : EReal) = V.maximalSlope := by
   let i : Fin (V.hermitianHNLength) :=
     ⟨0, V.hermitianHNLength_pos_of_finrank_pos hr⟩
@@ -598,7 +597,7 @@ theorem hermitianHNCut_antitone : Antitone (V.hermitianHNCut) := by
 
 /-- Source equation (4.57): the actual HN real filtration retains exactly
 the initial factors whose actual means are at least the threshold. -/
-def hermitianHNFiltration (t : ℝ) : Submodule K E :=
+def hermitianHNFiltration (t : ℝ) : Submodule K V :=
   V.hermitianHNTerm (V.hermitianHNCut t)
 
 /-- The actual rational HN real filtration is decreasing. -/
@@ -649,7 +648,7 @@ theorem hermitianHNFiltration_exhaustive :
     (fun i ↦ ht.trans (ha ⟨i, rfl⟩))⟩
 
 /-- The actual HN real filtration of a rank-zero bundle is identically zero. -/
-theorem hermitianHNFiltration_eq_bot_of_finrank_eq_zero (hE : Module.finrank K E = 0)
+theorem hermitianHNFiltration_eq_bot_of_finrank_eq_zero (hE : Module.finrank K V = 0)
     (t : ℝ) : V.hermitianHNFiltration t = ⊥ := by
   have hc := V.hermitianHNCut_le_length t
   rw [V.hermitianHNLength_eq_zero_of_finrank_eq_zero hE] at hc
@@ -659,7 +658,7 @@ theorem hermitianHNFiltration_eq_bot_of_finrank_eq_zero (hE : Module.finrank K E
 /-- An ordered rank position survives exactly when it lies below the rank
 of the actual real-filtration subspace. -/
 theorem le_hermitianHNOrderedSlope_iff_lt_filtration_finrank (t : ℝ)
-    (j : Fin (Module.finrank K E)) :
+    (j : Fin (Module.finrank K V)) :
     t ≤ V.hermitianHNOrderedSlope j ↔
       j.val < Module.finrank K (V.hermitianHNFiltration t) := by
   let i := V.hermitianHNFactorIndex j
@@ -685,10 +684,10 @@ theorem le_hermitianHNOrderedSlope_iff_lt_filtration_finrank (t : ℝ)
 real filtration and the produced ordered slope list, including rank zero. -/
 theorem hermitianHNFiltration_finrank_eq_card (t : ℝ) :
     Module.finrank K (V.hermitianHNFiltration t) =
-      Fintype.card {j : Fin (Module.finrank K E) // t ≤ V.hermitianHNOrderedSlope j} := by
-  let A := {j : Fin (Module.finrank K E) // t ≤ V.hermitianHNOrderedSlope j}
+      Fintype.card {j : Fin (Module.finrank K V) // t ≤ V.hermitianHNOrderedSlope j} := by
+  let A := {j : Fin (Module.finrank K V) // t ≤ V.hermitianHNOrderedSlope j}
   let r := Module.finrank K (V.hermitianHNFiltration t)
-  have hr : r ≤ Module.finrank K E := (V.hermitianHNFiltration t).finrank_le
+  have hr : r ≤ Module.finrank K V := (V.hermitianHNFiltration t).finrank_le
   let e : A ≃ Fin r :=
     { toFun := fun j ↦ ⟨j.val.val,
         (V.le_hermitianHNOrderedSlope_iff_lt_filtration_finrank t j.val).mp j.property⟩
@@ -832,7 +831,7 @@ theorem hermitianHNRightCut_factor_slope (i : Fin (V.hermitianHNLength)) :
 
 /-- Source equation (4.57)'s right-limit subspace: the union of the actual
 filtration subspaces at all strictly larger thresholds. -/
-def hermitianHNFiltrationPlus (t : ℝ) : Submodule K E :=
+def hermitianHNFiltrationPlus (t : ℝ) : Submodule K V :=
   ⨆ s : {s : ℝ // t < s}, V.hermitianHNFiltration s.val
 
 /-- The actual right-limit union is the flag term selected by the strict cutoff. -/
@@ -880,10 +879,8 @@ theorem hermitianHNFiltrationPlus_factor_slope
 
 /-- The source's actual subquotient norm: first restrict to the upper HN
 subspace, then quotient by the kernel of its map modulo the lower one. -/
-def hermitianHNSubquotient (i : Fin (V.hermitianHNLength)) :
-    AdelicVectorBundle S ((V.hermitianHNTerm (i.val + 1)) ⧸
-      ((V.hermitianHNTerm i.val).mkQ.comp
-        (V.hermitianHNTerm (i.val + 1)).subtype).ker) :=
+abbrev hermitianHNSubquotient (i : Fin (V.hermitianHNLength)) :
+    AdelicVectorBundle S :=
   let U := V.hermitianHNTerm (i.val + 1)
   let W := V.hermitianHNTerm i.val
   (V.restrictOfMeasurableBase U).quotientOfMeasurableBase (W.mkQ.comp U.subtype).ker
@@ -915,7 +912,7 @@ theorem hermitianHNSubquotient_semistable_slope
   have hg : g.range = U.map W.mkQ := by
     simp only [g, LinearMap.range_comp, Submodule.range_subtype]
   have hR : R.IsMeanSlopeSemistable := by
-    have he := congrArg (fun T : Submodule K (E ⧸ W) ↦
+    have he := congrArg (fun T : Submodule K (V ⧸ W) ↦
       IsMeanSlopeSemistable
         ((V.quotientOfMeasurableBase W).restrictOfMeasurableBase T)) hg
     exact Eq.mpr he (V.isMeanSlopeSemistable_hermitianHNFactor i)
@@ -926,7 +923,7 @@ theorem hermitianHNSubquotient_semistable_slope
   have hm := Q.maximalSlope_eq_of_completed_isometry R g.quotKerEquivRange hn
   have hRm := (R.isMeanSlopeSemistable_iff_maximalSlope_eq_slope hR.1).mp hR
   have hf : R.slope = (V.hermitianHNFactor i).slope :=
-    congrArg (fun T : Submodule K (E ⧸ W) ↦
+    congrArg (fun T : Submodule K (V ⧸ W) ↦
       ((V.quotientOfMeasurableBase W).restrictOfMeasurableBase T).slope) hg
   change Q.IsMeanSlopeSemistable ∧ Q.slope = _
   refine ⟨(Q.isMeanSlopeSemistable_iff_maximalSlope_eq_slope hr).mpr ?_, hs.trans hf⟩
@@ -941,7 +938,7 @@ theorem hermitianHNFiltrationPlus_le (t : ℝ) :
 
 /-- The actual right-limit supremum is the source's literal union over
 positive increments, rather than merely a generated subspace. -/
-theorem mem_hermitianHNFiltrationPlus_iff (t : ℝ) (x : E) :
+theorem mem_hermitianHNFiltrationPlus_iff (t : ℝ) (x : V) :
     x ∈ V.hermitianHNFiltrationPlus t ↔
       ∃ ε : ℝ, 0 < ε ∧ x ∈ V.hermitianHNFiltration (t + ε) := by
   have : Nonempty {s : ℝ // t < s} := ⟨⟨t + 1, by linarith⟩⟩
@@ -982,10 +979,8 @@ theorem hermitianHNFiltrationPlus_eq_of_ne_factor_slope (t : ℝ)
 
 /-- The source's actual graded adelic bundle: quotient the norm restricted
 to the threshold subspace by its kernel modulo the right-limit subspace. -/
-def hermitianHNGradedPiece (t : ℝ) :
-    AdelicVectorBundle S ((V.hermitianHNFiltration t) ⧸
-      ((V.hermitianHNFiltrationPlus t).mkQ.comp
-        (V.hermitianHNFiltration t).subtype).ker) :=
+abbrev hermitianHNGradedPiece (t : ℝ) :
+    AdelicVectorBundle S :=
   let U := V.hermitianHNFiltration t
   let W := V.hermitianHNFiltrationPlus t
   (V.restrictOfMeasurableBase U).quotientOfMeasurableBase (W.mkQ.comp U.subtype).ker
@@ -1019,11 +1014,11 @@ theorem hermitianHNGradedPiece_factor_slope
         (V.hermitianHNTerm (i.val + 1), V.hermitianHNTerm i.val) :=
     Prod.ext (V.hermitianHNFiltration_factor_slope i)
       (V.hermitianHNFiltrationPlus_factor_slope i)
-  have hp := congrArg (fun p : Submodule K E × Submodule K E ↦
+  have hp := congrArg (fun p : Submodule K V × Submodule K V ↦
     IsMeanSlopeSemistable
       ((V.restrictOfMeasurableBase p.1).quotientOfMeasurableBase
         (p.2.mkQ.comp p.1.subtype).ker)) he
-  have hm := congrArg (fun p : Submodule K E × Submodule K E ↦
+  have hm := congrArg (fun p : Submodule K V × Submodule K V ↦
     ((V.restrictOfMeasurableBase p.1).quotientOfMeasurableBase
       (p.2.mkQ.comp p.1.subtype).ker).slope) he
   have hq := V.hermitianHNSubquotient_semistable_slope i
@@ -1037,12 +1032,12 @@ theorem hermitianHNGradedPiece_finrank_eq_zero_of_ne_factor_slope (t : ℝ)
       ((V.hermitianHNFiltrationPlus t).mkQ.comp
         (V.hermitianHNFiltration t).subtype).ker) = 0 := by
   let U := V.hermitianHNFiltration t
-  have he := congrArg (fun W : Submodule K E ↦
+  have he := congrArg (fun W : Submodule K V ↦
     Module.finrank K (U ⧸ (W.mkQ.comp U.subtype).ker))
       (V.hermitianHNFiltrationPlus_eq_of_ne_factor_slope t ht)
   have hg : (U.mkQ.comp U.subtype).range = ⊥ := by
     rw [LinearMap.range_comp, Submodule.range_subtype, Submodule.mkQ_map_self]
-  have hr := congrArg (fun T : Submodule K (E ⧸ U) ↦ Module.finrank K T) hg
+  have hr := congrArg (fun T : Submodule K (V ⧸ U) ↦ Module.finrank K T) hg
   rw [finrank_bot] at hr
   exact he.trans ((U.mkQ.comp U.subtype).quotKerEquivRange.finrank_eq.trans hr)
 

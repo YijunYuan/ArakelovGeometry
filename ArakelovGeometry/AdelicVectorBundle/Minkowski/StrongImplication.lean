@@ -35,34 +35,34 @@ variable {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 /-- The actual strong ordered-minimum bound and first-slope defect give the
 corrected first-minimum estimate, without assuming attainment. -/
 theorem maximalSlope_le_maximalLogarithmicMinimum_add_of_strongMinkowski
-    (V : AdelicVectorBundle S E) [hV : V.toNormFamily.IsUltrametric]
+    (V : AdelicVectorBundle.{w} S) [hV : V.toNormFamily.IsUltrametric]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} C)
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     V.maximalSlope ≤ V.maximalLogarithmicMinimum +
-      ((C + (S.v S.Ωinf).toReal / 2) * Real.log (Module.finrank K E) : ℝ) := by
+      ((C + (S.v S.Ωinf).toReal / 2) * Real.log (Module.finrank K V) : ℝ) := by
   have hfirst := V.maximalSlope_le_generalHNOrderedSlope_zero_add_log_rank hr
   have hminimum := V.generalHNOrderedSlope_le_logarithmicMinimum_add_log_rank
      hM ⟨0, hr⟩
   change (V.generalHNOrderedSlope ⟨0, hr⟩ : EReal) ≤
-    V.maximalLogarithmicMinimum + (C * Real.log (Module.finrank K E) : ℝ) at hminimum
+    V.maximalLogarithmicMinimum + (C * Real.log (Module.finrank K V) : ℝ) at hminimum
   rw [EReal.coe_add] at hfirst
   have h := hfirst.trans (add_le_add hminimum (le_refl
-    ((Real.log (Module.finrank K E) / 2 * (S.v S.Ωinf).toReal : ℝ) : EReal)))
-  have herr : C * Real.log (Module.finrank K E) +
-      Real.log (Module.finrank K E) / 2 * (S.v S.Ωinf).toReal =
-      (C + (S.v S.Ωinf).toReal / 2) * Real.log (Module.finrank K E) := by ring
+    ((Real.log (Module.finrank K V) / 2 * (S.v S.Ωinf).toReal : ℝ) : EReal)))
+  have herr : C * Real.log (Module.finrank K V) +
+      Real.log (Module.finrank K V) / 2 * (S.v S.Ωinf).toReal =
+      (C + (S.v S.Ωinf).toReal / 2) * Real.log (Module.finrank K V) := by ring
   rw [add_assoc, ← EReal.coe_add, herr] at h
   exact h
 
 /-- In rank one the produced correction is zero. -/
 theorem maximalSlope_le_maximalLogarithmicMinimum_of_strongMinkowski_finrank_one
-    (V : AdelicVectorBundle S E) [hV : V.toNormFamily.IsUltrametric]
+    (V : AdelicVectorBundle.{w} S) [hV : V.toNormFamily.IsUltrametric]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} C)
-    (hr : Module.finrank K E = 1) :
+    (hr : Module.finrank K V = 1) :
     V.maximalSlope ≤ V.maximalLogarithmicMinimum := by
   have h := V.maximalSlope_le_maximalLogarithmicMinimum_add_of_strongMinkowski
      hM (by omega)
@@ -73,14 +73,14 @@ variable {E' : Type (max u w)} [AddCommGroup E'] [Module K E'] [FiniteDimensiona
 /-- The actual Hermitian and general ordered lists agree, and the first
 Hermitian ordered slope is the maximal slope. This retains the same level. -/
 theorem maximalSlope_le_maximalLogarithmicMinimum_add_of_strongMinkowski_hermitian
-    (V : AdelicVectorBundle S E')
+    (V : AdelicVectorBundle.{max u w} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian]
     {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, max u w} C)
-    (hr : 0 < Module.finrank K E') :
+    (hr : 0 < Module.finrank K V) :
     V.maximalSlope ≤ V.maximalLogarithmicMinimum +
-      (C * Real.log (Module.finrank K E') : ℝ) := by
+      (C * Real.log (Module.finrank K V) : ℝ) := by
   have h := V.generalHNOrderedSlope_le_logarithmicMinimum_add_log_rank
     (hV := hV.1) hM ⟨0, hr⟩
   rw [V.generalHNOrderedSlope_eq_hermitianHNOrderedSlope,
@@ -99,7 +99,7 @@ theorem HasStrongMinkowskiPropertyAtLevel.minkowski_add_half_archimedeanMass
     (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} C) :
     S.HasMinkowskiPropertyAtLevel.{u, v, w} (C + (S.v S.Ωinf).toReal / 2) := by
   refine ⟨add_nonneg hM.1 (div_nonneg ENNReal.toReal_nonneg (by norm_num)),
-    fun E _ _ _ V hr hV => ?_⟩
+    fun V hr hV => ?_⟩
   exact (EReal.sub_le_iff_le_add (Or.inl (EReal.coe_ne_bot _))
     (Or.inl (EReal.coe_ne_top _))).mpr
       (V.maximalSlope_le_maximalLogarithmicMinimum_add_of_strongMinkowski (hV := hV) hM hr)

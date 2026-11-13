@@ -33,42 +33,13 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
-namespace NormFamily
 
-/-- The actual completed transpose preserves the actual dual norm when the
-original rational equivalence preserves every completed vector norm. -/
-theorem dualEquiv_norm_eq_of_completed_isometry (ξ : NormFamily S E)
-    (η : NormFamily S F) (ω : S.Ω) (e : E ≃ₗ[K] F)
-    (he : ∀ x, η.norm ω (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = ξ.norm ω x)
-    (z : (S.ϕ ω).Completion ⊗[K] Module.Dual K F) :
-    ξ.dual.norm ω (e.dualMap.toLinearMap.baseChange (S.ϕ ω).Completion z) =
-      η.dual.norm ω z := by
-  change ξ.dual.norm ω (e.toLinearMap.dualMap.baseChange (S.ϕ ω).Completion z) =
-    η.dual.norm ω z
-  apply le_antisymm
-  · apply ξ.dual_norm_le ω _ (η.dual.norm_nonneg ω z)
-    intro x
-    rw [dualBaseChangeEquiv_dualMap, LinearMap.comp_apply]
-    simpa only [he] using η.norm_dual_apply_le ω z
-      (e.toLinearMap.baseChange (S.ϕ ω).Completion x)
-  · apply η.dual_norm_le ω z (ξ.dual.norm_nonneg ω _)
-    intro y
-    obtain ⟨x, rfl⟩ := (e.baseChange K (S.ϕ ω).Completion E F).surjective y
-    change ‖dualBaseChangeEquiv K (S.ϕ ω).Completion F z
-      (e.toLinearMap.baseChange (S.ϕ ω).Completion x)‖ ≤
-        ξ.dual.norm ω (e.toLinearMap.dualMap.baseChange (S.ϕ ω).Completion z) *
-          η.norm ω (e.toLinearMap.baseChange (S.ϕ ω).Completion x)
-    simpa only [dualBaseChangeEquiv_dualMap, LinearMap.comp_apply, he] using
-      ξ.norm_dual_apply_le ω (e.toLinearMap.dualMap.baseChange
-        (S.ϕ ω).Completion z) x
-
-end NormFamily
 
 namespace AdelicVectorBundle
 
 /-- Dual degrees agree under the actual contravariant completed isometry. -/
 theorem degree_dual_eq_of_completed_isometry [S.IsProper]
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
@@ -78,13 +49,12 @@ theorem degree_dual_eq_of_completed_isometry [S.IsProper]
   symm
   apply degree_eq_of_completed_isometry _ _ e.dualMap
   intro ω z
-  simp only [dualOfMeasurableBase_toNormFamily]
   exact V.toNormFamily.dualEquiv_norm_eq_of_completed_isometry W.toNormFamily ω e (he ω) z
 
 /-- Actual completed-fibre isometries preserve the global real determinant
 discrepancy, without any original finite-place ultrametricity assumption. -/
 theorem determinantDiscrepancy_eq_of_completed_isometry [S.IsProper]
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
@@ -98,7 +68,7 @@ theorem determinantDiscrepancy_eq_of_completed_isometry [S.IsProper]
 /-- Nested restriction preserves the actual global discrepancy under the
 existing canonical rational subspace isomorphism. -/
 theorem determinantDiscrepancy_restrict_restrict [S.IsProper]
-    (V : AdelicVectorBundle S E) (U W : Submodule K E) (h : U ≤ W)
+    (V : AdelicVectorBundle S) (U W : Submodule K V) (h : U ≤ W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     ((V.restrictOfMeasurableBase W).restrictOfMeasurableBase
@@ -107,19 +77,17 @@ theorem determinantDiscrepancy_restrict_restrict [S.IsProper]
   apply determinantDiscrepancy_eq_of_completed_isometry _ _
     (Submodule.comapSubtypeEquivOfLe h)
   intro ω z
-  simp only [restrictOfMeasurableBase_toNormFamily]
   exact (V.toNormFamily.restrict_restrict_norm_eq U W h ω z).symm
 
 /-- The total rational subspace has the actual ambient global discrepancy. -/
 theorem determinantDiscrepancy_restrict_top [S.IsProper]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.restrictOfMeasurableBase ⊤).determinantDiscrepancy =
       V.determinantDiscrepancy := by
   apply determinantDiscrepancy_eq_of_completed_isometry _ _ Submodule.topEquiv
   intro ω z
-  simp only [restrictOfMeasurableBase_toNormFamily]
   exact (V.toNormFamily.restrict_top_norm_eq ω z).symm
 
 end AdelicVectorBundle

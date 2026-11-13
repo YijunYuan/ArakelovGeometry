@@ -68,7 +68,7 @@ namespace AdelicVectorBundle
 /-- Degree of the actual measurable determinant is preserved by an actual
 completed isometry. Target determinant measurability is produced, not assumed. -/
 theorem degreeOfMeasurableDeterminant_eq_of_completed_isometry [S.IsProper]
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
     [hdet : V.toNormFamily.determinant.IsMeasurable]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω z, W.toNormFamily.norm ω

@@ -35,9 +35,9 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 degree by the actual native target determinant degree, without target regularity. -/
 theorem degree_restrict_le_nativeRestrictionDegreeOfCountableDiscreteBase
     {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule K E) :
+    (A : Submodule K V) :
     (V.restrictOfMeasurableBase A).degree ≤
       V.nativeRestrictionDegreeOfCountableDiscreteBase (A.baseChange L) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
@@ -55,6 +55,7 @@ theorem degree_restrict_le_nativeRestrictionDegreeOfCountableDiscreteBase
           (V.toNormFamily.scalarExtension_restrict_determinant_isMeasurable_of_countable_discrete
           (A.baseChange L))) (hN := ⟨hLN⟩) :=
     W.degreeOfMeasurableDeterminant_le_of_completed_contraction R
+      (hdetV := B.scalarExtensionOfCountableDiscreteBase_determinant_isMeasurable (L := L))
       (Submodule.toBaseChange.toLinearEquiv L A) (hN := ⟨hLN⟩)
       (fun x z ↦ V.toNormFamily.scalarExtension_restrict_norm_le A x z)
   exact (B.degreeOfMeasurableDeterminant_scalarExtensionOfCountableDiscreteBase
@@ -64,9 +65,9 @@ theorem degree_restrict_le_nativeRestrictionDegreeOfCountableDiscreteBase
 rank. The real rank-zero division convention is retained. -/
 theorem slope_restrict_le_nativeMeanOfCountableDiscreteBase
     {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule K E) :
+    (A : Submodule K V) :
     (V.restrictOfMeasurableBase A).slope ≤
       V.nativeRestrictionDegreeOfCountableDiscreteBase (A.baseChange L) /
         (Module.finrank L (A.baseChange L) : ℝ) := by
@@ -81,7 +82,7 @@ theorem slope_restrict_le_nativeMeanOfCountableDiscreteBase
 /-- Taking ALL original subspaces and their actual closure images compares
 positive degree with the genuine absolute supremum. -/
 theorem positiveDegree_le_absolutePositiveDegreeOfCountableDiscreteBase
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     V.positiveDegree ≤
       V.absolutePositiveDegreeOfCountableDiscreteBase := by
@@ -96,7 +97,7 @@ theorem positiveDegree_le_absolutePositiveDegreeOfCountableDiscreteBase
 /-- Positive-rank original subspaces extend with unchanged positive rank, so
 their actual mean degrees bound the original maximal-slope supremum. -/
 theorem maximalSlope_le_absoluteMaximalSlopeOfCountableDiscreteBase
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     V.maximalSlope ≤
       V.absoluteMaximalSlopeOfCountableDiscreteBase := by
@@ -115,9 +116,9 @@ theorem maximalSlope_le_absoluteMaximalSlopeOfCountableDiscreteBase
 /-- Every actual original restricted degree is bounded by the genuine
 absolute positive degree; no caller-supplied native degree bound is used. -/
 theorem degree_restrict_le_absolutePositiveDegreeOfCountableDiscreteBase
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule K E) :
+    (A : Submodule K V) :
     ((V.restrictOfMeasurableBase A).degree
       : EReal) ≤
       V.absolutePositiveDegreeOfCountableDiscreteBase :=

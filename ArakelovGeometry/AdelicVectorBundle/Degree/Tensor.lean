@@ -31,10 +31,10 @@ noncomputable section
 
 section Algebra
 
-universe wA
+universe wA wB
 
 variable (K L : Type*) [Field K] [Field L] [Algebra K L]
-  (E F : Type wA) [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  (E : Type wA) (F : Type wB) [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 /-- Completed determinant tensor transport commutes with original determinant
@@ -72,31 +72,33 @@ theorem determinantTensorEquiv_tprod_ne_zero
     (fun _ ↦ NormFamily.determinant_finrank) (fun _ ↦ s) (fun _ ↦ hs)
   have ht' : t' ≠ 0 := NormFamily.tensor_generators_ne_zero
     (fun _ ↦ NormFamily.determinant_finrank) (fun _ ↦ t) (fun _ ↦ ht)
-  let x : ∀ i, BinaryTensorFactors DE DF i := fun i ↦ match i with
-    | .inl _ => s'
-    | .inr _ => t'
-  have hr : ∀ i, Module.finrank K (BinaryTensorFactors DE DF i) = 1 := by
+  let x : ∀ i, LiftedTensorFactors DE DF i := fun i ↦ match i with
+    | .inl _ => ULift.up s'
+    | .inr _ => ULift.up t'
+  have hr : ∀ i, Module.finrank K (LiftedTensorFactors DE DF i) = 1 := by
     rintro (i | i)
-    · exact NormFamily.tensor_finrank_one (fun _ ↦ NormFamily.determinant_finrank)
-    · exact NormFamily.tensor_finrank_one (fun _ ↦ NormFamily.determinant_finrank)
+    · simpa only [LiftedTensorFactors, BinaryTensorFactors, finrank_ulift] using
+        NormFamily.tensor_finrank_one (fun _ ↦ NormFamily.determinant_finrank)
+    · simpa only [LiftedTensorFactors, BinaryTensorFactors, finrank_ulift] using
+        NormFamily.tensor_finrank_one (fun _ ↦ NormFamily.determinant_finrank)
   have hx : ∀ i, x i ≠ 0 := by
     rintro (i | i)
-    · exact hs'
-    · exact ht'
+    · exact fun h ↦ hs' (congrArg ULift.down h)
+    · exact fun h ↦ ht' (congrArg ULift.down h)
   have hz := NormFamily.tensor_generators_ne_zero hr x hx
   intro he
   have he' : s' ⊗ₜ[K] t' = 0 := (determinantTensorEquiv K E F).injective
     (he.trans (determinantTensorEquiv K E F).map_zero.symm)
   apply hz
-  apply (binaryTensorEquiv K (BinaryTensorFactors DE DF)).injective
-  simpa only [binaryTensorEquiv_tprod, map_zero] using he'
+  apply (tensorPairEquiv K DE DF).injective
+  simpa only [tensorPairEquiv_tprod, map_zero] using he'
 
 end Algebra
 
-universe u v w
+universe u v w w'
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
-  {E F : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 namespace NormFamily
@@ -148,11 +150,11 @@ namespace AdelicVectorBundle
 /-- The corrected source tensor degree bound on the actual binary mixed tensor.
 All ranks are allowed; the source's asserted general equality is false. -/
 theorem rank_mul_degree_add_rank_mul_degree_le_degree_mixedTensorPair [S.IsProper]
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
-    (Module.finrank K F : ℝ) * V.degree +
-      (Module.finrank K E : ℝ) * W.degree ≤
+    (Module.finrank K W : ℝ) * V.degree +
+      (Module.finrank K V : ℝ) * W.degree ≤
         (V.mixedTensorPair W).degree := by
   let DV := V.determinantOfMeasurableBase
   let DW := W.determinantOfMeasurableBase
@@ -160,11 +162,11 @@ theorem rank_mul_degree_add_rank_mul_degree_le_degree_mixedTensorPair [S.IsPrope
   let DT := T.determinantOfMeasurableBase
   let s := DV.lineGenerator (hV := (V.determinantOfMeasurableBase_isLine))
   let t := DW.lineGenerator (hV := (W.determinantOfMeasurableBase_isLine))
-  let q := determinantTensorEquiv K E F
-    ((⨂ₜ[K] (_ : Fin (Module.finrank K F)), s.val) ⊗ₜ[K]
-      (⨂ₜ[K] (_ : Fin (Module.finrank K E)), t.val))
+  let q := determinantTensorEquiv K V W
+    ((⨂ₜ[K] (_ : Fin (Module.finrank K W)), s.val) ⊗ₜ[K]
+      (⨂ₜ[K] (_ : Fin (Module.finrank K V)), t.val))
   have hq : q ≠ 0 :=
-    determinantTensorEquiv_tprod_ne_zero K E F s.property t.property
+    determinantTensorEquiv_tprod_ne_zero K V W s.property t.property
   have hsI : Integrable (V.toNormFamily.determinant.logNorm s.val) S.v :=
     DV.integrable_logNorm s.val
   have htI : Integrable (W.toNormFamily.determinant.logNorm t.val) S.v :=
@@ -172,8 +174,8 @@ theorem rank_mul_degree_add_rank_mul_degree_le_degree_mixedTensorPair [S.IsPrope
   have hqI : Integrable (T.toNormFamily.determinant.logNorm q) S.v :=
     DT.integrable_logNorm q
   calc
-    _ = -(∫ ω, (Module.finrank K F : ℝ) * V.toNormFamily.determinant.logNorm s.val ω +
-        (Module.finrank K E : ℝ) * W.toNormFamily.determinant.logNorm t.val ω ∂S.v) := by
+    _ = -(∫ ω, (Module.finrank K W : ℝ) * V.toNormFamily.determinant.logNorm s.val ω +
+        (Module.finrank K V : ℝ) * W.toNormFamily.determinant.logNorm t.val ω ∂S.v) := by
       rw [V.degree_eq_neg_integral s, W.degree_eq_neg_integral t,
         integral_add (hsI.const_mul _) (htI.const_mul _), integral_const_mul,
         integral_const_mul]

@@ -77,8 +77,8 @@ variable {K} {E : Type*} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 /-- Every actual number-field line has its ordinary first minimum and both extremal
 slopes equal to its actual determinant degree, with no purity hypothesis. -/
 theorem rank_one_invariants
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
-    (hr : Module.finrank K E = 1) :
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
+    (hr : Module.finrank K V = 1) :
     V.maximalLogarithmicMinimum =
         (V.degree : EReal) ∧
       V.maximalSlope =
@@ -90,7 +90,7 @@ theorem rank_one_invariants
     Or.inl inferInstance
   let hN := normalizedNumberFieldArchimedeanCompletions (K := K)
   have hline : V.IsLine := ⟨hr⟩
-  have hp : 0 < Module.finrank K E := by omega
+  have hp : 0 < Module.finrank K V := by omega
   have hsemi := V.isMeanSlopeSemistable_of_finrank_eq_one (hS := ⟨hS⟩) (hN := ⟨hN⟩) hr
   have hmax := (V.isMeanSlopeSemistable_iff_maximalSlope_eq_slope (hS := ⟨hS⟩)
       (hN := ⟨hN⟩) hp).mp hsemi
@@ -104,25 +104,25 @@ theorem rank_one_invariants
 /-- The explicit ordinary Minkowski bound on the pure Hermitian subclass.
 This does not assert the unrestricted number-field Minkowski property. -/
 theorem hermitian_maximalSlope_sub_level_mul_log_le_firstMinimum
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hV : V.toNormFamily.IsHermitian]
     [hpure : V.toNormFamily.IsPureAtFinitePlaces] :
     V.maximalSlope -
       ((((Module.finrank ℚ K : ℝ) / 2 +
           Real.log |(NumberField.discr K : ℝ)| / (2 * Real.log 2)) *
-        Real.log (Module.finrank K E : ℝ) : ℝ) : EReal) ≤
+        Real.log (Module.finrank K V : ℝ) : ℝ) : EReal) ≤
           V.maximalLogarithmicMinimum := by
-  by_cases hz : Module.finrank K E = 0
+  by_cases hz : Module.finrank K V = 0
   · simp only [hz, Nat.cast_zero, Real.log_zero, mul_zero, EReal.coe_zero, sub_zero]
     rw [V.maximalSlope_eq_bot_of_finrank_eq_zero
       hz]
     exact bot_le
-  have hn : 0 < Module.finrank K E := Nat.pos_of_ne_zero hz
-  by_cases hr : Module.finrank K E = 1
+  have hn : 0 < Module.finrank K V := Nat.pos_of_ne_zero hz
+  by_cases hr : Module.finrank K V = 1
   · obtain ⟨hfirst, hmax, _⟩ := rank_one_invariants V hr
     simp only [hr, Nat.cast_one, Real.log_one, mul_zero, EReal.coe_zero, sub_zero]
     exact hmax.trans hfirst.symm |>.le
-  · have htwo : 2 ≤ Module.finrank K E := by omega
+  · have htwo : 2 ≤ Module.finrank K V := by omega
     have h := NumberFieldHermitianFirstMinimum.maximalSlope_sub_error_le_firstMinimum
       V hn
     have hc := error_le_level_mul_log K htwo ((Module.finrank ℚ K : ℝ) / 2)
@@ -131,24 +131,24 @@ theorem hermitian_maximalSlope_sub_level_mul_log_le_firstMinimum
 /-- The explicit ordinary Minkowski bound on the pure subclass with arbitrary infinite
 norms; finite-place ultrametricity remains separate from value-group purity. -/
 theorem maximalSlope_sub_level_mul_log_le_firstMinimum
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hU : V.toNormFamily.IsUltrametric] [hpure : V.toNormFamily.IsPureAtFinitePlaces] :
     V.maximalSlope -
       ((((Module.finrank ℚ K : ℝ) +
           Real.log |(NumberField.discr K : ℝ)| / (2 * Real.log 2)) *
-        Real.log (Module.finrank K E : ℝ) : ℝ) : EReal) ≤
+        Real.log (Module.finrank K V : ℝ) : ℝ) : EReal) ≤
           V.maximalLogarithmicMinimum := by
-  by_cases hz : Module.finrank K E = 0
+  by_cases hz : Module.finrank K V = 0
   · simp only [hz, Nat.cast_zero, Real.log_zero, mul_zero, EReal.coe_zero, sub_zero]
     rw [V.maximalSlope_eq_bot_of_finrank_eq_zero
       hz]
     exact bot_le
-  have hn : 0 < Module.finrank K E := Nat.pos_of_ne_zero hz
-  by_cases hr : Module.finrank K E = 1
+  have hn : 0 < Module.finrank K V := Nat.pos_of_ne_zero hz
+  by_cases hr : Module.finrank K V = 1
   · obtain ⟨hfirst, hmax, _⟩ := rank_one_invariants V hr
     simp only [hr, Nat.cast_one, Real.log_one, mul_zero, EReal.coe_zero, sub_zero]
     exact hmax.trans hfirst.symm |>.le
-  · have htwo : 2 ≤ Module.finrank K E := by omega
+  · have htwo : 2 ≤ Module.finrank K V := by omega
     have h := NumberFieldPureFirstMinimum.maximalSlope_sub_error_le_firstMinimum
       V hn
     have hc := error_le_level_mul_log K htwo (Module.finrank ℚ K : ℝ)

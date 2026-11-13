@@ -37,30 +37,30 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 /-- Exact Hermitian additivity expresses every quotient degree deficit as
 the opposite restriction degree deficit, including zero ends. -/
 theorem degree_quotient_sub_rank_mul_slope_eq_rank_mul_slope_sub_degree_restrict_of_isHermitian
-    (V : AdelicVectorBundle S E) (U : Submodule K E)
+    (V : AdelicVectorBundle S) (U : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :
     (V.quotientOfMeasurableBase U).degree -
-        (Module.finrank K (E ⧸ U) : ℝ) * V.slope =
+        (Module.finrank K (V ⧸ U) : ℝ) * V.slope =
       (Module.finrank K U : ℝ) * V.slope -
         (V.restrictOfMeasurableBase U).degree := by
   have hd := V.degree_restrict_add_degree_quotient_eq_of_isHermitian U
   rw [V.degree_eq_rank_mul_slope] at hd
-  have hr : (Module.finrank K (E ⧸ U) : ℝ) + Module.finrank K U =
-      Module.finrank K E := by exact_mod_cast U.finrank_quotient_add_finrank
+  have hr : (Module.finrank K (V ⧸ U) : ℝ) + Module.finrank K U =
+      Module.finrank K V := by exact_mod_cast U.finrank_quotient_add_finrank
   rw [← hr, add_mul] at hd
   linarith
 
 /-- For a positive-rank actual Hermitian bundle, subspace semistability is
 equivalent to the mean-slope lower bound for every nonzero actual quotient. -/
 theorem isMeanSlopeSemistable_iff_slope_le_quotient_of_isHermitian
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K V) :
     V.IsMeanSlopeSemistable ↔
-      ∀ U : Submodule K E, 0 < Module.finrank K (E ⧸ U) →
+      ∀ U : Submodule K V, 0 < Module.finrank K (V ⧸ U) →
         V.slope ≤ (V.quotientOfMeasurableBase U).slope := by
   constructor
   · intro hs U hQ
@@ -76,7 +76,7 @@ theorem isMeanSlopeSemistable_iff_slope_le_quotient_of_isHermitian
       V.degree_quotient_sub_rank_mul_slope_eq_rank_mul_slope_sub_degree_restrict_of_isHermitian
         U
     rw [(V.quotientOfMeasurableBase U).degree_eq_rank_mul_slope] at hd
-    have hp : (0 : ℝ) < Module.finrank K (E ⧸ U) := Nat.cast_pos.mpr hQ
+    have hp : (0 : ℝ) < Module.finrank K (V ⧸ U) := Nat.cast_pos.mpr hQ
     apply (mul_le_mul_iff_right₀ hp).mp
     nlinarith
   · intro hQ
@@ -89,10 +89,10 @@ theorem isMeanSlopeSemistable_iff_slope_le_quotient_of_isHermitian
 /-- The actual quotient-mean infimum identifies Hermitian semistability
 with equality of the extended-real minimum and real mean. -/
 theorem isMeanSlopeSemistable_iff_minimalSlope_eq_slope_of_isHermitian
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K V) :
     V.IsMeanSlopeSemistable ↔ V.minimalSlope = (V.slope : EReal) := by
   rw [V.isMeanSlopeSemistable_iff_slope_le_quotient_of_isHermitian hr]
   constructor
@@ -108,13 +108,13 @@ theorem isMeanSlopeSemistable_iff_minimalSlope_eq_slope_of_isHermitian
 original positive-rank bundle is. The finite real representatives used in
 the proof come from the accepted extremal-slope finiteness theorem. -/
 theorem isMeanSlopeSemistable_dual_iff_of_isHermitian
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K E) :
+    [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K V) :
     (V.dualOfMeasurableBase).IsMeanSlopeSemistable ↔
       V.IsMeanSlopeSemistable := by
-  have hrD : 0 < Module.finrank K (Module.Dual K E) := by
+  have hrD : 0 < Module.finrank K (Module.Dual K V) := by
     rwa [Subspace.dual_finrank_eq]
   have hVD : (V.dualOfMeasurableBase).toNormFamily.IsHermitian := hV.dual
   rw [(V.dualOfMeasurableBase).isMeanSlopeSemistable_iff_minimalSlope_eq_slope_of_isHermitian

@@ -37,20 +37,23 @@ variable [MeasurableSingletonClass S.Ω]
 
 /-- The canonical adelic bundle on the actual finite native relative quotient,
 with both norm/dual measurability and domination supplied by proved producers. -/
-def nativeSubquotientOfPositiveAtoms (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+abbrev nativeSubquotientOfPositiveAtoms (ξ : NormFamily S E) [hξ : ξ.IsDominated]
     [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
-    AdelicVectorBundle (S.algebraicExtension L) (B ⧸ U) where
+    AdelicVectorBundle (S.algebraicExtension L) where
+  carrier := (B ⧸ U)
   toNormFamily := ((ξ.scalarExtension (L := L)).restrict B).quotient U
-  isMeasurable := by
-    exact IsDominated.scalarExtension_restrict_quotient_isMeasurable_of_positive_atoms
-      ξ hξ B U
-  dual_isMeasurable := by
-    exact IsDominated.scalarExtension_restrict_quotient_dual_isMeasurable_of_positive_atoms
-      ξ hξ B U
-  isDominated := by
-    exact ((hξ.scalarExtension_isStronglyDominated ξ
-      (AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin)).isDominated.restrict B).quotient U
+  toIsAdelic := {
+    isMeasurable := by
+      exact IsDominated.scalarExtension_restrict_quotient_isMeasurable_of_positive_atoms
+        ξ hξ B U
+    dual_isMeasurable := by
+      exact IsDominated.scalarExtension_restrict_quotient_dual_isMeasurable_of_positive_atoms
+        ξ hξ B U
+    isDominated := by
+      exact ((hξ.scalarExtension_isStronglyDominated ξ
+        (AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin)).isDominated.restrict B).quotient U
+  }
 
 @[simp]
 theorem nativeSubquotientOfPositiveAtoms_toNormFamily
@@ -80,11 +83,10 @@ instance nativeSubquotientOfPositiveAtoms_isStronglyAdelic
 
 /-- The actual determinant line of the produced native bundle is adelic,
 using the separately produced determinant measurability. -/
-def nativeDeterminantOfPositiveAtoms (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+abbrev nativeDeterminantOfPositiveAtoms (ξ : NormFamily S E) [hξ : ξ.IsDominated]
     [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
-    AdelicVectorBundle (S.algebraicExtension L)
-      (⋀[L]^(Module.finrank L (B ⧸ U)) (B ⧸ U)) :=
+    AdelicVectorBundle (S.algebraicExtension L) :=
   (ξ.nativeSubquotientOfPositiveAtoms B U).determinant
     (hm := IsDominated.scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms
       ξ hξ B U)
@@ -122,7 +124,8 @@ theorem native_degree_eq_neg_integral [S.IsProper]
         ξ hξ B U) =
       -(∫ x, (((ξ.scalarExtension (L := L)).restrict B).quotient U).determinant.logNorm t.val x
         ∂(S.algebraicExtension L).v) :=
-  AdelicVectorBundle.degreeOfMeasurableDeterminant_eq_neg_integral _ t
+  AdelicVectorBundle.degreeOfMeasurableDeterminant_eq_neg_integral
+    (ξ.nativeSubquotientOfPositiveAtoms B U) t
 
 /-- A zero native relative quotient has canonical degree zero. Its actual
 determinant bundle is still the scalar unit line. -/

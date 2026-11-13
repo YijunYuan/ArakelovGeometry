@@ -37,14 +37,14 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 namespace AdelicVectorBundle
 
-variable [S.IsProper] (V : AdelicVectorBundle S E)
+variable [S.IsProper] (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
 /-- The term at an actual ordered jump has that jump as its actual minimum.
 The rank cut proves positive rank before the true minimum is lifted to a real. -/
 theorem minimalSlope_restrict_generalHNFiltration_orderedSlope
-    (j : Fin (Module.finrank K E)) :
+    (j : Fin (Module.finrank K V)) :
     (V.restrictOfMeasurableBase
       (V.generalHNFiltration (V.generalHNOrderedSlope j))).minimalSlope
         = (V.generalHNOrderedSlope j : EReal) := by
@@ -68,7 +68,7 @@ theorem minimalSlope_restrict_generalHNFiltration_orderedSlope
 
 /-- The actual canonical inclusion contracts every completed vector, so
 the intrinsic filtration of any restriction maps into the ambient one. -/
-theorem map_generalHNFiltration_restrict_le (U : Submodule K E) (s : ℝ) :
+theorem map_generalHNFiltration_restrict_le (U : Submodule K V) (s : ℝ) :
     ((V.restrictOfMeasurableBase U).generalHNFiltration s).map U.subtype ≤
       V.generalHNFiltration s := by
   by_cases hf : U.subtype = 0
@@ -118,8 +118,8 @@ variable {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 compares the corresponding actual ordered slots. Injectivity and an
 attained nonzero source slot prove that the map is nonzero. -/
 theorem generalHNOrderedSlope_le_of_injective_of_mapHeight_le
-    (W : AdelicVectorBundle S F) (f : E →ₗ[K] F) (hi : Function.Injective f)
-    (c : ℝ) (hh : V.mapHeight W f ≤ (c : EReal)) (j : Fin (Module.finrank K E)) :
+    (W : AdelicVectorBundle S) (f : V →ₗ[K] W) (hi : Function.Injective f)
+    (c : ℝ) (hh : V.mapHeight W f ≤ (c : EReal)) (j : Fin (Module.finrank K V)) :
     V.generalHNOrderedSlope j ≤
       W.generalHNOrderedSlope
         (j.castLE (LinearMap.finrank_le_finrank_of_injective hi)) + c := by
@@ -144,16 +144,16 @@ theorem generalHNOrderedSlope_le_of_injective_of_mapHeight_le
 height. Its negative-infinite endpoint is excluded by the genuine nonzero
 map before lifting the height to a real number. -/
 theorem generalHNOrderedSlope_le_of_injective
-    (W : AdelicVectorBundle S F) (f : E →ₗ[K] F) (hi : Function.Injective f)
-    (hh : V.mapHeight W f ≠ ⊤) (j : Fin (Module.finrank K E)) :
+    (W : AdelicVectorBundle S) (f : V →ₗ[K] W) (hi : Function.Injective f)
+    (hh : V.mapHeight W f ≠ ⊤) (j : Fin (Module.finrank K V)) :
     (V.generalHNOrderedSlope j : EReal) ≤
       (W.generalHNOrderedSlope
         (j.castLE (LinearMap.finrank_le_finrank_of_injective hi)) : EReal) +
           V.mapHeight W f := by
   have hf : f ≠ 0 := by
     intro hz
-    have hm : Module.finrank K (⊤ : Submodule K E) ≤
-        Module.finrank K ((⊤ : Submodule K E).map f) :=
+    have hm : Module.finrank K (⊤ : Submodule K V) ≤
+        Module.finrank K ((⊤ : Submodule K V).map f) :=
       LinearMap.finrank_le_finrank_of_injective (f.submoduleMap_injective hi ⊤)
     rw [hz, Submodule.map_zero, finrank_bot, finrank_top] at hm
     exact (Nat.not_lt_zero j.val) (j.isLt.trans_le hm)
@@ -168,7 +168,7 @@ theorem generalHNOrderedSlope_le_of_injective
 /-- Every actual restricted bundle has each ordered slope at most the
 same ambient slot. The completed canonical inclusion gives height at
 most zero, with no height or Hermitianity hypothesis supplied. -/
-theorem generalHNOrderedSlope_restrict_le (U : Submodule K E)
+theorem generalHNOrderedSlope_restrict_le (U : Submodule K V)
     (j : Fin (Module.finrank K U)) :
     (V.restrictOfMeasurableBase U).generalHNOrderedSlope j ≤
       V.generalHNOrderedSlope (j.castLE U.finrank_le) := by

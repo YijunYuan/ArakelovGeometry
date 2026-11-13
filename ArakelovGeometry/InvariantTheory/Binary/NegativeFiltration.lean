@@ -352,7 +352,7 @@ section OrbitComposition
 universe u
 variable {k : Type u} [Field k] {ι : Bool → Type u}
   [∀ j, Fintype (ι j)] [∀ j, DecidableEq (ι j)]
-  {Q : Type u} [AddCommGroup Q] [Module k Q] {r : ℕ}
+  {Q : Type*} [AddCommGroup Q] [Module k Q] {r : ℕ}
 
 /-- The generic coefficient polynomial is exactly A8-ORBIT's original quotient
 polynomial in standard factor coordinates. This is the shared interface. -/

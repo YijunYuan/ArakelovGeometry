@@ -25,14 +25,14 @@ this norm with the source tensor-line norm in every rank.
 
 open scoped TensorProduct
 
-universe w
+universe w w'
 
 namespace ArakelovGeometry.NormFamily
 
 noncomputable section
 
 variable {K : Type*} [Field K] {S : AdelicStructure K}
-  {E F : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 /-- The existing binary tensor norm has the product value on nonzero
@@ -45,21 +45,21 @@ theorem injectiveTensorPair_norm_rational_generators
       ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] (x ⊗ₜ[K] y)) =
       ξ.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] x) *
         η.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] y) := by
-  let v : ∀ i, BinaryTensorFactors E F i := fun i ↦ match i with
-    | .inl _ => x
-    | .inr _ => y
-  have hr : ∀ i, Module.finrank K (BinaryTensorFactors E F i) = 1 := by
+  let v : ∀ i, LiftedTensorFactors E F i := fun i ↦ match i with
+    | .inl _ => ULift.up x
+    | .inr _ => ULift.up y
+  have hr : ∀ i, Module.finrank K (LiftedTensorFactors E F i) = 1 := by
     rintro (i | i)
-    · exact hE
-    · exact hF
+    · simpa only [LiftedTensorFactors, BinaryTensorFactors, finrank_ulift] using hE
+    · simpa only [LiftedTensorFactors, BinaryTensorFactors, finrank_ulift] using hF
   have hv : ∀ i, v i ≠ 0 := by
     rintro (i | i)
-    · exact hx
-    · exact hy
-  have he : (binaryTensorEquiv K (BinaryTensorFactors E F)).symm (x ⊗ₜ[K] y) =
+    · exact fun h ↦ hx (congrArg ULift.down h)
+    · exact fun h ↦ hy (congrArg ULift.down h)
+  have he : (tensorPairEquiv K E F).symm (x ⊗ₜ[K] y) =
       (⨂ₜ[K] i, v i) := by
-    apply (binaryTensorEquiv K (BinaryTensorFactors E F)).injective
-    simp only [LinearEquiv.apply_symm_apply, binaryTensorEquiv_tprod]
+    apply (tensorPairEquiv K E F).injective
+    simp only [LinearEquiv.apply_symm_apply, tensorPairEquiv_tprod]
     rfl
   rw [injectiveTensorPair_norm_tmul, he,
     (tensor_norm_rational_generators (tensorPairFactors ξ η) hr v hv ω).1]

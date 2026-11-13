@@ -100,7 +100,7 @@ theorem exists_integral_nonzero_large_degree
       V.slope -
         (Module.finrank ℚ K : ℝ) / 2 * Real.log (Module.finrank K E : ℝ) -
           Real.log |(NumberField.discr K : ℝ)| / 2 ≤
-            V.toNormFamily.vectorDegree s := by
+            V.toNormFamily.vectorDegree (hd := V.isDominated) (hm := V.isMeasurable) s := by
   let V := fullLatticeAdelicBundle L hfg hspan η
   let D := V.degree
   let R := NumberFieldMinkowskiRadius.radius K (Module.finrank K E) D
@@ -112,7 +112,7 @@ theorem exists_integral_nonzero_large_degree
   have hsbound : V.toNormFamily.archimedeanMaxNorm s.val ≤ Real.exp (-(-Real.log R)) := by
     simpa only [neg_neg, Real.exp_log hR] using hsR
   have hd := V.toNormFamily.vectorDegree_ge_of_integral_archimedean_bound
-    s hsball hsbound
+    (hd := V.isDominated) (hm := V.isMeasurable) s hsball hsbound
   refine ⟨s, hsL, ?_⟩
   have he := NumberFieldMinkowskiRadius.neg_rank_mul_log_radius K hn D
   change -(Module.finrank ℚ K : ℝ) * Real.log R = _ at he

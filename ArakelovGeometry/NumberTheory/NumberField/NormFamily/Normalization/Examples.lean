@@ -86,12 +86,12 @@ theorem φ_integral : (∫ ω, φ ω ∂OldS.v) = Real.log 2 := by
   simp only [Measure.real]
   erw [old_prime_mass, ENNReal.toReal_one, one_smul]
 
-def base : AdelicVectorBundle OldS ℚ := scalarLine OldS
-def bundle : AdelicVectorBundle OldS ℚ := base.scaleExp φ φ_measurable φ_integrable
+abbrev base : AdelicVectorBundle OldS := scalarLine OldS
+abbrev bundle : AdelicVectorBundle OldS := base.scaleExp φ φ_measurable φ_integrable
 theorem bundle_ultrametric : bundle.toNormFamily.IsUltrametric :=
   bundle.toNormFamily.isUltrametric_of_finrank_le_one (Module.finrank_self ℚ).le
 
-def normalizedBundle : AdelicVectorBundle NewS ℚ := bundle.numberFieldNormalize
+abbrev normalizedBundle : AdelicVectorBundle NewS := bundle.numberFieldNormalize
     (hV := bundle_ultrametric)
 
 theorem finite_original_norm_two : bundle.norm ωTwo.val (1 ⊗ₜ[ℚ] (1 : ℚ)) = 2 := by
@@ -168,11 +168,14 @@ theorem rank_two_zero_determinant :
 def zeroBasis : Module.Basis Empty ℚ (Empty → ℚ) := Pi.basisFun ℚ Empty
 def zeroOld : NormFamily OldS (Empty → ℚ) := ofBasisMixed OldS _ zeroBasis
 theorem zero_ultrametric : zeroOld.IsUltrametric := ofBasisMixed_isUltrametric zeroBasis
-def zeroBundle : AdelicVectorBundle OldS (Empty → ℚ) where
+abbrev zeroBundle : AdelicVectorBundle OldS where
+  carrier := (Empty → ℚ)
   toNormFamily := zeroOld
-  isMeasurable := zeroOld.isMeasurable_of_subsingleton
-  dual_isMeasurable := zeroOld.dual.isMeasurable_of_subsingleton
-  isDominated := zeroOld.isDominated_of_subsingleton
+  toIsAdelic := {
+    isMeasurable := zeroOld.isMeasurable_of_subsingleton
+    dual_isMeasurable := zeroOld.dual.isMeasurable_of_subsingleton
+    isDominated := zeroOld.isDominated_of_subsingleton
+  }
 
 theorem rank_zero_determinant_empty_norm (a : (placeRep ωTwo.val).Completion) :
     (zeroOld.numberFieldNormalize (hξ := zero_ultrametric)).determinant.norm ωTwo

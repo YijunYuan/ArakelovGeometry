@@ -44,23 +44,23 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 namespace AdelicVectorBundle
 
-variable [S.IsProper] (V : AdelicVectorBundle S E)
+variable [S.IsProper] (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
 /-- The actual sum in source Definition 4.3.45. Only nonzero rational
 subspaces with the actual restricted minimum-slope bound occur. -/
-def generalHNSlopeSum (t : ℝ) : Submodule K E :=
-  ⨆ (U : Submodule K E) (_ : U ≠ ⊥)
+def generalHNSlopeSum (t : ℝ) : Submodule K V :=
+  ⨆ (U : Submodule K V) (_ : U ≠ ⊥)
     (_ : (t : EReal) ≤ (V.restrictOfMeasurableBase U).minimalSlope), U
 
 /-- Source equation (4.65), with the actual epsilon-intersection. -/
-def generalHNFiltration (t : ℝ) : Submodule K E :=
+def generalHNFiltration (t : ℝ) : Submodule K V :=
   ⨅ (ε : ℝ) (_ : 0 < ε), V.generalHNSlopeSum (t - ε)
 
 /-- The source's two infinite endpoint conventions, keeping real levels
 in the actual epsilon-intersection definition. -/
-def generalHNFiltrationExtended : EReal → Submodule K E :=
+def generalHNFiltrationExtended : EReal → Submodule K V :=
   EReal.rec ⊤ (V.generalHNFiltration) ⊥
 
 @[simp] theorem generalHNFiltrationExtended_bot :
@@ -134,7 +134,7 @@ theorem exists_generalHNFiltration_stabilizes (t : ℝ) :
 
 /-- In rank zero the actual source sum has no eligible nonzero summands. -/
 theorem generalHNSlopeSum_eq_bot_of_finrank_eq_zero
-    (hr : Module.finrank K E = 0) (t : ℝ) : V.generalHNSlopeSum t = ⊥ := by
+    (hr : Module.finrank K V = 0) (t : ℝ) : V.generalHNSlopeSum t = ⊥ := by
   apply bot_unique
   apply iSup_le
   intro U
@@ -145,7 +145,7 @@ theorem generalHNSlopeSum_eq_bot_of_finrank_eq_zero
 
 /-- The actual epsilon intersection is zero at every real level in rank zero. -/
 theorem generalHNFiltration_eq_bot_of_finrank_eq_zero
-    (hr : Module.finrank K E = 0) (t : ℝ) : V.generalHNFiltration t = ⊥ := by
+    (hr : Module.finrank K V = 0) (t : ℝ) : V.generalHNFiltration t = ⊥ := by
   apply bot_unique
   exact iInf_le_of_le 1 (iInf_le_of_le zero_lt_one
     (le_of_eq (V.generalHNSlopeSum_eq_bot_of_finrank_eq_zero hr (t - 1))))
@@ -172,12 +172,12 @@ theorem generalHNSlopeSum_eq_bot_of_maximalSlope_lt (t : ℝ)
 below its minimum. The zero-rank case retains the empty source sum. -/
 theorem generalHNSlopeSum_eq_top_of_le_minimalSlope (t : ℝ)
     (ht : (t : EReal) ≤ V.minimalSlope) : V.generalHNSlopeSum t = ⊤ := by
-  by_cases hr : Module.finrank K E = 0
-  · have htop : (⊤ : Submodule K E) = ⊥ := Submodule.finrank_eq_zero.mp
+  by_cases hr : Module.finrank K V = 0
+  · have htop : (⊤ : Submodule K V) = ⊥ := Submodule.finrank_eq_zero.mp
       (by simpa only [finrank_top] using hr)
     exact (V.generalHNSlopeSum_eq_bot_of_finrank_eq_zero hr t).trans htop.symm
   · apply top_unique
-    have htop : (⊤ : Submodule K E) ≠ ⊥ := fun hz ↦ hr
+    have htop : (⊤ : Submodule K V) ≠ ⊥ := fun hz ↦ hr
       (by simpa only [finrank_top] using (Submodule.finrank_eq_zero.mpr hz))
     exact le_iSup_of_le ⊤ (le_iSup_of_le htop (le_iSup_of_le
       (by simpa only [V.minimalSlope_restrict_top] using ht) le_rfl))
@@ -194,7 +194,7 @@ theorem generalHNFiltration_eq_top_of_le_minimalSlope (t : ℝ)
 intersection is already zero. Infinite zero-rank extrema are kept explicit. -/
 theorem generalHNFiltration_eq_bot_of_maximalSlope_lt (t : ℝ)
     (ht : V.maximalSlope < (t : EReal)) : V.generalHNFiltration t = ⊥ := by
-  by_cases hr : Module.finrank K E = 0
+  by_cases hr : Module.finrank K V = 0
   · exact V.generalHNFiltration_eq_bot_of_finrank_eq_zero hr t
   · obtain ⟨c, hc⟩ := V.exists_maximalSlope_eq_coe (Nat.pos_of_ne_zero hr)
     have hct : c < t := EReal.coe_lt_coe_iff.mp (hc ▸ ht)
@@ -212,7 +212,7 @@ theorem generalHNFiltration_eq_bot_of_maximalSlope_lt (t : ℝ)
 /-- The actual general filtration is exhaustive, including the zero bundle. -/
 theorem exists_generalHNFiltration_eq_top :
     ∃ t : ℝ, V.generalHNFiltration t = ⊤ := by
-  by_cases hr : Module.finrank K E = 0
+  by_cases hr : Module.finrank K V = 0
   · refine ⟨0, V.generalHNFiltration_eq_top_of_le_minimalSlope 0 ?_⟩
     rw [V.minimalSlope_eq_top_of_finrank_eq_zero hr]
     exact le_top
@@ -222,7 +222,7 @@ theorem exists_generalHNFiltration_eq_top :
 /-- The actual general filtration is separated, including the zero bundle. -/
 theorem exists_generalHNFiltration_eq_bot :
     ∃ t : ℝ, V.generalHNFiltration t = ⊥ := by
-  by_cases hr : Module.finrank K E = 0
+  by_cases hr : Module.finrank K V = 0
   · exact ⟨0, V.generalHNFiltration_eq_bot_of_finrank_eq_zero hr 0⟩
   · obtain ⟨c, hc⟩ := V.exists_maximalSlope_eq_coe (Nat.pos_of_ne_zero hr)
     refine ⟨c + 1, V.generalHNFiltration_eq_bot_of_maximalSlope_lt (c + 1) ?_⟩
@@ -234,7 +234,7 @@ nonzero eligible index is empty. This consumes actual arbitrary-sum stability. -
 theorem le_minimalSlope_restrict_generalHNSlopeSum (t : ℝ) :
     (t : EReal) ≤ (V.restrictOfMeasurableBase
       (V.generalHNSlopeSum t)).minimalSlope := by
-  let I := {U : Submodule K E // U ≠ ⊥ ∧
+  let I := {U : Submodule K V // U ≠ ⊥ ∧
     (t : EReal) ≤ (V.restrictOfMeasurableBase U).minimalSlope}
   have he : (⨆ U : I, U.val) = V.generalHNSlopeSum t := by
     apply le_antisymm
@@ -265,7 +265,7 @@ theorem le_minimalSlope_restrict_generalHNFiltration (t : ℝ) :
     have hε : 0 < ε := lt_min hδ (by linarith)
     have hεδ : ε ≤ δ := min_le_left _ _
     have hεc : ε ≤ (t - c) / 2 := min_le_right _ _
-    have he := congrArg (fun U : Submodule K E ↦
+    have he := congrArg (fun U : Submodule K V ↦
       (V.restrictOfMeasurableBase U).minimalSlope) (hstable ε hε hεδ)
     have hb : ((t - ε : ℝ) : EReal) ≤ R.minimalSlope :=
       (V.le_minimalSlope_restrict_generalHNSlopeSum (t - ε)).trans_eq he
@@ -287,7 +287,7 @@ theorem generalHNFiltration_eq_generalHNSlopeSum (t : ℝ) :
 
 /-- Every actual restricted subspace with minimum at least the threshold
 lies in the general filtration term; the zero subspace is allowed. -/
-theorem le_generalHNFiltration_of_le_minimalSlope_restrict (U : Submodule K E) (t : ℝ)
+theorem le_generalHNFiltration_of_le_minimalSlope_restrict (U : Submodule K V) (t : ℝ)
     (ht : (t : EReal) ≤ (V.restrictOfMeasurableBase U).minimalSlope) :
     U ≤ V.generalHNFiltration t := by
   by_cases hU : U = ⊥
@@ -300,7 +300,7 @@ theorem le_generalHNFiltration_of_le_minimalSlope_restrict (U : Submodule K E) (
 /-- The actual general term is the greatest subspace with its actual
 restricted minimum at least the threshold, without any supplied attainment. -/
 theorem isGreatest_generalHNFiltration (t : ℝ) :
-    IsGreatest {U : Submodule K E |
+    IsGreatest {U : Submodule K V |
       (t : EReal) ≤ (V.restrictOfMeasurableBase U).minimalSlope}
       (V.generalHNFiltration t) :=
   ⟨V.le_minimalSlope_restrict_generalHNFiltration t,
@@ -313,7 +313,7 @@ theorem generalHNFiltration_eq_top_iff (t : ℝ) :
   constructor
   · intro ht
     have hm := V.le_minimalSlope_restrict_generalHNFiltration t
-    have he := congrArg (fun U : Submodule K E ↦
+    have he := congrArg (fun U : Submodule K V ↦
       (V.restrictOfMeasurableBase U).minimalSlope) ht
     exact hm.trans_eq (he.trans (V.minimalSlope_restrict_top))
   · exact V.generalHNFiltration_eq_top_of_le_minimalSlope t
@@ -333,7 +333,7 @@ theorem generalHNFiltration_locallyConstant_left (t : ℝ) :
 /-- Source maximum formula in positive rank, stated intrinsically as a
 greatest real level rather than a real-part convention for infinite minima. -/
 theorem exists_isGreatest_generalHNFiltration_eq_top
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     ∃ c : ℝ, V.minimalSlope = (c : EReal) ∧
       IsGreatest {t : ℝ | V.generalHNFiltration t = ⊤} c := by
   obtain ⟨c, hc⟩ := V.exists_minimalSlope_eq_coe hr
@@ -348,7 +348,7 @@ theorem exists_isGreatest_generalHNFiltration_eq_top
 section HermitianComparison
 
 variable {E' : Type (max u w)} [AddCommGroup E'] [Module K E']
-  [FiniteDimensional K E'] (W : AdelicVectorBundle S E')
+  [FiniteDimensional K E'] (W : AdelicVectorBundle.{max u w} S)
 
 /-- On actual Hermitian bundles the source epsilon-intersection construction
 equals the previously produced Hermitian filtration, since both are the same

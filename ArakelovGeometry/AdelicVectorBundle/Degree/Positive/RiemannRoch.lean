@@ -40,7 +40,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 
 /-- Every actual subspace and its actual quotient-dual annihilator give
 the positive-degree upper bound. No original ultrametricity is assumed. -/
-theorem positiveDegree_le_degree_add_positiveDegree_dual (V : AdelicVectorBundle S E)
+theorem positiveDegree_le_degree_add_positiveDegree_dual (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     V.positiveDegree ≤ (V.degree : EReal) +
@@ -62,7 +62,7 @@ theorem positiveDegree_le_degree_add_positiveDegree_dual (V : AdelicVectorBundle
 
 /-- Subtraction by the proved finite dual positive degree gives the first
 source Riemann--Roch comparison, including rank zero. -/
-theorem positiveDegree_sub_dual_le_degree (V : AdelicVectorBundle S E)
+theorem positiveDegree_sub_dual_le_degree (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     V.positiveDegree - (V.dualOfMeasurableBase).positiveDegree ≤
@@ -74,41 +74,43 @@ theorem positiveDegree_sub_dual_le_degree (V : AdelicVectorBundle S E)
 omit [S.IsProper] in
 /-- The dual of the actual bidual bundle is exactly the original actual
 dual bundle, by the all-completed-vector triple-dual norm identity. -/
-theorem dual_bidualOfMeasurableBase (V : AdelicVectorBundle S E)
+theorem dual_bidualOfMeasurableBase (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase] :
     (V.bidualOfMeasurableBase).dualOfMeasurableBase =
       V.dualOfMeasurableBase := by
   apply AdelicVectorBundle.ext
-  simp only [dualOfMeasurableBase_toNormFamily, bidualOfMeasurableBase_toNormFamily]
+    (hξ := V.bidualOfMeasurableBase.dualOfMeasurableBase.toIsAdelic)
+    (hη := V.dualOfMeasurableBase.toIsAdelic)
   exact V.toNormFamily.dual_dual_pullback_dual_eq
 
 /-- The actual bidual on the original rational space and the actual
 double dual have equal positive degree under canonical evaluation. -/
-theorem positiveDegree_bidual_eq_doubleDual (V : AdelicVectorBundle S E)
+theorem positiveDegree_bidual_eq_doubleDual (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.bidualOfMeasurableBase).positiveDegree =
       ((V.dualOfMeasurableBase).dualOfMeasurableBase).positiveDegree := by
-  apply positiveDegree_eq_of_completed_isometry _ _ (Module.evalEquiv K E)
+  apply positiveDegree_eq_of_completed_isometry _ _ (Module.evalEquiv K V)
   intro ω z
   rfl
 
 /-- Original ultrametricity outside infinity and usual Archimedean duality
 identify the actual original bundle with its bidual on every fibre. -/
-theorem positiveDegree_bidual_eq_of_isUltrametric (V : AdelicVectorBundle S E)
+theorem positiveDegree_bidual_eq_of_isUltrametric (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsUltrametric] :
     (V.bidualOfMeasurableBase).positiveDegree = V.positiveDegree := by
   have he : V.bidualOfMeasurableBase = V := by
     apply AdelicVectorBundle.ext
+      (hξ := V.bidualOfMeasurableBase.toIsAdelic) (hη := V.toIsAdelic)
     simpa only [bidualOfMeasurableBase_toNormFamily] using
       V.toNormFamily.dual_dual_pullback_eq
   rw [he]
 
 /-- Source (4.39) for every actual adelic bundle, retaining the actual
 bidual positive degree when original finite-place norms are not ultrametric. -/
-theorem riemannRoch_inequality (V : AdelicVectorBundle S E)
+theorem riemannRoch_inequality (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     0 ≤ (V.degree : EReal) -
@@ -135,7 +137,7 @@ theorem riemannRoch_inequality (V : AdelicVectorBundle S E)
 
 /-- Source (4.40) with the original bundle positive degree, under precisely
 the original outside-infinity ultrametricity assumption. -/
-theorem riemannRoch_inequality_of_isUltrametric (V : AdelicVectorBundle S E)
+theorem riemannRoch_inequality_of_isUltrametric (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsUltrametric] :
@@ -149,7 +151,7 @@ theorem riemannRoch_inequality_of_isUltrametric (V : AdelicVectorBundle S E)
 
 /-- For actual Hermitian bundles the Riemann--Roch discrepancy vanishes,
 so the original degree is the difference of the two actual positive degrees. -/
-theorem degree_eq_positiveDegree_sub_dual_of_isHermitian (V : AdelicVectorBundle S E)
+theorem degree_eq_positiveDegree_sub_dual_of_isHermitian (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :

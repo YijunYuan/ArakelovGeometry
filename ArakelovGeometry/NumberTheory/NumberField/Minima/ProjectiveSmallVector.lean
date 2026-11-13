@@ -42,7 +42,7 @@ theorem exists_original_nonzero_large_degree
       V.slope -
         (Module.finrank ℚ K : ℝ) / 2 * Real.log (Module.finrank K (K ⊗[𝓞 K] M) : ℝ) -
           Real.log |(NumberField.discr K : ℝ)| / 2 ≤
-            V.toNormFamily.vectorDegree
+            V.toNormFamily.vectorDegree (hd := V.isDominated) (hm := V.isMeasurable)
               ⟨genericInclusion (K := K) M m, hm⟩ := by
   obtain ⟨s, hs, hd⟩ := NumberFieldArithmeticSmallVector.exists_integral_nonzero_large_degree
     (genericImage (K := K) M) (genericImage_fg (K := K) M)

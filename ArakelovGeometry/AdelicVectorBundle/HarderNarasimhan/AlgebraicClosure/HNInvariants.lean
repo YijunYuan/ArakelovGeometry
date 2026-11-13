@@ -45,20 +45,20 @@ local instance hermitianClosedHNInvariantsProper : (S.algebraicExtension L).IsPr
 /-- Every actual ordered rank slope is preserved under closed Hermitian
 extension, using the produced canonical rank correspondence. -/
 theorem hermitianHNOrderedSlope_hermitianScalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (j : Fin (Module.finrank K E)) :
+    [hH : V.toNormFamily.IsHermitian] (j : Fin (Module.finrank K V)) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
     let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
     W.hermitianHNOrderedSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH)
-        (Fin.cast (Module.finrank_baseChange (R := L) (S := K) (M' := E)).symm j) =
+        (Fin.cast (Module.finrank_baseChange (R := L) (S := K) (M' := V)).symm j) =
       V.hermitianHNOrderedSlope j := by
   intro hLN hLS W hLH
   change W.toNormFamily.IsHermitian (hS := ⟨hLN⟩) at hLH
-  let jL : Fin (Module.finrank L (L ⊗[K] E)) :=
-    Fin.cast (Module.finrank_baseChange (R := L) (S := K) (M' := E)).symm j
+  let jL : Fin (Module.finrank L (L ⊗[K] V)) :=
+    Fin.cast (Module.finrank_baseChange (R := L) (S := K) (M' := V)).symm j
   have hf (t : ℝ) : Module.finrank L (W.hermitianHNFiltration (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
       (hV := hLH) t) =
       Module.finrank K (V.hermitianHNFiltration t) := by
@@ -79,7 +79,7 @@ theorem hermitianHNOrderedSlope_hermitianScalarExtension_of_isAlgClosed
 /-- The actual closed Hermitian extension preserves canonical positive degree,
 attained by the genuine restriction to its constructed threshold-zero HN term. -/
 theorem positiveDegree_hermitianScalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
@@ -98,7 +98,7 @@ theorem positiveDegree_hermitianScalarExtension_of_isAlgClosed
     _ = ((W.restrictOfMeasurableBase
         ((V.hermitianHNFiltration 0).baseChange L) (hS := ⟨hLS⟩)).degree
           (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) : EReal) :=
-      congrArg (fun U : Submodule L (L ⊗[K] E) ↦
+      congrArg (fun U : Submodule L (L ⊗[K] V) ↦
         ((W.restrictOfMeasurableBase U (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) : EReal))
           (V.hermitianHNFiltration_baseChange_hermitianScalarExtension_of_isAlgClosed
              0).symm
@@ -114,9 +114,9 @@ theorem positiveDegree_hermitianScalarExtension_of_isAlgClosed
 /-- The genuine native quotient positive degree is preserved in every rank,
 through the actual completed quotient tensor isometry. -/
 theorem positiveDegree_quotient_hermitianScalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hH : V.toNormFamily.IsHermitian] (U : Submodule K E) :
+    [hH : V.toNormFamily.IsHermitian] (U : Submodule K V) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
@@ -129,9 +129,10 @@ theorem positiveDegree_quotient_hermitianScalarExtension_of_isAlgClosed
   have he : Qext.positiveDegree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
       (W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).positiveDegree (hS := ⟨hLS⟩)
           (hN := ⟨hLN⟩) :=
-    Qext.positiveDegree_eq_of_completed_isometry _
+    Qext.positiveDegree_eq_of_completed_isometry
+      (W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩))
       (tensorQuotientBaseChangeEquiv (L := L) U) (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
-      (fun x z ↦ V.toNormFamily.hermitianScalarExtension_quotient_norm_eq (hLN := ⟨hLN⟩) U x z)
+      (V.toNormFamily.hermitianScalarExtension_quotient_norm_eq (hLN := ⟨hLN⟩) U)
   exact he.symm.trans
     (Q.positiveDegree_hermitianScalarExtension_of_isAlgClosed (hH := (hH.quotient U)))
 

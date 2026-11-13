@@ -25,7 +25,7 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
@@ -34,7 +34,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 whose genuine modified means and minima are its strictly decreasing jumps.
 No flag, factor semistability, or completed norm identity is assumed. -/
 theorem exists_generalHNFlag_semistable_factors :
-    ∃ (n : ℕ) (U : Fin (n + 1) → Submodule K E) (b : Fin n → ℝ),
+    ∃ (n : ℕ) (U : Fin (n + 1) → Submodule K V) (b : Fin n → ℝ),
     StrictMono U ∧ U 0 = ⊥ ∧ U (Fin.last n) = ⊤ ∧ StrictAnti b ∧
       (∀ t, V.generalHNFiltration t = ⨆ (i : Fin n) (_ : t ≤ b i), U i.succ) ∧
       (∀ i : Fin n, (V.flagQuotientOfMeasurableBase U i).IsSemistable ∧

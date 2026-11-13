@@ -36,10 +36,10 @@ noncomputable section
 
 section Algebra
 
-universe wA
+universe wA wB
 
 variable (K L : Type*) [Field K] [Field L] [Algebra K L]
-  (E F : Type wA) [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  (E : Type wA) (F : Type wB) [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 /-- Canonical products of completed dual vectors in the ordering of the
@@ -162,10 +162,10 @@ theorem completedTensorDualTuple_pairing_smul
 
 end Algebra
 
-universe u v w
+universe u v w w'
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
-  {E F : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 namespace NormFamily
@@ -200,7 +200,7 @@ theorem orthogonalTensorPair_dual_norm_le_projective
       ((TensorProduct.dualDistrib K E F).baseChange (S.ϕ ω).Completion z) ≤
         (ξ.dual.projectiveTensorPair η.dual).norm ω z := by
   let L := (S.ϕ ω).Completion
-  let X := fun i ↦ L ⊗[K] BinaryTensorFactors (Module.Dual K E) (Module.Dual K F) i
+  let X := fun i ↦ L ⊗[K] LiftedTensorFactors (Module.Dual K E) (Module.Dual K F) i
   let : ∀ i, NormedAddCommGroup (X i) :=
     fun i ↦ (tensorPairFactors ξ.dual η.dual i).fibreNormedAddCommGroup ω
   let : ∀ i, NormedSpace L (X i) :=
@@ -210,13 +210,12 @@ theorem orthogonalTensorPair_dual_norm_le_projective
   let := σ.fibreNormedSpace ω
   let A := TensorProduct.AlgebraTensorModule.distribBaseChange K L
     (Module.Dual K E) (Module.Dual K F)
-  let B := (binaryTensorEquiv K
-    (BinaryTensorFactors (Module.Dual K E) (Module.Dual K F))).baseChange K L _ _
-  let P := binaryTensorEquiv L X
+  let B := (tensorPairEquiv K (Module.Dual K E) (Module.Dual K F)).baseChange K L _ _
+  let P := tensorPairFibreEquiv K L (Module.Dual K E) (Module.Dual K F)
   let D := (TensorProduct.dualDistrib K E F).baseChange L
   let f := D.comp (A.symm.toLinearMap.comp P.toLinearMap)
   let v := tensorBaseChangeEquiv K L
-    (BinaryTensorFactors (Module.Dual K E) (Module.Dual K F)) (B.symm z)
+    (LiftedTensorFactors (Module.Dual K E) (Module.Dual K F)) (B.symm z)
   have hP : P v = A z := by
     have h := DFunLike.congr_fun (tensorBaseChangeEquiv_binary K L
       (Module.Dual K E) (Module.Dual K F)) (B.symm z)
@@ -224,15 +223,18 @@ theorem orthogonalTensorPair_dual_norm_le_projective
     simpa only [LinearEquiv.apply_symm_apply] using h
   have hf (x : ∀ i, X i) : ‖f (⨂ₜ[L] i, x i)‖ ≤ (1 : ℝ) * ∏ i, ‖x i‖ := by
     change σ.norm ω (D (A.symm (P (⨂ₜ[L] i, x i)))) ≤ _
-    rw [show P (⨂ₜ[L] i, x i) = x (.inl ()) ⊗ₜ[L] x (.inr ()) from
-      binaryTensorEquiv_tprod L X x]
+    rw [show P (⨂ₜ[L] i, x i) =
+      ((ULift.moduleEquiv.baseChange K L _ _) (x (.inl ()))) ⊗ₜ[L]
+        ((ULift.moduleEquiv.baseChange K L _ _) (x (.inr ()))) from
+      tensorPairFibreEquiv_tprod K L (Module.Dual K E) (Module.Dual K F) x]
     have hprod : (∏ i, ‖x i‖) =
-        ξ.dual.norm ω (x (.inl ())) * η.dual.norm ω (x (.inr ())) := by
+        ξ.dual.norm ω ((ULift.moduleEquiv.baseChange K L _ _) (x (.inl ()))) *
+          η.dual.norm ω ((ULift.moduleEquiv.baseChange K L _ _) (x (.inr ()))) := by
       change (∏ i, (tensorPairFactors ξ.dual η.dual i).norm ω (x i)) = _
-      simp only [Fintype.prod_sum_type, Fintype.prod_unique, tensorPairFactors]
+      simp only [Fintype.prod_sum_type, Fintype.prod_unique, tensorPairFactors, pullback_norm]
+      rfl
     rw [one_mul, hprod]
-    exact ξ.orthogonalTensorPair_dual_norm_tmul_le η ω
-      (x (.inl ())) (x (.inr ()))
+    exact ξ.orthogonalTensorPair_dual_norm_tmul_le η ω _ _
   have h := norm_linearMap_le_projective_of_tprod_le f zero_le_one hf v
   change σ.norm ω (D (A.symm (P v))) ≤ 1 * PiTensorProduct.projectiveSeminorm v at h
   rw [hP, LinearEquiv.symm_apply_apply, one_mul] at h
@@ -511,22 +513,22 @@ namespace AdelicVectorBundle
 /-- Source equation (4.35): the actual orthogonal tensor bundle has the
 rank-weighted degree sum. All analytic fields are supplied by its constructor. -/
 theorem degree_orthogonalTensorPair [S.IsProper]
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hW : W.IsHermitian] :
     (V ⊗ʰ W).degree =
-      (Module.finrank K F : ℝ) * V.degree +
-        (Module.finrank K E : ℝ) * W.degree := by
+      (Module.finrank K W : ℝ) * V.degree +
+        (Module.finrank K V : ℝ) * W.degree := by
   let DV := V.determinantOfMeasurableBase
   let DW := W.determinantOfMeasurableBase
   let T := V.orthogonalTensorPair W
   let s := DV.lineGenerator (hV := (V.determinantOfMeasurableBase_isLine))
   let t := DW.lineGenerator (hV := (W.determinantOfMeasurableBase_isLine))
-  let q := determinantTensorEquiv K E F
-    ((⨂ₜ[K] (_ : Fin (Module.finrank K F)), s.val) ⊗ₜ[K]
-      (⨂ₜ[K] (_ : Fin (Module.finrank K E)), t.val))
-  have hq : q ≠ 0 := determinantTensorEquiv_tprod_ne_zero K E F s.property t.property
+  let q := determinantTensorEquiv K V W
+    ((⨂ₜ[K] (_ : Fin (Module.finrank K W)), s.val) ⊗ₜ[K]
+      (⨂ₜ[K] (_ : Fin (Module.finrank K V)), t.val))
+  have hq : q ≠ 0 := determinantTensorEquiv_tprod_ne_zero K V W s.property t.property
   have hsI : Integrable (V.toNormFamily.determinant.logNorm s.val) S.v :=
     DV.integrable_logNorm s.val
   have htI : Integrable (W.toNormFamily.determinant.logNorm t.val) S.v :=
@@ -534,8 +536,8 @@ theorem degree_orthogonalTensorPair [S.IsProper]
   calc
     T.degree = -(∫ ω, T.toNormFamily.determinant.logNorm q ω ∂S.v) :=
       T.degree_eq_neg_integral ⟨q, hq⟩
-    _ = -(∫ ω, (Module.finrank K F : ℝ) * V.toNormFamily.determinant.logNorm s.val ω +
-        (Module.finrank K E : ℝ) * W.toNormFamily.determinant.logNorm t.val ω ∂S.v) := by
+    _ = -(∫ ω, (Module.finrank K W : ℝ) * V.toNormFamily.determinant.logNorm s.val ω +
+        (Module.finrank K V : ℝ) * W.toNormFamily.determinant.logNorm t.val ω ∂S.v) := by
       congr 1
       apply integral_congr_ae
       exact Filter.Eventually.of_forall fun ω ↦

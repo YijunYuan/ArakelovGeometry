@@ -302,7 +302,7 @@ end BinaryCovectorDegeneration
 
 section QuotientCoordinates
 
-variable {V : Type u} [AddCommGroup V] [Module k V]
+variable {V : Type*} [AddCommGroup V] [Module k V]
 
 /-- The scalar extension of a binary quotient in its chosen target basis.
 This explicit basis transport retains all original quotient coefficients; the

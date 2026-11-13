@@ -101,5 +101,67 @@ theorem pushforward_dual (ξ : NormFamily S E) (π : E →ₗ[K] F)
   ext ω z
   exact ξ.pushforward_dual_norm_eq π hπ ω z
 
+/-- The actual completed transpose preserves the actual dual norm when the
+original rational equivalence preserves every completed vector norm. -/
+theorem dualEquiv_norm_eq_of_completed_isometry (ξ : NormFamily S E)
+    (η : NormFamily S F) (ω : S.Ω) (e : E ≃ₗ[K] F)
+    (he : ∀ x, η.norm ω (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = ξ.norm ω x)
+    (z : (S.ϕ ω).Completion ⊗[K] Module.Dual K F) :
+    ξ.dual.norm ω (e.dualMap.toLinearMap.baseChange (S.ϕ ω).Completion z) =
+      η.dual.norm ω z := by
+  change ξ.dual.norm ω (e.toLinearMap.dualMap.baseChange (S.ϕ ω).Completion z) =
+    η.dual.norm ω z
+  apply le_antisymm
+  · apply ξ.dual_norm_le ω _ (η.dual.norm_nonneg ω z)
+    intro x
+    rw [dualBaseChangeEquiv_dualMap, LinearMap.comp_apply]
+    simpa only [he] using η.norm_dual_apply_le ω z
+      (e.toLinearMap.baseChange (S.ϕ ω).Completion x)
+  · apply η.dual_norm_le ω z (ξ.dual.norm_nonneg ω _)
+    intro y
+    obtain ⟨x, rfl⟩ := (e.baseChange K (S.ϕ ω).Completion E F).surjective y
+    change ‖dualBaseChangeEquiv K (S.ϕ ω).Completion F z
+      (e.toLinearMap.baseChange (S.ϕ ω).Completion x)‖ ≤
+        ξ.dual.norm ω (e.toLinearMap.dualMap.baseChange (S.ϕ ω).Completion z) *
+          η.norm ω (e.toLinearMap.baseChange (S.ϕ ω).Completion x)
+    simpa only [dualBaseChangeEquiv_dualMap, LinearMap.comp_apply, he] using
+      ξ.norm_dual_apply_le ω (e.toLinearMap.dualMap.baseChange
+        (S.ϕ ω).Completion z) x
+
+
+/-- Duality transports an equivalence pullback by the inverse transpose. -/
+theorem pullbackEquiv_dual (ξ : NormFamily S E) (e : F ≃ₗ[K] E) :
+    (ξ.pullback e.toLinearMap e.injective).dual =
+      ξ.dual.pullback e.symm.dualMap.toLinearMap e.symm.dualMap.injective := by
+  ext ω z
+  let η := ξ.pullback e.toLinearMap e.injective
+  have h (x : (S.ϕ ω).Completion ⊗[K] E) :
+      η.norm ω (e.symm.toLinearMap.baseChange (S.ϕ ω).Completion x) = ξ.norm ω x := by
+    change ξ.norm ω ((e.baseChange K (S.ϕ ω).Completion _ _)
+      ((e.baseChange K (S.ϕ ω).Completion _ _).symm x)) = _
+    rw [LinearEquiv.apply_symm_apply]
+  exact (ξ.dualEquiv_norm_eq_of_completed_isometry η ω e.symm h z).symm
+
+/-- The canonical bidual norm commutes with equivalence pullback. -/
+theorem pullbackEquiv_bidual (ξ : NormFamily S E) (e : F ≃ₗ[K] E) :
+    (ξ.pullback e.toLinearMap e.injective).dual.dual.pullback
+        (Module.Dual.eval K F) (Module.eval_apply_injective K) =
+      (ξ.dual.dual.pullback (Module.Dual.eval K E)
+        (Module.eval_apply_injective K)).pullback e.toLinearMap e.injective := by
+  ext ω x
+  let η := ξ.pullback e.toLinearMap e.injective
+  have h (z : (S.ϕ ω).Completion ⊗[K] Module.Dual K E) :
+      η.dual.norm ω (e.dualMap.toLinearMap.baseChange (S.ϕ ω).Completion z) =
+        ξ.dual.norm ω z :=
+    η.dualEquiv_norm_eq_of_completed_isometry ξ ω e (fun _ ↦ rfl) z
+  have hh := ξ.dual.dualEquiv_norm_eq_of_completed_isometry η.dual ω e.dualMap h
+    ((Module.Dual.eval K F).baseChange (S.ϕ ω).Completion x)
+  have hc : e.dualMap.dualMap.toLinearMap.comp (Module.Dual.eval K F) =
+      (Module.Dual.eval K E).comp e.toLinearMap := by ext y f; rfl
+  have hcx := DFunLike.congr_fun (congrArg (fun f ↦ f.baseChange (S.ϕ ω).Completion) hc) x
+  simp only [LinearMap.baseChange_comp, LinearMap.comp_apply] at hcx
+  rw [hcx] at hh
+  exact hh.symm
+
 end NormFamily
 end ArakelovGeometry

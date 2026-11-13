@@ -219,9 +219,9 @@ section GeometricAssembly
 universe u
 
 variable {k : Type u} [Field k] [CharZero k] [IsAlgClosed k]
-  {E : Bool → Type u} [∀ j, AddCommGroup (E j)] [∀ j, Module k (E j)]
+  {E : Bool → Type*} [∀ j, AddCommGroup (E j)] [∀ j, Module k (E j)]
   [∀ j, FiniteDimensional k (E j)] [∀ j, Nontrivial (E j)]
-  {Q : Type u} [AddCommGroup Q] [Module k Q] [FiniteDimensional k Q]
+  {Q : Type*} [AddCommGroup Q] [Module k Q] [FiniteDimensional k Q]
 
 /-- The binary geometric implication needed on Bost p31: actual A2 quotient
 nonsemistability over an algebraically closed characteristic-zero field produces
@@ -243,8 +243,10 @@ theorem exists_binary_negative_filtrations_of_not_isQuotientSemistable
       Submodule.filtrationExpectation
         (fun t ↦ (Submodule.piTensorFiltration P t).map q) < 0 := by
   classical
-  let ι j := Free.ChooseBasisIndex k (E j)
-  let b : ∀ j, Basis (ι j) k (E j) := fun j ↦ Free.chooseBasis k (E j)
+  let ι j := ULift.{u} (Fin (finrank k (E j)))
+  let b : ∀ j, Basis (ι j) k (E j) := fun j ↦
+    (Module.finBasis k (E j)).reindex Equiv.ulift.symm
+  let : ∀ j, Nonempty (ι j) := fun j ↦ ⟨ULift.up ⟨0, finrank_pos⟩⟩
   let d := Module.finBasis k Q
   let qc := binaryQuotientInCoordinates b q
   have hqc := binaryQuotientInCoordinates_surjective b q hq

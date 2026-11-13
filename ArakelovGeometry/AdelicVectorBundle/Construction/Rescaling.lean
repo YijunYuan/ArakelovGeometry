@@ -85,32 +85,35 @@ namespace AdelicVectorBundle
 
 /-- The actual adelic bundle with completed norms multiplied by `exp φ`.
 All analytic fields are produced from a measurable integrable representative. -/
-def scaleExp (V : AdelicVectorBundle S E) (φ : S.Ω → ℝ)
-    (hm : Measurable φ) (hi : Integrable φ S.v) : AdelicVectorBundle S E where
+abbrev scaleExp (V : AdelicVectorBundle S) (φ : S.Ω → ℝ)
+    (hm : Measurable φ) (hi : Integrable φ S.v) : AdelicVectorBundle S where
+  carrier := V
   toNormFamily := V.toNormFamily.scale (fun ω ↦ Real.exp (φ ω)) (fun _ ↦ Real.exp_pos _)
-  isMeasurable := V.isMeasurable.scale _ _ hm.exp
-  dual_isMeasurable := by
-    rw [NormFamily.scale_dual]
-    exact V.dual_isMeasurable.scale _ _ hm.exp.inv
-  isDominated := V.isDominated.scale_exp hi
+  toIsAdelic := {
+    isMeasurable := V.isMeasurable.scale _ _ hm.exp
+    dual_isMeasurable := by
+      rw [NormFamily.scale_dual]
+      exact V.dual_isMeasurable.scale _ _ hm.exp.inv
+    isDominated := V.isDominated.scale_exp hi
+  }
 
 @[simp]
-theorem scaleExp_toNormFamily (V : AdelicVectorBundle S E) (φ : S.Ω → ℝ)
+theorem scaleExp_toNormFamily (V : AdelicVectorBundle S) (φ : S.Ω → ℝ)
     (hm : Measurable φ) (hi : Integrable φ S.v) :
     (V.scaleExp φ hm hi).toNormFamily =
       V.toNormFamily.scale (fun ω ↦ Real.exp (φ ω)) (fun _ ↦ Real.exp_pos _) := rfl
 
 /-- Integrating the exact actual determinant rescaling gives its degree shift. -/
-theorem degree_scaleExp [S.IsProper] (V : AdelicVectorBundle S E) (φ : S.Ω → ℝ)
+theorem degree_scaleExp [S.IsProper] (V : AdelicVectorBundle.{w} S) (φ : S.Ω → ℝ)
     (hm : Measurable φ) (hi : Integrable φ S.v)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.scaleExp φ hm hi).degree = V.degree -
-      (Module.finrank K E : ℝ) * (∫ ω, φ ω ∂S.v) := by
-  let z := determinantGenerator (K := K) (E := E)
+      (Module.finrank K V : ℝ) * (∫ ω, φ ω ∂S.v) := by
+  let z := determinantGenerator (K := K) (E := V)
   have hz : z ≠ 0 := determinantGenerator_ne_zero
   have hlog : (V.scaleExp φ hm hi).toNormFamily.determinant.logNorm z =
-      (fun ω ↦ (Module.finrank K E : ℝ) * φ ω) + V.toNormFamily.determinant.logNorm z := by
+      (fun ω ↦ (Module.finrank K V : ℝ) * φ ω) + V.toNormFamily.determinant.logNorm z := by
     funext ω
     exact V.toNormFamily.determinant_logNorm_scale_exp φ z hz ω
   have hbase : Integrable (V.toNormFamily.determinant.logNorm z) S.v :=
@@ -118,27 +121,29 @@ theorem degree_scaleExp [S.IsProper] (V : AdelicVectorBundle S E) (φ : S.Ω →
   rw [(V.scaleExp φ hm hi).degree_eq_neg_integral ⟨z, hz⟩,
     V.degree_eq_neg_integral ⟨z, hz⟩, hlog]
   simp only [Pi.add_apply]
-  rw [integral_add (hi.const_mul (Module.finrank K E : ℝ)) hbase, integral_const_mul]
+  rw [integral_add (hi.const_mul (Module.finrank K V : ℝ)) hbase, integral_const_mul]
   ring
 
 /-- Restriction and actual exponential rescaling commute as adelic bundles.
 The structure equality follows from equality of their canonical norm families. -/
-theorem restrict_scaleExp (V : AdelicVectorBundle S E) (φ : S.Ω → ℝ)
+theorem restrict_scaleExp (V : AdelicVectorBundle S) (φ : S.Ω → ℝ)
     (hm : Measurable φ) (hi : Integrable φ S.v)
     [hS : S.HasMeasurableBase]
-    (U : Submodule K E) :
+    (U : Submodule K V) :
     (V.scaleExp φ hm hi).restrictOfMeasurableBase U =
       (V.restrictOfMeasurableBase U).scaleExp φ hm hi := by
   apply AdelicVectorBundle.ext
+    (hξ := ((V.scaleExp φ hm hi).restrictOfMeasurableBase U).toIsAdelic)
+    (hη := ((V.restrictOfMeasurableBase U).scaleExp φ hm hi).toIsAdelic)
   ext ω z
   rfl
 
 /-- Every actual restricted degree has its own exact rank shift. -/
-theorem degree_restrict_scaleExp [S.IsProper] (V : AdelicVectorBundle S E)
+theorem degree_restrict_scaleExp [S.IsProper] (V : AdelicVectorBundle S)
     (φ : S.Ω → ℝ) (hm : Measurable φ) (hi : Integrable φ S.v)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (U : Submodule K E) :
+    (U : Submodule K V) :
     ((V.scaleExp φ hm hi).restrictOfMeasurableBase U).degree =
       (V.restrictOfMeasurableBase U).degree -
         (Module.finrank K U : ℝ) * (∫ ω, φ ω ∂S.v) := by

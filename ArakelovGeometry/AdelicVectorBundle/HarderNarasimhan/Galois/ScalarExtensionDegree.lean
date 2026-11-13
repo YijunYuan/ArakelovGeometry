@@ -47,11 +47,11 @@ private theorem hermitianDegree_exists_nonzero_determinant
 /-- Original common density and finite extension produce the actual target
 degree context, and coefficient transport preserves every genuine restriction degree. -/
 theorem degree_hermitianScalarExtension_restrict_algEquiv_of_finiteDimensional
-    [FiniteDimensional K L] (V : AdelicVectorBundle S E)
+    [FiniteDimensional K L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] (σ : L ≃ₐ[K] L)
-    (B : Submodule L (L ⊗[K] E)) :
+    (B : Submodule L (L ⊗[K] V)) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
@@ -75,11 +75,11 @@ theorem degree_hermitianScalarExtension_restrict_algEquiv_of_finiteDimensional
 /-- Original common density produces density on the actual closed algebraic
 curve; every genuine Hermitian restriction has coefficient-invariant degree. -/
 theorem degree_hermitianScalarExtension_restrict_algEquiv_of_isAlgClosed
-    [IsAlgClosed L] (V : AdelicVectorBundle S E)
+    [IsAlgClosed L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] (σ : L ≃ₐ[K] L)
-    (B : Submodule L (L ⊗[K] E)) :
+    (B : Submodule L (L ⊗[K] V)) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
@@ -103,11 +103,11 @@ theorem degree_hermitianScalarExtension_restrict_algEquiv_of_isAlgClosed
 /-- The genuine finite-extension restriction mean slopes agree; zero rank
 uses the existing total real quotient convention. -/
 theorem slope_hermitianScalarExtension_restrict_algEquiv_of_finiteDimensional
-    [FiniteDimensional K L] (V : AdelicVectorBundle S E)
+    [FiniteDimensional K L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] (σ : L ≃ₐ[K] L)
-    (B : Submodule L (L ⊗[K] E)) :
+    (B : Submodule L (L ⊗[K] V)) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
@@ -122,11 +122,11 @@ theorem slope_hermitianScalarExtension_restrict_algEquiv_of_finiteDimensional
 /-- The actual closed-extension restriction mean slopes agree for every
 coefficient automorphism, including the empty restriction. -/
 theorem slope_hermitianScalarExtension_restrict_algEquiv_of_isAlgClosed
-    [IsAlgClosed L] (V : AdelicVectorBundle S E)
+    [IsAlgClosed L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] (σ : L ≃ₐ[K] L)
-    (B : Submodule L (L ⊗[K] E)) :
+    (B : Submodule L (L ⊗[K] V)) :
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)

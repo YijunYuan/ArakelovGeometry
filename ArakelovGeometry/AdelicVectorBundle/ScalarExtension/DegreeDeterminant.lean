@@ -39,7 +39,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- The ordinary common-density bundle's actual determinant is measurable
 by the completed determinant isometry and original determinant measurability. -/
-instance scalarExtension_determinant_isMeasurable (V : AdelicVectorBundle S E)
+instance scalarExtension_determinant_isMeasurable (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [S.IsArchimedeanNormalized] :
     (V.scalarExtension (L := L)).toNormFamily.determinant.IsMeasurable :=
@@ -48,7 +48,7 @@ instance scalarExtension_determinant_isMeasurable (V : AdelicVectorBundle S E)
 /-- The actual ordinary common-density extended vector bundle preserves
 degree for every algebraic extension, using produced determinant measurability. -/
 theorem degreeOfMeasurableDeterminant_scalarExtension [S.IsProper]
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     (V.scalarExtension (L := L)).degreeOfMeasurableDeterminant
@@ -76,7 +76,7 @@ variable [Countable S.Ω] [DiscreteMeasurableSpace S.Ω]
 /-- The countable-discrete bundle's actual determinant is measurable via
 the completed determinant isometry and original discrete measurability. -/
 instance scalarExtensionOfCountableDiscreteBase_determinant_isMeasurable
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [S.IsArchimedeanNormalized] :
     (V.scalarExtensionOfCountableDiscreteBase (L := L)).toNormFamily.determinant.IsMeasurable :=
   (V.isMeasurable.determinant_of_discrete_or_countable
@@ -85,7 +85,7 @@ instance scalarExtensionOfCountableDiscreteBase_determinant_isMeasurable
 /-- The actual countable-discrete extended vector bundle preserves degree
 for every algebraic extension, without extending discreteness as a premise. -/
 theorem degreeOfMeasurableDeterminant_scalarExtensionOfCountableDiscreteBase [S.IsProper]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     (V.scalarExtensionOfCountableDiscreteBase (L := L)).degreeOfMeasurableDeterminant
@@ -110,7 +110,7 @@ end CountableDiscrete
 
 /-- The actual Hermitian common-density bundle's determinant is measurable
 through the proved Hermitian determinant isometry and original measurability. -/
-instance hermitianScalarExtension_determinant_isMeasurable (V : AdelicVectorBundle S E)
+instance hermitianScalarExtension_determinant_isMeasurable (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hS : S.IsArchimedeanNormalized]
     [hL : (S.algebraicExtension L).IsArchimedeanNormalized]
@@ -122,7 +122,7 @@ instance hermitianScalarExtension_determinant_isMeasurable (V : AdelicVectorBund
 /-- The actual Hermitian common-density extended vector bundle preserves
 degree for every algebraic extension, with actual determinant measurability produced. -/
 theorem degreeOfMeasurableDeterminant_hermitianScalarExtension [S.IsProper]
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hS : S.IsArchimedeanNormalized]
     [hL : (S.algebraicExtension L).IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :
@@ -147,7 +147,7 @@ theorem degreeOfMeasurableDeterminant_hermitianScalarExtension [S.IsProper]
 /-- Over finite extensions, the produced-determinant ordinary degree equals
 the existing vector degree with its proved target common-density context. -/
 theorem degreeOfMeasurableDeterminant_scalarExtension_eq_degree
-    [S.IsProper] [FiniteDimensional K L] (V : AdelicVectorBundle S E)
+    [S.IsProper] [FiniteDimensional K L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
@@ -165,7 +165,7 @@ theorem degreeOfMeasurableDeterminant_scalarExtension_eq_degree
 the existing vector degree with its proved target discrete context. -/
 theorem degreeOfMeasurableDeterminant_scalarExtensionOfCountableDiscreteBase_eq_degree
     [S.IsProper] [FiniteDimensional K L] [Countable S.Ω] [DiscreteMeasurableSpace S.Ω]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     (V.scalarExtensionOfCountableDiscreteBase (L := L)).degreeOfMeasurableDeterminant
@@ -183,7 +183,7 @@ theorem degreeOfMeasurableDeterminant_scalarExtensionOfCountableDiscreteBase_eq_
 /-- Over finite extensions, the produced-determinant Hermitian degree equals
 the existing vector degree with its proved target common-density context. -/
 theorem degreeOfMeasurableDeterminant_hermitianScalarExtension_eq_degree
-    [S.IsProper] [FiniteDimensional K L] (V : AdelicVectorBundle S E)
+    [S.IsProper] [FiniteDimensional K L] (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hS : S.IsArchimedeanNormalized]
     [hL : (S.algebraicExtension L).IsArchimedeanNormalized]

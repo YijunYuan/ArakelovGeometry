@@ -277,7 +277,7 @@ open scoped TensorProduct
 
 universe u
 
-variable {K Q ι κ : Type*} [Field K] {E V : Type u}
+variable {K Q ι κ E V : Type*} [Field K]
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup V] [Module K V] [FiniteDimensional K V]
   [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q] [Finite ι] [Finite κ]

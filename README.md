@@ -541,11 +541,29 @@ AdelicVectorBundle/
   Examples/                     constructions and counterexamples
 ```
 
-`NormFamily` keeps the choice of norms explicit, so comparison theorems can use
-several metrics on the same completed vector space. `NormFamily.IsAdelic` records
-primal measurability, dual measurability and domination. `AdelicVectorBundle`
-bundles these proofs with the norm family. Restriction, quotient and dual
-constructors retain their precise additional measurability hypotheses.
+`NormFamily S E` keeps the vector space and the choice of norms explicit, so
+comparison theorems can use several metrics on the same completed vector space.
+`NormFamily.IsAdelic` records primal measurability, dual measurability and
+domination. `AdelicVectorBundle S` packages the vector space itself, its additive
+and module structures, finite dimensionality, the norm family and its adelicity
+certificate. A bundle `V` coerces to its carrier: vectors are written `x : V`,
+subspaces `Submodule K V`, and underlying linear maps `V →ₗ[K] W`.
+When a carrier universe must be fixed, write `AdelicVectorBundle.{w} S`;
+the universes of the base field and parameter space are inferred from `S`.
+Bundles on the same curve can have carriers in independent universes. Binary
+injective, mixed and Hermitian tensors retain the carrier `V ⊗[K] W`. Internally,
+`LiftedTensorFactors` uses `ULift` to reuse finite tensor constructions, and
+`tensorPairEquiv` transports their norms back to that ordinary tensor product.
+
+For a bundled curve `C`, `C.AdelicVectorBundle` abbreviates
+`AdelicVectorBundle C.AS`; its base field is `C.K`. Properness and the analytic
+base conditions remain separate assumptions on the results that use them.
+`V.toNormFamily` exposes the metric, and `ξ.toAdelicVectorBundle` packages an
+explicit norm family when `[ξ.IsAdelic]` is available. Packaging preserves the
+carrier and norms definitionally. Fixed-space comparisons continue to use norm
+families with adelicity assumptions; there is no separate `AdelicNormFamily`
+structure. Restriction, quotient and dual constructors package their resulting
+spaces and retain their precise additional measurability hypotheses.
 
 Supporting results are placed with their mathematical subject and use mathlib's
 existing constructions wherever applicable. Specialized files import the modules

@@ -34,11 +34,11 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 /-- Rank, ordinary degree, and every completed norm are preserved by a native
 subquotient comparison with its finite-stage model. -/
 abbrev HasCommonNativeSubquotientComparison
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
     [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] [FiniteDimensional K F]
-    (P Q : Submodule F (F ⊗[K] E)) (A B : Submodule L (L ⊗[K] E)) : Prop :=
+    (P Q : Submodule F (F ⊗[K] V)) (A B : Submodule L (L ⊗[K] V)) : Prop :=
   Module.finrank L (B ⧸ A.comap B.subtype) = Module.finrank F (Q ⧸ P.comap Q.subtype) ∧
   V.CommonSubspaceQuotientDegreeEq (L := L) F P Q B (A.comap B.subtype) ∧
   ∃ e : (L ⊗[F] (Q ⧸ P.comap Q.subtype)) ≃ₗ[L] (B ⧸ A.comap B.subtype),
@@ -51,23 +51,23 @@ abbrev HasCommonNativeSubquotientComparison
           (P.comap Q.subtype)).scalarExtension (L := L)).norm x z
 
 private theorem hasCommonNativeSubquotientComparison_of_images
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
     [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] [FiniteDimensional K F]
     (hi : ∃ a : F, a ^ 2 = -1)
-    (P Q : Submodule F (F ⊗[K] E)) (hPQ : P ≤ Q)
-    (A B : Submodule L (L ⊗[K] E)) (hAB : A ≤ B)
+    (P Q : Submodule F (F ⊗[K] V)) (hPQ : P ≤ Q)
+    (A B : Submodule L (L ⊗[K] V)) (hAB : A ≤ B)
     (hP : (P.baseChange L).map
-      (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E).toLinearMap = A)
+      (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L V).toLinearMap = A)
     (hQ : (Q.baseChange L).map
-      (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E).toLinearMap = B)
+      (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L V).toLinearMap = B)
     (hd : V.CommonNativeSubquotientDegreeEq (L := L) (hcount := hcount) F P Q) :
     V.HasCommonNativeSubquotientComparison (L := L) (hcount := hcount) F P Q A B := by
   obtain ⟨e, he, hr⟩ := V.toNormFamily.hasScalarExtensionSubquotientIsometry_of_images
     (L := L) F hi P Q hPQ A B hP hQ
   have hP' : (P.baseChange L).map
-      (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E).toLinearMap =
+      (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L V).toLinearMap =
         (A.comap B.subtype).map B.subtype := by
     simpa only [Submodule.map_comap_subtype, inf_eq_right.mpr hAB] using hP
   exact ⟨hr, commonSubspaceQuotientDegreeEq_of_images V (hcount := hcount) F P Q B
@@ -76,14 +76,14 @@ private theorem hasCommonNativeSubquotientComparison_of_images
 /-- One finite field preserves every flag factor's rank, ordinary degree, and
 completed norms under a produced rational equivalence. -/
 theorem exists_complexFiniteStage_nativeFlag_isometries_degrees_of_common_density
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    (n : ℕ) (A : Fin (n + 1) → Submodule L (L ⊗[K] E))
+    (n : ℕ) (A : Fin (n + 1) → Submodule L (L ⊗[K] V))
     (hA : StrictMono A) (hbot : A 0 = ⊥) (htop : A (Fin.last n) = ⊤) :
     ∃ F : AdelicStructure.FiniteIntermediateField K L, (∃ a : F, a ^ 2 = -1) ∧
-      ∃ C : Fin (n + 1) → Submodule F (F ⊗[K] E),
+      ∃ C : Fin (n + 1) → Submodule F (F ⊗[K] V),
         (∀ i, ((C i).baseChange L).map
-          (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E).toLinearMap = A i) ∧
+          (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L V).toLinearMap = A i) ∧
         (∀ i, Module.finrank F (C i) = Module.finrank L (A i)) ∧
         StrictMono C ∧ C 0 = ⊥ ∧ C (Fin.last n) = ⊤ ∧
         ∀ i : Fin n, V.HasCommonNativeSubquotientComparison (L := L) F

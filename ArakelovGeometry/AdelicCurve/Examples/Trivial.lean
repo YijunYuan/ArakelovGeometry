@@ -59,7 +59,7 @@ namespace ArakelovGeometry.AdelicCurve
 open MeasureTheory
 
 /-- The trivial adelic structure, exposed in the curve namespace for compatibility. -/
-noncomputable abbrev trivialAdelicStructure (K : Type*) [Field K]
+noncomputable def trivialAdelicStructure (K : Type*) [Field K]
     (Ω : Type*) [A : MeasurableSpace Ω] (v : Measure Ω) : AdelicStructure K :=
   AdelicStructure.trivialAdelicStructure K Ω v
 

@@ -83,12 +83,12 @@ namespace AdelicVectorBundle
 
 /-- Integrating the actual determinant contraction gives the log-integral
 comparison for a two-step exact sequence. -/
-theorem integral_determinantSequence_logNorm_le (V : AdelicVectorBundle S E)
-    (W : Submodule K E)
+theorem integral_determinantSequence_logNorm_le (V : AdelicVectorBundle S)
+    (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     {z : ⋀[K]^(Module.finrank K W) W}
-    {q : ⋀[K]^(Module.finrank K (E ⧸ W)) (E ⧸ W)}
+    {q : ⋀[K]^(Module.finrank K (V ⧸ W)) (V ⧸ W)}
     (hz : z ≠ 0) (hq : q ≠ 0) :
     (∫ ω, V.toNormFamily.determinant.logNorm
       (determinantSequenceEquiv W (z ⊗ₜ[K] q)) ω ∂S.v) ≤
@@ -117,8 +117,8 @@ theorem integral_determinantSequence_logNorm_le (V : AdelicVectorBundle S E)
 
 /-- A nonzero determinant vector computes the restricted bundle degree
 using exactly the actual restricted norm family. -/
-theorem degree_restrict_eq_neg_integral [S.IsProper] (V : AdelicVectorBundle S E)
-    (W : Submodule K E)
+theorem degree_restrict_eq_neg_integral [S.IsProper] (V : AdelicVectorBundle S)
+    (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (z : {z : ⋀[K]^(Module.finrank K W) W // z ≠ 0}) :
@@ -129,11 +129,11 @@ theorem degree_restrict_eq_neg_integral [S.IsProper] (V : AdelicVectorBundle S E
 
 /-- A nonzero determinant vector computes the quotient bundle degree
 using exactly the actual quotient norm family. -/
-theorem degree_quotient_eq_neg_integral [S.IsProper] (V : AdelicVectorBundle S E)
-    (W : Submodule K E)
+theorem degree_quotient_eq_neg_integral [S.IsProper] (V : AdelicVectorBundle S)
+    (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (q : {q : ⋀[K]^(Module.finrank K (E ⧸ W)) (E ⧸ W) // q ≠ 0}) :
+    (q : {q : ⋀[K]^(Module.finrank K (V ⧸ W)) (V ⧸ W) // q ≠ 0}) :
     (V.quotientOfMeasurableBase W).degree =
       -(∫ ω, (V.toNormFamily.quotient W).determinant.logNorm q.val ω ∂S.v) := by
   simpa only [quotientOfMeasurableBase_toNormFamily] using
@@ -141,15 +141,15 @@ theorem degree_quotient_eq_neg_integral [S.IsProper] (V : AdelicVectorBundle S E
 
 /-- Degrees are superadditive for the actual restricted and quotient bundles,
 the two-step lower inequality of Proposition 4.3.13. -/
-theorem degree_restrict_add_degree_quotient_le [S.IsProper] (V : AdelicVectorBundle S E)
-    (W : Submodule K E)
+theorem degree_restrict_add_degree_quotient_le [S.IsProper] (V : AdelicVectorBundle S)
+    (W : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.restrictOfMeasurableBase W).degree +
         (V.quotientOfMeasurableBase W).degree ≤ V.degree := by
   let z : {z : ⋀[K]^(Module.finrank K W) W // z ≠ 0} :=
     ⟨determinantGenerator, determinantGenerator_ne_zero⟩
-  let q : {q : ⋀[K]^(Module.finrank K (E ⧸ W)) (E ⧸ W) // q ≠ 0} :=
+  let q : {q : ⋀[K]^(Module.finrank K (V ⧸ W)) (V ⧸ W) // q ≠ 0} :=
     ⟨determinantGenerator, determinantGenerator_ne_zero⟩
   let e := determinantSequenceEquiv W (z.val ⊗ₜ[K] q.val)
   have he : e ≠ 0 := determinantSequence_tmul_ne_zero W z.property q.property

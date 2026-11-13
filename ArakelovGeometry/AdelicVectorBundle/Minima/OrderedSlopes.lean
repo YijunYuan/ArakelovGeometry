@@ -35,7 +35,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- The actual ordinary restriction to a completed minima cut has minimal
 slope at least its real cut, including the zero cut's infinite endpoint. -/
-theorem coe_le_minimalSlope_restrict_minimaFiltration (V : AdelicVectorBundle S E)
+theorem coe_le_minimalSlope_restrict_minimaFiltration (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] (t : ℝ) :
     (t : EReal) ≤ (V.restrictOfMeasurableBase (V.minimaFiltration t)).minimalSlope :=
@@ -45,7 +45,7 @@ theorem coe_le_minimalSlope_restrict_minimaFiltration (V : AdelicVectorBundle S 
 
 /-- Source Corollary4.3.78's filtration inclusion, from the produced actual
 restricted minimal-slope bound and the actual general HN maximality. -/
-theorem minimaFiltration_le_generalHNFiltration (V : AdelicVectorBundle S E)
+theorem minimaFiltration_le_generalHNFiltration (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] (t : ℝ) :
     V.minimaFiltration t ≤ V.generalHNFiltration t :=
@@ -56,10 +56,10 @@ theorem minimaFiltration_le_generalHNFiltration (V : AdelicVectorBundle S E)
 the source minimum index `j.val + 1`, so only valid positive indices occur.
 No attained or finite-value logarithmic minimum is assumed; rank zero has
 no ordered slots. -/
-theorem logarithmicMinimum_le_generalHNOrderedSlope (V : AdelicVectorBundle S E)
+theorem logarithmicMinimum_le_generalHNOrderedSlope (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    (j : Fin (Module.finrank K E)) :
+    (j : Fin (Module.finrank K V)) :
     V.logarithmicMinimum (j.val + 1) ≤ (V.generalHNOrderedSlope j : EReal) := by
   rw [V.logarithmicMinimum_eq_iSup_finrank_minimaFiltration (j.val + 1)]
   apply iSup_le

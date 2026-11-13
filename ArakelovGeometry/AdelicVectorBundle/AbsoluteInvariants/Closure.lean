@@ -30,7 +30,7 @@ variable {K : Type*} [Field K] {S : AdelicStructure K} [S.IsProper]
 /-- The existing absolute positive degree is computed on any prescribed
 algebraic closure using a produced field isomorphism. -/
 theorem absolutePositiveDegree_eq_scalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     V.absolutePositiveDegree =
@@ -44,7 +44,7 @@ theorem absolutePositiveDegree_eq_scalarExtension_of_isAlgClosed
 /-- The existing absolute maximal slope is computed on every algebraic
 closure, including its bottom convention for the zero bundle. -/
 theorem absoluteMaximalSlope_eq_scalarExtension_of_isAlgClosed
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     V.absoluteMaximalSlope =

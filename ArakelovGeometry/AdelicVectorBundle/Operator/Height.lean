@@ -79,8 +79,8 @@ variable [FiniteDimensional K F]
 
 /-- Domination and measurability of the two actual families give a genuine
 integrable lower envelope; no countability hypothesis is needed for this bound. -/
-theorem localHeight_hasIntegrableLowerBound (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F) (f : {f : E →ₗ[K] F // f ≠ 0}) :
+theorem localHeight_hasIntegrableLowerBound (V : AdelicVectorBundle.{w} S)
+    (W : AdelicVectorBundle.{w'} S) (f : {f : V →ₗ[K] W // f ≠ 0}) :
     HasIntegrableLowerBound (V.toNormFamily.localHeight W.toNormFamily f) S.v := by
   obtain ⟨x, hx⟩ : ∃ x, f.val x ≠ 0 := by
     by_contra! h
@@ -92,34 +92,34 @@ theorem localHeight_hasIntegrableLowerBound (V : AdelicVectorBundle S E)
 
 /-- Source Definition4.3.17 uses the lower envelope integral. The value for
 zero is an explicit convention, not the real logarithm of its zero norm. -/
-noncomputable def mapHeight (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
-    (f : E →ₗ[K] F) : EReal := by
+noncomputable def mapHeight (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (f : V →ₗ[K] W) : EReal := by
   classical
   exact if hf : f = 0 then ⊥ else
     lowerEnvelopeIntegral (V.toNormFamily.localHeight W.toNormFamily ⟨f, hf⟩) S.v
 
 @[simp]
-theorem mapHeight_zero (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) :
+theorem mapHeight_zero (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) :
     V.mapHeight W 0 = ⊥ := by
   simp [mapHeight]
 
 /-- The height of a nonzero map is exactly the stipulated lower integral. -/
-theorem mapHeight_eq_lowerEnvelopeIntegral (V : AdelicVectorBundle S E)
-    (W : AdelicVectorBundle S F) {f : E →ₗ[K] F} (hf : f ≠ 0) :
+theorem mapHeight_eq_lowerEnvelopeIntegral (V : AdelicVectorBundle.{w} S)
+    (W : AdelicVectorBundle.{w'} S) {f : V →ₗ[K] W} (hf : f ≠ 0) :
     V.mapHeight W f =
       lowerEnvelopeIntegral (V.toNormFamily.localHeight W.toNormFamily ⟨f, hf⟩) S.v := by
   simp [mapHeight, hf]
 
 /-- A nonzero map has height strictly greater than negative infinity. -/
-theorem bot_lt_mapHeight (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
-    {f : E →ₗ[K] F} (hf : f ≠ 0) : ⊥ < V.mapHeight W f := by
+theorem bot_lt_mapHeight (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    {f : V →ₗ[K] W} (hf : f ≠ 0) : ⊥ < V.mapHeight W f := by
   rw [V.mapHeight_eq_lowerEnvelopeIntegral W hf]
   exact hasIntegrableLowerBound_iff_bot_lt_lowerEnvelopeIntegral.mp
     (V.localHeight_hasIntegrableLowerBound W ⟨f, hf⟩)
 
 /-- Once integrability is proved, the genuine lower integral equals the ordinary integral. -/
-theorem mapHeight_eq_integral (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
-    {f : E →ₗ[K] F} (hf : f ≠ 0)
+theorem mapHeight_eq_integral (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    {f : V →ₗ[K] W} (hf : f ≠ 0)
     (hi : Integrable (V.toNormFamily.localHeight W.toNormFamily ⟨f, hf⟩) S.v) :
     V.mapHeight W f = (∫ ω, V.toNormFamily.localHeight W.toNormFamily ⟨f, hf⟩ ω ∂S.v : ℝ) := by
   rw [V.mapHeight_eq_lowerEnvelopeIntegral W hf]

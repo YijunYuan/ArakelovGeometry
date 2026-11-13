@@ -33,14 +33,14 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
 
 private theorem rank_mul_eq_sum_indicator (g : ℝ → ℝ) :
     (fun t ↦ (Module.finrank K (V.hermitianHNFiltration (hV := hV) t) : ℝ) * g t) =
-      fun t ↦ ∑ j : Fin (Module.finrank K E),
+      fun t ↦ ∑ j : Fin (Module.finrank K V),
         (Set.Iic (V.hermitianHNOrderedSlope (hV := hV) j)).indicator g t := by
   classical
   funext t
@@ -68,7 +68,7 @@ supported continuously differentiable test derivative. -/
 theorem integral_hermitianHNFiltration_finrank_mul_deriv
     (φ : ℝ → ℝ) (hφ : ContDiff ℝ 1 φ) (hc : HasCompactSupport φ) :
     (∫ t : ℝ, (Module.finrank K (V.hermitianHNFiltration t) : ℝ) * deriv φ t) =
-      ∑ j : Fin (Module.finrank K E), φ (V.hermitianHNOrderedSlope j) := by
+      ∑ j : Fin (Module.finrank K V), φ (V.hermitianHNOrderedSlope j) := by
   classical
   rw [V.rank_mul_eq_sum_indicator]
   have hd : Integrable (deriv φ) volume :=

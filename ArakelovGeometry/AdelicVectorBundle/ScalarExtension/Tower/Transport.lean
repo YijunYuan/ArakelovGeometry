@@ -243,28 +243,31 @@ namespace AdelicVectorBundle
 variable [FiniteDimensional L E]
 
 /-- The actual tower pullback preserves both measurability clauses and domination. -/
-def towerPullback (V : AdelicVectorBundle (S.algebraicExtension L) E)
+abbrev towerPullback (V : AdelicVectorBundle (S.algebraicExtension L))
     (F : IntermediateField K L) :
-    AdelicVectorBundle ((S.algebraicExtension F).algebraicExtension L) E where
+    AdelicVectorBundle ((S.algebraicExtension F).algebraicExtension L) where
+  carrier := V
   toNormFamily := V.toNormFamily.towerPullback F
-  isMeasurable := V.isMeasurable.towerPullback F
-  dual_isMeasurable := by
-    rw [NormFamily.towerPullback_dual]
-    exact V.dual_isMeasurable.towerPullback F
-  isDominated := V.isDominated.towerPullback F
+  toIsAdelic := {
+    isMeasurable := V.isMeasurable.towerPullback F
+    dual_isMeasurable := by
+      rw [NormFamily.towerPullback_dual]
+      exact V.dual_isMeasurable.towerPullback F
+    isDominated := V.isDominated.towerPullback F
+  }
 
 @[simp]
-theorem towerPullback_toNormFamily (V : AdelicVectorBundle (S.algebraicExtension L) E)
+theorem towerPullback_toNormFamily (V : AdelicVectorBundle (S.algebraicExtension L))
     (F : IntermediateField K L) :
     (V.towerPullback F).toNormFamily = V.toNormFamily.towerPullback F := rfl
 
 /-- Tower transport preserves the same one-dimensional vector space. -/
-instance isLine_towerPullback (V : AdelicVectorBundle (S.algebraicExtension L) E)
+instance isLine_towerPullback (V : AdelicVectorBundle (S.algebraicExtension L))
     (F : IntermediateField K L) [hV : V.IsLine] : (V.towerPullback F).IsLine := ⟨hV.rank_eq_one⟩
 
 /-- Actual line degree is unchanged by the measure-preserving tower equivalence. -/
 theorem lineDegree_towerPullback [S.IsProper]
-    (V : AdelicVectorBundle (S.algebraicExtension L) E)
+    (V : AdelicVectorBundle (S.algebraicExtension L))
     (F : IntermediateField K L) [hV : V.IsLine] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
@@ -275,7 +278,8 @@ theorem lineDegree_towerPullback [S.IsProper]
   let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
   change (V.towerPullback F).lineDegree (hV := (V.isLine_towerPullback F)) = V.lineDegree
   let s := V.lineGenerator
-  rw [lineDegree_eq_neg_integral _ s, lineDegree_eq_neg_integral _ s]
+  rw [lineDegree_eq_neg_integral (V.towerPullback F) s,
+    lineDegree_eq_neg_integral V s]
   change -(∫ x, V.toNormFamily.logNorm s.val
       (AdelicStructure.Algebraic.towerMeasurableEquiv S F x)
       ∂((S.algebraicExtension F).algebraicExtension L).v) =
@@ -286,7 +290,7 @@ theorem lineDegree_towerPullback [S.IsProper]
 
 /-- Actual vector degrees are unchanged, using the canonical determinant norms. -/
 theorem degree_towerPullback [S.IsProper]
-    (V : AdelicVectorBundle (S.algebraicExtension L) E)
+    (V : AdelicVectorBundle (S.algebraicExtension L))
     (F : IntermediateField K L)
     [hD : (S.algebraicExtension L).HasMeasurableBase]
     [hT : ((S.algebraicExtension F).algebraicExtension L).HasMeasurableBase]
@@ -302,7 +306,7 @@ theorem degree_towerPullback [S.IsProper]
   change (V.towerPullback F).degree = V.degree
   let s := (V.determinantOfMeasurableBase).lineGenerator
     (hV := (V.determinantOfMeasurableBase_isLine))
-  rw [degree_eq_neg_integral _ s, degree_eq_neg_integral _ s]
+  rw [degree_eq_neg_integral (V.towerPullback F) s, degree_eq_neg_integral V s]
   change -(∫ x, (V.toNormFamily.towerPullback F).determinant.logNorm s.val x
       ∂((S.algebraicExtension F).algebraicExtension L).v) =
     -(∫ x, V.toNormFamily.determinant.logNorm s.val x ∂(S.algebraicExtension L).v)
@@ -315,16 +319,14 @@ omit [FiniteDimensional L E] in
 /-- A completed isometry over the tower compares degrees on the direct and iterated curves. -/
 theorem degree_eq_of_tower_completed_isometry [S.IsProper]
     (F : IntermediateField K L)
-    {X Y : Type*} [AddCommGroup X] [Module L X] [FiniteDimensional L X]
-    [AddCommGroup Y] [Module L Y] [FiniteDimensional L Y]
-    (W : AdelicVectorBundle ((S.algebraicExtension F).algebraicExtension L) X)
-    (R : AdelicVectorBundle (S.algebraicExtension L) Y) (e : X ≃ₗ[L] Y)
+    (W : AdelicVectorBundle ((S.algebraicExtension F).algebraicExtension L))
+    (R : AdelicVectorBundle (S.algebraicExtension L)) (e : W ≃ₗ[L] R)
     [hD : (S.algebraicExtension L).HasMeasurableBase]
     [hT : ((S.algebraicExtension F).algebraicExtension L).HasMeasurableBase]
     [hND : (S.algebraicExtension L).IsArchimedeanNormalized]
     [hNT : ((S.algebraicExtension F).algebraicExtension L).IsArchimedeanNormalized]
     (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
-      (z : x.abv.Completion ⊗[L] X), R.toNormFamily.norm (scalarExtensionTowerPlace x)
+      (z : x.abv.Completion ⊗[L] W), R.toNormFamily.norm (scalarExtensionTowerPlace x)
         (e.toLinearMap.baseChange x.abv.Completion z) = W.toNormFamily.norm x z) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S F

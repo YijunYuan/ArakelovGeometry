@@ -40,18 +40,18 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 namespace AdelicVectorBundle
 
-variable [S.IsProper] (V : AdelicVectorBundle S E)
+variable [S.IsProper] (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
 
 /-- An actual quotient degree is bounded below by its rank times any real
 lower bound on the actual source minimum; the zero quotient contributes zero. -/
-theorem degree_quotient_ge_rank_mul_of_le_minimalSlope (U : Submodule K E) (b : ℝ)
+theorem degree_quotient_ge_rank_mul_of_le_minimalSlope (U : Submodule K V) (b : ℝ)
     (hb : (b : EReal) ≤ V.minimalSlope) :
-    (Module.finrank K (E ⧸ U) : ℝ) * b ≤ (V.quotientOfMeasurableBase U).degree := by
+    (Module.finrank K (V ⧸ U) : ℝ) * b ≤ (V.quotientOfMeasurableBase U).degree := by
   let Q := V.quotientOfMeasurableBase U
-  by_cases hr : Module.finrank K (E ⧸ U) = 0
+  by_cases hr : Module.finrank K (V ⧸ U) = 0
   · rw [Q.degree_eq_zero_of_finrank_eq_zero hr, hr, Nat.cast_zero, zero_mul]
   · have hmean := EReal.coe_le_coe_iff.mp
       (hb.trans (V.minimalSlope_le_slope_quotient U (Nat.pos_of_ne_zero hr)))
@@ -61,7 +61,7 @@ theorem degree_quotient_ge_rank_mul_of_le_minimalSlope (U : Submodule K E) (b : 
 /-- Actual consecutive quotient minima feed the genuine degree inequality
 for a finite restricted flag, with repeated terms and an empty flag included. -/
 theorem sum_rank_mul_le_degree_restrict_of_le_minimalSlope_flag {n : ℕ}
-    (F : Fin (n + 1) → Submodule K E) (hF : Monotone F) (hzero : F 0 = ⊥)
+    (F : Fin (n + 1) → Submodule K V) (hF : Monotone F) (hzero : F 0 = ⊥)
     (b : Fin n → ℝ)
     (hb : ∀ i, (b i : EReal) ≤ (V.restrictOfMeasurableBase (F i.succ)).minimalSlope) :
     (∑ i : Fin n, (Module.finrank K
@@ -76,7 +76,7 @@ theorem sum_rank_mul_le_degree_restrict_of_le_minimalSlope_flag {n : ℕ}
 
 /-- The actual full flag degree lower bound from its restricted minima. -/
 theorem sum_rank_mul_le_degree_of_le_minimalSlope_flag {n : ℕ}
-    (F : Fin (n + 1) → Submodule K E) (hF : Monotone F) (hzero : F 0 = ⊥)
+    (F : Fin (n + 1) → Submodule K V) (hF : Monotone F) (hzero : F 0 = ⊥)
     (htop : F (Fin.last n) = ⊤) (b : Fin n → ℝ)
     (hb : ∀ i, (b i : EReal) ≤ (V.restrictOfMeasurableBase (F i.succ)).minimalSlope) :
     (∑ i : Fin n, (Module.finrank K
@@ -137,12 +137,12 @@ exactly the sum of all ambient positive parts, including an empty prefix. -/
 theorem sum_generalHNOrderedSlope_restrict_zero_eq_sum_positive :
     (∑ j : Fin (Module.finrank K (V.generalHNFiltration 0)),
       (V.restrictOfMeasurableBase (V.generalHNFiltration 0)).generalHNOrderedSlope
-        j) = ∑ j : Fin (Module.finrank K E), max (V.generalHNOrderedSlope j) 0 := by
+        j) = ∑ j : Fin (Module.finrank K V), max (V.generalHNOrderedSlope j) 0 := by
   classical
   let U := V.generalHNFiltration 0
   let μ := V.generalHNOrderedSlope
-  let J := Finset.univ.filter (fun j : Fin (Module.finrank K E) => j.val < Module.finrank K U)
-  have hcut (j : Fin (Module.finrank K E)) :
+  let J := Finset.univ.filter (fun j : Fin (Module.finrank K V) => j.val < Module.finrank K U)
+  have hcut (j : Fin (Module.finrank K V)) :
       0 ≤ μ j ↔ j.val < Module.finrank K U :=
     V.le_generalHNOrderedSlope_iff_lt_filtration_finrank 0 j
   calc
@@ -155,7 +155,7 @@ theorem sum_generalHNOrderedSlope_restrict_zero_eq_sum_positive :
       · intro j _
         exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, j.isLt⟩
       · intro j _ k _ hjk
-        exact Fin.ext (congrArg (fun x : Fin (Module.finrank K E) => x.val) hjk)
+        exact Fin.ext (congrArg (fun x : Fin (Module.finrank K V) => x.val) hjk)
       · intro j hj
         have hp := (Finset.mem_filter.mp hj).2
         exact ⟨⟨j.val, hp⟩, Finset.mem_univ _, Fin.ext rfl⟩
@@ -165,7 +165,7 @@ theorem sum_generalHNOrderedSlope_restrict_zero_eq_sum_positive :
       apply Finset.sum_congr rfl
       intro j hj
       exact (max_eq_left ((hcut j).mpr (Finset.mem_filter.mp hj).2)).symm
-    _ = ∑ j : Fin (Module.finrank K E), max (μ j) 0 := by
+    _ = ∑ j : Fin (Module.finrank K V), max (μ j) 0 := by
       apply Finset.sum_subset (Finset.filter_subset _ _)
       intro j _ hj
       have hp : ¬ j.val < Module.finrank K U := by
@@ -177,7 +177,7 @@ slopes. The actual strict flag is produced from the filtration; each true
 factor degree is bounded by its actual source minimum, and the actual
 rank-block sum identifies the total, without Hermitianity. -/
 theorem sum_generalHNOrderedSlope_le_degree :
-    (∑ j : Fin (Module.finrank K E), V.generalHNOrderedSlope j) ≤
+    (∑ j : Fin (Module.finrank K V), V.generalHNOrderedSlope j) ≤
       V.degree := by
   obtain ⟨n, U, b, hU, hz, ht, _, _, _, _, _, _, _, hmin, hsum⟩ :=
     V.exists_generalHNFlag_orderedSlope_sum
@@ -193,7 +193,7 @@ theorem sum_generalHNOrderedSlope_le_degree :
 ordered slopes. Apply the genuine total lower bound intrinsically to the
 actual threshold-zero subspace and use its produced retained prefix. -/
 theorem sum_positive_generalHNOrderedSlope_le_positiveDegree :
-    ((∑ j : Fin (Module.finrank K E), max (V.generalHNOrderedSlope j) 0 : ℝ) : EReal) ≤
+    ((∑ j : Fin (Module.finrank K V), max (V.generalHNOrderedSlope j) 0 : ℝ) : EReal) ≤
       V.positiveDegree := by
   let U := V.generalHNFiltration 0
   let R := V.restrictOfMeasurableBase U

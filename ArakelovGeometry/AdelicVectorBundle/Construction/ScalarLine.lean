@@ -34,7 +34,7 @@ universe u v
 variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
 
 /-- The scalar line with the prescribed absolute values. -/
-noncomputable def scalarLine : AdelicVectorBundle S K := by
+noncomputable abbrev scalarLine : AdelicVectorBundle S := by
   let b := Module.Basis.singleton (Fin 1) K
   let ξ := NormFamily.ofBasis S K b
   have hnorm (ω : S.Ω) : ξ.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] (1 : K)) = 1 := by
@@ -63,7 +63,8 @@ instance scalarLine_isLine : (scalarLine S).IsLine := ⟨Module.finrank_self K�
 @[simp]
 theorem scalarLine_norm_tmul_one (ω : S.Ω) (a : (S.ϕ ω).Completion) :
     (scalarLine S).norm ω (a ⊗ₜ[K] (1 : K)) = ‖a‖ := by
-  rw [scalarLine_toNormFamily]
+  change (NormFamily.ofBasis S K (Module.Basis.singleton (Fin 1) K)).norm ω
+    (a ⊗ₜ[K] (1 : K)) = ‖a‖
   simpa only [Module.Basis.singleton_apply] using
     NormFamily.ofBasis_norm_tmul_basis S K (Module.Basis.singleton (Fin 1) K) ω a 0
 
@@ -71,7 +72,12 @@ theorem scalarLine_norm_tmul_one (ω : S.Ω) (a : (S.ϕ ω).Completion) :
 @[simp]
 theorem scalarLine_norm_rational (ω : S.Ω) (a : K) :
     (scalarLine S).norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] a) = S.ϕ ω a := by
-  have h := (scalarLine S).toNormFamily.norm_rational_smul ω a (1 : K)
-  simpa only [smul_eq_mul, mul_one, scalarLine_norm_tmul_one, norm_one] using h
+  calc
+    (scalarLine S).norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] a) =
+        S.ϕ ω a * (scalarLine S).norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] (1 : K)) := by
+      simpa only [smul_eq_mul, mul_one] using
+        (scalarLine S).toNormFamily.norm_rational_smul ω a (1 : K)
+    _ = S.ϕ ω a := by rw [scalarLine_norm_tmul_one, norm_one, mul_one]
+
 
 end ArakelovGeometry.AdelicVectorBundle

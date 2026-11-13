@@ -35,7 +35,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 /-- The genuine proper normalized curve and its usual completed fields
 exclude the upper endpoint for every positive ordinary index. -/
 theorem normalizedNumberField_logarithmicMinimum_ne_top
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     {i : ℕ} (hi : 1 ≤ i) : V.logarithmicMinimum i ≠ ⊤ := by
   exact V.logarithmicMinimum_ne_top
     (hreg := ⟨(Or.inr (Or.inl ⟨
@@ -47,8 +47,8 @@ theorem normalizedNumberField_logarithmicMinimum_ne_top
 /-- Positive rank and the actual last-minimum comparison exclude an
 infinite integral-basis threshold supremum, without coherence. -/
 theorem latticeLambda_ne_top_of_finrank_pos
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
-    (hr : 0 < Module.finrank K E) : V.toNormFamily.latticeLambda ≠ ⊤ := by
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
+    (hr : 0 < Module.finrank K V) : V.toNormFamily.latticeLambda ≠ ⊤ := by
   intro htop
   have h := V.degree_mul_latticeLambda_le_minimalLogarithmicMinimum
   rw [htop, EReal.coe_mul_top_of_pos (Nat.cast_pos.mpr Module.finrank_pos)] at h
@@ -58,9 +58,9 @@ theorem latticeLambda_ne_top_of_finrank_pos
 /-- Coherence supplies a real lower endpoint and the actual finite ordinary
 minimum supplies the upper endpoint. The real value is produced. -/
 theorem latticeLambda_eq_coe_of_coherent
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hc : V.toNormFamily.HasFiniteNormExceptions]
-    (hr : 0 < Module.finrank K E) :
+    (hr : 0 < Module.finrank K V) :
     V.toNormFamily.latticeLambda = (V.toNormFamily.latticeLambda.toReal : EReal) :=
   (EReal.coe_toReal (V.latticeLambda_ne_top_of_finrank_pos hr)
     hc.latticeLambda_ne_bot).symm
@@ -68,8 +68,8 @@ theorem latticeLambda_eq_coe_of_coherent
 /-- The actual first ordinary minimum gives a finite uniform upper bound
 on every nonzero rational vector's degree. -/
 theorem vectorDegree_le_normalizedNumberField_firstMinimum
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
-    (hr : 0 < Module.finrank K E) (s : {x : E // x ≠ 0}) :
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
+    (hr : 0 < Module.finrank K V) (s : {x : V // x ≠ 0}) :
     V.vectorDegree s ≤ V.maximalLogarithmicMinimum.toReal := by
   have hs := V.coe_le_logarithmicMinimum_of_linearIndependent
     (fun _ : Fin 1 => s) (linearIndependent_unique_iff.mpr s.property) (fun _ => le_rfl)
@@ -83,8 +83,8 @@ theorem vectorDegree_le_normalizedNumberField_firstMinimum
 /-- A genuine infinite place witnesses positivity of the actual
 Archimedean maximum on every nonzero rational vector. -/
 theorem archimedeanMaxNorm_pos
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
-    {x : E} (hx : x ≠ 0) : 0 < V.toNormFamily.archimedeanMaxNorm x := by
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
+    {x : V} (hx : x ≠ 0) : 0 < V.toNormFamily.archimedeanMaxNorm x := by
   let w : NumberField.InfinitePlace K := Classical.choice inferInstance
   have h := (V.toNormFamily.archimedeanMaxNorm_le_iff x
     (V.toNormFamily.archimedeanMaxNorm_nonneg x)).mp le_rfl
@@ -94,8 +94,8 @@ theorem archimedeanMaxNorm_pos
 /-- The finite first minimum produces a uniform positive lower bound for
 the Archimedean size of every nonzero actual integral vector. -/
 theorem exists_pos_le_archimedeanMaxNorm_of_globalUnitBall
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
-    (hr : 0 < Module.finrank K E) :
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
+    (hr : 0 < Module.finrank K V) :
     ∃ c : ℝ, 0 < c ∧ ∀ x ∈ V.toNormFamily.globalUnitBall,
       x ≠ 0 → c ≤ V.toNormFamily.archimedeanMaxNorm x := by
   let d : ℝ := Module.finrank ℚ K
@@ -135,12 +135,10 @@ theorem HasFiniteNormExceptions.latticeLambda_eq_coe
     (hc : ξ.HasFiniteNormExceptions) (hd : ξ.IsDominated)
     (hr : 0 < Module.finrank K E) :
     ξ.latticeLambda = (ξ.latticeLambda.toReal : EReal) := by
-  let V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E :=
-    { toNormFamily := ξ
-      isMeasurable := ξ.isMeasurable_of_discrete
-      dual_isMeasurable := ξ.dual.isMeasurable_of_discrete
-      isDominated := hd }
-  exact V.latticeLambda_eq_coe_of_coherent hr
+  let : ξ.IsAdelic :=
+    ⟨ξ.isMeasurable_of_discrete, ξ.dual.isMeasurable_of_discrete, hd⟩
+  let V := ξ.toAdelicVectorBundle
+  exact V.latticeLambda_eq_coe_of_coherent (hc := hc) hr
 
 /-- The same literal integral ball admits a positive Archimedean separation
 constant under domination. No integral basis or finite-generation witness is
@@ -150,11 +148,9 @@ theorem exists_pos_le_archimedeanMaxNorm_of_isDominated
     [hd : ξ.IsDominated] (hr : 0 < Module.finrank K E) :
     ∃ c : ℝ, 0 < c ∧ ∀ x ∈ ξ.globalUnitBall,
       x ≠ 0 → c ≤ ξ.archimedeanMaxNorm x := by
-  let V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E :=
-    { toNormFamily := ξ
-      isMeasurable := ξ.isMeasurable_of_discrete
-      dual_isMeasurable := ξ.dual.isMeasurable_of_discrete
-      isDominated := hd }
+  let : ξ.IsAdelic :=
+    ⟨ξ.isMeasurable_of_discrete, ξ.dual.isMeasurable_of_discrete, hd⟩
+  let V := ξ.toAdelicVectorBundle
   exact V.exists_pos_le_archimedeanMaxNorm_of_globalUnitBall hr
 
 end ArakelovGeometry.NormFamily

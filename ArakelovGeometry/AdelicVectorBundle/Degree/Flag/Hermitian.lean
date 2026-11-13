@@ -34,7 +34,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- The actual successive quotient degrees of a Hermitian flag sum to the
 degree of its final restricted bundle, without strict-inclusion assumptions. -/
 theorem sum_flagQuotient_degree_eq_restrict_of_isHermitian [S.IsProper]
-    (V : AdelicVectorBundle S E) {n : ℕ} (F : Fin (n + 1) → Submodule K E)
+    (V : AdelicVectorBundle S) {n : ℕ} (F : Fin (n + 1) → Submodule K V)
     (hF : Monotone F) (hzero : F 0 = ⊥)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
@@ -46,14 +46,14 @@ theorem sum_flagQuotient_degree_eq_restrict_of_isHermitian [S.IsProper]
       have hz : F (Fin.last 0) = ⊥ := hzero
       have hr : Module.finrank K (F (Fin.last 0)) = 0 := by
         rw [hz]
-        exact finrank_bot K E
+        exact finrank_bot K V
       have hd := degree_eq_zero_of_finrank_eq_zero
         (V.restrictOfMeasurableBase (F (Fin.last 0))) hr
       simp only [Fin.sum_univ_zero, hd]
   | succ n ih =>
-      let G : Fin (n + 1) → Submodule K E := fun i ↦ F i.castSucc
-      let U : Submodule K E := F (Fin.last n).castSucc
-      let W : Submodule K E := F (Fin.last (n + 1))
+      let G : Fin (n + 1) → Submodule K V := fun i ↦ F i.castSucc
+      let U : Submodule K V := F (Fin.last n).castSucc
+      let W : Submodule K V := F (Fin.last (n + 1))
       have hG : Monotone G := hF.comp Fin.strictMono_castSucc.monotone
       have hzG : G 0 = ⊥ := hzero
       have hprefix := ih G hG hzG
@@ -74,7 +74,7 @@ theorem sum_flagQuotient_degree_eq_restrict_of_isHermitian [S.IsProper]
 
 /-- Exact degree additivity for a complete actual Hermitian finite flag. -/
 theorem sum_flagQuotient_degree_eq_of_isHermitian [S.IsProper]
-    (V : AdelicVectorBundle S E) {n : ℕ} (F : Fin (n + 1) → Submodule K E)
+    (V : AdelicVectorBundle S) {n : ℕ} (F : Fin (n + 1) → Submodule K V)
     (hF : Monotone F) (hzero : F 0 = ⊥) (htop : F (Fin.last n) = ⊤)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]

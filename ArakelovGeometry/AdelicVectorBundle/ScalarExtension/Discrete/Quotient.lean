@@ -272,18 +272,18 @@ variable [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] [IsAlgClosed L]
 
 /-- The genuine native target quotient bundle, with primal measurability
 produced from finite descent and completed norm transport. -/
-def scalarExtensionQuotientOfCountableDiscreteBase (V : AdelicVectorBundle S E)
+abbrev scalarExtensionQuotientOfCountableDiscreteBase (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule L (L ⊗[K] E)) :
-    AdelicVectorBundle (S.algebraicExtension L) ((L ⊗[K] E) ⧸ A) :=
+    (A : Submodule L (L ⊗[K] V)) :
+    AdelicVectorBundle (S.algebraicExtension L) :=
   (V.scalarExtensionOfCountableDiscreteBase (L := L)).quotient A
     (hm := (V.toNormFamily.scalarExtension_quotient_isMeasurable_of_countable_discrete A))
 
 @[simp]
 theorem scalarExtensionQuotientOfCountableDiscreteBase_toNormFamily
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule L (L ⊗[K] E)) :
+    (A : Submodule L (L ⊗[K] V)) :
     (V.scalarExtensionQuotientOfCountableDiscreteBase (L := L) A).toNormFamily =
       (V.toNormFamily.scalarExtension (L := L)).quotient A := rfl
 

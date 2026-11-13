@@ -123,7 +123,7 @@ theorem archimedeanFactor_infinite (w : InfinitePlace K) :
 
 /-- The actual adelic scalar line with the literal codifferent finite lattice and the
 prescribed trace-generator norms at infinity. -/
-def dualizingLine : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) K :=
+abbrev dualizingLine : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) :=
   fullLatticeAdelicBundle (codifferentModule K) (codifferent_fg K) (codifferent_full K)
     ((AdelicVectorBundle.scalarLine (normalizedNumberFieldAdelicStructure K)).toNormFamily.scale
       (archimedeanFactor K) (archimedeanFactor_pos K))
@@ -131,6 +131,7 @@ def dualizingLine : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) 
 @[instance]
 theorem dualizingLine_isLine : (dualizingLine K).IsLine := ⟨Module.finrank_self K⟩
 
+@[instance]
 theorem dualizingLine_isHermitian :
     (dualizingLine K).IsHermitian :=
   (dualizingLine K).toNormFamily.isHermitian_of_finrank_one (Module.finrank_self K)

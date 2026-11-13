@@ -32,10 +32,10 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w
+universe u v w w'
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
-  {E F : Type (max u w)} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+  {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 namespace NormFamily
@@ -57,7 +57,7 @@ end NormFamily
 
 namespace AdelicVectorBundle
 
-variable [S.IsProper] (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F)
+variable [S.IsProper] (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
@@ -66,7 +66,7 @@ include hS hN hV hW
 omit [S.IsProper] in
 /-- A nonzero map between the actual Hermitian bundles has its genuine
 lower-integral height equal to a finite real integral. -/
-theorem mapHeight_eq_integral_of_isHermitian (f : E →ₗ[K] F) (hf : f ≠ 0) :
+theorem mapHeight_eq_integral_of_isHermitian (f : V →ₗ[K] W) (hf : f ≠ 0) :
     V.mapHeight W f =
       ((∫ ω, V.toNormFamily.localHeight W.toNormFamily ⟨f, hf⟩ ω ∂S.v) : ℝ) := by
   exact V.mapHeight_eq_integral_of_isStronglyAdelic W
@@ -75,15 +75,15 @@ theorem mapHeight_eq_integral_of_isHermitian (f : E →ₗ[K] F) (hf : f ≠ 0) 
 omit [S.IsProper] in
 /-- The real coordinate of a nonzero actual Hermitian map height is
 faithful: both infinite endpoints have been excluded by the produced integral. -/
-theorem mapHeight_eq_coe_toReal_of_isHermitian (f : E →ₗ[K] F) (hf : f ≠ 0) :
+theorem mapHeight_eq_coe_toReal_of_isHermitian (f : V →ₗ[K] W) (hf : f ≠ 0) :
     V.mapHeight W f = ((V.mapHeight W f).toReal : ℝ) := by
   rw [V.mapHeight_eq_integral_of_isHermitian W f hf, EReal.toReal_coe]
 
 omit hN hV hW [S.IsProper] in
 /-- The genuine height of the map from an actual restricted subspace to an
 actual target quotient is bounded by the original map's genuine height. -/
-theorem mapHeight_restrict_postQuotient_le (f : E →ₗ[K] F) (hf : f ≠ 0)
-    (U : Submodule K E) (T : Submodule K F)
+theorem mapHeight_restrict_postQuotient_le (f : V →ₗ[K] W) (hf : f ≠ 0)
+    (U : Submodule K V) (T : Submodule K W)
     (hg : T.mkQ.comp (f.comp U.subtype) ≠ 0) :
     (V.restrictOfMeasurableBase U).mapHeight (W.quotientOfMeasurableBase T)
       (T.mkQ.comp (f.comp U.subtype)) ≤ V.mapHeight W f := by
@@ -96,7 +96,7 @@ theorem mapHeight_restrict_postQuotient_le (f : E →ₗ[K] F) (hf : f ≠ 0)
 /-- Any actual finite real upper bound for a nonzero map's height gives
 the corresponding inclusion of actual HN threshold subspaces. -/
 theorem map_hermitianHNFiltration_le_of_mapHeight_le
-    (f : E →ₗ[K] F) (hf : f ≠ 0) (c : ℝ) (hh : V.mapHeight W f ≤ (c : EReal)) (t : ℝ) :
+    (f : V →ₗ[K] W) (hf : f ≠ 0) (c : ℝ) (hh : V.mapHeight W f ≤ (c : EReal)) (t : ℝ) :
     (V.hermitianHNFiltration t).map f ≤
       W.hermitianHNFiltration (t - c) := by
   let U := V.hermitianHNFiltration t
@@ -125,7 +125,7 @@ theorem map_hermitianHNFiltration_le_of_mapHeight_le
 
 /-- A nonzero rational map carries each actual Hermitian HN threshold
 subspace into the target threshold shifted by its genuine finite map height. -/
-theorem map_hermitianHNFiltration_le (f : E →ₗ[K] F) (hf : f ≠ 0) (t : ℝ) :
+theorem map_hermitianHNFiltration_le (f : V →ₗ[K] W) (hf : f ≠ 0) (t : ℝ) :
     (V.hermitianHNFiltration t).map f ≤
       W.hermitianHNFiltration (t - (V.mapHeight W f).toReal) := by
   exact V.map_hermitianHNFiltration_le_of_mapHeight_le W f hf
@@ -135,7 +135,7 @@ theorem map_hermitianHNFiltration_le (f : E →ₗ[K] F) (hf : f ≠ 0) (t : ℝ
 omit hW [FiniteDimensional K F] in
 /-- The exceptional zero map has zero actual image at every real threshold. -/
 theorem map_zero_hermitianHNFiltration (t : ℝ) :
-    (V.hermitianHNFiltration t).map (0 : E →ₗ[K] F) = ⊥ := by
+    (V.hermitianHNFiltration t).map (0 : V →ₗ[K] F) = ⊥ := by
   simp
 
 end AdelicVectorBundle

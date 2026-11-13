@@ -41,44 +41,47 @@ omit [Algebra K L] [Algebra L M] [IsScalarTower K L M]
   [Algebra.IsAlgebraic K L] [Algebra.IsAlgebraic L M] in
 /-- Every direct native restriction is ordinary adelic under the original
 common-density or countable-discrete alternatives. -/
-def scalarExtensionRestrictionOfOrdinaryBase (V : AdelicVectorBundle S E)
+abbrev scalarExtensionRestrictionOfOrdinaryBase (V : AdelicVectorBundle S)
     [hreg : S.HasOrdinaryBase]
     [hN : S.IsArchimedeanNormalized]
-    (B : Submodule M (M ⊗[K] E)) : AdelicVectorBundle (S.algebraicExtension M) B where
+    (B : Submodule M (M ⊗[K] V)) : AdelicVectorBundle (S.algebraicExtension M) where
+  carrier := B
   toNormFamily := (V.toNormFamily.scalarExtension (L := M)).restrict B
-  isMeasurable := by
-    rcases hreg.condition with h | ⟨hc, hd⟩
-    · exact ((V.scalarExtension (hS := h)).restrictOfMeasurableBase B
-        (hS := ⟨(Or.inr (h.algebraicExtension_of_isAlgClosed (L := M)))⟩)).isMeasurable
-    · let := hc
-      let := hd
-      exact (V.scalarExtensionRestrictionOfCountableDiscreteBase B).isMeasurable
-  dual_isMeasurable := by
-    rcases hreg.condition with h | ⟨hc, hd⟩
-    · exact ((V.scalarExtension (hS := h)).restrictOfMeasurableBase B
-        (hS := ⟨(Or.inr (h.algebraicExtension_of_isAlgClosed (L := M)))⟩)).dual_isMeasurable
-    · let := hc
-      let := hd
-      exact (V.scalarExtensionRestrictionOfCountableDiscreteBase B).dual_isMeasurable
-  isDominated := by
-    exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
-      V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)).isDominated.restrict B
+  toIsAdelic := {
+    isMeasurable := by
+      rcases hreg.condition with h | ⟨hc, hd⟩
+      · exact ((V.scalarExtension (hS := h)).restrictOfMeasurableBase B
+          (hS := ⟨(Or.inr (h.algebraicExtension_of_isAlgClosed (L := M)))⟩)).isMeasurable
+      · let := hc
+        let := hd
+        exact (V.scalarExtensionRestrictionOfCountableDiscreteBase B).isMeasurable
+    dual_isMeasurable := by
+      rcases hreg.condition with h | ⟨hc, hd⟩
+      · exact ((V.scalarExtension (hS := h)).restrictOfMeasurableBase B
+          (hS := ⟨(Or.inr (h.algebraicExtension_of_isAlgClosed (L := M)))⟩)).dual_isMeasurable
+      · let := hc
+        let := hd
+        exact (V.scalarExtensionRestrictionOfCountableDiscreteBase B).dual_isMeasurable
+    isDominated := by
+      exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
+        V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)).isDominated.restrict B
+  }
 
 @[simp]
-theorem scalarExtensionRestrictionOfOrdinaryBase_toNormFamily (V : AdelicVectorBundle S E)
+theorem scalarExtensionRestrictionOfOrdinaryBase_toNormFamily (V : AdelicVectorBundle S)
     [hreg : S.HasOrdinaryBase]
     [hN : S.IsArchimedeanNormalized]
-    (B : Submodule M (M ⊗[K] E)) :
+    (B : Submodule M (M ⊗[K] V)) :
     (V.scalarExtensionRestrictionOfOrdinaryBase B).toNormFamily =
       (V.toNormFamily.scalarExtension (L := M)).restrict B := rfl
 
 /-- The determinant of the actual direct native bundle is measurable by the
 produced closure density or the accepted finite-stage discrete descent. -/
 theorem scalarExtensionRestrictionOfOrdinaryBase_determinant_isMeasurable
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hreg : S.HasOrdinaryBase]
     [hN : S.IsArchimedeanNormalized]
-    (B : Submodule M (M ⊗[K] E)) :
+    (B : Submodule M (M ⊗[K] V)) :
     (V.scalarExtensionRestrictionOfOrdinaryBase B).toNormFamily.determinant.IsMeasurable :=
     by
   rcases hreg.condition with h | ⟨hc, hd⟩
@@ -91,60 +94,63 @@ theorem scalarExtensionRestrictionOfOrdinaryBase_determinant_isMeasurable
       B
 
 /-- Transport a direct native restriction to the iterated scalar-extension space. -/
-def ordinaryNativeTowerBundle (V : AdelicVectorBundle S E)
+abbrev ordinaryNativeTowerBundle (V : AdelicVectorBundle S)
     [hreg : S.HasOrdinaryBase]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
-    AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M) A :=
-  let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
+    (A : Submodule M (M ⊗[L] (L ⊗[K] V))) :
+    AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M) :=
+  let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M V
   let R := V.scalarExtensionRestrictionOfOrdinaryBase (A.map c.toLinearMap)
   (R.compatibleTowerPullback (L := L)).pullbackEquiv (c.submoduleMap A)
 
 /-- The transported bundle has the literal iterated restriction norm family. -/
-theorem ordinaryNativeTowerBundle_normFamily (V : AdelicVectorBundle S E)
+theorem ordinaryNativeTowerBundle_normFamily (V : AdelicVectorBundle S)
     [S.HasOrdinaryBase]
     [S.IsArchimedeanNormalized]
-    (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
+    (A : Submodule M (M ⊗[L] (L ⊗[K] V))) :
     (ordinaryNativeTowerBundle V A).toNormFamily =
       ((V.toNormFamily.scalarExtension (L := L)).scalarExtension (L := M)).restrict A :=
   V.toNormFamily.scalarExtension_compatibleTower_restrict_pullback A
 
 /-- A genuine ordinary bundle on each literal iterated native subspace,
 produced from original common density or countable discrete places. -/
-def nativeCompatibleTowerRestrictionOfOrdinaryBase (V : AdelicVectorBundle S E)
+abbrev nativeCompatibleTowerRestrictionOfOrdinaryBase (V : AdelicVectorBundle S)
     [hreg : S.HasOrdinaryBase]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
-    AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M) A where
+    (A : Submodule M (M ⊗[L] (L ⊗[K] V))) :
+    AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M) where
+  carrier := A
   toNormFamily := ((V.toNormFamily.scalarExtension (L := L)).scalarExtension (L := M)).restrict A
-  isMeasurable := by
-    rw [← ordinaryNativeTowerBundle_normFamily V A]
-    exact (ordinaryNativeTowerBundle V A).isMeasurable
-  dual_isMeasurable := by
-    rw [← ordinaryNativeTowerBundle_normFamily V A]
-    exact (ordinaryNativeTowerBundle V A).dual_isMeasurable
-  isDominated := by
-    rw [← ordinaryNativeTowerBundle_normFamily V A]
-    exact (ordinaryNativeTowerBundle V A).isDominated
+  toIsAdelic := {
+    isMeasurable := by
+      rw [← ordinaryNativeTowerBundle_normFamily V A]
+      exact (ordinaryNativeTowerBundle V A).isMeasurable
+    dual_isMeasurable := by
+      rw [← ordinaryNativeTowerBundle_normFamily V A]
+      exact (ordinaryNativeTowerBundle V A).dual_isMeasurable
+    isDominated := by
+      rw [← ordinaryNativeTowerBundle_normFamily V A]
+      exact (ordinaryNativeTowerBundle V A).isDominated
+  }
 
 @[simp]
-theorem nativeCompatibleTowerRestrictionOfOrdinaryBase_toNormFamily (V : AdelicVectorBundle S E)
+theorem nativeCompatibleTowerRestrictionOfOrdinaryBase_toNormFamily (V : AdelicVectorBundle S)
     [hreg : S.HasOrdinaryBase]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
+    (A : Submodule M (M ⊗[L] (L ⊗[K] V))) :
     (V.nativeCompatibleTowerRestrictionOfOrdinaryBase A).toNormFamily =
       ((V.toNormFamily.scalarExtension (L := L)).scalarExtension (L := M)).restrict A := rfl
 
 /-- Direct determinant measurability, actual tower transport and equivalence
 pullback produce the determinant measurability of the literal iterated bundle. -/
 theorem nativeCompatibleTowerRestrictionOfOrdinaryBase_determinant_isMeasurable
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hreg : S.HasOrdinaryBase]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
+    (A : Submodule M (M ⊗[L] (L ⊗[K] V))) :
     (V.nativeCompatibleTowerRestrictionOfOrdinaryBase
       A).toNormFamily.determinant.IsMeasurable := by
-  let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
+  let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M V
   let R := V.scalarExtensionRestrictionOfOrdinaryBase (A.map c.toLinearMap)
   let T := R.compatibleTowerPullback (L := L)
   have hdet : T.toNormFamily.determinant.IsMeasurable :=
@@ -160,10 +166,10 @@ variable [S.IsProper]
 
 /-- Canonical measurable-determinant degree of the actual iterated native
 restriction, with determinant measurability and normalization produced. -/
-def nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase (V : AdelicVectorBundle S E)
+def nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase (V : AdelicVectorBundle S)
     [hreg : S.HasOrdinaryBase]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule M (M ⊗[L] (L ⊗[K] E))) : ℝ :=
+    (A : Submodule M (M ⊗[L] (L ⊗[K] V))) : ℝ :=
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension L) M
   (V.nativeCompatibleTowerRestrictionOfOrdinaryBase A).degreeOfMeasurableDeterminant
@@ -174,11 +180,11 @@ def nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase (V : AdelicVectorBundle
 /-- Every actual nested native degree equals the canonical direct native
 degree of its associator image. Intermediate place regularity is unnecessary. -/
 theorem nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase_eq_direct
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hreg : S.HasOrdinaryBase]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
-    let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
+    (A : Submodule M (M ⊗[L] (L ⊗[K] V))) :
+    let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M V
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
     V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase A =
       AdelicVectorBundle.degreeOfMeasurableDeterminant
@@ -189,7 +195,7 @@ theorem nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase_eq_direct
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension L) M
-  let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
+  let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M V
   let R := V.scalarExtensionRestrictionOfOrdinaryBase (A.map c.toLinearMap)
   let T := R.compatibleTowerPullback (L := L)
   let W := V.nativeCompatibleTowerRestrictionOfOrdinaryBase A
@@ -215,10 +221,10 @@ theorem nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase_eq_direct
 /-- On the common-density branch, the actual nested degree is the usual
 degree of the same actual direct native scalar restriction. -/
 theorem nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase_eq_common_degree
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
-    let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
+    (A : Submodule M (M ⊗[L] (L ⊗[K] V))) :
+    let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M V
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
     V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase (hreg := ⟨(Or.inl hcount)⟩) A =
       ((V.scalarExtension (L := M)).restrictOfMeasurableBase (A.map c.toLinearMap)
@@ -231,26 +237,26 @@ theorem nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase_eq_common_degree
 /-- On the countable-discrete branch the actual nested degree is exactly
 the existing native direct restriction degree used by absolute invariants. -/
 theorem nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase_eq_countable_discrete_degree
-    [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] (V : AdelicVectorBundle S E)
+    [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
+    (A : Submodule M (M ⊗[L] (L ⊗[K] V))) :
     V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase
       (hreg := ⟨(Or.inr ⟨inferInstance, inferInstance⟩)⟩) A =
       V.nativeRestrictionDegreeOfCountableDiscreteBase
-        (A.map (TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E).toLinearMap) := by
+        (A.map (TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M V).toLinearMap) := by
   rw [V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase_eq_direct]
   rfl
 
 /-- The genuine rank-zero native restriction retains its empty-determinant
 degree zero through the external tower. -/
 theorem nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase_eq_zero_of_finrank_eq_zero
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hreg : S.HasOrdinaryBase]
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule M (M ⊗[L] (L ⊗[K] E))) (hr : Module.finrank M A = 0) :
+    (A : Submodule M (M ⊗[L] (L ⊗[K] V))) (hr : Module.finrank M A = 0) :
     V.nativeCompatibleTowerRestrictionDegreeOfOrdinaryBase A = 0 := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
-  let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
+  let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M V
   have hB : Module.finrank M (A.map c.toLinearMap) = 0 := by
     rw [← (c.submoduleMap A).finrank_eq, hr]
   rcases hreg.condition with h | ⟨hc, hd⟩

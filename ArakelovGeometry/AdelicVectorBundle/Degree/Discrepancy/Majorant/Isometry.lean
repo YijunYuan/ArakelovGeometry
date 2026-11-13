@@ -122,7 +122,7 @@ namespace AdelicVectorBundle
 /-- The actual lower-envelope integral of the local majorant infimum is
 preserved by completed-fibre isometries, even when it equals positive infinity. -/
 theorem majorantDiscrepancy_eq_of_completed_isometry
-    (V : AdelicVectorBundle S E) (W : AdelicVectorBundle S F) (e : E ≃ₗ[K] F)
+    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = V.toNormFamily.norm ω x) :
@@ -135,8 +135,8 @@ theorem majorantDiscrepancy_eq_of_completed_isometry
 
 /-- Canonical nested restriction preserves the global capital discrepancy
 of the actual norm family. -/
-theorem majorantDiscrepancy_restrict_restrict (V : AdelicVectorBundle S E)
-    (U W : Submodule K E) (h : U ≤ W)
+theorem majorantDiscrepancy_restrict_restrict (V : AdelicVectorBundle S)
+    (U W : Submodule K V) (h : U ≤ W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     ((V.restrictOfMeasurableBase W).restrictOfMeasurableBase
@@ -145,19 +145,17 @@ theorem majorantDiscrepancy_restrict_restrict (V : AdelicVectorBundle S E)
   apply majorantDiscrepancy_eq_of_completed_isometry _ _
     (Submodule.comapSubtypeEquivOfLe h)
   intro ω z
-  simp only [restrictOfMeasurableBase_toNormFamily]
   exact (V.toNormFamily.restrict_restrict_norm_eq U W h ω z).symm
 
 /-- Restriction to the total subspace preserves the actual global capital
 discrepancy, without a finiteness assumption on its lower integral. -/
-theorem majorantDiscrepancy_restrict_top (V : AdelicVectorBundle S E)
+theorem majorantDiscrepancy_restrict_top (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.restrictOfMeasurableBase ⊤).majorantDiscrepancy =
       V.majorantDiscrepancy := by
   apply majorantDiscrepancy_eq_of_completed_isometry _ _ Submodule.topEquiv
   intro ω z
-  simp only [restrictOfMeasurableBase_toNormFamily]
   exact (V.toNormFamily.restrict_top_norm_eq ω z).symm
 
 end AdelicVectorBundle

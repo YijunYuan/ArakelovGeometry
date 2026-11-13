@@ -194,8 +194,8 @@ variable [S.IsProper]
 /-- A semistable actual flag factor bounds the degree of every intersection
 subquotient. The image carries its restriction norm, and zero image rank is
 handled by degree zero rather than a division by rank. -/
-theorem degree_intersection_quotient_le_rank_mul_slope (V : AdelicVectorBundle S E)
-    (U A B : Submodule K E)
+theorem degree_intersection_quotient_le_rank_mul_slope (V : AdelicVectorBundle S)
+    (U A B : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hsemi : ((V.restrictOfMeasurableBase B).quotientOfMeasurableBase
@@ -229,8 +229,8 @@ theorem degree_intersection_quotient_le_rank_mul_slope (V : AdelicVectorBundle S
 
 /-- Each actual intersection flag factor satisfies the semistable degree
 bound for the corresponding actual flag factor. -/
-theorem degree_intersection_flagQuotient_le (V : AdelicVectorBundle S E)
-    {n : ℕ} (F : Fin (n + 1) → Submodule K E) (U : Submodule K E) (i : Fin n)
+theorem degree_intersection_flagQuotient_le (V : AdelicVectorBundle S)
+    {n : ℕ} (F : Fin (n + 1) → Submodule K V) (U : Submodule K V) (i : Fin n)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hsemi : (V.flagQuotientOfMeasurableBase F i).IsMeanSlopeSemistable] :
@@ -246,18 +246,18 @@ theorem degree_intersection_flagQuotient_le (V : AdelicVectorBundle S E)
 The intersection flag may have repeated terms. Slopes need not be ordered
 for this inequality; ordering is an additional uniqueness hypothesis later. -/
 theorem degree_restrict_le_sum_intersection_rank_mul_slope_of_semistableFlag
-    (V : AdelicVectorBundle S E) {n : ℕ} (F : Fin (n + 1) → Submodule K E)
+    (V : AdelicVectorBundle S) {n : ℕ} (F : Fin (n + 1) → Submodule K V)
     (hF : Monotone F) (hzero : F 0 = ⊥) (htop : F (Fin.last n) = ⊤)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian]
     [hsemi : ∀ i, (V.flagQuotientOfMeasurableBase F i).IsMeanSlopeSemistable]
-    (U : Submodule K E) :
+    (U : Submodule K V) :
     (V.restrictOfMeasurableBase U).degree ≤
-      ∑ i : Fin n, (Module.finrank K (U ⊓ F i.succ : Submodule K E) -
-        Module.finrank K (U ⊓ F i.castSucc : Submodule K E) : ℕ) *
+      ∑ i : Fin n, (Module.finrank K (U ⊓ F i.succ : Submodule K V) -
+        Module.finrank K (U ⊓ F i.castSucc : Submodule K V) : ℕ) *
           (V.flagQuotientOfMeasurableBase F i).slope := by
-  let G : Fin (n + 1) → Submodule K E := fun i ↦ U ⊓ F i
+  let G : Fin (n + 1) → Submodule K V := fun i ↦ U ⊓ F i
   have hG : Monotone G := fun i j hij ↦ inf_le_inf_left U (hF hij)
   have hzG : G 0 = ⊥ := by simp only [G, hzero, inf_bot_eq]
   have hlG : G (Fin.last n) = U := by simp only [G, htop, inf_top_eq]

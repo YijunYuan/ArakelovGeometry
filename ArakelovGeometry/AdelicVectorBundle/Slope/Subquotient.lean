@@ -31,7 +31,7 @@ universe u v w
 
 variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle S E)
+  (V : AdelicVectorBundle.{w} S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
@@ -44,7 +44,7 @@ theorem minimalSlope_restrict_top :
 
 /-- Canonical nested restrictions have identical actual minimal slopes.
 The comparison is the completed norm identity for the canonical subtype equivalence. -/
-theorem minimalSlope_restrict_restrict (U W : Submodule K E) (hUW : U ≤ W) :
+theorem minimalSlope_restrict_restrict (U W : Submodule K V) (hUW : U ≤ W) :
     ((V.restrictOfMeasurableBase W).restrictOfMeasurableBase
       (U.comap W.subtype)).minimalSlope =
       (V.restrictOfMeasurableBase U).minimalSlope := by
@@ -53,7 +53,7 @@ theorem minimalSlope_restrict_restrict (U W : Submodule K E) (hUW : U ≤ W) :
   exact (V.toNormFamily.restrict_restrict_norm_eq U W hUW ω z).symm
 
 /-- An actual completed quotient isometry transports the genuine minimum. -/
-theorem minimalSlope_quotient_restrict_range_eq (U A : Submodule K E) (hA : A ≤ U) :
+theorem minimalSlope_quotient_restrict_range_eq (U A : Submodule K V) (hA : A ≤ U) :
     ((V.restrictOfMeasurableBase U).quotientOfMeasurableBase
       (A.mkQ.comp U.subtype).ker).minimalSlope =
     ((V.quotientOfMeasurableBase A).restrictOfMeasurableBase
@@ -64,7 +64,7 @@ theorem minimalSlope_quotient_restrict_range_eq (U A : Submodule K E) (hA : A �
 
 /-- The actual extension minimum bound on the genuine preimage of a quotient subspace. -/
 theorem min_minimalSlope_restrict_le_minimalSlope_preimage
-    (A : Submodule K E) (G : Submodule K (E ⧸ A)) :
+    (A : Submodule K V) (G : Submodule K (V ⧸ A)) :
     min ((V.restrictOfMeasurableBase A).minimalSlope)
       (((V.quotientOfMeasurableBase A).restrictOfMeasurableBase G).minimalSlope) ≤
     (V.restrictOfMeasurableBase (G.comap A.mkQ)).minimalSlope := by
@@ -93,7 +93,7 @@ theorem min_minimalSlope_restrict_le_minimalSlope_preimage
   have hq := V.minimalSlope_quotient_restrict_range_eq U A hAU
   rw [LinearMap.ker_comp, Submodule.ker_mkQ] at hq
   have hQr := congrArg
-    (fun J : Submodule K (E ⧸ A) ↦
+    (fun J : Submodule K (V ⧸ A) ↦
       ((V.quotientOfMeasurableBase A).restrictOfMeasurableBase J).minimalSlope)
     hRange
   have hfR : f.range = A.comap U.subtype := Submodule.range_inclusion A U hAU
@@ -103,7 +103,7 @@ theorem min_minimalSlope_restrict_le_minimalSlope_preimage
   exact (min_le_min hMin le_rfl).trans hExt
 
 /-- A subspace of a subspace has the same true minimum on its actual ambient image. -/
-theorem minimalSlope_restrict_map_subtype (B : Submodule K E) (G : Submodule K B) :
+theorem minimalSlope_restrict_map_subtype (B : Submodule K V) (G : Submodule K B) :
     ((V.restrictOfMeasurableBase B).restrictOfMeasurableBase G).minimalSlope =
       (V.restrictOfMeasurableBase (G.map B.subtype)).minimalSlope := by
   have h := V.minimalSlope_restrict_restrict (G.map B.subtype) B
@@ -160,7 +160,7 @@ theorem nested_restrict_quotient_norm_eq (ξ : NormFamily S E)
 
 /-- Restricting an actual subquotient to an intermediate subspace gives
 that intermediate subquotient with its actual completed norms. -/
-theorem minimalSlope_subquotient_restrict_range (A U B : Submodule K E)
+theorem minimalSlope_subquotient_restrict_range (A U B : Submodule K V)
     (hAU : A ≤ U) (hUB : U ≤ B) :
     let T := A.comap B.subtype
     let R := U.comap B.subtype

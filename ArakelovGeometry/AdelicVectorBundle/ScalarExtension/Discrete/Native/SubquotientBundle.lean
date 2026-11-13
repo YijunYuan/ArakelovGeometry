@@ -9,6 +9,7 @@ public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.Discrete.Subsp
 public import ArakelovGeometry.AdelicVectorBundle.ScalarExtension.NativeSubquotientFiniteStage
 
 import ArakelovGeometry.AdelicVectorBundle.Degree.IsometryDual
+import ArakelovGeometry.AdelicVectorBundle.Dual.Map
 import ArakelovGeometry.AdelicVectorBundle.NormFamily.Domination.Subquotient
 import Mathlib.CategoryTheory.Category.Init
 
@@ -85,9 +86,9 @@ variable [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] [IsAlgClosed L]
 adelic. The original bundle need not be strongly adelic or ultrametric, and no
 regularity of the target place space is assumed. -/
 theorem scalarExtensionSubspaceQuotientOfCountableDiscreteBase_isStronglyAdelic
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (B : Submodule L (L ⊗[K] E)) (T : Submodule L B) :
+    (B : Submodule L (L ⊗[K] V)) (T : Submodule L B) :
     (V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase B T).IsStronglyAdelic := by
   change (((V.toNormFamily.scalarExtension (L := L)).restrict B).quotient T).IsStronglyDominated
   have hs : (V.toNormFamily.scalarExtension (L := L)).IsStronglyDominated :=

@@ -162,20 +162,20 @@ namespace AdelicVectorBundle
 
 /-- The actual quotient of a native restricted scalar bundle over an algebraic
 closure, with primal measurability produced from a countable discrete base. -/
-def scalarExtensionSubspaceQuotientOfCountableDiscreteBase
-    (V : AdelicVectorBundle S E)
+abbrev scalarExtensionSubspaceQuotientOfCountableDiscreteBase
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule L (L ⊗[K] E)) (T : Submodule L A) :
-    AdelicVectorBundle (S.algebraicExtension L) (A ⧸ T) :=
+    (A : Submodule L (L ⊗[K] V)) (T : Submodule L A) :
+    AdelicVectorBundle (S.algebraicExtension L) :=
   (V.scalarExtensionRestrictionOfCountableDiscreteBase (L := L) A).quotient T
     (hm := (V.toNormFamily.scalarExtension_restrict_quotient_isMeasurable_of_countable_discrete A
         T))
 
 @[simp]
 theorem scalarExtensionSubspaceQuotientOfCountableDiscreteBase_toNormFamily
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (A : Submodule L (L ⊗[K] E)) (T : Submodule L A) :
+    (A : Submodule L (L ⊗[K] V)) (T : Submodule L A) :
     (V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase (L := L) A T).toNormFamily =
       ((V.toNormFamily.scalarExtension (L := L)).restrict A).quotient T := rfl
 

@@ -32,30 +32,30 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- An attained full-rank threshold supplies an actual basis with the
 same degree bound, also when that basis is empty. -/
-theorem finrank_le_degreeThresholdSpan_iff_exists_basis (V : AdelicVectorBundle S E)
+theorem finrank_le_degreeThresholdSpan_iff_exists_basis (V : AdelicVectorBundle S)
     (t : ℝ) :
-    Module.finrank K E ≤ Module.finrank K (V.degreeThresholdSpan t) ↔
-      ∃ b : Module.Basis (Fin (Module.finrank K E)) K E,
+    Module.finrank K V ≤ Module.finrank K (V.degreeThresholdSpan t) ↔
+      ∃ b : Module.Basis (Fin (Module.finrank K V)) K V,
         ∀ i, t ≤ V.vectorDegree ⟨b i, b.ne_zero i⟩ := by
   classical
   constructor
   · intro ht
     obtain ⟨s, hli, hs⟩ :=
-      (V.le_finrank_degreeThresholdSpan_iff (Module.finrank K E) t).mp ht
+      (V.le_finrank_degreeThresholdSpan_iff (Module.finrank K V) t).mp ht
     let b := basisOfLinearIndependentOfCardEqFinrank'
       (fun i => (s i).val) hli (by simp)
     refine ⟨b, fun i => ?_⟩
     simpa only [b, coe_basisOfLinearIndependentOfCardEqFinrank'] using hs i
   · rintro ⟨b, hb⟩
-    exact (V.le_finrank_degreeThresholdSpan_iff (Module.finrank K E) t).mpr
+    exact (V.le_finrank_degreeThresholdSpan_iff (Module.finrank K V) t).mpr
       ⟨fun i => ⟨b i, b.ne_zero i⟩, b.linearIndependent, hb⟩
 
 /-- A real threshold spans the whole space precisely when an actual basis
 has at least that vector degree at each index. -/
-theorem degreeThresholdSpan_eq_top_iff_exists_basis (V : AdelicVectorBundle S E)
+theorem degreeThresholdSpan_eq_top_iff_exists_basis (V : AdelicVectorBundle S)
     (t : ℝ) :
     V.degreeThresholdSpan t = ⊤ ↔
-      ∃ b : Module.Basis (Fin (Module.finrank K E)) K E,
+      ∃ b : Module.Basis (Fin (Module.finrank K V)) K V,
         ∀ i, t ≤ V.vectorDegree ⟨b i, b.ne_zero i⟩ := by
   rw [← V.finrank_le_degreeThresholdSpan_iff_exists_basis t]
   constructor
@@ -67,9 +67,9 @@ theorem degreeThresholdSpan_eq_top_iff_exists_basis (V : AdelicVectorBundle S E)
 /-- The last logarithmic minimum is the supremum, over actual rational
 bases, of their smallest actual vector degree. The empty infimum is top. -/
 theorem minimalLogarithmicMinimum_eq_iSup_basis_iInf_vectorDegree
-    (V : AdelicVectorBundle S E) :
+    (V : AdelicVectorBundle S) :
     V.minimalLogarithmicMinimum =
-      ⨆ b : Module.Basis (Fin (Module.finrank K E)) K E,
+      ⨆ b : Module.Basis (Fin (Module.finrank K V)) K V,
         ⨅ i, (V.vectorDegree ⟨b i, b.ne_zero i⟩ : EReal) := by
   classical
   apply le_antisymm
@@ -91,13 +91,13 @@ theorem minimalLogarithmicMinimum_eq_iSup_basis_iInf_vectorDegree
 /-- Absolute last minima have the same basis formula on the actual
 ordinary algebraic-closure scalar bundle, with original regularity only. -/
 theorem absoluteMinimalLogarithmicMinimum_eq_iSup_basis_iInf_vectorDegree
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] :
     V.absoluteMinimalLogarithmicMinimum =
       ⨆ b : Module.Basis
-        (Fin (Module.finrank (AlgebraicClosure K) (AlgebraicClosure K ⊗[K] E)))
-        (AlgebraicClosure K) (AlgebraicClosure K ⊗[K] E),
+        (Fin (Module.finrank (AlgebraicClosure K) (AlgebraicClosure K ⊗[K] V)))
+        (AlgebraicClosure K) (AlgebraicClosure K ⊗[K] V),
         ⨅ i, ((V.ordinaryScalarExtension (L := AlgebraicClosure K)).vectorDegree
           ⟨b i, b.ne_zero i⟩ : EReal) := by
   simpa only [minimalLogarithmicMinimum, Module.finrank_baseChange,

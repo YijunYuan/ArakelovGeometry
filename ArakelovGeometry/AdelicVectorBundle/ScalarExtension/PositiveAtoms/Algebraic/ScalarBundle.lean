@@ -36,17 +36,20 @@ namespace NormFamily
 
 /-- The existing adelic bundle on the genuine ordinary algebraic scalar
 family, with both regularities produced from original domination alone. -/
-def algebraicScalarBundleOfPositiveAtoms (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+abbrev algebraicScalarBundleOfPositiveAtoms (ξ : NormFamily S E) [hξ : ξ.IsDominated]
     [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
-    AdelicVectorBundle (S.algebraicExtension L) (L ⊗[K] E) where
+    AdelicVectorBundle (S.algebraicExtension L) where
+  carrier := (L ⊗[K] E)
   toNormFamily := ξ.scalarExtension (L := L)
-  isMeasurable := by
-    exact hξ.scalarExtension_isMeasurable_of_positive_atoms_of_isAlgebraic ξ
-  dual_isMeasurable := by
-    exact hξ.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlgebraic ξ
-  isDominated := by
-    exact (hξ.scalarExtension_isStronglyDominated ξ
-      (AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin)).isDominated
+  toIsAdelic := {
+    isMeasurable := by
+      exact hξ.scalarExtension_isMeasurable_of_positive_atoms_of_isAlgebraic ξ
+    dual_isMeasurable := by
+      exact hξ.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlgebraic ξ
+    isDominated := by
+      exact (hξ.scalarExtension_isStronglyDominated ξ
+        (AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin)).isDominated
+  }
 
 @[simp]
 theorem algebraicScalarBundleOfPositiveAtoms_toNormFamily
@@ -69,7 +72,7 @@ namespace AdelicVectorBundle
 /-- The actual positive-atomic ordinary scalar bundle preserves canonical
 measurable-determinant degree, without density or discreteness assumptions. -/
 theorem degreeOfMeasurableDeterminant_algebraicScalarBundleOfPositiveAtoms [S.IsProper]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     [hdet : V.toNormFamily.determinant.IsMeasurable]
     [hN : S.IsArchimedeanNormalized] :
@@ -90,23 +93,23 @@ theorem degreeOfMeasurableDeterminant_algebraicScalarBundleOfPositiveAtoms [S.Is
   let hU := B.determinant_isLine (hm := hdet.determinant_scalarExtension) (hS := ⟨hLN⟩)
   have hd : W.lineDegree (hV := hW) = U.lineDegree (hV := hU) := by
     apply lineDegree_eq_of_norm_rational_eq W U (hV := hW) (hW := hU)
-      (determinantScalarExtensionEquiv K L E)
+      (determinantScalarExtensionEquiv K L V)
     intro x s
     change S.ParameterSpaceExtension L at x
     change (V.toNormFamily.determinant.scalarExtension (L := L)).norm x
         ((1 : x.abv.Completion) ⊗ₜ[L] s) =
       (V.toNormFamily.scalarExtension (L := L)).determinant.norm x
-        ((1 : x.abv.Completion) ⊗ₜ[L] determinantScalarExtensionEquiv K L E s)
+        ((1 : x.abv.Completion) ⊗ₜ[L] determinantScalarExtensionEquiv K L V s)
     have h := V.toNormFamily.determinant_scalarExtension_norm_eq x
-      ((1 : x.abv.Completion) ⊗ₜ[L] determinantScalarExtensionEquiv K L E s)
+      ((1 : x.abv.Completion) ⊗ₜ[L] determinantScalarExtensionEquiv K L V s)
     have he :
-        ((determinantScalarExtensionEquiv K L E).symm.toLinearMap.baseChange
+        ((determinantScalarExtensionEquiv K L V).symm.toLinearMap.baseChange
           x.abv.Completion)
-            ((1 : x.abv.Completion) ⊗ₜ[L] determinantScalarExtensionEquiv K L E s) =
+            ((1 : x.abv.Completion) ⊗ₜ[L] determinantScalarExtensionEquiv K L V s) =
           (1 : x.abv.Completion) ⊗ₜ[L] s := by
       rw [LinearMap.baseChange_tmul]
       exact congrArg (fun t => (1 : x.abv.Completion) ⊗ₜ[L] t)
-        ((determinantScalarExtensionEquiv K L E).symm_apply_apply s)
+        ((determinantScalarExtensionEquiv K L V).symm_apply_apply s)
     exact (h.trans (congrArg
       ((V.toNormFamily.determinant.scalarExtension (L := L)).norm x) he)).symm
   change U.lineDegree (hV := hU) = D.lineDegree (hV := hD)

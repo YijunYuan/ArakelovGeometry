@@ -69,28 +69,29 @@ theorem integral_infiniteLogEnvelope {n : ℕ} (hn : 0 < n) {ε : ℝ} (hε : 0 
 /-- A genuine actual Hermitian bundle is produced by measurable approximation, with its
 domination proved from the computed infinite envelope and its finite purity retained. -/
 theorem exists_hermitian_approximation
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hU : V.toNormFamily.IsUltrametric] [hpure : V.toNormFamily.IsPureAtFinitePlaces]
-    (hn : 0 < Module.finrank K E) {ε : ℝ} (hε : 0 < ε) :
-    ∃ W : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E,
-      W.toNormFamily.IsHermitian ∧
-      W.toNormFamily.IsPureAtFinitePlaces ∧
+    (hn : 0 < Module.finrank K V) {ε : ℝ} (hε : 0 < ε) :
+    ∃ W : NormFamily (normalizedNumberFieldAdelicStructure K) V,
+      W.IsAdelic ∧
+      W.IsHermitian ∧
+      W.IsPureAtFinitePlaces ∧
       (∀ ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin, ∀ z,
-        W.toNormFamily.norm ω z = V.toNormFamily.norm ω z) ∧
-      (∀ ω z, V.toNormFamily.norm ω z ≤ W.toNormFamily.norm ω z) ∧
-      ∀ ω z, W.toNormFamily.norm ω z ≤
-        Real.exp (infiniteLogEnvelope (Module.finrank K E) ε ω) * V.toNormFamily.norm ω z := by
+        W.norm ω z = V.toNormFamily.norm ω z) ∧
+      (∀ ω z, V.toNormFamily.norm ω z ≤ W.norm ω z) ∧
+      ∀ ω z, W.norm ω z ≤
+        Real.exp (infiniteLogEnvelope (Module.finrank K V) ε ω) * V.toNormFamily.norm ω z := by
   classical
   let S := normalizedNumberFieldAdelicStructure K
   let : Countable K := (Module.finBasis ℚ K).repr.injective.countable
   obtain ⟨η, hmη, hHη, hfη, hbη⟩ := V.isMeasurable.exists_hermitian_approximation hU
     (⊤ : Subfield K)
       (fun ω _ => S.isDenseSubfieldAt_top ω) hε
-  let g := infiniteLogEnvelope (K := K) (Module.finrank K E) ε
-  have hg := infiniteLogEnvelope_integrable (K := K) (Module.finrank K E) ε
-  have hC : 1 ≤ Real.sqrt ((Module.finrank K E : ℝ) + ε) := by
-    have hn' : (1 : ℝ) ≤ Module.finrank K E := by exact_mod_cast hn
-    simpa using Real.sqrt_le_sqrt (by linarith : (1 : ℝ) ≤ (Module.finrank K E : ℝ) + ε)
+  let g := infiniteLogEnvelope (K := K) (Module.finrank K V) ε
+  have hg := infiniteLogEnvelope_integrable (K := K) (Module.finrank K V) ε
+  have hC : 1 ≤ Real.sqrt ((Module.finrank K V : ℝ) + ε) := by
+    have hn' : (1 : ℝ) ≤ Module.finrank K V := by exact_mod_cast hn
+    simpa using Real.sqrt_le_sqrt (by linarith : (1 : ℝ) ≤ (Module.finrank K V : ℝ) + ε)
   have hg0 (ω : S.Ω) : 0 ≤ g ω := by
     exact Set.indicator_nonneg (fun _ _ => Real.log_nonneg hC) ω
   have hlower (ω : S.Ω) (z) : V.toNormFamily.norm ω z ≤ η.norm ω z := by
@@ -99,7 +100,7 @@ theorem exists_hermitian_approximation
     · rw [hfη ω (not_not.mp hω)]
   have hupper (ω : S.Ω) (z) : η.norm ω z ≤ Real.exp (g ω) * V.toNormFamily.norm ω z := by
     by_cases hω : ω ∈ S.Ωinf
-    · have hgω : g ω = Real.log (Real.sqrt ((Module.finrank K E : ℝ) + ε)) :=
+    · have hgω : g ω = Real.log (Real.sqrt ((Module.finrank K V : ℝ) + ε)) :=
         Set.indicator_of_mem hω _
       rw [hgω, Real.exp_log (lt_of_lt_of_le zero_lt_one hC)]
       exact (hbη ω hω z).2
@@ -115,7 +116,7 @@ theorem exists_hermitian_approximation
       _ ≤ η.norm ω z := by simpa using hlower ω z
   have hdη : η.IsDominated := V.isDominated.of_localDist ⟨g, hg, Eventually.of_forall hδ⟩
   let W := AdelicVectorBundle.ofMeasurableDominated η (hm := hmη) (hd := hdη)
-  refine ⟨W, hHη, ?_, hfη, hlower, hupper⟩
+  refine ⟨η, W.toIsAdelic, hHη, ?_, hfη, hlower, hupper⟩
   constructor
   intro ω hω z hz
   obtain ⟨a, ha, he⟩ := hpure ω hω z hz
@@ -123,17 +124,19 @@ theorem exists_hermitian_approximation
 
 /-- The actual first-minimum estimate at every positive Hermitian approximation scale. -/
 theorem maximalSlope_sub_approximation_error_le_firstMinimum
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hU : V.toNormFamily.IsUltrametric] [hpure : V.toNormFamily.IsPureAtFinitePlaces]
-    (hn : 0 < Module.finrank K E) {ε : ℝ} (hε : 0 < ε) :
+    (hn : 0 < Module.finrank K V) {ε : ℝ} (hε : 0 < ε) :
     V.maximalSlope -
-      (((Module.finrank ℚ K : ℝ) / 2 * Real.log ((Module.finrank K E : ℝ) + ε) +
-        ((Module.finrank ℚ K : ℝ) / 2 * Real.log (Module.finrank K E : ℝ) +
+      (((Module.finrank ℚ K : ℝ) / 2 * Real.log ((Module.finrank K V : ℝ) + ε) +
+        ((Module.finrank ℚ K : ℝ) / 2 * Real.log (Module.finrank K V : ℝ) +
           Real.log |(NumberField.discr K : ℝ)| / 2) : ℝ) : EReal) ≤
             V.maximalLogarithmicMinimum := by
-  obtain ⟨W, hH, hP, _, hlower, hupper⟩ := exists_hermitian_approximation V hn hε
-  let g := infiniteLogEnvelope (K := K) (Module.finrank K E) ε
-  have hg := infiniteLogEnvelope_integrable (K := K) (Module.finrank K E) ε
+  obtain ⟨η, hη, hH, hP, _, hlower, hupper⟩ := exists_hermitian_approximation V hn hε
+  let := hη
+  let W := η.toAdelicVectorBundle
+  let g := infiniteLogEnvelope (K := K) (Module.finrank K V) ε
+  have hg := infiniteLogEnvelope_integrable (K := K) (Module.finrank K V) ε
   have hmin := (logarithmicMinimum_comparison V W (fun _ => 0) g (integrable_zero _ ℝ _) hg
     (by simpa only [Real.exp_zero, one_mul] using hlower) hupper 1).2
   simp only [integral_zero, EReal.coe_zero, sub_zero] at hmin
@@ -152,25 +155,25 @@ theorem maximalSlope_sub_approximation_error_le_firstMinimum
 /-- The actual ordinary first minimum with arbitrary infinite norms and pure ultrametric
 finite norms, obtained by the honest positive-scale limit without finite-value assumptions. -/
 theorem maximalSlope_sub_error_le_firstMinimum
-    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) E)
+    (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
     [hU : V.toNormFamily.IsUltrametric] [hpure : V.toNormFamily.IsPureAtFinitePlaces]
-    (hn : 0 < Module.finrank K E) :
+    (hn : 0 < Module.finrank K V) :
     V.maximalSlope -
-      (((Module.finrank ℚ K : ℝ) * Real.log (Module.finrank K E : ℝ) +
+      (((Module.finrank ℚ K : ℝ) * Real.log (Module.finrank K V : ℝ) +
         Real.log |(NumberField.discr K : ℝ)| / 2 : ℝ) : EReal) ≤
           V.maximalLogarithmicMinimum := by
   let M := V.maximalSlope
   let c : ℝ → ℝ := fun ε =>
-    (Module.finrank ℚ K : ℝ) / 2 * Real.log ((Module.finrank K E : ℝ) + ε) +
-      ((Module.finrank ℚ K : ℝ) / 2 * Real.log (Module.finrank K E : ℝ) +
+    (Module.finrank ℚ K : ℝ) / 2 * Real.log ((Module.finrank K V : ℝ) + ε) +
+      ((Module.finrank ℚ K : ℝ) / 2 * Real.log (Module.finrank K V : ℝ) +
         Real.log |(NumberField.discr K : ℝ)| / 2)
   have hc : ContinuousAt c 0 := by
     apply ContinuousAt.add
     · apply ContinuousAt.mul continuousAt_const
       apply ContinuousAt.log (continuousAt_const.add continuousAt_id)
-      simpa using (Nat.cast_pos.mpr hn : (0 : ℝ) < Module.finrank K E).ne'
+      simpa using (Nat.cast_pos.mpr hn : (0 : ℝ) < Module.finrank K V).ne'
     · exact continuousAt_const
-  have hc0 : c 0 = (Module.finrank ℚ K : ℝ) * Real.log (Module.finrank K E : ℝ) +
+  have hc0 : c 0 = (Module.finrank ℚ K : ℝ) * Real.log (Module.finrank K V : ℝ) +
       Real.log |(NumberField.discr K : ℝ)| / 2 := by
     dsimp [c]
     rw [add_zero]

@@ -35,21 +35,21 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- The integral of the actual local determinant discrepancy. -/
-def determinantDiscrepancy (V : AdelicVectorBundle S E) : ℝ :=
+def determinantDiscrepancy (V : AdelicVectorBundle S) : ℝ :=
   ∫ ω, Real.log (V.toNormFamily.determinantDiscrepancy ω) ∂S.v
 
 /-- The actual lower integral of the local elementary-majorant infimum. -/
-def majorantDiscrepancy (V : AdelicVectorBundle S E)
+def majorantDiscrepancy (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] : EReal :=
   lowerEnvelopeIntegral (fun ω ↦ Real.log (V.toNormFamily.majorantDiscrepancy ω)) S.v
 
 /-- The global determinant discrepancy is nonnegative. -/
-theorem determinantDiscrepancy_nonneg (V : AdelicVectorBundle S E) :
+theorem determinantDiscrepancy_nonneg (V : AdelicVectorBundle S) :
     0 ≤ V.determinantDiscrepancy :=
   integral_nonneg V.toNormFamily.log_determinantDiscrepancy_nonneg
 
 /-- A zero lower envelope puts the global majorant discrepancy in [0,+∞]. -/
-theorem majorantDiscrepancy_nonneg (V : AdelicVectorBundle S E)
+theorem majorantDiscrepancy_nonneg (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     0 ≤ V.majorantDiscrepancy :=
   lowerEnvelopeIntegral_nonneg
@@ -57,7 +57,7 @@ theorem majorantDiscrepancy_nonneg (V : AdelicVectorBundle S E)
 
 /-- Strong domination makes the actual lower integral finite from above. -/
 theorem IsStronglyAdelic.majorantDiscrepancy_lt_top
-    {V : AdelicVectorBundle S E} (hV : V.IsStronglyAdelic)
+    {V : AdelicVectorBundle S} (hV : V.IsStronglyAdelic)
     [hN : S.IsArchimedeanNormalized] :
     V.majorantDiscrepancy < ⊤ := by
   obtain ⟨A, hA, hfA⟩ := (hV.log_majorantDiscrepancy_hasIntegrableBounds).1
@@ -66,14 +66,14 @@ theorem IsStronglyAdelic.majorantDiscrepancy_lt_top
   exact h.trans_lt (EReal.coe_lt_top _)
 
 /-- Nonnegativity excludes the other infinite value in every rank. -/
-theorem bot_lt_majorantDiscrepancy (V : AdelicVectorBundle S E)
+theorem bot_lt_majorantDiscrepancy (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     ⊥ < V.majorantDiscrepancy :=
   (EReal.bot_lt_coe 0).trans_le (V.majorantDiscrepancy_nonneg)
 
 /-- The actual determinant-discrepancy integral is the degree-duality defect. -/
 theorem determinantDiscrepancy_eq_degree_add_degree_dual [S.IsProper]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     V.determinantDiscrepancy =
@@ -82,7 +82,7 @@ theorem determinantDiscrepancy_eq_degree_add_degree_dual [S.IsProper]
 
 /-- Pointwise δ≤Δ passes to the real integral and the actual lower integral.
 The local determinant function is integrable under the standing alternative. -/
-theorem determinantDiscrepancy_le_majorantDiscrepancy (V : AdelicVectorBundle S E)
+theorem determinantDiscrepancy_le_majorantDiscrepancy (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.determinantDiscrepancy : EReal) ≤ V.majorantDiscrepancy := by
@@ -95,14 +95,14 @@ theorem determinantDiscrepancy_le_majorantDiscrepancy (V : AdelicVectorBundle S 
   exact h
 
 /-- A Hermitian family has zero global determinant discrepancy. -/
-theorem determinantDiscrepancy_eq_zero_of_isHermitian (V : AdelicVectorBundle S E)
+theorem determinantDiscrepancy_eq_zero_of_isHermitian (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] : V.determinantDiscrepancy = 0 := by
   simp only [determinantDiscrepancy,
     hV.determinantDiscrepancy_eq_one V.toNormFamily, Real.log_one, integral_zero]
 
 /-- A Hermitian family has zero actual lower majorant-discrepancy integral. -/
-theorem majorantDiscrepancy_eq_zero_of_isHermitian (V : AdelicVectorBundle S E)
+theorem majorantDiscrepancy_eq_zero_of_isHermitian (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] : V.majorantDiscrepancy = 0 := by
   have he : (fun ω ↦ Real.log (V.toNormFamily.majorantDiscrepancy ω)) = 0 := by
@@ -114,16 +114,16 @@ theorem majorantDiscrepancy_eq_zero_of_isHermitian (V : AdelicVectorBundle S E)
   simp only [Pi.zero_apply, integral_zero, EReal.coe_zero]
 
 /-- The unit determinant of the zero vector space has zero global discrepancy. -/
-theorem determinantDiscrepancy_eq_zero_of_finrank_eq_zero (V : AdelicVectorBundle S E)
-    (hr : Module.finrank K E = 0) : V.determinantDiscrepancy = 0 := by
+theorem determinantDiscrepancy_eq_zero_of_finrank_eq_zero (V : AdelicVectorBundle S)
+    (hr : Module.finrank K V = 0) : V.determinantDiscrepancy = 0 := by
   simp only [determinantDiscrepancy,
     V.toNormFamily.determinantDiscrepancy_eq_one_of_finrank_eq_zero hr,
     Real.log_one, integral_zero]
 
 /-- The explicit rank-zero infimum convention gives zero global lower integral. -/
-theorem majorantDiscrepancy_eq_zero_of_finrank_eq_zero (V : AdelicVectorBundle S E)
+theorem majorantDiscrepancy_eq_zero_of_finrank_eq_zero (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (hr : Module.finrank K E = 0) : V.majorantDiscrepancy = 0 := by
+    (hr : Module.finrank K V = 0) : V.majorantDiscrepancy = 0 := by
   have he : (fun ω ↦ Real.log (V.toNormFamily.majorantDiscrepancy ω)) = 0 := by
     funext ω
     rw [V.toNormFamily.majorantDiscrepancy_eq_one_of_finrank_eq_zero hr, Real.log_one]

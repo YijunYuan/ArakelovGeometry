@@ -37,78 +37,78 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 
 /-- The prescribed actual scalar family defines a bundle for every algebraic
 extension of a countable discrete base. -/
-def scalarExtensionOfCountableDiscreteBase (V : AdelicVectorBundle S E)
+abbrev scalarExtensionOfCountableDiscreteBase (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
-    AdelicVectorBundle (S.algebraicExtension L) (L ⊗[K] E) where
+    AdelicVectorBundle (S.algebraicExtension L) where
+  carrier := (L ⊗[K] V)
   toNormFamily := V.toNormFamily.scalarExtension (L := L)
-  isMeasurable := V.toNormFamily.scalarExtension_isMeasurable_of_countable_discrete
-  dual_isMeasurable := by
-    exact V.toNormFamily.scalarExtension_dual_isMeasurable_of_countable_discrete
-  isDominated := by
-    exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
-      V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)).isDominated
+  toIsAdelic := {
+    isMeasurable := V.toNormFamily.scalarExtension_isMeasurable_of_countable_discrete
+    dual_isMeasurable := by
+      exact V.toNormFamily.scalarExtension_dual_isMeasurable_of_countable_discrete
+    isDominated := by
+      exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
+        V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)).isDominated
+  }
 
 @[simp]
-theorem scalarExtensionOfCountableDiscreteBase_toNormFamily (V : AdelicVectorBundle S E)
+theorem scalarExtensionOfCountableDiscreteBase_toNormFamily (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     (V.scalarExtensionOfCountableDiscreteBase (L := L)).toNormFamily =
       V.toNormFamily.scalarExtension (L := L) := rfl
 
 /-- Strong domination is produced from the original bundle. -/
-theorem scalarExtensionOfCountableDiscreteBase_isStronglyAdelic (V : AdelicVectorBundle S E)
+theorem scalarExtensionOfCountableDiscreteBase_isStronglyAdelic (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     (V.scalarExtensionOfCountableDiscreteBase (L := L)).IsStronglyAdelic :=
   NormFamily.IsDominated.scalarExtension_isStronglyDominated
     V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)
 
 /-- The actual scalar family has ultrametric finite-place norms. -/
-theorem scalarExtensionOfCountableDiscreteBase_isUltrametric (V : AdelicVectorBundle S E)
+theorem scalarExtensionOfCountableDiscreteBase_isUltrametric (V : AdelicVectorBundle S)
     [S.IsArchimedeanNormalized] :
     (V.scalarExtensionOfCountableDiscreteBase (L := L)).toNormFamily.IsUltrametric :=
   V.toNormFamily.scalarExtension_isUltrametric
 
 /-- Scalar rank preservation includes the zero bundle. -/
-theorem scalarExtensionOfCountableDiscreteBase_rank (V : AdelicVectorBundle S E)
+theorem scalarExtensionOfCountableDiscreteBase_rank (V : AdelicVectorBundle S)
     [S.IsArchimedeanNormalized] :
     (V.scalarExtensionOfCountableDiscreteBase (L := L)).rank = V.rank :=
   Module.finrank_baseChange
 
 /-- The algebraic and accepted finite discrete constructors agree. -/
 theorem scalarExtensionOfCountableDiscreteBase_eq_of_finiteDimensional
-    [FiniteDimensional K L] (V : AdelicVectorBundle S E)
+    [FiniteDimensional K L] (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     V.scalarExtensionOfCountableDiscreteBase (L := L) =
       V.scalarExtensionOfCountableDiscrete (L := L) := by
-  apply AdelicVectorBundle.ext
   rfl
 
 /-- The algebraic discrete and common-density constructions have identical actual norms. -/
 theorem scalarExtensionOfCountableDiscreteBase_eq_scalarExtension
-    (V : AdelicVectorBundle S E) [hS : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hS : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] :
     V.scalarExtensionOfCountableDiscreteBase (L := L) =
-      V.scalarExtension (L := L) := by
-  apply AdelicVectorBundle.ext
+      V.scalarExtension (L := L) (hS := hS) := by
   rfl
 
 /-- On lines this is the accepted all-algebraic actual scalar line. -/
 theorem scalarExtensionOfCountableDiscreteBase_eq_scalarExtensionLine
-    (V : AdelicVectorBundle S E) [hV : V.IsLine]
+    (V : AdelicVectorBundle S) [hV : V.IsLine]
     [hN : S.IsArchimedeanNormalized] :
     V.scalarExtensionOfCountableDiscreteBase (L := L) =
-      V.scalarExtensionLine (L := L) := by
-  apply AdelicVectorBundle.ext
+      V.scalarExtensionLine (L := L) (hV := hV) := by
   rfl
 
 instance scalarExtensionOfCountableDiscreteBase_isLine
-    (V : AdelicVectorBundle S E) [hV : V.IsLine]
+    (V : AdelicVectorBundle S) [hV : V.IsLine]
     [hN : S.IsArchimedeanNormalized] :
     (V.scalarExtensionOfCountableDiscreteBase (L := L)).IsLine :=
   ⟨Module.finrank_baseChange.trans hV.rank_eq_one⟩
 
 /-- Proper-curve line degree is preserved for arbitrary algebraic extensions. -/
 theorem lineDegree_scalarExtensionOfCountableDiscreteBase [S.IsProper]
-    (V : AdelicVectorBundle S E) [hV : V.IsLine]
+    (V : AdelicVectorBundle S) [hV : V.IsLine]
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     (V.scalarExtensionOfCountableDiscreteBase (L := L)).lineDegree
@@ -121,7 +121,7 @@ theorem lineDegree_scalarExtensionOfCountableDiscreteBase [S.IsProper]
 /-- For finite extensions the actual vector degree is preserved; extended
 discreteness and normalization are both derived. -/
 theorem degree_scalarExtensionOfCountableDiscreteBase [S.IsProper] [FiniteDimensional K L]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     (V.scalarExtensionOfCountableDiscreteBase (L := L)).degree

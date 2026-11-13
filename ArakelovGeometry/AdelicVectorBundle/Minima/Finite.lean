@@ -30,10 +30,10 @@ variable {K E : Type*} [Field K] {S : AdelicStructure K}
 
 /-- A finite actual rational basis supplies one real threshold spanning the
 entire bundle, including its empty basis in rank zero. -/
-theorem exists_degreeThresholdSpan_eq_top (V : AdelicVectorBundle S E) :
+theorem exists_degreeThresholdSpan_eq_top (V : AdelicVectorBundle S) :
     ∃ t : ℝ, V.degreeThresholdSpan t = ⊤ := by
-  let b := Module.finBasis K E
-  let d : Fin (Module.finrank K E) → ℝ := fun j => V.vectorDegree ⟨b j, b.ne_zero j⟩
+  let b := Module.finBasis K V
+  let d : Fin (Module.finrank K V) → ℝ := fun j => V.vectorDegree ⟨b j, b.ne_zero j⟩
   obtain ⟨t, ht⟩ := Finite.bddBelow_range d
   refine ⟨t, top_unique ?_⟩
   rw [← b.span_eq]
@@ -43,8 +43,8 @@ theorem exists_degreeThresholdSpan_eq_top (V : AdelicVectorBundle S E) :
 
 /-- Every index at most rank has a real admissible threshold, hence cannot
 have bottom minimum. Index zero is an explicitly auxiliary case. -/
-theorem logarithmicMinimum_ne_bot (V : AdelicVectorBundle S E)
-    {i : ℕ} (hi : i ≤ Module.finrank K E) : V.logarithmicMinimum i ≠ ⊥ := by
+theorem logarithmicMinimum_ne_bot (V : AdelicVectorBundle S)
+    {i : ℕ} (hi : i ≤ Module.finrank K V) : V.logarithmicMinimum i ≠ ⊥ := by
   obtain ⟨t, ht⟩ := V.exists_degreeThresholdSpan_eq_top
   have h : (t : EReal) ≤ V.logarithmicMinimum i :=
     V.coe_le_logarithmicMinimum_of_finrank_le (by rw [ht, finrank_top]; exact hi)
@@ -53,9 +53,9 @@ theorem logarithmicMinimum_ne_bot (V : AdelicVectorBundle S E)
 /-- Every strict threshold below the supremum is surpassed by an actual
 independent nonzero rational tuple; the supremum need not be attained. -/
 theorem exists_linearIndependent_degree_gt_of_lt_logarithmicMinimum
-    (V : AdelicVectorBundle S E) (i : ℕ) {t : ℝ}
+    (V : AdelicVectorBundle S) (i : ℕ) {t : ℝ}
     (ht : (t : EReal) < V.logarithmicMinimum i) :
-    ∃ s : Fin i → {x : E // x ≠ 0}, LinearIndependent K (fun j => (s j).val) ∧
+    ∃ s : Fin i → {x : V // x ≠ 0}, LinearIndependent K (fun j => (s j).val) ∧
       ∀ j, t < V.vectorDegree (s j) := by
   rw [logarithmicMinimum, lt_iSup_iff] at ht
   obtain ⟨u, hu⟩ := ht
@@ -65,7 +65,7 @@ theorem exists_linearIndependent_degree_gt_of_lt_logarithmicMinimum
 
 /-- Low enough actual minima filtration cuts are the whole space, with no
 properness or regularity alternative needed for this lower-end conclusion. -/
-theorem exists_minimaFiltration_eq_top (V : AdelicVectorBundle S E) :
+theorem exists_minimaFiltration_eq_top (V : AdelicVectorBundle S) :
     ∃ t : ℝ, ∀ u ≤ t, V.minimaFiltration u = ⊤ := by
   obtain ⟨t, ht⟩ := V.exists_degreeThresholdSpan_eq_top
   refine ⟨t, fun u hu => top_unique ?_⟩
@@ -76,7 +76,7 @@ variable [S.IsProper]
 
 /-- Actual first-minimum bounds and produced finite native slope suprema
 exclude positive infinity on each of the original regularity alternatives. -/
-theorem absoluteMaximalLogarithmicMinimum_lt_top (V : AdelicVectorBundle S E)
+theorem absoluteMaximalLogarithmicMinimum_lt_top (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] :
     V.absoluteMaximalLogarithmicMinimum < ⊤ := by
@@ -94,7 +94,7 @@ theorem absoluteMaximalLogarithmicMinimum_lt_top (V : AdelicVectorBundle S E)
 
 /-- Every positive ordinary index excludes positive infinity, using the
 actual original-to-absolute comparison on all three regularity branches. -/
-theorem logarithmicMinimum_ne_top (V : AdelicVectorBundle S E)
+theorem logarithmicMinimum_ne_top (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
     {i : ℕ} (hi : 1 ≤ i) : V.logarithmicMinimum i ≠ ⊤ :=
@@ -103,10 +103,10 @@ theorem logarithmicMinimum_ne_top (V : AdelicVectorBundle S E)
       (V.absoluteMaximalLogarithmicMinimum_lt_top) |>.ne
 
 /-- Every valid source index has a produced real ordinary logarithmic minimum. -/
-theorem exists_logarithmicMinimum_eq_coe (V : AdelicVectorBundle S E)
+theorem exists_logarithmicMinimum_eq_coe (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
-    {i : ℕ} (hi : 1 ≤ i) (hr : i ≤ Module.finrank K E) :
+    {i : ℕ} (hi : 1 ≤ i) (hr : i ≤ Module.finrank K V) :
     ∃ c : ℝ, V.logarithmicMinimum i = (c : EReal) :=
   ⟨(V.logarithmicMinimum i).toReal,
     (EReal.coe_toReal (V.logarithmicMinimum_ne_top hi)
@@ -115,11 +115,11 @@ theorem exists_logarithmicMinimum_eq_coe (V : AdelicVectorBundle S E)
 /-- A real epsilon below the actual valid minimum admits an independent
 nonzero tuple. The real value is canonical and its finiteness is produced. -/
 theorem exists_linearIndependent_degree_ge_logarithmicMinimum_sub
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
-    {i : ℕ} (hi : 1 ≤ i) (hr : i ≤ Module.finrank K E) {ε : ℝ} (hε : 0 < ε) :
-    ∃ s : Fin i → {x : E // x ≠ 0}, LinearIndependent K (fun j => (s j).val) ∧
+    {i : ℕ} (hi : 1 ≤ i) (hr : i ≤ Module.finrank K V) {ε : ℝ} (hε : 0 < ε) :
+    ∃ s : Fin i → {x : V // x ≠ 0}, LinearIndependent K (fun j => (s j).val) ∧
       ∀ j, (V.logarithmicMinimum i).toReal - ε ≤ V.vectorDegree (s j) := by
   have hm := EReal.coe_toReal (V.logarithmicMinimum_ne_top hi)
     (V.logarithmicMinimum_ne_bot hr)
@@ -132,14 +132,14 @@ theorem exists_linearIndependent_degree_ge_logarithmicMinimum_sub
 
 /-- Produced finite first minimum separates all sufficiently high actual
 filtration cuts; rank zero uses its genuine zero-filtration convention. -/
-theorem exists_minimaFiltration_eq_bot (V : AdelicVectorBundle S E)
+theorem exists_minimaFiltration_eq_bot (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized] :
     ∃ t : ℝ, ∀ u ≥ t, V.minimaFiltration u = ⊥ := by
-  by_cases hr : Module.finrank K E = 0
+  by_cases hr : Module.finrank K V = 0
   · exact ⟨0, fun u _ => V.minimaFiltration_eq_bot_of_finrank_eq_zero hr u⟩
   · obtain ⟨c, hc⟩ := V.exists_logarithmicMinimum_eq_coe le_rfl (by omega :
-      1 ≤ Module.finrank K E)
+      1 ≤ Module.finrank K V)
     refine ⟨c + 1, fun u hu => (V.minimaFiltration_eq_bot_iff u).mpr ?_⟩
     rw [hc]
     exact EReal.coe_lt_coe_iff.mpr (by linarith)

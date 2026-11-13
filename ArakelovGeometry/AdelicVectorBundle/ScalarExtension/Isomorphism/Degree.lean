@@ -129,21 +129,21 @@ variable [IsAlgClosed L] [IsAlgClosed M]
 isomorphism of algebraic closures. Both determinant measurability proofs come
 from finite-stage descent; the equality follows by transporting the logarithm integral. -/
 theorem degree_nativeSubquotientOfCountableDiscreteBase_algEquiv [S.IsProper]
-    (V : AdelicVectorBundle S E)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
-    (σ : L ≃ₐ[K] M) (B T : Submodule L (L ⊗[K] E)) (hTB : T ≤ B) :
+    (σ : L ≃ₐ[K] M) (B T : Submodule L (L ⊗[K] V)) (hTB : T ≤ B) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
     let hdetL := V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase_determinant_isMeasurable
       B (T.comap B.subtype)
     let hdetM := V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase_determinant_isMeasurable
-      (L := M) (scalarExtensionSubspaceOrderIso (E := E) σ B)
-      ((scalarExtensionSubspaceOrderIso (E := E) σ T).comap
-        (scalarExtensionSubspaceOrderIso (E := E) σ B).subtype)
+      (L := M) (scalarExtensionSubspaceOrderIso (E := V) σ B)
+      ((scalarExtensionSubspaceOrderIso (E := V) σ T).comap
+        (scalarExtensionSubspaceOrderIso (E := V) σ B).subtype)
     (V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase (L := M)
-      (scalarExtensionSubspaceOrderIso (E := E) σ B)
-      ((scalarExtensionSubspaceOrderIso (E := E) σ T).comap
-        (scalarExtensionSubspaceOrderIso (E := E) σ B).subtype)).degreeOfMeasurableDeterminant
+      (scalarExtensionSubspaceOrderIso (E := V) σ B)
+      ((scalarExtensionSubspaceOrderIso (E := V) σ T).comap
+        (scalarExtensionSubspaceOrderIso (E := V) σ B).subtype)).degreeOfMeasurableDeterminant
           (hdet := hdetM) =
     (V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase (L := L) B
       (T.comap B.subtype)).degreeOfMeasurableDeterminant
@@ -155,17 +155,17 @@ theorem degree_nativeSubquotientOfCountableDiscreteBase_algEquiv [S.IsProper]
   let U := V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase (L := L) B
     (T.comap B.subtype)
   let W := V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase (L := M)
-    (scalarExtensionSubspaceOrderIso (E := E) σ B)
-    ((scalarExtensionSubspaceOrderIso (E := E) σ T).comap
-      (scalarExtensionSubspaceOrderIso (E := E) σ B).subtype)
+    (scalarExtensionSubspaceOrderIso (E := V) σ B)
+    ((scalarExtensionSubspaceOrderIso (E := V) σ T).comap
+      (scalarExtensionSubspaceOrderIso (E := V) σ B).subtype)
   let hdetU : U.toNormFamily.determinant.IsMeasurable :=
     V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase_determinant_isMeasurable
       B (T.comap B.subtype)
   let hdetW : W.toNormFamily.determinant.IsMeasurable :=
     V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase_determinant_isMeasurable
-      (L := M) (scalarExtensionSubspaceOrderIso (E := E) σ B)
-      ((scalarExtensionSubspaceOrderIso (E := E) σ T).comap
-        (scalarExtensionSubspaceOrderIso (E := E) σ B).subtype)
+      (L := M) (scalarExtensionSubspaceOrderIso (E := V) σ B)
+      ((scalarExtensionSubspaceOrderIso (E := V) σ T).comap
+        (scalarExtensionSubspaceOrderIso (E := V) σ B).subtype)
   change W.degreeOfMeasurableDeterminant (hN := ⟨hNM⟩) =
     U.degreeOfMeasurableDeterminant (hN := ⟨hNL⟩)
   let s := (U.determinant (hS := ⟨hNL⟩)).lineGenerator
@@ -179,7 +179,6 @@ theorem degree_nativeSubquotientOfCountableDiscreteBase_algEquiv [S.IsProper]
       ∂(S.algebraicExtension M).v) =
       ∫ y, U.toNormFamily.determinant.logNorm s.val y ∂(S.algebraicExtension L).v := by
     dsimp only [U, W, d]
-    simp only [scalarExtensionSubspaceQuotientOfCountableDiscreteBase_toNormFamily]
     exact V.toNormFamily.scalarExtension_subquotient_determinant_integral_logNorm_algEquiv
       σ B T hTB s.val
   exact (degreeOfMeasurableDeterminant_eq_neg_integral W (hN := ⟨hNM⟩) ⟨d s.val, hd⟩).trans
@@ -191,17 +190,17 @@ omit [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] in
 isomorphism when the original curve has a common countable dense subfield.
 Both extended degree contexts are produced from the original curve. -/
 theorem degree_nativeSubquotient_algEquiv [S.IsProper]
-    (V : AdelicVectorBundle S E) [hcount : S.HasCommonCountableDenseSubfield]
+    (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    (σ : L ≃ₐ[K] M) (B T : Submodule L (L ⊗[K] E)) (hTB : T ≤ B) :
+    (σ : L ≃ₐ[K] M) (B T : Submodule L (L ⊗[K] V)) (hTB : T ≤ B) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := L)
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := M)
     (((V.scalarExtension (L := M)).restrictOfMeasurableBase
-      (scalarExtensionSubspaceOrderIso (E := E) σ B)).quotientOfMeasurableBase
-        ((scalarExtensionSubspaceOrderIso (E := E) σ T).comap
-          (scalarExtensionSubspaceOrderIso (E := E) σ B).subtype)).degree
+      (scalarExtensionSubspaceOrderIso (E := V) σ B)).quotientOfMeasurableBase
+        ((scalarExtensionSubspaceOrderIso (E := V) σ T).comap
+          (scalarExtensionSubspaceOrderIso (E := V) σ B).subtype)).degree
             (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M))⟩) =
     (((V.scalarExtension (L := L)).restrictOfMeasurableBase
       B).quotientOfMeasurableBase (T.comap B.subtype)).degree
@@ -215,9 +214,9 @@ theorem degree_nativeSubquotient_algEquiv [S.IsProper]
   let U := ((V.scalarExtension (L := L)).restrictOfMeasurableBase B
    ).quotientOfMeasurableBase (T.comap B.subtype)
   let W := ((V.scalarExtension (L := M)).restrictOfMeasurableBase
-    (scalarExtensionSubspaceOrderIso (E := E) σ B)).quotientOfMeasurableBase
-      ((scalarExtensionSubspaceOrderIso (E := E) σ T).comap
-        (scalarExtensionSubspaceOrderIso (E := E) σ B).subtype)
+    (scalarExtensionSubspaceOrderIso (E := V) σ B)).quotientOfMeasurableBase
+      ((scalarExtensionSubspaceOrderIso (E := V) σ T).comap
+        (scalarExtensionSubspaceOrderIso (E := V) σ B).subtype)
   change W.degree (hN := ⟨hNM⟩) = U.degree (hN := ⟨hNL⟩)
   let s := (U.determinantOfMeasurableBase (hN := ⟨hNL⟩)).lineGenerator
     (hV := (U.determinantOfMeasurableBase_isLine (hN := ⟨hNL⟩)))
@@ -231,8 +230,6 @@ theorem degree_nativeSubquotient_algEquiv [S.IsProper]
       ∂(S.algebraicExtension M).v) =
       ∫ y, U.toNormFamily.determinant.logNorm s.val y ∂(S.algebraicExtension L).v := by
     dsimp only [U, W, d]
-    simp only [quotientOfMeasurableBase_toNormFamily, restrictOfMeasurableBase_toNormFamily,
-      scalarExtension_toNormFamily]
     exact V.toNormFamily.scalarExtension_subquotient_determinant_integral_logNorm_algEquiv
       σ B T hTB s.val
   exact (degree_eq_neg_integral W (hN := ⟨hNM⟩) ⟨d s.val, hd⟩).trans

@@ -212,7 +212,7 @@ theorem family_isDominated : family.IsDominated := by
     exact referenceFamily_strong.isDominated.2
 
 /-- A genuine adelic vector bundle with the original residue-bump completed norms. -/
-def bundle : AdelicVectorBundle S Plane :=
+abbrev bundle : AdelicVectorBundle S :=
   AdelicVectorBundle.ofDominatedNumberField family (hξ := family_isDominated)
 
 /-- Every selected actual place contributes at least the fixed positive logarithmic distance. -/

@@ -81,13 +81,13 @@ variable [S.IsProper] [FiniteDimensional K E]
 
 /-- Arbitrary sums of actual restricted subspaces preserve a common lower
 bound on their actual minimal slopes. Zero summands and an empty family are allowed. -/
-theorem minimalSlope_restrict_iSup_ge (V : AdelicVectorBundle S E)
+theorem minimalSlope_restrict_iSup_ge (V : AdelicVectorBundle.{w} S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
-    {ι : Type w''} (U : ι → Submodule K E) (a : ℝ)
+    {ι : Type w''} (U : ι → Submodule K V) (a : ℝ)
     (hU : ∀ i, (a : EReal) ≤ (V.restrictOfMeasurableBase (U i)).minimalSlope) :
     (a : EReal) ≤ (V.restrictOfMeasurableBase (⨆ i, U i)).minimalSlope := by
-  let W : Submodule K E := ⨆ i, U i
+  let W : Submodule K V := ⨆ i, U i
   let B := V.restrictOfMeasurableBase W
   apply B.le_minimalSlope
   intro T hT
@@ -100,6 +100,8 @@ theorem minimalSlope_restrict_iSup_ge (V : AdelicVectorBundle S E)
     have hd := T.finrank_quotient_add_finrank
     have hdimT : Module.finrank K T = Module.finrank K W := by
       rw [hker, finrank_top]
+    change 0 < Module.finrank K (W ⧸ T) at hT
+    change Module.finrank K (W ⧸ T) + Module.finrank K T = Module.finrank K W at hd
     rw [hdimT] at hd
     omega
   obtain ⟨i, hi⟩ := Submodule.exists_ne_zero_comp_inclusion_iSup U T.mkQ hq

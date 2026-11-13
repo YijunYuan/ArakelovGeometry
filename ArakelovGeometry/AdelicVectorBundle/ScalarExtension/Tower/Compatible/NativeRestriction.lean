@@ -64,10 +64,10 @@ theorem scalarExtension_compatibleTower_restrict_pullback (ξ : NormFamily S E)
 variable [IsAlgClosed M] [MeasurableSingletonClass S.Ω]
 
 /-- Transport the direct native restriction to its iterated tensor-product subspace. -/
-def nativeRestrictionTowerBundle (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+abbrev nativeRestrictionTowerBundle (ξ : NormFamily S E) [hξ : ξ.IsDominated]
     [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
     (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
-    AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M) A :=
+    AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M) :=
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K L M M E
   let R := ξ.nativeAlgebraicRestrictionOfPositiveAtoms (A.map c.toLinearMap)
   (R.compatibleTowerPullback (L := L)).pullbackEquiv (c.submoduleMap A)
@@ -82,20 +82,23 @@ theorem nativeRestrictionTowerBundle_normFamily (ξ : NormFamily S E)
 
 /-- A genuine ordinary adelic bundle on each actual iterated native subspace,
 with all fields produced from original positive finite atoms. -/
-def nativeCompatibleTowerRestrictionOfPositiveAtoms (ξ : NormFamily S E)
+abbrev nativeCompatibleTowerRestrictionOfPositiveAtoms (ξ : NormFamily S E)
     [hξ : ξ.IsDominated] [hpos : S.HasPositiveAtoms]
     [hS : S.HasOnlyFinitePlaces] (A : Submodule M (M ⊗[L] (L ⊗[K] E))) :
-    AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M) A where
+    AdelicVectorBundle ((S.algebraicExtension L).algebraicExtension M) where
+  carrier := A
   toNormFamily := ((ξ.scalarExtension (L := L)).scalarExtension (L := M)).restrict A
-  isMeasurable := by
-    rw [← nativeRestrictionTowerBundle_normFamily ξ A]
-    exact (nativeRestrictionTowerBundle ξ A).isMeasurable
-  dual_isMeasurable := by
-    rw [← nativeRestrictionTowerBundle_normFamily ξ A]
-    exact (nativeRestrictionTowerBundle ξ A).dual_isMeasurable
-  isDominated := by
-    rw [← nativeRestrictionTowerBundle_normFamily ξ A]
-    exact (nativeRestrictionTowerBundle ξ A).isDominated
+  toIsAdelic := {
+    isMeasurable := by
+      rw [← nativeRestrictionTowerBundle_normFamily ξ A]
+      exact (nativeRestrictionTowerBundle ξ A).isMeasurable
+    dual_isMeasurable := by
+      rw [← nativeRestrictionTowerBundle_normFamily ξ A]
+      exact (nativeRestrictionTowerBundle ξ A).dual_isMeasurable
+    isDominated := by
+      rw [← nativeRestrictionTowerBundle_normFamily ξ A]
+      exact (nativeRestrictionTowerBundle ξ A).isDominated
+  }
 
 @[simp]
 theorem nativeCompatibleTowerRestrictionOfPositiveAtoms_toNormFamily (ξ : NormFamily S E)
