@@ -219,13 +219,13 @@ variable {K : Type*} [Field K] {S : AdelicStructure K}
 followed by quotient norms. -/
 noncomputable abbrev filtrationGraded (V : AdelicVectorBundle S)
     (F : ℝ → Submodule K V) (t : ℝ)
-    [hS : S.HasMeasurableBase] :
+    [hS : S.NormMeasurabilityHypotheses] :
     AdelicVectorBundle S :=
-  (V.restrictOfMeasurableBase (F t)).quotientOfMeasurableBase
+  (V.restrictOfNormMeasurability (F t)).quotientOfNormMeasurability
     ((Submodule.filtrationRightLimit F t).comap (F t).subtype)
 
 instance instIsHermitianFiltrationGraded (V : AdelicVectorBundle S)
-    [S.HasMeasurableBase] [S.IsArchimedeanNormalized] [V.IsHermitian]
+    [S.NormMeasurabilityHypotheses] [S.IsArchimedeanNormalized] [V.IsHermitian]
     (F : ℝ → Submodule K V) (t : ℝ) : (V.filtrationGraded F t).IsHermitian := by
   unfold filtrationGraded
   infer_instance
@@ -237,7 +237,7 @@ of degree at least `a` times its rank. Rank-zero targets are included. This
 is the one-step degree argument in the adapted Bost Lemma 7.1 proof. -/
 theorem degree_ge_of_semistable_surjective_contraction
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] (a : ℝ)
     [hsemi : V.IsMeanSlopeSemistable] (ha : V.slope = a)
@@ -268,11 +268,11 @@ quotient, with the norms inherited from the original target bundle. -/
 theorem imageFlagQuotientMap_norm_le
     (V : Fin n → AdelicVectorBundle S) (W : AdelicVectorBundle S)
     (f : ∀ i, V i →ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     (hf : ∀ i ω x, W.toNormFamily.norm ω ((f i).baseChange (S.ϕ ω).Completion x) ≤
       (V i).norm ω x) (i : Fin n) (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K] V i) :
-    (W.flagQuotientOfMeasurableBase (Submodule.imageFlag f) i).toNormFamily.norm ω
+    (W.flagQuotientOfNormMeasurability (Submodule.imageFlag f) i).toNormFamily.norm ω
       ((Submodule.imageFlagQuotientMap f i).baseChange (S.ϕ ω).Completion z) ≤
         (V i).norm ω z := by
   have hc : (Submodule.imageFlag f i.succ).subtype.comp
@@ -293,7 +293,7 @@ actual accumulated-image flag, not a norm on their direct sum. -/
 theorem degree_ge_of_same_slope_spanning_contractions
     (V : Fin n → AdelicVectorBundle S) (W : AdelicVectorBundle S)
     (f : ∀ i, V i →ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : ∀ i, (V i).IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (a : ℝ)
@@ -309,15 +309,15 @@ theorem degree_ge_of_same_slope_spanning_contractions
   have htop : F (Fin.last n) = ⊤ := (Submodule.imageFlag_last f).trans hspan
   have hd (i : Fin n) :
       a * (Module.finrank K ((F i.succ) ⧸ (F i.castSucc).comap (F i.succ).subtype) : ℝ) ≤
-        (W.flagQuotientOfMeasurableBase F i).degree := by
+        (W.flagQuotientOfNormMeasurability F i).degree := by
     have hs := Submodule.imageFlagQuotientMap_surjective f i
     rcases hsemi i with hz | ⟨hss, ha⟩
     · have hr : Module.finrank K ((F i.succ) ⧸ (F i.castSucc).comap (F i.succ).subtype) = 0 :=
         Nat.eq_zero_of_le_zero (hz ▸ LinearMap.finrank_le_finrank_of_surjective hs)
       rw [hr, Nat.cast_zero, mul_zero,
-        (W.flagQuotientOfMeasurableBase F i).degree_eq_zero_of_finrank_eq_zero hr]
+        (W.flagQuotientOfNormMeasurability F i).degree_eq_zero_of_finrank_eq_zero hr]
     · exact degree_ge_of_semistable_surjective_contraction (V i)
-        (W.flagQuotientOfMeasurableBase F i) (hV := hV i) a
+        (W.flagQuotientOfNormMeasurability F i) (hV := hV i) a
         (hsemi := hss) ha
         (Submodule.imageFlagQuotientMap f i) hs
         (imageFlagQuotientMap_norm_le V W f hf i)
@@ -333,7 +333,7 @@ theorem degree_ge_of_same_slope_spanning_contractions
     _ = ∑ i : Fin n, a * (Module.finrank K
         ((F i.succ) ⧸ (F i.castSucc).comap (F i.succ).subtype) : ℝ) := by
       rw [← Finset.mul_sum, ← Nat.cast_sum, hr]
-    _ ≤ ∑ i : Fin n, (W.flagQuotientOfMeasurableBase F i).degree :=
+    _ ≤ ∑ i : Fin n, (W.flagQuotientOfNormMeasurability F i).degree :=
       Finset.sum_le_sum fun i _ ↦ hd i
     _ = W.degree := W.sum_flagQuotient_degree_eq_of_isHermitian
       F hF hzero htop
@@ -348,7 +348,7 @@ source family. Internally the enumeration gives the actual image flag. -/
 theorem degree_ge_of_finite_same_slope_spanning_contractions [Finite ι]
     (V : ι → AdelicVectorBundle S) (W : AdelicVectorBundle S)
     (f : ∀ i, (V i).carrier →ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : ∀ i, (V i).toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (a : ℝ)
@@ -372,7 +372,7 @@ argument, retaining the target's quotient norm. -/
 theorem slope_quotient_ge_of_finite_same_slope_spanning_contractions [Finite ι]
     (V : ι → AdelicVectorBundle S) (W : AdelicVectorBundle S)
     (f : ∀ i, (V i).carrier →ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : ∀ i, (V i).toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (a : ℝ)
@@ -382,7 +382,7 @@ theorem slope_quotient_ge_of_finite_same_slope_spanning_contractions [Finite ι]
     (hf : ∀ i ω x, W.toNormFamily.norm ω ((f i).baseChange (S.ϕ ω).Completion x) ≤
       (V i).toNormFamily.norm ω x)
     (U : Submodule K W) (hr : 0 < Module.finrank K (W ⧸ U)) :
-    a ≤ (W.quotientOfMeasurableBase U).slope := by
+    a ≤ (W.quotientOfNormMeasurability U).slope := by
   have hspan' : (⨆ i, (U.mkQ.comp (f i)).range) = ⊤ := by
     simp only [LinearMap.range_comp, ← Submodule.map_iSup, hspan, Submodule.map_top,
       LinearMap.range_eq_top.mpr U.mkQ_surjective]
@@ -393,7 +393,7 @@ theorem slope_quotient_ge_of_finite_same_slope_spanning_contractions [Finite ι]
     rw [LinearMap.baseChange_comp, LinearMap.comp_apply]
     exact (W.toNormFamily.quotient_norm_mk_le U ω _).trans (hf i ω x)
   exact (le_div_iff₀ (Nat.cast_pos.mpr hr)).mpr
-    (degree_ge_of_finite_same_slope_spanning_contractions V (W.quotientOfMeasurableBase U)
+    (degree_ge_of_finite_same_slope_spanning_contractions V (W.quotientOfNormMeasurability U)
       (fun i ↦ U.mkQ.comp (f i)) (hW := (hW.quotient U)) a hsemi hspan' hn)
 
 omit [FiniteDimensional K Q] in
@@ -402,7 +402,7 @@ a finite real filtration whenever the images span the target. The source
 bundles need not have equal slopes. -/
 theorem hermitianHN_imageFiltration_finite [Finite ι]
     (V : ι → AdelicVectorBundle S) (f : ∀ i, (V i).carrier →ₗ[K] Q)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : ∀ i, (V i).toNormFamily.IsHermitian]
     (hspan : (⨆ i, (f i).range) = ⊤) :
@@ -432,7 +432,7 @@ actual subquotient norms. No same-slope premise is imposed on the sources. -/
 theorem hermitianHN_imageFiltration_gradedMap_norm_le
     (V : ι → AdelicVectorBundle S) (W : AdelicVectorBundle S)
     (f : ∀ i, (V i).carrier →ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : ∀ i, (V i).toNormFamily.IsHermitian]
     (hf : ∀ i ω x, W.toNormFamily.norm ω ((f i).baseChange (S.ϕ ω).Completion x) ≤
@@ -451,7 +451,7 @@ theorem hermitianHN_imageFiltration_gradedMap_norm_le
 maps above, is zero or semistable of slope equal to its threshold. -/
 theorem filtrationGraded_hermitianHN_zero_or_semistable
     (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] (t : ℝ) :
     Module.finrank K (Submodule.FiltrationGraded (V.hermitianHNFiltration) t) = 0 ∨
@@ -469,7 +469,7 @@ bundles, supply the common slope. -/
 theorem hermitianHN_imageFiltration_grade_degree_ge [Finite ι]
     (V : ι → AdelicVectorBundle S) (W : AdelicVectorBundle S)
     (f : ∀ i, (V i).carrier →ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : ∀ i, (V i).toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (hf : ∀ i ω x, W.toNormFamily.norm ω ((f i).baseChange (S.ϕ ω).Completion x) ≤
@@ -493,7 +493,7 @@ finite real filtration. The endpoint identifications retain the ambient
 bundle's original norms. -/
 theorem finsum_weight_rank_le_degree_of_grade_bounds
     (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hW : W.toNormFamily.IsHermitian]
     (F : ℝ → Submodule K W) (hF : Antitone F)
@@ -514,7 +514,7 @@ theorem finsum_weight_rank_le_degree_of_grade_bounds
       (U i.succ, U i.castSucc) := Prod.ext (hlevel i) (hright i)
   have he := congrArg (fun p : Submodule K W × Submodule K W ↦
     a i * (Module.finrank K (p.1 ⧸ p.2.comap p.1.subtype) : ℝ) ≤
-      ((W.restrictOfMeasurableBase p.1).quotientOfMeasurableBase
+      ((W.restrictOfNormMeasurability p.1).quotientOfNormMeasurability
         (p.2.comap p.1.subtype)).degree) hp
   exact Eq.mp he (hgrade (a i))
 
@@ -525,7 +525,7 @@ degree bounds are all produced by the proof. -/
 theorem finsum_hermitianHN_imageFiltration_le_degree [Finite ι]
     (V : ι → AdelicVectorBundle S) (W : AdelicVectorBundle S)
     (f : ∀ i, (V i).carrier →ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : ∀ i, (V i).toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (hspan : (⨆ i, (f i).range) = ⊤)
@@ -543,7 +543,7 @@ the target's actual slope. Rank zero is harmless and is also included. -/
 theorem expectation_hermitianHN_imageFiltration_le_slope [Finite ι]
     (V : ι → AdelicVectorBundle S) (W : AdelicVectorBundle S)
     (f : ∀ i, (V i).carrier →ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : ∀ i, (V i).toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (hspan : (⨆ i, (f i).range) = ⊤)
@@ -559,7 +559,7 @@ theorem expectation_hermitianHN_imageFiltration_le_slope [Finite ι]
 sum to a bound for the original Hermitian bundle's degree. -/
 theorem finsum_le_degree_of_filtration_grade_bounds
     (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hW : W.toNormFamily.IsHermitian]
     (F : ℝ → Submodule K W) (hF : Antitone F)
@@ -584,7 +584,7 @@ theorem finsum_le_degree_of_filtration_grade_bounds
   have hp : (F (a i), Submodule.filtrationRightLimit F (a i)) =
       (U i.succ, U i.castSucc) := Prod.ext (hlevel i) (hright i)
   have he := congrArg (fun p : Submodule K W × Submodule K W ↦
-    d (a i) ≤ ((W.restrictOfMeasurableBase p.1).quotientOfMeasurableBase
+    d (a i) ≤ ((W.restrictOfNormMeasurability p.1).quotientOfNormMeasurability
       (p.2.comap p.1.subtype)).degree) hp
   exact Eq.mp he (hgrade (a i))
 

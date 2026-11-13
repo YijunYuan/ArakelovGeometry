@@ -152,18 +152,18 @@ namespace AdelicVectorBundle
 open AdelicStructure
 
 variable (V : AdelicVectorBundle (singleTrivialPlace K))
-  [hS : (singleTrivialPlace K).HasMeasurableBase]
+  [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
 open Classical in
 /-- The genuine ultrametric minimum is the largest level whose literal
 ball contains every vector, including the infinite zero-rank convention. -/
-theorem le_minimalSlope_iff_trivialSeminorm_le [hV : V.toNormFamily.IsUltrametric]
+theorem le_minimalSlope_iff_trivialSeminorm_le [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
     (t : ℝ) :
     (t : EReal) ≤ V.minimalSlope ↔
       ∀ x, V.toNormFamily.trivialSeminorm x ≤ Real.exp (-t) := by
-  rw [← V.generalHNFiltration_eq_top_iff t,
-    V.generalHNFiltration_eq_trivialFiltration t]
+  rw [← V.hnFiltration_eq_top_iff t,
+    V.hnFiltration_eq_trivialFiltration t]
   constructor
   · intro he x
     have hm : x ∈ V.toNormFamily.trivialFiltration t := by
@@ -180,10 +180,10 @@ open Classical in
 by the actual bidual ball, without assuming original ultrametricity. -/
 theorem le_minimalSlope_iff_trivialSeminorm_bidual_le (t : ℝ) :
     (t : EReal) ≤ V.minimalSlope ↔
-      ∀ x, (V.bidualOfMeasurableBase).toNormFamily.trivialSeminorm x ≤ Real.exp (-t) := by
-  rw [← V.minimalSlope_bidualOfMeasurableBase]
-  exact (V.bidualOfMeasurableBase).le_minimalSlope_iff_trivialSeminorm_le
-    (hV := (V.toNormFamily.dual.dual_isUltrametric.pullback
+      ∀ x, (V.bidualOfNormMeasurability).toNormFamily.trivialSeminorm x ≤ Real.exp (-t) := by
+  rw [← V.minimalSlope_bidualOfNormMeasurability]
+  exact (V.bidualOfNormMeasurability).le_minimalSlope_iff_trivialSeminorm_le
+    (hV := (V.toNormFamily.dual.dual_isUltrametricAtFinitePlaces.pullback
       (Module.Dual.eval K V) (Module.eval_apply_injective K))) t
 
 open Classical in
@@ -191,24 +191,24 @@ open Classical in
 and minimal slopes for the original arbitrary norm. -/
 theorem slopes_eq_neg_log_of_trivialSeminorm_bidual_eq_const
     {c : ℝ} (hc : 0 < c)
-    (h : ∀ x, x ≠ 0 → (V.bidualOfMeasurableBase).toNormFamily.trivialSeminorm x = c)
+    (h : ∀ x, x ≠ 0 → (V.bidualOfNormMeasurability).toNormFamily.trivialSeminorm x = c)
     (hr : 0 < Module.finrank K V) :
-    V.slope = -Real.log c ∧ V.modifiedSlope = -Real.log c ∧
+    V.slope = -Real.log c ∧ V.hnMeanSlope = -Real.log c ∧
       V.minimalSlope = (-Real.log c : ℝ) := by
   have hm : V.minimalSlope = (-Real.log c : ℝ) := by
-    rw [← V.minimalSlope_bidualOfMeasurableBase]
-    exact (V.bidualOfMeasurableBase).minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const
+    rw [← V.minimalSlope_bidualOfNormMeasurability]
+    exact (V.bidualOfNormMeasurability).minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const
       hc h hr
   have hs : V.slope = -Real.log c := by
     change V.degree / (Module.finrank K V : ℝ) = _
-    rw [← V.degree_bidualOfMeasurableBase]
-    exact (V.bidualOfMeasurableBase).slope_eq_neg_log_of_trivialSeminorm_eq_const
+    rw [← V.degree_bidualOfNormMeasurability]
+    exact (V.bidualOfNormMeasurability).slope_eq_neg_log_of_trivialSeminorm_eq_const
       hc h hr
-  have hl := V.minimalSlope_le_modifiedSlope hr
-  have hu := V.modifiedSlope_le_slope
+  have hl := V.minimalSlope_le_hnMeanSlope hr
+  have hu := V.hnMeanSlope_le_slope
   rw [hm] at hl
   rw [hs] at hu
-  have he : V.modifiedSlope = -Real.log c :=
+  have he : V.hnMeanSlope = -Real.log c :=
     le_antisymm hu (EReal.coe_le_coe_iff.mp hl)
   exact ⟨hs, he, hm⟩
 
@@ -218,7 +218,7 @@ arbitrary norm is semistable exactly when its actual bidual is constant. -/
 theorem isSemistable_iff_exists_trivialSeminorm_bidual_eq_const
     (hr : 0 < Module.finrank K V) :
     V.IsSemistable ↔ ∃ c : ℝ, 0 < c ∧
-      ∀ x, x ≠ 0 → (V.bidualOfMeasurableBase).toNormFamily.trivialSeminorm x = c := by
+      ∀ x, x ≠ 0 → (V.bidualOfNormMeasurability).toNormFamily.trivialSeminorm x = c := by
   constructor
   · intro hV
     obtain ⟨m, hm⟩ := V.exists_minimalSlope_eq_coe hr
@@ -228,7 +228,7 @@ theorem isSemistable_iff_exists_trivialSeminorm_bidual_eq_const
         rw [NormFamily.trivialSeminorm_apply]
         exact V.toNormFamily.norm_rational_pos PUnit.unit hx
       have hline : ∀ y, y ≠ 0 →
-          (V.restrictOfMeasurableBase (K ∙ x)).toNormFamily.trivialSeminorm y =
+          (V.restrictOfNormMeasurability (K ∙ x)).toNormFamily.trivialSeminorm y =
             V.toNormFamily.trivialSeminorm x := by
         intro y hy
         exact V.toNormFamily.trivialSeminorm_restrict_span_eq x y hy
@@ -238,7 +238,7 @@ theorem isSemistable_iff_exists_trivialSeminorm_bidual_eq_const
         rw [finrank_span_singleton hx]
         exact zero_lt_one
       have hlm := minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const
-        (V.restrictOfMeasurableBase (K ∙ x)) hpx hline hlr
+        (V.restrictOfNormMeasurability (K ∙ x)) hpx hline hlr
       rw [hlm, hm] at hmin
       have hlog := EReal.coe_le_coe_iff.mp hmin
       have he := Real.exp_le_exp.mpr
@@ -251,7 +251,7 @@ theorem isSemistable_iff_exists_trivialSeminorm_bidual_eq_const
   · rintro ⟨c, hc, h⟩
     obtain ⟨_, hmod, hmin⟩ :=
       V.slopes_eq_neg_log_of_trivialSeminorm_bidual_eq_const hc h hr
-    apply (V.isSemistable_iff_modifiedSlope_eq_minimalSlope hr).mpr
+    apply (V.isSemistable_iff_hnMeanSlope_eq_minimalSlope hr).mpr
     rw [hmod, hmin]
 
 end AdelicVectorBundle

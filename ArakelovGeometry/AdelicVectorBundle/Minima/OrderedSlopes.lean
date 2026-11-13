@@ -36,39 +36,39 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 /-- The actual ordinary restriction to a completed minima cut has minimal
 slope at least its real cut, including the zero cut's infinite endpoint. -/
 theorem coe_le_minimalSlope_restrict_minimaFiltration (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] (t : ℝ) :
-    (t : EReal) ≤ (V.restrictOfMeasurableBase (V.minimaFiltration t)).minimalSlope :=
+    (t : EReal) ≤ (V.restrictOfNormMeasurability (V.minimaFiltration t)).minimalSlope :=
   (V.coe_le_minimalLogarithmicMinimum_restrict_minimaFiltration t).trans
     (minimalLogarithmicMinimum_le_minimalSlope
-      (V.restrictOfMeasurableBase (V.minimaFiltration t)))
+      (V.restrictOfNormMeasurability (V.minimaFiltration t)))
 
 /-- Source Corollary4.3.78's filtration inclusion, from the produced actual
 restricted minimal-slope bound and the actual general HN maximality. -/
-theorem minimaFiltration_le_generalHNFiltration (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+theorem minimaFiltration_le_hnFiltration (V : AdelicVectorBundle S)
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] (t : ℝ) :
-    V.minimaFiltration t ≤ V.generalHNFiltration t :=
-  V.le_generalHNFiltration_of_le_minimalSlope_restrict (V.minimaFiltration t) t
+    V.minimaFiltration t ≤ V.hnFiltration t :=
+  V.le_hnFiltration_of_le_minimalSlope_restrict (V.minimaFiltration t) t
     (V.coe_le_minimalSlope_restrict_minimaFiltration t)
 
 /-- Source Corollary4.3.78. The zero-based ordered slot `j` corresponds to
 the source minimum index `j.val + 1`, so only valid positive indices occur.
 No attained or finite-value logarithmic minimum is assumed; rank zero has
 no ordered slots. -/
-theorem logarithmicMinimum_le_generalHNOrderedSlope (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+theorem logarithmicMinimum_le_hnSlope (V : AdelicVectorBundle S)
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (j : Fin (Module.finrank K V)) :
-    V.logarithmicMinimum (j.val + 1) ≤ (V.generalHNOrderedSlope j : EReal) := by
+    V.logarithmicMinimum (j.val + 1) ≤ (V.hnSlope j : EReal) := by
   rw [V.logarithmicMinimum_eq_iSup_finrank_minimaFiltration (j.val + 1)]
   apply iSup_le
   intro t
   apply iSup_le
   intro ht
-  have hr := ht.trans (Submodule.finrank_mono (V.minimaFiltration_le_generalHNFiltration t))
+  have hr := ht.trans (Submodule.finrank_mono (V.minimaFiltration_le_hnFiltration t))
   exact EReal.coe_le_coe_iff.mpr
-    ((V.le_generalHNOrderedSlope_iff_lt_filtration_finrank t j).mpr
+    ((V.le_hnSlope_iff_lt_filtration_finrank t j).mpr
       ((Nat.lt_succ_self j.val).trans_le hr))
 
 end ArakelovGeometry.AdelicVectorBundle

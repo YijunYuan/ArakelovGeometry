@@ -82,13 +82,13 @@ variable [S.IsProper] [FiniteDimensional K E]
 /-- Arbitrary sums of actual restricted subspaces preserve a common lower
 bound on their actual minimal slopes. Zero summands and an empty family are allowed. -/
 theorem minimalSlope_restrict_iSup_ge (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     {ι : Type w''} (U : ι → Submodule K V) (a : ℝ)
-    (hU : ∀ i, (a : EReal) ≤ (V.restrictOfMeasurableBase (U i)).minimalSlope) :
-    (a : EReal) ≤ (V.restrictOfMeasurableBase (⨆ i, U i)).minimalSlope := by
+    (hU : ∀ i, (a : EReal) ≤ (V.restrictOfNormMeasurability (U i)).minimalSlope) :
+    (a : EReal) ≤ (V.restrictOfNormMeasurability (⨆ i, U i)).minimalSlope := by
   let W : Submodule K V := ⨆ i, U i
-  let B := V.restrictOfMeasurableBase W
+  let B := V.restrictOfNormMeasurability W
   apply B.le_minimalSlope
   intro T hT
   have hq : T.mkQ ≠ 0 := by
@@ -106,8 +106,8 @@ theorem minimalSlope_restrict_iSup_ge (V : AdelicVectorBundle S)
     omega
   obtain ⟨i, hi⟩ := Submodule.exists_ne_zero_comp_inclusion_iSup U T.mkQ hq
   let f := T.mkQ.comp (Submodule.inclusion (le_iSup U i))
-  let A := V.restrictOfMeasurableBase (U i)
-  let Q := B.quotientOfMeasurableBase T
+  let A := V.restrictOfNormMeasurability (U i)
+  let Q := B.quotientOfNormMeasurability T
   have hh : A.mapHeight Q f ≤ 0 := by
     apply mapHeight_le_zero_of_completed_contraction
     intro ω z

@@ -293,7 +293,8 @@ theorem IsStronglyDominated.maxDirectSum {ξ : NormFamily S E} {η : NormFamily 
     ofBasisHermitian_isStronglyDominated_of_measure_lt_top c hfin
   have hmax : (ξ₀.maxDirectSum η₀).IsStronglyDominated :=
     ((ξ₀.maxDirectSum η₀).isStronglyDominated_iff_isDominated_of_ultrametric
-      (hξ := ((ofBasisHermitian_isUltrametric b).maxDirectSum (ofBasisHermitian_isUltrametric c)))
+      (hξ := ((ofBasisHermitian_isUltrametricAtFinitePlaces b).maxDirectSum
+        (ofBasisHermitian_isUltrametricAtFinitePlaces c)))
 ).mpr (hξ₀.isDominated.maxDirectSum hη₀.isDominated hfin)
   have hdistξ := hξ₀.localDist hξ hfin
   have hdistη := hη₀.localDist hη hfin

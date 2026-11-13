@@ -137,7 +137,7 @@ theorem HasFiniteNormExceptions.exists_primeCompl_smul_mem_globalUnitBall
 /-- The canonical inclusion of the literal global unit-ball module into the
 literal local unit-ball module, using their actual integral scalar actions. -/
 def globalToRationalUnitBall
-    (ξ : NormFamily (S) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (S) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (p : HeightOneSpectrum (𝓞 K)) :
     ξ.globalUnitBallModule →ₗ[𝓞 K]
       ξ.rationalUnitBallModule (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p)
@@ -148,13 +148,13 @@ def globalToRationalUnitBall
 
 @[simp]
 theorem globalToRationalUnitBall_coe
-    (ξ : NormFamily (S) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (S) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (p : HeightOneSpectrum (𝓞 K)) (x : ξ.globalUnitBallModule) :
     (ξ.globalToRationalUnitBall p x : E) = x := rfl
 
 /-- The actual local inclusion is injective without a coherence hypothesis. -/
 theorem globalToRationalUnitBall_injective
-    (ξ : NormFamily (S) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (S) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (p : HeightOneSpectrum (𝓞 K)) :
     Function.Injective (ξ.globalToRationalUnitBall p) := by
   intro x y h
@@ -165,7 +165,7 @@ theorem globalToRationalUnitBall_injective
 identify the literal local ball as localization of the literal global ball. -/
 theorem HasFiniteNormExceptions.isLocalizedModule_globalToRationalUnitBall
     {ξ : NormFamily (S) E} (hfinite : ξ.HasFiniteNormExceptions)
-    (hξ : ξ.IsUltrametric) (p : HeightOneSpectrum (𝓞 K)) :
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (p : HeightOneSpectrum (𝓞 K)) :
     IsLocalizedModule p.asIdeal.primeCompl (ξ.globalToRationalUnitBall p) := by
   let : IsLocalizedModule p.asIdeal.primeCompl (LinearMap.id :
       ξ.rationalUnitBallModule (normalizedPrimeParameter p) (normalizedPrimeParameter_mem_fin p)
@@ -191,7 +191,7 @@ theorem HasFiniteNormExceptions.isLocalizedModule_globalToRationalUnitBall
 recovers the actual rational local unit-ball module. -/
 def normalizedGlobalLocalEquiv
     (ξ : NormFamily (S) E) [hfinite : ξ.HasFiniteNormExceptions]
-    [hξ : ξ.IsUltrametric] (p : HeightOneSpectrum (𝓞 K)) :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (p : HeightOneSpectrum (𝓞 K)) :
     ((S).rationalLocalRing (normalizedPrimeParameter p)
       (normalizedPrimeParameter_mem_fin p)) ⊗[𝓞 K] (ξ.globalUnitBallModule) ≃ₗ[
       (S).rationalLocalRing (normalizedPrimeParameter p)
@@ -212,7 +212,7 @@ def normalizedGlobalLocalEquiv
 @[simp]
 theorem normalizedGlobalLocalEquiv_tmul
     (ξ : NormFamily (S) E) [hfinite : ξ.HasFiniteNormExceptions]
-    [hξ : ξ.IsUltrametric] (p : HeightOneSpectrum (𝓞 K))
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (p : HeightOneSpectrum (𝓞 K))
     (r : (S).rationalLocalRing (normalizedPrimeParameter p)
       (normalizedPrimeParameter_mem_fin p)) (x : ξ.globalUnitBallModule) :
     ξ.normalizedGlobalLocalEquiv p (r ⊗ₜ[𝓞 K] x) =
@@ -237,7 +237,7 @@ private theorem normalizedValue_isNontrivial (ω : (S).Ω) :
 as localization of the coherent literal global module at nonzero integers. -/
 theorem HasFiniteNormExceptions.isLocalizedModule_normalizedGlobalGenericFibre
     {ξ : NormFamily (S) E} (hfinite : ξ.HasFiniteNormExceptions)
-    (hξ : ξ.IsUltrametric) :
+    (hξ : ξ.IsUltrametricAtFinitePlaces) :
     IsLocalizedModule (nonZeroDivisors (𝓞 K)) (ξ.globalUnitBallModule).subtype := by
   let : IsLocalizedModule (nonZeroDivisors (𝓞 K)) (LinearMap.id : E →ₗ[𝓞 K] E) :=
     isLocalizedModule_id (nonZeroDivisors (𝓞 K)) E K
@@ -254,7 +254,7 @@ theorem HasFiniteNormExceptions.isLocalizedModule_normalizedGlobalGenericFibre
 /-- The canonical actual generic fibre of the coherent literal global module. -/
 def normalizedGlobalGenericFiberEquiv
     (ξ : NormFamily (S) E) [hfinite : ξ.HasFiniteNormExceptions]
-    [hξ : ξ.IsUltrametric] : K ⊗[𝓞 K] (ξ.globalUnitBallModule) ≃ₗ[K] E := by
+    [hξ : ξ.IsUltrametricAtFinitePlaces] : K ⊗[𝓞 K] (ξ.globalUnitBallModule) ≃ₗ[K] E := by
   letI := hfinite.isLocalizedModule_normalizedGlobalGenericFibre hξ
   exact (IsLocalizedModule.isBaseChange (nonZeroDivisors (𝓞 K))
     K (ξ.globalUnitBallModule).subtype).equiv
@@ -262,7 +262,7 @@ def normalizedGlobalGenericFiberEquiv
 @[simp]
 theorem normalizedGlobalGenericFiberEquiv_tmul
     (ξ : NormFamily (S) E) [hfinite : ξ.HasFiniteNormExceptions]
-    [hξ : ξ.IsUltrametric] (a : K) (x : ξ.globalUnitBallModule) :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (a : K) (x : ξ.globalUnitBallModule) :
     ξ.normalizedGlobalGenericFiberEquiv (a ⊗ₜ[𝓞 K] x) = a • (x : E) := by
   let := hfinite.isLocalizedModule_normalizedGlobalGenericFibre hξ
   exact IsBaseChange.equiv_tmul (IsLocalizedModule.isBaseChange (nonZeroDivisors (𝓞 K))
@@ -294,7 +294,7 @@ theorem hasFiniteNormExceptions_of_integral_global_absorption
 /-- Source coherence is equivalent to actual global generic-fibre localization;
 the reverse implication uses genuine scalar-support finiteness. -/
 theorem hasFiniteNormExceptions_iff_isLocalizedModule_normalizedGlobalGenericFibre
-    (ξ : NormFamily (S) E) [hξ : ξ.IsUltrametric] :
+    (ξ : NormFamily (S) E) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     ξ.HasFiniteNormExceptions ↔
       IsLocalizedModule (nonZeroDivisors (𝓞 K)) (ξ.globalUnitBallModule).subtype := by
   refine ⟨fun h => h.isLocalizedModule_normalizedGlobalGenericFibre hξ, ?_⟩
@@ -310,7 +310,7 @@ theorem hasFiniteNormExceptions_iff_isLocalizedModule_normalizedGlobalGenericFib
 coherence hypothesis gives actual global spanning. -/
 theorem IsDominated.fg_and_span_normalizedGlobalUnitBallModule [FiniteDimensional K E]
     {ξ : NormFamily (S) E} (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hfinite : ξ.HasFiniteNormExceptions) :
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (hfinite : ξ.HasFiniteNormExceptions) :
     (ξ.globalUnitBallModule).FG ∧ Submodule.span K ξ.globalUnitBall = ⊤ :=
   ⟨hdom.fg_normalizedGlobalUnitBallModule hξ,
     hfinite.span_globalUnitBall_eq_top (fun ω _ => normalizedValue_isNontrivial ω)⟩

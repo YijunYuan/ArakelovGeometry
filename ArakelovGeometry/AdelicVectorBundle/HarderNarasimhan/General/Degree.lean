@@ -41,7 +41,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 namespace AdelicVectorBundle
 
 variable [S.IsProper] (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
 
 
@@ -49,8 +49,8 @@ variable [S.IsProper] (V : AdelicVectorBundle S)
 lower bound on the actual source minimum; the zero quotient contributes zero. -/
 theorem degree_quotient_ge_rank_mul_of_le_minimalSlope (U : Submodule K V) (b : ℝ)
     (hb : (b : EReal) ≤ V.minimalSlope) :
-    (Module.finrank K (V ⧸ U) : ℝ) * b ≤ (V.quotientOfMeasurableBase U).degree := by
-  let Q := V.quotientOfMeasurableBase U
+    (Module.finrank K (V ⧸ U) : ℝ) * b ≤ (V.quotientOfNormMeasurability U).degree := by
+  let Q := V.quotientOfNormMeasurability U
   by_cases hr : Module.finrank K (V ⧸ U) = 0
   · rw [Q.degree_eq_zero_of_finrank_eq_zero hr, hr, Nat.cast_zero, zero_mul]
   · have hmean := EReal.coe_le_coe_iff.mp
@@ -63,93 +63,93 @@ for a finite restricted flag, with repeated terms and an empty flag included. -/
 theorem sum_rank_mul_le_degree_restrict_of_le_minimalSlope_flag {n : ℕ}
     (F : Fin (n + 1) → Submodule K V) (hF : Monotone F) (hzero : F 0 = ⊥)
     (b : Fin n → ℝ)
-    (hb : ∀ i, (b i : EReal) ≤ (V.restrictOfMeasurableBase (F i.succ)).minimalSlope) :
+    (hb : ∀ i, (b i : EReal) ≤ (V.restrictOfNormMeasurability (F i.succ)).minimalSlope) :
     (∑ i : Fin n, (Module.finrank K
       (F i.succ ⧸ (F i.castSucc).comap (F i.succ).subtype) : ℝ) * b i) ≤
-        (V.restrictOfMeasurableBase (F (Fin.last n))).degree := by
+        (V.restrictOfNormMeasurability (F (Fin.last n))).degree := by
   apply le_trans _ (V.sum_flagQuotient_degree_le_restrict F hF hzero)
   apply Finset.sum_le_sum
   intro i _
   exact degree_quotient_ge_rank_mul_of_le_minimalSlope
-    (V.restrictOfMeasurableBase (F i.succ))
+    (V.restrictOfNormMeasurability (F i.succ))
       ((F i.castSucc).comap (F i.succ).subtype) (b i) (hb i)
 
 /-- The actual full flag degree lower bound from its restricted minima. -/
 theorem sum_rank_mul_le_degree_of_le_minimalSlope_flag {n : ℕ}
     (F : Fin (n + 1) → Submodule K V) (hF : Monotone F) (hzero : F 0 = ⊥)
     (htop : F (Fin.last n) = ⊤) (b : Fin n → ℝ)
-    (hb : ∀ i, (b i : EReal) ≤ (V.restrictOfMeasurableBase (F i.succ)).minimalSlope) :
+    (hb : ∀ i, (b i : EReal) ≤ (V.restrictOfNormMeasurability (F i.succ)).minimalSlope) :
     (∑ i : Fin n, (Module.finrank K
       (F i.succ ⧸ (F i.castSucc).comap (F i.succ).subtype) : ℝ) * b i) ≤
         V.degree := by
   calc
-    _ ≤ (V.restrictOfMeasurableBase (F (Fin.last n))).degree :=
+    _ ≤ (V.restrictOfNormMeasurability (F (Fin.last n))).degree :=
       V.sum_rank_mul_le_degree_restrict_of_le_minimalSlope_flag F hF hzero b hb
     _ = V.degree := by rw [htop, V.degree_restrict_top]
 
 /-- The actual threshold's restricted degree dominates threshold times its
 true rank; no ordinary or modified slope equality is assumed. -/
-theorem rank_mul_le_degree_restrict_generalHNFiltration (t : ℝ) :
-    (Module.finrank K (V.generalHNFiltration t) : ℝ) * t ≤
-      (V.restrictOfMeasurableBase (V.generalHNFiltration t)).degree := by
-  let U := V.generalHNFiltration t
-  let R := V.restrictOfMeasurableBase U
+theorem rank_mul_le_degree_restrict_hnFiltration (t : ℝ) :
+    (Module.finrank K (V.hnFiltration t) : ℝ) * t ≤
+      (V.restrictOfNormMeasurability (V.hnFiltration t)).degree := by
+  let U := V.hnFiltration t
+  let R := V.restrictOfNormMeasurability U
   by_cases hr : Module.finrank K U = 0
   · rw [R.degree_eq_zero_of_finrank_eq_zero hr, hr, Nat.cast_zero, zero_mul]
   · have hmean := EReal.coe_le_coe_iff.mp
-      ((V.le_minimalSlope_restrict_generalHNFiltration t).trans
+      ((V.le_minimalSlope_restrict_hnFiltration t).trans
         (R.minimalSlope_le_slope (Nat.pos_of_ne_zero hr)))
     rw [R.degree_eq_rank_mul_slope]
     exact mul_le_mul_of_nonneg_left hmean (Nat.cast_nonneg _)
 
 /-- Positive degree includes the actual threshold subspace, so it dominates
 threshold times that actual rank, including rank zero. -/
-theorem rank_mul_le_positiveDegree_generalHNFiltration (t : ℝ) :
-    ((Module.finrank K (V.generalHNFiltration t) : ℝ) * t : ℝ) ≤
+theorem rank_mul_le_positiveDegree_hnFiltration (t : ℝ) :
+    ((Module.finrank K (V.hnFiltration t) : ℝ) * t : ℝ) ≤
       V.positiveDegree :=
-  (EReal.coe_le_coe (V.rank_mul_le_degree_restrict_generalHNFiltration t)).trans
-    (V.degree_restrict_le_positiveDegree (V.generalHNFiltration t))
+  (EReal.coe_le_coe (V.rank_mul_le_degree_restrict_hnFiltration t)).trans
+    (V.degree_restrict_le_positiveDegree (V.hnFiltration t))
 
 /-- The intrinsic ordered slopes of an actual threshold term are precisely
 its retained ambient prefix. Canonical completed inclusions and the actual
 intrinsic filtration identity are used in both directions. -/
-theorem generalHNOrderedSlope_restrict_term_eq (t : ℝ)
-    (j : Fin (Module.finrank K (V.generalHNFiltration t))) :
-    (V.restrictOfMeasurableBase (V.generalHNFiltration t)).generalHNOrderedSlope
-      j = V.generalHNOrderedSlope
-        (j.castLE (V.generalHNFiltration t).finrank_le) := by
-  let U := V.generalHNFiltration t
-  let R := V.restrictOfMeasurableBase U
+theorem hnSlope_restrict_term_eq (t : ℝ)
+    (j : Fin (Module.finrank K (V.hnFiltration t))) :
+    (V.restrictOfNormMeasurability (V.hnFiltration t)).hnSlope
+      j = V.hnSlope
+        (j.castLE (V.hnFiltration t).finrank_le) := by
+  let U := V.hnFiltration t
+  let R := V.restrictOfNormMeasurability U
   let k := j.castLE U.finrank_le
-  let μ := V.generalHNOrderedSlope k
+  let μ := V.hnSlope k
   have htμ : t ≤ μ :=
-    (V.le_generalHNOrderedSlope_iff_lt_filtration_finrank t k).mpr j.isLt
-  have heq := V.map_generalHNFiltration_restrict_term_eq t μ htμ
-  have hm := Submodule.finrank_map_le U.subtype (R.generalHNFiltration μ)
+    (V.le_hnSlope_iff_lt_filtration_finrank t k).mpr j.isLt
+  have heq := V.map_hnFiltration_restrict_term_eq t μ htμ
+  have hm := Submodule.finrank_map_le U.subtype (R.hnFiltration μ)
   rw [heq] at hm
-  have hjμ := V.lt_finrank_generalHNFiltration_orderedSlope k
-  apply le_antisymm (V.generalHNOrderedSlope_restrict_le U j)
-  exact (R.le_generalHNOrderedSlope_iff_lt_filtration_finrank μ j).mpr
+  have hjμ := V.lt_finrank_hnFiltration_orderedSlope k
+  apply le_antisymm (V.hnSlope_restrict_le U j)
+  exact (R.le_hnSlope_iff_lt_filtration_finrank μ j).mpr
     (hjμ.trans_le hm)
 
 /-- The genuine ordered sum of the threshold-zero restricted bundle is
 exactly the sum of all ambient positive parts, including an empty prefix. -/
-theorem sum_generalHNOrderedSlope_restrict_zero_eq_sum_positive :
-    (∑ j : Fin (Module.finrank K (V.generalHNFiltration 0)),
-      (V.restrictOfMeasurableBase (V.generalHNFiltration 0)).generalHNOrderedSlope
-        j) = ∑ j : Fin (Module.finrank K V), max (V.generalHNOrderedSlope j) 0 := by
+theorem sum_hnSlope_restrict_zero_eq_sum_positive :
+    (∑ j : Fin (Module.finrank K (V.hnFiltration 0)),
+      (V.restrictOfNormMeasurability (V.hnFiltration 0)).hnSlope
+        j) = ∑ j : Fin (Module.finrank K V), max (V.hnSlope j) 0 := by
   classical
-  let U := V.generalHNFiltration 0
-  let μ := V.generalHNOrderedSlope
+  let U := V.hnFiltration 0
+  let μ := V.hnSlope
   let J := Finset.univ.filter (fun j : Fin (Module.finrank K V) => j.val < Module.finrank K U)
   have hcut (j : Fin (Module.finrank K V)) :
       0 ≤ μ j ↔ j.val < Module.finrank K U :=
-    V.le_generalHNOrderedSlope_iff_lt_filtration_finrank 0 j
+    V.le_hnSlope_iff_lt_filtration_finrank 0 j
   calc
     _ = ∑ j : Fin (Module.finrank K U), μ (j.castLE U.finrank_le) := by
       apply Finset.sum_congr rfl
       intro j _
-      exact V.generalHNOrderedSlope_restrict_term_eq 0 j
+      exact V.hnSlope_restrict_term_eq 0 j
     _ = ∑ j ∈ J, μ j := by
       apply Finset.sum_bij (fun j _ => j.castLE U.finrank_le)
       · intro j _
@@ -176,11 +176,11 @@ theorem sum_generalHNOrderedSlope_restrict_zero_eq_sum_positive :
 slopes. The actual strict flag is produced from the filtration; each true
 factor degree is bounded by its actual source minimum, and the actual
 rank-block sum identifies the total, without Hermitianity. -/
-theorem sum_generalHNOrderedSlope_le_degree :
-    (∑ j : Fin (Module.finrank K V), V.generalHNOrderedSlope j) ≤
+theorem sum_hnSlope_le_degree :
+    (∑ j : Fin (Module.finrank K V), V.hnSlope j) ≤
       V.degree := by
   obtain ⟨n, U, b, hU, hz, ht, _, _, _, _, _, _, _, hmin, hsum⟩ :=
-    V.exists_generalHNFlag_orderedSlope_sum
+    V.exists_hnFlag_orderedSlope_sum
   calc
     _ = ∑ i : Fin n, (Module.finrank K
         (U i.succ ⧸ (U i.castSucc).comap (U i.succ).subtype) : ℝ) * b i :=
@@ -192,33 +192,33 @@ theorem sum_generalHNOrderedSlope_le_degree :
 /-- Positive degree dominates the full sum of positive parts of the actual
 ordered slopes. Apply the genuine total lower bound intrinsically to the
 actual threshold-zero subspace and use its produced retained prefix. -/
-theorem sum_positive_generalHNOrderedSlope_le_positiveDegree :
-    ((∑ j : Fin (Module.finrank K V), max (V.generalHNOrderedSlope j) 0 : ℝ) : EReal) ≤
+theorem sum_positive_hnSlope_le_positiveDegree :
+    ((∑ j : Fin (Module.finrank K V), max (V.hnSlope j) 0 : ℝ) : EReal) ≤
       V.positiveDegree := by
-  let U := V.generalHNFiltration 0
-  let R := V.restrictOfMeasurableBase U
+  let U := V.hnFiltration 0
+  let R := V.restrictOfNormMeasurability U
   calc
-    _ = ((∑ j : Fin (Module.finrank K U), R.generalHNOrderedSlope j : ℝ) : EReal) :=
+    _ = ((∑ j : Fin (Module.finrank K U), R.hnSlope j : ℝ) : EReal) :=
       congrArg (fun x : ℝ ↦ (x : EReal))
-        (V.sum_generalHNOrderedSlope_restrict_zero_eq_sum_positive).symm
+        (V.sum_hnSlope_restrict_zero_eq_sum_positive).symm
     _ ≤ (R.degree : EReal) :=
-      EReal.coe_le_coe (R.sum_generalHNOrderedSlope_le_degree)
+      EReal.coe_le_coe (R.sum_hnSlope_le_degree)
     _ ≤ V.positiveDegree := V.degree_restrict_le_positiveDegree U
 
 /-- Source (4.66) with the genuine signed jump integral, whose actual
 finite atomic first moment is integrable even in rank zero. -/
-theorem neg_integral_generalHNSignedJumpMeasure_le_degree :
-    -(∫ᵛ t : ℝ, t ∂<•V.generalHNSignedJumpMeasure) ≤ V.degree := by
-  rw [V.integral_id_generalHNSignedJumpMeasure, neg_neg]
-  exact V.sum_generalHNOrderedSlope_le_degree
+theorem neg_integral_hnSignedJumpMeasure_le_degree :
+    -(∫ᵛ t : ℝ, t ∂<•V.hnSignedJumpMeasure) ≤ V.degree := by
+  rw [V.integral_id_hnSignedJumpMeasure, neg_neg]
+  exact V.sum_hnSlope_le_degree
 
 /-- Source (4.67) with the genuine Lebesgue integral of the actual rank
 function on the positive half-line; it is not a proxy finite sum definition. -/
-theorem integral_generalHNFiltration_finrank_Ici_zero_le_positiveDegree :
-    ((∫ t : ℝ in Set.Ici 0, (Module.finrank K (V.generalHNFiltration t) : ℝ) : ℝ) :
+theorem integral_hnFiltration_finrank_Ici_zero_le_positiveDegree :
+    ((∫ t : ℝ in Set.Ici 0, (Module.finrank K (V.hnFiltration t) : ℝ) : ℝ) :
       EReal) ≤ V.positiveDegree := by
-  rw [V.integral_generalHNFiltration_finrank_Ici_zero]
-  exact V.sum_positive_generalHNOrderedSlope_le_positiveDegree
+  rw [V.integral_hnFiltration_finrank_Ici_zero]
+  exact V.sum_positive_hnSlope_le_positiveDegree
 
 end AdelicVectorBundle
 

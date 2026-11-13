@@ -55,7 +55,7 @@ variable {K : Type u} [Field K] [NumberField K] {S : AdelicStructure K}
 /-- The actual scaled-coordinate image is a submodule of a finite free module
 over the actual principal local coefficient ring, so the literal local ball is free. -/
 theorem free_rationalUnitBallModule (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Module.Free (S.rationalLocalRing ω hω) (ξ.rationalUnitBallModule ω hω) := by
   let := S.isPrincipalIdealRing_rationalLocalRing ω hω hnt
   let b := Module.finBasis K E
@@ -71,7 +71,7 @@ theorem free_rationalUnitBallModule (ξ : NormFamily S E) (ω : S.Ω) (hω : ω 
 theorem free_normalizedRationalUnitBallModule
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
     (ω : (normalizedNumberFieldAdelicStructure K).Ω)
-    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Module.Free ((normalizedNumberFieldAdelicStructure K).rationalLocalRing ω hω)
       (ξ.rationalUnitBallModule ω hω) :=
   ξ.free_rationalUnitBallModule ω hω
@@ -81,7 +81,7 @@ theorem free_normalizedRationalUnitBallModule
 /-- A finite basis of the actual free local unit-ball module, produced from
 the genuine finite generation and freeness theorems. -/
 def rationalLocalUnitBallBasis (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Module.Basis (Fin (Module.finrank (S.rationalLocalRing ω hω)
       (ξ.rationalUnitBallModule ω hω))) (S.rationalLocalRing ω hω)
       (ξ.rationalUnitBallModule ω hω) := by
@@ -93,7 +93,7 @@ def rationalLocalUnitBallBasis (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S
 /-- The actual local free basis extends through the proved intrinsic generic
 fibre isomorphism to an actual basis of the original rational vector space. -/
 def rationalLocalUnitBallGenericBasis (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Module.Basis (Fin (Module.finrank (S.rationalLocalRing ω hω)
       (ξ.rationalUnitBallModule ω hω))) K E :=
   ((ξ.rationalLocalUnitBallBasis ω hω hnt).baseChange K).map
@@ -101,7 +101,7 @@ def rationalLocalUnitBallGenericBasis (ξ : NormFamily S E) (ω : S.Ω) (hω : �
 
 @[simp]
 theorem rationalLocalUnitBallGenericBasis_coe (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric]
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (i : Fin (Module.finrank (S.rationalLocalRing ω hω)
       (ξ.rationalUnitBallModule ω hω))) :
     ξ.rationalLocalUnitBallGenericBasis ω hω hnt i =
@@ -112,7 +112,7 @@ theorem rationalLocalUnitBallGenericBasis_coe (ξ : NormFamily S E) (ω : S.Ω)
 /-- The produced actual generic basis proves that the local unit-ball free
 rank is exactly the original rational vector-space dimension. -/
 theorem finrank_rationalUnitBallModule (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Module.finrank (S.rationalLocalRing ω hω) (ξ.rationalUnitBallModule ω hω) =
       Module.finrank K E := by
   simpa only [Fintype.card_fin] using

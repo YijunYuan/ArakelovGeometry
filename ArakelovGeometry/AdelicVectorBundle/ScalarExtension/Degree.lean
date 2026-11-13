@@ -791,7 +791,7 @@ theorem scalarExtension_determinant_norm_le (x : S.ParameterSpaceExtension L)
   · have hq : ∀ s t : x.abv.Completion ⊗[L]
         (⋀[L]^(Module.finrank L (L ⊗[K] E)) (L ⊗[K] E)),
         q (s + t) ≤ max (q s) (q t) :=
-      ((ξ.scalarExtension (L := L)).determinant.isUltrametric_of_finrank_le_one
+      ((ξ.scalarExtension (L := L)).determinant.isUltrametricAtFinitePlaces_of_finrank_le_one
         (determinant_finrank (K := L) (E := L ⊗[K] E)).le)
         x ((AdelicStructure.mem_Ωfin_algebraicExtension_iff x).2 hx)
     have h := seminorm_linearMap_le_scalarExtensionInjective q hq a zero_le_one hf y
@@ -989,19 +989,19 @@ theorem lineDegree_scalarExtensionLine [S.IsProper] (V : AdelicVectorBundle S)
 The hypotheses establish adelicity of the original determinant; no measurability
 hypothesis on the whole extended vector family is used. -/
 abbrev scalarExtensionDeterminant (V : AdelicVectorBundle S)
-    [hbase : S.HasMeasurableBase]
+    [hbase : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     AdelicVectorBundle (S.algebraicExtension L) :=
   ofLine (V.toNormFamily.scalarExtension (L := L)).determinant
     NormFamily.determinant_finrank
     (hm := (V.isMeasurable.determinant_of_discrete_or_countable).determinant_scalarExtension)
     (hd := NormFamily.IsDominated.determinant_scalarExtension (ξ := V.toNormFamily)
-      (V.determinantOfMeasurableBase).isDominated
+      (V.determinantOfNormMeasurability).isDominated
       (V.isMeasurable.determinant_of_discrete_or_countable))
 
 @[simp]
 theorem scalarExtensionDeterminant_toNormFamily (V : AdelicVectorBundle S)
-    [hbase : S.HasMeasurableBase]
+    [hbase : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     (V.scalarExtensionDeterminant (L := L)).toNormFamily =
       (V.toNormFamily.scalarExtension (L := L)).determinant := rfl
@@ -1009,7 +1009,7 @@ theorem scalarExtensionDeterminant_toNormFamily (V : AdelicVectorBundle S)
 /-- The actual extended determinant has rank one, including when the
 original vector space has rank zero. -/
 instance scalarExtensionDeterminant_isLine (V : AdelicVectorBundle S)
-    [hbase : S.HasMeasurableBase]
+    [hbase : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     (V.scalarExtensionDeterminant (L := L)).IsLine :=
   ⟨NormFamily.determinant_finrank⟩
@@ -1017,15 +1017,15 @@ instance scalarExtensionDeterminant_isLine (V : AdelicVectorBundle S)
 /-- The ordinary scalar extension's actual determinant-line degree equals
 the original vector-bundle degree on every algebraic extension. -/
 theorem lineDegree_scalarExtensionDeterminant [S.IsProper] (V : AdelicVectorBundle S)
-    [hbase : S.HasMeasurableBase]
+    [hbase : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     (V.scalarExtensionDeterminant (L := L)).lineDegree
       (hV := (V.scalarExtensionDeterminant_isLine)) = V.degree := by
   intro hp
   let := hp
-  let D := V.determinantOfMeasurableBase
-  let hD := V.determinantOfMeasurableBase_isLine
+  let D := V.determinantOfNormMeasurability
+  let hD := V.determinantOfNormMeasurability_isLine
   let W := D.scalarExtensionLine (L := L) (hV := hD)
   let hW := D.scalarExtensionLine_isLine (L := L) (hV := hD)
   let U := V.scalarExtensionDeterminant (L := L)

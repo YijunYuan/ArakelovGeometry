@@ -40,7 +40,7 @@ private theorem abs_rank_mul_le (U : Submodule K E) (t : ℝ) :
 absolute integral, uniformly over all actual subspaces. -/
 theorem positiveDegree_scaleExp_le (V : AdelicVectorBundle S) (φ : S.Ω → ℝ)
     (hm : Measurable φ) (hi : Integrable φ S.v)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     (V.scaleExp φ hm hi).positiveDegree ≤ V.positiveDegree +
       (((Module.finrank K V : ℝ) * |∫ ω, φ ω ∂S.v| : ℝ) : EReal) := by
@@ -61,7 +61,7 @@ theorem positiveDegree_scaleExp_le (V : AdelicVectorBundle S) (φ : S.Ω → ℝ
 without assuming that a supremum is attained. -/
 theorem positiveDegree_le_scaleExp_add (V : AdelicVectorBundle S) (φ : S.Ω → ℝ)
     (hm : Measurable φ) (hi : Integrable φ S.v)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     V.positiveDegree ≤ (V.scaleExp φ hm hi).positiveDegree +
       (((Module.finrank K V : ℝ) * |∫ ω, φ ω ∂S.v| : ℝ) : EReal) := by
@@ -82,7 +82,7 @@ theorem positiveDegree_le_scaleExp_add (V : AdelicVectorBundle S) (φ : S.Ω →
 proved finite real representatives. -/
 theorem positiveDegree_sub_le_scaleExp (V : AdelicVectorBundle S) (φ : S.Ω → ℝ)
     (hm : Measurable φ) (hi : Integrable φ S.v)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     V.positiveDegree -
       (((Module.finrank K V : ℝ) * |∫ ω, φ ω ∂S.v| : ℝ) : EReal) ≤
@@ -100,15 +100,15 @@ theorem positiveDegree_sub_le_scaleExp (V : AdelicVectorBundle S) (φ : S.Ω →
 positive degree. The exponent need not be pointwise nonnegative. -/
 theorem positiveDegree_scaleExp_le_of_integral_nonneg (V : AdelicVectorBundle S)
     (φ : S.Ω → ℝ) (hm : Measurable φ) (hi : Integrable φ S.v)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (ht : 0 ≤ ∫ ω, φ ω ∂S.v) :
     (V.scaleExp φ hm hi).positiveDegree ≤ V.positiveDegree := by
   apply positiveDegree_le _
   intro U
   have he := V.degree_restrict_scaleExp φ hm hi U
-  have hb : ((V.scaleExp φ hm hi).restrictOfMeasurableBase U).degree ≤
-      (V.restrictOfMeasurableBase U).degree := by
+  have hb : ((V.scaleExp φ hm hi).restrictOfNormMeasurability U).degree ≤
+      (V.restrictOfNormMeasurability U).degree := by
     rw [he]
     exact sub_le_self _ (mul_nonneg (Nat.cast_nonneg _) ht)
   exact (EReal.coe_le_coe_iff.mpr hb).trans (V.degree_restrict_le_positiveDegree U)
@@ -116,15 +116,15 @@ theorem positiveDegree_scaleExp_le_of_integral_nonneg (V : AdelicVectorBundle S)
 /-- A nonpositive integral increases every actual restricted degree. -/
 theorem positiveDegree_le_scaleExp_of_integral_nonpos (V : AdelicVectorBundle S)
     (φ : S.Ω → ℝ) (hm : Measurable φ) (hi : Integrable φ S.v)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (ht : (∫ ω, φ ω ∂S.v) ≤ 0) :
     V.positiveDegree ≤ (V.scaleExp φ hm hi).positiveDegree := by
   apply V.positiveDegree_le
   intro U
   have he := V.degree_restrict_scaleExp φ hm hi U
-  have hb : (V.restrictOfMeasurableBase U).degree ≤
-      ((V.scaleExp φ hm hi).restrictOfMeasurableBase U).degree := by
+  have hb : (V.restrictOfNormMeasurability U).degree ≤
+      ((V.scaleExp φ hm hi).restrictOfNormMeasurability U).degree := by
     rw [he]
     have hmul := mul_nonpos_of_nonneg_of_nonpos
       (Nat.cast_nonneg (Module.finrank K U) : (0 : ℝ) ≤ Module.finrank K U) ht
@@ -136,7 +136,7 @@ theorem positiveDegree_le_scaleExp_of_integral_nonpos (V : AdelicVectorBundle S)
 individual completed norm fibres can change. -/
 theorem positiveDegree_scaleExp_eq_of_integral_eq_zero (V : AdelicVectorBundle S)
     (φ : S.Ω → ℝ) (hm : Measurable φ) (hi : Integrable φ S.v)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (ht : (∫ ω, φ ω ∂S.v) = 0) :
     (V.scaleExp φ hm hi).positiveDegree = V.positiveDegree :=
@@ -148,7 +148,7 @@ integrable representative of an almost-everywhere class. -/
 theorem positiveDegree_scaleExp_eq_of_ae_eq (V : AdelicVectorBundle S)
     (φ ψ : S.Ω → ℝ) (hmφ : Measurable φ) (hiφ : Integrable φ S.v)
     (hmψ : Measurable ψ) (hiψ : Integrable ψ S.v)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (he : φ =ᵐ[S.v] ψ) :
     (V.scaleExp φ hmφ hiφ).positiveDegree =

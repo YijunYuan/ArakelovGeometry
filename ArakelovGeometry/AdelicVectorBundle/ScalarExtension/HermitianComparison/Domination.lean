@@ -121,7 +121,7 @@ theorem hermitianScalarExtension_localDist_ofBasisMixed_le
   intro z
   constructor
   · exact (norm_le_mul_of_basis_norm_le (S := S.algebraicExtension L)
-      (b.baseChange L) η (hξ := (hermitianScalarExtension_isUltrametric ξ))
+      (b.baseChange L) η (hξ := (hermitianScalarExtension_isUltrametricAtFinitePlaces ξ))
       x (Real.exp_pos _).le ha' z).trans
       (mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr (by linarith))
         ((ofBasisMixed (S.algebraicExtension L) (L ⊗[K] E)

@@ -187,7 +187,7 @@ variable {K : Type*} [Field K] [NumberField K]
 
 /-- Actual normalized rational logarithmic norm integrals agree with the old ones. -/
 theorem numberFieldNormalize_integral_logNorm
-    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric] (x : E)
+    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces] (x : E)
     (hx : Integrable (ξ.logNorm x) (numberFieldAdelicStructure K).v) :
     (∫ ω, (ξ.numberFieldNormalize).logNorm x ω
       ∂(normalizedNumberFieldAdelicStructure K).v) =
@@ -198,7 +198,7 @@ theorem numberFieldNormalize_integral_logNorm
 
 /-- Actual normalized absolute logarithmic norm integrals agree with the old ones. -/
 theorem numberFieldNormalize_integral_abs_logNorm
-    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric] (x : E)
+    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces] (x : E)
     (hx : Integrable (ξ.logNorm x) (numberFieldAdelicStructure K).v) :
     (∫ ω, |(ξ.numberFieldNormalize).logNorm x ω|
       ∂(normalizedNumberFieldAdelicStructure K).v) =

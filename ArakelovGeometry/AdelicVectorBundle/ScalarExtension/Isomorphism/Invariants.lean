@@ -34,9 +34,9 @@ variable {K : Type*} [Field K] {S : AdelicStructure K} [S.IsProper]
 through its canonical completed isometry. -/
 theorem degree_quotient_of_eq_bot (V : AdelicVectorBundle S)
     (P : Submodule K V) (hP : P = ⊥)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    (V.quotientOfMeasurableBase P).degree = V.degree := by
+    (V.quotientOfNormMeasurability P).degree = V.degree := by
   symm
   apply degree_eq_of_completed_isometry _ _
     (P.quotEquivOfEqBot hP).symm
@@ -48,9 +48,9 @@ theorem degree_quotient_of_eq_bot (V : AdelicVectorBundle S)
 
 /-- The actual quotient by zero has the original degree. -/
 theorem degree_quotient_bot (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    (V.quotientOfMeasurableBase ⊥).degree = V.degree :=
+    (V.quotientOfNormMeasurability ⊥).degree = V.degree :=
   V.degree_quotient_of_eq_bot ⊥ rfl
 
 variable {L M : Type*} [Field L] [Field M] [Algebra K L] [Algebra K M]
@@ -66,10 +66,10 @@ theorem degree_restrict_scalarExtension_algEquiv
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := L)
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := M)
-    ((V.scalarExtension (L := M)).restrictOfMeasurableBase
+    ((V.scalarExtension (L := M)).restrictOfNormMeasurability
       (scalarExtensionSubspaceOrderIso (E := V) σ B)).degree
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M))⟩) =
-    ((V.scalarExtension (L := L)).restrictOfMeasurableBase B).degree
+    ((V.scalarExtension (L := L)).restrictOfNormMeasurability B).degree
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
@@ -77,8 +77,8 @@ theorem degree_restrict_scalarExtension_algEquiv
   dsimp only at hd
   let hL := hcount.algebraicExtension_of_isAlgClosed (L := L)
   let hM := hcount.algebraicExtension_of_isAlgClosed (L := M)
-  let R := (V.scalarExtension (L := L)).restrictOfMeasurableBase B
-  let T := (V.scalarExtension (L := M)).restrictOfMeasurableBase
+  let R := (V.scalarExtension (L := L)).restrictOfNormMeasurability B
+  let T := (V.scalarExtension (L := M)).restrictOfNormMeasurability
     (scalarExtensionSubspaceOrderIso (E := V) σ B)
   have hbot : ((⊥ : Submodule L (L ⊗[K] V)).comap B.subtype) = ⊥ :=
     (Submodule.comap_bot _).trans (Submodule.ker_subtype B)
@@ -101,10 +101,10 @@ theorem slope_restrict_scalarExtension_algEquiv
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := L)
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := M)
-    ((V.scalarExtension (L := M)).restrictOfMeasurableBase
+    ((V.scalarExtension (L := M)).restrictOfNormMeasurability
       (scalarExtensionSubspaceOrderIso (E := V) σ B)).slope
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M))⟩) =
-    ((V.scalarExtension (L := L)).restrictOfMeasurableBase B).slope
+    ((V.scalarExtension (L := L)).restrictOfNormMeasurability B).slope
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S M

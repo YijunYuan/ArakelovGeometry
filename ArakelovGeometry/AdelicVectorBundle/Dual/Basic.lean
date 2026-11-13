@@ -92,7 +92,7 @@ theorem dual_norm_le (ω : S.Ω)
 
 /-- Every dual family is ultrametric at the non-Archimedean places, without
 requiring the original norm family to be ultrametric. -/
-theorem dual_isUltrametric : ξ.dual.IsUltrametric := by
+theorem dual_isUltrametricAtFinitePlaces : ξ.dual.IsUltrametricAtFinitePlaces := by
   constructor
   intro ω hω z t
   let := ξ.fibreNormedAddCommGroup ω
@@ -264,5 +264,5 @@ theorem dual_dual_dual_pullback :
 end ArakelovGeometry.NormFamily
 
 namespace ArakelovGeometry.NormFamily
-attribute [instance] dual_isUltrametric
+attribute [instance] dual_isUltrametricAtFinitePlaces
 end ArakelovGeometry.NormFamily

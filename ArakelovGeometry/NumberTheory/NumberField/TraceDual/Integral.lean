@@ -233,7 +233,7 @@ variable {K E : Type*} [Field K] [NumberField K]
 /-- The original dominated pure global ball has its actual integer trace dual. -/
 def normalizedGlobalUnitBallIntegralTraceEquiv
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
-    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] [hpure : ξ.IsPureAtFinitePlaces] :
     NumberFieldIntegralTraceDual.integralTraceDual (ξ.globalUnitBallModule) ≃ₗ[ℤ]
       Module.Dual ℤ (ξ.globalUnitBallModule) :=
   NumberFieldIntegralTraceDual.integralTraceEquiv (ξ.globalUnitBallModule)
@@ -242,7 +242,7 @@ def normalizedGlobalUnitBallIntegralTraceEquiv
 @[simp]
 theorem normalizedGlobalUnitBallIntegralTraceEquiv_apply
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    [ξ.IsDominated] [ξ.IsUltrametric] [ξ.IsPureAtFinitePlaces]
+    [ξ.IsDominated] [ξ.IsUltrametricAtFinitePlaces] [ξ.IsPureAtFinitePlaces]
     (f : NumberFieldIntegralTraceDual.integralTraceDual (ξ.globalUnitBallModule))
     (m : ξ.globalUnitBallModule) :
     (ξ.normalizedGlobalUnitBallIntegralTraceEquiv f m : ℚ) =

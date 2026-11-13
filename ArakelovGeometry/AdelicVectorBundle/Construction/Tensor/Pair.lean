@@ -39,7 +39,7 @@ namespace NormFamily
 /-- Either source base alternative produces actual binary mixed measurability. -/
 theorem IsMeasurable.mixedTensorPair {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsMeasurable) (hη : η.IsMeasurable)
-    [hS : S.HasMeasurableBase] :
+    [hS : S.NormMeasurabilityHypotheses] :
     (ξ.mixedTensorPair η).IsMeasurable :=
   (inferInstance : (mixedTensor (tensorPairFactors ξ η)).IsMeasurable).pullback _ _
 
@@ -57,7 +57,7 @@ namespace AdelicVectorBundle
 
 /-- The actual binary mixed tensor bundle, with its analytic properties produced. -/
 abbrev mixedTensorPair (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     AdelicVectorBundle S :=
   ofMeasurableDominated (V.toNormFamily.mixedTensorPair W.toNormFamily)
@@ -67,7 +67,7 @@ abbrev mixedTensorPair (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
 @[simp]
 theorem mixedTensorPair_toNormFamily (V : AdelicVectorBundle S)
     (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     (V.mixedTensorPair W).toNormFamily =
       V.toNormFamily.mixedTensorPair W.toNormFamily := rfl
@@ -75,7 +75,7 @@ theorem mixedTensorPair_toNormFamily (V : AdelicVectorBundle S)
 /-- The binary tensor constructor retains the actual strong adelic predicate. -/
 theorem mixedTensorPair_isStronglyAdelic (V : AdelicVectorBundle S)
     (W : AdelicVectorBundle S)
-    [S.HasMeasurableBase]
+    [S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     (V.mixedTensorPair W).IsStronglyAdelic :=
   V.isDominated.strong_mixedTensorPair W.isDominated

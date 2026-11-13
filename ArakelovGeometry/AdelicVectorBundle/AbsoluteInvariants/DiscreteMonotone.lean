@@ -38,10 +38,10 @@ theorem degree_restrict_le_nativeRestrictionDegreeOfCountableDiscreteBase
     (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
     (A : Submodule K V) :
-    (V.restrictOfMeasurableBase A).degree ≤
+    (V.restrictOfNormMeasurability A).degree ≤
       V.nativeRestrictionDegreeOfCountableDiscreteBase (A.baseChange L) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-  let B := V.restrictOfMeasurableBase A
+  let B := V.restrictOfNormMeasurability A
   let W := B.scalarExtensionOfCountableDiscreteBase (L := L)
   let R := V.scalarExtensionRestrictionOfCountableDiscreteBase (A.baseChange L)
   let : R.toNormFamily.determinant.IsMeasurable :=
@@ -68,7 +68,7 @@ theorem slope_restrict_le_nativeMeanOfCountableDiscreteBase
     (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
     (A : Submodule K V) :
-    (V.restrictOfMeasurableBase A).slope ≤
+    (V.restrictOfNormMeasurability A).slope ≤
       V.nativeRestrictionDegreeOfCountableDiscreteBase (A.baseChange L) /
         (Module.finrank L (A.baseChange L) : ℝ) := by
   have hr : Module.finrank L (A.baseChange L) = Module.finrank K A :=
@@ -119,7 +119,7 @@ theorem degree_restrict_le_absolutePositiveDegreeOfCountableDiscreteBase
     (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
     (A : Submodule K V) :
-    ((V.restrictOfMeasurableBase A).degree
+    ((V.restrictOfNormMeasurability A).degree
       : EReal) ≤
       V.absolutePositiveDegreeOfCountableDiscreteBase :=
   (V.degree_restrict_le_positiveDegree A).trans

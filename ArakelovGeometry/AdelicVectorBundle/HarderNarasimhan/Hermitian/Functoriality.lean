@@ -58,7 +58,7 @@ end NormFamily
 namespace AdelicVectorBundle
 
 variable [S.IsProper] (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
 include hS hN hV hW
@@ -85,7 +85,7 @@ actual target quotient is bounded by the original map's genuine height. -/
 theorem mapHeight_restrict_postQuotient_le (f : V →ₗ[K] W) (hf : f ≠ 0)
     (U : Submodule K V) (T : Submodule K W)
     (hg : T.mkQ.comp (f.comp U.subtype) ≠ 0) :
-    (V.restrictOfMeasurableBase U).mapHeight (W.quotientOfMeasurableBase T)
+    (V.restrictOfNormMeasurability U).mapHeight (W.quotientOfNormMeasurability T)
       (T.mkQ.comp (f.comp U.subtype)) ≤ V.mapHeight W f := by
   apply V.mapHeight_le_of_operatorNorm_le W _ _ f _ hf hg
   intro ω
@@ -105,15 +105,15 @@ theorem map_hermitianHNFiltration_le_of_mapHeight_le
   have hg : g = 0 := by
     by_contra hg
     have hm := minimalSlope_sub_mapHeight_le_maximalSlope_of_ne_zero
-      (V.restrictOfMeasurableBase U) (W.quotientOfMeasurableBase T) g hg
-    have hheight : (V.restrictOfMeasurableBase U).mapHeight
-        (W.quotientOfMeasurableBase T) g ≤ (c : EReal) :=
+      (V.restrictOfNormMeasurability U) (W.quotientOfNormMeasurability T) g hg
+    have hheight : (V.restrictOfNormMeasurability U).mapHeight
+        (W.quotientOfNormMeasurability T) g ≤ (c : EReal) :=
       (V.mapHeight_restrict_postQuotient_le W f hf U T hg).trans hh
     have hlo := V.le_minimalSlope_restrict_hermitianHNFiltration t
     have hhi := W.maximalSlope_quotient_hermitianHNFiltration_lt (t - c)
     have hb : ((t - c : ℝ) : EReal) ≤
-        (V.restrictOfMeasurableBase U).minimalSlope -
-          (V.restrictOfMeasurableBase U).mapHeight (W.quotientOfMeasurableBase T) g := by
+        (V.restrictOfNormMeasurability U).minimalSlope -
+          (V.restrictOfNormMeasurability U).mapHeight (W.quotientOfNormMeasurability T) g := by
       rw [EReal.coe_sub]
       exact EReal.sub_le_sub hlo hheight
     exact (not_le_of_gt hhi) (hb.trans hm)

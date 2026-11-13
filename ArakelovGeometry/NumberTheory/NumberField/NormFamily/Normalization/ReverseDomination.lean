@@ -96,7 +96,7 @@ variable {K : Type*} [Field K] [NumberField K]
 
 /-- Upper domination of the actual normalization reflects to the fixed old family. -/
 theorem IsUpperDominated.of_numberFieldNormalize
-    {ξ : NormFamily (numberFieldAdelicStructure K) E} {hξ : ξ.IsUltrametric}
+    {ξ : NormFamily (numberFieldAdelicStructure K) E} {hξ : ξ.IsUltrametricAtFinitePlaces}
     (hupper : (ξ.numberFieldNormalize).IsUpperDominated) : ξ.IsUpperDominated := by
   constructor
   intro x hx
@@ -112,7 +112,7 @@ theorem IsUpperDominated.of_numberFieldNormalize
 
 /-- Lower domination of the actual normalization reflects to the fixed old family. -/
 theorem IsLowerDominated.of_numberFieldNormalize
-    {ξ : NormFamily (numberFieldAdelicStructure K) E} {hξ : ξ.IsUltrametric}
+    {ξ : NormFamily (numberFieldAdelicStructure K) E} {hξ : ξ.IsUltrametricAtFinitePlaces}
     (hlower : (ξ.numberFieldNormalize).IsLowerDominated) : ξ.IsLowerDominated := by
   constructor
   intro x hx
@@ -128,14 +128,14 @@ theorem IsLowerDominated.of_numberFieldNormalize
 
 /-- Actual upper domination is unchanged for every fixed old ultrametric family. -/
 theorem numberFieldNormalize_isUpperDominated_iff
-    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric] :
+    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     (ξ.numberFieldNormalize).IsUpperDominated ↔ ξ.IsUpperDominated :=
   ⟨IsUpperDominated.of_numberFieldNormalize,
     fun h => h.numberFieldNormalize hξ⟩
 
 /-- Actual lower domination is unchanged for every fixed old ultrametric family. -/
 theorem numberFieldNormalize_isLowerDominated_iff
-    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric] :
+    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     (ξ.numberFieldNormalize).IsLowerDominated ↔ ξ.IsLowerDominated :=
   ⟨IsLowerDominated.of_numberFieldNormalize,
     fun h => h.numberFieldNormalize hξ⟩
@@ -145,7 +145,7 @@ variable [FiniteDimensional K E]
 /-- Full domination is preserved and reflected using the actual completed dual
 normalization equality, independently of the discarded zero-mass trivial norm. -/
 theorem numberFieldNormalize_isDominated_iff
-    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric] :
+    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     (ξ.numberFieldNormalize).IsDominated ↔ ξ.IsDominated := by
   constructor
   · intro h

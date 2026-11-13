@@ -285,7 +285,7 @@ theorem normalizedCompletedDeterminantEquiv_eq_tensor
 
 namespace NormFamily
 
-variable (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+variable (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
 
 /-- The actual completed determinant quotient transports by the same positive
 normalization power as its actual completed vector norm. -/
@@ -323,13 +323,15 @@ theorem numberFieldNormalize_determinant_norm_map
 
 omit hξ in
 /-- Every actual determinant family is a line, so its finite norms are ultrametric. -/
-instance numberField_determinant_isUltrametric : ξ.determinant.IsUltrametric :=
-  ξ.determinant.isUltrametric_of_finrank_le_one determinant_finrank.le
+instance numberField_determinant_isUltrametricAtFinitePlaces
+    : ξ.determinant.IsUltrametricAtFinitePlaces :=
+  ξ.determinant.isUltrametricAtFinitePlaces_of_finrank_le_one determinant_finrank.le
 
 /-- Normalization commutes with the genuine completed determinant norm family. -/
 theorem numberFieldNormalize_determinant :
     (ξ.numberFieldNormalize).determinant =
-      ξ.determinant.numberFieldNormalize (hξ := ξ.numberField_determinant_isUltrametric) := by
+      ξ.determinant.numberFieldNormalize (hξ :=
+        ξ.numberField_determinant_isUltrametricAtFinitePlaces) := by
   ext ω z
   obtain ⟨y, rfl⟩ := (normalizedNormFamilyTensorEquiv ω).surjective z
   erw [numberFieldNormalize_determinant_norm_map, numberFieldNormalize_norm_map]
@@ -393,7 +395,7 @@ end NormFamily
 namespace AdelicVectorBundle
 
 variable (V : AdelicVectorBundle (numberFieldAdelicStructure K))
-  [hV : V.toNormFamily.IsUltrametric]
+  [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
 
 /-- The native actual normalized determinant degree equals the old native degree;
 all properness, Archimedean and discrete-base properties are supplied by the curves. -/
@@ -410,8 +412,8 @@ theorem numberFieldNormalize_degree :
   let hS : DiscreteMeasurableSpace (numberFieldAdelicStructure K).Ω ∨
       (numberFieldAdelicStructure K).HasCommonCountableDenseSubfield :=
     Or.inl (inferInstanceAs (DiscreteMeasurableSpace (AbsoluteValue.Place K)))
-  let D := V.determinantOfMeasurableBase (hS := ⟨hS⟩) (hN := ⟨numberFieldArchimedeanCompletions⟩)
-  let s := D.lineGenerator (hV := (V.determinantOfMeasurableBase_isLine (hS := ⟨hS⟩)
+  let D := V.determinantOfNormMeasurability (hS := ⟨hS⟩) (hN := ⟨numberFieldArchimedeanCompletions⟩)
+  let s := D.lineGenerator (hV := (V.determinantOfNormMeasurability_isLine (hS := ⟨hS⟩)
     (hN := ⟨numberFieldArchimedeanCompletions⟩)))
   rw [(V.numberFieldNormalize).degree_eq_neg_integral
     s,

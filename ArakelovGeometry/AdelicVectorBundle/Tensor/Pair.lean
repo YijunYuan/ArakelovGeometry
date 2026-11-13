@@ -118,9 +118,10 @@ noncomputable def injectiveTensorPair (ξ : NormFamily S E) (η : NormFamily S F
     (tensorPairEquiv K E F).symm.toLinearMap
     (tensorPairEquiv K E F).symm.injective
 
-instance instIsUltrametricInjectiveTensorPair (ξ : NormFamily S E) (η : NormFamily S F) :
-    (ξ.injectiveTensorPair η).IsUltrametric :=
-  (injectiveTensor_isUltrametric (tensorPairFactors ξ η)).pullback
+instance instIsUltrametricAtFinitePlacesInjectiveTensorPair
+    (ξ : NormFamily S E) (η : NormFamily S F) :
+    (ξ.injectiveTensorPair η).IsUltrametricAtFinitePlaces :=
+  (injectiveTensor_isUltrametricAtFinitePlaces (tensorPairFactors ξ η)).pullback
     (tensorPairEquiv K E F).symm.toLinearMap
     (tensorPairEquiv K E F).symm.injective
 
@@ -134,7 +135,7 @@ theorem injectiveTensorPair_norm_tmul (ξ : NormFamily S E) (η : NormFamily S F
 /-- Either source base hypothesis proves measurability of the actual binary norm. -/
 theorem IsMeasurable.injectiveTensorPair {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsMeasurable) (hη : η.IsMeasurable)
-    [hS : S.HasMeasurableBase] :
+    [hS : S.NormMeasurabilityHypotheses] :
     (ξ.injectiveTensorPair η).IsMeasurable :=
   (inferInstance : (injectiveTensor (tensorPairFactors ξ η)).IsMeasurable).pullback _ _
 
@@ -152,7 +153,7 @@ namespace AdelicVectorBundle
 proved under the source alternatives. -/
 noncomputable abbrev injectiveTensorPair (V : AdelicVectorBundle S)
     (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     AdelicVectorBundle S :=
   ofMeasurableDominated (V.toNormFamily.injectiveTensorPair W.toNormFamily)
@@ -162,7 +163,7 @@ noncomputable abbrev injectiveTensorPair (V : AdelicVectorBundle S)
 @[simp]
 theorem injectiveTensorPair_toNormFamily (V : AdelicVectorBundle S)
     (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     (V.injectiveTensorPair W).toNormFamily =
       V.toNormFamily.injectiveTensorPair W.toNormFamily := rfl

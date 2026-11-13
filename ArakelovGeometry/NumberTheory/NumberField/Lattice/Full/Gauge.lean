@@ -190,7 +190,7 @@ theorem scalarLatticeGauge_add_le_max (L : Submodule (𝓞 K) E) (hfg : L.FG)
       max (scalarLatticeGauge (F := Kᵥ p) (NumberFieldModel.completedLatticeSpan L p : Set _) x)
         (scalarLatticeGauge (F := Kᵥ p) (NumberFieldModel.completedLatticeSpan L p : Set _) y) := by
   let b := rationalLocalGenericBasis L hfg hspan p
-  have h := NormFamily.ofBasisMixed_isUltrametric b _
+  have h := NormFamily.ofBasisMixed_isUltrametricAtFinitePlaces b _
     (normalizedPrimeParameter_mem_fin p) x y
   rw [NormFamily.ofBasisMixed_norm_of_finite b _ (normalizedPrimeParameter_mem_fin p),
     NormFamily.ofBasisMixed_norm_of_finite b _ (normalizedPrimeParameter_mem_fin p),
@@ -239,9 +239,9 @@ theorem fullLatticeGaugeFamily_norm_not_finite (L : Submodule (𝓞 K) E) (hfg :
   rw [dite_eq_right hω]
 
 /-- The family is genuinely ultrametric at every finite completed fibre. -/
-instance fullLatticeGaugeFamily_isUltrametric (L : Submodule (𝓞 K) E) (hfg : L.FG)
+instance fullLatticeGaugeFamily_isUltrametricAtFinitePlaces (L : Submodule (𝓞 K) E) (hfg : L.FG)
     (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (S₀) E) :
-    (fullLatticeGaugeFamily L hfg hspan η).IsUltrametric := by
+    (fullLatticeGaugeFamily L hfg hspan η).IsUltrametricAtFinitePlaces := by
   constructor
   intro ω hω x y
   let b := rationalLocalGenericBasis L hfg hspan (primeAt ω hω)
@@ -251,7 +251,7 @@ instance fullLatticeGaugeFamily_isUltrametric (L : Submodule (𝓞 K) E) (hfg : 
     dsimp only [fullLatticeGaugeFamily]
     rw [dite_eq_left hω]
   simp only [hn]
-  exact NormFamily.ofBasisMixed_isUltrametric b ω hω x y
+  exact NormFamily.ofBasisMixed_isUltrametricAtFinitePlaces b ω hω x y
 
 /-- Its literal completed finite unit ball is the canonical completed tensor image. -/
 theorem fullLatticeGaugeFamily_completedUnitBall_eq

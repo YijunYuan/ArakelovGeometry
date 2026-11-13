@@ -222,7 +222,7 @@ theorem IsDominated.bidual_of_scalarExtension
     rw [scalarExtension_measure_Ωinf]
     exact hfin
   have hbL := IsDominated.localDist_ofBasisMixed_of_ultrametric (b.baseChange L)
-    (ξ.scalarExtension (L := L)) hL ξ.scalarExtension_isUltrametric hfinL
+    (ξ.scalarExtension (L := L)) hL ξ.scalarExtension_isUltrametricAtFinitePlaces hfinL
   have hu : HasIntegrableUpperBound
       (fun x : (S.algebraicExtension L).Ω => η.localDist (ofBasisMixed S E b) x.base)
       (S.algebraicExtension L).v := hbL.1.mono

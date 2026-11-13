@@ -122,7 +122,7 @@ variable {K E : Type*} [Field K] [NumberField K]
 /-- Tensor–Hom duality on the actual dominated pure global ball. -/
 def globalUnitBallTensorCodifferentEquiv
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
-    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] [hpure : ξ.IsPureAtFinitePlaces] :
     codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) (ξ.globalUnitBallModule) ≃ₗ[𝓞 K]
       ((ξ.globalUnitBallModule) →ₗ[𝓞 K] codifferentModule K) :=
   tensorCodifferentEquiv (ξ.globalUnitBallModule)
@@ -131,7 +131,7 @@ def globalUnitBallTensorCodifferentEquiv
 @[simp]
 theorem globalUnitBallTensorCodifferentEquiv_tmul_apply
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    [ξ.IsDominated] [ξ.IsUltrametric] [ξ.IsPureAtFinitePlaces]
+    [ξ.IsDominated] [ξ.IsUltrametricAtFinitePlaces] [ξ.IsPureAtFinitePlaces]
     (a : codifferentModule K) (φ : Module.Dual (𝓞 K) (ξ.globalUnitBallModule))
     (m : ξ.globalUnitBallModule) :
     ξ.globalUnitBallTensorCodifferentEquiv (a ⊗ₜ[𝓞 K] φ) m = φ m • a :=
@@ -140,7 +140,7 @@ theorem globalUnitBallTensorCodifferentEquiv_tmul_apply
 /-- The original trace-integral dual of the pure global ball as an actual tensor. -/
 def globalUnitBallTraceTensorEquiv
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
-    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] [hpure : ξ.IsPureAtFinitePlaces] :
     codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) (ξ.globalUnitBallModule) ≃ₗ[𝓞 K]
       integralTraceDual (ξ.globalUnitBallModule) :=
   let hm := hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure
@@ -149,7 +149,7 @@ def globalUnitBallTraceTensorEquiv
 @[simp]
 theorem globalUnitBallTraceTensorEquiv_tmul_apply
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    [ξ.IsDominated] [ξ.IsUltrametric] [ξ.IsPureAtFinitePlaces]
+    [ξ.IsDominated] [ξ.IsUltrametricAtFinitePlaces] [ξ.IsPureAtFinitePlaces]
     (a : codifferentModule K) (φ : Module.Dual (𝓞 K) (ξ.globalUnitBallModule))
     (m : ξ.globalUnitBallModule) :
     (ξ.globalUnitBallTraceTensorEquiv (a ⊗ₜ[𝓞 K] φ)).1 (m : E) =
@@ -159,7 +159,7 @@ theorem globalUnitBallTraceTensorEquiv_tmul_apply
 /-- The actual integer trace dual of the original pure global ball. -/
 def globalUnitBallIntegerTensorEquiv
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
-    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] [hpure : ξ.IsPureAtFinitePlaces] :
     codifferentModule K ⊗[𝓞 K] Module.Dual (𝓞 K) (ξ.globalUnitBallModule) ≃ₗ[ℤ]
       Module.Dual ℤ (ξ.globalUnitBallModule) :=
   let hm := hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure
@@ -168,7 +168,7 @@ def globalUnitBallIntegerTensorEquiv
 @[simp]
 theorem globalUnitBallIntegerTensorEquiv_tmul_apply
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    [ξ.IsDominated] [ξ.IsUltrametric] [ξ.IsPureAtFinitePlaces]
+    [ξ.IsDominated] [ξ.IsUltrametricAtFinitePlaces] [ξ.IsPureAtFinitePlaces]
     (a : codifferentModule K) (φ : Module.Dual (𝓞 K) (ξ.globalUnitBallModule))
     (m : ξ.globalUnitBallModule) :
     (ξ.globalUnitBallIntegerTensorEquiv (a ⊗ₜ[𝓞 K] φ) m : ℚ) =

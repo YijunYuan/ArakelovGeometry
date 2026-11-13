@@ -65,9 +65,9 @@ theorem ofBasis_restrict_dual_isMeasurable_of_all_finite (b : Module.Basis m K E
     (F : Submodule K E) [hS : S.HasOnlyFinitePlaces] :
     ((ofBasis S E b).restrict F).dual.IsMeasurable := by
   classical
-  have hξ : (ofBasis S E b).IsUltrametric := by
+  have hξ : (ofBasis S E b).IsUltrametricAtFinitePlaces := by
     rw [ofBasis_eq_mixed_of_all_finite (S := S) b]
-    exact ofBasisMixed_isUltrametric b
+    exact ofBasisMixed_isUltrametricAtFinitePlaces b
   have harch : ∀ ω ∈ S.Ωinf, IsRCLikeNormedField (S.ϕ ω).Completion := by
     intro ω hω
     exact False.elim (hω (hS ω))

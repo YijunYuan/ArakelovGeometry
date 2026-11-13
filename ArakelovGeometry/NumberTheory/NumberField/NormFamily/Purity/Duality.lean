@@ -81,7 +81,7 @@ namespace CompletedPureDuality
 
 variable (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
   (ω : (normalizedNumberFieldAdelicStructure K).Ω)
-  (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hUltra : ξ.IsUltrametric]
+  (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hUltra : ξ.IsUltrametricAtFinitePlaces]
 
 local notation "F" =>
   AbsoluteValue.Completion (AdelicStructure.ϕ (normalizedNumberFieldAdelicStructure K) ω)

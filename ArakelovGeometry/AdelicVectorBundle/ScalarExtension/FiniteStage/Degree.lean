@@ -45,10 +45,10 @@ theorem degree_restrict_scalarExtension_finiteStage [S.IsProper]
     let _ := hcount.algebraicExtension_of_finiteDimensional (L := F)
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := L)
     let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L V
-    ((V.scalarExtension (L := L)).restrictOfMeasurableBase
+    ((V.scalarExtension (L := L)).restrictOfNormMeasurability
       ((B.baseChange L).map c.toLinearMap)).degree
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
-    ((V.scalarExtension (L := F)).restrictOfMeasurableBase
+    ((V.scalarExtension (L := F)).restrictOfNormMeasurability
       B).degree
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
@@ -62,14 +62,14 @@ theorem degree_restrict_scalarExtension_finiteStage [S.IsProper]
   let hTN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) (hS := ⟨hFN⟩)
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L V
   let e := (Submodule.toBaseChange.toLinearEquiv L B).trans (c.submoduleMap (B.baseChange L))
-  let B₀ := (V.scalarExtension (L := F)).restrictOfMeasurableBase B
+  let B₀ := (V.scalarExtension (L := F)).restrictOfNormMeasurability B
   let W := NormFamily.toAdelicVectorBundle
     (((V.toNormFamily.scalarExtension (L := F)).restrict B).scalarExtension (L := L))
     (hξ := (B₀.scalarExtension (L := L) (hS := hF)
       (hN := ⟨hFN⟩)).toIsAdelic)
   let R := ((V.toNormFamily.scalarExtension (L := L)).restrict
     ((B.baseChange L).map c.toLinearMap)).toAdelicVectorBundle
-      (hξ := ((V.scalarExtension (L := L)).restrictOfMeasurableBase
+      (hξ := ((V.scalarExtension (L := L)).restrictOfNormMeasurability
         ((B.baseChange L).map c.toLinearMap)).toIsAdelic)
   change R.degree (hN := ⟨hLN⟩) = B₀.degree (hN := ⟨hFN⟩)
   have he : R.degree (hN := ⟨hLN⟩) = W.degree (hN := ⟨hTN⟩) :=
@@ -96,10 +96,10 @@ theorem exists_complexFiniteStage_native_degrees [S.IsProper]
         ∀ i,
           let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
           let _ := hcount.algebraicExtension_of_finiteDimensional (L := F)
-          ((V.scalarExtension (L := L)).restrictOfMeasurableBase
+          ((V.scalarExtension (L := L)).restrictOfNormMeasurability
             (A i)).degree
             (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
-          ((V.scalarExtension (L := F)).restrictOfMeasurableBase
+          ((V.scalarExtension (L := F)).restrictOfNormMeasurability
             (B i)).degree
             (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
@@ -131,10 +131,10 @@ theorem exists_complexFiniteStage_flag_native_degrees [S.IsProper]
         ∀ i,
           let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
           let _ := hcount.algebraicExtension_of_finiteDimensional (L := F)
-          ((V.scalarExtension (L := L)).restrictOfMeasurableBase
+          ((V.scalarExtension (L := L)).restrictOfNormMeasurability
             (A i)).degree
             (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
-          ((V.scalarExtension (L := F)).restrictOfMeasurableBase
+          ((V.scalarExtension (L := F)).restrictOfNormMeasurability
             (B i)).degree
             (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L

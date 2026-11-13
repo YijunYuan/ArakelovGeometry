@@ -125,7 +125,7 @@ theorem trivialSeminorm_bidual_le_of_mem_span
     (ξ.dual.dual.pullback (Module.Dual.eval K E)
       (Module.eval_apply_injective K)).trivialSeminorm x ≤ a := by
   let β := ξ.dual.dual.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K)
-  have hβ : β.IsUltrametric := ξ.dual.dual_isUltrametric.pullback _ _
+  have hβ : β.IsUltrametricAtFinitePlaces := ξ.dual.dual_isUltrametricAtFinitePlaces.pullback _ _
   have hs : Submodule.span K {y | ξ.trivialSeminorm y ≤ a} ≤
       β.trivialFiltration (hξ := hβ) (-Real.log a) := by
     apply Submodule.span_le.mpr
@@ -175,19 +175,20 @@ namespace AdelicVectorBundle
 open AdelicStructure
 
 variable (V : AdelicVectorBundle (singleTrivialPlace K))
-  [hS : (singleTrivialPlace K).HasMeasurableBase]
+  [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
 open Classical in
 /-- Source Proposition4.3.64: the actual general filtration of an arbitrary
 original norm is the literal ball filtration of its actual canonical bidual. -/
-theorem generalHNFiltration_eq_bidual_trivialFiltration (t : ℝ) :
-    V.generalHNFiltration t =
-      (V.bidualOfMeasurableBase).toNormFamily.trivialFiltration
-        (hξ := (V.toNormFamily.dual.dual_isUltrametric.pullback
+theorem hnFiltration_eq_bidual_trivialFiltration (t : ℝ) :
+    V.hnFiltration t =
+      (V.bidualOfNormMeasurability).toNormFamily.trivialFiltration
+        (hξ := (V.toNormFamily.dual.dual_isUltrametricAtFinitePlaces.pullback
           (Module.Dual.eval K V) (Module.eval_apply_injective K))) t := by
-  let β := V.bidualOfMeasurableBase
-  have hβ : β.toNormFamily.IsUltrametric := V.toNormFamily.dual.dual_isUltrametric.pullback
+  let β := V.bidualOfNormMeasurability
+  have hβ : β.toNormFamily.IsUltrametricAtFinitePlaces :=
+    V.toNormFamily.dual.dual_isUltrametricAtFinitePlaces.pullback
     (Module.Dual.eval K V) (Module.eval_apply_injective K)
   apply le_antisymm
   · by_cases hi : (LinearMap.id : V →ₗ[K] V) = 0
@@ -203,13 +204,13 @@ theorem generalHNFiltration_eq_bidual_trivialFiltration (t : ℝ) :
         intro ω x
         rw [LinearMap.baseChange_id, LinearMap.id_apply]
         exact V.toNormFamily.dual_dual_norm_eval_le ω x
-      have hm := V.map_generalHNFiltration_le_of_mapHeight_le β
+      have hm := V.map_hnFiltration_le_of_mapHeight_le β
         (LinearMap.id : V →ₗ[K] V) hi 0 hh t
       simp only [Submodule.map_id, sub_zero] at hm
-      rw [β.generalHNFiltration_eq_trivialFiltration (hV := hβ) t] at hm
+      rw [β.hnFiltration_eq_trivialFiltration (hV := hβ) t] at hm
       exact hm
   · intro x hx
-    change x ∈ ⨅ (ε : ℝ) (_ : 0 < ε), V.generalHNSlopeSum (t - ε)
+    change x ∈ ⨅ (ε : ℝ) (_ : 0 < ε), V.minimalSlopeSubspaceSum (t - ε)
     rw [Submodule.mem_iInf]
     intro ε
     rw [Submodule.mem_iInf]
@@ -220,7 +221,7 @@ theorem generalHNFiltration_eq_bidual_trivialFiltration (t : ℝ) :
     have hspan := V.toNormFamily.mem_span_of_trivialSeminorm_bidual_lt
       (Real.exp_pos (-(t - ε))) x (hqx.trans_lt he)
     have hs : Submodule.span K {y | V.toNormFamily.trivialSeminorm y ≤
-        Real.exp (-(t - ε))} ≤ V.generalHNSlopeSum (t - ε) := by
+        Real.exp (-(t - ε))} ≤ V.minimalSlopeSubspaceSum (t - ε) := by
       apply Submodule.span_le.mpr
       intro y hy
       by_cases hyzero : y = 0
@@ -230,7 +231,7 @@ theorem generalHNFiltration_eq_bidual_trivialFiltration (t : ℝ) :
         rw [NormFamily.trivialSeminorm_apply]
         exact V.toNormFamily.norm_rational_pos PUnit.unit hyzero
       have hline : ∀ z, z ≠ 0 →
-          (V.restrictOfMeasurableBase (K ∙ y)).toNormFamily.trivialSeminorm z =
+          (V.restrictOfNormMeasurability (K ∙ y)).toNormFamily.trivialSeminorm z =
             V.toNormFamily.trivialSeminorm y := by
         intro z hz
         exact V.toNormFamily.trivialSeminorm_restrict_span_eq y z hz
@@ -238,15 +239,15 @@ theorem generalHNFiltration_eq_bidual_trivialFiltration (t : ℝ) :
         rw [finrank_span_singleton hyzero]
         exact zero_lt_one
       have hl := minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const
-        (V.restrictOfMeasurableBase (K ∙ y)) hpy hline hr
+        (V.restrictOfNormMeasurability (K ∙ y)) hpy hline hr
       have hlog : Real.log (V.toNormFamily.trivialSeminorm y) ≤ -(t - ε) :=
         Real.exp_le_exp.mp (show Real.exp (Real.log (V.toNormFamily.trivialSeminorm y)) ≤
           Real.exp (-(t - ε)) from by rw [Real.exp_log hpy]; exact hy)
       have hmin : ((t - ε : ℝ) : EReal) ≤
-          (V.restrictOfMeasurableBase (K ∙ y)).minimalSlope := by
+          (V.restrictOfNormMeasurability (K ∙ y)).minimalSlope := by
         rw [hl]
         exact EReal.coe_le_coe (by linarith)
-      have hi : K ∙ y ≤ V.generalHNSlopeSum (t - ε) :=
+      have hi : K ∙ y ≤ V.minimalSlopeSubspaceSum (t - ε) :=
         le_iSup_of_le (K ∙ y) (le_iSup_of_le
           (Submodule.span_singleton_eq_bot.not.mpr hyzero) (le_iSup_of_le hmin le_rfl))
       exact hi (Submodule.mem_span_singleton_self y)
@@ -255,59 +256,59 @@ theorem generalHNFiltration_eq_bidual_trivialFiltration (t : ℝ) :
 open Classical in
 /-- Bidualization preserves every actual real filtration term, with no
 original ultrametricity or positive-rank premise. -/
-theorem generalHNFiltration_bidualOfMeasurableBase (t : ℝ) :
-    (V.bidualOfMeasurableBase).generalHNFiltration t =
-      V.generalHNFiltration t := by
-  rw [V.generalHNFiltration_eq_bidual_trivialFiltration t]
-  exact (V.bidualOfMeasurableBase).generalHNFiltration_eq_trivialFiltration
-    (hV := (V.toNormFamily.dual.dual_isUltrametric.pullback
+theorem hnFiltration_bidualOfNormMeasurability (t : ℝ) :
+    (V.bidualOfNormMeasurability).hnFiltration t =
+      V.hnFiltration t := by
+  rw [V.hnFiltration_eq_bidual_trivialFiltration t]
+  exact (V.bidualOfNormMeasurability).hnFiltration_eq_trivialFiltration
+    (hV := (V.toNormFamily.dual.dual_isUltrametricAtFinitePlaces.pullback
       (Module.Dual.eval K V) (Module.eval_apply_injective K))) t
 
 open Classical in
 /-- The actual extended filtration also keeps the source's two infinite
 endpoint conventions under bidualization, including rank zero. -/
-theorem generalHNFiltrationExtended_bidualOfMeasurableBase (t : EReal) :
-    (V.bidualOfMeasurableBase).generalHNFiltrationExtended t =
-      V.generalHNFiltrationExtended t := by
-  have he : (V.bidualOfMeasurableBase).generalHNFiltration =
-      V.generalHNFiltration :=
-    funext (V.generalHNFiltration_bidualOfMeasurableBase)
+theorem hnFiltrationExtended_bidualOfNormMeasurability (t : EReal) :
+    (V.bidualOfNormMeasurability).hnFiltrationExtended t =
+      V.hnFiltrationExtended t := by
+  have he : (V.bidualOfNormMeasurability).hnFiltration =
+      V.hnFiltration :=
+    funext (V.hnFiltration_bidualOfNormMeasurability)
   exact congrArg (fun g : ℝ → Submodule K V ↦
     (EReal.rec ⊤ g ⊥ t : Submodule K V)) he
 
 open Classical in
 /-- The literal supremum defining every actual ordered slot is preserved
 because the actual filtration rank cuts agree. -/
-theorem generalHNOrderedSlope_bidualOfMeasurableBase (j : Fin (Module.finrank K V)) :
-    (V.bidualOfMeasurableBase).generalHNOrderedSlope j =
-      V.generalHNOrderedSlope j := by
-  have he : (V.bidualOfMeasurableBase).generalHNFiltration =
-      V.generalHNFiltration :=
-    funext (V.generalHNFiltration_bidualOfMeasurableBase)
+theorem hnSlope_bidualOfNormMeasurability (j : Fin (Module.finrank K V)) :
+    (V.bidualOfNormMeasurability).hnSlope j =
+      V.hnSlope j := by
+  have he : (V.bidualOfNormMeasurability).hnFiltration =
+      V.hnFiltration :=
+    funext (V.hnFiltration_bidualOfNormMeasurability)
   exact congrArg (fun g : ℝ → Submodule K V ↦
     sSup {t : ℝ | j.val < Module.finrank K (g t)}) he
 
 open Classical in
 /-- The actual HN flag is produced for both bundles and identified by its
 true filtration range; no flag or factor semistability is supplied. -/
-theorem exists_common_generalHNFlag_bidualOfMeasurableBase :
+theorem exists_common_hnFlag_bidualOfNormMeasurability :
     ∃ n : ℕ, ∃ U : Fin (n + 1) → Submodule K V,
       StrictMono U ∧ U 0 = ⊥ ∧ U (Fin.last n) = ⊤ ∧
-      (∀ i : Fin n, (V.flagQuotientOfMeasurableBase U i).IsSemistable ∧
-        ((V.bidualOfMeasurableBase).flagQuotientOfMeasurableBase U i).IsSemistable) ∧
-      StrictAnti (fun i : Fin n ↦ (V.flagQuotientOfMeasurableBase U i).modifiedSlope) ∧
+      (∀ i : Fin n, (V.flagQuotientOfNormMeasurability U i).IsSemistable ∧
+        ((V.bidualOfNormMeasurability).flagQuotientOfNormMeasurability U i).IsSemistable) ∧
+      StrictAnti (fun i : Fin n ↦ (V.flagQuotientOfNormMeasurability U i).hnMeanSlope) ∧
       StrictAnti (fun i : Fin n ↦
-        ((V.bidualOfMeasurableBase).flagQuotientOfMeasurableBase U i).modifiedSlope
+        ((V.bidualOfNormMeasurability).flagQuotientOfNormMeasurability U i).hnMeanSlope
 ) := by
-  let β := V.bidualOfMeasurableBase
-  obtain ⟨⟨n, U⟩, ⟨hU, hz, ht, hsemi, hb⟩, _⟩ := V.existsUnique_generalHNFlag
-  obtain ⟨⟨m, F⟩, ⟨hF, hFz, hFt, hFsemi, hFb⟩, _⟩ := β.existsUnique_generalHNFlag
-  have he : β.generalHNFiltration = V.generalHNFiltration :=
-    funext (V.generalHNFiltration_bidualOfMeasurableBase)
+  let β := V.bidualOfNormMeasurability
+  obtain ⟨⟨n, U⟩, ⟨hU, hz, ht, hsemi, hb⟩, _⟩ := V.existsUnique_hnFlag
+  obtain ⟨⟨m, F⟩, ⟨hF, hFz, hFt, hFsemi, hFb⟩, _⟩ := β.existsUnique_hnFlag
+  have he : β.hnFiltration = V.hnFiltration :=
+    funext (V.hnFiltration_bidualOfNormMeasurability)
   have hRange : Set.range U = Set.range F :=
-    (V.range_generalHNFiltration_eq_of_semistableFlag U hU hz ht (hsemi := hsemi) hb).symm.trans
+    (V.range_hnFiltration_eq_of_semistableFlag U hU hz ht (hsemi := hsemi) hb).symm.trans
       ((congrArg Set.range he).symm.trans
-        (β.range_generalHNFiltration_eq_of_semistableFlag F hF hFz hFt (hsemi := hFsemi) hFb))
+        (β.range_hnFiltration_eq_of_semistableFlag F hF hFz hFt (hsemi := hFsemi) hFb))
   have hcU := Nat.card_congr (Equiv.ofInjective U hU.injective)
   have hcF := Nat.card_congr (Equiv.ofInjective F hF.injective)
   have hcRange := congrArg (fun Z : Set (Submodule K V) ↦ Nat.card Z) hRange

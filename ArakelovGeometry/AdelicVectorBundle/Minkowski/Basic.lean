@@ -37,24 +37,26 @@ namespace AdelicStructure
 /-- Source Definition 4.3.73, on all actual admissible positive-rank bundles
 in the given universe. Zero rank imposes no logarithmic condition. -/
 def HasMinkowskiPropertyAtLevel (S : AdelicStructure.{u, v} K) [S.IsProper]
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] (C : ℝ) : Prop :=
   0 ≤ C ∧ ∀
-    (V : AdelicVectorBundle.{w} S), 0 < Module.finrank K V → V.toNormFamily.IsUltrametric →
+    (V : AdelicVectorBundle.{w} S), 0 < Module.finrank K V →
+      V.toNormFamily.IsUltrametricAtFinitePlaces →
       V.maximalSlope - (C * Real.log (Module.finrank K V) : ℝ) ≤
         V.maximalLogarithmicMinimum
 
 /-- Source Definition 4.3.79 with the actual last minimum and minimal slope. -/
 def HasStrongMinkowskiPropertyAtLevel (S : AdelicStructure.{u, v} K) [S.IsProper]
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] (C : ℝ) : Prop :=
   0 ≤ C ∧ ∀
-    (V : AdelicVectorBundle.{w} S), 0 < Module.finrank K V → V.toNormFamily.IsUltrametric →
+    (V : AdelicVectorBundle.{w} S), 0 < Module.finrank K V →
+      V.toNormFamily.IsUltrametricAtFinitePlaces →
       V.minimalSlope - (C * Real.log (Module.finrank K V) : ℝ) ≤
         V.minimalLogarithmicMinimum
 
 variable {S : AdelicStructure.{u, v} K} [S.IsProper]
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized] {C D : ℝ}
 
 /-- A larger level weakens the actual universal ordinary inequality. -/
@@ -83,7 +85,7 @@ without assumptions on attainment or finite endpoints. -/
 theorem HasMinkowskiPropertyAtLevel.maximalSlope_le
     (h : S.HasMinkowskiPropertyAtLevel.{u, v, w} C)
     (V : AdelicVectorBundle.{w} S) (hr : 0 < Module.finrank K V)
-    [hV : V.toNormFamily.IsUltrametric] :
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] :
     V.maximalSlope ≤ V.maximalLogarithmicMinimum +
       (C * Real.log (Module.finrank K V) : ℝ) :=
   (EReal.sub_le_iff_le_add (Or.inl (EReal.coe_ne_bot _))
@@ -101,8 +103,9 @@ variable {S : AdelicStructure.{u, v} K} [S.IsProper]
 The global Minkowski property is applied to this tensor, not assumed of it. -/
 theorem maximalSlope_injectiveTensorPair_le_of_minkowski
     (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
-    [hV : V.toNormFamily.IsUltrametric] [hW : W.toNormFamily.IsUltrametric]
-    [hS : S.HasMeasurableBase]
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
+      [hW : W.toNormFamily.IsUltrametricAtFinitePlaces]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     {C : ℝ} (hM : S.HasMinkowskiPropertyAtLevel.{u, v, max w w'} C)
     (hE : 0 < Module.finrank K V) (hF : 0 < Module.finrank K W) :
@@ -110,7 +113,7 @@ theorem maximalSlope_injectiveTensorPair_le_of_minkowski
       V.maximalSlope + W.maximalSlope +
         (C * Real.log ((Module.finrank K V : ℝ) * Module.finrank K W) : ℝ) := by
   let T := V.injectiveTensorPair W
-  have ht : T.toNormFamily.IsUltrametric := inferInstance
+  have ht : T.toNormFamily.IsUltrametricAtFinitePlaces := inferInstance
   have hr : 0 < Module.finrank K (V ⊗[K] W) := by
     rw [Module.finrank_tensorProduct]
     exact Nat.mul_pos hE hF

@@ -41,7 +41,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 namespace AdelicVectorBundle
 
 variable [S.IsProper] (V : AdelicVectorBundle.{max u w} S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
 include hS hN hV
@@ -52,7 +52,7 @@ theorem hermitianHNFiltration_eq_top_of_le_minimalSlope (t : ℝ)
     (ht : (t : EReal) ≤ V.minimalSlope) :
     V.hermitianHNFiltration t = ⊤ := by
   let T := V.hermitianHNFiltration t
-  let Q := V.quotientOfMeasurableBase T
+  let Q := V.quotientOfNormMeasurability T
   have hm : T.mkQ = 0 := by
     by_contra hm
     have hmap := V.minimalSlope_sub_mapHeight_le_maximalSlope_of_ne_zero Q T.mkQ hm
@@ -75,27 +75,27 @@ theorem hermitianHNFiltration_eq_top_of_le_minimalSlope (t : ℝ)
 /-- Every actual restricted subspace with minimal slope at least the
 threshold lies in the actual HN threshold subspace. -/
 theorem le_hermitianHNFiltration_of_le_minimalSlope_restrict (U : Submodule K V) (t : ℝ)
-    (ht : (t : EReal) ≤ (V.restrictOfMeasurableBase U).minimalSlope) :
+    (ht : (t : EReal) ≤ (V.restrictOfNormMeasurability U).minimalSlope) :
     U ≤ V.hermitianHNFiltration t := by
   by_cases hf : U.subtype = 0
   · intro x hx
     have he : x = 0 := DFunLike.congr_fun hf (⟨x, hx⟩ : U)
     exact he ▸ Submodule.zero_mem _
   · have htop := hermitianHNFiltration_eq_top_of_le_minimalSlope
-      (V.restrictOfMeasurableBase U) (hV := (hV.restrict U)) t ht
-    have hh : (V.restrictOfMeasurableBase U).mapHeight V U.subtype ≤ 0 := by
+      (V.restrictOfNormMeasurability U) (hV := (hV.restrict U)) t ht
+    have hh : (V.restrictOfNormMeasurability U).mapHeight V U.subtype ≤ 0 := by
       apply mapHeight_le_zero_of_completed_contraction
       intro ω z
       exact le_rfl
     have hfun := map_hermitianHNFiltration_le_of_mapHeight_le
-      (V.restrictOfMeasurableBase U) V (hV := (hV.restrict U)) U.subtype hf 0 hh t
+      (V.restrictOfNormMeasurability U) V (hV := (hV.restrict U)) U.subtype hf 0 hh t
     simpa only [sub_zero, htop, Submodule.map_top, Submodule.range_subtype] using hfun
 
 /-- The actual HN threshold subspace is the greatest rational subspace
 with actual restricted minimal slope at least the threshold. -/
 theorem isGreatest_hermitianHNFiltration (t : ℝ) :
     IsGreatest {U : Submodule K V |
-      (t : EReal) ≤ (V.restrictOfMeasurableBase U).minimalSlope}
+      (t : EReal) ≤ (V.restrictOfNormMeasurability U).minimalSlope}
       (V.hermitianHNFiltration t) := by
   refine ⟨V.le_minimalSlope_restrict_hermitianHNFiltration t, ?_⟩
   intro U hU
@@ -106,7 +106,7 @@ whose actual restricted minimal slope is at least the threshold. -/
 theorem hermitianHNFiltration_eq_iSup_minimalSlope (t : ℝ) :
     V.hermitianHNFiltration t =
       ⨆ (U : Submodule K V)
-        (_ : (t : EReal) ≤ (V.restrictOfMeasurableBase U).minimalSlope), U := by
+        (_ : (t : EReal) ≤ (V.restrictOfNormMeasurability U).minimalSlope), U := by
   apply le_antisymm
   · exact le_iSup_of_le (V.hermitianHNFiltration t)
       (le_iSup_of_le (V.le_minimalSlope_restrict_hermitianHNFiltration t) le_rfl)
@@ -118,7 +118,7 @@ threshold subspace. An empty eligible family contributes the zero subspace. -/
 theorem hermitianHNFiltration_eq_iSup_nonzero_minimalSlope (t : ℝ) :
     V.hermitianHNFiltration t =
       ⨆ (U : Submodule K V) (_ : U ≠ ⊥)
-        (_ : (t : EReal) ≤ (V.restrictOfMeasurableBase U).minimalSlope), U := by
+        (_ : (t : EReal) ≤ (V.restrictOfNormMeasurability U).minimalSlope), U := by
   apply le_antisymm
   · by_cases hzero : V.hermitianHNFiltration t = ⊥
     · rw [hzero]

@@ -197,13 +197,13 @@ theorem degree_nativeSubquotient_algEquiv [S.IsProper]
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := L)
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := M)
-    (((V.scalarExtension (L := M)).restrictOfMeasurableBase
-      (scalarExtensionSubspaceOrderIso (E := V) σ B)).quotientOfMeasurableBase
+    (((V.scalarExtension (L := M)).restrictOfNormMeasurability
+      (scalarExtensionSubspaceOrderIso (E := V) σ B)).quotientOfNormMeasurability
         ((scalarExtensionSubspaceOrderIso (E := V) σ T).comap
           (scalarExtensionSubspaceOrderIso (E := V) σ B).subtype)).degree
             (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := M))⟩) =
-    (((V.scalarExtension (L := L)).restrictOfMeasurableBase
-      B).quotientOfMeasurableBase (T.comap B.subtype)).degree
+    (((V.scalarExtension (L := L)).restrictOfNormMeasurability
+      B).quotientOfNormMeasurability (T.comap B.subtype)).degree
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S M
@@ -211,15 +211,15 @@ theorem degree_nativeSubquotient_algEquiv [S.IsProper]
   let hM := hcount.algebraicExtension_of_isAlgClosed (L := M)
   let hNL := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
   let hNM := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := M)
-  let U := ((V.scalarExtension (L := L)).restrictOfMeasurableBase B
-   ).quotientOfMeasurableBase (T.comap B.subtype)
-  let W := ((V.scalarExtension (L := M)).restrictOfMeasurableBase
-    (scalarExtensionSubspaceOrderIso (E := V) σ B)).quotientOfMeasurableBase
+  let U := ((V.scalarExtension (L := L)).restrictOfNormMeasurability B
+   ).quotientOfNormMeasurability (T.comap B.subtype)
+  let W := ((V.scalarExtension (L := M)).restrictOfNormMeasurability
+    (scalarExtensionSubspaceOrderIso (E := V) σ B)).quotientOfNormMeasurability
       ((scalarExtensionSubspaceOrderIso (E := V) σ T).comap
         (scalarExtensionSubspaceOrderIso (E := V) σ B).subtype)
   change W.degree (hN := ⟨hNM⟩) = U.degree (hN := ⟨hNL⟩)
-  let s := (U.determinantOfMeasurableBase (hN := ⟨hNL⟩)).lineGenerator
-    (hV := (U.determinantOfMeasurableBase_isLine (hN := ⟨hNL⟩)))
+  let s := (U.determinantOfNormMeasurability (hN := ⟨hNL⟩)).lineGenerator
+    (hV := (U.determinantOfNormMeasurability_isLine (hN := ⟨hNL⟩)))
   let d := scalarExtensionSubquotientDeterminantEquiv σ B T
   have hd : d s.val ≠ 0 := by
     intro h

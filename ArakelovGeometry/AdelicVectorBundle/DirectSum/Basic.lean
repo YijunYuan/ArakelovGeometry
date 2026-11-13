@@ -241,12 +241,12 @@ theorem maxDirectSum_norm_pair (ω : S.Ω)
 
 /-- It suffices for the profiles to agree with the max shape on `[0,1]`
 at non-Archimedean places; their extensions to the real line are irrelevant. -/
-theorem IsUltrametric.directSum_of_profile_eq_max
+theorem IsUltrametricAtFinitePlaces.directSum_of_profile_eq_max
     {ξ : NormFamily S E} {η : NormFamily S F}
-    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric) (ψ : S.Ω → NormShape)
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (hη : η.IsUltrametricAtFinitePlaces) (ψ : S.Ω → NormShape)
     (hψ : ∀ ω ∈ S.Ωfin,
       Set.EqOn (ψ ω).toFun NormShape.maxShape.toFun (Set.Icc (0 : ℝ) 1)) :
-    (ξ.directSum η ψ).IsUltrametric := by
+    (ξ.directSum η ψ).IsUltrametricAtFinitePlaces := by
   constructor
   intro ω hω z t
   have hshape {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
@@ -260,18 +260,19 @@ theorem IsUltrametric.directSum_of_profile_eq_max
     map_add, Prod.fst_add, Prod.snd_add] using h
 
 /-- Max shapes at the non-Archimedean places preserve ultrametricity. -/
-theorem IsUltrametric.directSum {ξ : NormFamily S E} {η : NormFamily S F}
-    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric) (ψ : S.Ω → NormShape)
+theorem IsUltrametricAtFinitePlaces.directSum {ξ : NormFamily S E} {η : NormFamily S F}
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (hη : η.IsUltrametricAtFinitePlaces) (ψ : S.Ω → NormShape)
     (hψ : ∀ ω ∈ S.Ωfin, ψ ω = NormShape.maxShape) :
-    (ξ.directSum η ψ).IsUltrametric := by
+    (ξ.directSum η ψ).IsUltrametricAtFinitePlaces := by
   apply hξ.directSum_of_profile_eq_max hη ψ
   intro ω hω
   rw [hψ ω hω]
   exact fun _ _ ↦ rfl
 
 /-- The max direct sum of ultrametric norm families is ultrametric. -/
-theorem IsUltrametric.maxDirectSum {ξ : NormFamily S E} {η : NormFamily S F}
-    (hξ : ξ.IsUltrametric) (hη : η.IsUltrametric) : (ξ.maxDirectSum η).IsUltrametric :=
+theorem IsUltrametricAtFinitePlaces.maxDirectSum {ξ : NormFamily S E} {η : NormFamily S F}
+    (hξ : ξ.IsUltrametricAtFinitePlaces)
+      (hη : η.IsUltrametricAtFinitePlaces) : (ξ.maxDirectSum η).IsUltrametricAtFinitePlaces :=
   hξ.directSum hη (fun _ ↦ NormShape.maxShape) (fun _ _ ↦ rfl)
 
 /-- When the second space is zero-dimensional, the norm is the first norm. -/

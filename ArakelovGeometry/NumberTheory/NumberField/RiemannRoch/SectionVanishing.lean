@@ -31,7 +31,7 @@ variable {K E : Type*} [Field K] {S : AdelicStructure K} [S.IsProper]
 contradicting negative actual maximal slope. -/
 theorem effectiveSections_eq_singleton_of_maximalSlope_neg
     (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (hneg : V.maximalSlope < 0) : V.toNormFamily.effectiveSections = {0} := by
   ext s
@@ -58,17 +58,17 @@ theorem effectiveSections_eq_singleton_of_maximalSlope_neg
 so all actual effective sections come from the literal restricted subspace. -/
 theorem effectiveSections_eq_image_restrict_of_quotient_maximalSlope_neg
     (V : AdelicVectorBundle S) (U : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
-    (hneg : (V.quotientOfMeasurableBase U).maximalSlope < 0) :
+    (hneg : (V.quotientOfNormMeasurability U).maximalSlope < 0) :
     V.toNormFamily.effectiveSections =
-      U.subtype '' (V.restrictOfMeasurableBase U).toNormFamily.effectiveSections := by
-  have hQ := (V.quotientOfMeasurableBase U).effectiveSections_eq_singleton_of_maximalSlope_neg
+      U.subtype '' (V.restrictOfNormMeasurability U).toNormFamily.effectiveSections := by
+  have hQ := (V.quotientOfNormMeasurability U).effectiveSections_eq_singleton_of_maximalSlope_neg
     hneg
   ext x
   constructor
   · intro hx
-    have hxQ : U.mkQ x ∈ (V.quotientOfMeasurableBase U).toNormFamily.effectiveSections := by
+    have hxQ : U.mkQ x ∈ (V.quotientOfNormMeasurability U).toNormFamily.effectiveSections := by
       intro ω
       change (V.toNormFamily.quotient U).norm ω (1 ⊗ₜ[K] U.mkQ x) ≤ 1
       have h := (V.toNormFamily.quotient_norm_mk_le U ω (1 ⊗ₜ[K] x)).trans (hx ω)

@@ -90,19 +90,20 @@ theorem positiveDegree_hermitianScalarExtension_of_isAlgClosed
   let hLH := V.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩)
   change W.toNormFamily.IsHermitian (hS := ⟨hLN⟩) at hLH
   calc
-    _ = ((W.restrictOfMeasurableBase (W.hermitianHNFiltration (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
+    _ = ((W.restrictOfNormMeasurability (W.hermitianHNFiltration (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
         (hV := hLH) 0) (hS := ⟨hLS⟩)).degree
         (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) : EReal) :=
       W.positiveDegree_eq_degree_restrict_hermitianHNFiltration_zero (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
           (hV := hLH)
-    _ = ((W.restrictOfMeasurableBase
+    _ = ((W.restrictOfNormMeasurability
         ((V.hermitianHNFiltration 0).baseChange L) (hS := ⟨hLS⟩)).degree
           (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) : EReal) :=
       congrArg (fun U : Submodule L (L ⊗[K] V) ↦
-        ((W.restrictOfMeasurableBase U (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) : EReal))
+        ((W.restrictOfNormMeasurability U (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩)
+          (hN := ⟨hLN⟩) : EReal))
           (V.hermitianHNFiltration_baseChange_hermitianScalarExtension_of_isAlgClosed
              0).symm
-    _ = ((V.restrictOfMeasurableBase
+    _ = ((V.restrictOfNormMeasurability
         (V.hermitianHNFiltration 0)).degree
           : EReal) :=
       congrArg (fun d : ℝ ↦ (d : EReal))
@@ -120,17 +121,17 @@ theorem positiveDegree_quotient_hermitianScalarExtension_of_isAlgClosed
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
-    (W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).positiveDegree (hS := ⟨hLS⟩)
+    (W.quotientOfNormMeasurability (U.baseChange L) (hS := ⟨hLS⟩)).positiveDegree (hS := ⟨hLS⟩)
         (hN := ⟨hLN⟩) =
-      (V.quotientOfMeasurableBase U).positiveDegree := by
+      (V.quotientOfNormMeasurability U).positiveDegree := by
   intro hLN hLS W
-  let Q := V.quotientOfMeasurableBase U
+  let Q := V.quotientOfNormMeasurability U
   let Qext := Q.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩) (hV := (hH.quotient U))
   have he : Qext.positiveDegree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
-      (W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).positiveDegree (hS := ⟨hLS⟩)
+      (W.quotientOfNormMeasurability (U.baseChange L) (hS := ⟨hLS⟩)).positiveDegree (hS := ⟨hLS⟩)
           (hN := ⟨hLN⟩) :=
     Qext.positiveDegree_eq_of_completed_isometry
-      (W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩))
+      (W.quotientOfNormMeasurability (U.baseChange L) (hS := ⟨hLS⟩))
       (tensorQuotientBaseChangeEquiv (L := L) U) (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
       (V.toNormFamily.hermitianScalarExtension_quotient_norm_eq (hLN := ⟨hLN⟩) U)
   exact he.symm.trans

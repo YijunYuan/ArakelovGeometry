@@ -54,7 +54,7 @@ abbrev ordinaryScalarExtension (V : AdelicVectorBundle S)
         let := hd
         exact (V.scalarExtensionOfCountableDiscreteBase (L := L)).isMeasurable
       · let := hm
-        exact (V.toNormFamily.algebraicScalarBundleOfPositiveAtoms (hpos := ⟨hp⟩)
+        exact (V.toNormFamily.algebraicScalarBundleOfPositiveSingletons (hpos := ⟨hp⟩)
             (hS := ⟨hf⟩)).isMeasurable
     dual_isMeasurable := by
       rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
@@ -63,7 +63,7 @@ abbrev ordinaryScalarExtension (V : AdelicVectorBundle S)
         let := hd
         exact (V.scalarExtensionOfCountableDiscreteBase (L := L)).dual_isMeasurable
       · let := hm
-        exact (V.toNormFamily.algebraicScalarBundleOfPositiveAtoms
+        exact (V.toNormFamily.algebraicScalarBundleOfPositiveSingletons
           (hpos := ⟨hp⟩) (hS := ⟨hf⟩)).dual_isMeasurable
     isDominated := by
       exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
@@ -142,9 +142,9 @@ theorem ordinaryScalarExtension_eq_positiveAtoms [MeasurableSingletonClass S.Ω]
     (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
-    [S.HasPositiveAtoms] [S.HasOnlyFinitePlaces] :
+    [S.HasPositiveSingletons] [S.HasOnlyFinitePlaces] :
     V.ordinaryScalarExtension (L := L) =
-      V.toNormFamily.algebraicScalarBundleOfPositiveAtoms := rfl
+      V.toNormFamily.algebraicScalarBundleOfPositiveSingletons := rfl
 
 /-- Actual rational sections gain degree in every produced regularity branch. -/
 theorem vectorDegree_le_ordinaryScalarExtension (V : AdelicVectorBundle S)

@@ -576,11 +576,12 @@ theorem squareNorm_vectorDegree_le_zero (x : {x : RationalPlane // x ≠ 0}) :
 /-- All actual rational square lines have nonpositive Arakelov degree. -/
 theorem squareNorm_degree_restrict_le_zero (U : Submodule ℚ RationalPlane)
     (hr : Module.finrank ℚ U = 1) :
-    (squareNorm.restrictOfMeasurableBase U
+    (squareNorm.restrictOfNormMeasurability U
         (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)).degree
       (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
           (hN := ⟨rationalAdelicStructure_isRCLike⟩) ≤ 0 := by
-  let V := squareNorm.restrictOfMeasurableBase U (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
+  let V :=
+    squareNorm.restrictOfNormMeasurability U (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
   let x := V.lineGenerator (hV := ⟨hr⟩)
   have hx : (x.val : RationalPlane) ≠ 0 := by
     intro h
@@ -630,11 +631,12 @@ private theorem squareQuotient_dual_coord_le (U : Submodule ℚ RationalPlane)
 /-- Every actual rational quotient line of the square has nonnegative degree. -/
 theorem squareNorm_degree_quotient_nonneg (U : Submodule ℚ RationalPlane)
     (hr : Module.finrank ℚ (RationalPlane ⧸ U) = 1) :
-    0 ≤ (squareNorm.quotientOfMeasurableBase U
+    0 ≤ (squareNorm.quotientOfNormMeasurability U
       (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)).degree
         (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
             (hN := ⟨rationalAdelicStructure_isRCLike⟩) := by
-  let Q := squareNorm.quotientOfMeasurableBase U (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
+  let Q :=
+    squareNorm.quotientOfNormMeasurability U (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
   let z := Q.lineGenerator (hV := ⟨hr⟩)
   obtain ⟨ℓ, he⟩ := Module.Projective.exists_dual_eq_one ℚ z.property
   let f := ℓ.comp U.mkQ
@@ -659,7 +661,7 @@ theorem squareNorm_degree_quotient_nonneg (U : Submodule ℚ RationalPlane)
     exact Real.log_le_log (rationalAdelicStructure.ϕ ω |>.pos hi)
       (squareQuotient_dual_coord_le U ℓ i ω)
   have hm := integral_mono (rationalAdelicStructure.integrable_log _ hi)
-    ((Q.dualOfMeasurableBase (hS := ⟨(Or.inl
+    ((Q.dualOfNormMeasurability (hS := ⟨(Or.inl
         rationalAdelicStructure_discrete)⟩)).integrable_logNorm ℓ)
     hb
   rw [AdelicStructure.IsProper.product_formula _ hi] at hm
@@ -681,7 +683,7 @@ theorem squareCoordinateLine_finrank (i : Fin 2) :
 
 /-- The actual restricted degree of either coordinate line is zero. -/
 theorem squareNorm_degree_coordinateLine (i : Fin 2) :
-    (squareNorm.restrictOfMeasurableBase (squareCoordinateLine i)
+    (squareNorm.restrictOfNormMeasurability (squareCoordinateLine i)
       (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)).degree
         (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
             (hN := ⟨rationalAdelicStructure_isRCLike⟩) = 0 := by
@@ -690,7 +692,8 @@ theorem squareNorm_degree_coordinateLine (i : Fin 2) :
   have hx : x ≠ 0 := by
     intro h
     exact squareBasis.ne_zero i (congrArg Subtype.val h)
-  let V := squareNorm.restrictOfMeasurableBase U (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
+  let V :=
+    squareNorm.restrictOfNormMeasurability U (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
   rw [squareLineDegreeFormula V (squareCoordinateLine_finrank i) x hx]
   have he : V.toNormFamily.logNorm x = 0 := by
     funext ω
@@ -778,7 +781,7 @@ theorem squareNorm_coordinateQuotient_norm_generator (i : Fin 2)
 
 /-- The actual degree of either coordinate quotient is zero. -/
 theorem squareNorm_degree_coordinateQuotient (i : Fin 2) :
-    (squareNorm.quotientOfMeasurableBase (squareCoordinateKernel i)
+    (squareNorm.quotientOfNormMeasurability (squareCoordinateKernel i)
       (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)).degree
         (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
             (hN := ⟨rationalAdelicStructure_isRCLike⟩) = 0 := by
@@ -794,7 +797,8 @@ theorem squareNorm_degree_coordinateQuotient (i : Fin 2) :
       simp [Module.Basis.coord_apply, Module.Basis.repr_self]
     rw [h, map_zero] at he
     exact zero_ne_one he
-  let Q := squareNorm.quotientOfMeasurableBase U (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
+  let Q :=
+    squareNorm.quotientOfNormMeasurability U (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
   rw [squareLineDegreeFormula Q (squareCoordinateQuotient_finrank i) x hx]
   have he : Q.toNormFamily.logNorm x = 0 := by
     funext ω
@@ -858,12 +862,12 @@ theorem squareNorm_minimalSlope :
     change Module.finrank ℚ (RationalPlane ⧸ U) + Module.finrank ℚ U = 2 at hdim
     change 0 < Module.finrank ℚ (RationalPlane ⧸ U) at hU
     by_cases hr : Module.finrank ℚ (RationalPlane ⧸ U) = 1
-    · have hm : 0 ≤ (squareNorm.quotientOfMeasurableBase U (hS := ⟨hS⟩)).slope
+    · have hm : 0 ≤ (squareNorm.quotientOfNormMeasurability U (hS := ⟨hS⟩)).slope
           (hS := ⟨hS⟩) (hN := ⟨rationalAdelicStructure_isRCLike⟩) := by
         rw [AdelicVectorBundle.slope_eq_degree_of_finrank_one _ hr]
         exact squareNorm_degree_quotient_nonneg U hr
       exact (EReal.coe_le_coe hm).trans
-        ((squareNorm.quotientOfMeasurableBase U (hS := ⟨hS⟩)).slope_le_maximalSlope
+        ((squareNorm.quotientOfNormMeasurability U (hS := ⟨hS⟩)).slope_le_maximalSlope
           (hS := ⟨hS⟩) (hN := ⟨rationalAdelicStructure_isRCLike⟩) hU)
     · have hz : U = ⊥ := Submodule.finrank_eq_zero.mp (by omega)
       rw [hz, squareNorm.maximalSlope_quotient_bot, squareNorm_maximalSlope]
@@ -873,7 +877,7 @@ theorem squareNorm_minimalSlope :
 /-- Every nonzero actual square subspace has minimal slope at most zero. -/
 theorem squareNorm_minimalSlope_restrict_le_zero (U : Submodule ℚ RationalPlane)
     (hU : 0 < Module.finrank ℚ U) :
-    (squareNorm.restrictOfMeasurableBase U
+    (squareNorm.restrictOfNormMeasurability U
         (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)).minimalSlope
       (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
           (hN := ⟨rationalAdelicStructure_isRCLike⟩) ≤ 0 := by
@@ -883,7 +887,7 @@ theorem squareNorm_minimalSlope_restrict_le_zero (U : Submodule ℚ RationalPlan
   have hle := U.finrank_le
   rw [squareNorm_finrank] at hle
   by_cases hr : Module.finrank ℚ U = 1
-  · have h := (squareNorm.restrictOfMeasurableBase U (hS := ⟨hS⟩)).minimalSlope_le_slope
+  · have h := (squareNorm.restrictOfNormMeasurability U (hS := ⟨hS⟩)).minimalSlope_le_slope
       (hS := ⟨hS⟩) (hN := ⟨rationalAdelicStructure_isRCLike⟩) hU
     rw [AdelicVectorBundle.slope_eq_degree_of_finrank_one _ hr] at h
     exact h.trans (EReal.coe_le_coe (squareNorm_degree_restrict_le_zero U hr))
@@ -894,67 +898,67 @@ theorem squareNorm_minimalSlope_restrict_le_zero (U : Submodule ℚ RationalPlan
 
 
 /-- The genuine general filtration of the square has its sole threshold at zero. -/
-theorem squareNorm_generalHNFiltration (t : ℝ) :
-    squareNorm.generalHNFiltration (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
+theorem squareNorm_hnFiltration (t : ℝ) :
+    squareNorm.hnFiltration (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
       (hN := ⟨rationalAdelicStructure_isRCLike⟩) t = if t ≤ 0 then ⊤ else ⊥ := by
   let hS : DiscreteMeasurableSpace rationalAdelicStructure.Ω ∨
       rationalAdelicStructure.HasCommonCountableDenseSubfield :=
     Or.inl rationalAdelicStructure_discrete
   by_cases ht : t ≤ 0
   · rw [ite_eq_left ht]
-    apply squareNorm.generalHNFiltration_eq_top_of_le_minimalSlope
+    apply squareNorm.hnFiltration_eq_top_of_le_minimalSlope
     rw [squareNorm_minimalSlope]
     exact EReal.coe_le_coe ht
   · rw [ite_eq_right ht]
     by_contra hz
-    have hp : 0 < Module.finrank ℚ (squareNorm.generalHNFiltration
+    have hp : 0 < Module.finrank ℚ (squareNorm.hnFiltration
         (hS := ⟨hS⟩) (hN := ⟨rationalAdelicStructure_isRCLike⟩) t) :=
       Nat.pos_of_ne_zero (fun h ↦ hz (Submodule.finrank_eq_zero.mp h))
-    have hm := squareNorm.le_minimalSlope_restrict_generalHNFiltration
+    have hm := squareNorm.le_minimalSlope_restrict_hnFiltration
       (hS := ⟨hS⟩) (hN := ⟨rationalAdelicStructure_isRCLike⟩) t
     have hb := squareNorm_minimalSlope_restrict_le_zero _ hp
     have he : (t : EReal) ≤ (0 : EReal) := hm.trans hb
     exact ht (EReal.coe_le_coe_iff.mp he)
 
 /-- Every genuine general ordered slope of the square is zero. -/
-theorem squareNorm_generalHNOrderedSlope (j : Fin (Module.finrank ℚ RationalPlane)) :
-    squareNorm.generalHNOrderedSlope (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
+theorem squareNorm_hnSlope (j : Fin (Module.finrank ℚ RationalPlane)) :
+    squareNorm.hnSlope (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
       (hN := ⟨rationalAdelicStructure_isRCLike⟩) j = 0 := by
   let hS : DiscreteMeasurableSpace rationalAdelicStructure.Ω ∨
       rationalAdelicStructure.HasCommonCountableDenseSubfield :=
     Or.inl rationalAdelicStructure_discrete
   apply le_antisymm
   · by_contra h
-    have hp : 0 < squareNorm.generalHNOrderedSlope (hS := ⟨hS⟩)
+    have hp : 0 < squareNorm.hnSlope (hS := ⟨hS⟩)
         (hN := ⟨rationalAdelicStructure_isRCLike⟩) j :=
       lt_of_not_ge h
-    have hj := squareNorm.lt_finrank_generalHNFiltration_orderedSlope
+    have hj := squareNorm.lt_finrank_hnFiltration_orderedSlope
       (hS := ⟨hS⟩) (hN := ⟨rationalAdelicStructure_isRCLike⟩) j
-    rw [squareNorm_generalHNFiltration, ite_eq_right (not_le.mpr hp), finrank_bot] at hj
+    rw [squareNorm_hnFiltration, ite_eq_right (not_le.mpr hp), finrank_bot] at hj
     exact Nat.not_lt_zero _ hj
-  · have h := squareNorm.minimalSlope_le_generalHNOrderedSlope
+  · have h := squareNorm.minimalSlope_le_hnSlope
       (hS := ⟨hS⟩) (hN := ⟨rationalAdelicStructure_isRCLike⟩) j
     rw [squareNorm_minimalSlope] at h
     exact EReal.coe_le_coe_iff.mp h
 
 /-- Source strictness: every square ordered slope is below its positive maximal slope. -/
-theorem squareNorm_generalHNOrderedSlope_lt_maximalSlope
+theorem squareNorm_hnSlope_lt_maximalSlope
     (j : Fin (Module.finrank ℚ RationalPlane)) :
-    (squareNorm.generalHNOrderedSlope (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
+    (squareNorm.hnSlope (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
       (hN := ⟨rationalAdelicStructure_isRCLike⟩) j : EReal) <
         squareNorm.maximalSlope (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
           (hN := ⟨rationalAdelicStructure_isRCLike⟩) := by
-  rw [squareNorm_generalHNOrderedSlope, squareNorm_maximalSlope]
+  rw [squareNorm_hnSlope, squareNorm_maximalSlope]
   exact EReal.coe_lt_coe (div_pos (Real.log_pos (by norm_num)) (by norm_num))
 
 /-- Source distinction: the sum of actual ordered slopes is strictly below actual degree. -/
-theorem squareNorm_sum_generalHNOrderedSlope_lt_degree :
+theorem squareNorm_sum_hnSlope_lt_degree :
     (∑ j : Fin (Module.finrank ℚ RationalPlane),
-      squareNorm.generalHNOrderedSlope (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
+      squareNorm.hnSlope (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
         (hN := ⟨rationalAdelicStructure_isRCLike⟩) j) <
           squareNorm.degree (hS := ⟨(Or.inl rationalAdelicStructure_discrete)⟩)
             (hN := ⟨rationalAdelicStructure_isRCLike⟩) := by
-  simp only [squareNorm_generalHNOrderedSlope, Finset.sum_const_zero, squareNorm_degree]
+  simp only [squareNorm_hnSlope, Finset.sum_const_zero, squareNorm_degree]
   exact Real.log_pos (by norm_num)
 
 end

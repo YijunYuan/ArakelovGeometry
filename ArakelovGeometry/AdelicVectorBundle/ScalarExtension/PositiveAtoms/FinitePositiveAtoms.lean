@@ -61,7 +61,7 @@ theorem fibreProbabilityMeasure_singleton_pos_of_finiteDimensional
 /-- Strictly positive measurable base atoms stay strictly positive at every
 actual finite algebraic extension place, including inseparable stages. -/
 theorem singleton_pos_algebraicExtension_of_finiteDimensional
-    [MeasurableSingletonClass S.Ω] [hpos : S.HasPositiveAtoms]
+    [MeasurableSingletonClass S.Ω] [hpos : S.HasPositiveSingletons]
     (x : ParameterSpaceExtension S L) : 0 < measure S L {x} := by
   classical
   let : MeasurableSpace (ParameterSpaceExtension S L) := projectiveMeasurableSpace S L
@@ -128,10 +128,10 @@ end ArakelovGeometry.AdelicStructure.Algebraic
 
 namespace ArakelovGeometry.AdelicStructure
 
-instance hasPositiveAtoms_algebraicExtension_finite
+instance hasPositiveSingletons_algebraicExtension_finite
     {K L : Type*} [Field K] [Field L] [Algebra K L] [FiniteDimensional K L]
-    (S : AdelicStructure K) [MeasurableSingletonClass S.Ω] [S.HasPositiveAtoms] :
-    (S.algebraicExtension L).HasPositiveAtoms :=
+    (S : AdelicStructure K) [MeasurableSingletonClass S.Ω] [S.HasPositiveSingletons] :
+    (S.algebraicExtension L).HasPositiveSingletons :=
   ⟨Algebraic.singleton_pos_algebraicExtension_of_finiteDimensional S⟩
 
 end ArakelovGeometry.AdelicStructure

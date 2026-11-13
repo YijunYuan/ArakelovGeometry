@@ -53,9 +53,9 @@ theorem truncatedFamily_norm (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (hc1 : c �
   split_ifs <;> rfl
 
 /-- The actual finite truncation is ultrametric. -/
-theorem truncatedFamily_isUltrametric (s : Finset ℚ) (c : ℝ)
+theorem truncatedFamily_isUltrametricAtFinitePlaces (s : Finset ℚ) (c : ℝ)
     (hc : 0 < c) (hc1 : c ≤ 1) :
-    (truncatedFamily s c hc hc1).IsUltrametric := by
+    (truncatedFamily s c hc hc1).IsUltrametricAtFinitePlaces := by
   constructor
   classical
   intro a ha x y
@@ -63,7 +63,7 @@ theorem truncatedFamily_isUltrametric (s : Finset ℚ) (c : ℝ)
     truncatedFamily_norm s c hc hc1 a x, truncatedFamily_norm s c hc hc1 a y]
   by_cases hs : a ∈ s
   · simp only [ite_eq_left hs]
-    exact normFamily_isUltrametric c hc hc1 a ha x y
+    exact normFamily_isUltrametricAtFinitePlaces c hc hc1 a ha x y
   · simp only [ite_eq_right hs]
     by_cases hx : x = 0
     · rw [hx, zero_add]

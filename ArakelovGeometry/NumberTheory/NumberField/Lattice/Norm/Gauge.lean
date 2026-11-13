@@ -41,7 +41,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 lattice in the original actual completed fibre. -/
 theorem completedUnitBallModule_eq_completedBasisLattice
     {S : AdelicStructure K} (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     ξ.completedUnitBallModule ω hω = completedBasisLattice S
       (ξ.rationalLocalUnitBallGenericBasis ω hω hnt) ω hω := by
   let N := ξ.completedUnitBallModule ω hω
@@ -64,7 +64,7 @@ theorem completedUnitBallGauge_eq_basisNorm
     (ω : (normalizedNumberFieldAdelicStructure K).Ω)
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin)
     (hnt : ((normalizedNumberFieldAdelicStructure K).ϕ ω).IsNontrivial)
-    [hξ : ξ.IsUltrametric]
+    [hξ : ξ.IsUltrametricAtFinitePlaces]
     (z : ((normalizedNumberFieldAdelicStructure K).ϕ ω).Completion ⊗[K] E) :
     completedUnitBallGauge ξ ω z =
       (ofBasis (normalizedNumberFieldAdelicStructure K) E
@@ -75,7 +75,7 @@ theorem completedUnitBallGauge_eq_basisNorm
   exact scalarLatticeGauge_completedBasisLattice _ ω hω hnt z
 
 variable (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-  [hξ : ξ.IsUltrametric]
+  [hξ : ξ.IsUltrametricAtFinitePlaces]
 
 /-- Finite completed ball gauges and original infinite norms on the same
 actual normalized number-field fibres. -/
@@ -107,7 +107,8 @@ theorem latticeGaugeFamily_norm_not_finite
   change (if hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin then _ else _) = _
   rw [dite_eq_right hω]
 
-theorem latticeGaugeFamily_isUltrametric : (ξ.latticeGaugeFamily).IsUltrametric := by
+theorem latticeGaugeFamily_isUltrametricAtFinitePlaces
+    : (ξ.latticeGaugeFamily).IsUltrametricAtFinitePlaces := by
   constructor
   intro ω hω x y
   let b := ξ.rationalLocalUnitBallGenericBasis ω hω
@@ -120,7 +121,7 @@ theorem latticeGaugeFamily_isUltrametric : (ξ.latticeGaugeFamily).IsUltrametric
     dsimp only [latticeGaugeFamily]
     rw [dite_eq_left hω]
   simp only [hn]
-  exact ofBasisMixed_isUltrametric b ω hω x y
+  exact ofBasisMixed_isUltrametricAtFinitePlaces b ω hω x y
 
 theorem latticeGaugeFamily_completedUnitBall_eq
     (ω : (normalizedNumberFieldAdelicStructure K).Ω)
@@ -153,7 +154,7 @@ theorem latticeGaugeFamily_globalUnitBall_eq :
 
 theorem latticeGaugeFamily_globalUnitBallModule_eq :
     (ξ.latticeGaugeFamily).globalUnitBallModule
-      (hξ := (ξ.latticeGaugeFamily_isUltrametric)) = ξ.globalUnitBallModule := by
+      (hξ := (ξ.latticeGaugeFamily_isUltrametricAtFinitePlaces)) = ξ.globalUnitBallModule := by
   ext x
   change x ∈ (ξ.latticeGaugeFamily).globalUnitBall ↔ x ∈ ξ.globalUnitBall
   rw [ξ.latticeGaugeFamily_globalUnitBall_eq]

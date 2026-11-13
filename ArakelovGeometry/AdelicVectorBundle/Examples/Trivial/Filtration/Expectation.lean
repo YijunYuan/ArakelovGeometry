@@ -32,9 +32,9 @@ variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
 are literal norm balls. Every quotient carries the actual induced norm. -/
 theorem degree_eq_sum_trivialFiltration_flag
     (V : AdelicVectorBundle (singleTrivialPlace K))
-    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
-    [hV : V.toNormFamily.IsUltrametric]
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
     {n : ℕ} (U : Fin (n + 1) → Submodule K V) (a : Fin n → ℝ)
     (hU : Monotone U) (hz : U 0 = ⊥) (ht : U (Fin.last n) = ⊤)
     (hlevel : ∀ i, V.toNormFamily.trivialFiltration (a i) = U i.succ)
@@ -50,7 +50,7 @@ theorem degree_eq_sum_trivialFiltration_flag
   apply Finset.sum_congr rfl
   intro i _
   have he := degree_eq_neg_finrank_mul_log_of_trivialSeminorm_eq_const
-      (V.flagQuotientOfMeasurableBase U i)
+      (V.flagQuotientOfNormMeasurability U i)
       (Real.exp_pos (-a i))
       (V.toNormFamily.trivialSeminorm_subquotient_eq_exp_neg_of_ball_endpoints
          (U i.castSucc) (U i.succ) (a i) (hlevel i) (hright i))
@@ -60,9 +60,9 @@ theorem degree_eq_sum_trivialFiltration_flag
 the intrinsic dimension-weighted sum of its literal graded quotients. -/
 theorem degree_eq_finsum_trivialFiltration
     (V : AdelicVectorBundle (singleTrivialPlace K))
-    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
-    [hV : V.toNormFamily.IsUltrametric] :
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] :
     V.degree = ∑ᶠ t : ℝ,
       t * (finrank K (Submodule.FiltrationGraded (V.toNormFamily.trivialFiltration) t) : ℝ) := by
   obtain ⟨n, U, a, hU, hz, ht, _, ha, _, hlevel, hright, hrec⟩ :=
@@ -74,9 +74,9 @@ theorem degree_eq_finsum_trivialFiltration
 /-- The intrinsic expectation is the existing slope, not a new arithmetic slope. -/
 theorem slope_eq_filtrationExpectation_trivialFiltration
     (V : AdelicVectorBundle (singleTrivialPlace K))
-    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
-    [hV : V.toNormFamily.IsUltrametric] :
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] :
     V.slope = Submodule.filtrationExpectation (V.toNormFamily.trivialFiltration) := by
   rw [slope, degree_eq_finsum_trivialFiltration V, Submodule.filtrationExpectation]
 
@@ -92,7 +92,7 @@ theorem finite_support_filtrationGraded (F : ℝ → Submodule K E)
 
 /-- The bundle attached to any source real filtration has its intrinsic expectation as slope. -/
 theorem slope_ofTrivialFiltration_eq_expectation
-    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     (F : ℝ → Submodule K E)
     (hF : Antitone F) (hbot : ∃ t, F t = ⊥) (htop : ∃ t, F t = ⊤)
@@ -101,15 +101,16 @@ theorem slope_ofTrivialFiltration_eq_expectation
       Submodule.filtrationExpectation F := by
   have he := slope_eq_filtrationExpectation_trivialFiltration
       (ofTrivialFiltration F hF hbot htop hleft)
-      (hV := (NormFamily.ofTrivialFiltration_isUltrametric F hF hbot htop hleft))
+      (hV := (NormFamily.ofTrivialFiltration_isUltrametricAtFinitePlaces F hF hbot htop hleft))
   have hrecover : (NormFamily.ofTrivialFiltration F hF hbot htop hleft).trivialFiltration
-      (hξ := (NormFamily.ofTrivialFiltration_isUltrametric F hF hbot htop hleft)) = F :=
+      (hξ := (NormFamily.ofTrivialFiltration_isUltrametricAtFinitePlaces F hF hbot htop hleft)) = F
+        :=
     funext (NormFamily.trivialFiltration_ofTrivialFiltration F hF hbot htop hleft)
   simpa only [ofTrivialFiltration_toNormFamily, hrecover] using he
 
 /-- Arbitrary adapted-basis weights compute the actual slope of the associated bundle. -/
 theorem slope_ofTrivialFiltration_eq_sum_weights
-    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     (F : ℝ → Submodule K E)
     (hF : Antitone F) (hbot : ∃ t, F t = ⊥) (htop : ∃ t, F t = ⊤)

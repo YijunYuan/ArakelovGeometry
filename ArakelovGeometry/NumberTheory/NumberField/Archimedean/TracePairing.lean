@@ -356,14 +356,14 @@ variable {K E : Type*} [Field K] [NumberField K]
 /-- The actual dominated pure global ball has precisely its real integral dual. -/
 def normalizedGlobalUnitBallIntegralRealDualEquiv
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    [hdom : ξ.IsDominated] [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
+    [hdom : ξ.IsDominated] [hξ : ξ.IsUltrametricAtFinitePlaces] [hpure : ξ.IsPureAtFinitePlaces] :
     integralTraceDual (ξ.globalUnitBallModule) ≃ₗ[ℤ]
       integralRealDual (ξ.globalUnitBallModule) :=
   let hm := hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure
   integralDiagonalEquiv (ξ.globalUnitBallModule) hm.1 hm.2.2
 
 theorem IsDominated.pure_normalizedGlobalUnitBall_integral_trace_dual_image
-    (hdom : ξ.IsDominated) (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
+    (hdom : ξ.IsDominated) (hξ : ξ.IsUltrametricAtFinitePlaces) (hpure : ξ.IsPureAtFinitePlaces) :
     ((integralTraceDual (ξ.globalUnitBallModule)).restrictScalars ℤ).map
       (originalTraceDualMap (K := K) (E := E)) =
         integralRealDual (ξ.globalUnitBallModule) :=
@@ -372,7 +372,7 @@ theorem IsDominated.pure_normalizedGlobalUnitBall_integral_trace_dual_image
 
 
 theorem IsDominated.pure_normalizedGlobalUnitBall_tracePairing_diagonal_image
-    (hdom : ξ.IsDominated) (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
+    (hdom : ξ.IsDominated) (hξ : ξ.IsUltrametricAtFinitePlaces) (hpure : ξ.IsPureAtFinitePlaces) :
     (diagonalLattice (integralTraceDual (ξ.globalUnitBallModule))).map
       ((tracePairing (K := K) (E := E)).restrictScalars ℤ) =
         integralRealDual (ξ.globalUnitBallModule) :=

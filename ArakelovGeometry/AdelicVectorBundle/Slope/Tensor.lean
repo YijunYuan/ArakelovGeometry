@@ -41,7 +41,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} {F : Type wF} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
   (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
 
 /-- The corrected mixed tensor mean slope comparison, with both rank guards. -/
@@ -105,11 +105,11 @@ subspaces with the maximal slope of the ambient mixed tensor bundle. -/
 theorem restrict_slope_add_restrict_slope_le_maximalSlope_mixedTensorPair
     (U : Submodule K V) (T : Submodule K W)
     (hU : 0 < Module.finrank K U) (hT : 0 < Module.finrank K T) :
-    ((V.restrictOfMeasurableBase U).slope : EReal) +
-      ((W.restrictOfMeasurableBase T).slope : EReal) ≤
+    ((V.restrictOfNormMeasurability U).slope : EReal) +
+      ((W.restrictOfNormMeasurability T).slope : EReal) ≤
         (V.mixedTensorPair W).maximalSlope := by
-  let P := V.restrictOfMeasurableBase U
-  let Q := W.restrictOfMeasurableBase T
+  let P := V.restrictOfNormMeasurability U
+  let Q := W.restrictOfNormMeasurability T
   let A := P.mixedTensorPair Q
   let B := V.mixedTensorPair W
   let f := TensorProduct.map U.subtype T.subtype
@@ -160,11 +160,11 @@ theorem restrict_slope_add_restrict_slope_le_maximalSlope_orthogonalTensorPair
     [hV : V.IsHermitian] [hW : W.IsHermitian]
     (U : Submodule K V) (T : Submodule K W)
     (hU : 0 < Module.finrank K U) (hT : 0 < Module.finrank K T) :
-    ((V.restrictOfMeasurableBase U).slope : EReal) +
-      ((W.restrictOfMeasurableBase T).slope : EReal) ≤
+    ((V.restrictOfNormMeasurability U).slope : EReal) +
+      ((W.restrictOfNormMeasurability T).slope : EReal) ≤
         (V ⊗ʰ W).maximalSlope := by
-  let P := V.restrictOfMeasurableBase U
-  let Q := W.restrictOfMeasurableBase T
+  let P := V.restrictOfNormMeasurability U
+  let Q := W.restrictOfNormMeasurability T
   have hP : P.IsHermitian := NormFamily.IsHermitian.restrict hV U
   have hQ : Q.IsHermitian := NormFamily.IsHermitian.restrict hW T
   let A := P.orthogonalTensorPair Q (hV := hP) (hW := hQ)

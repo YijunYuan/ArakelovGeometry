@@ -37,9 +37,9 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 
 /-- One produced countable base support works simultaneously for every
 algebraic extension and every vector of its actual completed fibre. -/
-theorem IsDominated.exists_scalarExtension_coordinate_exceptions_of_positive_atoms
+theorem IsDominated.exists_scalarExtension_coordinate_exceptions_of_pos_singletons
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E) (b : Module.Basis ι K E)
-    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveSingletons]
     (hfin : S.v S.Ωinf < ⊤) :
     ∃ H : S.Ω → ℝ, Integrable H S.v ∧ (∀ ω, 0 ≤ H ω) ∧
       (Function.support H).Countable ∧
@@ -97,7 +97,7 @@ theorem IsDominated.functionField_scalarExtension_coordinate_exceptions
           (ξ.scalarExtension (L := L)).norm x z =
             (ofBasisMixed ((AdelicStructure.functionFieldAdelicStructure k).algebraicExtension L)
               (L ⊗[RatFunc k] E) (b.baseChange L)).norm x z := by
-  apply IsDominated.exists_scalarExtension_coordinate_exceptions_of_positive_atoms ξ b hξ
+  apply IsDominated.exists_scalarExtension_coordinate_exceptions_of_pos_singletons ξ b hξ
   rw [AdelicStructure.functionField_Ωinf_eq_empty, measure_empty]
   exact ENNReal.zero_lt_top
 

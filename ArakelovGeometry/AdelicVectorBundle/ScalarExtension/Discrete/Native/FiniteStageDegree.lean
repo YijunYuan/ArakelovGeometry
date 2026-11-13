@@ -73,7 +73,7 @@ theorem degree_nativeRestrictionOfCountableDiscreteBase_finiteStage [S.IsProper]
         (hdet :=
           (V.scalarExtensionRestrictionOfCountableDiscreteBase_determinant_isMeasurable A))
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
-    ((V.scalarExtensionOfCountableDiscreteBase (L := F)).restrictOfMeasurableBase
+    ((V.scalarExtensionOfCountableDiscreteBase (L := F)).restrictOfNormMeasurability
       B).degree
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
@@ -90,7 +90,7 @@ theorem degree_nativeRestrictionOfCountableDiscreteBase_finiteStage [S.IsProper]
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L V
   let A := (B.baseChange L).map c.toLinearMap
   let e := (Submodule.toBaseChange.toLinearEquiv L B).trans (c.submoduleMap (B.baseChange L))
-  let B₀ := (V.scalarExtensionOfCountableDiscreteBase (L := F)).restrictOfMeasurableBase
+  let B₀ := (V.scalarExtensionOfCountableDiscreteBase (L := F)).restrictOfNormMeasurability
     B
   let W := NormFamily.toAdelicVectorBundle
     (((V.toNormFamily.scalarExtension (L := F)).restrict B).scalarExtension (L := L))
@@ -130,7 +130,7 @@ theorem degree_nativeQuotientOfCountableDiscreteBase_finiteStage [S.IsProper]
         (hdet :=
           (V.scalarExtensionQuotientOfCountableDiscreteBase_determinant_isMeasurable A))
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
-    ((V.scalarExtensionOfCountableDiscreteBase (L := F)).quotientOfMeasurableBase
+    ((V.scalarExtensionOfCountableDiscreteBase (L := F)).quotientOfNormMeasurability
       B).degree
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
@@ -147,7 +147,7 @@ theorem degree_nativeQuotientOfCountableDiscreteBase_finiteStage [S.IsProper]
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L V
   let A := (B.baseChange L).map c.toLinearMap
   let e := finiteStageQuotientEquiv (L := L) F B
-  let B₀ := (V.scalarExtensionOfCountableDiscreteBase (L := F)).quotientOfMeasurableBase
+  let B₀ := (V.scalarExtensionOfCountableDiscreteBase (L := F)).quotientOfNormMeasurability
     B
   let W := NormFamily.toAdelicVectorBundle
     (((V.toNormFamily.scalarExtension (L := F)).quotient B).scalarExtension (L := L))

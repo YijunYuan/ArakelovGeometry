@@ -33,10 +33,10 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 
 /-- The actual bidual family on the original rational space, with its
 measurability supplied by the exact base alternatives. -/
-noncomputable abbrev bidualOfMeasurableBase (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase] :
+noncomputable abbrev bidualOfNormMeasurability (V : AdelicVectorBundle S)
+    [hS : S.NormMeasurabilityHypotheses] :
     AdelicVectorBundle S :=
-  ((V.dualOfMeasurableBase).dualOfMeasurableBase).pullback
+  ((V.dualOfNormMeasurability).dualOfNormMeasurability).pullback
     (Module.Dual.eval K V) (Module.eval_apply_injective K) (hm := (by
       change (V.toNormFamily.dual.dual.pullback (Module.Dual.eval K V)
         (Module.eval_apply_injective K)).dual.IsMeasurable
@@ -44,30 +44,30 @@ noncomputable abbrev bidualOfMeasurableBase (V : AdelicVectorBundle S)
       exact V.dual_isMeasurable))
 
 @[simp]
-theorem bidualOfMeasurableBase_toNormFamily (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase] :
-    (V.bidualOfMeasurableBase).toNormFamily =
+theorem bidualOfNormMeasurability_toNormFamily (V : AdelicVectorBundle S)
+    [hS : S.NormMeasurabilityHypotheses] :
+    (V.bidualOfNormMeasurability).toNormFamily =
       V.toNormFamily.dual.dual.pullback (Module.Dual.eval K V)
         (Module.eval_apply_injective K) := rfl
 
 /-- The canonical bidual of any adelic bundle is strongly adelic. -/
-theorem bidualOfMeasurableBase_isStronglyAdelic (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+theorem bidualOfNormMeasurability_isStronglyAdelic (V : AdelicVectorBundle S)
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    (V.bidualOfMeasurableBase).IsStronglyAdelic :=
-  ((V.dualOfMeasurableBase).dualOfMeasurableBase_isStronglyAdelic).pullback
+    (V.bidualOfNormMeasurability).IsStronglyAdelic :=
+  ((V.dualOfNormMeasurability).dualOfNormMeasurability_isStronglyAdelic).pullback
     (Module.Dual.eval K V) (Module.eval_apply_injective K) _
 
 /-- Source equation(4.23), proved by equality of the actual completed
 projective determinant norms, with no ultrametricity assumption on the original. -/
-theorem degree_bidualOfMeasurableBase [S.IsProper] (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+theorem degree_bidualOfNormMeasurability [S.IsProper] (V : AdelicVectorBundle S)
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    (V.bidualOfMeasurableBase).degree = V.degree := by
-  let s := (V.determinantOfMeasurableBase).lineGenerator
-    (hV := (V.determinantOfMeasurableBase_isLine))
-  rw [(V.bidualOfMeasurableBase).degree_eq_neg_integral s,
-    V.degree_eq_neg_integral s, bidualOfMeasurableBase_toNormFamily,
+    (V.bidualOfNormMeasurability).degree = V.degree := by
+  let s := (V.determinantOfNormMeasurability).lineGenerator
+    (hV := (V.determinantOfNormMeasurability_isLine))
+  rw [(V.bidualOfNormMeasurability).degree_eq_neg_integral s,
+    V.degree_eq_neg_integral s, bidualOfNormMeasurability_toNormFamily,
     V.toNormFamily.determinant_dual_dual_pullback]
 
 end ArakelovGeometry.AdelicVectorBundle

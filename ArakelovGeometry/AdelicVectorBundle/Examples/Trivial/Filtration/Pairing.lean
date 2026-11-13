@@ -64,15 +64,15 @@ variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
 /-- The actual `F`-grade, carrying the norm induced from the specified bundle `V`. -/
 noncomputable abbrev filtrationGradedBundle (V : AdelicVectorBundle (singleTrivialPlace K))
     (F : ℝ → Submodule K V) (s : ℝ)
-    [hS : (singleTrivialPlace K).HasMeasurableBase] :
+    [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses] :
     AdelicVectorBundle (singleTrivialPlace K) :=
-  (V.restrictOfMeasurableBase (F s)).quotientOfMeasurableBase
+  (V.restrictOfNormMeasurability (F s)).quotientOfNormMeasurability
     ((filtrationRightLimit F s).comap (F s).subtype)
 
 variable (V : AdelicVectorBundle (singleTrivialPlace K))
-  [hS : (singleTrivialPlace K).HasMeasurableBase]
+  [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
-  [hV : V.toNormFamily.IsUltrametric]
+  [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
   (F : ℝ → Submodule K V)
 
 omit hN in
@@ -162,11 +162,13 @@ theorem filtrationPairing_eq_finsum_graded_degree (F : ℝ → Submodule K E)
   obtain ⟨b, a, c, hFa, hGc, _, _⟩ := NormFamily.exists_common_orthogonal_basis_ofTrivialFiltration
     F G hF hFbot hFtop hFleft hG hGbot hGtop hGleft
   have hrecover : (NormFamily.ofTrivialFiltration G hG hGbot hGtop hGleft).trivialFiltration
-      (hξ := (NormFamily.ofTrivialFiltration_isUltrametric G hG hGbot hGtop hGleft)) = G :=
+      (hξ := (NormFamily.ofTrivialFiltration_isUltrametricAtFinitePlaces G hG hGbot hGtop hGleft)) =
+        G :=
     funext (NormFamily.trivialFiltration_ofTrivialFiltration G hG hGbot hGtop hGleft)
   have he := filtrationPairing_eq_finsum_graded_degree_of_common_basis
     (ofTrivialFiltration G hG hGbot hGtop hGleft)
-    (hV := (NormFamily.ofTrivialFiltration_isUltrametric G hG hGbot hGtop hGleft)) F hF b a c hFa
+    (hV := (NormFamily.ofTrivialFiltration_isUltrametricAtFinitePlaces G hG hGbot hGtop hGleft)) F
+      hF b a c hFa
     (by simpa only [ofTrivialFiltration_toNormFamily, hrecover] using hGc)
   simpa only [ofTrivialFiltration_toNormFamily, hrecover] using he
 

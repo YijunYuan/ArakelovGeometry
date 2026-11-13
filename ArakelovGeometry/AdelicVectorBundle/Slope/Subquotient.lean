@@ -32,12 +32,12 @@ universe u w
 variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
 
 /-- The actual top restriction has the original minimum, including rank zero. -/
 theorem minimalSlope_restrict_top :
-    (V.restrictOfMeasurableBase ⊤).minimalSlope = V.minimalSlope := by
+    (V.restrictOfNormMeasurability ⊤).minimalSlope = V.minimalSlope := by
   apply minimalSlope_eq_of_completed_isometry _ _ Submodule.topEquiv
   intro ω z
   rfl
@@ -45,18 +45,18 @@ theorem minimalSlope_restrict_top :
 /-- Canonical nested restrictions have identical actual minimal slopes.
 The comparison is the completed norm identity for the canonical subtype equivalence. -/
 theorem minimalSlope_restrict_restrict (U W : Submodule K V) (hUW : U ≤ W) :
-    ((V.restrictOfMeasurableBase W).restrictOfMeasurableBase
+    ((V.restrictOfNormMeasurability W).restrictOfNormMeasurability
       (U.comap W.subtype)).minimalSlope =
-      (V.restrictOfMeasurableBase U).minimalSlope := by
+      (V.restrictOfNormMeasurability U).minimalSlope := by
   apply minimalSlope_eq_of_completed_isometry _ _ (Submodule.comapSubtypeEquivOfLe hUW)
   intro ω z
   exact (V.toNormFamily.restrict_restrict_norm_eq U W hUW ω z).symm
 
 /-- An actual completed quotient isometry transports the genuine minimum. -/
 theorem minimalSlope_quotient_restrict_range_eq (U A : Submodule K V) (hA : A ≤ U) :
-    ((V.restrictOfMeasurableBase U).quotientOfMeasurableBase
+    ((V.restrictOfNormMeasurability U).quotientOfNormMeasurability
       (A.mkQ.comp U.subtype).ker).minimalSlope =
-    ((V.quotientOfMeasurableBase A).restrictOfMeasurableBase
+    ((V.quotientOfNormMeasurability A).restrictOfNormMeasurability
       (A.mkQ.comp U.subtype).range).minimalSlope := by
   apply minimalSlope_eq_of_completed_isometry _ _ (A.mkQ.comp U.subtype).quotKerEquivRange
   intro ω z
@@ -65,13 +65,13 @@ theorem minimalSlope_quotient_restrict_range_eq (U A : Submodule K V) (hA : A �
 /-- The actual extension minimum bound on the genuine preimage of a quotient subspace. -/
 theorem min_minimalSlope_restrict_le_minimalSlope_preimage
     (A : Submodule K V) (G : Submodule K (V ⧸ A)) :
-    min ((V.restrictOfMeasurableBase A).minimalSlope)
-      (((V.quotientOfMeasurableBase A).restrictOfMeasurableBase G).minimalSlope) ≤
-    (V.restrictOfMeasurableBase (G.comap A.mkQ)).minimalSlope := by
+    min ((V.restrictOfNormMeasurability A).minimalSlope)
+      (((V.quotientOfNormMeasurability A).restrictOfNormMeasurability G).minimalSlope) ≤
+    (V.restrictOfNormMeasurability (G.comap A.mkQ)).minimalSlope := by
   let U := G.comap A.mkQ
   have hAU : A ≤ U := A.le_comap_mkQ G
-  let P := V.restrictOfMeasurableBase A
-  let W := V.restrictOfMeasurableBase U
+  let P := V.restrictOfNormMeasurability A
+  let W := V.restrictOfNormMeasurability U
   let f : A →ₗ[K] U := Submodule.inclusion hAU
   have hh : P.mapHeight W f ≤ 0 := by
     apply P.mapHeight_le_zero_of_completed_contraction W f
@@ -94,18 +94,18 @@ theorem min_minimalSlope_restrict_le_minimalSlope_preimage
   rw [LinearMap.ker_comp, Submodule.ker_mkQ] at hq
   have hQr := congrArg
     (fun J : Submodule K (V ⧸ A) ↦
-      ((V.quotientOfMeasurableBase A).restrictOfMeasurableBase J).minimalSlope)
+      ((V.quotientOfNormMeasurability A).restrictOfNormMeasurability J).minimalSlope)
     hRange
   have hfR : f.range = A.comap U.subtype := Submodule.range_inclusion A U hAU
   have hQf := congrArg
-    (fun J : Submodule K U ↦ (W.quotientOfMeasurableBase J).minimalSlope) hfR
+    (fun J : Submodule K U ↦ (W.quotientOfNormMeasurability J).minimalSlope) hfR
   rw [hQf.trans (hq.trans hQr)] at hExt
   exact (min_le_min hMin le_rfl).trans hExt
 
 /-- A subspace of a subspace has the same true minimum on its actual ambient image. -/
 theorem minimalSlope_restrict_map_subtype (B : Submodule K V) (G : Submodule K B) :
-    ((V.restrictOfMeasurableBase B).restrictOfMeasurableBase G).minimalSlope =
-      (V.restrictOfMeasurableBase (G.map B.subtype)).minimalSlope := by
+    ((V.restrictOfNormMeasurability B).restrictOfNormMeasurability G).minimalSlope =
+      (V.restrictOfNormMeasurability (G.map B.subtype)).minimalSlope := by
   have h := V.minimalSlope_restrict_restrict (G.map B.subtype) B
     (Submodule.map_subtype_le B G)
   rw [Submodule.comap_map_eq_of_injective B.subtype_injective G] at h
@@ -164,14 +164,14 @@ theorem minimalSlope_subquotient_restrict_range (A U B : Submodule K V)
     (hAU : A ≤ U) (hUB : U ≤ B) :
     let T := A.comap B.subtype
     let R := U.comap B.subtype
-    (((V.restrictOfMeasurableBase B).quotientOfMeasurableBase T).restrictOfMeasurableBase
+    (((V.restrictOfNormMeasurability B).quotientOfNormMeasurability T).restrictOfNormMeasurability
       (T.mkQ.comp R.subtype).range).minimalSlope =
-        ((V.restrictOfMeasurableBase U).quotientOfMeasurableBase
+        ((V.restrictOfNormMeasurability U).quotientOfNormMeasurability
           (A.comap U.subtype)).minimalSlope := by
   let T := A.comap B.subtype
   let R := U.comap B.subtype
   have hTR : T ≤ R := Submodule.comap_mono hAU
-  have hq := (V.restrictOfMeasurableBase B).minimalSlope_quotient_restrict_range_eq
+  have hq := (V.restrictOfNormMeasurability B).minimalSlope_quotient_restrict_range_eq
     R T hTR
   rw [LinearMap.ker_comp, Submodule.ker_mkQ] at hq
   change _ = _

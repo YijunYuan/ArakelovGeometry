@@ -165,7 +165,7 @@ variable {K E : Type*} [Field K] [NumberField K]
   {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
 
 theorem IsDominated.pure_globalBall_euclidean_discrete (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (hpure : ξ.IsPureAtFinitePlaces) :
     letI := euclideanNormedAddCommGroup ξ
     DiscreteTopology (diagonalLattice (ξ.globalUnitBallModule)) :=
   euclidean_discrete_diagonalLattice ξ _
@@ -174,7 +174,7 @@ theorem IsDominated.pure_globalBall_euclidean_discrete (hdom : ξ.IsDominated)
 
 open scoped Classical in
 theorem IsDominated.pure_globalBall_euclidean_isZLattice (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (hpure : ξ.IsPureAtFinitePlaces) :
     letI := euclideanNormedAddCommGroup ξ
     letI := euclideanNormedSpace ξ
     letI := hdom.pure_globalBall_euclidean_discrete hξ hpure

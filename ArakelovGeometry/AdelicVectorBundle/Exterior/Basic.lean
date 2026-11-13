@@ -79,8 +79,9 @@ theorem exteriorPower_norm_le (n : ℕ) (ω : S.Ω)
     (tensorToExterior K E n) (tensorToExterior_surjective K E n) ω x
 
 /-- Exterior-power norms are ultrametric at every non-Archimedean place. -/
-theorem exteriorPower_isUltrametric (n : ℕ) : (ξ.exteriorPower n).IsUltrametric :=
-  (mixedTensor_isUltrametric (fun _ : Fin n ↦ ξ)).pushforward
+theorem exteriorPower_isUltrametricAtFinitePlaces
+    (n : ℕ) : (ξ.exteriorPower n).IsUltrametricAtFinitePlaces :=
+  (mixedTensor_isUltrametricAtFinitePlaces (fun _ : Fin n ↦ ξ)).pushforward
     (tensorToExterior K E n) (tensorToExterior_surjective K E n)
 
 /-- Every decomposable exterior tensor is bounded by the product of its

@@ -60,7 +60,7 @@ variable {K : Type*} [Field K] {S : AdelicStructure K} [S.IsProper]
 target's actual largest destabilizer by its genuine restricted slope. -/
 theorem map_destabilizingSubspace_le_of_completed_isometry
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (hr : 0 < Module.finrank K V) (hrF : 0 < Module.finrank K W)
@@ -72,8 +72,8 @@ theorem map_destabilizingSubspace_le_of_completed_isometry
   have hp : 0 < Module.finrank K (D.map e.toLinearMap) := by
     rw [← (e.submoduleMap D).finrank_eq]
     exact V.destabilizingSubspace_finrank_pos hr
-  have hm : (V.restrictOfMeasurableBase D).slope =
-      (W.restrictOfMeasurableBase (D.map e.toLinearMap)).slope := by
+  have hm : (V.restrictOfNormMeasurability D).slope =
+      (W.restrictOfNormMeasurability (D.map e.toLinearMap)).slope := by
     apply slope_eq_of_completed_isometry _ _ (e.submoduleMap D)
     intro ω z
     exact V.toNormFamily.restrict_map_equiv_norm_eq W.toNormFamily e D ω (he ω) z
@@ -85,7 +85,7 @@ theorem map_destabilizingSubspace_le_of_completed_isometry
 /-- Actual completed isometries identify the actual largest destabilizers. -/
 theorem map_destabilizingSubspace_eq_of_completed_isometry
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (hr : 0 < Module.finrank K V) (hrF : 0 < Module.finrank K W)
@@ -139,8 +139,8 @@ theorem hermitianHNStep_baseChange_hermitianScalarExtension_of_finiteGalois
       apply hU
       apply (Submodule.baseChange_inj (A := L)).mp
       simpa only [Submodule.baseChange_top] using he
-    let Q := V.quotientOfMeasurableBase U
-    let QL := W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)
+    let Q := V.quotientOfNormMeasurability U
+    let QL := W.quotientOfNormMeasurability (U.baseChange L) (hS := ⟨hLS⟩)
     let hQL : QL.toNormFamily.IsHermitian (hS := ⟨hLN⟩) := hLH.quotient (U.baseChange L)
     let Qext := Q.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩) (hV := (hH.quotient U))
     let hQext := Q.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩) (hV := (hH.quotient U))
@@ -271,13 +271,13 @@ theorem maximalSlope_quotient_hermitianScalarExtension_of_finiteGalois
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
-    (W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).maximalSlope (hS := ⟨hLS⟩)
+    (W.quotientOfNormMeasurability (U.baseChange L) (hS := ⟨hLS⟩)).maximalSlope (hS := ⟨hLS⟩)
         (hN := ⟨hLN⟩) =
-      (V.quotientOfMeasurableBase U).maximalSlope := by
+      (V.quotientOfNormMeasurability U).maximalSlope := by
   intro hLN hLS W
-  let Q := V.quotientOfMeasurableBase U
+  let Q := V.quotientOfNormMeasurability U
   let Qext := Q.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩) (hV := (hH.quotient U))
-  let QL := W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)
+  let QL := W.quotientOfNormMeasurability (U.baseChange L) (hS := ⟨hLS⟩)
   have he : Qext.maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) = QL.maximalSlope (hS := ⟨hLS⟩)
       (hN := ⟨hLN⟩) :=
     Qext.maximalSlope_eq_of_completed_isometry QL

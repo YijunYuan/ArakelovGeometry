@@ -78,10 +78,10 @@ theorem destabilizingSubspace_baseChange_hermitianScalarExtension_of_finiteGaloi
       change 0 < Module.finrank L DL at hp
       rw [← hU, hdim] at hp
       exact hp
-    have hmU : ((V.restrictOfMeasurableBase U).slope
+    have hmU : ((V.restrictOfNormMeasurability U).slope
         : EReal) = V.maximalSlope := by
       calc
-        _ = ((W.restrictOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩)
+        _ = ((W.restrictOfNormMeasurability (U.baseChange L) (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩)
             (hN := ⟨hLN⟩) : EReal) := by
           rw [V.slope_restrict_hermitianScalarExtension_of_finiteDimensional
              U]

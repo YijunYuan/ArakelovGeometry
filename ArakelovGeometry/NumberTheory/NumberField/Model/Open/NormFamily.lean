@@ -194,7 +194,7 @@ theorem coherent_and_dominated_of_open_model [Module.Projective (regularFunction
 /-- Actual normalized Archimedean completions upgrade the original finite-ultrametric
 model conclusion to strong domination without an extra normalization hypothesis. -/
 theorem coherent_and_stronglyDominated_of_open_model [Module.Projective (regularFunctions U) M]
-    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametric] :
+    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     letI := coefficientFieldAlgebra U hU
     letI := coefficientModule U hU E
     letI := coefficientGenericScalarTower U hU E
@@ -234,7 +234,7 @@ coherence, domination, and strong domination of the original finite-ultrametric 
 theorem coherent_and_stronglyDominated_of_locallyFree_open_model
     (hfree : ∀ (I : Ideal (regularFunctions U)) (_hI : I.IsMaximal),
       Module.Free (Localization.AtPrime I) (LocalizedModule I.primeCompl M))
-    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametric] :
+    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     letI := coefficientFieldAlgebra U hU
     letI := coefficientModule U hU E
     letI := coefficientGenericScalarTower U hU E

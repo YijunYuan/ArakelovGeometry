@@ -86,7 +86,7 @@ variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
 
 /-- Restriction of the actual norm induces the inverse image of each literal ball. -/
 theorem trivialFiltration_restrict (ξ : NormFamily (singleTrivialPlace K) E)
-    [hξ : ξ.IsUltrametric] (U : Submodule K E) (t : ℝ) :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (U : Submodule K E) (t : ℝ) :
     (ξ.restrict U).trivialFiltration (hξ := (hξ.restrict U)) t =
       (ξ.trivialFiltration t).comap U.subtype := by
   classical
@@ -104,21 +104,22 @@ theorem trivialFiltration_subquotient_ofTrivialFiltration [FiniteDimensional K E
     (A B : Submodule K E) (t : ℝ) :
     (((ofTrivialFiltration R hR hbot htop hleft).restrict B).quotient
       (A.comap B.subtype)).trivialFiltration
-        (hξ := (((ofTrivialFiltration_isUltrametric R hR hbot htop hleft).restrict B).quotient
+        (hξ := (((ofTrivialFiltration_isUltrametricAtFinitePlaces R hR hbot htop hleft).restrict
+          B).quotient
           (A.comap B.subtype))) t =
       ((R t).comap B.subtype).map (A.comap B.subtype).mkQ := by
   have he := trivialFiltration_pushforward
     ((ofTrivialFiltration R hR hbot htop hleft).restrict B)
-    (hξ := ((ofTrivialFiltration_isUltrametric R hR hbot htop hleft).restrict B))
+    (hξ := ((ofTrivialFiltration_isUltrametricAtFinitePlaces R hR hbot htop hleft).restrict B))
     (A.comap B.subtype).mkQ (A.comap B.subtype).mkQ_surjective t
   rw [trivialFiltration_restrict _
-    (hξ := (ofTrivialFiltration_isUltrametric R hR hbot htop hleft)) B t,
+    (hξ := (ofTrivialFiltration_isUltrametricAtFinitePlaces R hR hbot htop hleft)) B t,
     trivialFiltration_ofTrivialFiltration] at he
   exact he
 
 /-- Equality of all literal cuts identifies the original actual norm family. -/
 theorem eq_ofTrivialFiltration_of_cuts [FiniteDimensional K E]
-    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (F : ℝ → Submodule K E) (hF : Antitone F)
     (hbot : ∃ t, F t = ⊥) (htop : ∃ t, F t = ⊤)
     (hleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t)
@@ -140,7 +141,8 @@ theorem subquotient_ofTrivialFiltration_eq [FiniteDimensional K E]
     ((ofTrivialFiltration R hR hRbot hRtop hRleft).restrict B).quotient
         (A.comap B.subtype) = ofTrivialFiltration F hF hFbot hFtop hFleft := by
   apply eq_ofTrivialFiltration_of_cuts _
-    (hξ := (((ofTrivialFiltration_isUltrametric R hR hRbot hRtop hRleft).restrict B).quotient
+    (hξ := (((ofTrivialFiltration_isUltrametricAtFinitePlaces R hR hRbot hRtop hRleft).restrict
+      B).quotient
       (A.comap B.subtype))) F hF hFbot hFtop hFleft
   intro t
   exact (trivialFiltration_subquotient_ofTrivialFiltration
@@ -160,7 +162,7 @@ variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
 of the prescribed quotient filtrations. Compatibility is the threshold equality
 constructed by `Submodule.exists_lift_prescribed_filtrations`. -/
 theorem degree_lift_eq_sum
-    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     {n : ℕ} (U : Fin (n + 1) → Submodule K E) (hU : Monotone U)
     (hzero : U 0 = ⊥) (htop : U (Fin.last n) = ⊤)
@@ -178,14 +180,14 @@ theorem degree_lift_eq_sum
       ∑ i, (ofTrivialFiltration (F i) (hF i) (hFbot i) (hFtop i) (hFleft i)).degree := by
   let V := ofTrivialFiltration R hR hRbot hRtop hRleft
   have hV : V.toNormFamily.IsHermitian := by
-    refine ⟨NormFamily.ofTrivialFiltration_isUltrametric R hR hRbot hRtop hRleft, ?_⟩
+    refine ⟨NormFamily.ofTrivialFiltration_isUltrametricAtFinitePlaces R hR hRbot hRtop hRleft, ?_⟩
     intro ω hω
     simp only [singleTrivialPlace_Ωinf, Set.mem_empty_iff_false] at hω
-  have hq : ∀ i, V.flagQuotientOfMeasurableBase U i =
+  have hq : ∀ i, V.flagQuotientOfNormMeasurability U i =
       ofTrivialFiltration (F i) (hF i) (hFbot i) (hFtop i) (hFleft i) := by
     intro i
     apply AdelicVectorBundle.ext
-      (hξ := (V.flagQuotientOfMeasurableBase U i).toIsAdelic)
+      (hξ := (V.flagQuotientOfNormMeasurability U i).toIsAdelic)
       (hη := (ofTrivialFiltration (F i) (hF i) (hFbot i) (hFtop i) (hFleft i)).toIsAdelic)
     exact NormFamily.subquotient_ofTrivialFiltration_eq R hR hRbot hRtop hRleft
       (U i.castSucc) (U i.succ) (F i) (hF i) (hFbot i) (hFtop i) (hFleft i) (hc i)
@@ -194,7 +196,7 @@ theorem degree_lift_eq_sum
 
 /-- Adapted weights compute the actual degree of the realized filtration. -/
 theorem degree_ofTrivialFiltration_eq_sum_weights
-    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     (F : ℝ → Submodule K E) (hF : Antitone F)
     (hbot : ∃ t, F t = ⊥) (htop : ∃ t, F t = ⊤)
@@ -212,7 +214,7 @@ theorem degree_ofTrivialFiltration_eq_sum_weights
 
 /-- Expectation is additive with rank multiplicities, including zero-rank quotients. -/
 theorem finrank_mul_expectation_lift_eq_sum
-    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     {n : ℕ} (U : Fin (n + 1) → Submodule K E) (hU : Monotone U)
     (hzero : U 0 = ⊥) (htop : U (Fin.last n) = ⊤)
@@ -235,7 +237,7 @@ theorem finrank_mul_expectation_lift_eq_sum
 
 /-- Pairing with the original flag groups the unchanged quotient weights by block. -/
 theorem pairing_lift_eq_sum_quotient_degrees
-    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     {n : ℕ} (U : Fin (n + 1) → Submodule K E)
     {ι : Fin n → Type*}

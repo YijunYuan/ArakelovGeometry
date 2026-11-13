@@ -154,7 +154,7 @@ omit [FiniteDimensional K E] in
 theorem normalizedBasisMixed_hasFiniteNormExceptions {ι : Type*} [Fintype ι]
     (b : Module.Basis ι K E) : (ofBasisMixed (N) E b).HasFiniteNormExceptions := by
   apply hasFiniteNormExceptions_of_span_normalizedGlobalUnitBall_eq_top
-    (ofBasisMixed (N) E b) (hξ := (ofBasisMixed_isUltrametric b))
+    (ofBasisMixed (N) E b) (hξ := (ofBasisMixed_isUltrametricAtFinitePlaces b))
   apply top_unique
   rw [← b.span_eq]
   apply Submodule.span_mono

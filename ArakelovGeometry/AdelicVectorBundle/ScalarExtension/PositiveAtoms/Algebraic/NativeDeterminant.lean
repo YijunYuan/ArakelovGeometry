@@ -41,9 +41,9 @@ namespace IsDominated
 
 /-- Finite-stage descent produces actual native determinant measurability
 on every algebraic closure of an all-finite positive atomic curve. -/
-theorem scalarExtension_subquotient_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+theorem scalarExtension_subquotient_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
     (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (P Q : Submodule L (L ⊗[K] E)) (hPQ : P ≤ Q) :
     (((ξ.scalarExtension (L := L)).restrict Q).quotient
       (P.comap Q.subtype)).determinant.IsMeasurable := by
@@ -54,7 +54,7 @@ theorem scalarExtension_subquotient_determinant_isMeasurable_of_positive_atoms_o
   let η := η₀.scalarExtension (L := L)
   let θ := ((ξ.scalarExtension (L := L)).restrict Q).quotient (P.comap Q.subtype)
   have hm₀ : η₀.determinant.IsMeasurable :=
-    scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms
+    scalarExtension_restrict_quotient_determinant_isMeasurable_of_pos_singletons
       ξ hξ Q₀ (P₀.comap Q₀.subtype)
   have hm : η.determinant.IsMeasurable := hm₀.determinant_scalarExtension
   have ht : (θ.towerPullback F.toIntermediateField).determinant.IsMeasurable :=
@@ -64,9 +64,10 @@ theorem scalarExtension_subquotient_determinant_isMeasurable_of_positive_atoms_o
   exact (θ.determinant.isMeasurable_towerPullback_iff F.toIntermediateField).mp ht
 
 /-- Every literal relative quotient is covered by its ambient subspace image. -/
-theorem scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+theorem
+    scalarExtension_restrict_quotient_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
     (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
     (((ξ.scalarExtension (L := L)).restrict B).quotient U).determinant.IsMeasurable := by
   let P := U.map B.subtype
@@ -74,27 +75,28 @@ theorem scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_a
   have hU : P.comap B.subtype = U := by
     change (U.map B.subtype).comap B.subtype = U
     rw [Submodule.comap_map_eq, Submodule.ker_subtype, sup_bot_eq]
-  have hm := scalarExtension_subquotient_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+  have hm :=
+    scalarExtension_subquotient_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
     ξ hξ P B hP
   exact Eq.mp (congrArg (fun C : Submodule L B =>
     (((ξ.scalarExtension (L := L)).restrict B).quotient C).determinant.IsMeasurable) hU) hm
 
 /-- The genuine completed determinant dual is measurable, including rank zero. -/
 theorem
-    scalarExtension_restrict_quotient_determinant_dual_isMeasurable_of_positive_atoms_of_isAlgClosed
+    scalarExtension_restrict_quotient_determinant_dual_isMeasurable_of_pos_singletons_of_isAlgClosed
     (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
     (((ξ.scalarExtension (L := L)).restrict B).quotient U).determinant.dual.IsMeasurable :=
-  (scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+  (scalarExtension_restrict_quotient_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
     ξ hξ B U).dual_of_finrank_one
       (determinant_finrank (K := L) (E := B ⧸ U))
 
 /-- Produced actual determinant regularity combines with dominated operations
 for integrability of every rational determinant logarithm. -/
-theorem integrable_native_determinant_logNorm_of_positive_atoms_of_isAlgClosed
+theorem integrable_native_determinant_logNorm_of_pos_singletons_of_isAlgClosed
     (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B)
     (z : ⋀[L]^(Module.finrank L (B ⧸ U)) (B ⧸ U)) :
     Integrable ((((ξ.scalarExtension (L := L)).restrict B).quotient U).determinant.logNorm z)
@@ -103,7 +105,7 @@ theorem integrable_native_determinant_logNorm_of_positive_atoms_of_isAlgClosed
     (AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin)).isDominated.restrict B).quotient U
     ).determinant
   exact hd.integrable_logNorm
-    (scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+    (scalarExtension_restrict_quotient_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
       ξ hξ B U) z
 
 end IsDominated

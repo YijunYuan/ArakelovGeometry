@@ -85,7 +85,7 @@ namespace AdelicVectorBundle
 comparison for a two-step exact sequence. -/
 theorem integral_determinantSequence_logNorm_le (V : AdelicVectorBundle S)
     (W : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     {z : ⋀[K]^(Module.finrank K W) W}
     {q : ⋀[K]^(Module.finrank K (V ⧸ W)) (V ⧸ W)}
@@ -95,17 +95,17 @@ theorem integral_determinantSequence_logNorm_le (V : AdelicVectorBundle S)
       (∫ ω, (V.toNormFamily.restrict W).determinant.logNorm z ω ∂S.v) +
         (∫ ω, (V.toNormFamily.quotient W).determinant.logNorm q ω ∂S.v) := by
   have iz : Integrable ((V.toNormFamily.restrict W).determinant.logNorm z) S.v := by
-    simpa only [determinantOfMeasurableBase_toNormFamily,
-      restrictOfMeasurableBase_toNormFamily] using
-      ((V.restrictOfMeasurableBase W).determinantOfMeasurableBase).integrable_logNorm z
+    simpa only [determinantOfNormMeasurability_toNormFamily,
+      restrictOfNormMeasurability_toNormFamily] using
+      ((V.restrictOfNormMeasurability W).determinantOfNormMeasurability).integrable_logNorm z
   have iq : Integrable ((V.toNormFamily.quotient W).determinant.logNorm q) S.v := by
-    simpa only [determinantOfMeasurableBase_toNormFamily,
-      quotientOfMeasurableBase_toNormFamily] using
-      ((V.quotientOfMeasurableBase W).determinantOfMeasurableBase).integrable_logNorm q
+    simpa only [determinantOfNormMeasurability_toNormFamily,
+      quotientOfNormMeasurability_toNormFamily] using
+      ((V.quotientOfNormMeasurability W).determinantOfNormMeasurability).integrable_logNorm q
   have ie : Integrable (V.toNormFamily.determinant.logNorm
       (determinantSequenceEquiv W (z ⊗ₜ[K] q))) S.v := by
-    simpa only [determinantOfMeasurableBase_toNormFamily] using
-      (V.determinantOfMeasurableBase).integrable_logNorm
+    simpa only [determinantOfNormMeasurability_toNormFamily] using
+      (V.determinantOfNormMeasurability).integrable_logNorm
         (determinantSequenceEquiv W (z ⊗ₜ[K] q))
   have h := integral_mono ie (iz.add iq)
     (fun ω ↦ V.toNormFamily.determinantSequence_logNorm_tmul_le W hz hq ω)
@@ -119,34 +119,34 @@ theorem integral_determinantSequence_logNorm_le (V : AdelicVectorBundle S)
 using exactly the actual restricted norm family. -/
 theorem degree_restrict_eq_neg_integral [S.IsProper] (V : AdelicVectorBundle S)
     (W : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (z : {z : ⋀[K]^(Module.finrank K W) W // z ≠ 0}) :
-    (V.restrictOfMeasurableBase W).degree =
+    (V.restrictOfNormMeasurability W).degree =
       -(∫ ω, (V.toNormFamily.restrict W).determinant.logNorm z.val ω ∂S.v) := by
-  simpa only [restrictOfMeasurableBase_toNormFamily] using
-    (V.restrictOfMeasurableBase W).degree_eq_neg_integral z
+  simpa only [restrictOfNormMeasurability_toNormFamily] using
+    (V.restrictOfNormMeasurability W).degree_eq_neg_integral z
 
 /-- A nonzero determinant vector computes the quotient bundle degree
 using exactly the actual quotient norm family. -/
 theorem degree_quotient_eq_neg_integral [S.IsProper] (V : AdelicVectorBundle S)
     (W : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (q : {q : ⋀[K]^(Module.finrank K (V ⧸ W)) (V ⧸ W) // q ≠ 0}) :
-    (V.quotientOfMeasurableBase W).degree =
+    (V.quotientOfNormMeasurability W).degree =
       -(∫ ω, (V.toNormFamily.quotient W).determinant.logNorm q.val ω ∂S.v) := by
-  simpa only [quotientOfMeasurableBase_toNormFamily] using
-    (V.quotientOfMeasurableBase W).degree_eq_neg_integral q
+  simpa only [quotientOfNormMeasurability_toNormFamily] using
+    (V.quotientOfNormMeasurability W).degree_eq_neg_integral q
 
 /-- Degrees are superadditive for the actual restricted and quotient bundles,
 the two-step lower inequality of Proposition 4.3.13. -/
 theorem degree_restrict_add_degree_quotient_le [S.IsProper] (V : AdelicVectorBundle S)
     (W : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    (V.restrictOfMeasurableBase W).degree +
-        (V.quotientOfMeasurableBase W).degree ≤ V.degree := by
+    (V.restrictOfNormMeasurability W).degree +
+        (V.quotientOfNormMeasurability W).degree ≤ V.degree := by
   let z : {z : ⋀[K]^(Module.finrank K W) W // z ≠ 0} :=
     ⟨determinantGenerator, determinantGenerator_ne_zero⟩
   let q : {q : ⋀[K]^(Module.finrank K (V ⧸ W)) (V ⧸ W) // q ≠ 0} :=

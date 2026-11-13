@@ -367,23 +367,23 @@ theorem bundle_maximalLogarithmicMinimum_empty (c : ℝ) (hc : 0 < c) (hc1 : c �
 theorem bundle_slope_restrict_line (s : Finset ℚ) (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1)
     (W : Submodule ℚ Plane) (hW : Module.finrank ℚ W = 1)
     (x : {x : W // x ≠ 0}) :
-    ((bundle s c hc hc1).restrictOfMeasurableBase W (hS := ⟨countingRegularity⟩)).slope
+    ((bundle s c hc hc1).restrictOfNormMeasurability W (hS := ⟨countingRegularity⟩)).slope
       (hS := ⟨countingRegularity⟩) (hN := ⟨countingArchimedeanNormalization⟩) =
       ((s.filter fun a ↦ x.val.val.2 = a * x.val.val.1).card : ℝ) * (-Real.log c) := by
   rw [AdelicVectorBundle.slope_eq_degree_of_finrank_one _ hW,
     AdelicVectorBundle.degree_eq_vectorDegree_of_finrank_one _ hW x,
-    AdelicVectorBundle.vectorDegree_restrictOfMeasurableBase, bundle_vectorDegree]
+    AdelicVectorBundle.vectorDegree_restrictOfNormMeasurability, bundle_vectorDegree]
 
 private theorem restricted_line_slope_le (s : Finset ℚ) (c : ℝ)
     (hc : 0 < c) (hc1 : c ≤ 1) (W : Submodule ℚ Plane)
     (hW : Module.finrank ℚ W = 1) :
-    ((bundle s c hc hc1).restrictOfMeasurableBase W (hS := ⟨countingRegularity⟩)).slope
+    ((bundle s c hc hc1).restrictOfNormMeasurability W (hS := ⟨countingRegularity⟩)).slope
       (hS := ⟨countingRegularity⟩) (hN := ⟨countingArchimedeanNormalization⟩) ≤ -Real.log c := by
   have : Nontrivial W := Module.nontrivial_of_finrank_pos (by rw [hW]; norm_num)
   obtain ⟨x, hx⟩ := exists_ne (0 : W)
   rw [AdelicVectorBundle.slope_eq_degree_of_finrank_one _ hW,
     AdelicVectorBundle.degree_eq_vectorDegree_of_finrank_one _ hW ⟨x,hx⟩,
-    AdelicVectorBundle.vectorDegree_restrictOfMeasurableBase]
+    AdelicVectorBundle.vectorDegree_restrictOfNormMeasurability]
   exact bundle_vectorDegree_le s c hc hc1 _
 
 private theorem proper_nonzero_subspace_finrank (W : Submodule ℚ Plane)
@@ -538,7 +538,8 @@ theorem countingCurve_not_minkowski (C : ℝ) :
   obtain ⟨s, hs, hbad⟩ := exists_sourceBundle_violating_level C
   have hbound := h.maximalSlope_le (sourceBundle s)
     (by rw [finrank_plane]; norm_num)
-    (hV := (truncatedFamily_isUltrametric s (Real.exp (-1)) (Real.exp_pos _) sourceCost_le_one))
+    (hV := (truncatedFamily_isUltrametricAtFinitePlaces s (Real.exp (-1))
+      (Real.exp_pos _) sourceCost_le_one))
   rw [finrank_plane, Nat.cast_ofNat] at hbound
   exact (not_lt_of_ge hbound) hbad
 
@@ -562,9 +563,10 @@ theorem liftedSourceBundle_finrank : Module.finrank ℚ (ULift.{w} Plane) = 2 :=
   (ULift.moduleEquiv : ULift.{w} Plane ≃ₗ[ℚ] Plane).finrank_eq.trans finrank_plane
 
 /-- Actual finite-place ultrametricity is transported through the injective base change. -/
-theorem liftedSourceBundle_isUltrametric (s : Finset ℚ) :
-    (liftedSourceBundle.{w} s).toNormFamily.IsUltrametric :=
-  (truncatedFamily_isUltrametric s (Real.exp (-1)) (Real.exp_pos _) sourceCost_le_one).pullback
+theorem liftedSourceBundle_isUltrametricAtFinitePlaces (s : Finset ℚ) :
+    (liftedSourceBundle.{w} s).toNormFamily.IsUltrametricAtFinitePlaces :=
+  (truncatedFamily_isUltrametricAtFinitePlaces s (Real.exp (-1))
+    (Real.exp_pos _) sourceCost_le_one).pullback
     ULift.moduleEquiv.toLinearMap ULift.moduleEquiv.injective
 
 /-- The literal rational vector-degree integral agrees under the actual universe isometry. -/
@@ -611,7 +613,8 @@ theorem countingCurve_not_minkowski_universe (C : ℝ) :
   intro h
   obtain ⟨s, hs, hbad⟩ := exists_sourceBundle_violating_level C
   have hb := h.maximalSlope_le (liftedSourceBundle.{w} s)
-    (by rw [liftedSourceBundle_finrank]; norm_num) (hV := (liftedSourceBundle_isUltrametric s))
+    (by rw [liftedSourceBundle_finrank]; norm_num)
+      (hV := (liftedSourceBundle_isUltrametricAtFinitePlaces s))
   rw [liftedSourceBundle_maximalSlope, liftedSourceBundle_finrank, Nat.cast_ofNat] at hb
   have hm : (liftedSourceBundle.{w} s).maximalLogarithmicMinimum ≤
       (sourceBundle s).maximalLogarithmicMinimum := by

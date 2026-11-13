@@ -38,17 +38,17 @@ universe u w
 variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
 
-private theorem generalHN_integrableOn_indicator_Iic_Ici (a b : ℝ) :
+private theorem hn_integrableOn_indicator_Iic_Ici (a b : ℝ) :
     IntegrableOn ((Set.Iic b).indicator (fun _ : ℝ ↦ (1 : ℝ))) (Set.Ici a) volume := by
   apply (integrable_indicator_iff measurableSet_Ici).mp
   rw [Set.indicator_indicator, Set.Ici_inter_Iic]
   exact (integrable_indicator_iff measurableSet_Icc).mpr
     (integrableOn_const (measure_Icc_lt_top.ne))
 
-private theorem generalHN_integral_indicator_Iic_Ici (a b : ℝ) :
+private theorem hn_integral_indicator_Iic_Ici (a b : ℝ) :
     (∫ t in Set.Ici a, (Set.Iic b).indicator (fun _ : ℝ ↦ (1 : ℝ)) t) =
       max (b - a) 0 := by
   rw [← integral_indicator measurableSet_Ici, Set.indicator_indicator,
@@ -57,89 +57,89 @@ private theorem generalHN_integral_indicator_Iic_Ici (a b : ℝ) :
 
 /-- The actual filtration rank, as a real function, is the sum of the
 half-line indicators of all actual ordered slots. -/
-theorem generalHNFiltration_finrank_eq_sum_indicator (t : ℝ) :
-    (Module.finrank K (V.generalHNFiltration t) : ℝ) =
+theorem hnFiltration_finrank_eq_sum_indicator (t : ℝ) :
+    (Module.finrank K (V.hnFiltration t) : ℝ) =
       ∑ j : Fin (Module.finrank K V),
-        (Set.Iic (V.generalHNOrderedSlope j)).indicator
+        (Set.Iic (V.hnSlope j)).indicator
           (fun _ : ℝ ↦ (1 : ℝ)) t := by
   classical
-  rw [V.generalHNFiltration_finrank_eq_card t]
+  rw [V.hnFiltration_finrank_eq_card t]
   simpa only [Set.indicator_apply, Set.mem_Iic] using
-    (Finset.sum_boole (fun j ↦ t ≤ V.generalHNOrderedSlope j)
+    (Finset.sum_boole (fun j ↦ t ≤ V.hnSlope j)
       Finset.univ).symm
 
 /-- Actual filtration rank is integrable above every real threshold. -/
-theorem integrableOn_generalHNFiltration_finrank (a : ℝ) :
+theorem integrableOn_hnFiltration_finrank (a : ℝ) :
     IntegrableOn (fun t ↦
-      (Module.finrank K (V.generalHNFiltration t) : ℝ)) (Set.Ici a) volume := by
+      (Module.finrank K (V.hnFiltration t) : ℝ)) (Set.Ici a) volume := by
   classical
-  simp_rw [V.generalHNFiltration_finrank_eq_sum_indicator]
+  simp_rw [V.hnFiltration_finrank_eq_sum_indicator]
   exact integrable_finsetSum Finset.univ
-    (fun j _ ↦ generalHN_integrableOn_indicator_Iic_Ici a
-      (V.generalHNOrderedSlope j))
+    (fun j _ ↦ hn_integrableOn_indicator_Iic_Ici a
+      (V.hnSlope j))
 
 /-- The genuine Lebesgue integral of actual rank above a threshold is the
 finite sum of the positive parts of the shifted actual ordered slopes. -/
-theorem integral_generalHNFiltration_finrank_Ici (a : ℝ) :
+theorem integral_hnFiltration_finrank_Ici (a : ℝ) :
     (∫ t in Set.Ici a,
-      (Module.finrank K (V.generalHNFiltration t) : ℝ)) =
+      (Module.finrank K (V.hnFiltration t) : ℝ)) =
         ∑ j : Fin (Module.finrank K V),
-          max (V.generalHNOrderedSlope j - a) 0 := by
+          max (V.hnSlope j - a) 0 := by
   classical
-  simp_rw [V.generalHNFiltration_finrank_eq_sum_indicator]
+  simp_rw [V.hnFiltration_finrank_eq_sum_indicator]
   rw [integral_finsetSum Finset.univ
-    (fun j _ ↦ generalHN_integrableOn_indicator_Iic_Ici a
-      (V.generalHNOrderedSlope j))]
+    (fun j _ ↦ hn_integrableOn_indicator_Iic_Ici a
+      (V.hnSlope j))]
   exact Finset.sum_congr rfl
-    (fun j _ ↦ generalHN_integral_indicator_Iic_Ici a (V.generalHNOrderedSlope j))
+    (fun j _ ↦ hn_integral_indicator_Iic_Ici a (V.hnSlope j))
 
 /-- The source rank integral on the nonnegative half-line is the sum of
 positive parts of the actual general ordered slopes. -/
-theorem integral_generalHNFiltration_finrank_Ici_zero :
+theorem integral_hnFiltration_finrank_Ici_zero :
     (∫ t in Set.Ici (0 : ℝ),
-      (Module.finrank K (V.generalHNFiltration t) : ℝ)) =
-        ∑ j : Fin (Module.finrank K V), max (V.generalHNOrderedSlope j) 0 := by
-  rw [V.integral_generalHNFiltration_finrank_Ici 0]
+      (Module.finrank K (V.hnFiltration t) : ℝ)) =
+        ∑ j : Fin (Module.finrank K V), max (V.hnSlope j) 0 := by
+  rw [V.integral_hnFiltration_finrank_Ici 0]
   simp only [sub_zero]
 
 /-- The positive atomic jump measure has one atom for each actual ordered
 slot, retaining the actual rank multiplicities when slopes repeat. -/
-def generalHNJumpMeasure : Measure ℝ :=
-  ∑ j : Fin (Module.finrank K V), Measure.dirac (V.generalHNOrderedSlope j)
+def hnJumpMeasure : Measure ℝ :=
+  ∑ j : Fin (Module.finrank K V), Measure.dirac (V.hnSlope j)
 
-instance isFiniteMeasure_generalHNJumpMeasure :
-    IsFiniteMeasure (V.generalHNJumpMeasure) := by
-  unfold generalHNJumpMeasure
+instance isFiniteMeasure_hnJumpMeasure :
+    IsFiniteMeasure (V.hnJumpMeasure) := by
+  unfold hnJumpMeasure
   infer_instance
 
 /-- Every real function is integrable for the actual finite atomic jump
 measure; no behavior between the finitely many genuine slopes is required. -/
-theorem integrable_generalHNJumpMeasure (f : ℝ → ℝ) :
-    Integrable f (V.generalHNJumpMeasure) := by
-  unfold generalHNJumpMeasure
+theorem integrable_hnJumpMeasure (f : ℝ → ℝ) :
+    Integrable f (V.hnJumpMeasure) := by
+  unfold hnJumpMeasure
   exact integrable_finsetSum_measure.mpr
     (fun j _ ↦ integrable_dirac (by finiteness))
 
 /-- Genuine integration against the jump measure sums the values at all
 actual ordered slopes, with their actual multiplicities. -/
-theorem integral_generalHNJumpMeasure (f : ℝ → ℝ) :
-    (∫ t, f t ∂V.generalHNJumpMeasure) =
-      ∑ j : Fin (Module.finrank K V), f (V.generalHNOrderedSlope j) := by
-  unfold generalHNJumpMeasure
+theorem integral_hnJumpMeasure (f : ℝ → ℝ) :
+    (∫ t, f t ∂V.hnJumpMeasure) =
+      ∑ j : Fin (Module.finrank K V), f (V.hnSlope j) := by
+  unfold hnJumpMeasure
   rw [integral_finsetSum_measure (fun j _ ↦ integrable_dirac (by finiteness))]
   simp only [integral_dirac]
 
 /-- The actual atoms measure the actual rank drop on every half-open
 interval. The `[a,b)` endpoints reflect left continuity of the rank function. -/
-theorem generalHNJumpMeasure_real_Ico (a b : ℝ) (hab : a ≤ b) :
-    (V.generalHNJumpMeasure).real (Set.Ico a b) =
-      (Module.finrank K (V.generalHNFiltration a) : ℝ) -
-        Module.finrank K (V.generalHNFiltration b) := by
+theorem hnJumpMeasure_real_Ico (a b : ℝ) (hab : a ≤ b) :
+    (V.hnJumpMeasure).real (Set.Ico a b) =
+      (Module.finrank K (V.hnFiltration a) : ℝ) -
+        Module.finrank K (V.hnFiltration b) := by
   classical
   rw [← integral_indicator_one measurableSet_Ico,
-    V.integral_generalHNJumpMeasure,
-    V.generalHNFiltration_finrank_eq_sum_indicator a,
-    V.generalHNFiltration_finrank_eq_sum_indicator b,
+    V.integral_hnJumpMeasure,
+    V.hnFiltration_finrank_eq_sum_indicator a,
+    V.hnFiltration_finrank_eq_sum_indicator b,
     ← Finset.sum_sub_distrib]
   apply Finset.sum_congr rfl
   intro j _
@@ -148,41 +148,41 @@ theorem generalHNJumpMeasure_real_Ico (a b : ℝ) (hab : a ≤ b) :
 
 /-- The signed jump measure of the actual decreasing left-continuous rank
 function is the negative of its positive atomic jump measure. -/
-def generalHNSignedJumpMeasure : SignedMeasure ℝ :=
-  -(V.generalHNJumpMeasure).toSignedMeasure
+def hnSignedJumpMeasure : SignedMeasure ℝ :=
+  -(V.hnJumpMeasure).toSignedMeasure
 
 /-- The signed jump measure equals the actual rank increment on `[a,b)`. -/
-theorem generalHNSignedJumpMeasure_Ico (a b : ℝ) (hab : a ≤ b) :
-    V.generalHNSignedJumpMeasure (Set.Ico a b) =
-      (Module.finrank K (V.generalHNFiltration b) : ℝ) -
-        Module.finrank K (V.generalHNFiltration a) := by
-  unfold generalHNSignedJumpMeasure
+theorem hnSignedJumpMeasure_Ico (a b : ℝ) (hab : a ≤ b) :
+    V.hnSignedJumpMeasure (Set.Ico a b) =
+      (Module.finrank K (V.hnFiltration b) : ℝ) -
+        Module.finrank K (V.hnFiltration a) := by
+  unfold hnSignedJumpMeasure
   rw [_root_.neg_apply, Measure.toSignedMeasure_apply_measurable measurableSet_Ico,
-    V.generalHNJumpMeasure_real_Ico a b hab, neg_sub]
+    V.hnJumpMeasure_real_Ico a b hab, neg_sub]
 
 /-- Actual signed integration gives the negative sum over genuine ordered
 slots, by the canonical Bochner-to-signed-measure integration bridge. -/
-theorem integral_generalHNSignedJumpMeasure (f : ℝ → ℝ) :
-    (∫ᵛ t, f t ∂<•V.generalHNSignedJumpMeasure) =
-      -∑ j : Fin (Module.finrank K V), f (V.generalHNOrderedSlope j) := by
-  unfold generalHNSignedJumpMeasure
+theorem integral_hnSignedJumpMeasure (f : ℝ → ℝ) :
+    (∫ᵛ t, f t ∂<•V.hnSignedJumpMeasure) =
+      -∑ j : Fin (Module.finrank K V), f (V.hnSlope j) := by
+  unfold hnSignedJumpMeasure
   rw [VectorMeasure.integral_neg_vectorMeasure, VectorMeasure.integral_toSignedMeasure,
-    V.integral_generalHNJumpMeasure]
+    V.integral_hnJumpMeasure]
 
 /-- The genuine signed first moment of the actual rank-jump measure is
 minus the sum of all actual general ordered slopes, including rank zero. -/
-theorem integral_id_generalHNSignedJumpMeasure :
-    (∫ᵛ t, t ∂<•V.generalHNSignedJumpMeasure) =
-      -∑ j : Fin (Module.finrank K V), V.generalHNOrderedSlope j :=
-  V.integral_generalHNSignedJumpMeasure (fun t ↦ t)
+theorem integral_id_hnSignedJumpMeasure :
+    (∫ᵛ t, t ∂<•V.hnSignedJumpMeasure) =
+      -∑ j : Fin (Module.finrank K V), V.hnSlope j :=
+  V.integral_hnSignedJumpMeasure (fun t ↦ t)
 
-private theorem generalHN_rank_mul_eq_sum_indicator (g : ℝ → ℝ) :
-    (fun t ↦ (Module.finrank K (V.generalHNFiltration t) : ℝ) * g t) =
+private theorem hn_rank_mul_eq_sum_indicator (g : ℝ → ℝ) :
+    (fun t ↦ (Module.finrank K (V.hnFiltration t) : ℝ) * g t) =
       fun t ↦ ∑ j : Fin (Module.finrank K V),
-        (Set.Iic (V.generalHNOrderedSlope j)).indicator g t := by
+        (Set.Iic (V.hnSlope j)).indicator g t := by
   classical
   funext t
-  rw [V.generalHNFiltration_finrank_eq_sum_indicator, Finset.sum_mul]
+  rw [V.hnFiltration_finrank_eq_sum_indicator, Finset.sum_mul]
   apply Finset.sum_congr rfl
   intro j _
   simp only [Set.indicator_apply]
@@ -190,12 +190,12 @@ private theorem generalHN_rank_mul_eq_sum_indicator (g : ℝ → ℝ) :
 
 /-- The actual rank times a compactly supported test derivative is genuinely
 Lebesgue integrable; the integral does not use a default value. -/
-theorem integrable_generalHNFiltration_finrank_mul_deriv
+theorem integrable_hnFiltration_finrank_mul_deriv
     (φ : ℝ → ℝ) (hφ : ContDiff ℝ 1 φ) (hc : HasCompactSupport φ) :
     Integrable (fun t ↦
-      (Module.finrank K (V.generalHNFiltration t) : ℝ) * deriv φ t) volume := by
+      (Module.finrank K (V.hnFiltration t) : ℝ) * deriv φ t) volume := by
   classical
-  rw [V.generalHN_rank_mul_eq_sum_indicator]
+  rw [V.hn_rank_mul_eq_sum_indicator]
   have hd : Integrable (deriv φ) volume :=
     (hφ.continuous_deriv le_rfl).integrable_of_hasCompactSupport hc.deriv
   exact integrable_finsetSum Finset.univ (fun j _ ↦
@@ -203,12 +203,12 @@ theorem integrable_generalHNFiltration_finrank_mul_deriv
 
 /-- Fundamental calculus evaluates the actual rank against every compactly
 supported continuously differentiable test derivative. -/
-theorem integral_generalHNFiltration_finrank_mul_deriv
+theorem integral_hnFiltration_finrank_mul_deriv
     (φ : ℝ → ℝ) (hφ : ContDiff ℝ 1 φ) (hc : HasCompactSupport φ) :
-    (∫ t : ℝ, (Module.finrank K (V.generalHNFiltration t) : ℝ) * deriv φ t) =
-      ∑ j : Fin (Module.finrank K V), φ (V.generalHNOrderedSlope j) := by
+    (∫ t : ℝ, (Module.finrank K (V.hnFiltration t) : ℝ) * deriv φ t) =
+      ∑ j : Fin (Module.finrank K V), φ (V.hnSlope j) := by
   classical
-  rw [V.generalHN_rank_mul_eq_sum_indicator]
+  rw [V.hn_rank_mul_eq_sum_indicator]
   have hd : Integrable (deriv φ) volume :=
     (hφ.continuous_deriv le_rfl).integrable_of_hasCompactSupport hc.deriv
   rw [integral_finsetSum Finset.univ (fun j _ ↦
@@ -220,12 +220,12 @@ theorem integral_generalHNFiltration_finrank_mul_deriv
 
 /-- The actual canonical signed rank-jump measure is the distributional
 derivative of the actual rank function, on all compactly supported C¹ tests. -/
-theorem generalHNSignedJumpMeasure_weakDerivative
+theorem hnSignedJumpMeasure_weakDerivative
     (φ : ℝ → ℝ) (hφ : ContDiff ℝ 1 φ) (hc : HasCompactSupport φ) :
-    -(∫ t : ℝ, (Module.finrank K (V.generalHNFiltration t) : ℝ) * deriv φ t) =
-      ∫ᵛ t, φ t ∂<•V.generalHNSignedJumpMeasure := by
-  rw [V.integral_generalHNFiltration_finrank_mul_deriv φ hφ hc,
-    V.integral_generalHNSignedJumpMeasure]
+    -(∫ t : ℝ, (Module.finrank K (V.hnFiltration t) : ℝ) * deriv φ t) =
+      ∫ᵛ t, φ t ∂<•V.hnSignedJumpMeasure := by
+  rw [V.integral_hnFiltration_finrank_mul_deriv φ hφ hc,
+    V.integral_hnSignedJumpMeasure]
 
 end
 

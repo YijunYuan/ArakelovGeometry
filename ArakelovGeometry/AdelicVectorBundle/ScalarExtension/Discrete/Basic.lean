@@ -199,7 +199,7 @@ theorem degree_scalarExtensionOfCountableDiscrete [S.IsProper]
   let hLS := AdelicStructure.discreteMeasurableSpace_algebraicExtension_of_finiteDimensional
     (S := S) (L := L)
   let hNL := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
-  have he : (V.scalarExtensionOfCountableDiscrete (L := L)).determinantOfMeasurableBase
+  have he : (V.scalarExtensionOfCountableDiscrete (L := L)).determinantOfNormMeasurability
       (hS := ⟨(Or.inl hLS)⟩) (hN := ⟨hNL⟩) =
         V.scalarExtensionDeterminant (L := L) := by
       rfl

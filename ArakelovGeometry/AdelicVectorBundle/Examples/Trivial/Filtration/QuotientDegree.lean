@@ -108,21 +108,21 @@ variable {K J Q : Type*} [Field K] [Fintype J]
 the determinant maximum of the original prescribed factor weights. -/
 theorem filtrationExpectation_pushforward_injectiveTensor_eq_sup'
     (ν : ∀ j, NormFamily (singleTrivialPlace K) (E j))
-    [hν : ∀ j, (ν j).IsUltrametric] (b : ∀ j, Basis (ι j) K (E j))
+    [hν : ∀ j, (ν j).IsUltrametricAtFinitePlaces] (b : ∀ j, Basis (ι j) K (E j))
     (w : ∀ j, ι j → ℝ)
     (hb : ∀ j t, (ν j).trivialFiltration (hξ := (hν j)) t = span K (b j '' {i | t ≤ w j i}))
     (c : Basis (Fin (finrank K Q)) K Q) (q : (⨂[K] j, E j) →ₗ[K] Q)
     (hq : Function.Surjective q) :
     filtrationExpectation (((injectiveTensor ν).pushforward q hq).trivialFiltration
-      (hξ := ((injectiveTensor_isUltrametric ν).pushforward q hq))) =
+      (hξ := ((injectiveTensor_isUltrametricAtFinitePlaces ν).pushforward q hq))) =
       (quotientDeterminantSupport (Basis.piTensorProduct b) c q).sup'
         (quotientDeterminantSupport_nonempty (Basis.piTensorProduct b) c q hq)
         (fun σ ↦ ∑ k, ∑ j, w j (σ k j)) / finrank K Q := by
   have he : ((injectiveTensor ν).pushforward q hq).trivialFiltration
-      (hξ := ((injectiveTensor_isUltrametric ν).pushforward q hq)) = fun t ↦
+      (hξ := ((injectiveTensor_isUltrametricAtFinitePlaces ν).pushforward q hq)) = fun t ↦
       (span K (Basis.piTensorProduct b '' {p | t ≤ ∑ j, w j (p j)})).map q := by
     funext t
-    rw [trivialFiltration_pushforward _ (hξ := (injectiveTensor_isUltrametric ν)),
+    rw [trivialFiltration_pushforward _ (hξ := (injectiveTensor_isUltrametricAtFinitePlaces ν)),
       trivialFiltration_injectiveTensor_eq_span_of_weights ν b w hb]
   rw [he]
   exact filtrationExpectation_image_eq_sup' (Basis.piTensorProduct b)
@@ -141,7 +141,7 @@ variable {K E Q ι : Type*} [Field K]
 /-- The determinant maximum computes the literal filtration expectation of
 the actual quotient norm, using any basis adapted to the source norm. -/
 theorem filtrationExpectation_pushforward_eq_sup'
-    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (b : Basis ι K E) (w : ι → ℝ)
     (hb : ∀ t, ξ.trivialFiltration t = span K (b '' {i | t ≤ w i}))
     (c : Basis (Fin (finrank K Q)) K Q) (q : E →ₗ[K] Q)
@@ -284,25 +284,25 @@ variable {K Q ι κ E V : Type*} [Field K]
 maximum of the prescribed original factor weights. -/
 theorem filtrationExpectation_pushforward_injectiveTensorPair_eq_sup'
     (ξ : NormFamily (singleTrivialPlace K) E) (η : NormFamily (singleTrivialPlace K) V)
-    [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric]
+    [hξ : ξ.IsUltrametricAtFinitePlaces] [hη : η.IsUltrametricAtFinitePlaces]
     (b : Basis ι K E) (c : Basis κ K V) (w : ι → ℝ) (z : κ → ℝ)
     (hb : ∀ t, ξ.trivialFiltration t = span K (b '' {i | t ≤ w i}))
     (hc : ∀ t, η.trivialFiltration t = span K (c '' {i | t ≤ z i}))
     (d : Basis (Fin (finrank K Q)) K Q) (q : E ⊗[K] V →ₗ[K] Q)
     (hq : Function.Surjective q) :
     filtrationExpectation (((ξ.injectiveTensorPair η).pushforward q hq).trivialFiltration
-      (hξ := ((ξ.injectiveTensorPair_isUltrametric η).pushforward q hq))) =
+      (hξ := ((ξ.injectiveTensorPair_isUltrametricAtFinitePlaces η).pushforward q hq))) =
       (quotientDeterminantSupport (b.tensorProduct c) d q).sup'
         (quotientDeterminantSupport_nonempty (b.tensorProduct c) d q hq)
         (fun σ ↦ ∑ k, (w (σ k).1 + z (σ k).2)) / finrank K Q := by
   have hspan (t : ℝ) :
       (ξ.injectiveTensorPair η).trivialFiltration
-          (hξ := (ξ.injectiveTensorPair_isUltrametric η)) t =
+          (hξ := (ξ.injectiveTensorPair_isUltrametricAtFinitePlaces η)) t =
         span K (b.tensorProduct c '' {ij | t ≤ w ij.1 + z ij.2}) := by
     rw [trivialFiltration_injectiveTensorPair ξ η]
     exact tensorFiltration_eq_span_tensorProduct b c w z hb hc t
   exact filtrationExpectation_pushforward_eq_sup' (ξ.injectiveTensorPair η)
-    (hξ := (ξ.injectiveTensorPair_isUltrametric η)) (b.tensorProduct c)
+    (hξ := (ξ.injectiveTensorPair_isUltrametricAtFinitePlaces η)) (b.tensorProduct c)
     (fun ij ↦ w ij.1 + z ij.2) hspan d q hq
 
 end ArakelovGeometry.NormFamily

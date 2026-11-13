@@ -52,7 +52,7 @@ theorem exp_localHeight (ξ : NormFamily S E) (η : NormFamily S F)
 theorem IsMeasurable.localHeight_of_discrete_or_countable
     {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsMeasurable) (hη : η.IsMeasurable)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     (f : {f : E →ₗ[K] F // f ≠ 0}) : Measurable (ξ.localHeight η f) :=
   (hξ.operatorNorm_of_discrete_or_countable hη f.val).log
 

@@ -44,9 +44,9 @@ namespace NormFamily
 
 /-- Actual restricted dual measurability, produced by finite descent and
 positive finite-extension atoms, with no original regularity assumption. -/
-theorem IsDominated.scalarExtension_restrict_dual_isMeasurable_of_positive_atoms_of_isAlgClosed
+theorem IsDominated.scalarExtension_restrict_dual_isMeasurable_of_pos_singletons_of_isAlgClosed
     (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (A : Submodule L (L ⊗[K] E)) :
     ((ξ.scalarExtension (L := L)).restrict A).dual.IsMeasurable := by
   let hN := AdelicStructure.isRCLikeNormedField_of_forall_mem_Ωfin (S := S)
@@ -68,34 +68,35 @@ theorem IsDominated.scalarExtension_restrict_dual_isMeasurable_of_positive_atoms
     (hξ.scalarExtension_isStronglyDominated ξ
       (S.v_Ωinf_lt_top_of_isRCLike (hS := ⟨hN⟩))).isDominated.restrict (B 0)
   have hm : η.dual.IsMeasurable :=
-    hd₀.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlgebraic η₀ (hpos := ⟨hFpos⟩)
+    hd₀.scalarExtension_dual_isMeasurable_of_pos_singletons_of_isAlgebraic η₀ (hpos := ⟨hFpos⟩)
         (hS := ⟨hFS⟩)
   exact IsMeasurable.dual_of_tower_completed_isometry F η θ e he hm
 
 /-- The genuine native restriction on the actual subspace, with its produced
 regularities and the existing canonical adelic-bundle structure. -/
-abbrev nativeAlgebraicRestrictionOfPositiveAtoms (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+abbrev nativeAlgebraicRestrictionOfPositiveSingletons (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (A : Submodule L (L ⊗[K] E)) : AdelicVectorBundle (S.algebraicExtension L) :=
-  (ξ.algebraicScalarBundleOfPositiveAtoms (L := L)).restrict A
-    (hm := (hξ.scalarExtension_restrict_dual_isMeasurable_of_positive_atoms_of_isAlgClosed ξ A))
+  (ξ.algebraicScalarBundleOfPositiveSingletons (L := L)).restrict A
+    (hm := (hξ.scalarExtension_restrict_dual_isMeasurable_of_pos_singletons_of_isAlgClosed ξ
+      A))
 
 @[simp]
-theorem nativeAlgebraicRestrictionOfPositiveAtoms_toNormFamily
+theorem nativeAlgebraicRestrictionOfPositiveSingletons_toNormFamily
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (A : Submodule L (L ⊗[K] E)) :
-    (ξ.nativeAlgebraicRestrictionOfPositiveAtoms A).toNormFamily =
+    (ξ.nativeAlgebraicRestrictionOfPositiveSingletons A).toNormFamily =
       (ξ.scalarExtension (L := L)).restrict A := rfl
 
 /-- Restriction retains actual strong domination, including the zero subspace. -/
-theorem nativeAlgebraicRestrictionOfPositiveAtoms_isStronglyAdelic
+theorem nativeAlgebraicRestrictionOfPositiveSingletons_isStronglyAdelic
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (A : Submodule L (L ⊗[K] E)) :
-    (ξ.nativeAlgebraicRestrictionOfPositiveAtoms A).IsStronglyAdelic :=
+    (ξ.nativeAlgebraicRestrictionOfPositiveSingletons A).IsStronglyAdelic :=
   IsStronglyDominated.restrict
-    (ξ.algebraicScalarBundleOfPositiveAtoms_isStronglyAdelic (L := L)) A
+    (ξ.algebraicScalarBundleOfPositiveSingletons_isStronglyAdelic (L := L)) A
     (hS := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension
       (L := L) (hS := ⟨(AdelicStructure.isRCLikeNormedField_of_forall_mem_Ωfin)⟩))⟩)
 
@@ -104,26 +105,26 @@ namespace AdelicVectorBundle
 
 /-- The geometric and common-density restrictions have literally the same
 completed norm family, hence the same canonical adelic bundle. -/
-theorem nativeAlgebraicRestrictionOfPositiveAtoms_eq_common
+theorem nativeAlgebraicRestrictionOfPositiveSingletons_eq_common
     (V : AdelicVectorBundle S)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] V)) :
-    V.toNormFamily.nativeAlgebraicRestrictionOfPositiveAtoms A =
-      (V.scalarExtension (L := L) (hN := hN)).restrictOfMeasurableBase A
+    V.toNormFamily.nativeAlgebraicRestrictionOfPositiveSingletons A =
+      (V.scalarExtension (L := L) (hN := hN)).restrictOfNormMeasurability A
         (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩) :=
   rfl
 
 /-- The geometric and countable-discrete native restrictions coincide on
 their common domain, without a new extension regularity assumption. -/
-theorem nativeAlgebraicRestrictionOfPositiveAtoms_eq_countable_discrete
+theorem nativeAlgebraicRestrictionOfPositiveSingletons_eq_countable_discrete
     [Countable S.Ω] [DiscreteMeasurableSpace S.Ω]
     (V : AdelicVectorBundle S)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] V)) :
-    V.toNormFamily.nativeAlgebraicRestrictionOfPositiveAtoms A =
+    V.toNormFamily.nativeAlgebraicRestrictionOfPositiveSingletons A =
       V.scalarExtensionRestrictionOfCountableDiscreteBase (L := L) (hN := hN) A :=
   rfl
 

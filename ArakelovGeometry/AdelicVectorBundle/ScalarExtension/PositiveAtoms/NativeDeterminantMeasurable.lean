@@ -61,9 +61,9 @@ variable {L : Type*} [Field L] [Algebra K L] [FiniteDimensional K L]
 
 /-- Every native finite-extension subspace has a measurable actual determinant
 on an all-finite positive atomic curve, for any original dominated family. -/
-theorem IsDominated.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms
+theorem IsDominated.scalarExtension_restrict_determinant_isMeasurable_of_pos_singletons
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveSingletons]
     [hS : S.HasOnlyFinitePlaces] (B : Submodule L (L ⊗[K] E)) :
     ((ξ.scalarExtension (L := L)).restrict B).determinant.IsMeasurable := by
   let := AdelicStructure.measurableSingletonClass_algebraicExtension_of_finiteDimensional
@@ -71,7 +71,7 @@ theorem IsDominated.scalarExtension_restrict_determinant_isMeasurable_of_positiv
   let b := Module.finBasis K E
   have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin (S := S)
   obtain ⟨H, _, _, hc, _, hb, _⟩ :=
-    IsDominated.exists_scalarExtension_coordinate_exceptions_of_positive_atoms ξ b hξ hfin
+    IsDominated.exists_scalarExtension_coordinate_exceptions_of_pos_singletons ξ b hξ hfin
   have ht := AdelicStructure.ParameterSpaceExtension.countable_preimage_proj_of_finiteDimensional
     (L := L) (Function.support H) hc
   let q := ofBasisMixed (S.algebraicExtension L) (L ⊗[K] E) (b.baseChange L)
@@ -91,19 +91,20 @@ theorem IsDominated.scalarExtension_restrict_determinant_isMeasurable_of_positiv
 
 /-- The genuine determinant-line dual is measurable by the produced line
 regularity, with no regularity hypothesis on the original family. -/
-theorem IsDominated.scalarExtension_restrict_determinant_dual_isMeasurable_of_positive_atoms
+theorem IsDominated.scalarExtension_restrict_determinant_dual_isMeasurable_of_pos_singletons
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveSingletons]
     [hS : S.HasOnlyFinitePlaces] (B : Submodule L (L ⊗[K] E)) :
     ((ξ.scalarExtension (L := L)).restrict B).determinant.dual.IsMeasurable :=
-  (IsDominated.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms
+  (IsDominated.scalarExtension_restrict_determinant_isMeasurable_of_pos_singletons
     ξ hξ B).dual_of_finrank_one (determinant_finrank (K := L) (E := B))
 
 /-- Every literal native relative quotient has a measurable actual determinant.
 The comparison uses the original dominated family on the completed quotient. -/
-theorem IsDominated.scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms
+theorem
+    IsDominated.scalarExtension_restrict_quotient_determinant_isMeasurable_of_pos_singletons
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveSingletons]
     [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
     (((ξ.scalarExtension (L := L)).restrict B).quotient U).determinant.IsMeasurable := by
@@ -112,7 +113,7 @@ theorem IsDominated.scalarExtension_restrict_quotient_determinant_isMeasurable_o
   let b := Module.finBasis K E
   have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin (S := S)
   obtain ⟨H, _, _, hc, _, hb, _⟩ :=
-    IsDominated.exists_scalarExtension_coordinate_exceptions_of_positive_atoms ξ b hξ hfin
+    IsDominated.exists_scalarExtension_coordinate_exceptions_of_pos_singletons ξ b hξ hfin
   have ht := AdelicStructure.ParameterSpaceExtension.countable_preimage_proj_of_finiteDimensional
     (L := L) (Function.support H) hc
   let q := ofBasisMixed (S.algebraicExtension L) (L ⊗[K] E) (b.baseChange L)
@@ -137,13 +138,13 @@ namespace IsDominated
 
 /-- The actual determinant-line dual of every native relative quotient has
 produced measurability, with the determinant line still rank one at zero rank. -/
-theorem scalarExtension_restrict_quotient_determinant_dual_isMeasurable_of_positive_atoms
+theorem scalarExtension_restrict_quotient_determinant_dual_isMeasurable_of_pos_singletons
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveSingletons]
     [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
     (((ξ.scalarExtension (L := L)).restrict B).quotient U).determinant.dual.IsMeasurable :=
-  (scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms
+  (scalarExtension_restrict_quotient_determinant_isMeasurable_of_pos_singletons
     ξ hξ B U).dual_of_finrank_one
       (determinant_finrank (K := L) (E := B ⧸ U))
 
@@ -158,7 +159,7 @@ theorem IsDominated.functionField_scalarExtension_restrict_determinant_isMeasura
     (ξ : NormFamily (AdelicStructure.functionFieldAdelicStructure k) E)
     (hξ : ξ.IsDominated) (B : Submodule L (L ⊗[RatFunc k] E)) :
     ((ξ.scalarExtension (L := L)).restrict B).determinant.IsMeasurable := by
-  apply IsDominated.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms
+  apply IsDominated.scalarExtension_restrict_determinant_isMeasurable_of_pos_singletons
     ξ hξ B
 
 /-- The actual determinant dual on geometric finite native subspaces is also
@@ -182,7 +183,8 @@ theorem IsDominated.functionField_scalarExtension_restrict_quotient_determinant_
     (ξ : NormFamily (AdelicStructure.functionFieldAdelicStructure k) E)
     (hξ : ξ.IsDominated) (B : Submodule L (L ⊗[RatFunc k] E)) (U : Submodule L B) :
     (((ξ.scalarExtension (L := L)).restrict B).quotient U).determinant.IsMeasurable := by
-  apply IsDominated.scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms
+  apply
+    IsDominated.scalarExtension_restrict_quotient_determinant_isMeasurable_of_pos_singletons
     ξ hξ B U
 
 /-- Genuine native subquotient determinant duals have measurable rational
@@ -199,9 +201,9 @@ theorem IsDominated.functionField_scalarExtension_restrict_quotient_determinant_
 
 /-- Every rational logarithmic determinant profile on a native finite relative
 quotient is integrable for the actual extension measure. -/
-theorem IsDominated.integrable_native_determinant_logNorm_of_positive_atoms
+theorem IsDominated.integrable_native_determinant_logNorm_of_pos_singletons
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveSingletons]
     [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B)
     (z : ⋀[L]^(Module.finrank L (B ⧸ U)) (B ⧸ U)) :
@@ -211,7 +213,7 @@ theorem IsDominated.integrable_native_determinant_logNorm_of_positive_atoms
   have hd := (((hξ.scalarExtension_isStronglyDominated ξ hfin).isDominated.restrict B).quotient U
     ).determinant
   exact hd.integrable_logNorm
-    (IsDominated.scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms
+    (IsDominated.scalarExtension_restrict_quotient_determinant_isMeasurable_of_pos_singletons
       ξ hξ B U) z
 
 /-- The actual geometric projective-line native determinant logarithm is
@@ -225,7 +227,7 @@ theorem IsDominated.functionField_integrable_native_determinant_logNorm
     (z : ⋀[L]^(Module.finrank L (B ⧸ U)) (B ⧸ U)) :
     Integrable ((((ξ.scalarExtension (L := L)).restrict B).quotient U).determinant.logNorm z)
       ((AdelicStructure.functionFieldAdelicStructure k).algebraicExtension L).v := by
-  apply IsDominated.integrable_native_determinant_logNorm_of_positive_atoms
+  apply IsDominated.integrable_native_determinant_logNorm_of_pos_singletons
     ξ hξ B U z
 
 end ArakelovGeometry.NormFamily

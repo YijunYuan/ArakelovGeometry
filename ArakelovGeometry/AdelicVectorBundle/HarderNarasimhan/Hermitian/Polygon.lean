@@ -41,15 +41,15 @@ the actual ranks and means of a complete semistable flag. -/
 theorem degree_restrict_le_supportLine_of_semistableFlag
     (V : AdelicVectorBundle S) {n : ℕ} (F : Fin (n + 1) → Submodule K V)
     (hF : Monotone F) (hzero : F 0 = ⊥) (htop : F (Fin.last n) = ⊤)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian]
-    [hsemi : ∀ i, (V.flagQuotientOfMeasurableBase F i).IsMeanSlopeSemistable]
+    [hsemi : ∀ i, (V.flagQuotientOfNormMeasurability F i).IsMeanSlopeSemistable]
     (U : Submodule K V) (t : ℝ) :
-    (V.restrictOfMeasurableBase U).degree ≤
+    (V.restrictOfNormMeasurability U).degree ≤
       (Module.finrank K U : ℝ) * t + ∑ i : Fin n,
         (Module.finrank K ((F i.succ) ⧸ ((F i.castSucc).comap (F i.succ).subtype)) : ℝ) *
-          max ((V.flagQuotientOfMeasurableBase F i).slope - t) 0 := by
+          max ((V.flagQuotientOfNormMeasurability F i).slope - t) 0 := by
   let k : Fin n → ℝ := fun i ↦
     (Module.finrank K (U ⊓ F i.succ : Submodule K V) -
       Module.finrank K (U ⊓ F i.castSucc : Submodule K V) : ℕ)
@@ -60,7 +60,7 @@ theorem degree_restrict_le_supportLine_of_semistableFlag
     F hF hzero htop U).trans
   calc
     _ = (Module.finrank K U : ℝ) * t + ∑ i : Fin n,
-        k i * ((V.flagQuotientOfMeasurableBase F i).slope - t) := by
+        k i * ((V.flagQuotientOfNormMeasurability F i).slope - t) := by
       rw [← hk, Finset.sum_mul, ← Finset.sum_add_distrib]
       apply Finset.sum_congr rfl
       intro i _
@@ -79,7 +79,7 @@ theorem degree_restrict_le_supportLine_of_semistableFlag
         (mul_le_mul_of_nonneg_right hkd (le_max_right _ _))
 
 variable (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
 
@@ -93,7 +93,7 @@ def hermitianHNSupportLine (t x : ℝ) : ℝ :=
 
 /-- Every actual rational subspace lies below each actual HN supporting line. -/
 theorem degree_restrict_le_hermitianHNSupportLine (U : Submodule K V) (t : ℝ) :
-    (V.restrictOfMeasurableBase U).degree ≤
+    (V.restrictOfNormMeasurability U).degree ≤
       V.hermitianHNSupportLine t (Module.finrank K U) := by
   simpa only [hermitianHNSupportLine, V.finrank_hermitianHNFlagQuotient_eq,
     V.slope_hermitianHNFlagQuotient_eq] using
@@ -124,7 +124,7 @@ theorem hermitianHNPolygon_le_supportLine
 
 /-- Every actual subspace degree is bounded by the actual finite envelope. -/
 theorem degree_restrict_le_hermitianHNPolygon (U : Submodule K V) :
-    (V.restrictOfMeasurableBase U).degree ≤
+    (V.restrictOfNormMeasurability U).degree ≤
       V.hermitianHNPolygon (Module.finrank K U) := by
   classical
   by_cases hp : 0 < V.hermitianHNLength
@@ -220,7 +220,7 @@ theorem hermitianHNSupportLine_factor_slope
     (i : Fin (V.hermitianHNLength)) (x : ℝ) :
     V.hermitianHNSupportLine
       ((V.hermitianHNFactor i).slope) x =
-        (V.restrictOfMeasurableBase (V.hermitianHNTerm i.val)).degree +
+        (V.restrictOfNormMeasurability (V.hermitianHNTerm i.val)).degree +
           (x - (Module.finrank K (V.hermitianHNTerm i.val) : ℝ)) *
             (V.hermitianHNFactor i).slope := by
   classical
@@ -236,7 +236,7 @@ theorem hermitianHNSupportLine_factor_slope
     exact_mod_cast V.sum_hermitianHNFactor_finrank_prefix i.val hi
   have hD : (∑ j : Fin i.val, d ⟨j.val, Nat.lt_of_lt_of_le j.isLt hi⟩ *
       β ⟨j.val, Nat.lt_of_lt_of_le j.isLt hi⟩) =
-        (V.restrictOfMeasurableBase (V.hermitianHNTerm i.val)).degree := by
+        (V.restrictOfNormMeasurability (V.hermitianHNTerm i.val)).degree := by
     simpa only [d, β, degree_eq_rank_mul_slope] using
       V.sum_hermitianHNFactor_degree_prefix i.val hi
   have hs : (∑ j : Fin (V.hermitianHNLength), d j * max (β j - β i) 0) =
@@ -270,7 +270,7 @@ preceding rank, rather than at a supplied numerical vertex. -/
 theorem hermitianHNPolygon_rank_factor_start
     (i : Fin (V.hermitianHNLength)) :
     V.hermitianHNPolygon (Module.finrank K (V.hermitianHNTerm i.val)) =
-      (V.restrictOfMeasurableBase (V.hermitianHNTerm i.val)).degree := by
+      (V.restrictOfNormMeasurability (V.hermitianHNTerm i.val)).degree := by
   apply le_antisymm
   · apply (V.hermitianHNPolygon_le_supportLine i _).trans_eq
     rw [V.hermitianHNSupportLine_factor_slope]
@@ -283,7 +283,7 @@ theorem hermitianHNPolygon_rank_factor_end
     (i : Fin (V.hermitianHNLength)) :
     V.hermitianHNPolygon
         (Module.finrank K (V.hermitianHNTerm (i.val + 1))) =
-      (V.restrictOfMeasurableBase (V.hermitianHNTerm (i.val + 1))).degree
+      (V.restrictOfNormMeasurability (V.hermitianHNTerm (i.val + 1))).degree
         := by
   apply le_antisymm
   · apply (V.hermitianHNPolygon_le_supportLine i _).trans_eq
@@ -307,7 +307,7 @@ endpoints and the sole vertex of the empty zero-dimensional flag. -/
 theorem hermitianHNPolygon_rank_term (m : ℕ)
     (hm : m ≤ V.hermitianHNLength) :
     V.hermitianHNPolygon (Module.finrank K (V.hermitianHNTerm m)) =
-      (V.restrictOfMeasurableBase (V.hermitianHNTerm m)).degree := by
+      (V.restrictOfNormMeasurability (V.hermitianHNTerm m)).degree := by
   by_cases hp : 0 < V.hermitianHNLength
   · by_cases hlt : m < V.hermitianHNLength
     · exact V.hermitianHNPolygon_rank_factor_start ⟨m, hlt⟩
@@ -317,7 +317,7 @@ theorem hermitianHNPolygon_rank_term (m : ℕ)
       have hv := V.hermitianHNPolygon_rank_factor_end i
       have ht := congrArg (fun k : ℕ ↦
         V.hermitianHNPolygon (Module.finrank K (V.hermitianHNTerm k)) =
-          (V.restrictOfMeasurableBase (V.hermitianHNTerm k)).degree) hi
+          (V.restrictOfNormMeasurability (V.hermitianHNTerm k)).degree) hi
       exact Eq.mp ht hv
   · have hm0 : m = 0 := by omega
     subst m
@@ -332,7 +332,7 @@ theorem hermitianHNSupportLine_rank_factor_end
     V.hermitianHNSupportLine
         ((V.hermitianHNFactor i).slope)
         (Module.finrank K (V.hermitianHNTerm (i.val + 1))) =
-      (V.restrictOfMeasurableBase (V.hermitianHNTerm (i.val + 1))).degree
+      (V.restrictOfNormMeasurability (V.hermitianHNTerm (i.val + 1))).degree
         := by
   rw [V.hermitianHNSupportLine_factor_slope]
   have hm := Submodule.finrank_mono
@@ -356,13 +356,13 @@ theorem hermitianHNPolygon_affine_factor
       (Module.finrank K (V.hermitianHNTerm i.val) : ℝ)
       (Module.finrank K (V.hermitianHNTerm (i.val + 1)) : ℝ)) :
     V.hermitianHNPolygon x =
-      (V.restrictOfMeasurableBase (V.hermitianHNTerm i.val)).degree +
+      (V.restrictOfNormMeasurability (V.hermitianHNTerm i.val)).degree +
         (x - (Module.finrank K (V.hermitianHNTerm i.val) : ℝ)) *
           (V.hermitianHNFactor i).slope := by
   let r : ℝ := Module.finrank K (V.hermitianHNTerm i.val)
   let s : ℝ := Module.finrank K (V.hermitianHNTerm (i.val + 1))
-  let D := (V.restrictOfMeasurableBase (V.hermitianHNTerm i.val)).degree
-  let D' := (V.restrictOfMeasurableBase (V.hermitianHNTerm (i.val + 1))).degree
+  let D := (V.restrictOfNormMeasurability (V.hermitianHNTerm i.val)).degree
+  let D' := (V.restrictOfNormMeasurability (V.hermitianHNTerm (i.val + 1))).degree
   let β := (V.hermitianHNFactor i).slope
   have hr : r < s := Nat.cast_lt.mpr
     (Submodule.finrank_lt_finrank_of_lt (V.hermitianHNTerm_lt i.val (i.val + 1)

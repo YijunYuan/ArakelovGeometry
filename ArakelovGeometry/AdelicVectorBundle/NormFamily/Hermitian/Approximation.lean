@@ -326,8 +326,9 @@ theorem complexEllipsoidFamily_norm_finite (ω : S.Ω) (hω : ω ∈ S.Ωfin)
   ξ.complexEllipsoidFamily_norm_of_not_mem b σ hσ Q hQ ω (fun hi => hi hω) x
 
 /-- Finite-place ultrametricity is preserved and reflected. -/
-theorem complexEllipsoidFamily_isUltrametric_iff :
-    (ξ.complexEllipsoidFamily b σ hσ Q hQ).IsUltrametric ↔ ξ.IsUltrametric := by
+theorem complexEllipsoidFamily_isUltrametricAtFinitePlaces_iff :
+    (ξ.complexEllipsoidFamily b σ hσ Q hQ).IsUltrametricAtFinitePlaces ↔
+      ξ.IsUltrametricAtFinitePlaces := by
   constructor <;> intro hu <;> constructor <;> intro ω hω x y
   · simpa only [ξ.complexEllipsoidFamily_norm_finite b σ hσ Q hQ ω hω] using
       hu ω hω x y
@@ -371,9 +372,9 @@ theorem complexEllipsoidFamily_exists_innerProduct
 source Hermitian condition whenever the original family is ultrametric. -/
 theorem complexEllipsoidFamily_isHermitian
     [hS : S.IsArchimedeanNormalized]
-    [hu : ξ.IsUltrametric] :
+    [hu : ξ.IsUltrametricAtFinitePlaces] :
     (ξ.complexEllipsoidFamily b σ hσ Q hQ).IsHermitian :=
-  ⟨(ξ.complexEllipsoidFamily_isUltrametric_iff b σ hσ Q hQ).mpr hu,
+  ⟨(ξ.complexEllipsoidFamily_isUltrametricAtFinitePlaces_iff b σ hσ Q hQ).mpr hu,
     ξ.complexEllipsoidFamily_exists_innerProduct b σ hσ Q hQ⟩
 
 /-- Measurable rational evaluations on the infinite subtype paste with the
@@ -420,7 +421,7 @@ theorem IsMeasurable.exists_archimedean_innerProduct_approximation
         letI := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
         ∃ c : InnerProductSpace.Core (S.ϕ ω).Completion ((S.ϕ ω).Completion ⊗[K] E),
           ∀ x, (η.norm ω x) ^ 2 = RCLike.re (c.inner x x)) ∧
-      (η.IsUltrametric ↔ ξ.IsUltrametric) ∧
+      (η.IsUltrametricAtFinitePlaces ↔ ξ.IsUltrametricAtFinitePlaces) ∧
       (∀ ω ∈ S.Ωfin, ∀ x, η.norm ω x = ξ.norm ω x) ∧
       ∀ ω ∈ S.Ωinf, ∀ x, ξ.norm ω x ≤ η.norm ω x ∧
         η.norm ω x ≤ Real.sqrt (Module.finrank K E + ε) * ξ.norm ω x := by
@@ -433,7 +434,7 @@ theorem IsMeasurable.exists_archimedean_innerProduct_approximation
   refine ⟨ξ.complexEllipsoidFamily b σ hσ Q hQ,
     ξ.complexEllipsoidFamily_isMeasurable b σ hσ Q hQ hmeas,
     ξ.complexEllipsoidFamily_exists_innerProduct b σ hσ Q hQ,
-    ξ.complexEllipsoidFamily_isUltrametric_iff b σ hσ Q hQ,
+    ξ.complexEllipsoidFamily_isUltrametricAtFinitePlaces_iff b σ hσ Q hQ,
     ξ.complexEllipsoidFamily_norm_finite b σ hσ Q hQ, fun ω hω x => ?_⟩
   rw [ξ.complexEllipsoidFamily_norm_of_mem b σ hσ Q hQ ω hω]
   simpa only [Fintype.card_fin] using hbounds ⟨ω, hω⟩ x
@@ -443,7 +444,7 @@ a measurable Hermitian approximation with the dimension-sharp John bound.
 The common countable subfield is required only at infinite places. The
 statement includes rank zero and the empty infinite-place locus. -/
 theorem IsMeasurable.exists_hermitian_approximation [FiniteDimensional K E]
-    {ξ : NormFamily S E} (hξ : ξ.IsMeasurable) (hu : ξ.IsUltrametric)
+    {ξ : NormFamily S E} (hξ : ξ.IsMeasurable) (hu : ξ.IsUltrametricAtFinitePlaces)
     [hS : S.IsArchimedeanNormalized]
     (K₀ : Subfield K) [Countable K₀]
     (hK₀ : ∀ ω ∈ S.Ωinf, S.IsDenseSubfieldAt K₀ ω) {ε : ℝ} (hε : 0 < ε) :

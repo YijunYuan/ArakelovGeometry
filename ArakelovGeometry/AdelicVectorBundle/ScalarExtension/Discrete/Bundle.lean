@@ -65,10 +65,11 @@ theorem scalarExtensionOfCountableDiscreteBase_isStronglyAdelic (V : AdelicVecto
     V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)
 
 /-- The actual scalar family has ultrametric finite-place norms. -/
-theorem scalarExtensionOfCountableDiscreteBase_isUltrametric (V : AdelicVectorBundle S)
+theorem scalarExtensionOfCountableDiscreteBase_isUltrametricAtFinitePlaces
+    (V : AdelicVectorBundle S)
     [S.IsArchimedeanNormalized] :
-    (V.scalarExtensionOfCountableDiscreteBase (L := L)).toNormFamily.IsUltrametric :=
-  V.toNormFamily.scalarExtension_isUltrametric
+    (V.scalarExtensionOfCountableDiscreteBase (L := L)).toNormFamily.IsUltrametricAtFinitePlaces :=
+  V.toNormFamily.scalarExtension_isUltrametricAtFinitePlaces
 
 /-- Scalar rank preservation includes the zero bundle. -/
 theorem scalarExtensionOfCountableDiscreteBase_rank (V : AdelicVectorBundle S)

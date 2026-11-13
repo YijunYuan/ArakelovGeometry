@@ -186,9 +186,9 @@ def ofTrivialFiltration : NormFamily (singleTrivialPlace K) E :=
     (trivialFiltrationSeminorm_eq_zero_iff F hF hbot htop hleft)
 
 /-- The produced actual family is ultrametric on every completed vector. -/
-theorem ofTrivialFiltration_isUltrametric :
-    (ofTrivialFiltration F hF hbot htop hleft).IsUltrametric :=
-  (ofTrivialNorm_isUltrametric_iff _ _).mpr
+theorem ofTrivialFiltration_isUltrametricAtFinitePlaces :
+    (ofTrivialFiltration F hF hbot htop hleft).IsUltrametricAtFinitePlaces :=
+  (ofTrivialNorm_isUltrametricAtFinitePlaces_iff _ _).mpr
     (trivialFiltrationSeminorm_add_le_max F hF hbot htop hleft)
 
 open Classical in
@@ -196,7 +196,7 @@ open Classical in
 family's literal closed balls, including zero vectors and endpoints. -/
 theorem trivialFiltration_ofTrivialFiltration (t : ℝ) :
     (ofTrivialFiltration F hF hbot htop hleft).trivialFiltration
-      (hξ := (ofTrivialFiltration_isUltrametric F hF hbot htop hleft)) t = F t := by
+      (hξ := (ofTrivialFiltration_isUltrametricAtFinitePlaces F hF hbot htop hleft)) t = F t := by
   ext x
   simp only [mem_trivialFiltration, ofTrivialFiltration, trivialSeminorm_ofTrivialNorm,
     trivialFiltrationSeminorm_apply]
@@ -209,7 +209,7 @@ open Classical in
 /-- The inverse construction recovers an actual ultrametric family on
 all completed vectors, via equality of its genuine extracted norm. -/
 theorem ofTrivialFiltration_trivialFiltration [FiniteDimensional K E]
-    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric] :
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     ofTrivialFiltration (ξ.trivialFiltration) (ξ.antitone_trivialFiltration)
       (ξ.trivialFiltration_attains_bot_top).1 (ξ.trivialFiltration_attains_bot_top).2
       (ξ.trivialFiltration_locallyConstant_left) = ξ := by

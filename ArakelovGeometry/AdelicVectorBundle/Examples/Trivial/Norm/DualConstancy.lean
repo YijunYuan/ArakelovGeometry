@@ -114,7 +114,7 @@ namespace AdelicVectorBundle
 open AdelicStructure
 
 variable (V : AdelicVectorBundle (singleTrivialPlace K))
-  [hS : (singleTrivialPlace K).HasMeasurableBase]
+  [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
 open Classical in

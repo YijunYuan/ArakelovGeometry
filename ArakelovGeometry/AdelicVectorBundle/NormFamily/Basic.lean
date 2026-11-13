@@ -130,19 +130,19 @@ instance instSubsingleton [Subsingleton E] : Subsingleton (NormFamily S E) where
     rw [norm_eq_zero_of_subsingleton, norm_eq_zero_of_subsingleton]
 
 /-- Ultrametricity is imposed at every non-Archimedean place, as in §4.1.1. -/
-class IsUltrametric : Prop where
+class IsUltrametricAtFinitePlaces : Prop where
   /-- The defining property. -/
   norm_add_le_max :
     ∀ ω ∈ S.Ωfin, ∀ x y, ξ.norm ω (x + y) ≤ max (ξ.norm ω x) (ξ.norm ω y)
 
-instance : CoeFun (ξ.IsUltrametric)
+instance : CoeFun (ξ.IsUltrametricAtFinitePlaces)
     (fun _ ↦
       ∀ ω ∈ S.Ωfin, ∀ x y, ξ.norm ω (x + y) ≤ max (ξ.norm ω x) (ξ.norm ω y)) :=
   ⟨fun h ↦ h.norm_add_le_max⟩
 
-/-- The defining proposition of `IsUltrametric`. -/
-theorem IsUltrametric.iff :
-    ξ.IsUltrametric ↔
+/-- The defining proposition of `IsUltrametricAtFinitePlaces`. -/
+theorem IsUltrametricAtFinitePlaces.iff :
+    ξ.IsUltrametricAtFinitePlaces ↔
     ∀ ω ∈ S.Ωfin, ∀ x y, ξ.norm ω (x + y) ≤ max (ξ.norm ω x) (ξ.norm ω y) :=
   ⟨fun h ↦ h.norm_add_le_max, fun h ↦ ⟨h⟩⟩
 
@@ -201,8 +201,8 @@ theorem scale_injective (f : S.Ω → ℝ) (hf : ∀ ω, 0 < f ω) :
   (scaleEquiv f hf).injective
 
 /-- Scaling by a positive function preserves the non-Archimedean triangle inequality. -/
-theorem IsUltrametric.scale {ξ : NormFamily S E} (hξ : ξ.IsUltrametric)
-    (f : S.Ω → ℝ) (hf : ∀ ω, 0 < f ω) : (ξ.scale f hf).IsUltrametric := by
+theorem IsUltrametricAtFinitePlaces.scale {ξ : NormFamily S E} (hξ : ξ.IsUltrametricAtFinitePlaces)
+    (f : S.Ω → ℝ) (hf : ∀ ω, 0 < f ω) : (ξ.scale f hf).IsUltrametricAtFinitePlaces := by
   constructor
   intro ω hω x y
   simp only [scale_norm, ← mul_max_of_nonneg _ _ (hf ω).le]
@@ -210,8 +210,8 @@ theorem IsUltrametric.scale {ξ : NormFamily S E} (hξ : ξ.IsUltrametric)
 
 /-- Positive rescaling preserves and reflects ultrametricity. -/
 @[simp]
-theorem scale_isUltrametric_iff (f : S.Ω → ℝ) (hf : ∀ ω, 0 < f ω) :
-    (ξ.scale f hf).IsUltrametric ↔ ξ.IsUltrametric := by
+theorem scale_isUltrametricAtFinitePlaces_iff (f : S.Ω → ℝ) (hf : ∀ ω, 0 < f ω) :
+    (ξ.scale f hf).IsUltrametricAtFinitePlaces ↔ ξ.IsUltrametricAtFinitePlaces := by
   refine ⟨fun h ↦ ?_, fun h ↦ h.scale f hf⟩
   simpa only [scale_inv_scale] using h.scale (fun ω ↦ (f ω)⁻¹)
     (fun ω ↦ inv_pos.mpr (hf ω))

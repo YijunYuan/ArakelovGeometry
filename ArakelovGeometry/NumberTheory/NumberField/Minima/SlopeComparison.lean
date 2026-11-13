@@ -125,18 +125,18 @@ theorem maximalSlope_antitone_norm
   apply Q.toAdelicVectorBundle.maximalSlope_le
   intro F hF
   have hrestrict :
-      (P.restrictOfMeasurableBase F).toNormFamily ≤
-        (Q.toAdelicVectorBundle.restrictOfMeasurableBase F).toNormFamily := by
+      (P.restrictOfNormMeasurability F).toNormFamily ≤
+        (Q.toAdelicVectorBundle.restrictOfNormMeasurability F).toNormFamily := by
     intro ω z
     exact h ω (F.subtype.baseChange _ z)
   have hd := AdelicVectorBundle.degree_antitone
-    (P.restrictOfMeasurableBase F)
-    (Q.toAdelicVectorBundle.restrictOfMeasurableBase F).toNormFamily
-    (hW := (Q.toAdelicVectorBundle.restrictOfMeasurableBase F).toIsAdelic) hrestrict
+    (P.restrictOfNormMeasurability F)
+    (Q.toAdelicVectorBundle.restrictOfNormMeasurability F).toNormFamily
+    (hW := (Q.toAdelicVectorBundle.restrictOfNormMeasurability F).toIsAdelic) hrestrict
   have hs :
-      (Q.toAdelicVectorBundle.restrictOfMeasurableBase F).slope
+      (Q.toAdelicVectorBundle.restrictOfNormMeasurability F).slope
           ≤
-        (P.restrictOfMeasurableBase F).slope
+        (P.restrictOfNormMeasurability F).slope
           :=
     div_le_div_of_nonneg_right hd (Nat.cast_pos.mpr hF).le
   exact (EReal.coe_le_coe hs).trans (P.slope_restrict_le_maximalSlope F hF

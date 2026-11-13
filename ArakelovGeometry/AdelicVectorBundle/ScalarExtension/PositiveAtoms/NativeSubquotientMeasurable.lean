@@ -53,9 +53,9 @@ private theorem isMeasurable_of_countable_localDist_zero
 /-- Every actual native relative quotient of the finite scalar extension of
 an original dominated family is measurable on an all-finite positive atomic
 curve. The field and both parameter spaces may be uncountable. -/
-theorem IsDominated.scalarExtension_restrict_quotient_isMeasurable_of_positive_atoms
+theorem IsDominated.scalarExtension_restrict_quotient_isMeasurable_of_pos_singletons
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveSingletons]
     [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
     (((ξ.scalarExtension (L := L)).restrict B).quotient U).IsMeasurable := by
@@ -64,7 +64,7 @@ theorem IsDominated.scalarExtension_restrict_quotient_isMeasurable_of_positive_a
   let b := Module.finBasis K E
   have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin (S := S)
   obtain ⟨H, _, _, hc, _, hb, _⟩ :=
-    IsDominated.exists_scalarExtension_coordinate_exceptions_of_positive_atoms ξ b hξ hfin
+    IsDominated.exists_scalarExtension_coordinate_exceptions_of_pos_singletons ξ b hξ hfin
   have ht := AdelicStructure.ParameterSpaceExtension.countable_preimage_proj_of_finiteDimensional
     (L := L) (Function.support H) hc
   let q := ofBasisMixed (S.algebraicExtension L) (L ⊗[K] E) (b.baseChange L)
@@ -87,9 +87,9 @@ theorem IsDominated.scalarExtension_restrict_quotient_isMeasurable_of_positive_a
 
 /-- The actual dual of every original-family native relative quotient is
 measurable using the same produced countable scalar exception set. -/
-theorem IsDominated.scalarExtension_restrict_quotient_dual_isMeasurable_of_positive_atoms
+theorem IsDominated.scalarExtension_restrict_quotient_dual_isMeasurable_of_pos_singletons
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E)
-    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveSingletons]
     [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
     (((ξ.scalarExtension (L := L)).restrict B).quotient U).dual.IsMeasurable := by
@@ -98,7 +98,7 @@ theorem IsDominated.scalarExtension_restrict_quotient_dual_isMeasurable_of_posit
   let b := Module.finBasis K E
   have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin (S := S)
   obtain ⟨H, _, _, hc, _, hb, _⟩ :=
-    IsDominated.exists_scalarExtension_coordinate_exceptions_of_positive_atoms ξ b hξ hfin
+    IsDominated.exists_scalarExtension_coordinate_exceptions_of_pos_singletons ξ b hξ hfin
   have ht := AdelicStructure.ParameterSpaceExtension.countable_preimage_proj_of_finiteDimensional
     (L := L) (Function.support H) hc
   let q := ofBasisMixed (S.algebraicExtension L) (L ⊗[K] E) (b.baseChange L)
@@ -130,7 +130,7 @@ theorem IsDominated.functionField_scalarExtension_restrict_quotient_isMeasurable
     (ξ : NormFamily (AdelicStructure.functionFieldAdelicStructure k) E)
     (hξ : ξ.IsDominated) (B : Submodule L (L ⊗[RatFunc k] E)) (U : Submodule L B) :
     (((ξ.scalarExtension (L := L)).restrict B).quotient U).IsMeasurable := by
-  apply IsDominated.scalarExtension_restrict_quotient_isMeasurable_of_positive_atoms
+  apply IsDominated.scalarExtension_restrict_quotient_isMeasurable_of_pos_singletons
     ξ hξ B U
 
 /-- The same genuine projective-line regularity holds for actual native
@@ -142,7 +142,7 @@ theorem IsDominated.functionField_scalarExtension_restrict_quotient_dual_isMeasu
     (ξ : NormFamily (AdelicStructure.functionFieldAdelicStructure k) E)
     (hξ : ξ.IsDominated) (B : Submodule L (L ⊗[RatFunc k] E)) (U : Submodule L B) :
     (((ξ.scalarExtension (L := L)).restrict B).quotient U).dual.IsMeasurable := by
-  apply IsDominated.scalarExtension_restrict_quotient_dual_isMeasurable_of_positive_atoms
+  apply IsDominated.scalarExtension_restrict_quotient_dual_isMeasurable_of_pos_singletons
     ξ hξ B U
 
 end ArakelovGeometry.NormFamily

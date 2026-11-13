@@ -47,14 +47,14 @@ theorem restrict_globalUnitBall_eq_preimage (F : Submodule K E) :
   ext x
   rfl
 
-theorem restrict_globalUnitBallModule_eq_comap [hξ : ξ.IsUltrametric]
+theorem restrict_globalUnitBallModule_eq_comap [hξ : ξ.IsUltrametricAtFinitePlaces]
     (F : Submodule K E) :
     (ξ.restrict F).globalUnitBallModule (hξ := (hξ.restrict F)) =
       (ξ.globalUnitBallModule).comap (F.subtype.restrictScalars (𝓞 K)) := by
   ext x
   rfl
 
-theorem restrict_completedUnitBallModule_eq_comap [hξ : ξ.IsUltrametric]
+theorem restrict_completedUnitBallModule_eq_comap [hξ : ξ.IsUltrametricAtFinitePlaces]
     (F : Submodule K E) (ω : (normalizedNumberFieldAdelicStructure K).Ω)
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) :
     (ξ.restrict F).completedUnitBallModule ω hω (hξ := (hξ.restrict F)) =
@@ -98,7 +98,7 @@ instance instHasFiniteNormExceptionsRestrict [hfinite : ξ.HasFiniteNormExceptio
   hfinite.restrict F
 
 /-- The literal inclusion of the actual restricted integral lattice. -/
-def restrictedGlobalUnitBallInclusion [hξ : ξ.IsUltrametric] (F : Submodule K E) :
+def restrictedGlobalUnitBallInclusion [hξ : ξ.IsUltrametricAtFinitePlaces] (F : Submodule K E) :
     (ξ.restrict F).globalUnitBallModule (hξ := (hξ.restrict F)) →ₗ[𝓞 K]
       ξ.globalUnitBallModule where
   toFun x := ⟨(x.val : E), x.property⟩
@@ -106,11 +106,12 @@ def restrictedGlobalUnitBallInclusion [hξ : ξ.IsUltrametric] (F : Submodule K 
   map_smul' _ _ := Subtype.ext rfl
 
 @[simp]
-theorem restrictedGlobalUnitBallInclusion_coe [hξ : ξ.IsUltrametric] (F : Submodule K E)
+theorem restrictedGlobalUnitBallInclusion_coe
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (F : Submodule K E)
     (x : (ξ.restrict F).globalUnitBallModule (hξ := (hξ.restrict F))) :
     (ξ.restrictedGlobalUnitBallInclusion F x : E) = (x.val : E) := rfl
 
-theorem restrictedGlobalUnitBallInclusion_injective [hξ : ξ.IsUltrametric]
+theorem restrictedGlobalUnitBallInclusion_injective [hξ : ξ.IsUltrametricAtFinitePlaces]
     (F : Submodule K E) : Function.Injective (ξ.restrictedGlobalUnitBallInclusion F) := by
   intro x y h
   apply Subtype.ext
@@ -119,7 +120,7 @@ theorem restrictedGlobalUnitBallInclusion_injective [hξ : ξ.IsUltrametric]
 
 variable [FiniteDimensional K E]
 
-theorem latticeGaugeFamily_restrict [hξ : ξ.IsUltrametric] (F : Submodule K E) :
+theorem latticeGaugeFamily_restrict [hξ : ξ.IsUltrametricAtFinitePlaces] (F : Submodule K E) :
     (ξ.restrict F).latticeGaugeFamily
         (hξ := (hξ.restrict F)) = (ξ.latticeGaugeFamily).restrict F := by
   ext ω z
@@ -132,7 +133,7 @@ theorem latticeGaugeFamily_restrict [hξ : ξ.IsUltrametric] (F : Submodule K E)
 
 theorem IsDominated.fg_restrict_normalizedGlobalUnitBallModule
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hdom : ξ.IsDominated) (hξ : ξ.IsUltrametric) (F : Submodule K E) :
+    (hdom : ξ.IsDominated) (hξ : ξ.IsUltrametricAtFinitePlaces) (F : Submodule K E) :
     ((ξ.restrict F).globalUnitBallModule (hξ := (hξ.restrict F))).FG := by
   let : Module.Finite (𝓞 K) (ξ.globalUnitBallModule) :=
     Module.Finite.iff_fg.mpr (hdom.fg_normalizedGlobalUnitBallModule hξ)
@@ -153,7 +154,7 @@ theorem HasFiniteNormExceptions.span_restrict_normalizedGlobalUnitBall_eq_top
 
 theorem HasFiniteNormExceptions.restricted_normalizedGlobalCompletedTensorMap_bijective
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hfinite : ξ.HasFiniteNormExceptions) (hξ : ξ.IsUltrametric)
+    (hfinite : ξ.HasFiniteNormExceptions) (hξ : ξ.IsUltrametricAtFinitePlaces)
     (F : Submodule K E) (p : HeightOneSpectrum (𝓞 K)) :
     Function.Bijective ((ξ.restrict F).normalizedGlobalUnitBallCompletedTensorMap
       (hξ := (hξ.restrict F)) p) :=
@@ -211,7 +212,8 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 
 theorem normalizedLineGlobalUnitBall_invertible
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    [hξ : ξ.IsUltrametric] [hfinite : ξ.HasFiniteNormExceptions] [hdom : ξ.IsDominated]
+    [hξ : ξ.IsUltrametricAtFinitePlaces] [hfinite : ξ.HasFiniteNormExceptions]
+      [hdom : ξ.IsDominated]
     (F : Submodule K E) (hrank : Module.finrank K F = 1) :
     Module.Invertible (𝓞 K) ((ξ.restrict F).globalUnitBallModule (hξ := (hξ.restrict F))) :=
   NumberFieldLineLattice.invertible_of_fg_of_span_eq_top_of_finrank_eq_one _
@@ -220,7 +222,8 @@ theorem normalizedLineGlobalUnitBall_invertible
 
 theorem exists_normalizedLineGlobalUnitBall_boundedIndex_element
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    [hξ : ξ.IsUltrametric] [hfinite : ξ.HasFiniteNormExceptions] [hdom : ξ.IsDominated]
+    [hξ : ξ.IsUltrametricAtFinitePlaces] [hfinite : ξ.HasFiniteNormExceptions]
+      [hdom : ξ.IsDominated]
     (F : Submodule K E) (hrank : Module.finrank K F = 1) :
     ∃ l : (ξ.restrict F).globalUnitBallModule (hξ := (hξ.restrict F)), l ≠ 0 ∧
       Finite (((ξ.restrict F).globalUnitBallModule (hξ := (hξ.restrict F))) ⧸

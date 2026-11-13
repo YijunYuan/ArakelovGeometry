@@ -144,8 +144,8 @@ theorem majorantDiscrepancy_le_exp_bidual_localDist_pow_finite (ξ : NormFamily 
   let a : S.Ω → ℝ := fun _ ↦ Real.exp (ξ.localDist β ω)
   have ha : ∀ ω', 0 < a ω' := fun _ ↦ Real.exp_pos _
   let η := β.scale a ha
-  have hu : η.IsUltrametric :=
-    (ξ.dual.dual_isUltrametric.pullback _ _).scale a ha
+  have hu : η.IsUltrametricAtFinitePlaces :=
+    (ξ.dual.dual_isUltrametricAtFinitePlaces.pullback _ _).scale a ha
   have he : η.IsElementaryAt ω :=
     ⟨hu ω, fun hi ↦ False.elim (hi hω)⟩
   have hl (x : (S.ϕ ω).Completion ⊗[K] E) : ξ.norm ω x ≤ η.norm ω x := by

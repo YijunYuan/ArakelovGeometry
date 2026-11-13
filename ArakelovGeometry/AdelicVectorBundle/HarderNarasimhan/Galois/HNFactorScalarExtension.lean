@@ -57,17 +57,18 @@ theorem slope_hermitianHNFactor_hermitianScalarExtension_of_finiteGalois
   refine ⟨hj, ?_⟩
   apply EReal.coe_injective
   calc
-    _ = (W.quotientOfMeasurableBase (W.hermitianHNTerm (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) i)
+    _ = (W.quotientOfNormMeasurability (W.hermitianHNTerm (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) i)
         (hS := ⟨hLS⟩)).maximalSlope
         (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := W.slope_hermitianHNFactor_eq_maximalSlope_quotient
             (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (hV := hLH) ⟨i, hj⟩
-    _ = (W.quotientOfMeasurableBase
+    _ = (W.quotientOfNormMeasurability
         ((V.hermitianHNTerm i).baseChange L) (hS := ⟨hLS⟩)).maximalSlope
           (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := congrArg (fun U : Submodule L (L ⊗[K] V) ↦
-            (W.quotientOfMeasurableBase U (hS := ⟨hLS⟩)).maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩))
+            (W.quotientOfNormMeasurability U (hS := ⟨hLS⟩)).maximalSlope (hS := ⟨hLS⟩)
+              (hN := ⟨hLN⟩))
               (V.hermitianHNTerm_baseChange_hermitianScalarExtension_of_finiteGalois
                  i).symm
-    _ = (V.quotientOfMeasurableBase
+    _ = (V.quotientOfNormMeasurability
         (V.hermitianHNTerm i)).maximalSlope
           :=
       V.maximalSlope_quotient_hermitianScalarExtension_of_finiteGalois

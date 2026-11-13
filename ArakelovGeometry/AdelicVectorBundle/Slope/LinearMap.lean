@@ -132,7 +132,7 @@ variable [S.IsProper]
 gives the mean-slope estimate, including infinite map height. -/
 theorem slope_le_slope_add_mapHeight (V : AdelicVectorBundle S)
     (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (e : V ≃ₗ[K] W) (hr : 0 < Module.finrank K V) :
     (V.slope : EReal) ≤ (W.slope : EReal) + V.mapHeight W e.toLinearMap := by
@@ -172,13 +172,13 @@ omit [S.IsProper] in
 of its ambient map. -/
 theorem mapHeight_restriction_le (V : AdelicVectorBundle S)
     (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     (f : V →ₗ[K] W) (hf : f ≠ 0) (U : Submodule K V) (T : Submodule K W)
     (g : U →ₗ[K] T) (hg : g ≠ 0) (hc : T.subtype.comp g = f.comp U.subtype) :
-    (V.restrictOfMeasurableBase U).mapHeight
-      (W.restrictOfMeasurableBase T) g ≤ V.mapHeight W f := by
+    (V.restrictOfNormMeasurability U).mapHeight
+      (W.restrictOfNormMeasurability T) g ≤ V.mapHeight W f := by
   apply V.mapHeight_le_of_operatorNorm_le W
-    (V.restrictOfMeasurableBase U) (W.restrictOfMeasurableBase T) f g hf hg
+    (V.restrictOfNormMeasurability U) (W.restrictOfNormMeasurability T) f g hf hg
   intro ω
   exact V.toNormFamily.operatorNorm_restriction_le W.toNormFamily f U T g hc ω
 
@@ -187,14 +187,14 @@ omit [S.IsProper] in
 ambient map height. -/
 theorem mapHeight_quotient_le (V : AdelicVectorBundle S)
     (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     (f : V →ₗ[K] W) (hf : f ≠ 0) (U : Submodule K V) (T : Submodule K W)
     (g : (V ⧸ U) →ₗ[K] (W ⧸ T)) (hg : g ≠ 0)
     (hc : g.comp U.mkQ = T.mkQ.comp f) :
-    (V.quotientOfMeasurableBase U).mapHeight
-      (W.quotientOfMeasurableBase T) g ≤ V.mapHeight W f := by
+    (V.quotientOfNormMeasurability U).mapHeight
+      (W.quotientOfNormMeasurability T) g ≤ V.mapHeight W f := by
   apply V.mapHeight_le_of_operatorNorm_le W
-    (V.quotientOfMeasurableBase U) (W.quotientOfMeasurableBase T) f g hf hg
+    (V.quotientOfNormMeasurability U) (W.quotientOfNormMeasurability T) f g hf hg
   intro ω
   exact V.toNormFamily.operatorNorm_quotient_le W.toNormFamily f hf U T g hc ω
 
@@ -202,7 +202,7 @@ theorem mapHeight_quotient_le (V : AdelicVectorBundle S)
 height. Each source subspace is compared with its actual range restriction. -/
 theorem maximalSlope_le_maximalSlope_add_mapHeight_of_injective
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) (hf : Function.Injective f) :
     V.maximalSlope ≤ W.maximalSlope + V.mapHeight W f := by
@@ -214,8 +214,8 @@ theorem maximalSlope_le_maximalSlope_add_mapHeight_of_injective
     intro U hU
     let e := LinearEquiv.ofInjective (f.comp U.subtype) (hf.comp U.subtype_injective)
     let T := (f.comp U.subtype).range
-    let P := V.restrictOfMeasurableBase U
-    let Q := W.restrictOfMeasurableBase T
+    let P := V.restrictOfNormMeasurability U
+    let Q := W.restrictOfNormMeasurability T
     let : Nontrivial U := Module.nontrivial_of_finrank_pos hU
     have he : e.toLinearMap ≠ 0 := LinearMap.ne_zero_of_injective e.injective
     have hc : T.subtype.comp e.toLinearMap = f.comp U.subtype := by ext x; rfl
@@ -228,7 +228,7 @@ theorem maximalSlope_le_maximalSlope_add_mapHeight_of_injective
 target mean slope. Its canonical source quotient norm is constructed here. -/
 theorem minimalSlope_le_slope_add_mapHeight_of_surjective
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) (hs : Function.Surjective f) (hr : 0 < Module.finrank K W) :
     V.minimalSlope ≤ (W.slope : EReal) + V.mapHeight W f := by
@@ -253,13 +253,13 @@ theorem minimalSlope_le_slope_add_mapHeight_of_surjective
 canonical source quotient. Infinite map heights are retained. -/
 theorem minimalSlope_le_maximalSlope_add_mapHeight_of_ne_zero
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) (hf : f ≠ 0) :
     V.minimalSlope ≤ W.maximalSlope + V.mapHeight W f := by
   have hr : 0 < Module.finrank K f.range := Nat.pos_of_ne_zero (fun hz ↦
     hf (LinearMap.range_eq_bot.mp (Submodule.finrank_eq_zero.mp hz)))
-  let Q := W.restrictOfMeasurableBase f.range
+  let Q := W.restrictOfNormMeasurability f.range
   have hfr : f.rangeRestrict ≠ 0 := by
     intro hz
     have hc : f.range.subtype.comp f.rangeRestrict = f := by ext x; rfl
@@ -278,7 +278,7 @@ finite-height premise is used to translate the actual quotient-mean infimum;
 the infinite-height case additionally requires the slope-finiteness producer. -/
 theorem minimalSlope_le_minimalSlope_add_mapHeight_of_surjective_of_ne_top
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) (hs : Function.Surjective f) (hf : f ≠ 0)
     (ht : V.mapHeight W f ≠ ⊤) :
@@ -290,7 +290,7 @@ theorem minimalSlope_le_minimalSlope_add_mapHeight_of_surjective_of_ne_top
   rw [W.minimalSlope_eq_iInf_slope_quotient]
   apply le_iInf
   intro U
-  let Q := W.quotientOfMeasurableBase U.val
+  let Q := W.quotientOfNormMeasurability U.val
   let g := U.val.mkQ.comp f
   have hgSurj : Function.Surjective g := U.val.mkQ_surjective.comp hs
   let : Nontrivial (W ⧸ U.val) := Module.nontrivial_of_finrank_pos U.property

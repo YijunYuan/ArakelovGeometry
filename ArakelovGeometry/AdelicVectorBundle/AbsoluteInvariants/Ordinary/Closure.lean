@@ -34,106 +34,110 @@ variable {K L M : Type*} [Field K] [Field L] [Field M]
 
 /-- Canonical measurable-determinant degree of the actual ordinary direct
 native restriction, with all analytic hypotheses produced. -/
-def nativeRestrictionDegreeOfOrdinaryBase (V : AdelicVectorBundle S)
-    [hreg : S.HasOrdinaryBase]
+def nativeRestrictionDegreeOfScalarMeasurability (V : AdelicVectorBundle S)
+    [hreg : S.ScalarExtensionMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] V)) : ℝ :=
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-  (V.scalarExtensionRestrictionOfOrdinaryBase A).degreeOfMeasurableDeterminant
-    (hdet := (V.scalarExtensionRestrictionOfOrdinaryBase_determinant_isMeasurable A))
+  (V.scalarExtensionRestrictionOfScalarMeasurability A).degreeOfMeasurableDeterminant
+    (hdet := (V.scalarExtensionRestrictionOfScalarMeasurability_determinant_isMeasurable
+      A))
     (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩)
 
 /-- On common density this is the usual degree of the same actual native
 restriction. -/
-theorem nativeRestrictionDegreeOfOrdinaryBase_eq_common_degree
+theorem nativeRestrictionDegreeOfScalarMeasurability_eq_common_degree
     (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] V)) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    V.nativeRestrictionDegreeOfOrdinaryBase (hreg := ⟨(Or.inl hcount)⟩) A =
-      ((V.scalarExtension (L := L)).restrictOfMeasurableBase A
+    V.nativeRestrictionDegreeOfScalarMeasurability (hreg := ⟨(Or.inl hcount)⟩) A =
+      ((V.scalarExtension (L := L)).restrictOfNormMeasurability A
         (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)).degree
         (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) := rfl
 
 /-- On a countable discrete original base this is the existing actual native
 determinant degree. -/
-theorem nativeRestrictionDegreeOfOrdinaryBase_eq_countable_discrete_degree
+theorem nativeRestrictionDegreeOfScalarMeasurability_eq_countable_discrete_degree
     [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] V)) :
-    V.nativeRestrictionDegreeOfOrdinaryBase (hreg := ⟨(Or.inr ⟨inferInstance, inferInstance⟩)⟩) A =
+    V.nativeRestrictionDegreeOfScalarMeasurability (hreg := ⟨(Or.inr ⟨inferInstance,
+      inferInstance⟩)⟩) A =
       V.nativeRestrictionDegreeOfCountableDiscreteBase A := rfl
 
 /-- Every nonzero rational determinant section computes the actual degree,
 including the nonzero empty determinant in rank zero. -/
-theorem nativeRestrictionDegreeOfOrdinaryBase_eq_neg_integral
+theorem nativeRestrictionDegreeOfScalarMeasurability_eq_neg_integral
     (V : AdelicVectorBundle S)
-    [hreg : S.HasOrdinaryBase]
+    [hreg : S.ScalarExtensionMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] V)) (t : ⋀[L]^(Module.finrank L A) A) (ht : t ≠ 0) :
-    V.nativeRestrictionDegreeOfOrdinaryBase A =
+    V.nativeRestrictionDegreeOfScalarMeasurability A =
       -∫ ω, ((V.toNormFamily.scalarExtension (L := L)).restrict A).determinant.logNorm t ω
         ∂(S.algebraicExtension L).v := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   exact degreeOfMeasurableDeterminant_eq_neg_integral
-    (V.scalarExtensionRestrictionOfOrdinaryBase A)
-      (hdet := V.scalarExtensionRestrictionOfOrdinaryBase_determinant_isMeasurable A)
+    (V.scalarExtensionRestrictionOfScalarMeasurability A)
+      (hdet := V.scalarExtensionRestrictionOfScalarMeasurability_determinant_isMeasurable
+        A)
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) ⟨t, ht⟩
 
 /-- The actual rational determinant map and genuine measure transport identify
 ordinary native degrees across a prescribed coefficient-field isomorphism. -/
-theorem nativeRestrictionDegreeOfOrdinaryBase_algEquiv (V : AdelicVectorBundle S)
-    [hreg : S.HasOrdinaryBase]
+theorem nativeRestrictionDegreeOfScalarMeasurability_algEquiv (V : AdelicVectorBundle S)
+    [hreg : S.ScalarExtensionMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (σ : L ≃ₐ[K] M) (A : Submodule L (L ⊗[K] V)) :
-    V.nativeRestrictionDegreeOfOrdinaryBase
+    V.nativeRestrictionDegreeOfScalarMeasurability
       (scalarExtensionSubspaceOrderIso (E := V) σ A) =
-      V.nativeRestrictionDegreeOfOrdinaryBase A := by
+      V.nativeRestrictionDegreeOfScalarMeasurability A := by
   let := RingHomInvPair.of_ringEquiv σ.toRingEquiv
   let := RingHomInvPair.of_ringEquiv_symm σ.toRingEquiv
   let t := determinantGenerator (K := L) (E := A)
   have ht : t ≠ 0 := determinantGenerator_ne_zero
   let d := scalarExtensionRestrictionDeterminantEquiv σ A
   have hd : d t ≠ 0 := d.map_ne_zero_iff.mpr ht
-  rw [V.nativeRestrictionDegreeOfOrdinaryBase_eq_neg_integral _ (d t) hd,
-    V.nativeRestrictionDegreeOfOrdinaryBase_eq_neg_integral A t ht]
+  rw [V.nativeRestrictionDegreeOfScalarMeasurability_eq_neg_integral _ (d t) hd,
+    V.nativeRestrictionDegreeOfScalarMeasurability_eq_neg_integral A t ht]
   exact congrArg (fun a : ℝ => -a)
     (V.toNormFamily.scalarExtension_restrict_determinant_integral_logNorm_algEquiv σ A t)
 
 /-- Every actual native degree appears on both sides of the genuine subspace
 bijection, so the entire extended-real supremum is preserved. -/
-theorem iSup_nativeRestrictionDegreeOfOrdinaryBase_algEquiv (V : AdelicVectorBundle S)
-    [hreg : S.HasOrdinaryBase]
+theorem iSup_nativeRestrictionDegreeOfScalarMeasurability_algEquiv
+    (V : AdelicVectorBundle S)
+    [hreg : S.ScalarExtensionMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (σ : L ≃ₐ[K] M) :
     (⨆ B : Submodule M (M ⊗[K] V),
-      (V.nativeRestrictionDegreeOfOrdinaryBase B : EReal)) =
+      (V.nativeRestrictionDegreeOfScalarMeasurability B : EReal)) =
     ⨆ A : Submodule L (L ⊗[K] V),
-      (V.nativeRestrictionDegreeOfOrdinaryBase A : EReal) := by
+      (V.nativeRestrictionDegreeOfScalarMeasurability A : EReal) := by
   apply le_antisymm
   · apply iSup_le
     intro B
-    rw [← V.nativeRestrictionDegreeOfOrdinaryBase_algEquiv σ.symm B]
+    rw [← V.nativeRestrictionDegreeOfScalarMeasurability_algEquiv σ.symm B]
     exact le_iSup (fun A : Submodule L (L ⊗[K] V) =>
-      (V.nativeRestrictionDegreeOfOrdinaryBase A : EReal)) _
+      (V.nativeRestrictionDegreeOfScalarMeasurability A : EReal)) _
   · apply iSup_le
     intro A
-    rw [← V.nativeRestrictionDegreeOfOrdinaryBase_algEquiv σ A]
+    rw [← V.nativeRestrictionDegreeOfScalarMeasurability_algEquiv σ A]
     exact le_iSup (fun B : Submodule M (M ⊗[K] V) =>
-      (V.nativeRestrictionDegreeOfOrdinaryBase B : EReal)) _
+      (V.nativeRestrictionDegreeOfScalarMeasurability B : EReal)) _
 
 /-- Rank preservation reindexes every actual positive-rank native mean,
 without requiring that either supremum be attained. -/
-theorem iSup_nativeMeanOfOrdinaryBase_algEquiv (V : AdelicVectorBundle S)
-    [hreg : S.HasOrdinaryBase]
+theorem iSup_nativeMeanOfScalarMeasurability_algEquiv (V : AdelicVectorBundle S)
+    [hreg : S.ScalarExtensionMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (σ : L ≃ₐ[K] M) :
     (⨆ B : {B : Submodule M (M ⊗[K] V) // 0 < Module.finrank M B},
-      (V.nativeRestrictionDegreeOfOrdinaryBase B.val /
+      (V.nativeRestrictionDegreeOfScalarMeasurability B.val /
         (Module.finrank M B.val : ℝ) : EReal)) =
     ⨆ A : {A : Submodule L (L ⊗[K] V) // 0 < Module.finrank L A},
-      (V.nativeRestrictionDegreeOfOrdinaryBase A.val /
+      (V.nativeRestrictionDegreeOfScalarMeasurability A.val /
         (Module.finrank L A.val : ℝ) : EReal) := by
   apply le_antisymm
   · apply iSup_le
@@ -141,22 +145,22 @@ theorem iSup_nativeMeanOfOrdinaryBase_algEquiv (V : AdelicVectorBundle S)
     let A := scalarExtensionSubspaceOrderIso (E := V) σ.symm B.val
     have hr : Module.finrank L A = Module.finrank M B.val :=
       scalarExtensionSubspaceOrderIso_finrank σ.symm B.val
-    have hd := V.nativeRestrictionDegreeOfOrdinaryBase_algEquiv σ.symm B.val
+    have hd := V.nativeRestrictionDegreeOfScalarMeasurability_algEquiv σ.symm B.val
     have hA : 0 < Module.finrank L A := hr.symm ▸ B.property
     exact (le_of_eq (by rw [← hd, ← hr])).trans
       (le_iSup (fun A : {A : Submodule L (L ⊗[K] V) // 0 < Module.finrank L A} =>
-        (V.nativeRestrictionDegreeOfOrdinaryBase A.val /
+        (V.nativeRestrictionDegreeOfScalarMeasurability A.val /
           (Module.finrank L A.val : ℝ) : EReal)) ⟨A, hA⟩)
   · apply iSup_le
     intro A
     let B := scalarExtensionSubspaceOrderIso (E := V) σ A.val
     have hr : Module.finrank M B = Module.finrank L A.val :=
       scalarExtensionSubspaceOrderIso_finrank σ A.val
-    have hd := V.nativeRestrictionDegreeOfOrdinaryBase_algEquiv σ A.val
+    have hd := V.nativeRestrictionDegreeOfScalarMeasurability_algEquiv σ A.val
     have hB : 0 < Module.finrank M B := hr.symm ▸ A.property
     exact (le_of_eq (by rw [← hd, ← hr])).trans
       (le_iSup (fun B : {B : Submodule M (M ⊗[K] V) // 0 < Module.finrank M B} =>
-        (V.nativeRestrictionDegreeOfOrdinaryBase B.val /
+        (V.nativeRestrictionDegreeOfScalarMeasurability B.val /
           (Module.finrank M B.val : ℝ) : EReal)) ⟨B, hB⟩)
 
 /-- The existing discrete absolute positive degree is computed over every
@@ -169,7 +173,7 @@ theorem absolutePositiveDegreeOfCountableDiscreteBase_eq_iSup_of_isAlgClosed
         (V.nativeRestrictionDegreeOfCountableDiscreteBase B : EReal) := by
   let : IsAlgClosure K M := ⟨inferInstance, inferInstance⟩
   let σ := IsAlgClosure.equiv K (AlgebraicClosure K) M
-  exact (V.iSup_nativeRestrictionDegreeOfOrdinaryBase_algEquiv
+  exact (V.iSup_nativeRestrictionDegreeOfScalarMeasurability_algEquiv
     (hreg := ⟨(Or.inr ⟨inferInstance, inferInstance⟩)⟩) σ).symm
 
 /-- Closure choice also preserves all actual positive-rank native means,
@@ -183,7 +187,7 @@ theorem absoluteMaximalSlopeOfCountableDiscreteBase_eq_iSup_of_isAlgClosed
           (Module.finrank M B.val : ℝ) : EReal) := by
   let : IsAlgClosure K M := ⟨inferInstance, inferInstance⟩
   let σ := IsAlgClosure.equiv K (AlgebraicClosure K) M
-  exact (V.iSup_nativeMeanOfOrdinaryBase_algEquiv
+  exact (V.iSup_nativeMeanOfScalarMeasurability_algEquiv
     (hreg := ⟨(Or.inr ⟨inferInstance, inferInstance⟩)⟩) σ).symm
 
 end ArakelovGeometry.AdelicVectorBundle

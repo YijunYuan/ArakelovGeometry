@@ -60,16 +60,17 @@ private theorem geometricFirstMinimum_normalization
   exact False.elim (hω (hS ω))
 
 /-- The actual native line degree is the degree of its ambient scalar vector. -/
-theorem nativeAlgebraicRestrictionDegreeOfPositiveAtoms_span_singleton
+theorem nativeAlgebraicRestrictionDegreeOfPositiveSingletons_span_singleton
     {L : Type*} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L]
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (s : {x : L ⊗[K] E // x ≠ 0}) :
-    ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms (L ∙ s.val) =
-      (ξ.algebraicScalarBundleOfPositiveAtoms).vectorDegree s := by
+    ξ.nativeAlgebraicRestrictionDegreeOfPositiveSingletons (L ∙ s.val) =
+      (ξ.algebraicScalarBundleOfPositiveSingletons).vectorDegree s := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-  let R := ξ.nativeAlgebraicRestrictionOfPositiveAtoms (L ∙ s.val)
-  let hdet := hξ.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+  let R := ξ.nativeAlgebraicRestrictionOfPositiveSingletons (L ∙ s.val)
+  let hdet :=
+    hξ.scalarExtension_restrict_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
     ξ (L ∙ s.val)
   let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
   let u : {x : L ∙ s.val // x ≠ 0} :=
@@ -83,34 +84,34 @@ theorem nativeAlgebraicRestrictionDegreeOfPositiveAtoms_span_singleton
 
 /-- Every genuine nonzero closure vector supplies a rank-one term of the
 actual geometric absolute maximal-slope supremum. -/
-theorem vectorDegree_algebraicScalarBundle_le_absoluteMaximalSlopeOfPositiveAtoms
+theorem vectorDegree_algebraicScalarBundle_le_absoluteMaximalSlopeOfPositiveSingletons
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (s : {x : AlgebraicClosure K ⊗[K] E // x ≠ 0}) :
-    ((ξ.algebraicScalarBundleOfPositiveAtoms).vectorDegree s : EReal) ≤
-      ξ.absoluteMaximalSlopeOfPositiveAtoms := by
-  have h := ξ.nativeMean_le_absoluteMaximalSlopeOfPositiveAtoms
+    ((ξ.algebraicScalarBundleOfPositiveSingletons).vectorDegree s : EReal) ≤
+      ξ.absoluteMaximalSlopeOfPositiveSingletons := by
+  have h := ξ.nativeMean_le_absoluteMaximalSlopeOfPositiveSingletons
     (AlgebraicClosure K ∙ s.val) (by rw [finrank_span_singleton s.property]; exact zero_lt_one)
   rw [finrank_span_singleton s.property, Nat.cast_one, EReal.coe_one, div_one,
-    ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms_span_singleton s] at h
+    ξ.nativeAlgebraicRestrictionDegreeOfPositiveSingletons_span_singleton s] at h
   exact h
 
 /-- The actual closure first minimum is bounded by all actual native means,
 including the empty rank-zero supremum. -/
-theorem maximalLogarithmicMinimum_algebraicScalarBundle_le_absoluteMaximalSlopeOfPositiveAtoms
+theorem maximalLogarithmicMinimum_algebraicScalarBundle_le_absoluteMaximalSlopeOfPositiveSingletons
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
-    (ξ.algebraicScalarBundleOfPositiveAtoms (L := AlgebraicClosure K)
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces] :
+    (ξ.algebraicScalarBundleOfPositiveSingletons (L := AlgebraicClosure K)
        ).maximalLogarithmicMinimum ≤
-      ξ.absoluteMaximalSlopeOfPositiveAtoms := by
-  let V := ξ.algebraicScalarBundleOfPositiveAtoms (L := AlgebraicClosure K)
+      ξ.absoluteMaximalSlopeOfPositiveSingletons := by
+  let V := ξ.algebraicScalarBundleOfPositiveSingletons (L := AlgebraicClosure K)
   apply iSup_le
   intro t
   apply iSup_le
   intro ht
   obtain ⟨f, _, hf⟩ := (V.le_finrank_degreeThresholdSpan_iff 1 t).mp ht
   exact (EReal.coe_le_coe_iff.mpr (hf 0)).trans
-    (ξ.vectorDegree_algebraicScalarBundle_le_absoluteMaximalSlopeOfPositiveAtoms
+    (ξ.vectorDegree_algebraicScalarBundle_le_absoluteMaximalSlopeOfPositiveSingletons
         (f 0))
 
 end NormFamily
@@ -122,17 +123,17 @@ variable [MeasurableSingletonClass S.Ω]
 
 /-- The geometric absolute inequality in source Proposition4.3.72 on the
 actual closure bundle, without any intermediate regularity premise. -/
-theorem absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlopeOfPositiveAtoms
+theorem absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlopeOfPositiveSingletons
     (V : AdelicVectorBundle S)
     [hreg : S.HasRegularBase]
     [hN : S.IsArchimedeanNormalized]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces] :
     V.absoluteMaximalLogarithmicMinimum ≤
-      V.toNormFamily.absoluteMaximalSlopeOfPositiveAtoms := by
+      V.toNormFamily.absoluteMaximalSlopeOfPositiveSingletons := by
   change (V.ordinaryScalarExtension (L := AlgebraicClosure K)
 ).maximalLogarithmicMinimum ≤ _
   rw [V.ordinaryScalarExtension_eq_positiveAtoms]
-  exact maximalLogarithmicMinimum_algebraicScalarBundle_le_absoluteMaximalSlopeOfPositiveAtoms
+  exact maximalLogarithmicMinimum_algebraicScalarBundle_le_absoluteMaximalSlopeOfPositiveSingletons
     V.toNormFamily
 
 end AdelicVectorBundle

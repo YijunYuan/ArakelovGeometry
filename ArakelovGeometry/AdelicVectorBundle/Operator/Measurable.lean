@@ -79,7 +79,7 @@ theorem IsMeasurable.operatorNorm_of_common_countable_dense_subfield
 theorem IsMeasurable.operatorNorm_of_discrete_or_countable
     {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsMeasurable) (hη : η.IsMeasurable)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     (f : E →ₗ[K] F) : Measurable (fun ω => ξ.operatorNorm η ω f) := by
   rcases hS.discrete_or_countable with hS | hS
   · let := hS

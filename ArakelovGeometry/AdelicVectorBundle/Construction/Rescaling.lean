@@ -106,7 +106,7 @@ theorem scaleExp_toNormFamily (V : AdelicVectorBundle S) (φ : S.Ω → ℝ)
 /-- Integrating the exact actual determinant rescaling gives its degree shift. -/
 theorem degree_scaleExp [S.IsProper] (V : AdelicVectorBundle S) (φ : S.Ω → ℝ)
     (hm : Measurable φ) (hi : Integrable φ S.v)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     (V.scaleExp φ hm hi).degree = V.degree -
       (Module.finrank K V : ℝ) * (∫ ω, φ ω ∂S.v) := by
@@ -117,7 +117,7 @@ theorem degree_scaleExp [S.IsProper] (V : AdelicVectorBundle S) (φ : S.Ω → �
     funext ω
     exact V.toNormFamily.determinant_logNorm_scale_exp φ z hz ω
   have hbase : Integrable (V.toNormFamily.determinant.logNorm z) S.v :=
-    (V.determinantOfMeasurableBase).integrable_logNorm z
+    (V.determinantOfNormMeasurability).integrable_logNorm z
   rw [(V.scaleExp φ hm hi).degree_eq_neg_integral ⟨z, hz⟩,
     V.degree_eq_neg_integral ⟨z, hz⟩, hlog]
   simp only [Pi.add_apply]
@@ -128,24 +128,24 @@ theorem degree_scaleExp [S.IsProper] (V : AdelicVectorBundle S) (φ : S.Ω → �
 The structure equality follows from equality of their canonical norm families. -/
 theorem restrict_scaleExp (V : AdelicVectorBundle S) (φ : S.Ω → ℝ)
     (hm : Measurable φ) (hi : Integrable φ S.v)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     (U : Submodule K V) :
-    (V.scaleExp φ hm hi).restrictOfMeasurableBase U =
-      (V.restrictOfMeasurableBase U).scaleExp φ hm hi := by
+    (V.scaleExp φ hm hi).restrictOfNormMeasurability U =
+      (V.restrictOfNormMeasurability U).scaleExp φ hm hi := by
   apply AdelicVectorBundle.ext
-    (hξ := ((V.scaleExp φ hm hi).restrictOfMeasurableBase U).toIsAdelic)
-    (hη := ((V.restrictOfMeasurableBase U).scaleExp φ hm hi).toIsAdelic)
+    (hξ := ((V.scaleExp φ hm hi).restrictOfNormMeasurability U).toIsAdelic)
+    (hη := ((V.restrictOfNormMeasurability U).scaleExp φ hm hi).toIsAdelic)
   ext ω z
   rfl
 
 /-- Every actual restricted degree has its own exact rank shift. -/
 theorem degree_restrict_scaleExp [S.IsProper] (V : AdelicVectorBundle S)
     (φ : S.Ω → ℝ) (hm : Measurable φ) (hi : Integrable φ S.v)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (U : Submodule K V) :
-    ((V.scaleExp φ hm hi).restrictOfMeasurableBase U).degree =
-      (V.restrictOfMeasurableBase U).degree -
+    ((V.scaleExp φ hm hi).restrictOfNormMeasurability U).degree =
+      (V.restrictOfNormMeasurability U).degree -
         (Module.finrank K U : ℝ) * (∫ ω, φ ω ∂S.v) := by
   rw [V.restrict_scaleExp φ hm hi U]
   exact degree_scaleExp _ φ hm hi

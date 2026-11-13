@@ -140,12 +140,12 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 /-- Integral scalars act through the proved canonical coefficient map on the
 existing actual local unit-ball module. -/
 noncomputable instance rationalUnitBall_integralModule (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] :
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Module (𝓞 K) (ξ.rationalUnitBallModule ω hω) :=
   Module.compHom (ξ.rationalUnitBallModule ω hω) (S.integralLocalCoefficientMap ω hω)
 
 instance rationalUnitBall_integralScalarTower (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] :
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     IsScalarTower (𝓞 K) (S.rationalLocalRing ω hω) (ξ.rationalUnitBallModule ω hω) := by
   constructor
   intro a r x
@@ -155,7 +155,7 @@ instance rationalUnitBall_integralScalarTower (ξ : NormFamily S E)
 
 @[simp]
 theorem rationalUnitBall_integral_smul_coe (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric]
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (a : 𝓞 K) (x : ξ.rationalUnitBallModule ω hω) :
     ((a • x : ξ.rationalUnitBallModule ω hω) : E) =
       algebraMap (𝓞 K) K a • (x : E) := rfl
@@ -163,7 +163,7 @@ theorem rationalUnitBall_integral_smul_coe (ξ : NormFamily S E)
 /-- The actual rational local unit ball, restricted to integral coefficients,
 is already a localized module at its actual finite prime. -/
 theorem isLocalizedModule_rationalUnitBall_of_finitePlace [NumberField K] (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric]
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (p : NumberField.FinitePlace K) (hp : (S.ϕ ω).IsEquiv p.val) :
     IsLocalizedModule p.maximalIdeal.asIdeal.primeCompl
       (LinearMap.id : ξ.rationalUnitBallModule ω hω →ₗ[𝓞 K]
@@ -175,7 +175,7 @@ theorem isLocalizedModule_rationalUnitBall_of_finitePlace [NumberField K] (ξ : 
 /-- The actual integer-to-local coefficient scalar extension of the genuine
 rational unit ball recovers that actual local module. -/
 noncomputable def rationalUnitBallIntegerLocalizationEquiv [NumberField K] (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric]
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (p : NumberField.FinitePlace K) (hp : (S.ϕ ω).IsEquiv p.val) :
     (S.rationalLocalRing ω hω) ⊗[𝓞 K] (ξ.rationalUnitBallModule ω hω) ≃ₗ[
       S.rationalLocalRing ω hω] ξ.rationalUnitBallModule ω hω := by
@@ -187,7 +187,7 @@ noncomputable def rationalUnitBallIntegerLocalizationEquiv [NumberField K] (ξ :
 
 @[simp]
 theorem rationalUnitBallIntegerLocalizationEquiv_tmul [NumberField K] (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric]
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (p : NumberField.FinitePlace K) (hp : (S.ϕ ω).IsEquiv p.val)
     (r : S.rationalLocalRing ω hω) (x : ξ.rationalUnitBallModule ω hω) :
     ξ.rationalUnitBallIntegerLocalizationEquiv ω hω p hp (r ⊗ₜ[𝓞 K] x) = r • x := by

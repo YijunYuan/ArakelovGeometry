@@ -40,12 +40,12 @@ namespace AdelicVectorBundle
 /-- Dual degrees agree under the actual contravariant completed isometry. -/
 theorem degree_dual_eq_of_completed_isometry [S.IsProper]
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = V.toNormFamily.norm ω x) :
-    (V.dualOfMeasurableBase).degree =
-      (W.dualOfMeasurableBase).degree := by
+    (V.dualOfNormMeasurability).degree =
+      (W.dualOfNormMeasurability).degree := by
   symm
   apply degree_eq_of_completed_isometry _ _ e.dualMap
   intro ω z
@@ -55,7 +55,7 @@ theorem degree_dual_eq_of_completed_isometry [S.IsProper]
 discrepancy, without any original finite-place ultrametricity assumption. -/
 theorem determinantDiscrepancy_eq_of_completed_isometry [S.IsProper]
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = V.toNormFamily.norm ω x) :
@@ -69,11 +69,11 @@ theorem determinantDiscrepancy_eq_of_completed_isometry [S.IsProper]
 existing canonical rational subspace isomorphism. -/
 theorem determinantDiscrepancy_restrict_restrict [S.IsProper]
     (V : AdelicVectorBundle S) (U W : Submodule K V) (h : U ≤ W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    ((V.restrictOfMeasurableBase W).restrictOfMeasurableBase
+    ((V.restrictOfNormMeasurability W).restrictOfNormMeasurability
       (U.comap W.subtype)).determinantDiscrepancy =
-      (V.restrictOfMeasurableBase U).determinantDiscrepancy := by
+      (V.restrictOfNormMeasurability U).determinantDiscrepancy := by
   apply determinantDiscrepancy_eq_of_completed_isometry _ _
     (Submodule.comapSubtypeEquivOfLe h)
   intro ω z
@@ -82,9 +82,9 @@ theorem determinantDiscrepancy_restrict_restrict [S.IsProper]
 /-- The total rational subspace has the actual ambient global discrepancy. -/
 theorem determinantDiscrepancy_restrict_top [S.IsProper]
     (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    (V.restrictOfMeasurableBase ⊤).determinantDiscrepancy =
+    (V.restrictOfNormMeasurability ⊤).determinantDiscrepancy =
       V.determinantDiscrepancy := by
   apply determinantDiscrepancy_eq_of_completed_isometry _ _ Submodule.topEquiv
   intro ω z

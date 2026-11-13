@@ -26,21 +26,21 @@ namespace ArakelovGeometry.AdelicVectorBundle
 variable {K E : Type*} [Field K] {S : AdelicStructure K} [S.IsProper]
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
 
 /-- Inclusion of the actual zero HN truncation gives an actual bijection of the
 original all-place effective-section sets, without an arithmetic model premise. -/
 def effectiveSectionsEquivHNZero :
-    (V.restrictOfMeasurableBase
+    (V.restrictOfNormMeasurability
       (V.hermitianHNFiltration 0)).toNormFamily.effectiveSections ≃
       V.toNormFamily.effectiveSections :=
   let U := V.hermitianHNFiltration 0
   (Equiv.Set.imageOfInjOn U.subtype
-    (V.restrictOfMeasurableBase U).toNormFamily.effectiveSections
+    (V.restrictOfNormMeasurability U).toNormFamily.effectiveSections
       (by exact U.subtype_injective.injOn)).trans (Set.equivOfEq (by
-        have hneg : (V.quotientOfMeasurableBase U).maximalSlope < 0 := by
+        have hneg : (V.quotientOfNormMeasurability U).maximalSlope < 0 := by
           simpa only [EReal.coe_zero] using
             V.maximalSlope_quotient_hermitianHNFiltration_lt 0
         exact (V.effectiveSections_eq_image_restrict_of_quotient_maximalSlope_neg
@@ -51,7 +51,7 @@ HN truncation. The count equality comes from the produced literal bijection. -/
 theorem card_effectiveSections_eq_HNZero :
     Nat.card V.toNormFamily.effectiveSections =
       Nat.card
-        (V.restrictOfMeasurableBase
+        (V.restrictOfNormMeasurability
           (V.hermitianHNFiltration 0)).toNormFamily.effectiveSections :=
   (Nat.card_congr (V.effectiveSectionsEquivHNZero)).symm
 
@@ -59,11 +59,11 @@ theorem card_effectiveSections_eq_HNZero :
 realizes positive degree and has nonnegative actual minimal slope. -/
 theorem hnZero_sections_degree_minimalSlope :
     (Nat.card V.toNormFamily.effectiveSections =
-      Nat.card (V.restrictOfMeasurableBase
+      Nat.card (V.restrictOfNormMeasurability
         (V.hermitianHNFiltration 0)).toNormFamily.effectiveSections) ∧
     V.positiveDegree =
-      ((V.restrictOfMeasurableBase (V.hermitianHNFiltration 0)).degree : EReal) ∧
-    0 ≤ (V.restrictOfMeasurableBase
+      ((V.restrictOfNormMeasurability (V.hermitianHNFiltration 0)).degree : EReal) ∧
+    0 ≤ (V.restrictOfNormMeasurability
       (V.hermitianHNFiltration 0)).minimalSlope := by
   refine ⟨V.card_effectiveSections_eq_HNZero,
     V.positiveDegree_eq_degree_restrict_hermitianHNFiltration_zero, ?_⟩
@@ -94,7 +94,7 @@ theorem original_hnZero_sections_degree_minimalSlope
       fullLatticeGaugeFamily_isHermitian L hfg hspan η
     let F := V.hermitianHNFiltration
       (hV := hV) 0
-    let W := V.restrictOfMeasurableBase F
+    let W := V.restrictOfNormMeasurability F
     (logSectionCount M η = Real.log (Nat.card W.toNormFamily.effectiveSections : ℝ)) ∧
     V.positiveDegree =
       (W.degree : EReal) ∧

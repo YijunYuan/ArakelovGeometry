@@ -88,8 +88,8 @@ theorem φ_integral : (∫ ω, φ ω ∂OldS.v) = Real.log 2 := by
 
 abbrev base : AdelicVectorBundle OldS := scalarLine OldS
 abbrev bundle : AdelicVectorBundle OldS := base.scaleExp φ φ_measurable φ_integrable
-theorem bundle_ultrametric : bundle.toNormFamily.IsUltrametric :=
-  bundle.toNormFamily.isUltrametric_of_finrank_le_one (Module.finrank_self ℚ).le
+theorem bundle_ultrametric : bundle.toNormFamily.IsUltrametricAtFinitePlaces :=
+  bundle.toNormFamily.isUltrametricAtFinitePlaces_of_finrank_le_one (Module.finrank_self ℚ).le
 
 abbrev normalizedBundle : AdelicVectorBundle NewS := bundle.numberFieldNormalize
     (hV := bundle_ultrametric)
@@ -152,7 +152,8 @@ theorem normalized_degree_negative :
 abbrev V₂ := Fin 2 → ℚ
 def b₂ : Module.Basis (Fin 2) ℚ V₂ := Pi.basisFun ℚ (Fin 2)
 def ξ₂ : NormFamily OldS V₂ := ofBasisMixed OldS V₂ b₂
-theorem ξ₂_ultrametric : ξ₂.IsUltrametric := ofBasisMixed_isUltrametric b₂
+theorem ξ₂_ultrametric
+    : ξ₂.IsUltrametricAtFinitePlaces := ofBasisMixed_isUltrametricAtFinitePlaces b₂
 
 theorem rank_two_completed_determinant
     (z : (placeRep ωTwo.val).Completion ⊗[ℚ] (⋀[ℚ]^(Module.finrank ℚ V₂) V₂)) :
@@ -167,7 +168,8 @@ theorem rank_two_zero_determinant :
 
 def zeroBasis : Module.Basis Empty ℚ (Empty → ℚ) := Pi.basisFun ℚ Empty
 def zeroOld : NormFamily OldS (Empty → ℚ) := ofBasisMixed OldS _ zeroBasis
-theorem zero_ultrametric : zeroOld.IsUltrametric := ofBasisMixed_isUltrametric zeroBasis
+theorem zero_ultrametric
+    : zeroOld.IsUltrametricAtFinitePlaces := ofBasisMixed_isUltrametricAtFinitePlaces zeroBasis
 abbrev zeroBundle : AdelicVectorBundle OldS where
   carrier := (Empty → ℚ)
   toNormFamily := zeroOld

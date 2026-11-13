@@ -99,9 +99,9 @@ variable {E : Type*} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 /-- Domination and positive base atoms produce measurability of the actual
 ordinary finite scalar extension. Original ultrametricity and countability
 of the ground field or parameter spaces are not hypotheses. -/
-theorem IsDominated.scalarExtension_isMeasurable_of_positive_atoms
+theorem IsDominated.scalarExtension_isMeasurable_of_pos_singletons
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E) (b : Module.Basis ι K E)
-    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveSingletons]
     (hfin : S.v S.Ωinf < ⊤) :
     (ξ.scalarExtension (L := L)).IsMeasurable := by
   constructor
@@ -109,7 +109,7 @@ theorem IsDominated.scalarExtension_isMeasurable_of_positive_atoms
   let := AdelicStructure.measurableSingletonClass_algebraicExtension_of_finiteDimensional
     (S := S) (L := L)
   obtain ⟨H, _, _, hc, _, _, he⟩ :=
-    IsDominated.exists_scalarExtension_coordinate_exceptions_of_positive_atoms ξ b hξ hfin
+    IsDominated.exists_scalarExtension_coordinate_exceptions_of_pos_singletons ξ b hξ hfin
   have ht := AdelicStructure.ParameterSpaceExtension.countable_preimage_proj_of_finiteDimensional
     (L := L) (Function.support H) hc
   intro z
@@ -128,16 +128,16 @@ theorem IsDominated.functionField_scalarExtension_isMeasurable
     [Module (RatFunc k) E] [FiniteDimensional (RatFunc k) E]
     (ξ : NormFamily (AdelicStructure.functionFieldAdelicStructure k) E)
     (hξ : ξ.IsDominated) : (ξ.scalarExtension (L := L)).IsMeasurable := by
-  apply IsDominated.scalarExtension_isMeasurable_of_positive_atoms ξ
+  apply IsDominated.scalarExtension_isMeasurable_of_pos_singletons ξ
     (Module.finBasis (RatFunc k) E) hξ
   rw [AdelicStructure.functionField_Ωinf_eq_empty, measure_empty]
   exact ENNReal.zero_lt_top
 
 /-- The actual dual of the finite scalar extension is measurable from the
 same produced exceptional set and the actual dual-distance contraction. -/
-theorem IsDominated.scalarExtension_dual_isMeasurable_of_positive_atoms
+theorem IsDominated.scalarExtension_dual_isMeasurable_of_pos_singletons
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E) (b : Module.Basis ι K E)
-    (hξ : ξ.IsDominated) [hpos : S.HasPositiveAtoms]
+    (hξ : ξ.IsDominated) [hpos : S.HasPositiveSingletons]
     (hfin : S.v S.Ωinf < ⊤) :
     (ξ.scalarExtension (L := L)).dual.IsMeasurable := by
   constructor
@@ -146,7 +146,7 @@ theorem IsDominated.scalarExtension_dual_isMeasurable_of_positive_atoms
   let := AdelicStructure.measurableSingletonClass_algebraicExtension_of_finiteDimensional
     (S := S) (L := L)
   obtain ⟨H, _, _, hc, _, hb, _⟩ :=
-    IsDominated.exists_scalarExtension_coordinate_exceptions_of_positive_atoms ξ b hξ hfin
+    IsDominated.exists_scalarExtension_coordinate_exceptions_of_pos_singletons ξ b hξ hfin
   have ht := AdelicStructure.ParameterSpaceExtension.countable_preimage_proj_of_finiteDimensional
     (L := L) (Function.support H) hc
   let q := ofBasisMixed (S.algebraicExtension L) (L ⊗[K] E) (b.baseChange L)
@@ -172,7 +172,7 @@ theorem IsDominated.functionField_scalarExtension_dual_isMeasurable
     [Module (RatFunc k) E] [FiniteDimensional (RatFunc k) E]
     (ξ : NormFamily (AdelicStructure.functionFieldAdelicStructure k) E)
     (hξ : ξ.IsDominated) : (ξ.scalarExtension (L := L)).dual.IsMeasurable := by
-  apply IsDominated.scalarExtension_dual_isMeasurable_of_positive_atoms ξ
+  apply IsDominated.scalarExtension_dual_isMeasurable_of_pos_singletons ξ
     (Module.finBasis (RatFunc k) E) hξ
   rw [AdelicStructure.functionField_Ωinf_eq_empty, measure_empty]
   exact ENNReal.zero_lt_top

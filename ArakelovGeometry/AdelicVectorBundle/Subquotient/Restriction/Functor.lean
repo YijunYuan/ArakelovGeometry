@@ -79,20 +79,20 @@ variable [FiniteDimensional K E]
 /-- Nested restriction and direct restriction have the same actual degree. -/
 theorem degree_restrict_restrict [S.IsProper] (V : AdelicVectorBundle S)
     (U W : Submodule K V) (h : U ≤ W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    ((V.restrictOfMeasurableBase W).restrictOfMeasurableBase
+    ((V.restrictOfNormMeasurability W).restrictOfNormMeasurability
       (U.comap W.subtype)).degree =
-      (V.restrictOfMeasurableBase U).degree := by
+      (V.restrictOfNormMeasurability U).degree := by
   apply degree_eq_of_completed_isometry _ _ (Submodule.comapSubtypeEquivOfLe h)
   intro ω z
   exact (V.toNormFamily.restrict_restrict_norm_eq U W h ω z).symm
 
 /-- The actual total-subspace restriction has the ambient bundle degree. -/
 theorem degree_restrict_top [S.IsProper] (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    (V.restrictOfMeasurableBase ⊤).degree = V.degree := by
+    (V.restrictOfNormMeasurability ⊤).degree = V.degree := by
   apply degree_eq_of_completed_isometry _ _ Submodule.topEquiv
   intro ω z
   exact (V.toNormFamily.restrict_top_norm_eq ω z).symm

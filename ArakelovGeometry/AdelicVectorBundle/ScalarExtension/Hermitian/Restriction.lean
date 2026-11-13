@@ -121,16 +121,17 @@ theorem degree_restrict_hermitianScalarExtension_of_finiteDimensional
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
-    (W.restrictOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
-      (V.restrictOfMeasurableBase U).degree := by
+    (W.restrictOfNormMeasurability (U.baseChange L) (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩)
+      (hN := ⟨hLN⟩) =
+      (V.restrictOfNormMeasurability U).degree := by
   intro hLN hLS W
-  let R := V.restrictOfMeasurableBase U
+  let R := V.restrictOfNormMeasurability U
   let Rext := R.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩) (hV := (hH.restrict U))
   have he : Rext.degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
-      (W.restrictOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩)
+      (W.restrictOfNormMeasurability (U.baseChange L) (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩)
           (hN := ⟨hLN⟩) :=
     Rext.degree_eq_of_completed_isometry
-      (W.restrictOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩))
+      (W.restrictOfNormMeasurability (U.baseChange L) (hS := ⟨hLS⟩))
       (Submodule.toBaseChange.toLinearEquiv L U)
       (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (fun x z =>
           V.toNormFamily.hermitianScalarExtension_restrict_norm_eq
@@ -148,8 +149,9 @@ theorem slope_restrict_hermitianScalarExtension_of_finiteDimensional
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
-    (W.restrictOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
-      (V.restrictOfMeasurableBase U).slope := by
+    (W.restrictOfNormMeasurability (U.baseChange L) (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩)
+      (hN := ⟨hLN⟩) =
+      (V.restrictOfNormMeasurability U).slope := by
   intro hLN hLS W
   have hr : Module.finrank L (U.baseChange L) = Module.finrank K U :=
     (Submodule.toBaseChange.toLinearEquiv L U).finrank_eq.symm.trans Module.finrank_baseChange

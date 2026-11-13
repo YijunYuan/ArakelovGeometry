@@ -69,11 +69,11 @@ theorem maximalSlope_hermitianScalarExtension_of_finiteGalois
         exact hpD
       calc
         W.maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
-            ((W.restrictOfMeasurableBase D (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩)
+            ((W.restrictOfNormMeasurability D (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩)
                 (hN := ⟨hLN⟩) : EReal) :=
           (W.slope_destabilizingSubspace_eq_maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩)
               (hV := hLH) hrL).symm
-        _ = ((V.restrictOfMeasurableBase U).slope
+        _ = ((V.restrictOfNormMeasurability U).slope
             : EReal) := by
           rw [← hU, V.slope_restrict_hermitianScalarExtension_of_finiteDimensional
              U]

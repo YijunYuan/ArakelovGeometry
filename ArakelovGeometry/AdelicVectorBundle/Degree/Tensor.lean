@@ -151,17 +151,17 @@ namespace AdelicVectorBundle
 All ranks are allowed; the source's asserted general equality is false. -/
 theorem rank_mul_degree_add_rank_mul_degree_le_degree_mixedTensorPair [S.IsProper]
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     (Module.finrank K W : ℝ) * V.degree +
       (Module.finrank K V : ℝ) * W.degree ≤
         (V.mixedTensorPair W).degree := by
-  let DV := V.determinantOfMeasurableBase
-  let DW := W.determinantOfMeasurableBase
+  let DV := V.determinantOfNormMeasurability
+  let DW := W.determinantOfNormMeasurability
   let T := V.mixedTensorPair W
-  let DT := T.determinantOfMeasurableBase
-  let s := DV.lineGenerator (hV := (V.determinantOfMeasurableBase_isLine))
-  let t := DW.lineGenerator (hV := (W.determinantOfMeasurableBase_isLine))
+  let DT := T.determinantOfNormMeasurability
+  let s := DV.lineGenerator (hV := (V.determinantOfNormMeasurability_isLine))
+  let t := DW.lineGenerator (hV := (W.determinantOfNormMeasurability_isLine))
   let q := determinantTensorEquiv K V W
     ((⨂ₜ[K] (_ : Fin (Module.finrank K W)), s.val) ⊗ₜ[K]
       (⨂ₜ[K] (_ : Fin (Module.finrank K V)), t.val))

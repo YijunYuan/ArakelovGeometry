@@ -50,8 +50,8 @@ theorem dual_dual_pullback_quotient (ξ : NormFamily S E)
     rw [β.quotient_dual_annihilator, ξ.quotient_dual_annihilator]
     change (β.dual.restrict U.dualAnnihilator).pullback _ _ = _
     rw [ξ.dual_dual_pullback_dual_eq]
-  have hu : (β.quotient U).IsUltrametric :=
-    (ξ.dual.dual_isUltrametric.pullback _ _).quotient U
+  have hu : (β.quotient U).IsUltrametricAtFinitePlaces :=
+    (ξ.dual.dual_isUltrametricAtFinitePlaces.pullback _ _).quotient U
   rw [← hd]
   exact (β.quotient U).dual_dual_pullback_eq (hξ := hu)
 
@@ -60,31 +60,31 @@ end NormFamily
 namespace AdelicVectorBundle
 
 variable (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
 
 include hN
 
 /-- The actual adelic constructors commute because their completed norm
 families agree, rather than through a supplied quotient-isometry certificate. -/
-theorem quotient_bidualOfMeasurableBase (U : Submodule K V) :
-    (V.bidualOfMeasurableBase).quotientOfMeasurableBase U =
-      (V.quotientOfMeasurableBase U).bidualOfMeasurableBase := by
+theorem quotient_bidualOfNormMeasurability (U : Submodule K V) :
+    (V.bidualOfNormMeasurability).quotientOfNormMeasurability U =
+      (V.quotientOfNormMeasurability U).bidualOfNormMeasurability := by
   apply AdelicVectorBundle.ext
-    (hξ := (V.bidualOfMeasurableBase.quotientOfMeasurableBase U).toIsAdelic)
-    (hη := (V.quotientOfMeasurableBase U).bidualOfMeasurableBase.toIsAdelic)
+    (hξ := (V.bidualOfNormMeasurability.quotientOfNormMeasurability U).toIsAdelic)
+    (hη := (V.quotientOfNormMeasurability U).bidualOfNormMeasurability.toIsAdelic)
   exact (V.toNormFamily.dual_dual_pullback_quotient U).symm
 
 /-- Bidualization preserves the actual infimum of nonzero quotient means,
 including the infinite minimum convention of the zero bundle. -/
-theorem minimalSlope_bidualOfMeasurableBase [S.IsProper] :
-    (V.bidualOfMeasurableBase).minimalSlope = V.minimalSlope := by
-  rw [(V.bidualOfMeasurableBase).minimalSlope_eq_iInf_slope_quotient,
+theorem minimalSlope_bidualOfNormMeasurability [S.IsProper] :
+    (V.bidualOfNormMeasurability).minimalSlope = V.minimalSlope := by
+  rw [(V.bidualOfNormMeasurability).minimalSlope_eq_iInf_slope_quotient,
     V.minimalSlope_eq_iInf_slope_quotient]
   apply iInf_congr
   intro U
-  rw [V.quotient_bidualOfMeasurableBase U.val]
-  simp only [slope, degree_bidualOfMeasurableBase]
+  rw [V.quotient_bidualOfNormMeasurability U.val]
+  simp only [slope, degree_bidualOfNormMeasurability]
 
 end AdelicVectorBundle
 

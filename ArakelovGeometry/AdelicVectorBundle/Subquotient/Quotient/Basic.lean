@@ -168,7 +168,7 @@ theorem quotientSeminorm_id (ω : S.Ω) (x : (S.ϕ ω).Completion ⊗[K] E) :
     Function.injective_id ω x
 
 /-- The quotient seminorm retains the non-Archimedean triangle inequality. -/
-theorem quotientSeminorm_add_le_max [hξ : ξ.IsUltrametric]
+theorem quotientSeminorm_add_le_max [hξ : ξ.IsUltrametricAtFinitePlaces]
     (π : E →ₗ[K] G) (hπ : Function.Surjective π) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
     (z t : (S.ϕ ω).Completion ⊗[K] G) :
     ξ.quotientSeminorm π hπ ω (z + t) ≤
@@ -283,8 +283,10 @@ theorem pushforward_norm_of_subsingleton [Subsingleton E]
   · exact (ξ.pushforward π hπ).norm_nonneg ω _
 
 /-- Quotient families remain ultrametric at every non-Archimedean place. -/
-theorem IsUltrametric.pushforward {ξ : NormFamily S E} (hξ : ξ.IsUltrametric)
-    (π : E →ₗ[K] G) (hπ : Function.Surjective π) : (ξ.pushforward π hπ).IsUltrametric :=
+theorem IsUltrametricAtFinitePlaces.pushforward
+    {ξ : NormFamily S E} (hξ : ξ.IsUltrametricAtFinitePlaces)
+    (π : E →ₗ[K] G)
+      (hπ : Function.Surjective π) : (ξ.pushforward π hπ).IsUltrametricAtFinitePlaces :=
   ⟨fun ω hω x y ↦ ξ.quotientSeminorm_add_le_max π hπ ω hω x y⟩
 
 /-- Quotient by a subspace, using the scalar extension of its canonical quotient map. -/
@@ -318,8 +320,9 @@ theorem quotient_top_norm (ω : S.Ω)
   (ξ.quotient ⊤).norm_eq_zero_of_subsingleton ω x
 
 /-- Ultrametricity is preserved by quotienting by any subspace. -/
-theorem IsUltrametric.quotient {ξ : NormFamily S E} (hξ : ξ.IsUltrametric)
-    (F : Submodule K E) : (ξ.quotient F).IsUltrametric :=
+theorem IsUltrametricAtFinitePlaces.quotient
+    {ξ : NormFamily S E} (hξ : ξ.IsUltrametricAtFinitePlaces)
+    (F : Submodule K E) : (ξ.quotient F).IsUltrametricAtFinitePlaces :=
   hξ.pushforward F.mkQ F.mkQ_surjective
 
 section Isometry
@@ -386,11 +389,14 @@ variable {K : Type*} [Field K] {S : AdelicStructure K}
 
 variable [FiniteDimensional K E]
 
-instance instIsUltrametricPushforward {ξ : NormFamily S E} [hξ : ξ.IsUltrametric]
-    (f : E →ₗ[K] F) (hf : Function.Surjective f) : (ξ.pushforward f hf).IsUltrametric :=
+instance instIsUltrametricAtFinitePlacesPushforward
+    {ξ : NormFamily S E} [hξ : ξ.IsUltrametricAtFinitePlaces]
+    (f : E →ₗ[K] F)
+      (hf : Function.Surjective f) : (ξ.pushforward f hf).IsUltrametricAtFinitePlaces :=
   hξ.pushforward f hf
 
-instance instIsUltrametricQuotient {ξ : NormFamily S E} [hξ : ξ.IsUltrametric]
-    (P : Submodule K E) : (ξ.quotient P).IsUltrametric := hξ.quotient P
+instance instIsUltrametricAtFinitePlacesQuotient
+    {ξ : NormFamily S E} [hξ : ξ.IsUltrametricAtFinitePlaces]
+    (P : Submodule K E) : (ξ.quotient P).IsUltrametricAtFinitePlaces := hξ.quotient P
 
 end ArakelovGeometry.NormFamily

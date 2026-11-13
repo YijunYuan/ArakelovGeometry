@@ -149,7 +149,7 @@ variable {K E : Type*} [Field K] [NumberField K]
   {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
 
 theorem IsDominated.pure_globalBall_euclideanCovolume_pos
-    (hdom : ξ.IsDominated) (hultra : ξ.IsUltrametric)
+    (hdom : ξ.IsDominated) (hultra : ξ.IsUltrametricAtFinitePlaces)
     (hpure : ξ.IsPureAtFinitePlaces)
     (hHerm : ξ.IsHermitian) :
     0 < euclideanCovolume ξ (ξ.globalUnitBallModule) :=

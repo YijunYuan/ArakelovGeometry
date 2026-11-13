@@ -49,8 +49,9 @@ theorem degree_restrict_scalarExtension_of_isHermitian_of_isAlgClosed
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let P := V.scalarExtension (L := L)
-    (P.restrictOfMeasurableBase (A.baseChange L) (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
-      (V.restrictOfMeasurableBase A).degree := by
+    (P.restrictOfNormMeasurability (A.baseChange L) (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩)
+      (hN := ⟨hLN⟩) =
+      (V.restrictOfNormMeasurability A).degree := by
   intro hLN hLS P
   apply le_antisymm
   · exact (V.degree_restrict_scalarExtension_le_hermitianScalarExtension_of_isAlgClosed
@@ -67,8 +68,9 @@ theorem slope_restrict_scalarExtension_of_isHermitian_of_isAlgClosed
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let P := V.scalarExtension (L := L)
-    (P.restrictOfMeasurableBase (A.baseChange L) (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
-      (V.restrictOfMeasurableBase A).slope := by
+    (P.restrictOfNormMeasurability (A.baseChange L) (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩)
+      (hN := ⟨hLN⟩) =
+      (V.restrictOfNormMeasurability A).slope := by
   intro hLN hLS P
   have hr : Module.finrank L (A.baseChange L) = Module.finrank K A :=
     (Submodule.toBaseChange.toLinearEquiv L A).finrank_eq.symm.trans Module.finrank_baseChange

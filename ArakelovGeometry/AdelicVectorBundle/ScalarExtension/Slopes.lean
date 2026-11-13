@@ -41,8 +41,8 @@ theorem degree_le_restrict_scalarExtension
     [hN : S.IsArchimedeanNormalized]
     (A : Submodule K V) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    (V.restrictOfMeasurableBase A).degree ≤
-    ((V.scalarExtension (L := L)).restrictOfMeasurableBase
+    (V.restrictOfNormMeasurability A).degree ≤
+    ((V.scalarExtension (L := L)).restrictOfNormMeasurability
       (A.baseChange L) (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed
           (L := L)))⟩)).degree
       (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
@@ -52,12 +52,12 @@ theorem degree_le_restrict_scalarExtension
       (S.algebraicExtension L).HasCommonCountableDenseSubfield :=
     Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
   let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
-  let W := (V.restrictOfMeasurableBase A).scalarExtension (L := L)
-  let R := (V.scalarExtension (L := L)).restrictOfMeasurableBase (A.baseChange L) (hS := ⟨hL⟩)
+  let W := (V.restrictOfNormMeasurability A).scalarExtension (L := L)
+  let R := (V.scalarExtension (L := L)).restrictOfNormMeasurability (A.baseChange L) (hS := ⟨hL⟩)
   have he : W.degree (hS := ⟨hL⟩) (hN := ⟨hLN⟩) ≤ R.degree (hS := ⟨hL⟩) (hN := ⟨hLN⟩) :=
     W.degree_le_of_completed_contraction R (Submodule.toBaseChange.toLinearEquiv L A)
       (hS := ⟨hL⟩) (hN := ⟨hLN⟩) (fun x z => V.toNormFamily.scalarExtension_restrict_norm_le A x z)
-  exact ((V.restrictOfMeasurableBase A).degree_scalarExtension_of_isAlgClosed
+  exact ((V.restrictOfNormMeasurability A).degree_scalarExtension_of_isAlgClosed
     (L := L)).symm.le.trans he
 
 /-- Mean slopes of actual native restrictions increase, including rank zero. -/
@@ -66,8 +66,8 @@ theorem slope_le_restrict_scalarExtension
     [hN : S.IsArchimedeanNormalized]
     (A : Submodule K V) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    (V.restrictOfMeasurableBase A).slope ≤
-    ((V.scalarExtension (L := L)).restrictOfMeasurableBase
+    (V.restrictOfNormMeasurability A).slope ≤
+    ((V.scalarExtension (L := L)).restrictOfNormMeasurability
       (A.baseChange L) (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)).slope
       (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) := by

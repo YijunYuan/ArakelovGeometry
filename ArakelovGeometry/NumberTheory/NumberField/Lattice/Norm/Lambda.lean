@@ -95,7 +95,7 @@ theorem latticeLambda_eq_top_of_finrank_eq_zero (hr : Module.finrank K E = 0) :
     exact False.elim (by simpa [hr] using i.isLt)
   exact le_iSup_of_le a (le_iSup_of_le ha le_rfl)
 
-theorem latticeGaugeFamily_archimedeanMaxNorm_eq [hξ : ξ.IsUltrametric] (x : E) :
+theorem latticeGaugeFamily_archimedeanMaxNorm_eq [hξ : ξ.IsUltrametricAtFinitePlaces] (x : E) :
     (ξ.latticeGaugeFamily).archimedeanMaxNorm x = ξ.archimedeanMaxNorm x := by
   unfold archimedeanMaxNorm
   congr 2
@@ -103,14 +103,14 @@ theorem latticeGaugeFamily_archimedeanMaxNorm_eq [hξ : ξ.IsUltrametric] (x : E
   intro ω hω
   rw [ξ.latticeGaugeFamily_norm_not_finite ω hω]
 
-theorem latticeGaugeFamily_integralBasisThresholds_eq [hξ : ξ.IsUltrametric] :
+theorem latticeGaugeFamily_integralBasisThresholds_eq [hξ : ξ.IsUltrametricAtFinitePlaces] :
     (ξ.latticeGaugeFamily).integralBasisThresholds = ξ.integralBasisThresholds := by
   ext a
   simp only [integralBasisThresholds, Set.mem_ofPred_eq,
     ξ.latticeGaugeFamily_globalUnitBall_eq,
     ξ.latticeGaugeFamily_archimedeanMaxNorm_eq]
 
-theorem latticeGaugeFamily_latticeLambda_eq [hξ : ξ.IsUltrametric] :
+theorem latticeGaugeFamily_latticeLambda_eq [hξ : ξ.IsUltrametricAtFinitePlaces] :
     (ξ.latticeGaugeFamily).latticeLambda = ξ.latticeLambda := by
   simp only [latticeLambda, ξ.latticeGaugeFamily_integralBasisThresholds_eq]
 

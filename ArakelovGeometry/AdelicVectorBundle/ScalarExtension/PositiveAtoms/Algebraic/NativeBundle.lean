@@ -40,18 +40,19 @@ open IsDominated
 
 /-- The canonical adelic bundle on the actual algebraic-closure native relative quotient,
 with both norm/dual measurability and domination supplied by proved producers. -/
-abbrev nativeAlgebraicSubquotientOfPositiveAtoms (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+abbrev nativeAlgebraicSubquotientOfPositiveSingletons (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
     AdelicVectorBundle (S.algebraicExtension L) where
   carrier := (B ⧸ U)
   toNormFamily := ((ξ.scalarExtension (L := L)).restrict B).quotient U
   toIsAdelic := {
     isMeasurable := by
-      exact scalarExtension_restrict_quotient_isMeasurable_of_positive_atoms_of_isAlgClosed
+      exact scalarExtension_restrict_quotient_isMeasurable_of_pos_singletons_of_isAlgClosed
         ξ hξ B U
     dual_isMeasurable := by
-      exact scalarExtension_restrict_quotient_dual_isMeasurable_of_positive_atoms_of_isAlgClosed
+      exact
+        scalarExtension_restrict_quotient_dual_isMeasurable_of_pos_singletons_of_isAlgClosed
         ξ hξ B U
     isDominated := by
       exact ((hξ.scalarExtension_isStronglyDominated ξ
@@ -59,57 +60,57 @@ abbrev nativeAlgebraicSubquotientOfPositiveAtoms (ξ : NormFamily S E) [hξ : ξ
   }
 
 @[simp]
-theorem nativeAlgebraicSubquotientOfPositiveAtoms_toNormFamily
+theorem nativeAlgebraicSubquotientOfPositiveSingletons_toNormFamily
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
-    (ξ.nativeAlgebraicSubquotientOfPositiveAtoms B U).toNormFamily =
+    (ξ.nativeAlgebraicSubquotientOfPositiveSingletons B U).toNormFamily =
       ((ξ.scalarExtension (L := L)).restrict B).quotient U := rfl
 
-instance nativeAlgebraicSubquotientOfPositiveAtoms_determinant_isMeasurable
+instance nativeAlgebraicSubquotientOfPositiveSingletons_determinant_isMeasurable
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [S.HasPositiveAtoms] [S.HasOnlyFinitePlaces]
+    [S.HasPositiveSingletons] [S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
-    (ξ.nativeAlgebraicSubquotientOfPositiveAtoms B U).toNormFamily.determinant.IsMeasurable :=
-  scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+    (ξ.nativeAlgebraicSubquotientOfPositiveSingletons B U).toNormFamily.determinant.IsMeasurable :=
+  scalarExtension_restrict_quotient_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
     ξ hξ B U
 
 /-- The produced actual native bundle is strongly adelic even when the
 original dominated family is not strongly dominated or measurable. -/
-instance nativeAlgebraicSubquotientOfPositiveAtoms_isStronglyAdelic
+instance nativeAlgebraicSubquotientOfPositiveSingletons_isStronglyAdelic
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
-    (ξ.nativeAlgebraicSubquotientOfPositiveAtoms B U).IsStronglyAdelic := by
+    (ξ.nativeAlgebraicSubquotientOfPositiveSingletons B U).IsStronglyAdelic := by
   exact ((hξ.scalarExtension_isStronglyDominated ξ
     (AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin)).restrict B).quotient U
 
 /-- The actual determinant line of the produced native bundle is adelic,
 using the separately produced determinant measurability. -/
-abbrev nativeAlgebraicDeterminantOfPositiveAtoms (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+abbrev nativeAlgebraicDeterminantOfPositiveSingletons (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
     AdelicVectorBundle (S.algebraicExtension L) :=
-  (ξ.nativeAlgebraicSubquotientOfPositiveAtoms B U).determinant
+  (ξ.nativeAlgebraicSubquotientOfPositiveSingletons B U).determinant
     (hm :=
-      scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+      scalarExtension_restrict_quotient_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
       ξ hξ B U)
 
 @[simp]
-theorem nativeAlgebraicDeterminantOfPositiveAtoms_toNormFamily
+theorem nativeAlgebraicDeterminantOfPositiveSingletons_toNormFamily
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
-    (ξ.nativeAlgebraicDeterminantOfPositiveAtoms B U).toNormFamily =
+    (ξ.nativeAlgebraicDeterminantOfPositiveSingletons B U).toNormFamily =
       (((ξ.scalarExtension (L := L)).restrict B).quotient U).determinant := rfl
 
 /-- The genuine determinant bundle has rank one also when the relative
 quotient has rank zero. -/
-instance nativeAlgebraicDeterminantOfPositiveAtoms_isLine
+instance nativeAlgebraicDeterminantOfPositiveSingletons_isLine
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
-    (ξ.nativeAlgebraicDeterminantOfPositiveAtoms B U).IsLine :=
+    (ξ.nativeAlgebraicDeterminantOfPositiveSingletons B U).IsLine :=
   ⟨determinant_finrank (K := L) (E := B ⧸ U)⟩
 
 local instance nativeAlgebraic_isProper_algebraicExtension [S.IsProper] :
@@ -120,28 +121,28 @@ local instance nativeAlgebraic_isProper_algebraicExtension [S.IsProper] :
 from its proved integrable determinant logarithm, with no countable density. -/
 theorem native_algebraic_degree_eq_neg_integral [S.IsProper]
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B)
     (t : {z : ⋀[L]^(Module.finrank L (B ⧸ U)) (B ⧸ U) // z ≠ 0}) :
-    (ξ.nativeAlgebraicSubquotientOfPositiveAtoms B U).degreeOfMeasurableDeterminant
+    (ξ.nativeAlgebraicSubquotientOfPositiveSingletons B U).degreeOfMeasurableDeterminant
       (hdet :=
-        scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+        scalarExtension_restrict_quotient_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
         ξ hξ B U) =
       -(∫ x, (((ξ.scalarExtension (L := L)).restrict B).quotient U).determinant.logNorm t.val x
         ∂(S.algebraicExtension L).v) :=
   AdelicVectorBundle.degreeOfMeasurableDeterminant_eq_neg_integral
-    (ξ.nativeAlgebraicSubquotientOfPositiveAtoms B U) t
+    (ξ.nativeAlgebraicSubquotientOfPositiveSingletons B U) t
 
 /-- A zero native relative quotient has canonical degree zero. Its actual
 determinant bundle is still the scalar unit line. -/
 theorem native_algebraic_degree_eq_zero_of_finrank_eq_zero [S.IsProper]
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B)
     (hr : Module.finrank L (B ⧸ U) = 0) :
-    (ξ.nativeAlgebraicSubquotientOfPositiveAtoms B U).degreeOfMeasurableDeterminant
+    (ξ.nativeAlgebraicSubquotientOfPositiveSingletons B U).degreeOfMeasurableDeterminant
       (hdet :=
-        (scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+        (scalarExtension_restrict_quotient_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
         ξ hξ B U)) = 0 := by
   let t := exteriorPower.ιMulti L (Module.finrank L (B ⧸ U)) (fun _ ↦ (0 : B ⧸ U))
   have ht : t ≠ 0 := AdelicVectorBundle.determinant_empty_ne_zero hr

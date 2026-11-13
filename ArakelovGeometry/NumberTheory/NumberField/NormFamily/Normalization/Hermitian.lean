@@ -99,7 +99,7 @@ end AdelicStructure
 
 namespace NormFamily
 
-variable (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+variable (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
 
 /-- Actual Hermitianity is preserved and reflected on the canonical completed fibres. -/
 theorem numberFieldNormalize_isHermitian_iff :
@@ -131,7 +131,7 @@ theorem numberFieldNormalize_isHermitian_iff :
   · intro hold
     have hp := isHermitian_iff_parallelogram.mp hold
     apply isHermitian_iff_parallelogram.mpr
-    refine ⟨ξ.numberFieldNormalize_isUltrametric, ?_⟩
+    refine ⟨ξ.numberFieldNormalize_isUltrametricAtFinitePlaces, ?_⟩
     intro ω hω x y
     obtain ⟨a, rfl⟩ := (normalizedNormFamilyTensorEquiv ω).surjective x
     obtain ⟨b, rfl⟩ := (normalizedNormFamilyTensorEquiv ω).surjective y
@@ -156,14 +156,14 @@ variable [FiniteDimensional K E]
 theorem numberFieldNormalize_isStronglyDominated_iff :
     (ξ.numberFieldNormalize).IsStronglyDominated ↔ ξ.IsStronglyDominated :=
   ((ξ.numberFieldNormalize).isStronglyDominated_iff_isDominated_of_ultrametric
-    (hξ := (ξ.numberFieldNormalize_isUltrametric))).trans
+    (hξ := (ξ.numberFieldNormalize_isUltrametricAtFinitePlaces))).trans
       ((ξ.numberFieldNormalize_isDominated_iff).trans
         (ξ.isStronglyDominated_iff_isDominated_of_ultrametric
           (hS := ⟨numberFieldArchimedeanCompletions⟩)).symm)
 
 /-- A strongly dominated old family has a strongly dominated normalized family. -/
 theorem IsStronglyDominated.numberFieldNormalize
-    {ξ : NormFamily (numberFieldAdelicStructure K) E} (hξ : ξ.IsUltrametric)
+    {ξ : NormFamily (numberFieldAdelicStructure K) E} (hξ : ξ.IsUltrametricAtFinitePlaces)
     (h : ξ.IsStronglyDominated) : (ξ.numberFieldNormalize).IsStronglyDominated :=
   (ξ.numberFieldNormalize_isStronglyDominated_iff).mpr h
 

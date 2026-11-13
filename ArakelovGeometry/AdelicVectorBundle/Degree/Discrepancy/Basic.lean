@@ -74,16 +74,16 @@ theorem bot_lt_majorantDiscrepancy (V : AdelicVectorBundle S)
 /-- The actual determinant-discrepancy integral is the degree-duality defect. -/
 theorem determinantDiscrepancy_eq_degree_add_degree_dual [S.IsProper]
     (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     V.determinantDiscrepancy =
-      V.degree + (V.dualOfMeasurableBase).degree :=
+      V.degree + (V.dualOfNormMeasurability).degree :=
   (V.degree_add_degree_dual_eq_integral_log_determinantDiscrepancy).symm
 
 /-- Pointwise δ≤Δ passes to the real integral and the actual lower integral.
 The local determinant function is integrable under the standing alternative. -/
 theorem determinantDiscrepancy_le_majorantDiscrepancy (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     (V.determinantDiscrepancy : EReal) ≤ V.majorantDiscrepancy := by
   have h := lowerEnvelopeIntegral_mono (μ := S.v)

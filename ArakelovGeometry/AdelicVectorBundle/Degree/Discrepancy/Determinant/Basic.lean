@@ -191,21 +191,21 @@ namespace AdelicVectorBundle
 /-- The discrepancy of an adelic bundle is measurable under exactly the
 source's standing measurability alternative. -/
 theorem measurable_determinantDiscrepancy (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase] :
+    [hS : S.NormMeasurabilityHypotheses] :
     Measurable V.toNormFamily.determinantDiscrepancy :=
   V.toNormFamily.measurable_determinantDiscrepancy
     (hm := (V.isMeasurable.determinant_of_discrete_or_countable))
-    (hd := ((V.dualOfMeasurableBase).isMeasurable.determinant_of_discrete_or_countable))
+    (hd := ((V.dualOfNormMeasurability).isMeasurable.determinant_of_discrete_or_countable))
 
 /-- Both genuine determinant lines are adelic, so their logarithmic
 norms supply integrability of the logarithmic discrepancy. -/
 theorem integrable_log_determinantDiscrepancy (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     Integrable (fun ω ↦ Real.log (V.toNormFamily.determinantDiscrepancy ω)) S.v := by
-  have hm := (V.determinantOfMeasurableBase).integrable_logNorm
+  have hm := (V.determinantOfNormMeasurability).integrable_logNorm
     (determinantGenerator (K := K) (E := V))
-  have hd := ((V.dualOfMeasurableBase).determinantOfMeasurableBase).integrable_logNorm
+  have hd := ((V.dualOfNormMeasurability).determinantOfNormMeasurability).integrable_logNorm
     (dualDeterminantGenerator (K := K) (E := V))
   change Integrable (V.toNormFamily.determinant.logNorm determinantGenerator) S.v at hm
   change Integrable (V.toNormFamily.dual.determinant.logNorm dualDeterminantGenerator) S.v at hd
@@ -216,18 +216,18 @@ theorem integrable_log_determinantDiscrepancy (V : AdelicVectorBundle S)
 determinant discrepancy, in every rank. -/
 theorem degree_add_degree_dual_eq_integral_log_determinantDiscrepancy [S.IsProper]
     (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    V.degree + (V.dualOfMeasurableBase).degree =
+    V.degree + (V.dualOfNormMeasurability).degree =
       ∫ ω, Real.log (V.toNormFamily.determinantDiscrepancy ω) ∂S.v := by
   let f := V.toNormFamily.determinant.logNorm (determinantGenerator (K := K) (E := V))
   let g := V.toNormFamily.dual.determinant.logNorm
     (dualDeterminantGenerator (K := K) (E := V))
-  have hm : Integrable f S.v := (V.determinantOfMeasurableBase).integrable_logNorm _
+  have hm : Integrable f S.v := (V.determinantOfNormMeasurability).integrable_logNorm _
   have hd : Integrable g S.v :=
-    ((V.dualOfMeasurableBase).determinantOfMeasurableBase).integrable_logNorm _
+    ((V.dualOfNormMeasurability).determinantOfNormMeasurability).integrable_logNorm _
   rw [V.degree_eq_neg_integral ⟨_, determinantGenerator_ne_zero⟩,
-    (V.dualOfMeasurableBase).degree_eq_neg_integral
+    (V.dualOfNormMeasurability).degree_eq_neg_integral
       ⟨_, dualDeterminantGenerator_ne_zero⟩]
   change -(∫ ω, f ω ∂S.v) + -(∫ ω, g ω ∂S.v) = _
   have hm' : Integrable (fun ω ↦ -f ω) S.v := hm.neg
@@ -241,9 +241,9 @@ theorem degree_add_degree_dual_eq_integral_log_determinantDiscrepancy [S.IsPrope
 
 /-- Degree plus dual degree is nonnegative, with no Hermitian hypothesis. -/
 theorem degree_add_degree_dual_nonneg [S.IsProper] (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    0 ≤ V.degree + (V.dualOfMeasurableBase).degree := by
+    0 ≤ V.degree + (V.dualOfNormMeasurability).degree := by
   rw [V.degree_add_degree_dual_eq_integral_log_determinantDiscrepancy]
   exact integral_nonneg (fun ω ↦ V.toNormFamily.log_determinantDiscrepancy_nonneg ω)
 

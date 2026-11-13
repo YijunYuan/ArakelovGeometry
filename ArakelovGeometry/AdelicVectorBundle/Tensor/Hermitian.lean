@@ -94,7 +94,7 @@ theorem orthogonalTensorPair_isHermitian (ξ : NormFamily S E) (η : NormFamily 
 /-- Either exact source alternative supplies binary orthogonal measurability. -/
 theorem IsMeasurable.orthogonalTensorPair {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsMeasurable) (hη : η.IsMeasurable)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [ξ.IsHermitian] [η.IsHermitian] :
     (ξ ⊗ʰ η).IsMeasurable :=
@@ -144,14 +144,14 @@ theorem orthogonalTensorPair_norm_tmul_completed (ξ : NormFamily S E) (η : Nor
 /-- The actual dual tensor measurability is produced, rather than assumed. -/
 theorem IsMeasurable.orthogonalTensorPair_dual {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsMeasurable) (hη : η.IsMeasurable)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [ξ.IsHermitian] [η.IsHermitian] :
     (ξ ⊗ʰ η).dual.IsMeasurable :=
   (hξ.orthogonalTensorPair hη).dual_of_discrete_or_countable
 
 instance instIsMeasurableOrthogonalTensorPair (ξ : NormFamily S E) (η : NormFamily S F)
-    [S.HasMeasurableBase] [S.IsArchimedeanNormalized]
+    [S.NormMeasurabilityHypotheses] [S.IsArchimedeanNormalized]
     [ξ.IsMeasurable] [η.IsMeasurable] [ξ.IsHermitian] [η.IsHermitian] :
     (ξ ⊗ʰ η).IsMeasurable :=
   IsMeasurable.orthogonalTensorPair inferInstance inferInstance
@@ -168,7 +168,7 @@ namespace AdelicVectorBundle
 /-- The actual binary Hermitian tensor bundle, with its analytic properties
 produced from the factors and the source measurability alternatives. -/
 abbrev orthogonalTensorPair (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hW : W.IsHermitian] :
     AdelicVectorBundle S :=
@@ -180,7 +180,7 @@ scoped[TensorProduct] infixl:100 " ⊗ʰ " => ArakelovGeometry.AdelicVectorBundl
 @[simp]
 theorem orthogonalTensorPair_toNormFamily (V : AdelicVectorBundle S)
     (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hW : W.IsHermitian] :
     (V ⊗ʰ W).toNormFamily =
@@ -189,7 +189,7 @@ theorem orthogonalTensorPair_toNormFamily (V : AdelicVectorBundle S)
 /-- The canonical tensor bundle is strongly adelic in its actual norms. -/
 theorem orthogonalTensorPair_isStronglyAdelic (V : AdelicVectorBundle S)
     (W : AdelicVectorBundle S)
-    [S.HasMeasurableBase]
+    [S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hW : W.IsHermitian] :
     (V ⊗ʰ W).IsStronglyAdelic :=
@@ -198,7 +198,7 @@ theorem orthogonalTensorPair_isStronglyAdelic (V : AdelicVectorBundle S)
 /-- The actual binary tensor bundle has the orthogonal product inner norm. -/
 theorem orthogonalTensorPair_isHermitian (V : AdelicVectorBundle S)
     (W : AdelicVectorBundle S)
-    [S.HasMeasurableBase]
+    [S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hW : W.IsHermitian] :
     (V ⊗ʰ W).IsHermitian :=

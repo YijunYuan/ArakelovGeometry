@@ -417,7 +417,7 @@ real level. Its finite flag data also settle levels outside the jump set. -/
 theorem HNVariationLift.filtrationOnGraded_eq
     [S.IsProper]
     {V : AdelicVectorBundle S}
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] {P : ℝ → Submodule K V}
     (L : V.HNVariationLift P) (t : ℝ) :
@@ -428,7 +428,7 @@ theorem HNVariationLift.filtrationOnGraded_eq
   · obtain ⟨i, rfl⟩ := hm
     let C (A : Submodule K V × Submodule K V) :=
       ∀ s, ((L.direction s).comap A.1.subtype).map (A.2.comap A.1.subtype).mkQ =
-        ((V.restrictOfMeasurableBase A.1).quotientOfMeasurableBase
+        ((V.restrictOfNormMeasurability A.1).quotientOfNormMeasurability
           (A.2.comap A.1.subtype)).hermitianHNFiltration
           (hV := ((hV.restrict A.1).quotient (A.2.comap A.1.subtype))) s
     have hp : (P (L.weight i), Submodule.filtrationRightLimit P (L.weight i)) =
@@ -444,7 +444,7 @@ theorem HNVariationLift.filtrationOnGraded_eq
 existing Hermitian tensor constructor applied to the actual two grades. -/
 noncomputable abbrev tensorFiltrationGradedSource
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (P : ℝ → Submodule K V) (R : ℝ → Submodule K W) (t u : ℝ) :
@@ -454,7 +454,7 @@ noncomputable abbrev tensorFiltrationGradedSource
 
 instance tensorFiltrationGradedSource_isHermitian
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (P : ℝ → Submodule K V) (R : ℝ → Submodule K W) (t u : ℝ) :
@@ -465,7 +465,7 @@ instance tensorFiltrationGradedSource_isHermitian
 actual image-filtration grade. The target norm is not induced from a pair. -/
 noncomputable abbrev tensorFiltrationQuotientGraded
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q)
@@ -478,7 +478,7 @@ noncomputable abbrev tensorFiltrationQuotientGraded
 
 instance tensorFiltrationQuotientGraded_isHermitian
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q)
@@ -499,7 +499,7 @@ contraction producer discharge both. This is the numerical grade bound of
 the adapted Bost Lemma 7.2 route before identifying secondary HN weights. -/
 theorem tensorFiltrationQuotientGraded_hnImage_degree_ge
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q)
@@ -534,7 +534,7 @@ filtrations satisfy Bost's local weighted degree bound. This theorem does
 not yet identify those images with a chosen ambient HN lifting's cuts. -/
 theorem tensorFiltrationQuotientGraded_secondary_degree_ge
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q)
@@ -585,7 +585,7 @@ theorem tensorFiltrationQuotientGraded_secondary_degree_ge
 tensor products of the actual factor-grade HN filtrations. -/
 noncomputable def tensorFiltrationSecondaryImage
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (q : V ⊗[K] W →ₗ[K] Q)
@@ -609,7 +609,7 @@ pair contractions, finite spanning, the actual secondary images, and both
 flag degree sums are proved. The eventual variation bound is separate. -/
 theorem tensorFiltrationSecondaryImage_weighted_le_slope
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q)
@@ -673,7 +673,7 @@ This one-sided form of Bost pp.30–32 suffices for the A9 lower bound; the
 paper's exact affine identity and full CM (5.13) are not asserted. -/
 theorem tensorFiltrationQuotient_eventual_hn_upper
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
     (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q)

@@ -198,7 +198,7 @@ theorem determinant_norm_le_injectiveTensor_norm (ω : S.Ω) (hω : ω ∈ S.Ωf
     exact ξ.determinant_norm_ιMulti_le ω x
   have hdet : ∀ x y : (S.ϕ ω).Completion ⊗[K] (⋀[K]^(Module.finrank K E) E),
       ‖x + y‖ ≤ max ‖x‖ ‖y‖ :=
-    ξ.determinant.isUltrametric_of_finrank_le_one (determinant_finrank.le) ω hω
+    ξ.determinant.isUltrametricAtFinitePlaces_of_finrank_le_one (determinant_finrank.le) ω hω
   have H := norm_linearMap_le_injective_of_ultrametric f hdet hf (e z)
   change ‖(tensorToExterior K E (Module.finrank K E)).baseChange
     (S.ϕ ω).Completion z‖ ≤ ArakelovGeometry.injectiveTensorSeminorm (e z)

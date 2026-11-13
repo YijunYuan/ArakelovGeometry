@@ -32,7 +32,7 @@ open AdelicStructure
 universe u w
 
 variable {K : Type u} [Field K] {E : Type w} [AddCommGroup E] [Module K E]
-  (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric]
+  (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
 
 open Classical in
 /-- The literal closed ball of the extracted actual norm, as a rational
@@ -45,10 +45,11 @@ def trivialFiltration (t : ℝ) : Submodule K E where
     exact (Real.exp_pos _).le
   add_mem' := by
     intro x y hx hy
-    have hu : (ofTrivialNorm ξ.trivialSeminorm ξ.trivialSeminorm_eq_zero_iff).IsUltrametric := by
+    have hu : (ofTrivialNorm ξ.trivialSeminorm
+      ξ.trivialSeminorm_eq_zero_iff).IsUltrametricAtFinitePlaces := by
       rw [ξ.ofTrivialNorm_trivialSeminorm]
       exact hξ
-    exact ((ofTrivialNorm_isUltrametric_iff _ _).mp hu x y).trans (max_le hx hy)
+    exact ((ofTrivialNorm_isUltrametricAtFinitePlaces_iff _ _).mp hu x y).trans (max_le hx hy)
   smul_mem' := by
     intro a x hx
     change ξ.trivialSeminorm

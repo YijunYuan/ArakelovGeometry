@@ -138,7 +138,7 @@ theorem IsPureAtFinitePlaces.quotient_globalImpurity_eq_zero
 
 theorem IsPureAtFinitePlaces.quotient_latticeGaugeFamily_eq
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsPureAtFinitePlaces) (hU : ξ.IsUltrametric) (F : Submodule K E) :
+    (hξ : ξ.IsPureAtFinitePlaces) (hU : ξ.IsUltrametricAtFinitePlaces) (F : Submodule K E) :
     (ξ.quotient F).latticeGaugeFamily (hξ := (hU.quotient F)) = ξ.quotient F :=
   (hξ.quotient F).latticeGaugeFamily_eq (hU.quotient F)
 

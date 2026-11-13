@@ -27,7 +27,7 @@ universe u w
 variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 variable (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
 
@@ -35,7 +35,7 @@ variable (V : AdelicVectorBundle S)
 in the polygon's hypograph over the genuine rank interval. -/
 theorem convexHull_degreePoints_subset_hermitianHNPolygon_hypograph :
     convexHull ℝ (Set.range (fun U : Submodule K V ↦
-      ((Module.finrank K U : ℝ), (V.restrictOfMeasurableBase U).degree))) ⊆
+      ((Module.finrank K U : ℝ), (V.restrictOfNormMeasurability U).degree))) ⊆
         {p : ℝ × ℝ | p.1 ∈ Set.Icc 0 (Module.finrank K V : ℝ) ∧
           p.2 ≤ V.hermitianHNPolygon p.1} := by
   apply convexHull_min
@@ -118,15 +118,15 @@ theorem hermitianHNPolygon_graph_mem_convexHull_degreePoints (x : ℝ)
     (hx : x ∈ Set.Icc 0 (Module.finrank K V : ℝ)) :
     (x, V.hermitianHNPolygon x) ∈
       convexHull ℝ (Set.range (fun U : Submodule K V ↦
-        ((Module.finrank K U : ℝ), (V.restrictOfMeasurableBase U).degree))) := by
+        ((Module.finrank K U : ℝ), (V.restrictOfNormMeasurability U).degree))) := by
   let A : Set (ℝ × ℝ) := Set.range (fun U : Submodule K V ↦
-    ((Module.finrank K U : ℝ), (V.restrictOfMeasurableBase U).degree))
+    ((Module.finrank K U : ℝ), (V.restrictOfNormMeasurability U).degree))
   by_cases hr : 0 < Module.finrank K V
   · obtain ⟨i, hi⟩ := V.exists_hermitianHNFactor_real_rank_interval hr x hx
     let r : ℝ := Module.finrank K (V.hermitianHNTerm i.val)
     let s : ℝ := Module.finrank K (V.hermitianHNTerm (i.val + 1))
-    let D := (V.restrictOfMeasurableBase (V.hermitianHNTerm i.val)).degree
-    let D' := (V.restrictOfMeasurableBase
+    let D := (V.restrictOfNormMeasurability (V.hermitianHNTerm i.val)).degree
+    let D' := (V.restrictOfNormMeasurability
       (V.hermitianHNTerm (i.val + 1))).degree
     let β := (V.hermitianHNFactor i).slope
     have hrs : r < s := Nat.cast_lt.mpr
@@ -175,7 +175,7 @@ theorem hermitianHNPolygon_graph_mem_convexHull_degreePoints (x : ℝ)
     have hp := V.hermitianHNPolygon_rank_term 0 (Nat.zero_le _)
     have hv : (x, V.hermitianHNPolygon x) =
         ((Module.finrank K (V.hermitianHNTerm 0) : ℝ),
-          (V.restrictOfMeasurableBase (V.hermitianHNTerm 0)).degree) := by
+          (V.restrictOfNormMeasurability (V.hermitianHNTerm 0)).degree) := by
       apply Prod.ext
       · exact hx0.trans hzRank.symm
       · simpa only [hzRank, hx0] using hp
@@ -187,7 +187,7 @@ theorem hermitianHNPolygon_isGreatest_degreePoints_hull_fibre (x : ℝ)
     (hx : x ∈ Set.Icc 0 (Module.finrank K V : ℝ)) :
     IsGreatest {y : ℝ | (x, y) ∈
       convexHull ℝ (Set.range (fun U : Submodule K V ↦
-        ((Module.finrank K U : ℝ), (V.restrictOfMeasurableBase U).degree)))}
+        ((Module.finrank K U : ℝ), (V.restrictOfNormMeasurability U).degree)))}
       (V.hermitianHNPolygon x) :=
   ⟨V.hermitianHNPolygon_graph_mem_convexHull_degreePoints x hx,
     fun _ hy ↦ (V.convexHull_degreePoints_subset_hermitianHNPolygon_hypograph
@@ -239,7 +239,7 @@ theorem hermitianHNPolygon_locally_affine_of_not_internal_rank (x : ℝ)
   let ε := min (x - r) (s - x)
   have he : 0 < ε := lt_min (sub_pos.mpr hl) (sub_pos.mpr hu)
   refine ⟨ε, he,
-    (V.restrictOfMeasurableBase (V.hermitianHNTerm i.val)).degree -
+    (V.restrictOfNormMeasurability (V.hermitianHNTerm i.val)).degree -
       r * (V.hermitianHNFactor i).slope,
     (V.hermitianHNFactor i).slope, ?_⟩
   intro y hy

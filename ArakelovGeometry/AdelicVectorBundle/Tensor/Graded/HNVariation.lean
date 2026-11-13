@@ -44,7 +44,7 @@ variable {K : Type*} [Field K] {Q : Type*}
   [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
   {S : AdelicStructure K} [S.IsProper]
   (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
 
@@ -103,7 +103,7 @@ variable {K E F Q : Type u} [Field K] [CharZero K]
   {S : AdelicStructure K} [S.IsProper]
   (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
   [Nontrivial V] [Nontrivial W]
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
 

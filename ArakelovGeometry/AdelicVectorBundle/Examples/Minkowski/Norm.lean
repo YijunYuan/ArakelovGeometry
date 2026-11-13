@@ -165,8 +165,8 @@ theorem normFamily_norm_rational (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1)
   rw [normFamily_norm, trivialCompletedTensorEquiv_one_tmul]
 
 /-- The actual family is ultrametric on every completed finite fibre. -/
-theorem normFamily_isUltrametric (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1) :
-    (normFamily c hc hc1).IsUltrametric := by
+theorem normFamily_isUltrametricAtFinitePlaces (c : ℝ) (hc : 0 < c) (hc1 : c ≤ 1) :
+    (normFamily c hc hc1).IsUltrametricAtFinitePlaces := by
   constructor
   intro a _ x y
   rw [normFamily_norm, normFamily_norm, normFamily_norm, map_add]

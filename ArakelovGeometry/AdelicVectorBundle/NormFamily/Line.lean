@@ -34,10 +34,10 @@ variable [FiniteDimensional K E]
 
 /-- Every norm family in dimension at most one is ultrametric at finite places.
 Exact rank-one biduality transports the ultrametric completed dual norm. -/
-theorem isUltrametric_of_finrank_le_one (ξ : NormFamily S E)
-    (hr : Module.finrank K E ≤ 1) : ξ.IsUltrametric := by
+theorem isUltrametricAtFinitePlaces_of_finrank_le_one (ξ : NormFamily S E)
+    (hr : Module.finrank K E ≤ 1) : ξ.IsUltrametricAtFinitePlaces := by
   rw [← ξ.dual_dual_pullback_eq_of_finrank_le_one hr]
-  exact ξ.dual.dual_isUltrametric.pullback
+  exact ξ.dual.dual_isUltrametricAtFinitePlaces.pullback
     (Module.Dual.eval K E) (Module.eval_apply_injective K)
 
 omit [FiniteDimensional K E] in

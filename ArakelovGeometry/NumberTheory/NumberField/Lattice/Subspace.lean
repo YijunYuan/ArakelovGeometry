@@ -33,7 +33,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 /-- Finite generation of the literal ambient integral ball, rather than
 an analytic domination premise, makes every literal subspace ball finite. -/
 theorem fg_restrict_normalizedGlobalUnitBallModule_of_fg
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (hfg : (ξ.globalUnitBallModule).FG) (F : Submodule K E) :
     ((ξ.restrict F).globalUnitBallModule (hξ := (hξ.restrict F))).FG := by
   let : Module.Finite (𝓞 K) (ξ.globalUnitBallModule) :=
@@ -50,7 +50,7 @@ variable [FiniteDimensional K E]
 at every actual finite parameter, by its canonical integral tensor map. -/
 def normalizedRestrictedGlobalCompletedTensorEquiv
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    [ξ.HasFiniteNormExceptions] [hξ : ξ.IsUltrametric] (F : Submodule K E)
+    [ξ.HasFiniteNormExceptions] [hξ : ξ.IsUltrametricAtFinitePlaces] (F : Submodule K E)
     (ω : (normalizedNumberFieldAdelicStructure K).Ω)
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) :
     (normalizedNumberFieldAdelicStructure K).completedLocalRing ω hω ⊗[𝓞 K]
@@ -62,7 +62,7 @@ def normalizedRestrictedGlobalCompletedTensorEquiv
 @[simp]
 theorem normalizedRestrictedGlobalCompletedTensorEquiv_tmul
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    [ξ.HasFiniteNormExceptions] [hξ : ξ.IsUltrametric] (F : Submodule K E)
+    [ξ.HasFiniteNormExceptions] [hξ : ξ.IsUltrametricAtFinitePlaces] (F : Submodule K E)
     (ω : (normalizedNumberFieldAdelicStructure K).Ω)
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin)
     (a : (normalizedNumberFieldAdelicStructure K).completedLocalRing ω hω)
@@ -77,7 +77,7 @@ omit [FiniteDimensional K E] in
 /-- The actual finite coherent ambient lattice makes every actual line
 intersection invertible without domination of the original norm family. -/
 theorem normalizedRestrictedGlobalUnitBall_invertible_of_fg
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hfinite : ξ.HasFiniteNormExceptions] (hfg : (ξ.globalUnitBallModule).FG)
     (F : Submodule K E) (hrank : Module.finrank K F = 1) :
     Module.Invertible (𝓞 K) ((ξ.restrict F).globalUnitBallModule (hξ := (hξ.restrict F))) :=
@@ -89,7 +89,7 @@ omit [FiniteDimensional K E] in
 /-- A substantive bounded-index consumer of the actual finite coherent
 line intersection. The element and index are produced in the original module. -/
 theorem exists_normalizedRestrictedGlobalUnitBall_boundedIndex_element_of_fg
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hfinite : ξ.HasFiniteNormExceptions] (hfg : (ξ.globalUnitBallModule).FG)
     (F : Submodule K E) (hrank : Module.finrank K F = 1) :
     ∃ l : (ξ.restrict F).globalUnitBallModule (hξ := (hξ.restrict F)), l ≠ 0 ∧

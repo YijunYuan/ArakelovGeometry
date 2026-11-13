@@ -168,7 +168,8 @@ theorem projectiveTensor_norm_tprod_le (ω : S.Ω)
   exact PiTensorProduct.projectiveSeminorm_tprod_le x
 
 /-- The injective family is ultrametric at every non-Archimedean place. -/
-theorem injectiveTensor_isUltrametric : (injectiveTensor ξ).IsUltrametric := by
+theorem injectiveTensor_isUltrametricAtFinitePlaces
+    : (injectiveTensor ξ).IsUltrametricAtFinitePlaces := by
   constructor
   intro ω hω z t
   let : ∀ i, NormedAddCommGroup ((S.ϕ ω).Completion ⊗[K] E i) :=
@@ -213,11 +214,11 @@ theorem mixedTensor_norm_of_not_mem_Ωfin (ω : S.Ω) (hω : ω ∉ S.Ωfin)
   simp [mixedTensor, hω]
 
 /-- The mixed tensor family is ultrametric at all non-Archimedean places. -/
-theorem mixedTensor_isUltrametric : (mixedTensor ξ).IsUltrametric := by
+theorem mixedTensor_isUltrametricAtFinitePlaces : (mixedTensor ξ).IsUltrametricAtFinitePlaces := by
   constructor
   intro ω hω z t
   simp only [mixedTensor_norm_of_mem_Ωfin ξ ω hω]
-  exact injectiveTensor_isUltrametric ξ ω hω z t
+  exact injectiveTensor_isUltrametricAtFinitePlaces ξ ω hω z t
 
 /-- For an empty family the projective norm is the completed scalar norm
 under the canonical empty-tensor identification. -/

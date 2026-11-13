@@ -96,8 +96,8 @@ instance functionField_hasOnlyFinitePlaces :
   exact hω
 
 /-- The geometric point measure has positive atoms. -/
-instance functionField_hasPositiveAtoms :
-    (functionFieldAdelicStructure k).HasPositiveAtoms :=
+instance functionField_hasPositiveSingletons :
+    (functionFieldAdelicStructure k).HasPositiveSingletons :=
   ⟨functionField_singleton_pos⟩
 
 end AdelicStructure
@@ -112,9 +112,9 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 /-- On an arbitrary positive-atomic discrete base, actual bidual-coordinate
 distance is integrable, its actual support countable, and all completed
 norms agree outside that support. The original norm need not be ultrametric. -/
-theorem IsDominated.bidual_coordinate_exceptions_of_positive_atoms
+theorem IsDominated.bidual_coordinate_exceptions_of_pos_singletons
     [DiscreteMeasurableSpace S.Ω] (hξ : ξ.IsDominated)
-    [hpos : S.HasPositiveAtoms] (hfin : S.v S.Ωinf < ⊤) :
+    [hpos : S.HasPositiveSingletons] (hfin : S.v S.Ωinf < ⊤) :
     let p := ξ.dual.dual.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K)
     let q := ofBasisMixed S E b
     Integrable (p.localDist q) S.v ∧
@@ -148,7 +148,7 @@ theorem IsDominated.functionField_bidual_coordinate_exceptions
       ∀ ω ∉ Function.support (p.localDist q),
         ∀ z : ((AdelicStructure.functionFieldAdelicStructure k).ϕ ω).Completion ⊗[RatFunc k] E,
           p.norm ω z = q.norm ω z := by
-  apply IsDominated.bidual_coordinate_exceptions_of_positive_atoms b ξ hξ
+  apply IsDominated.bidual_coordinate_exceptions_of_pos_singletons b ξ hξ
   rw [AdelicStructure.functionField_Ωinf_eq_empty, measure_empty]
   exact ENNReal.zero_lt_top
 

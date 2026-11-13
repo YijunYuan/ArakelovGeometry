@@ -104,7 +104,7 @@ variable [Algebra.IsAlgebraic K L]
 
 /-- Ordinary extension over a complexified base preserves the actual
 completed pullback norm at every place of an ultrametric norm family. -/
-theorem scalarExtension_pullback_norm_eq_of_sqrt_neg_one [hξ : ξ.IsUltrametric]
+theorem scalarExtension_pullback_norm_eq_of_sqrt_neg_one [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hN : S.IsArchimedeanNormalized]
     (hi : ∃ a : K, a ^ 2 = -1) (f : F →ₗ[K] E) (hf : Function.Injective f)
     (x : S.ParameterSpaceExtension L) (z : x.abv.Completion ⊗[L] (L ⊗[K] F)) :
@@ -121,7 +121,7 @@ theorem scalarExtension_pullback_norm_eq_of_sqrt_neg_one [hξ : ξ.IsUltrametric
 omit [FiniteDimensional K F] in
 /-- The native base-changed subspace, under the canonical tensor equivalence,
 has exactly the extended original restriction norm on every completed fibre. -/
-theorem scalarExtension_restrict_norm_eq_of_sqrt_neg_one [hξ : ξ.IsUltrametric]
+theorem scalarExtension_restrict_norm_eq_of_sqrt_neg_one [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hN : S.IsArchimedeanNormalized]
     (hi : ∃ a : K, a ^ 2 = -1) (A : Submodule K E)
     (x : S.ParameterSpaceExtension L) (z : x.abv.Completion ⊗[L] (L ⊗[K] A)) :

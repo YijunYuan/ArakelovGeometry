@@ -41,13 +41,13 @@ actual semistable flag means, weighted by the actual factor ranks. -/
 theorem positiveDegree_le_sum_rank_mul_max_slope_of_semistableFlag
     (V : AdelicVectorBundle S) {n : ℕ} (F : Fin (n + 1) → Submodule K V)
     (hF : Monotone F) (hzero : F 0 = ⊥) (htop : F (Fin.last n) = ⊤)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian]
-    [hsemi : ∀ i, (V.flagQuotientOfMeasurableBase F i).IsMeanSlopeSemistable] :
+    [hsemi : ∀ i, (V.flagQuotientOfNormMeasurability F i).IsMeanSlopeSemistable] :
     V.positiveDegree ≤ ((∑ i : Fin n,
       (Module.finrank K ((F i.succ) ⧸ ((F i.castSucc).comap (F i.succ).subtype)) : ℝ) *
-        max ((V.flagQuotientOfMeasurableBase F i).slope) 0 : ℝ) : EReal) := by
+        max ((V.flagQuotientOfNormMeasurability F i).slope) 0 : ℝ) : EReal) := by
   apply V.positiveDegree_le
   intro U
   apply EReal.coe_le_coe_iff.mpr
@@ -60,7 +60,7 @@ theorem positiveDegree_le_sum_rank_mul_max_slope_of_semistableFlag
       (Nat.cast_le.mpr (intersection_rank_increment_le F hF U i)) (le_max_right _ _))
 
 variable (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
 
@@ -68,7 +68,7 @@ variable (V : AdelicVectorBundle S)
 semistable, by the checked completed isometry with the produced image factor. -/
 theorem isMeanSlopeSemistable_hermitianHNFlagQuotient
     (i : Fin (V.hermitianHNLength)) :
-    (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag) i).IsMeanSlopeSemistable
+    (V.flagQuotientOfNormMeasurability (V.hermitianHNFlag) i).IsMeanSlopeSemistable
       := by
   let U := V.hermitianHNTerm i.val
   let W := V.hermitianHNTerm (i.val + 1)
@@ -77,10 +77,10 @@ theorem isMeanSlopeSemistable_hermitianHNFlagQuotient
     simp only [g, LinearMap.ker_comp, Submodule.ker_mkQ]
   have hs := (V.hermitianHNSubquotient_semistable_slope i).1
   change IsMeanSlopeSemistable
-    ((V.restrictOfMeasurableBase W).quotientOfMeasurableBase g.ker) at hs
+    ((V.restrictOfNormMeasurability W).quotientOfNormMeasurability g.ker) at hs
   have ht := congrArg (fun T : Submodule K W ↦
     IsMeanSlopeSemistable
-      ((V.restrictOfMeasurableBase W).quotientOfMeasurableBase T)) hk
+      ((V.restrictOfNormMeasurability W).quotientOfNormMeasurability T)) hk
   exact Eq.mp ht hs
 
 /-- The actual factor image rank agrees with the canonical flag quotient
@@ -106,7 +106,7 @@ theorem finrank_hermitianHNFlagQuotient_eq
 /-- Canonical flag quotient means equal actual image-factor means. -/
 theorem slope_hermitianHNFlagQuotient_eq
     (i : Fin (V.hermitianHNLength)) :
-    (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag) i).slope =
+    (V.flagQuotientOfNormMeasurability (V.hermitianHNFlag) i).slope =
       (V.hermitianHNFactor i).slope := by
   let U := V.hermitianHNTerm i.val
   let W := V.hermitianHNTerm (i.val + 1)
@@ -114,10 +114,10 @@ theorem slope_hermitianHNFlagQuotient_eq
   have hk : g.ker = U.comap W.subtype := by
     simp only [g, LinearMap.ker_comp, Submodule.ker_mkQ]
   have hs := (V.hermitianHNSubquotient_semistable_slope i).2
-  change ((V.restrictOfMeasurableBase W).quotientOfMeasurableBase g.ker).slope
+  change ((V.restrictOfNormMeasurability W).quotientOfNormMeasurability g.ker).slope
     = _ at hs
   have ht := congrArg (fun T : Submodule K W ↦
-    ((V.restrictOfMeasurableBase W).quotientOfMeasurableBase T).slope) hk
+    ((V.restrictOfNormMeasurability W).quotientOfNormMeasurability T).slope) hk
   exact ht.symm.trans hs
 
 /-- Positive degree is bounded by the positive actual HN factor means
@@ -138,21 +138,21 @@ theorem positiveDegree_le_sum_hermitianHNFactor_rank_mul_max_slope :
 the actual quotient-image factor rather than a supplied degree identity. -/
 theorem degree_restrict_hermitianHNTerm_succ
     (i : Fin (V.hermitianHNLength)) :
-    (V.restrictOfMeasurableBase (V.hermitianHNTerm i.val)).degree +
+    (V.restrictOfNormMeasurability (V.hermitianHNTerm i.val)).degree +
       (V.hermitianHNFactor i).degree =
-        (V.restrictOfMeasurableBase (V.hermitianHNTerm (i.val + 1))).degree
+        (V.restrictOfNormMeasurability (V.hermitianHNTerm (i.val + 1))).degree
           := by
   let U := V.hermitianHNTerm i.val
   let W := V.hermitianHNTerm (i.val + 1)
   have hUW : U ≤ W := V.hermitianHNTerm_monotone (Nat.le_succ _)
-  have hHW : (V.restrictOfMeasurableBase W).toNormFamily.IsHermitian := by
-    simpa only [restrictOfMeasurableBase_toNormFamily] using hV.restrict W
+  have hHW : (V.restrictOfNormMeasurability W).toNormFamily.IsHermitian := by
+    simpa only [restrictOfNormMeasurability_toNormFamily] using hV.restrict W
   have hs := degree_restrict_add_degree_quotient_eq_of_isHermitian
-    (V.restrictOfMeasurableBase W) (U.comap W.subtype) (hV := hHW)
+    (V.restrictOfNormMeasurability W) (U.comap W.subtype) (hV := hHW)
   rw [V.degree_restrict_restrict U W hUW] at hs
-  change (V.restrictOfMeasurableBase U).degree +
-    (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag) i).degree =
-      (V.restrictOfMeasurableBase W).degree at hs
+  change (V.restrictOfNormMeasurability U).degree +
+    (V.flagQuotientOfNormMeasurability (V.hermitianHNFlag) i).degree =
+      (V.restrictOfNormMeasurability W).degree at hs
   rwa [← V.degree_hermitianHNFactor_eq_flagQuotient i] at hs
 
 /-- Every actual HN prefix degree is the sum of the preceding actual
@@ -161,7 +161,7 @@ theorem sum_hermitianHNFactor_degree_prefix (m : ℕ)
     (hm : m ≤ V.hermitianHNLength) :
     (∑ i : Fin m,
       (V.hermitianHNFactor ⟨i.val, Nat.lt_of_lt_of_le i.isLt hm⟩).degree) =
-        (V.restrictOfMeasurableBase (V.hermitianHNTerm m)).degree := by
+        (V.restrictOfNormMeasurability (V.hermitianHNTerm m)).degree := by
   induction m with
   | zero =>
       rw [Fin.sum_univ_zero, V.hermitianHNTerm_zero]
@@ -176,7 +176,7 @@ theorem sum_hermitianHNFactor_degree_prefix (m : ℕ)
 /-- The produced threshold-zero HN term has degree equal to the sum of
 the positive actual factor means, including zero-slope factors harmlessly. -/
 theorem degree_restrict_hermitianHNFiltration_zero :
-    (V.restrictOfMeasurableBase (V.hermitianHNFiltration 0)).degree =
+    (V.restrictOfNormMeasurability (V.hermitianHNFiltration 0)).degree =
       ∑ i : Fin (V.hermitianHNLength),
         (Module.finrank K ((V.hermitianHNTerm (i.val + 1)).map
           (V.hermitianHNTerm i.val).mkQ) : ℝ) *
@@ -221,7 +221,7 @@ theorem degree_restrict_hermitianHNFiltration_zero :
 HN subspace; neither the subspace nor its numerical degree is an input. -/
 theorem positiveDegree_eq_degree_restrict_hermitianHNFiltration_zero :
     V.positiveDegree =
-      ((V.restrictOfMeasurableBase (V.hermitianHNFiltration 0)).degree
+      ((V.restrictOfNormMeasurability (V.hermitianHNFiltration 0)).degree
         : EReal) := by
   apply le_antisymm
   · exact (V.positiveDegree_le_sum_hermitianHNFactor_rank_mul_max_slope).trans_eq

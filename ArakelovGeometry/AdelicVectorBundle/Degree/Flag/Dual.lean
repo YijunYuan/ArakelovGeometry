@@ -38,13 +38,13 @@ the actual successive quotients of a finite flag starting at zero. -/
 theorem degree_restrict_sub_determinantDiscrepancy_le_sum_flagQuotient [S.IsProper]
     (V : AdelicVectorBundle S) {n : ℕ} (F : Fin (n + 1) → Submodule K V)
     (hF : Monotone F) (hzero : F 0 = ⊥)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
-    [hV : V.toNormFamily.IsUltrametric] :
-    (V.restrictOfMeasurableBase (F (Fin.last n))).degree -
-        (V.restrictOfMeasurableBase (F (Fin.last n))).determinantDiscrepancy ≤
-      ∑ i : Fin n, ((V.flagQuotientOfMeasurableBase F i).degree -
-        (V.flagQuotientOfMeasurableBase F i).determinantDiscrepancy) := by
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] :
+    (V.restrictOfNormMeasurability (F (Fin.last n))).degree -
+        (V.restrictOfNormMeasurability (F (Fin.last n))).determinantDiscrepancy ≤
+      ∑ i : Fin n, ((V.flagQuotientOfNormMeasurability F i).degree -
+        (V.flagQuotientOfNormMeasurability F i).determinantDiscrepancy) := by
   induction n with
   | zero =>
       have hz : F (Fin.last 0) = ⊥ := hzero
@@ -52,9 +52,9 @@ theorem degree_restrict_sub_determinantDiscrepancy_le_sum_flagQuotient [S.IsProp
         rw [hz]
         exact finrank_bot K V
       have hd := degree_eq_zero_of_finrank_eq_zero
-        (V.restrictOfMeasurableBase (F (Fin.last 0))) hr
+        (V.restrictOfNormMeasurability (F (Fin.last 0))) hr
       have hδ := determinantDiscrepancy_eq_zero_of_finrank_eq_zero
-        (V.restrictOfMeasurableBase (F (Fin.last 0))) hr
+        (V.restrictOfNormMeasurability (F (Fin.last 0))) hr
       simp only [Fin.sum_univ_zero, hd, hδ, sub_self, le_refl]
   | succ n ih =>
       let G : Fin (n + 1) → Submodule K V := fun i ↦ F i.castSucc
@@ -63,23 +63,24 @@ theorem degree_restrict_sub_determinantDiscrepancy_le_sum_flagQuotient [S.IsProp
       have hG : Monotone G := hF.comp Fin.strictMono_castSucc.monotone
       have hzG : G 0 = ⊥ := hzero
       have hprefix := ih G hG hzG
-      change (V.restrictOfMeasurableBase U).degree -
-          (V.restrictOfMeasurableBase U).determinantDiscrepancy ≤
-        ∑ i : Fin n, ((V.flagQuotientOfMeasurableBase F i.castSucc).degree -
-          (V.flagQuotientOfMeasurableBase F i.castSucc).determinantDiscrepancy) at hprefix
+      change (V.restrictOfNormMeasurability U).degree -
+          (V.restrictOfNormMeasurability U).determinantDiscrepancy ≤
+        ∑ i : Fin n, ((V.flagQuotientOfNormMeasurability F i.castSucc).degree -
+          (V.flagQuotientOfNormMeasurability F i.castSucc).determinantDiscrepancy) at hprefix
       have hUW : U ≤ W := hF (Fin.le_last _)
-      have hUWnorm : (V.restrictOfMeasurableBase W).toNormFamily.IsUltrametric := by
-        simpa only [restrictOfMeasurableBase_toNormFamily] using hV.restrict W
+      have hUWnorm : (V.restrictOfNormMeasurability W).toNormFamily.IsUltrametricAtFinitePlaces :=
+        by
+        simpa only [restrictOfNormMeasurability_toNormFamily] using hV.restrict W
       have hstep := degree_sub_determinantDiscrepancy_le_restrict_add_quotient
-        (V.restrictOfMeasurableBase W) (U.comap W.subtype) (hV := hUWnorm)
+        (V.restrictOfNormMeasurability W) (U.comap W.subtype) (hV := hUWnorm)
       rw [V.degree_restrict_restrict U W hUW,
         V.determinantDiscrepancy_restrict_restrict U W hUW] at hstep
-      change (V.restrictOfMeasurableBase W).degree -
-          (V.restrictOfMeasurableBase W).determinantDiscrepancy ≤
-        ((V.restrictOfMeasurableBase U).degree -
-          (V.restrictOfMeasurableBase U).determinantDiscrepancy) +
-        ((V.flagQuotientOfMeasurableBase F (Fin.last n)).degree -
-          (V.flagQuotientOfMeasurableBase F (Fin.last n)).determinantDiscrepancy) at hstep
+      change (V.restrictOfNormMeasurability W).degree -
+          (V.restrictOfNormMeasurability W).determinantDiscrepancy ≤
+        ((V.restrictOfNormMeasurability U).degree -
+          (V.restrictOfNormMeasurability U).determinantDiscrepancy) +
+        ((V.flagQuotientOfNormMeasurability F (Fin.last n)).degree -
+          (V.flagQuotientOfNormMeasurability F (Fin.last n)).determinantDiscrepancy) at hstep
       rw [Fin.sum_univ_castSucc]
       exact hstep.trans (add_le_add_left hprefix _)
 
@@ -88,15 +89,15 @@ finite flag in an ultrametric-outside-infinity bundle. -/
 theorem degree_sub_determinantDiscrepancy_le_sum_flagQuotient [S.IsProper]
     (V : AdelicVectorBundle S) {n : ℕ} (F : Fin (n + 1) → Submodule K V)
     (hF : Monotone F) (hzero : F 0 = ⊥) (htop : F (Fin.last n) = ⊤)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
-    [hV : V.toNormFamily.IsUltrametric] :
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] :
     V.degree - V.determinantDiscrepancy ≤
-      ∑ i : Fin n, ((V.flagQuotientOfMeasurableBase F i).degree -
-        (V.flagQuotientOfMeasurableBase F i).determinantDiscrepancy) := by
+      ∑ i : Fin n, ((V.flagQuotientOfNormMeasurability F i).degree -
+        (V.flagQuotientOfNormMeasurability F i).determinantDiscrepancy) := by
   calc
-    _ = (V.restrictOfMeasurableBase (F (Fin.last n))).degree -
-        (V.restrictOfMeasurableBase (F (Fin.last n))).determinantDiscrepancy := by
+    _ = (V.restrictOfNormMeasurability (F (Fin.last n))).degree -
+        (V.restrictOfNormMeasurability (F (Fin.last n))).determinantDiscrepancy := by
       rw [htop, V.degree_restrict_top, V.determinantDiscrepancy_restrict_top]
     _ ≤ _ := V.degree_restrict_sub_determinantDiscrepancy_le_sum_flagQuotient
       F hF hzero

@@ -40,9 +40,9 @@ namespace IsDominated
 
 /-- Full primal measurability of every actual native algebraic-closure
 subquotient, from finite-stage descent and original domination alone. -/
-theorem scalarExtension_subquotient_isMeasurable_of_positive_atoms_of_isAlgClosed
+theorem scalarExtension_subquotient_isMeasurable_of_pos_singletons_of_isAlgClosed
     (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (P Q : Submodule L (L ⊗[K] E)) (hPQ : P ≤ Q) :
     (((ξ.scalarExtension (L := L)).restrict Q).quotient
       (P.comap Q.subtype)).IsMeasurable := by
@@ -65,7 +65,7 @@ theorem scalarExtension_subquotient_isMeasurable_of_positive_atoms_of_isAlgClose
       (AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin)).isDominated.restrict Q₀
       ).quotient (P₀.comap Q₀.subtype)
   have hm : η.IsMeasurable :=
-    hd₀.scalarExtension_isMeasurable_of_positive_atoms_of_isAlgebraic η₀ (hpos := ⟨hFpos⟩)
+    hd₀.scalarExtension_isMeasurable_of_pos_singletons_of_isAlgebraic η₀ (hpos := ⟨hFpos⟩)
         (hS := ⟨hFS⟩)
   have ht : (θ.towerPullback F.toIntermediateField).IsMeasurable :=
     hm.of_completed_isometry η (θ.towerPullback F.toIntermediateField) e he
@@ -73,9 +73,9 @@ theorem scalarExtension_subquotient_isMeasurable_of_positive_atoms_of_isAlgClose
 
 /-- Full actual completed-dual measurability of every native subquotient;
 the transpose of the produced isometry is used on actual rational functionals. -/
-theorem scalarExtension_subquotient_dual_isMeasurable_of_positive_atoms_of_isAlgClosed
+theorem scalarExtension_subquotient_dual_isMeasurable_of_pos_singletons_of_isAlgClosed
     (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (P Q : Submodule L (L ⊗[K] E)) (hPQ : P ≤ Q) :
     (((ξ.scalarExtension (L := L)).restrict Q).quotient
       (P.comap Q.subtype)).dual.IsMeasurable := by
@@ -98,14 +98,14 @@ theorem scalarExtension_subquotient_dual_isMeasurable_of_positive_atoms_of_isAlg
       (AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin)).isDominated.restrict Q₀
       ).quotient (P₀.comap Q₀.subtype)
   have hm : η.dual.IsMeasurable :=
-    hd₀.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlgebraic η₀ (hpos := ⟨hFpos⟩)
+    hd₀.scalarExtension_dual_isMeasurable_of_pos_singletons_of_isAlgebraic η₀ (hpos := ⟨hFpos⟩)
         (hS := ⟨hFS⟩)
   exact IsMeasurable.dual_of_tower_completed_isometry F η θ e he hm
 
 /-- Literal relative quotients have actual primal regularity. -/
-theorem scalarExtension_restrict_quotient_isMeasurable_of_positive_atoms_of_isAlgClosed
+theorem scalarExtension_restrict_quotient_isMeasurable_of_pos_singletons_of_isAlgClosed
     (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
     (((ξ.scalarExtension (L := L)).restrict B).quotient U).IsMeasurable := by
   let P := U.map B.subtype
@@ -113,15 +113,15 @@ theorem scalarExtension_restrict_quotient_isMeasurable_of_positive_atoms_of_isAl
   have hU : P.comap B.subtype = U := by
     change (U.map B.subtype).comap B.subtype = U
     rw [Submodule.comap_map_eq, Submodule.ker_subtype, sup_bot_eq]
-  have hm := scalarExtension_subquotient_isMeasurable_of_positive_atoms_of_isAlgClosed
+  have hm := scalarExtension_subquotient_isMeasurable_of_pos_singletons_of_isAlgClosed
     ξ hξ P B hP
   exact Eq.mp (congrArg (fun C : Submodule L B =>
     (((ξ.scalarExtension (L := L)).restrict B).quotient C).IsMeasurable) hU) hm
 
 /-- Literal relative quotients have actual completed-dual regularity. -/
-theorem scalarExtension_restrict_quotient_dual_isMeasurable_of_positive_atoms_of_isAlgClosed
+theorem scalarExtension_restrict_quotient_dual_isMeasurable_of_pos_singletons_of_isAlgClosed
     (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (B : Submodule L (L ⊗[K] E)) (U : Submodule L B) :
     (((ξ.scalarExtension (L := L)).restrict B).quotient U).dual.IsMeasurable := by
   let P := U.map B.subtype
@@ -129,7 +129,7 @@ theorem scalarExtension_restrict_quotient_dual_isMeasurable_of_positive_atoms_of
   have hU : P.comap B.subtype = U := by
     change (U.map B.subtype).comap B.subtype = U
     rw [Submodule.comap_map_eq, Submodule.ker_subtype, sup_bot_eq]
-  have hm := scalarExtension_subquotient_dual_isMeasurable_of_positive_atoms_of_isAlgClosed
+  have hm := scalarExtension_subquotient_dual_isMeasurable_of_pos_singletons_of_isAlgClosed
     ξ hξ P B hP
   exact Eq.mp (congrArg (fun C : Submodule L B =>
     (((ξ.scalarExtension (L := L)).restrict B).quotient C).dual.IsMeasurable) hU) hm

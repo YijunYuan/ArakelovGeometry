@@ -38,7 +38,7 @@ local notation "N" => normalizedNumberFieldAdelicStructure K
 
 /-- The original canonical rational local tensor map, with no coherence input. -/
 def normalizedGlobalLocalTensorMap (ξ : NormFamily (N) E)
-    [hξ : ξ.IsUltrametric] (p : HeightOneSpectrum (𝓞 K)) :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (p : HeightOneSpectrum (𝓞 K)) :
     ((N).rationalLocalRing (normalizedPrimeParameter p)
       (normalizedPrimeParameter_mem_fin p)) ⊗[𝓞 K] (ξ.globalUnitBallModule) →ₗ[
       (N).rationalLocalRing (normalizedPrimeParameter p)
@@ -51,7 +51,7 @@ def normalizedGlobalLocalTensorMap (ξ : NormFamily (N) E)
 
 @[simp]
 theorem normalizedGlobalLocalTensorMap_tmul (ξ : NormFamily (N) E)
-    [hξ : ξ.IsUltrametric] (p : HeightOneSpectrum (𝓞 K))
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (p : HeightOneSpectrum (𝓞 K))
     (a : (N).rationalLocalRing (normalizedPrimeParameter p)
       (normalizedPrimeParameter_mem_fin p)) (x : ξ.globalUnitBallModule) :
     ξ.normalizedGlobalLocalTensorMap p (a ⊗ₜ[𝓞 K] x) =
@@ -61,7 +61,7 @@ theorem normalizedGlobalLocalTensorMap_tmul (ξ : NormFamily (N) E)
 /-- The actual coherent local equivalence is the original canonical local map. -/
 theorem normalizedGlobalLocalEquiv_coe
     (ξ : NormFamily (N) E) [ξ.HasFiniteNormExceptions]
-    [ξ.IsUltrametric] (p : HeightOneSpectrum (𝓞 K)) :
+    [ξ.IsUltrametricAtFinitePlaces] (p : HeightOneSpectrum (𝓞 K)) :
     (ξ.normalizedGlobalLocalEquiv p).toLinearMap =
       ξ.normalizedGlobalLocalTensorMap p := by
   apply TensorProduct.AlgebraTensorModule.ext
@@ -71,19 +71,19 @@ theorem normalizedGlobalLocalEquiv_coe
 
 /-- The original canonical global generic map, with no coherence input. -/
 def normalizedGlobalGenericFibreMap (ξ : NormFamily (N) E)
-    [hξ : ξ.IsUltrametric] : K ⊗[𝓞 K] (ξ.globalUnitBallModule) →ₗ[K] E :=
+    [hξ : ξ.IsUltrametricAtFinitePlaces] : K ⊗[𝓞 K] (ξ.globalUnitBallModule) →ₗ[K] E :=
   (ξ.globalUnitBallModule).subtype.liftBaseChange K
 
 @[simp]
 theorem normalizedGlobalGenericFibreMap_tmul (ξ : NormFamily (N) E)
-    [hξ : ξ.IsUltrametric] (a : K) (x : ξ.globalUnitBallModule) :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (a : K) (x : ξ.globalUnitBallModule) :
     ξ.normalizedGlobalGenericFibreMap (a ⊗ₜ[𝓞 K] x) = a • (x : E) :=
   LinearMap.liftBaseChange_tmul _ _ a x
 
 /-- The actual coherent generic equivalence is the original canonical generic map. -/
 theorem normalizedGlobalGenericFiberEquiv_coe
     (ξ : NormFamily (N) E) [ξ.HasFiniteNormExceptions]
-    [ξ.IsUltrametric] :
+    [ξ.IsUltrametricAtFinitePlaces] :
     (ξ.normalizedGlobalGenericFiberEquiv).toLinearMap =
       ξ.normalizedGlobalGenericFibreMap := by
   apply TensorProduct.AlgebraTensorModule.ext
@@ -93,7 +93,7 @@ theorem normalizedGlobalGenericFiberEquiv_coe
 
 /-- Every actual local tensor image lies in the rational span of the global ball. -/
 theorem normalizedGlobalLocalTensorMap_coe_mem_span (ξ : NormFamily (N) E)
-    [hξ : ξ.IsUltrametric] (p : HeightOneSpectrum (𝓞 K))
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (p : HeightOneSpectrum (𝓞 K))
     (t : ((N).rationalLocalRing (normalizedPrimeParameter p)
       (normalizedPrimeParameter_mem_fin p)) ⊗[𝓞 K] (ξ.globalUnitBallModule)) :
     (ξ.normalizedGlobalLocalTensorMap p t : E) ∈ Submodule.span K ξ.globalUnitBall := by
@@ -108,7 +108,7 @@ theorem normalizedGlobalLocalTensorMap_coe_mem_span (ξ : NormFamily (N) E)
 
 /-- Surjectivity at one actual finite prime forces full global rational span. -/
 theorem span_normalizedGlobalUnitBall_eq_top_of_localTensorMap_surjective
-    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (p : HeightOneSpectrum (𝓞 K)) (hsurj : Function.Surjective
       (ξ.normalizedGlobalLocalTensorMap p)) : Submodule.span K ξ.globalUnitBall = ⊤ := by
   apply top_unique
@@ -125,7 +125,7 @@ theorem span_normalizedGlobalUnitBall_eq_top_of_localTensorMap_surjective
 
 /-- Every actual generic tensor image lies in the rational span of the global ball. -/
 theorem normalizedGlobalGenericFibreMap_mem_span (ξ : NormFamily (N) E)
-    [hξ : ξ.IsUltrametric] (t : K ⊗[𝓞 K] (ξ.globalUnitBallModule)) :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (t : K ⊗[𝓞 K] (ξ.globalUnitBallModule)) :
     ξ.normalizedGlobalGenericFibreMap t ∈ Submodule.span K ξ.globalUnitBall := by
   induction t using TensorProduct.inductionOn with
   | tmul a x =>
@@ -136,7 +136,7 @@ theorem normalizedGlobalGenericFibreMap_mem_span (ξ : NormFamily (N) E)
 
 /-- The original generic tensor surjection forces full global rational span. -/
 theorem span_normalizedGlobalUnitBall_eq_top_of_genericFibreMap_surjective
-    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (hsurj : Function.Surjective (ξ.normalizedGlobalGenericFibreMap)) :
     Submodule.span K ξ.globalUnitBall = ⊤ := by
   apply top_unique
@@ -147,7 +147,7 @@ theorem span_normalizedGlobalUnitBall_eq_top_of_genericFibreMap_surjective
 /-- Actual global rational spanning gives source coherence by genuine span
 induction, ultrametric addition and actual finite scalar evaluation support. -/
 theorem hasFiniteNormExceptions_of_span_normalizedGlobalUnitBall_eq_top
-    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (hspan : Submodule.span K ξ.globalUnitBall = ⊤) : ξ.HasFiniteNormExceptions := by
   constructor
   intro x
@@ -200,7 +200,7 @@ theorem hasFiniteNormExceptions_of_span_normalizedGlobalUnitBall_eq_top
 
 /-- Actual global spanning is equivalent to genuine source coherence. -/
 theorem hasFiniteNormExceptions_iff_span_normalizedGlobalUnitBall_eq_top
-    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametric] :
+    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     ξ.HasFiniteNormExceptions ↔ Submodule.span K ξ.globalUnitBall = ⊤ := by
   constructor
   · intro hfinite
@@ -211,7 +211,7 @@ theorem hasFiniteNormExceptions_iff_span_normalizedGlobalUnitBall_eq_top
 
 /-- Source coherence criterion (4), for the original canonical generic-fibre map. -/
 theorem hasFiniteNormExceptions_iff_normalizedGlobalGenericFibreMap_bijective
-    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametric] :
+    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     ξ.HasFiniteNormExceptions ↔ Function.Bijective (ξ.normalizedGlobalGenericFibreMap) := by
   constructor
   · intro hfinite
@@ -223,7 +223,7 @@ theorem hasFiniteNormExceptions_iff_normalizedGlobalGenericFibreMap_bijective
 
 /-- Source coherence criterion (2), for the actual canonical map at every actual prime. -/
 theorem hasFiniteNormExceptions_iff_normalizedGlobalLocalTensorMap_all_bijective
-    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametric] :
+    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     ξ.HasFiniteNormExceptions ↔ ∀ p : HeightOneSpectrum (𝓞 K),
       Function.Bijective (ξ.normalizedGlobalLocalTensorMap p) := by
   constructor
@@ -237,7 +237,7 @@ theorem hasFiniteNormExceptions_iff_normalizedGlobalLocalTensorMap_all_bijective
 
 /-- Source coherence criterion (3), with genuine canonical-map bijectivity at one prime. -/
 theorem hasFiniteNormExceptions_iff_normalizedGlobalLocalTensorMap_exists_bijective
-    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametric] :
+    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     ξ.HasFiniteNormExceptions ↔ ∃ p : HeightOneSpectrum (𝓞 K),
       Function.Bijective (ξ.normalizedGlobalLocalTensorMap p) := by
   constructor
@@ -251,7 +251,7 @@ theorem hasFiniteNormExceptions_iff_normalizedGlobalLocalTensorMap_exists_biject
 
 /-- One genuine canonical local surjection already gives all source coherence criteria. -/
 theorem hasFiniteNormExceptions_iff_normalizedGlobalLocalTensorMap_exists_surjective
-    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametric] :
+    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     ξ.HasFiniteNormExceptions ↔ ∃ p : HeightOneSpectrum (𝓞 K),
       Function.Surjective (ξ.normalizedGlobalLocalTensorMap p) := by
   constructor

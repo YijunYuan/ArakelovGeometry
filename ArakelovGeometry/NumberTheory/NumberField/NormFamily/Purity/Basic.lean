@@ -187,7 +187,7 @@ theorem globalImpurity_eq_zero_restrict (hσ : ξ.globalImpurity = 0)
 variable [FiniteDimensional K E]
 
 /-- The actual produced completed unit-ball gauge family is pure. -/
-instance latticeGaugeFamily_isPureAtFinitePlaces [hξ : ξ.IsUltrametric] :
+instance latticeGaugeFamily_isPureAtFinitePlaces [hξ : ξ.IsUltrametricAtFinitePlaces] :
     (ξ.latticeGaugeFamily).IsPureAtFinitePlaces := by
   constructor
   intro ω hω z hz
@@ -205,7 +205,7 @@ instance latticeGaugeFamily_isPureAtFinitePlaces [hξ : ξ.IsUltrametric] :
 retained by its original construction. -/
 theorem IsPureAtFinitePlaces.latticeGaugeFamily_eq {ξ :
     NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hξ : ξ.IsPureAtFinitePlaces) (hu : ξ.IsUltrametric) :
+    (hξ : ξ.IsPureAtFinitePlaces) (hu : ξ.IsUltrametricAtFinitePlaces) :
     ξ.latticeGaugeFamily = ξ := by
   ext ω z
   by_cases hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin

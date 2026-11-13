@@ -38,7 +38,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 namespace AdelicVectorBundle
 
 variable [S.IsProper] (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
 
 /-- The actual image restriction retains the source restricted minimum
@@ -47,11 +47,11 @@ its zero-map height is never added to that minimum. -/
 theorem le_minimalSlope_restrict_map_of_mapHeight_le
     (f : V →ₗ[K] W) (hf : f ≠ 0) (U : Submodule K V)
     (c : ℝ) (hh : V.mapHeight W f ≤ (c : EReal)) (t : ℝ)
-    (hU : (t : EReal) ≤ (V.restrictOfMeasurableBase U).minimalSlope) :
+    (hU : (t : EReal) ≤ (V.restrictOfNormMeasurability U).minimalSlope) :
     ((t - c : ℝ) : EReal) ≤
-      (W.restrictOfMeasurableBase (U.map f)).minimalSlope := by
-  let A := V.restrictOfMeasurableBase U
-  let B := W.restrictOfMeasurableBase (U.map f)
+      (W.restrictOfNormMeasurability (U.map f)).minimalSlope := by
+  let A := V.restrictOfNormMeasurability U
+  let B := W.restrictOfNormMeasurability (U.map f)
   let g := f.submoduleMap U
   by_cases hg : g = 0
   · rw [(A.minimalSlope_target_eq_top_of_zero_surjective B g
@@ -69,34 +69,34 @@ theorem le_minimalSlope_restrict_map_of_mapHeight_le
 /-- Any actual real upper bound for a nonzero map's height transports the
 actual general filtration. No Hermitianity or minimum bound on its image
 is supplied: the latter is proved through the canonical image surjection. -/
-theorem map_generalHNFiltration_le_of_mapHeight_le
+theorem map_hnFiltration_le_of_mapHeight_le
     (f : V →ₗ[K] W) (hf : f ≠ 0) (c : ℝ) (hh : V.mapHeight W f ≤ (c : EReal)) (t : ℝ) :
-    (V.generalHNFiltration t).map f ≤ W.generalHNFiltration (t - c) := by
-  apply W.le_generalHNFiltration_of_le_minimalSlope_restrict _ (t - c)
+    (V.hnFiltration t).map f ≤ W.hnFiltration (t - c) := by
+  apply W.le_hnFiltration_of_le_minimalSlope_restrict _ (t - c)
   exact V.le_minimalSlope_restrict_map_of_mapHeight_le W f hf _ c hh t
-    (V.le_minimalSlope_restrict_generalHNFiltration t)
+    (V.le_minimalSlope_restrict_hnFiltration t)
 
 /-- Source Proposition 4.3.49 with the full actual extended-real height.
 Infinite height gives the true negative-infinite target endpoint. Otherwise
 both endpoints are excluded before producing a real height. -/
-theorem map_generalHNFiltration_le (f : V →ₗ[K] W) (hf : f ≠ 0) (t : ℝ) :
-    (V.generalHNFiltration t).map f ≤
-      W.generalHNFiltrationExtended ((t : EReal) - V.mapHeight W f) := by
+theorem map_hnFiltration_le (f : V →ₗ[K] W) (hf : f ≠ 0) (t : ℝ) :
+    (V.hnFiltration t).map f ≤
+      W.hnFiltrationExtended ((t : EReal) - V.mapHeight W f) := by
   by_cases ht : V.mapHeight W f = ⊤
-  · rw [ht, EReal.sub_top, W.generalHNFiltrationExtended_bot]
+  · rw [ht, EReal.sub_top, W.hnFiltrationExtended_bot]
     exact le_top
   · have hb : V.mapHeight W f ≠ ⊥ := (V.bot_lt_mapHeight W hf).ne'
     obtain ⟨c, hc⟩ : ∃ c : ℝ, V.mapHeight W f = (c : EReal) := by
       lift V.mapHeight W f to ℝ using ⟨ht, hb⟩ with c
       exact ⟨c, rfl⟩
-    rw [hc, ← EReal.coe_sub, W.generalHNFiltrationExtended_coe]
-    exact V.map_generalHNFiltration_le_of_mapHeight_le W f hf c hc.le t
+    rw [hc, ← EReal.coe_sub, W.hnFiltrationExtended_coe]
+    exact V.map_hnFiltration_le_of_mapHeight_le W f hf c hc.le t
 
 omit [FiniteDimensional K F] in
 /-- The exceptional zero map has zero actual image at every real level.
 No subtraction of its negative-infinite height is evaluated. -/
-theorem map_zero_generalHNFiltration (t : ℝ) :
-    (V.generalHNFiltration t).map (0 : V →ₗ[K] F) = ⊥ := by simp
+theorem map_zero_hnFiltration (t : ℝ) :
+    (V.hnFiltration t).map (0 : V →ₗ[K] F) = ⊥ := by simp
 
 end AdelicVectorBundle
 

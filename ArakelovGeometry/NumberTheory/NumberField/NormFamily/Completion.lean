@@ -81,7 +81,7 @@ theorem fullLatticeGaugeFamily_isStronglyDominated
     (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (N) E) :
     (fullLatticeGaugeFamily L hfg hspan η).IsStronglyDominated :=
   ((fullLatticeGaugeFamily L hfg hspan η).isStronglyDominated_iff_isDominated_of_ultrametric
-    (hξ := (fullLatticeGaugeFamily_isUltrametric L hfg hspan η))
+    (hξ := (fullLatticeGaugeFamily_isUltrametricAtFinitePlaces L hfg hspan η))
    ).mpr
       (fullLatticeGaugeFamily_coherent_and_dominated L hfg hspan η).2
 

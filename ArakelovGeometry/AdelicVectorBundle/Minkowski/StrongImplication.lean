@@ -35,17 +35,17 @@ variable {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 /-- The actual strong ordered-minimum bound and first-slope defect give the
 corrected first-minimum estimate, without assuming attainment. -/
 theorem maximalSlope_le_maximalLogarithmicMinimum_add_of_strongMinkowski
-    (V : AdelicVectorBundle.{w} S) [hV : V.toNormFamily.IsUltrametric]
-    [hS : S.HasMeasurableBase]
+    (V : AdelicVectorBundle.{w} S) [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} C)
     (hr : 0 < Module.finrank K V) :
     V.maximalSlope ≤ V.maximalLogarithmicMinimum +
       ((C + (S.v S.Ωinf).toReal / 2) * Real.log (Module.finrank K V) : ℝ) := by
-  have hfirst := V.maximalSlope_le_generalHNOrderedSlope_zero_add_log_rank hr
-  have hminimum := V.generalHNOrderedSlope_le_logarithmicMinimum_add_log_rank
+  have hfirst := V.maximalSlope_le_hnSlope_zero_add_log_rank hr
+  have hminimum := V.hnSlope_le_logarithmicMinimum_add_log_rank
      hM ⟨0, hr⟩
-  change (V.generalHNOrderedSlope ⟨0, hr⟩ : EReal) ≤
+  change (V.hnSlope ⟨0, hr⟩ : EReal) ≤
     V.maximalLogarithmicMinimum + (C * Real.log (Module.finrank K V) : ℝ) at hminimum
   rw [EReal.coe_add] at hfirst
   have h := hfirst.trans (add_le_add hminimum (le_refl
@@ -58,8 +58,8 @@ theorem maximalSlope_le_maximalLogarithmicMinimum_add_of_strongMinkowski
 
 /-- In rank one the produced correction is zero. -/
 theorem maximalSlope_le_maximalLogarithmicMinimum_of_strongMinkowski_finrank_one
-    (V : AdelicVectorBundle.{w} S) [hV : V.toNormFamily.IsUltrametric]
-    [hS : S.HasMeasurableBase]
+    (V : AdelicVectorBundle.{w} S) [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} C)
     (hr : Module.finrank K V = 1) :
@@ -74,23 +74,23 @@ variable {E' : Type (max u w)} [AddCommGroup E'] [Module K E'] [FiniteDimensiona
 Hermitian ordered slope is the maximal slope. This retains the same level. -/
 theorem maximalSlope_le_maximalLogarithmicMinimum_add_of_strongMinkowski_hermitian
     (V : AdelicVectorBundle.{max u w} S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian]
     {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, max u w} C)
     (hr : 0 < Module.finrank K V) :
     V.maximalSlope ≤ V.maximalLogarithmicMinimum +
       (C * Real.log (Module.finrank K V) : ℝ) := by
-  have h := V.generalHNOrderedSlope_le_logarithmicMinimum_add_log_rank
+  have h := V.hnSlope_le_logarithmicMinimum_add_log_rank
     (hV := hV.1) hM ⟨0, hr⟩
-  rw [V.generalHNOrderedSlope_eq_hermitianHNOrderedSlope,
+  rw [V.hnSlope_eq_hermitianHNOrderedSlope,
     V.hermitianHNOrderedSlope_zero_eq_maximalSlope hr] at h
   exact h
 
 end AdelicVectorBundle
 
 namespace AdelicStructure
-variable [hS : S.HasMeasurableBase]
+variable [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized] {C : ℝ}
 
 /-- Source Remark 4.3.81 with the actual general first-slope correction,

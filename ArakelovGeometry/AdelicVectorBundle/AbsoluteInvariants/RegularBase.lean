@@ -42,20 +42,21 @@ abbrev scalarExtensionRestrictionOfRegularBase (A : Submodule L (L ⊗[K] V)) :
   toIsAdelic := {
     isMeasurable := by
       rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
-      · exact (V.scalarExtensionRestrictionOfOrdinaryBase (hreg := ⟨(Or.inl h)⟩) A).isMeasurable
-      · exact (V.scalarExtensionRestrictionOfOrdinaryBase
+      · exact (V.scalarExtensionRestrictionOfScalarMeasurability (hreg := ⟨(Or.inl h)⟩)
+        A).isMeasurable
+      · exact (V.scalarExtensionRestrictionOfScalarMeasurability
           (hreg := ⟨(Or.inr ⟨hc, hd⟩)⟩) A).isMeasurable
       · let := hm
-        exact (V.toNormFamily.nativeAlgebraicRestrictionOfPositiveAtoms
+        exact (V.toNormFamily.nativeAlgebraicRestrictionOfPositiveSingletons
           (hpos := ⟨hp⟩) (hS := ⟨hf⟩) A).isMeasurable
     dual_isMeasurable := by
       rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
-      · exact (V.scalarExtensionRestrictionOfOrdinaryBase
+      · exact (V.scalarExtensionRestrictionOfScalarMeasurability
           (hreg := ⟨(Or.inl h)⟩) A).dual_isMeasurable
-      · exact (V.scalarExtensionRestrictionOfOrdinaryBase
+      · exact (V.scalarExtensionRestrictionOfScalarMeasurability
           (hreg := ⟨(Or.inr ⟨hc, hd⟩)⟩) A).dual_isMeasurable
       · let := hm
-        exact (V.toNormFamily.nativeAlgebraicRestrictionOfPositiveAtoms
+        exact (V.toNormFamily.nativeAlgebraicRestrictionOfPositiveSingletons
           (hpos := ⟨hp⟩) (hS := ⟨hf⟩) A).dual_isMeasurable
     isDominated := by
       exact (NormFamily.IsDominated.scalarExtension_isStronglyDominated
@@ -75,12 +76,12 @@ theorem scalarExtensionRestrictionOfRegularBase_determinant_isMeasurable
     (V.scalarExtensionRestrictionOfRegularBase A).toNormFamily.determinant.IsMeasurable :=
     by
   rcases hreg.condition with h | ⟨hc, hd⟩ | ⟨hm, hp, hf⟩
-  · exact V.scalarExtensionRestrictionOfOrdinaryBase_determinant_isMeasurable
+  · exact V.scalarExtensionRestrictionOfScalarMeasurability_determinant_isMeasurable
       (hreg := ⟨(Or.inl h)⟩) A
-  · exact V.scalarExtensionRestrictionOfOrdinaryBase_determinant_isMeasurable
+  · exact V.scalarExtensionRestrictionOfScalarMeasurability_determinant_isMeasurable
       (hreg := ⟨(Or.inr ⟨hc, hd⟩)⟩) A
   · let := hm
-    exact scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+    exact scalarExtension_restrict_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
       V.toNormFamily V.isDominated (hpos := ⟨hp⟩) (hS := ⟨hf⟩) A
 
 variable [S.IsProper]
@@ -96,7 +97,7 @@ def nativeRestrictionDegreeOfRegularBase (A : Submodule L (L ⊗[K] V)) : ℝ :=
 theorem nativeRestrictionDegreeOfRegularBase_eq_common
     [hc : S.HasCommonCountableDenseSubfield] (A : Submodule L (L ⊗[K] V)) :
     V.nativeRestrictionDegreeOfRegularBase A =
-      V.nativeRestrictionDegreeOfOrdinaryBase (hreg := ⟨(Or.inl hc)⟩) A := rfl
+      V.nativeRestrictionDegreeOfScalarMeasurability (hreg := ⟨(Or.inl hc)⟩) A := rfl
 
 /-- Exact discrete coherence, with no closure discreteness premise. -/
 theorem nativeRestrictionDegreeOfRegularBase_eq_discrete
@@ -106,10 +107,10 @@ theorem nativeRestrictionDegreeOfRegularBase_eq_discrete
 
 /-- Exact positive-atomic coherence on the actual native determinant. -/
 theorem nativeRestrictionDegreeOfRegularBase_eq_positiveAtoms
-    [MeasurableSingletonClass S.Ω] [S.HasPositiveAtoms] [S.HasOnlyFinitePlaces]
+    [MeasurableSingletonClass S.Ω] [S.HasPositiveSingletons] [S.HasOnlyFinitePlaces]
     (A : Submodule L (L ⊗[K] V)) :
     V.nativeRestrictionDegreeOfRegularBase A =
-      V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A := rfl
+      V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveSingletons A := rfl
 
 omit [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L] in
 /-- Absolute positive degree uses every actual native closure subspace. -/
@@ -149,15 +150,15 @@ theorem absoluteMaximalSlopeOfRegularBase_eq_discrete
 
 omit [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L] in
 theorem absolutePositiveDegreeOfRegularBase_eq_positiveAtoms
-    [MeasurableSingletonClass S.Ω] [S.HasPositiveAtoms] [S.HasOnlyFinitePlaces] :
+    [MeasurableSingletonClass S.Ω] [S.HasPositiveSingletons] [S.HasOnlyFinitePlaces] :
     V.absolutePositiveDegreeOfRegularBase =
-      V.toNormFamily.absolutePositiveDegreeOfPositiveAtoms := rfl
+      V.toNormFamily.absolutePositiveDegreeOfPositiveSingletons := rfl
 
 omit [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L] in
 theorem absoluteMaximalSlopeOfRegularBase_eq_positiveAtoms
-    [MeasurableSingletonClass S.Ω] [S.HasPositiveAtoms] [S.HasOnlyFinitePlaces] :
+    [MeasurableSingletonClass S.Ω] [S.HasPositiveSingletons] [S.HasOnlyFinitePlaces] :
     V.absoluteMaximalSlopeOfRegularBase =
-      V.toNormFamily.absoluteMaximalSlopeOfPositiveAtoms := rfl
+      V.toNormFamily.absoluteMaximalSlopeOfPositiveSingletons := rfl
 
 omit [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L] in
 /-- The actual zero native subspace supplies nonnegativity in every branch. -/
@@ -169,7 +170,8 @@ theorem absolutePositiveDegreeOfRegularBase_nonneg :
     let := hd
     exact V.absolutePositiveDegreeOfCountableDiscreteBase_nonneg
   · let := hm
-    exact V.toNormFamily.absolutePositiveDegreeOfPositiveAtoms_nonneg (hpos := ⟨hp⟩) (hS := ⟨hf⟩)
+    exact V.toNormFamily.absolutePositiveDegreeOfPositiveSingletons_nonneg (hpos := ⟨hp⟩) (hS :=
+      ⟨hf⟩)
 
 omit [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L] in
 /-- The previously produced all-native-subspace envelopes exclude positive infinity. -/
@@ -181,7 +183,8 @@ theorem absolutePositiveDegreeOfRegularBase_lt_top :
     let := hd
     exact V.absolutePositiveDegreeOfCountableDiscreteBase_lt_top
   · let := hm
-    exact V.toNormFamily.absolutePositiveDegreeOfPositiveAtoms_lt_top (hpos := ⟨hp⟩) (hS := ⟨hf⟩)
+    exact V.toNormFamily.absolutePositiveDegreeOfPositiveSingletons_lt_top (hpos := ⟨hp⟩) (hS :=
+      ⟨hf⟩)
 
 omit [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L] in
 /-- The actual positive-rank native means have a produced finite upper bound. -/
@@ -193,7 +196,7 @@ theorem absoluteMaximalSlopeOfRegularBase_lt_top :
     let := hd
     exact V.absoluteMaximalSlopeOfCountableDiscreteBase_lt_top
   · let := hm
-    exact V.toNormFamily.absoluteMaximalSlopeOfPositiveAtoms_lt_top (hpos := ⟨hp⟩) (hS := ⟨hf⟩)
+    exact V.toNormFamily.absoluteMaximalSlopeOfPositiveSingletons_lt_top (hpos := ⟨hp⟩) (hS := ⟨hf⟩)
 
 omit [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L] in
 /-- Both endpoints are excluded before producing an actual real positive degree. -/
@@ -215,7 +218,7 @@ theorem exists_absoluteMaximalSlopeOfRegularBase_eq_coe (hr : 0 < Module.finrank
     let := hd
     exact V.exists_absoluteMaximalSlopeOfCountableDiscreteBase_eq_coe hr
   · let := hm
-    exact V.toNormFamily.exists_absoluteMaximalSlopeOfPositiveAtoms_eq_coe
+    exact V.toNormFamily.exists_absoluteMaximalSlopeOfPositiveSingletons_eq_coe
       (hpos := ⟨hp⟩) (hS := ⟨hf⟩) hr
 
 omit [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L] in
@@ -228,7 +231,7 @@ theorem absolutePositiveDegreeOfRegularBase_eq_zero_of_finrank_eq_zero
     let := hd
     exact V.absolutePositiveDegreeOfCountableDiscreteBase_eq_zero_of_finrank_eq_zero hr
   · let := hm
-    exact V.toNormFamily.absolutePositiveDegreeOfPositiveAtoms_eq_zero_of_finrank_eq_zero
+    exact V.toNormFamily.absolutePositiveDegreeOfPositiveSingletons_eq_zero_of_finrank_eq_zero
       (hpos := ⟨hp⟩) (hS := ⟨hf⟩) hr
 
 omit [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L] in
@@ -241,7 +244,7 @@ theorem absoluteMaximalSlopeOfRegularBase_eq_bot_of_finrank_eq_zero
     let := hd
     exact V.absoluteMaximalSlopeOfCountableDiscreteBase_eq_bot_of_finrank_eq_zero hr
   · let := hm
-    exact V.toNormFamily.absoluteMaximalSlopeOfPositiveAtoms_eq_bot_of_finrank_eq_zero
+    exact V.toNormFamily.absoluteMaximalSlopeOfPositiveSingletons_eq_bot_of_finrank_eq_zero
       (hpos := ⟨hp⟩) (hS := ⟨hf⟩) hr
 
 omit [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L] in
@@ -255,7 +258,7 @@ theorem absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlopeOfRegularBase :
     let := hd
     exact V.absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlopeOfCountableDiscreteBase
   · let := hm
-    exact V.absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlopeOfPositiveAtoms
+    exact V.absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlopeOfPositiveSingletons
       (hreg := ⟨(Or.inr (Or.inr ⟨hm, hp, hf⟩))⟩) (hpos := ⟨hp⟩) (hS := ⟨hf⟩)
 
 end ArakelovGeometry.AdelicVectorBundle

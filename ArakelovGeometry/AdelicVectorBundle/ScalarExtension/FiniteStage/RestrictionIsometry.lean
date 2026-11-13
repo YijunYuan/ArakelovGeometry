@@ -38,7 +38,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 namespace NormFamily
 
 private theorem scalarExtension_restrict_subtype_norm_eq (ξ : NormFamily S E)
-    [hξ : ξ.IsUltrametric]
+    [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hN : S.IsArchimedeanNormalized]
     (hi : ∃ a : K, a ^ 2 = -1) (A : Submodule K E)
     (x : S.ParameterSpaceExtension L) (z : x.abv.Completion ⊗[L] (L ⊗[K] A)) :
@@ -69,8 +69,8 @@ theorem scalarExtension_restrict_tower_norm_eq
   simp only [LinearMap.baseChange_comp, LinearMap.comp_apply] at hz
   erw [(ξ.scalarExtension (L := L)).restrict_norm A (scalarExtensionTowerPlace x)]
   erw [hz]
-  have hξF : (ξ.scalarExtension (L := F)).IsUltrametric :=
-    ξ.scalarExtension_isUltrametric
+  have hξF : (ξ.scalarExtension (L := F)).IsUltrametricAtFinitePlaces :=
+    ξ.scalarExtension_isUltrametricAtFinitePlaces
   calc
     _ = ((ξ.scalarExtension (L := F)).scalarExtension (L := L)).norm x
         ((B.subtype.baseChange L).baseChange x.abv.Completion z) :=

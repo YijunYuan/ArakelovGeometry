@@ -41,7 +41,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
 /-- An injective contraction cannot decrease maximal slope. -/
 theorem maximalSlope_le_of_completed_contraction
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) (hf : Function.Injective f)
     (hcontract : ∀ ω z, W.norm ω (f.baseChange (S.ϕ ω).Completion z) ≤ V.norm ω z) :
@@ -51,18 +51,18 @@ theorem maximalSlope_le_of_completed_contraction
     (by simpa only [add_zero] using add_le_add le_rfl hheight)
 
 variable (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
 
 /-- The maximal-slope payoff of the actual normed subquotient of an interval. -/
 def maximalSlopePayoff : PayoffFunction (Submodule K V) EReal :=
-  ⟨fun I ↦ ((V.restrictOfMeasurableBase I.right).quotientOfMeasurableBase
+  ⟨fun I ↦ ((V.restrictOfNormMeasurability I.right).quotientOfNormMeasurability
     (I.left.comap I.right.subtype)).maximalSlope⟩
 
 /-- The second-isomorphism contraction gives convexity of the adelic game. -/
 instance maximalSlopePayoff_isConvex : (V.maximalSlopePayoff).IsConvex where
   le U W hUW := by
-    change ((V.restrictOfMeasurableBase U).quotientOfMeasurableBase
+    change ((V.restrictOfNormMeasurability U).quotientOfNormMeasurability
       ((U ⊓ W).comap U.subtype)).maximalSlope ≤ _
     rw [Submodule.comap_inf]
     apply maximalSlope_le_of_completed_contraction _ _
@@ -72,9 +72,9 @@ instance maximalSlopePayoff_isConvex : (V.maximalSlopePayoff).IsConvex where
 
 /-- Enlarging the upper subspace embeds one normed subquotient into another. -/
 theorem maximalSlope_subquotient_mono (A B C : Submodule K V) (hBC : B ≤ C) :
-    ((V.restrictOfMeasurableBase B).quotientOfMeasurableBase
+    ((V.restrictOfNormMeasurability B).quotientOfNormMeasurability
       (A.comap B.subtype)).maximalSlope ≤
-    ((V.restrictOfMeasurableBase C).quotientOfMeasurableBase
+    ((V.restrictOfNormMeasurability C).quotientOfNormMeasurability
       (A.comap C.subtype)).maximalSlope := by
   let P := A.comap B.subtype
   let Q := A.comap C.subtype
@@ -117,7 +117,7 @@ theorem max_maximalSlopePayoff (I : StrictIntvl (Submodule K V)) :
 theorem A_maximalSlopePayoff (I : StrictIntvl (Submodule K V)) :
     (V.maximalSlopePayoff).A I =
       ⨅ (U : Submodule K V) (_ : I.left ≤ U ∧ U < I.right),
-        ((V.restrictOfMeasurableBase I.right).quotientOfMeasurableBase
+        ((V.restrictOfNormMeasurability I.right).quotientOfNormMeasurability
           (U.comap I.right.subtype)).maximalSlope := by
   simp only [PayoffFunction.A_apply, V.max_maximalSlopePayoff]
   rfl
@@ -125,12 +125,12 @@ theorem A_maximalSlopePayoff (I : StrictIntvl (Submodule K V)) :
 /-- Player A's value is the minimal slope of the actual normed subquotient. -/
 theorem A_maximalSlopePayoff_eq_minimalSlope (I : StrictIntvl (Submodule K V)) :
     (V.maximalSlopePayoff).A I =
-      ((V.restrictOfMeasurableBase I.right).quotientOfMeasurableBase
+      ((V.restrictOfNormMeasurability I.right).quotientOfNormMeasurability
         (I.left.comap I.right.subtype)).minimalSlope := by
   rw [V.A_maximalSlopePayoff]
-  let W := V.restrictOfMeasurableBase I.right
+  let W := V.restrictOfNormMeasurability I.right
   let T := I.left.comap I.right.subtype
-  let Q := W.quotientOfMeasurableBase T
+  let Q := W.quotientOfNormMeasurability T
   apply le_antisymm
   · apply Q.le_minimalSlope
     intro Z hZ
@@ -185,7 +185,7 @@ theorem A_maximalSlopePayoff_eq_minimalSlope (I : StrictIntvl (Submodule K V)) :
 /-- On an initial interval, player A's value is exactly the existing minimal slope. -/
 theorem A_maximalSlopePayoff_bot (B : Submodule K V) (hB : ⊥ < B) :
     (V.maximalSlopePayoff).A ⟨⊥, B, hB⟩ =
-      (V.restrictOfMeasurableBase B).minimalSlope := by
+      (V.restrictOfNormMeasurability B).minimalSlope := by
   rw [V.A_maximalSlopePayoff_eq_minimalSlope, Submodule.comap_bot, Submodule.ker_subtype]
   exact minimalSlope_quotient_bot _
 

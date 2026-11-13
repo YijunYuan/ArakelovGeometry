@@ -32,7 +32,7 @@ theorem hasNorthcott_algebraicExtension_of_finite [hS : AS.HasNorthcott] :
     (AS.algebraicExtension E).HasNorthcott := by
   constructor
   intro C _
-  apply (AS.finite_affineHeight_le_degree_le (L := E) C
+  apply (AS.finite_affineLogHeight_le_degree_le (L := E) C
     (Module.finrank K E)).subset
   intro a ha
   refine ⟨ha, ?_⟩
@@ -47,7 +47,7 @@ theorem hasNorthcott_finiteExtension [hS : AS.HasNorthcott] :
   intro C hC
   apply ((AS.hasNorthcott_algebraicExtension_of_finite E) C hC).subset
   intro a ha
-  have he := AS.affineHeight_comp_finiteEmbedding (AlgHom.id K E) a
+  have he := AS.affineLogHeight_comp_finiteEmbedding (AlgHom.id K E) a
   exact he.trans_le ha
 
 end ArakelovGeometry.AdelicStructure

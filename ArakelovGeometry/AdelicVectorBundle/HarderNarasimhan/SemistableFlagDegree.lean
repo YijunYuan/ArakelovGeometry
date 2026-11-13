@@ -196,17 +196,17 @@ subquotient. The image carries its restriction norm, and zero image rank is
 handled by degree zero rather than a division by rank. -/
 theorem degree_intersection_quotient_le_rank_mul_slope (V : AdelicVectorBundle S)
     (U A B : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
-    [hsemi : ((V.restrictOfMeasurableBase B).quotientOfMeasurableBase
+    [hsemi : ((V.restrictOfNormMeasurability B).quotientOfNormMeasurability
       (A.comap B.subtype)).IsMeanSlopeSemistable] :
-    ((V.restrictOfMeasurableBase (U ⊓ B)).quotientOfMeasurableBase
+    ((V.restrictOfNormMeasurability (U ⊓ B)).quotientOfNormMeasurability
         ((U ⊓ A).comap (U ⊓ B).subtype)).degree ≤
       (Module.finrank K (↥(U ⊓ B) ⧸ ((U ⊓ A).comap (U ⊓ B).subtype)) : ℝ) *
-        ((V.restrictOfMeasurableBase B).quotientOfMeasurableBase
+        ((V.restrictOfNormMeasurability B).quotientOfNormMeasurability
           (A.comap B.subtype)).slope := by
   let g := intersectionToSubquotientLinearMap U A B
-  let Q := (V.restrictOfMeasurableBase B).quotientOfMeasurableBase
+  let Q := (V.restrictOfNormMeasurability B).quotientOfNormMeasurability
     (A.comap B.subtype)
   have hk : g.ker = (U ⊓ A).comap (U ⊓ B).subtype :=
     ker_intersectionToSubquotientLinearMap U A B
@@ -219,8 +219,8 @@ theorem degree_intersection_quotient_le_rank_mul_slope (V : AdelicVectorBundle S
     simp
   · have hp : 0 < Module.finrank K g.range := by rw [← hr]; exact Nat.pos_of_ne_zero hz
     have hd := degree_le_of_completed_contraction
-      ((V.restrictOfMeasurableBase (U ⊓ B)).quotientOfMeasurableBase g.ker)
-      (Q.restrictOfMeasurableBase g.range) g.quotKerEquivRange
+      ((V.restrictOfNormMeasurability (U ⊓ B)).quotientOfNormMeasurability g.ker)
+      (Q.restrictOfNormMeasurability g.range) g.quotKerEquivRange
       (V.toNormFamily.intersectionQuotient_range_norm_le U A B)
     rw [hk] at hd
     apply hd.trans
@@ -231,13 +231,13 @@ theorem degree_intersection_quotient_le_rank_mul_slope (V : AdelicVectorBundle S
 bound for the corresponding actual flag factor. -/
 theorem degree_intersection_flagQuotient_le (V : AdelicVectorBundle S)
     {n : ℕ} (F : Fin (n + 1) → Submodule K V) (U : Submodule K V) (i : Fin n)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
-    [hsemi : (V.flagQuotientOfMeasurableBase F i).IsMeanSlopeSemistable] :
-    (V.flagQuotientOfMeasurableBase (fun j ↦ U ⊓ F j) i).degree ≤
+    [hsemi : (V.flagQuotientOfNormMeasurability F i).IsMeanSlopeSemistable] :
+    (V.flagQuotientOfNormMeasurability (fun j ↦ U ⊓ F j) i).degree ≤
       (Module.finrank K (↥(U ⊓ F i.succ) ⧸
         ((U ⊓ F i.castSucc).comap (U ⊓ F i.succ).subtype)) : ℝ) *
-          (V.flagQuotientOfMeasurableBase F i).slope :=
+          (V.flagQuotientOfNormMeasurability F i).slope :=
   V.degree_intersection_quotient_le_rank_mul_slope U (F i.castSucc) (F i.succ)
     (hsemi := hsemi)
 
@@ -248,15 +248,15 @@ for this inequality; ordering is an additional uniqueness hypothesis later. -/
 theorem degree_restrict_le_sum_intersection_rank_mul_slope_of_semistableFlag
     (V : AdelicVectorBundle S) {n : ℕ} (F : Fin (n + 1) → Submodule K V)
     (hF : Monotone F) (hzero : F 0 = ⊥) (htop : F (Fin.last n) = ⊤)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian]
-    [hsemi : ∀ i, (V.flagQuotientOfMeasurableBase F i).IsMeanSlopeSemistable]
+    [hsemi : ∀ i, (V.flagQuotientOfNormMeasurability F i).IsMeanSlopeSemistable]
     (U : Submodule K V) :
-    (V.restrictOfMeasurableBase U).degree ≤
+    (V.restrictOfNormMeasurability U).degree ≤
       ∑ i : Fin n, (Module.finrank K (U ⊓ F i.succ : Submodule K V) -
         Module.finrank K (U ⊓ F i.castSucc : Submodule K V) : ℕ) *
-          (V.flagQuotientOfMeasurableBase F i).slope := by
+          (V.flagQuotientOfNormMeasurability F i).slope := by
   let G : Fin (n + 1) → Submodule K V := fun i ↦ U ⊓ F i
   have hG : Monotone G := fun i j hij ↦ inf_le_inf_left U (hF hij)
   have hzG : G 0 = ⊥ := by simp only [G, hzero, inf_bot_eq]

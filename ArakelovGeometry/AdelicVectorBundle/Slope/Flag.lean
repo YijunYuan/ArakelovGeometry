@@ -27,21 +27,21 @@ universe u w
 variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
 
 /-- The actual extension minimum bound for two nested ambient restrictions. -/
 theorem min_minimalSlope_restrict_le_of_le (A B : Submodule K V) (hAB : A ≤ B) :
-    min ((V.restrictOfMeasurableBase A).minimalSlope)
-      (((V.restrictOfMeasurableBase B).quotientOfMeasurableBase
+    min ((V.restrictOfNormMeasurability A).minimalSlope)
+      (((V.restrictOfNormMeasurability B).quotientOfNormMeasurability
         (A.comap B.subtype)).minimalSlope) ≤
-    (V.restrictOfMeasurableBase B).minimalSlope := by
+    (V.restrictOfNormMeasurability B).minimalSlope := by
   have h := min_minimalSlope_restrict_le_minimalSlope_preimage
-    (V.restrictOfMeasurableBase B) (A.comap B.subtype) ⊤
+    (V.restrictOfNormMeasurability B) (A.comap B.subtype) ⊤
   simp only [Submodule.comap_top] at h
-  rw [((V.restrictOfMeasurableBase B).quotientOfMeasurableBase
+  rw [((V.restrictOfNormMeasurability B).quotientOfNormMeasurability
     (A.comap B.subtype)).minimalSlope_restrict_top,
-    (V.restrictOfMeasurableBase B).minimalSlope_restrict_top] at h
+    (V.restrictOfNormMeasurability B).minimalSlope_restrict_top] at h
   rw [V.minimalSlope_restrict_restrict A B hAB] at h
   exact h
 
@@ -50,9 +50,9 @@ theorem le_minimalSlope_restrict_flag_of_factor_minima {n : ℕ}
     (U : Fin (n + 1) → Submodule K V) (b : Fin n → ℝ)
     (hU : Monotone U) (hz : U 0 = ⊥) (hb : Antitone b)
     (hQ : ∀ i, (b i : EReal) ≤
-      (V.flagQuotientOfMeasurableBase U i).minimalSlope) :
+      (V.flagQuotientOfNormMeasurability U i).minimalSlope) :
     ∀ i : Fin n, (b i : EReal) ≤
-      (V.restrictOfMeasurableBase (U i.succ)).minimalSlope := by
+      (V.restrictOfNormMeasurability (U i.succ)).minimalSlope := by
   cases n with
   | zero => intro i; exact Fin.elim0 i
   | succ n =>
@@ -63,11 +63,11 @@ theorem le_minimalSlope_restrict_flag_of_factor_minima {n : ℕ}
         (hU (Fin.zero_le _))
       rw [hz] at he
       have hm := minimalSlope_eq_top_of_finrank_eq_zero
-        (V.restrictOfMeasurableBase (⊥ : Submodule K V)) (finrank_bot K V)
+        (V.restrictOfNormMeasurability (⊥ : Submodule K V)) (finrank_bot K V)
       rw [hm, min_top_left] at he
       have hq := hQ 0
       change (b 0 : EReal) ≤ minimalSlope
-        (quotientOfMeasurableBase (V.restrictOfMeasurableBase (U (0 : Fin (n + 1)).succ))
+        (quotientOfNormMeasurability (V.restrictOfNormMeasurability (U (0 : Fin (n + 1)).succ))
           ((U 0).comap (U (0 : Fin (n + 1)).succ).subtype)) at hq
       rw [hz] at hq
       exact hq.trans he

@@ -83,7 +83,8 @@ theorem injectiveScalarExtension_pushforward_dual_norm_eq
     ← ξ.injectiveScalarExtension_dual x hnon,
     ← (ξ.pushforward π hπ).injectiveScalarExtension_dual x hnon]
   have he := ξ.dual.injectiveScalarExtensionSeminorm_pullback_eq
-    (hξ := ξ.dual_isUltrametric) π.dualMap (LinearMap.dualMap_injective_of_surjective hπ)
+    (hξ := ξ.dual_isUltrametricAtFinitePlaces) π.dualMap (LinearMap.dualMap_injective_of_surjective
+      hπ)
     x hx d
   change (ξ.dual.injectiveScalarExtension (L := L)).norm x
       ((π.dualMap.baseChange L).baseChange x.abv.Completion d) =
@@ -107,9 +108,10 @@ theorem injectiveScalarExtension_pushforward_norm_eq
   let θ := (ξ.pushforward π hπ).injectiveScalarExtension (L := L)
   have hx' : x ∈ (S.algebraicExtension L).Ωfin := (AdelicStructure.mem_Ωfin_algebraicExtension_iff
     x).mpr hx
-  have hη : η.IsUltrametric :=
-    ξ.injectiveScalarExtension_isUltrametric.pushforward _ _
-  have hθ : θ.IsUltrametric := (ξ.pushforward π hπ).injectiveScalarExtension_isUltrametric
+  have hη : η.IsUltrametricAtFinitePlaces :=
+    ξ.injectiveScalarExtension_isUltrametricAtFinitePlaces.pushforward _ _
+  have hθ : θ.IsUltrametricAtFinitePlaces :=
+    (ξ.pushforward π hπ).injectiveScalarExtension_isUltrametricAtFinitePlaces
   change η.norm x z = θ.norm x z
   rw [← hη.dual_dual_norm_eval x hx' z, ← hθ.dual_dual_norm_eval x hx' z]
   exact dual_norm_eq_of_pointwise_eq η.dual θ.dual x

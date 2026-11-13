@@ -123,11 +123,12 @@ theorem orthogonalTensor_norm_of_infinite (ω : S.Ω) (hω : ω ∈ S.Ωinf)
   simp only [orthogonalTensor, dite_eq_left hω]
 
 /-- The orthogonal tensor family is ultrametric at all finite places. -/
-theorem orthogonalTensor_isUltrametric : (orthogonalTensor ξ).IsUltrametric := by
+theorem orthogonalTensor_isUltrametricAtFinitePlaces
+    : (orthogonalTensor ξ).IsUltrametricAtFinitePlaces := by
   constructor
   intro ω hω z t
   simp only [orthogonalTensor_norm_of_finite ξ ω hω]
-  exact injectiveTensor_isUltrametric ξ ω hω z t
+  exact injectiveTensor_isUltrametricAtFinitePlaces ξ ω hω z t
 
 /-- The actual completed orthogonal tensor norm lies between the injective
 and projective norms at every place. -/
@@ -153,7 +154,7 @@ theorem orthogonalTensor_norm_bounds (ω : S.Ω)
 /-- The completed orthogonal tensor family is Hermitian for its actual norm. -/
 instance orthogonalTensor_isHermitian : (orthogonalTensor ξ).IsHermitian := by
   classical
-  refine ⟨orthogonalTensor_isUltrametric ξ, fun ω hω => ?_⟩
+  refine ⟨orthogonalTensor_isUltrametricAtFinitePlaces ξ, fun ω hω => ?_⟩
   let := hS ω hω
   let := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
   let : ∀ i, NormedAddCommGroup ((S.ϕ ω).Completion ⊗[K] E i) :=
@@ -250,7 +251,7 @@ injective/projective bounds feed the checked tensor-domination argument. -/
 theorem IsDominated.strong_orthogonalTensor (hd : ∀ i, (ξ i).IsDominated) :
     (orthogonalTensor ξ).IsStronglyDominated :=
   isStronglyDominated_tensor_of_bounds ξ (orthogonalTensor ξ)
-    (hu := (orthogonalTensor_isUltrametric ξ))
+    (hu := (orthogonalTensor_isUltrametricAtFinitePlaces ξ))
     (fun ω z => (orthogonalTensor_norm_bounds ξ ω z).1)
     (fun ω z => (orthogonalTensor_norm_bounds ξ ω z).2)
     S.v_Ωinf_lt_top_of_isRCLike

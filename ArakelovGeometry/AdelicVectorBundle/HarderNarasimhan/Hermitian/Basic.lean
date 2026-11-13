@@ -45,7 +45,7 @@ theorem finrank_quotient_pos_of_ne_top (U : Submodule K E) (hU : U ≠ ⊤) :
   omega
 
 variable (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
 
@@ -53,7 +53,7 @@ variable (V : AdelicVectorBundle S)
 destabilizing subspace. The full subspace is a fixed point. -/
 def hermitianHNStep (U : Submodule K V) : Submodule K V :=
   if hU : U = ⊤ then U else
-    ((V.quotientOfMeasurableBase U).destabilizingSubspace
+    ((V.quotientOfNormMeasurability U).destabilizingSubspace
       (hV := (hV.quotient U)) (finrank_quotient_pos_of_ne_top U hU)).comap U.mkQ
 
 /-- The terminal subspace stays terminal. -/
@@ -64,9 +64,9 @@ def hermitianHNStep (U : Submodule K V) : Submodule K V :=
 theorem lt_hermitianHNStep (U : Submodule K V) (hU : U ≠ ⊤) :
     U < V.hermitianHNStep U := by
   rw [hermitianHNStep, dite_eq_right hU]
-  have hp := (V.quotientOfMeasurableBase U).destabilizingSubspace_finrank_pos
+  have hp := (V.quotientOfNormMeasurability U).destabilizingSubspace_finrank_pos
     (finrank_quotient_pos_of_ne_top U hU)
-  have hn : (V.quotientOfMeasurableBase U).destabilizingSubspace
+  have hn : (V.quotientOfNormMeasurability U).destabilizingSubspace
       (finrank_quotient_pos_of_ne_top U hU) ≠ ⊥ := by
     intro he
     rw [he, finrank_bot] at hp
@@ -86,7 +86,7 @@ theorem le_hermitianHNStep (U : Submodule K V) : U ≤ V.hermitianHNStep U := by
 produced destabilizing subspace, rather than a chosen isomorphic proxy. -/
 theorem hermitianHNStep_map_mkQ (U : Submodule K V) (hU : U ≠ ⊤) :
     (V.hermitianHNStep U).map U.mkQ =
-      (V.quotientOfMeasurableBase U).destabilizingSubspace
+      (V.quotientOfNormMeasurability U).destabilizingSubspace
         (hV := (hV.quotient U)) (finrank_quotient_pos_of_ne_top U hU) := by
   rw [hermitianHNStep, dite_eq_right hU]
   exact Submodule.map_comap_eq_of_surjective U.mkQ_surjective _
@@ -94,20 +94,20 @@ theorem hermitianHNStep_map_mkQ (U : Submodule K V) (hU : U ≠ ⊤) :
 /-- The actual subquotient selected at each nonterminal step is semistable.
 Its norm is the restriction of the ambient actual quotient norm. -/
 theorem isMeanSlopeSemistable_hermitianHNStep_factor (U : Submodule K V) (hU : U ≠ ⊤) :
-    ((V.quotientOfMeasurableBase U).restrictOfMeasurableBase
+    ((V.quotientOfNormMeasurability U).restrictOfNormMeasurability
       ((V.hermitianHNStep U).map U.mkQ)).IsMeanSlopeSemistable := by
   rw [V.hermitianHNStep_map_mkQ U hU]
-  exact (V.quotientOfMeasurableBase U).isMeanSlopeSemistable_restrict_destabilizingSubspace
+  exact (V.quotientOfNormMeasurability U).isMeanSlopeSemistable_restrict_destabilizingSubspace
     (finrank_quotient_pos_of_ne_top U hU)
 
 /-- The actual subquotient selected at each step attains the quotient's
 maximal slope. -/
 theorem slope_hermitianHNStep_factor_eq_maximalSlope (U : Submodule K V) (hU : U ≠ ⊤) :
-    (((V.quotientOfMeasurableBase U).restrictOfMeasurableBase
+    (((V.quotientOfNormMeasurability U).restrictOfNormMeasurability
       ((V.hermitianHNStep U).map U.mkQ)).slope : EReal) =
-        (V.quotientOfMeasurableBase U).maximalSlope := by
+        (V.quotientOfNormMeasurability U).maximalSlope := by
   rw [V.hermitianHNStep_map_mkQ U hU]
-  exact (V.quotientOfMeasurableBase U).slope_destabilizingSubspace_eq_maximalSlope
+  exact (V.quotientOfNormMeasurability U).slope_destabilizingSubspace_eq_maximalSlope
     (finrank_quotient_pos_of_ne_top U hU)
 
 /-- The actual rational HN sequence, continued constantly after it reaches
@@ -206,7 +206,7 @@ theorem hermitianHNLength_eq_zero_of_finrank_eq_zero (hE : Module.finrank K V = 
 norm to the next flag term's canonical quotient image. -/
 abbrev hermitianHNFactor (i : Fin (V.hermitianHNLength)) :
     AdelicVectorBundle S :=
-  (V.quotientOfMeasurableBase (V.hermitianHNTerm i.val)).restrictOfMeasurableBase
+  (V.quotientOfNormMeasurability (V.hermitianHNTerm i.val)).restrictOfNormMeasurability
     ((V.hermitianHNTerm (i.val + 1)).map
       (V.hermitianHNTerm i.val).mkQ)
 
@@ -232,7 +232,7 @@ theorem isHermitian_hermitianHNFactor (i : Fin (V.hermitianHNLength)) :
 theorem slope_hermitianHNFactor_eq_maximalSlope_quotient
     (i : Fin (V.hermitianHNLength)) :
     ((V.hermitianHNFactor i).slope : EReal) =
-      (V.quotientOfMeasurableBase (V.hermitianHNTerm i.val)).maximalSlope :=
+      (V.quotientOfNormMeasurability (V.hermitianHNTerm i.val)).maximalSlope :=
   V.slope_hermitianHNStep_factor_eq_maximalSlope _
     (V.hermitianHNTerm_ne_top_of_lt_length i.val i.isLt)
 
@@ -241,8 +241,8 @@ strictly smaller actual mean slope. Equality would force containment in it. -/
 theorem slope_restrict_lt_slope_destabilizingSubspace_of_lt
     (hr : 0 < Module.finrank K V) (P : Submodule K V)
     (hDP : V.destabilizingSubspace hr < P) :
-    (V.restrictOfMeasurableBase P).slope <
-      (V.restrictOfMeasurableBase (V.destabilizingSubspace hr)).slope := by
+    (V.restrictOfNormMeasurability P).slope <
+      (V.restrictOfNormMeasurability (V.destabilizingSubspace hr)).slope := by
   have hP := (V.destabilizingSubspace_finrank_pos hr).trans_le
     (Submodule.finrank_mono hDP.le)
   have hD := V.slope_destabilizingSubspace_eq_maximalSlope hr
@@ -258,9 +258,9 @@ has strictly smaller mean. Hermitian exact degree additivity is load-bearing. -/
 theorem slope_quotient_restrict_destabilizingSubspace_lt
     (hr : 0 < Module.finrank K V) (P : Submodule K V)
     (hDP : V.destabilizingSubspace hr < P) :
-    ((V.restrictOfMeasurableBase P).quotientOfMeasurableBase
+    ((V.restrictOfNormMeasurability P).quotientOfNormMeasurability
       ((V.destabilizingSubspace hr).comap P.subtype)).slope <
-        (V.restrictOfMeasurableBase (V.destabilizingSubspace hr)).slope := by
+        (V.restrictOfNormMeasurability (V.destabilizingSubspace hr)).slope := by
   let D := V.destabilizingSubspace hr
   let I := D.comap P.subtype
   have hIrank : Module.finrank K I = Module.finrank K D :=
@@ -277,40 +277,40 @@ theorem slope_quotient_restrict_destabilizingSubspace_lt
   have hPpos : 0 < Module.finrank K P :=
     (V.destabilizingSubspace_finrank_pos hr).trans_le
       (Submodule.finrank_mono hDP.le)
-  have hd := (V.restrictOfMeasurableBase P).degree_restrict_add_degree_quotient_eq_of_isHermitian
+  have hd := (V.restrictOfNormMeasurability P).degree_restrict_add_degree_quotient_eq_of_isHermitian
     I (hV := (hV.restrict P))
   rw [V.degree_restrict_restrict D P hDP.le] at hd
-  rw [(V.restrictOfMeasurableBase D).degree_eq_rank_mul_slope,
+  rw [(V.restrictOfNormMeasurability D).degree_eq_rank_mul_slope,
     degree_eq_rank_mul_slope
-      ((V.restrictOfMeasurableBase P).quotientOfMeasurableBase I),
-    (V.restrictOfMeasurableBase P).degree_eq_rank_mul_slope] at hd
+      ((V.restrictOfNormMeasurability P).quotientOfNormMeasurability I),
+    (V.restrictOfNormMeasurability P).degree_eq_rank_mul_slope] at hd
   have hmean := V.slope_restrict_lt_slope_destabilizingSubspace_of_lt hr P hDP
   have hQr : (0 : ℝ) < Module.finrank K (P ⧸ I) := Nat.cast_pos.mpr hQpos
   have hPr : (0 : ℝ) < Module.finrank K P := Nat.cast_pos.mpr hPpos
   have hrankr : (Module.finrank K (P ⧸ I) : ℝ) + Module.finrank K D =
       Module.finrank K P := by
     exact_mod_cast hrank
-  have hβdim := congrArg (fun r : ℝ ↦ r * (V.restrictOfMeasurableBase D).slope) hrankr
+  have hβdim := congrArg (fun r : ℝ ↦ r * (V.restrictOfNormMeasurability D).slope) hrankr
   rw [add_mul] at hβdim
   have hm := mul_lt_mul_of_pos_left hmean hPr
   apply (mul_lt_mul_iff_right₀ hQr).mp
-  change (Module.finrank K D : ℝ) * (V.restrictOfMeasurableBase D).slope +
+  change (Module.finrank K D : ℝ) * (V.restrictOfNormMeasurability D).slope +
     (Module.finrank K (P ⧸ I) : ℝ) *
-      ((V.restrictOfMeasurableBase P).quotientOfMeasurableBase I).slope =
-        (Module.finrank K P : ℝ) * (V.restrictOfMeasurableBase P).slope at hd
-  change (V.restrictOfMeasurableBase P).slope <
-    (V.restrictOfMeasurableBase D).slope at hmean
+      ((V.restrictOfNormMeasurability P).quotientOfNormMeasurability I).slope =
+        (Module.finrank K P : ℝ) * (V.restrictOfNormMeasurability P).slope at hd
+  change (V.restrictOfNormMeasurability P).slope <
+    (V.restrictOfNormMeasurability D).slope at hmean
   nlinarith
 
 /-- Removing the actual largest destabilizer strictly lowers the remaining
 quotient's maximal slope. The zero quotient has maximum `⊥` and is included. -/
 theorem maximalSlope_quotient_destabilizingSubspace_lt_slope
     (hr : 0 < Module.finrank K V) :
-    (V.quotientOfMeasurableBase (V.destabilizingSubspace hr)).maximalSlope <
-      ((V.restrictOfMeasurableBase (V.destabilizingSubspace hr)).slope
+    (V.quotientOfNormMeasurability (V.destabilizingSubspace hr)).maximalSlope <
+      ((V.restrictOfNormMeasurability (V.destabilizingSubspace hr)).slope
         : EReal) := by
   let D := V.destabilizingSubspace hr
-  let Q := V.quotientOfMeasurableBase D
+  let Q := V.quotientOfNormMeasurability D
   by_cases hD : D = ⊤
   · have hzero : Module.finrank K (V ⧸ D) = 0 := by
       let : Subsingleton (V ⧸ D) := Submodule.Quotient.subsingleton_iff.mpr hD
@@ -338,15 +338,15 @@ theorem maximalSlope_quotient_destabilizingSubspace_lt_slope
       dsimp only [g]
       rw [LinearMap.range_comp, Submodule.range_subtype]
       exact Submodule.map_comap_eq_of_surjective D.mkQ_surjective T
-    have hs : ((V.restrictOfMeasurableBase P).quotientOfMeasurableBase g.ker).slope =
-        (Q.restrictOfMeasurableBase g.range).slope := by
+    have hs : ((V.restrictOfNormMeasurability P).quotientOfNormMeasurability g.ker).slope =
+        (Q.restrictOfNormMeasurability g.range).slope := by
       apply slope_eq_of_completed_isometry _ _ g.quotKerEquivRange
       intro ω z
       exact (V.toNormFamily.quotient_restrict_range_norm_eq P D hDP.le ω z).symm
     have hkermean := congrArg (fun I : Submodule K P ↦
-      ((V.restrictOfMeasurableBase P).quotientOfMeasurableBase I).slope) hgker
+      ((V.restrictOfNormMeasurability P).quotientOfNormMeasurability I).slope) hgker
     have hrangemean := congrArg (fun U : Submodule K (V ⧸ D) ↦
-      (Q.restrictOfMeasurableBase U).slope) hgrange
+      (Q.restrictOfNormMeasurability U).slope) hgrange
     have hPmean := V.slope_quotient_restrict_destabilizingSubspace_lt hr P hDP
     have hTmean := (hs.trans hrangemean).symm.trans_lt (hkermean.trans_lt hPmean)
     have hTmax := Q.slope_destabilizingSubspace_eq_maximalSlope (hV := hQH) hQpos
@@ -355,9 +355,9 @@ theorem maximalSlope_quotient_destabilizingSubspace_lt_slope
 /-- Every nonterminal canonical HN step strictly lowers the remaining
 actual quotient's maximum. Quotient composition preserves its actual norms. -/
 theorem maximalSlope_quotient_hermitianHNStep_lt (U : Submodule K V) (hU : U ≠ ⊤) :
-    (V.quotientOfMeasurableBase (V.hermitianHNStep U)).maximalSlope <
-      (V.quotientOfMeasurableBase U).maximalSlope := by
-  let Q := V.quotientOfMeasurableBase U
+    (V.quotientOfNormMeasurability (V.hermitianHNStep U)).maximalSlope <
+      (V.quotientOfNormMeasurability U).maximalSlope := by
+  let Q := V.quotientOfNormMeasurability U
   let hQ := hV.quotient U
   let hr := finrank_quotient_pos_of_ne_top U hU
   let D := Q.destabilizingSubspace (hV := hQ) hr
@@ -366,7 +366,7 @@ theorem maximalSlope_quotient_hermitianHNStep_lt (U : Submodule K V) (hU : U ≠
   have hk : (D.mkQ.comp U.mkQ).ker = V.hermitianHNStep U := by
     rw [LinearMap.ker_comp, Submodule.ker_mkQ, hermitianHNStep, dite_eq_right hU]
   have he := (V.maximalSlope_quotient_quotient_eq_quotient_ker U D).trans
-    (congrArg (fun W : Submodule K V ↦ (V.quotientOfMeasurableBase W).maximalSlope) hk)
+    (congrArg (fun W : Submodule K V ↦ (V.quotientOfNormMeasurability W).maximalSlope) hk)
   exact he.symm.trans_lt hdrop
 
 /-- Consecutive actual HN factors have strictly decreasing real slopes. -/
@@ -381,7 +381,7 @@ theorem slope_hermitianHNFactor_lt_of_succ
       V.hermitianHNStep (V.hermitianHNTerm i.val) := by
     rw [← hij, V.hermitianHNTerm_succ]
   have hj := (V.slope_hermitianHNFactor_eq_maximalSlope_quotient j).trans
-    (congrArg (fun U : Submodule K V ↦ (V.quotientOfMeasurableBase U).maximalSlope)
+    (congrArg (fun U : Submodule K V ↦ (V.quotientOfNormMeasurability U).maximalSlope)
       hterms)
   have hi := V.slope_hermitianHNFactor_eq_maximalSlope_quotient i
   exact EReal.coe_lt_coe_iff.mp (hj.trans_lt (hdrop.trans_eq hi.symm))
@@ -883,7 +883,7 @@ abbrev hermitianHNSubquotient (i : Fin (V.hermitianHNLength)) :
     AdelicVectorBundle S :=
   let U := V.hermitianHNTerm (i.val + 1)
   let W := V.hermitianHNTerm i.val
-  (V.restrictOfMeasurableBase U).quotientOfMeasurableBase (W.mkQ.comp U.subtype).ker
+  (V.restrictOfNormMeasurability U).quotientOfNormMeasurability (W.mkQ.comp U.subtype).ker
 
 /-- Actual subquotient norms retain Hermitianity. -/
 theorem isHermitian_hermitianHNSubquotient (i : Fin (V.hermitianHNLength)) :
@@ -901,8 +901,8 @@ theorem hermitianHNSubquotient_semistable_slope
   let U := V.hermitianHNTerm (i.val + 1)
   let W := V.hermitianHNTerm i.val
   let g := W.mkQ.comp U.subtype
-  let Q := (V.restrictOfMeasurableBase U).quotientOfMeasurableBase g.ker
-  let R := (V.quotientOfMeasurableBase W).restrictOfMeasurableBase g.range
+  let Q := (V.restrictOfNormMeasurability U).quotientOfNormMeasurability g.ker
+  let R := (V.quotientOfNormMeasurability W).restrictOfNormMeasurability g.range
   have hWU : W ≤ U := V.hermitianHNTerm_monotone (Nat.le_succ i.val)
   have hn : ∀ ω z, R.toNormFamily.norm ω
       (g.quotKerEquivRange.toLinearMap.baseChange (S.ϕ ω).Completion z) =
@@ -914,7 +914,7 @@ theorem hermitianHNSubquotient_semistable_slope
   have hR : R.IsMeanSlopeSemistable := by
     have he := congrArg (fun T : Submodule K (V ⧸ W) ↦
       IsMeanSlopeSemistable
-        ((V.quotientOfMeasurableBase W).restrictOfMeasurableBase T)) hg
+        ((V.quotientOfNormMeasurability W).restrictOfNormMeasurability T)) hg
     exact Eq.mpr he (V.isMeanSlopeSemistable_hermitianHNFactor i)
   have hr : 0 < Module.finrank K (U ⧸ g.ker) := by
     rw [g.quotKerEquivRange.finrank_eq]
@@ -924,7 +924,7 @@ theorem hermitianHNSubquotient_semistable_slope
   have hRm := (R.isMeanSlopeSemistable_iff_maximalSlope_eq_slope hR.1).mp hR
   have hf : R.slope = (V.hermitianHNFactor i).slope :=
     congrArg (fun T : Submodule K (V ⧸ W) ↦
-      ((V.quotientOfMeasurableBase W).restrictOfMeasurableBase T).slope) hg
+      ((V.quotientOfNormMeasurability W).restrictOfNormMeasurability T).slope) hg
   change Q.IsMeanSlopeSemistable ∧ Q.slope = _
   refine ⟨(Q.isMeanSlopeSemistable_iff_maximalSlope_eq_slope hr).mpr ?_, hs.trans hf⟩
   exact (hm.trans hRm).trans (congrArg (fun x : ℝ ↦ (x : EReal)) hs.symm)
@@ -983,7 +983,7 @@ abbrev hermitianHNGradedPiece (t : ℝ) :
     AdelicVectorBundle S :=
   let U := V.hermitianHNFiltration t
   let W := V.hermitianHNFiltrationPlus t
-  (V.restrictOfMeasurableBase U).quotientOfMeasurableBase (W.mkQ.comp U.subtype).ker
+  (V.restrictOfNormMeasurability U).quotientOfNormMeasurability (W.mkQ.comp U.subtype).ker
 
 /-- The graded quotient uses exactly the right-limit subspace inside the
 threshold subspace. This is the source's subquotient carrier. -/
@@ -1016,10 +1016,10 @@ theorem hermitianHNGradedPiece_factor_slope
       (V.hermitianHNFiltrationPlus_factor_slope i)
   have hp := congrArg (fun p : Submodule K V × Submodule K V ↦
     IsMeanSlopeSemistable
-      ((V.restrictOfMeasurableBase p.1).quotientOfMeasurableBase
+      ((V.restrictOfNormMeasurability p.1).quotientOfNormMeasurability
         (p.2.mkQ.comp p.1.subtype).ker)) he
   have hm := congrArg (fun p : Submodule K V × Submodule K V ↦
-    ((V.restrictOfMeasurableBase p.1).quotientOfMeasurableBase
+    ((V.restrictOfNormMeasurability p.1).quotientOfNormMeasurability
       (p.2.mkQ.comp p.1.subtype).ker).slope) he
   have hq := V.hermitianHNSubquotient_semistable_slope i
   exact ⟨Eq.mpr hp hq.1, hm.trans hq.2⟩

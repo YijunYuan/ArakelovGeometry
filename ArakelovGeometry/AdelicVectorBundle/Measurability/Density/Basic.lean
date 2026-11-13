@@ -53,34 +53,36 @@ theorem AdelicStructure.HasCommonCountableDenseSubfield.iff (S : AdelicStructure
   ⟨fun h ↦ h.exists_subfield, fun h ↦ ⟨h⟩⟩
 
 /-- The two base hypotheses that preserve measurability under norm constructions. -/
-class AdelicStructure.HasMeasurableBase (S : AdelicStructure K) : Prop where
+class AdelicStructure.NormMeasurabilityHypotheses (S : AdelicStructure K) : Prop where
   /-- Either the index space is discrete measurable or a common countable dense
   subfield exists at all places. -/
   discrete_or_countable : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield
 
-instance AdelicStructure.hasMeasurableBase_of_discrete (S : AdelicStructure K)
-    [DiscreteMeasurableSpace S.Ω] : S.HasMeasurableBase := ⟨Or.inl inferInstance⟩
+instance AdelicStructure.normMeasurabilityHypotheses_of_discrete (S : AdelicStructure K)
+    [DiscreteMeasurableSpace S.Ω] : S.NormMeasurabilityHypotheses := ⟨Or.inl inferInstance⟩
 
-instance (priority := 100) AdelicStructure.hasMeasurableBase_of_commonCountable
+instance (priority := 100) AdelicStructure.normMeasurabilityHypotheses_of_commonCountable
     (S : AdelicStructure K) [S.HasCommonCountableDenseSubfield] :
-    S.HasMeasurableBase := ⟨Or.inr inferInstance⟩
+    S.NormMeasurabilityHypotheses := ⟨Or.inr inferInstance⟩
 
 /-- Base regularity ensuring measurability of ordinary algebraic scalar extension. -/
-class AdelicStructure.HasOrdinaryBase (S : AdelicStructure K) : Prop where
+class AdelicStructure.ScalarExtensionMeasurabilityHypotheses (S : AdelicStructure K) : Prop where
   /-- Common countable density, or a countable discrete measurable place space. -/
   condition : S.HasCommonCountableDenseSubfield ∨
     (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω)
 
-instance AdelicStructure.hasOrdinaryBase_of_commonCountable
+instance AdelicStructure.scalarExtensionMeasurabilityHypotheses_of_commonCountable
     (S : AdelicStructure K) [S.HasCommonCountableDenseSubfield] :
-    S.HasOrdinaryBase := ⟨Or.inl inferInstance⟩
+    S.ScalarExtensionMeasurabilityHypotheses := ⟨Or.inl inferInstance⟩
 
-instance AdelicStructure.hasOrdinaryBase_of_countable_discrete
+instance AdelicStructure.scalarExtensionMeasurabilityHypotheses_of_countable_discrete
     (S : AdelicStructure K) [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] :
-    S.HasOrdinaryBase := ⟨Or.inr ⟨inferInstance, inferInstance⟩⟩
+    S.ScalarExtensionMeasurabilityHypotheses := ⟨Or.inr ⟨inferInstance, inferInstance⟩⟩
 
-instance (priority := 100) AdelicStructure.hasMeasurableBase_of_ordinary
-    (S : AdelicStructure K) [hS : S.HasOrdinaryBase] : S.HasMeasurableBase :=
+instance (priority := 100)
+    AdelicStructure.normMeasurabilityHypotheses_of_scalarExtensionMeasurability
+    (S : AdelicStructure K)
+      [hS : S.ScalarExtensionMeasurabilityHypotheses] : S.NormMeasurabilityHypotheses :=
   ⟨hS.condition.elim Or.inr (fun h ↦ Or.inl h.2)⟩
 
 /-- Base regularity for native subquotients and absolute invariants. -/
@@ -90,13 +92,13 @@ class AdelicStructure.HasRegularBase (S : AdelicStructure K) : Prop where
     (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
     (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin)
 
-instance AdelicStructure.hasRegularBase_of_ordinary
-    (S : AdelicStructure K) [hS : S.HasOrdinaryBase] : S.HasRegularBase :=
+instance AdelicStructure.hasRegularBase_of_scalarExtensionMeasurability
+    (S : AdelicStructure K) [hS : S.ScalarExtensionMeasurabilityHypotheses] : S.HasRegularBase :=
   ⟨hS.condition.elim Or.inl (fun h ↦ Or.inr (Or.inl h))⟩
 
 instance AdelicStructure.hasRegularBase_of_positive_finite_places
     (S : AdelicStructure K) [MeasurableSingletonClass S.Ω]
-    [hp : S.HasPositiveAtoms] [hf : S.HasOnlyFinitePlaces] : S.HasRegularBase :=
+    [hp : S.HasPositiveSingletons] [hf : S.HasOnlyFinitePlaces] : S.HasRegularBase :=
   ⟨Or.inr (Or.inr ⟨inferInstance, hp.measure_singleton_pos, hf.mem_Ωfin⟩)⟩
 
 variable {E : Type w} [AddCommGroup E] [Module K E]

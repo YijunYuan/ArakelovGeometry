@@ -34,16 +34,16 @@ universe u w
 variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (V : AdelicVectorBundle S) (φ : S.Ω → ℝ) (hm : Measurable φ) (hi : Integrable φ S.v)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
 
 /-- The actual quotient bundle commutes with exponential rescaling, using
 the equality of the defining infima of completed lift norms. -/
 theorem quotient_scaleExp (U : Submodule K V) :
-    (V.scaleExp φ hm hi).quotientOfMeasurableBase U =
-      (V.quotientOfMeasurableBase U).scaleExp φ hm hi := by
+    (V.scaleExp φ hm hi).quotientOfNormMeasurability U =
+      (V.quotientOfNormMeasurability U).scaleExp φ hm hi := by
   apply AdelicVectorBundle.ext
-    (hξ := ((V.scaleExp φ hm hi).quotientOfMeasurableBase U).toIsAdelic)
-    (hη := ((V.quotientOfMeasurableBase U).scaleExp φ hm hi).toIsAdelic)
+    (hξ := ((V.scaleExp φ hm hi).quotientOfNormMeasurability U).toIsAdelic)
+    (hη := ((V.quotientOfNormMeasurability U).scaleExp φ hm hi).toIsAdelic)
   exact V.toNormFamily.scale_quotient (fun ω ↦ Real.exp (φ ω))
     (fun _ ↦ Real.exp_pos _) U
 
@@ -61,8 +61,8 @@ theorem slope_scaleExp (hE : 0 < Module.finrank K V) :
 
 /-- Every nonzero actual subspace has the same slope shift. -/
 theorem slope_restrict_scaleExp (U : Submodule K V) (hU : 0 < Module.finrank K U) :
-    ((V.scaleExp φ hm hi).restrictOfMeasurableBase U).slope =
-      (V.restrictOfMeasurableBase U).slope - ∫ ω, φ ω ∂S.v := by
+    ((V.scaleExp φ hm hi).restrictOfNormMeasurability U).slope =
+      (V.restrictOfNormMeasurability U).slope - ∫ ω, φ ω ∂S.v := by
   rw [V.restrict_scaleExp φ hm hi U]
   exact slope_scaleExp _ φ hm hi hU
 

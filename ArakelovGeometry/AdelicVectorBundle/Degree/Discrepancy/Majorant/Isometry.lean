@@ -137,11 +137,11 @@ theorem majorantDiscrepancy_eq_of_completed_isometry
 of the actual norm family. -/
 theorem majorantDiscrepancy_restrict_restrict (V : AdelicVectorBundle S)
     (U W : Submodule K V) (h : U ≤ W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    ((V.restrictOfMeasurableBase W).restrictOfMeasurableBase
+    ((V.restrictOfNormMeasurability W).restrictOfNormMeasurability
       (U.comap W.subtype)).majorantDiscrepancy =
-      (V.restrictOfMeasurableBase U).majorantDiscrepancy := by
+      (V.restrictOfNormMeasurability U).majorantDiscrepancy := by
   apply majorantDiscrepancy_eq_of_completed_isometry _ _
     (Submodule.comapSubtypeEquivOfLe h)
   intro ω z
@@ -150,9 +150,9 @@ theorem majorantDiscrepancy_restrict_restrict (V : AdelicVectorBundle S)
 /-- Restriction to the total subspace preserves the actual global capital
 discrepancy, without a finiteness assumption on its lower integral. -/
 theorem majorantDiscrepancy_restrict_top (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    (V.restrictOfMeasurableBase ⊤).majorantDiscrepancy =
+    (V.restrictOfNormMeasurability ⊤).majorantDiscrepancy =
       V.majorantDiscrepancy := by
   apply majorantDiscrepancy_eq_of_completed_isometry _ _ Submodule.topEquiv
   intro ω z

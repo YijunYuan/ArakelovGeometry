@@ -43,7 +43,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 namespace AdelicVectorBundle
 
 variable [S.IsProper] (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
 
 
@@ -51,20 +51,20 @@ variable [S.IsProper] (V : AdelicVectorBundle S)
 have the original factor mean. -/
 theorem nested_restrict_quotient_semistable_slope
     (A B C : Submodule K V) (hBC : B ≤ C)
-    [hsemi : ((V.restrictOfMeasurableBase B).quotientOfMeasurableBase
+    [hsemi : ((V.restrictOfNormMeasurability B).quotientOfNormMeasurability
       (A.comap B.subtype)).IsMeanSlopeSemistable] :
-    let R := quotientOfMeasurableBase
-      ((V.restrictOfMeasurableBase C).restrictOfMeasurableBase (B.comap C.subtype))
+    let R := quotientOfNormMeasurability
+      ((V.restrictOfNormMeasurability C).restrictOfNormMeasurability (B.comap C.subtype))
       ((A.comap C.subtype).comap (B.comap C.subtype).subtype)
     R.IsMeanSlopeSemistable ∧ R.slope =
-      ((V.restrictOfMeasurableBase B).quotientOfMeasurableBase
+      ((V.restrictOfNormMeasurability B).quotientOfNormMeasurability
         (A.comap B.subtype)).slope := by
   let e := Submodule.comapSubtypeEquivOfLe hBC
   let π := (A.comap B.subtype).mkQ.comp e.toLinearMap
   let hπ := (A.comap B.subtype).mkQ_surjective.comp e.surjective
-  let Q := (V.restrictOfMeasurableBase B).quotientOfMeasurableBase (A.comap B.subtype)
-  let R := quotientOfMeasurableBase
-    ((V.restrictOfMeasurableBase C).restrictOfMeasurableBase (B.comap C.subtype)) π.ker
+  let Q := (V.restrictOfNormMeasurability B).quotientOfNormMeasurability (A.comap B.subtype)
+  let R := quotientOfNormMeasurability
+    ((V.restrictOfNormMeasurability C).restrictOfNormMeasurability (B.comap C.subtype)) π.ker
   have hn : ∀ ω z, Q.toNormFamily.norm ω
       ((π.quotKerEquivOfSurjective hπ).toLinearMap.baseChange (S.ϕ ω).Completion z) =
         R.toNormFamily.norm ω z := by
@@ -81,8 +81,8 @@ theorem nested_restrict_quotient_semistable_slope
       ((hm.trans hQmax).trans (congrArg (fun x : ℝ ↦ (x : EReal)) hs.symm)), hs⟩
   have hk := nested_restrict_quotient_map_ker A B C hBC
   have he := congrArg (fun I : Submodule K (B.comap C.subtype) ↦
-    let R := quotientOfMeasurableBase
-      ((V.restrictOfMeasurableBase C).restrictOfMeasurableBase (B.comap C.subtype)) I
+    let R := quotientOfNormMeasurability
+      ((V.restrictOfNormMeasurability C).restrictOfNormMeasurability (B.comap C.subtype)) I
     R.IsMeanSlopeSemistable ∧ R.slope = Q.slope) hk
   exact Eq.mp he hR
 
@@ -91,20 +91,20 @@ canonical HN flag of its final restricted subspace, with unchanged factor means.
 theorem semistableFlag_initial_eq_hermitianHNTerm
     [hH : V.toNormFamily.IsHermitian] {n : ℕ}
     (F : Fin (n + 1) → Submodule K V) (hF : StrictMono F) (hzero : F 0 = ⊥)
-    [hsemi : ∀ j, (V.flagQuotientOfMeasurableBase F j).IsMeanSlopeSemistable]
-    (hβ : StrictAnti (fun j ↦ (V.flagQuotientOfMeasurableBase F j).slope))
+    [hsemi : ∀ j, (V.flagQuotientOfNormMeasurability F j).IsMeanSlopeSemistable]
+    (hβ : StrictAnti (fun j ↦ (V.flagQuotientOfNormMeasurability F j).slope))
     (k : Fin (n + 1)) :
     let C := F k
-    let Q := V.restrictOfMeasurableBase C
+    let Q := V.restrictOfNormMeasurability C
     let idx : Fin (k.val + 1) → Fin (n + 1) := fun j ↦ ⟨j.val, by omega⟩
     let δ : Fin k.val → Fin n := fun j ↦ ⟨j.val, by omega⟩
     let G : Fin (k.val + 1) → Submodule K C := fun j ↦ (F (idx j)).comap C.subtype
     k.val = Q.hermitianHNLength (hV := (hH.restrict C)) ∧
       (∀ j, G j = Q.hermitianHNTerm (hV := (hH.restrict C)) j.val) ∧
-      ∀ j, (Q.flagQuotientOfMeasurableBase G j).slope =
-        (V.flagQuotientOfMeasurableBase F (δ j)).slope := by
+      ∀ j, (Q.flagQuotientOfNormMeasurability G j).slope =
+        (V.flagQuotientOfNormMeasurability F (δ j)).slope := by
   let C := F k
-  let Q := V.restrictOfMeasurableBase C
+  let Q := V.restrictOfNormMeasurability C
   let idx : Fin (k.val + 1) → Fin (n + 1) := fun j ↦ ⟨j.val, by omega⟩
   let δ : Fin k.val → Fin n := fun j ↦ ⟨j.val, by omega⟩
   let G : Fin (k.val + 1) → Submodule K C := fun j ↦ (F (idx j)).comap C.subtype
@@ -128,9 +128,9 @@ theorem semistableFlag_initial_eq_hermitianHNTerm
     rw [hi]
     exact Submodule.comap_subtype_self C
   have hf : ∀ j : Fin k.val,
-      (Q.flagQuotientOfMeasurableBase G j).IsMeanSlopeSemistable ∧
-      (Q.flagQuotientOfMeasurableBase G j).slope =
-        (V.flagQuotientOfMeasurableBase F (δ j)).slope := by
+      (Q.flagQuotientOfNormMeasurability G j).IsMeanSlopeSemistable ∧
+      (Q.flagQuotientOfNormMeasurability G j).slope =
+        (V.flagQuotientOfNormMeasurability F (δ j)).slope := by
     intro j
     have hBC : F (δ j).succ ≤ C := hF.monotone (show (δ j).succ ≤ k by
       change j.val + 1 ≤ k.val
@@ -148,15 +148,15 @@ theorem semistableFlag_initial_eq_hermitianHNTerm
     have hp : ((F (δ j).succ).comap C.subtype, (F (δ j).castSucc).comap C.subtype) =
         (G j.succ, G j.castSucc) := Prod.ext hu hl
     have he := congrArg (fun p : Submodule K C × Submodule K C ↦
-      let R := quotientOfMeasurableBase (Q.restrictOfMeasurableBase p.1)
+      let R := quotientOfNormMeasurability (Q.restrictOfNormMeasurability p.1)
         (p.2.comap p.1.subtype)
       R.IsMeanSlopeSemistable ∧ R.slope =
-        (V.flagQuotientOfMeasurableBase F (δ j)).slope) hp
+        (V.flagQuotientOfNormMeasurability F (δ j)).slope) hp
     exact Eq.mp he hs
-  have hb : StrictAnti (fun j ↦ (Q.flagQuotientOfMeasurableBase G j).slope) := by
+  have hb : StrictAnti (fun j ↦ (Q.flagQuotientOfNormMeasurability G j).slope) := by
     intro a b hab
-    change (Q.flagQuotientOfMeasurableBase G b).slope <
-      (Q.flagQuotientOfMeasurableBase G a).slope
+    change (Q.flagQuotientOfNormMeasurability G b).slope <
+      (Q.flagQuotientOfNormMeasurability G a).slope
     rw [(hf a).2, (hf b).2]
     exact hβ hab
   have he := Q.semistableFlag_eq_hermitianHNTerm (hH := (hH.restrict C))
@@ -169,21 +169,21 @@ theorem semistableFlag_tail_eq_hermitianHNTerm
     [hH : V.toNormFamily.IsHermitian] {n : ℕ}
     (F : Fin (n + 1) → Submodule K V) (hF : StrictMono F)
     (htop : F (Fin.last n) = ⊤)
-    [hsemi : ∀ j, (V.flagQuotientOfMeasurableBase F j).IsMeanSlopeSemistable]
-    (hβ : StrictAnti (fun j ↦ (V.flagQuotientOfMeasurableBase F j).slope))
+    [hsemi : ∀ j, (V.flagQuotientOfNormMeasurability F j).IsMeanSlopeSemistable]
+    (hβ : StrictAnti (fun j ↦ (V.flagQuotientOfNormMeasurability F j).slope))
     (k : Fin (n + 1)) :
     let D := F k
-    let Q := V.quotientOfMeasurableBase D
+    let Q := V.quotientOfNormMeasurability D
     let m := n - k.val
     let idx : Fin (m + 1) → Fin (n + 1) := fun j ↦ ⟨j.val + k.val, by omega⟩
     let δ : Fin m → Fin n := fun j ↦ ⟨j.val + k.val, by omega⟩
     let G : Fin (m + 1) → Submodule K (V ⧸ D) := fun j ↦ (F (idx j)).map D.mkQ
     m = Q.hermitianHNLength (hV := (hH.quotient D)) ∧
       (∀ j, G j = Q.hermitianHNTerm (hV := (hH.quotient D)) j.val) ∧
-      ∀ j, (Q.flagQuotientOfMeasurableBase G j).slope =
-        (V.flagQuotientOfMeasurableBase F (δ j)).slope := by
+      ∀ j, (Q.flagQuotientOfNormMeasurability G j).slope =
+        (V.flagQuotientOfNormMeasurability F (δ j)).slope := by
   let D := F k
-  let Q := V.quotientOfMeasurableBase D
+  let Q := V.quotientOfNormMeasurability D
   let m := n - k.val
   let idx : Fin (m + 1) → Fin (n + 1) := fun j ↦ ⟨j.val + k.val, by omega⟩
   let δ : Fin m → Fin n := fun j ↦ ⟨j.val + k.val, by omega⟩
@@ -217,9 +217,9 @@ theorem semistableFlag_tail_eq_hermitianHNTerm
     change (F (idx (Fin.last m))).map D.mkQ = ⊤
     rw [hi, htop, Submodule.map_top, LinearMap.range_eq_top.mpr D.mkQ_surjective]
   have hf : ∀ j : Fin m,
-      (Q.flagQuotientOfMeasurableBase G j).IsMeanSlopeSemistable ∧
-      (Q.flagQuotientOfMeasurableBase G j).slope =
-        (V.flagQuotientOfMeasurableBase F (δ j)).slope := by
+      (Q.flagQuotientOfNormMeasurability G j).IsMeanSlopeSemistable ∧
+      (Q.flagQuotientOfNormMeasurability G j).slope =
+        (V.flagQuotientOfNormMeasurability F (δ j)).slope := by
     intro j
     have hDA : D ≤ F (δ j).castSucc := hF.monotone (show k ≤ (δ j).castSucc by
       change k.val ≤ j.val + k.val
@@ -240,15 +240,15 @@ theorem semistableFlag_tail_eq_hermitianHNTerm
     have hp : ((F (δ j).succ).map D.mkQ, (F (δ j).castSucc).map D.mkQ) =
         (G j.succ, G j.castSucc) := Prod.ext hu hl
     have he := congrArg (fun p : Submodule K (V ⧸ D) × Submodule K (V ⧸ D) ↦
-      let R := quotientOfMeasurableBase (Q.restrictOfMeasurableBase p.1)
+      let R := quotientOfNormMeasurability (Q.restrictOfNormMeasurability p.1)
         (p.2.comap p.1.subtype)
       R.IsMeanSlopeSemistable ∧ R.slope =
-        (V.flagQuotientOfMeasurableBase F (δ j)).slope) hp
+        (V.flagQuotientOfNormMeasurability F (δ j)).slope) hp
     exact Eq.mp he hs
-  have hb : StrictAnti (fun j ↦ (Q.flagQuotientOfMeasurableBase G j).slope) := by
+  have hb : StrictAnti (fun j ↦ (Q.flagQuotientOfNormMeasurability G j).slope) := by
     intro a b hab
-    change (Q.flagQuotientOfMeasurableBase G b).slope <
-      (Q.flagQuotientOfMeasurableBase G a).slope
+    change (Q.flagQuotientOfNormMeasurability G b).slope <
+      (Q.flagQuotientOfNormMeasurability G a).slope
     rw [(hf a).2, (hf b).2]
     apply hβ
     change a.val + k.val < b.val + k.val
@@ -260,7 +260,7 @@ theorem semistableFlag_tail_eq_hermitianHNTerm
 /-- The canonical HN flag quotients are actual nonzero semistable bundles. -/
 theorem isMeanSlopeSemistable_hermitianHNFlag_quotient
     [hH : V.toNormFamily.IsHermitian] (i : Fin (V.hermitianHNLength)) :
-    (V.flagQuotientOfMeasurableBase
+    (V.flagQuotientOfNormMeasurability
       (V.hermitianHNFlag) i).IsMeanSlopeSemistable := by
   let U := V.hermitianHNTerm (i.val + 1)
   let W := V.hermitianHNTerm i.val
@@ -268,17 +268,17 @@ theorem isMeanSlopeSemistable_hermitianHNFlag_quotient
     rw [LinearMap.ker_comp, Submodule.ker_mkQ]
   have he := congrArg (fun I : Submodule K U ↦
     IsMeanSlopeSemistable
-      ((V.restrictOfMeasurableBase U).quotientOfMeasurableBase I)) hk
+      ((V.restrictOfNormMeasurability U).quotientOfNormMeasurability I)) hk
   exact Eq.mp he (V.hermitianHNSubquotient_semistable_slope i).1
 
 /-- The canonical HN flag quotient means are strictly decreasing. -/
 theorem hermitianHNFlag_quotient_slope_strictAnti
     [hH : V.toNormFamily.IsHermitian] :
     StrictAnti (fun i ↦
-      (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag) i).slope) := by
+      (V.flagQuotientOfNormMeasurability (V.hermitianHNFlag) i).slope) := by
   intro i j hij
-  change (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag) j).slope <
-    (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag) i).slope
+  change (V.flagQuotientOfNormMeasurability (V.hermitianHNFlag) j).slope <
+    (V.flagQuotientOfNormMeasurability (V.hermitianHNFlag) i).slope
   rw [V.slope_hermitianHNFlag_quotient_eq_factor i,
     V.slope_hermitianHNFlag_quotient_eq_factor j]
   exact V.hermitianHNFactor_slope_strictAnti hij
@@ -288,7 +288,7 @@ k-term HN flag on the canonical rational subspaces. -/
 theorem hermitianHN_restrict_initial_flag
     [hH : V.toNormFamily.IsHermitian] (k : Fin (V.hermitianHNLength + 1)) :
     let C := V.hermitianHNTerm k.val
-    let Q := V.restrictOfMeasurableBase C
+    let Q := V.restrictOfNormMeasurability C
     k.val = Q.hermitianHNLength (hV := (hH.restrict C)) ∧
       ∀ j : Fin (k.val + 1),
         (V.hermitianHNTerm j.val).comap C.subtype =
@@ -305,7 +305,7 @@ remaining HN flag, with its canonical quotient images. -/
 theorem hermitianHN_quotient_tail_flag
     [hH : V.toNormFamily.IsHermitian] (k : Fin (V.hermitianHNLength + 1)) :
     let D := V.hermitianHNTerm k.val
-    let Q := V.quotientOfMeasurableBase D
+    let Q := V.quotientOfNormMeasurability D
     V.hermitianHNLength - k.val = Q.hermitianHNLength (hV := (hH.quotient D)) ∧
       ∀ j : Fin (V.hermitianHNLength - k.val + 1),
         (V.hermitianHNTerm (j.val + k.val)).map D.mkQ =
@@ -323,12 +323,12 @@ theorem slope_hermitianHNFactor_restrict_term_eq
     [hH : V.toNormFamily.IsHermitian] (k : Fin (V.hermitianHNLength + 1))
     (j : Fin k.val) :
     let C := V.hermitianHNTerm k.val
-    let Q := V.restrictOfMeasurableBase C
+    let Q := V.restrictOfNormMeasurability C
     let hlen := (V.hermitianHN_restrict_initial_flag k).1
     (Q.hermitianHNFactor (hV := (hH.restrict C)) (Fin.cast hlen j)).slope =
       (V.hermitianHNFactor ⟨j.val, by omega⟩).slope := by
   let C := V.hermitianHNTerm k.val
-  let Q := V.restrictOfMeasurableBase C
+  let Q := V.restrictOfNormMeasurability C
   let hlen := (V.hermitianHN_restrict_initial_flag k).1
   let jQ := Fin.cast hlen j
   let i : Fin (V.hermitianHNLength) := ⟨j.val, by omega⟩
@@ -340,7 +340,7 @@ theorem slope_hermitianHNFactor_restrict_term_eq
         (Q.hermitianHNFlag (hV := (hH.restrict C))) jQ.castSucc) :=
     Prod.ext (ht j.succ) (ht j.castSucc)
   have hc := congrArg (fun p : Submodule K C × Submodule K C ↦
-    (quotientOfMeasurableBase (Q.restrictOfMeasurableBase p.1)
+    (quotientOfNormMeasurability (Q.restrictOfNormMeasurability p.1)
       (p.2.comap p.1.subtype)).slope) hp
   have he := V.semistableFlag_initial_eq_hermitianHNTerm
     (V.hermitianHNFlag) (V.hermitianHNFlag_strictMono)
@@ -356,12 +356,12 @@ theorem slope_hermitianHNFactor_quotient_term_eq
     [hH : V.toNormFamily.IsHermitian] (k : Fin (V.hermitianHNLength + 1))
     (j : Fin (V.hermitianHNLength - k.val)) :
     let D := V.hermitianHNTerm k.val
-    let Q := V.quotientOfMeasurableBase D
+    let Q := V.quotientOfNormMeasurability D
     let hlen := (V.hermitianHN_quotient_tail_flag k).1
     (Q.hermitianHNFactor (hV := (hH.quotient D)) (Fin.cast hlen j)).slope =
       (V.hermitianHNFactor ⟨j.val + k.val, by omega⟩).slope := by
   let D := V.hermitianHNTerm k.val
-  let Q := V.quotientOfMeasurableBase D
+  let Q := V.quotientOfNormMeasurability D
   let hlen := (V.hermitianHN_quotient_tail_flag k).1
   let jQ := Fin.cast hlen j
   let i : Fin (V.hermitianHNLength) := ⟨j.val + k.val, by omega⟩
@@ -373,7 +373,7 @@ theorem slope_hermitianHNFactor_quotient_term_eq
         (Q.hermitianHNFlag (hV := (hH.quotient D))) jQ.castSucc) :=
     Prod.ext (ht j.succ) (ht j.castSucc)
   have hc := congrArg (fun p : Submodule K (V ⧸ D) × Submodule K (V ⧸ D) ↦
-    (quotientOfMeasurableBase (Q.restrictOfMeasurableBase p.1)
+    (quotientOfNormMeasurability (Q.restrictOfNormMeasurability p.1)
       (p.2.comap p.1.subtype)).slope) hp
   have he := V.semistableFlag_tail_eq_hermitianHNTerm
     (V.hermitianHNFlag) (V.hermitianHNFlag_strictMono)
@@ -387,7 +387,7 @@ theorem slope_hermitianHNFactor_quotient_term_eq
 slope strictly below that threshold, including the zero quotient. -/
 theorem maximalSlope_quotient_hermitianHNFiltration_lt
     [hH : V.toNormFamily.IsHermitian] (t : ℝ) :
-    (V.quotientOfMeasurableBase (V.hermitianHNFiltration t)).maximalSlope <
+    (V.quotientOfNormMeasurability (V.hermitianHNFiltration t)).maximalSlope <
       (t : EReal) := by
   let c := V.hermitianHNCut t
   have hcl := V.hermitianHNCut_le_length t
@@ -416,11 +416,11 @@ inequality bounds a restricted endpoint by the actual means of semistable factor
 theorem le_minimalSlope_restrict_last_of_semistableFlag
     [hH : V.toNormFamily.IsHermitian] {n : ℕ}
     (F : Fin (n + 1) → Submodule K V) (hF : Monotone F) (hzero : F 0 = ⊥)
-    [hsemi : ∀ i, (V.flagQuotientOfMeasurableBase F i).IsMeanSlopeSemistable]
-    (t : ℝ) (hμ : ∀ i, t ≤ (V.flagQuotientOfMeasurableBase F i).slope) :
-    (t : EReal) ≤ (V.restrictOfMeasurableBase (F (Fin.last n))).minimalSlope := by
+    [hsemi : ∀ i, (V.flagQuotientOfNormMeasurability F i).IsMeanSlopeSemistable]
+    (t : ℝ) (hμ : ∀ i, t ≤ (V.flagQuotientOfNormMeasurability F i).slope) :
+    (t : EReal) ≤ (V.restrictOfNormMeasurability (F (Fin.last n))).minimalSlope := by
   let A : Fin (n + 1) → Type _ := fun i ↦ F i
-  let W : ∀ i, AdelicVectorBundle S := fun i ↦ V.restrictOfMeasurableBase (F i)
+  let W : ∀ i, AdelicVectorBundle S := fun i ↦ V.restrictOfNormMeasurability (F i)
   let α : ∀ i : Fin n, A i.castSucc →ₗ[K] A i.succ :=
     fun i ↦ Submodule.inclusion (hF (Fin.castSucc_le_succ i))
   have htail : ∀ i : Fin (n + 1), linearChainTailMap A α i =
@@ -457,16 +457,16 @@ theorem le_minimalSlope_restrict_last_of_semistableFlag
   have hc := minimalSlope_linearChain_lowerBound W α h0
   refine (le_iInf fun i ↦ ?_).trans hc
   let j := i.val
-  let R := (W j.succ).quotientOfMeasurableBase (α j).range
+  let R := (W j.succ).quotientOfNormMeasurability (α j).range
   have hrange : (α j).range = (F j.castSucc).comap (F j.succ).subtype :=
     Submodule.range_inclusion _ _ (hF (Fin.castSucc_le_succ j))
   have hp := congrArg (fun I : Submodule K (F j.succ) ↦
-    IsMeanSlopeSemistable ((W j.succ).quotientOfMeasurableBase I)) hrange
+    IsMeanSlopeSemistable ((W j.succ).quotientOfNormMeasurability I)) hrange
   have hs : R.IsMeanSlopeSemistable := Eq.mpr hp (hsemi j)
   have hm := (R.isMeanSlopeSemistable_iff_minimalSlope_eq_slope_of_isHermitian
     (hV := ((hH.restrict (F j.succ)).quotient (α j).range)) hs.1).mp hs
   have he := congrArg (fun I : Submodule K (F j.succ) ↦
-    ((W j.succ).quotientOfMeasurableBase I).slope) hrange
+    ((W j.succ).quotientOfNormMeasurability I).slope) hrange
   have ht : (t : EReal) ≤ R.minimalSlope := by
     rw [hm]
     exact EReal.coe_le_coe_iff.mpr ((hμ j).trans_eq he.symm)
@@ -482,7 +482,7 @@ slope at least that threshold; the zero retained subspace has minimal slope top.
 theorem le_minimalSlope_restrict_hermitianHNFiltration
     [hH : V.toNormFamily.IsHermitian] (t : ℝ) :
     (t : EReal) ≤
-      (V.restrictOfMeasurableBase (V.hermitianHNFiltration t)).minimalSlope := by
+      (V.restrictOfNormMeasurability (V.hermitianHNFiltration t)).minimalSlope := by
   let c := V.hermitianHNCut t
   have hcl := V.hermitianHNCut_le_length t
   by_cases hc : c = 0
@@ -496,12 +496,12 @@ theorem le_minimalSlope_restrict_hermitianHNFiltration
     let δ : Fin c → Fin (V.hermitianHNLength) := fun j ↦ ⟨j.val, by omega⟩
     have hF : Monotone F := fun _ _ h ↦ V.hermitianHNTerm_monotone h
     have hz : F 0 = ⊥ := V.hermitianHNTerm_zero
-    have hs : ∀ j, (V.flagQuotientOfMeasurableBase F j).IsMeanSlopeSemistable := by
+    have hs : ∀ j, (V.flagQuotientOfNormMeasurability F j).IsMeanSlopeSemistable := by
       intro j
       exact V.isMeanSlopeSemistable_hermitianHNFlag_quotient (δ j)
-    have hμ : ∀ j, t ≤ (V.flagQuotientOfMeasurableBase F j).slope := by
+    have hμ : ∀ j, t ≤ (V.flagQuotientOfNormMeasurability F j).slope := by
       intro j
-      change t ≤ (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag) (δ j)).slope
+      change t ≤ (V.flagQuotientOfNormMeasurability (V.hermitianHNFlag) (δ j)).slope
       rw [V.slope_hermitianHNFlag_quotient_eq_factor (δ j)]
       exact (V.le_hermitianHNFactor_slope_iff_lt_cut t (δ j)).mpr j.isLt
     exact V.le_minimalSlope_restrict_last_of_semistableFlag F hF hz (hsemi := hs) t hμ

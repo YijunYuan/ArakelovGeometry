@@ -60,7 +60,7 @@ open AdelicStructure
 
 /-- The actual real distance integral equals the finite source impurity. -/
 theorem integral_localDist_latticeGaugeFamily_eq_globalImpurity_toReal
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (hσ : ξ.globalImpurity ≠ ⊤) :
     (∫ ω, ξ.localDist (ξ.latticeGaugeFamily) ω
       ∂(normalizedNumberFieldAdelicStructure K).v) = ξ.globalImpurity.toReal := by
@@ -113,7 +113,8 @@ open AdelicStructure NormFamily
 from discrete measurability and coherent lattice domination. -/
 abbrev numberFieldLatticeGauge
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
-    [hV : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions] :
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
+      [hc : V.toNormFamily.HasFiniteNormExceptions] :
     AdelicVectorBundle (normalizedNumberFieldAdelicStructure K) :=
   ofMeasurableDominated (V.toNormFamily.latticeGaugeFamily)
     (hm := (V.toNormFamily.latticeGaugeFamily).isMeasurable_of_discrete)
@@ -125,18 +126,19 @@ abbrev numberFieldLatticeGauge
 @[simp]
 theorem numberFieldLatticeGauge_toNormFamily
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
-    [hV : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions] :
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
+      [hc : V.toNormFamily.HasFiniteNormExceptions] :
     (V.numberFieldLatticeGauge).toNormFamily = V.toNormFamily.latticeGaugeFamily := rfl
 
 theorem numberFieldLatticeGauge_globalImpurity_eq_zero
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
-    [hV : V.toNormFamily.IsUltrametric] [V.toNormFamily.HasFiniteNormExceptions] :
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] [V.toNormFamily.HasFiniteNormExceptions] :
     (V.numberFieldLatticeGauge).toNormFamily.globalImpurity = 0 :=
   V.toNormFamily.latticeGaugeFamily_globalImpurity_eq_zero
 
 theorem numberFieldLatticeGauge_latticeLambda_eq
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
-    [hV : V.toNormFamily.IsUltrametric] [V.toNormFamily.HasFiniteNormExceptions] :
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] [V.toNormFamily.HasFiniteNormExceptions] :
     (V.numberFieldLatticeGauge).toNormFamily.latticeLambda = V.toNormFamily.latticeLambda :=
   V.toNormFamily.latticeGaugeFamily_latticeLambda_eq
 
@@ -144,7 +146,8 @@ theorem numberFieldLatticeGauge_latticeLambda_eq
 plus the literal source impurity, with no zero-cost transfer asserted. -/
 theorem logarithmicMinimum_le_numberFieldLatticeGauge_add_globalImpurity
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
-    [hV : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions] (i : ℕ) :
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] [hc : V.toNormFamily.HasFiniteNormExceptions]
+      (i : ℕ) :
     V.logarithmicMinimum i ≤ (V.numberFieldLatticeGauge).logarithmicMinimum i +
       (V.toNormFamily.globalImpurity.toReal : EReal) := by
   have hσ := V.isDominated.globalImpurity_ne_top V.toNormFamily hc

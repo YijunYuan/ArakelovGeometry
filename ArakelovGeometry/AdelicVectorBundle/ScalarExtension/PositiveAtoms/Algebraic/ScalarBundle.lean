@@ -36,34 +36,34 @@ namespace NormFamily
 
 /-- The existing adelic bundle on the genuine ordinary algebraic scalar
 family, with both regularities produced from original domination alone. -/
-abbrev algebraicScalarBundleOfPositiveAtoms (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
+abbrev algebraicScalarBundleOfPositiveSingletons (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces] :
     AdelicVectorBundle (S.algebraicExtension L) where
   carrier := (L ⊗[K] E)
   toNormFamily := ξ.scalarExtension (L := L)
   toIsAdelic := {
     isMeasurable := by
-      exact hξ.scalarExtension_isMeasurable_of_positive_atoms_of_isAlgebraic ξ
+      exact hξ.scalarExtension_isMeasurable_of_pos_singletons_of_isAlgebraic ξ
     dual_isMeasurable := by
-      exact hξ.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlgebraic ξ
+      exact hξ.scalarExtension_dual_isMeasurable_of_pos_singletons_of_isAlgebraic ξ
     isDominated := by
       exact (hξ.scalarExtension_isStronglyDominated ξ
         (AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin)).isDominated
   }
 
 @[simp]
-theorem algebraicScalarBundleOfPositiveAtoms_toNormFamily
+theorem algebraicScalarBundleOfPositiveSingletons_toNormFamily
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
-    (ξ.algebraicScalarBundleOfPositiveAtoms (L := L)).toNormFamily =
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces] :
+    (ξ.algebraicScalarBundleOfPositiveSingletons (L := L)).toNormFamily =
       ξ.scalarExtension (L := L) := rfl
 
 /-- Ordinary algebraic scalar extension is strongly adelic on the actual
 completed fibres, independently of original strong domination or regularity. -/
-theorem algebraicScalarBundleOfPositiveAtoms_isStronglyAdelic
+theorem algebraicScalarBundleOfPositiveSingletons_isStronglyAdelic
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
-    (ξ.algebraicScalarBundleOfPositiveAtoms (L := L)).IsStronglyAdelic :=
+    [S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces] :
+    (ξ.algebraicScalarBundleOfPositiveSingletons (L := L)).IsStronglyAdelic :=
   hξ.scalarExtension_isStronglyDominated ξ (AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin)
 
 end NormFamily
@@ -71,13 +71,13 @@ namespace AdelicVectorBundle
 
 /-- The actual positive-atomic ordinary scalar bundle preserves canonical
 measurable-determinant degree, without density or discreteness assumptions. -/
-theorem degreeOfMeasurableDeterminant_algebraicScalarBundleOfPositiveAtoms [S.IsProper]
+theorem degreeOfMeasurableDeterminant_algebraicScalarBundleOfPositiveSingletons [S.IsProper]
     (V : AdelicVectorBundle S)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     [hdet : V.toNormFamily.determinant.IsMeasurable]
     [hN : S.IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    (V.toNormFamily.algebraicScalarBundleOfPositiveAtoms (L := L)
+    (V.toNormFamily.algebraicScalarBundleOfPositiveSingletons (L := L)
      ).degreeOfMeasurableDeterminant (hdet := hdet.determinant_scalarExtension)
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
     V.degreeOfMeasurableDeterminant := by
@@ -88,7 +88,7 @@ theorem degreeOfMeasurableDeterminant_algebraicScalarBundleOfPositiveAtoms [S.Is
   let hD := V.determinant_isLine
   let W := D.scalarExtensionLine (L := L) (hV := hD)
   let hW := D.scalarExtensionLine_isLine (L := L) (hV := hD)
-  let B := V.toNormFamily.algebraicScalarBundleOfPositiveAtoms (L := L)
+  let B := V.toNormFamily.algebraicScalarBundleOfPositiveSingletons (L := L)
   let U := B.determinant (hm := hdet.determinant_scalarExtension) (hS := ⟨hLN⟩)
   let hU := B.determinant_isLine (hm := hdet.determinant_scalarExtension) (hS := ⟨hLN⟩)
   have hd : W.lineDegree (hV := hW) = U.lineDegree (hV := hU) := by

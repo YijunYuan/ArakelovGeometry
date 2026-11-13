@@ -128,7 +128,7 @@ theorem finite_finiteNorm_disagreements_of_integrable
 
 theorem IsDominated.integrable_localDist_normalizedBasisMixed
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E} (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) {ι : Type*} [Fintype ι] (b : Module.Basis ι K E) :
+    (hξ : ξ.IsUltrametricAtFinitePlaces) {ι : Type*} [Fintype ι] (b : Module.Basis ι K E) :
     Integrable (ξ.localDist (ofBasisMixed (normalizedNumberFieldAdelicStructure K) E b))
       (normalizedNumberFieldAdelicStructure K).v := by
   let S := normalizedNumberFieldAdelicStructure K
@@ -145,7 +145,7 @@ theorem IsDominated.integrable_localDist_normalizedBasisMixed
 
 theorem IsDominated.finite_normalizedBasisMixed_disagreements
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E} (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces)
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (hpure : ξ.IsPureAtFinitePlaces)
     {ι : Type*} [Fintype ι] (b : Module.Basis ι K E) :
     {ω | ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin ∧
       ξ.norm ω ≠ (ofBasisMixed (normalizedNumberFieldAdelicStructure K) E b).norm ω}.Finite :=
@@ -154,7 +154,8 @@ theorem IsDominated.finite_normalizedBasisMixed_disagreements
 
 theorem IsDominated.hasFiniteNormExceptions_of_pure
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E} (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) : ξ.HasFiniteNormExceptions := by
+    (hξ : ξ.IsUltrametricAtFinitePlaces)
+      (hpure : ξ.IsPureAtFinitePlaces) : ξ.HasFiniteNormExceptions := by
   constructor
   let b := Module.finBasis K E
   have hbad := hdom.finite_normalizedBasisMixed_disagreements hξ hpure b
@@ -167,7 +168,7 @@ theorem IsDominated.hasFiniteNormExceptions_of_pure
 
 theorem IsDominated.finite_primeBasisGauge_disagreements
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E} (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces)
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (hpure : ξ.IsPureAtFinitePlaces)
     {ι : Type*} [Fintype ι] (b : Module.Basis ι K E) :
     {p : HeightOneSpectrum (𝓞 K) | ξ.norm (normalizedPrimeParameter p) ≠
       (ofBasis (normalizedNumberFieldAdelicStructure K) E b).norm
@@ -183,7 +184,7 @@ theorem IsDominated.finite_primeBasisGauge_disagreements
 
 theorem IsDominated.exists_primeBasisGauge_eq_off_finset
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E} (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces)
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (hpure : ξ.IsPureAtFinitePlaces)
     {ι : Type*} [Fintype ι] (b : Module.Basis ι K E) :
     ∃ T : Finset (HeightOneSpectrum (𝓞 K)), ∀ p ∉ T, ∀ z,
       ξ.norm (normalizedPrimeParameter p) z =
@@ -201,7 +202,7 @@ theorem IsDominated.exists_primeBasisGauge_eq_off_finset
 
 theorem IsDominated.pure_normalizedGlobalUnitBall_finite_projective_span
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E} (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (hpure : ξ.IsPureAtFinitePlaces) :
     (ξ.globalUnitBallModule).FG ∧ Module.Projective (𝓞 K) (ξ.globalUnitBallModule) ∧
       Submodule.span K ξ.globalUnitBall = ⊤ := by
   have hc := hdom.hasFiniteNormExceptions_of_pure hξ hpure
@@ -211,7 +212,7 @@ theorem IsDominated.pure_normalizedGlobalUnitBall_finite_projective_span
 set_option backward.isDefEq.respectTransparency false in
 theorem IsDominated.exists_pure_fullLatticeGaugeFamily_eq
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E} (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (hpure : ξ.IsPureAtFinitePlaces) :
     ∃ (hfg : (ξ.globalUnitBallModule).FG)
       (hspan : Submodule.span K ξ.globalUnitBall = ⊤),
       NumberFieldFullLattice.fullLatticeGaugeFamily

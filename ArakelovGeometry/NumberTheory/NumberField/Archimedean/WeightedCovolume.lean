@@ -231,7 +231,7 @@ variable {K E : Type*} [Field K] [NumberField K]
 
 open scoped Classical in
 theorem IsDominated.pure_globalBall_weightedCovolume_eq
-    (hdom : ξ.IsDominated) (hultra : ξ.IsUltrametric)
+    (hdom : ξ.IsDominated) (hultra : ξ.IsUltrametricAtFinitePlaces)
     (hpure : ξ.IsPureAtFinitePlaces)
     (hHerm : ξ.IsHermitian) :
     weightedCovolume ξ (ξ.globalUnitBallModule) =
@@ -242,7 +242,7 @@ theorem IsDominated.pure_globalBall_weightedCovolume_eq
     (hdom.pure_normalizedGlobalUnitBall_finite_projective_span hultra hpure).2.2
 
 theorem IsDominated.pure_globalBall_weightedCovolume_pos
-    (hdom : ξ.IsDominated) (hultra : ξ.IsUltrametric)
+    (hdom : ξ.IsDominated) (hultra : ξ.IsUltrametricAtFinitePlaces)
     (hpure : ξ.IsPureAtFinitePlaces)
     (hHerm : ξ.IsHermitian) :
     0 < weightedCovolume ξ (ξ.globalUnitBallModule) :=

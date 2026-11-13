@@ -216,8 +216,8 @@ theorem scalarExtension_norm_of_not_mem_Ωfin (x : AdelicStructure.ParameterSpac
 
 /-- Every injectively extended family is ultrametric at the non-Archimedean
 places, regardless of ultrametricity of the original family. -/
-theorem injectiveScalarExtension_isUltrametric :
-    (ξ.injectiveScalarExtension (L := L)).IsUltrametric := by
+theorem injectiveScalarExtension_isUltrametricAtFinitePlaces :
+    (ξ.injectiveScalarExtension (L := L)).IsUltrametricAtFinitePlaces := by
   constructor
   intro x hx z t
   change AdelicStructure.ParameterSpaceExtension S L at x
@@ -241,8 +241,8 @@ theorem injectiveScalarExtension_isUltrametric :
   exact scalarExtensionInjectiveSeminorm_add_le_max hL _ _
 
 /-- The source's scalar extension is always ultrametric at finite places. -/
-theorem scalarExtension_isUltrametric :
-    (ξ.scalarExtension (L := L)).IsUltrametric := by
+theorem scalarExtension_isUltrametricAtFinitePlaces :
+    (ξ.scalarExtension (L := L)).IsUltrametricAtFinitePlaces := by
   constructor
   intro x hx z t
   change AdelicStructure.ParameterSpaceExtension S L at x
@@ -253,7 +253,7 @@ theorem scalarExtension_isUltrametric :
   rw [scalarExtension_norm_of_mem_Ωfin ξ x hbase (z + t),
     scalarExtension_norm_of_mem_Ωfin ξ x hbase z,
     scalarExtension_norm_of_mem_Ωfin ξ x hbase t]
-  exact ξ.injectiveScalarExtension_isUltrametric x hx z t
+  exact ξ.injectiveScalarExtension_isUltrametricAtFinitePlaces x hx z t
 
 /-- The transported projective norm is the source's infimum over finite sums
 in the scalar extension of the original completed fibre. -/

@@ -110,7 +110,7 @@ theorem bundle_isMeanSlopeSemistable (p : Nat.Primes) (a : ℤ)
       intro h
       exact he (Submodule.eq_top_of_finrank_eq (h.trans finrank_plane.symm))
     have hF1 : Module.finrank ℚ F = 1 := by omega
-    let R := (bundle p a).restrictOfMeasurableBase F (hS := ⟨rationalCurveRegularity⟩)
+    let R := (bundle p a).restrictOfNormMeasurability F (hS := ⟨rationalCurveRegularity⟩)
     let s := R.lineGenerator (hV := ⟨hF1⟩)
     have hb : R.slope (hS := ⟨rationalCurveRegularity⟩)
         (hN := ⟨(normalizedNumberFieldArchimedeanCompletions
@@ -119,9 +119,9 @@ theorem bundle_isMeanSlopeSemistable (p : Nat.Primes) (a : ℤ)
         (hN := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) hF1,
         R.degree_eq_vectorDegree_of_finrank_one (hS := ⟨rationalCurveRegularity⟩)
           (hN := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) hF1 s]
-      change ((bundle p a).restrictOfMeasurableBase F
+      change ((bundle p a).restrictOfNormMeasurability F
           (hS := ⟨rationalCurveRegularity⟩)).vectorDegree s ≤ _
-      rw [(bundle p a).vectorDegree_restrictOfMeasurableBase]
+      rw [(bundle p a).vectorDegree_restrictOfNormMeasurability]
       exact bundle_vectorDegree_le p a ha _
     rw [bundle_slope]
     have hlog : 0 ≤ Real.log (p.val : ℝ) :=

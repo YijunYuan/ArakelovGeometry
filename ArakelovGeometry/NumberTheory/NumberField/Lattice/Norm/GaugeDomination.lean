@@ -40,7 +40,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
   [FiniteDimensional K E]
 
 variable (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-  [hξ : ξ.IsUltrametric]
+  [hξ : ξ.IsUltrametricAtFinitePlaces]
 
 /-- Genuine coherence identifies the literal completed global span with
 the literal completed norm unit ball, via the original canonical tensor map. -/
@@ -107,7 +107,7 @@ theorem IsDominated.globalImpurity_ne_top
   have hs := (ξ.isStronglyDominated_iff_isDominated_of_ultrametric
    ).mpr hd
   have hgs := ((ξ.latticeGaugeFamily).isStronglyDominated_iff_isDominated_of_ultrametric
-    (hξ := (ξ.latticeGaugeFamily_isUltrametric))).mpr hg
+    (hξ := (ξ.latticeGaugeFamily_isUltrametricAtFinitePlaces))).mpr hg
   apply (ξ.globalImpurity_ne_top_iff_localDist_hasIntegrableUpperBound).mpr
   exact (hs.localDist hgs ((normalizedNumberFieldAdelicStructure K).v_Ωinf_lt_top_of_isRCLike
    )).1

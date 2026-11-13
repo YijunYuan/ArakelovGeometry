@@ -132,7 +132,8 @@ theorem hermitian_maximalSlope_sub_level_mul_log_le_firstMinimum
 norms; finite-place ultrametricity remains separate from value-group purity. -/
 theorem maximalSlope_sub_level_mul_log_le_firstMinimum
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
-    [hU : V.toNormFamily.IsUltrametric] [hpure : V.toNormFamily.IsPureAtFinitePlaces] :
+    [hU : V.toNormFamily.IsUltrametricAtFinitePlaces]
+      [hpure : V.toNormFamily.IsPureAtFinitePlaces] :
     V.maximalSlope -
       ((((Module.finrank ℚ K : ℝ) +
           Real.log |(NumberField.discr K : ℝ)| / (2 * Real.log 2)) *

@@ -93,7 +93,7 @@ theorem injectiveTensorPair_dual_norm_eq_bidual_operatorNorm (ξ : NormFamily S 
 /-- At the source's ultrametric/normalized norms, both biduals are the original
 norms, giving the exact operator norm on the ordinary dual tensor product. -/
 theorem injectiveTensorPair_dual_norm_eq_operatorNorm (ξ : NormFamily S E)
-    (η : NormFamily S F) [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric]
+    (η : NormFamily S F) [hξ : ξ.IsUltrametricAtFinitePlaces] [hη : η.IsUltrametricAtFinitePlaces]
     [hN : S.IsArchimedeanNormalized]
     (ω : S.Ω) (z : Module.Dual K E ⊗[K] F) :
     (ξ.dual.injectiveTensorPair η).norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] z) =
@@ -103,7 +103,7 @@ theorem injectiveTensorPair_dual_norm_eq_operatorNorm (ξ : NormFamily S E)
 
 /-- The local height is the logarithmic norm of the actual representing tensor. -/
 theorem localHeight_eq_logNorm_tensor (ξ : NormFamily S E) (η : NormFamily S F)
-    [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric]
+    [hξ : ξ.IsUltrametricAtFinitePlaces] [hη : η.IsUltrametricAtFinitePlaces]
     [hN : S.IsArchimedeanNormalized]
     (f : {f : E →ₗ[K] F // f ≠ 0}) (ω : S.Ω) :
     ξ.localHeight η f ω = (ξ.dual.injectiveTensorPair η).logNorm (linearMapTensor f).val ω := by
@@ -118,12 +118,12 @@ namespace AdelicVectorBundle
 /-- Source Definition4.3.17: with ultrametric finite-place norms, map height
 is minus the vector degree in the actual injective dual tensor bundle. -/
 theorem mapHeight_eq_neg_tensor_vectorDegree (V : AdelicVectorBundle S)
-    (W : AdelicVectorBundle S) [hV : V.toNormFamily.IsUltrametric]
-    [hW : W.toNormFamily.IsUltrametric]
-    [hS : S.HasMeasurableBase]
+    (W : AdelicVectorBundle S) [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
+    [hW : W.toNormFamily.IsUltrametricAtFinitePlaces]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (f : {f : V →ₗ[K] W // f ≠ 0}) :
-    let T := (V.dualOfMeasurableBase).injectiveTensorPair W
+    let T := (V.dualOfNormMeasurability).injectiveTensorPair W
     V.mapHeight W f.val =
       (-(T.toNormFamily.vectorDegree (hd := T.isDominated) (hm := T.isMeasurable)
         (linearMapTensor f)) : ℝ) := by

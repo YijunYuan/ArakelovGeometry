@@ -101,7 +101,7 @@ theorem IsDominated.strong_dual {ξ : NormFamily S E} (hξ : ξ.IsDominated) :
 /-- Under the source's usual Archimedean normalization, an ultrametric family
 is strongly dominated exactly when it is dominated. -/
 theorem isStronglyDominated_iff_isDominated_of_ultrametric (ξ : NormFamily S E)
-    [hξ : ξ.IsUltrametric]
+    [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hS : S.IsArchimedeanNormalized] :
     ξ.IsStronglyDominated ↔ ξ.IsDominated :=
   ⟨fun h ↦ h.1, fun h ↦ h.strong_of_bidual_eq (ξ.dual_dual_pullback_eq)⟩

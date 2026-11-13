@@ -50,15 +50,15 @@ private theorem measurable_actual_stage_restriction
 
 /-- Actual ordinary scalar measurability after every algebraic extension of
 an all-finite positive atomic curve, from original domination alone. -/
-theorem IsDominated.scalarExtension_isMeasurable_of_positive_atoms_of_isAlgebraic
+theorem IsDominated.scalarExtension_isMeasurable_of_pos_singletons_of_isAlgebraic
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces] :
     (ξ.scalarExtension (L := L)).IsMeasurable := by
   constructor
   have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin (S := S)
   intro z
   obtain ⟨F, y, hy⟩ := exists_finiteStage_tensor_lift z
-  have hm := IsDominated.scalarExtension_isMeasurable_of_positive_atoms (L := F)
+  have hm := IsDominated.scalarExtension_isMeasurable_of_pos_singletons (L := F)
     ξ (Module.finBasis K E) hξ hfin
   have he : (fun x : (S.algebraicExtension L).Ω =>
       (ξ.scalarExtension (L := L)).norm x
@@ -77,9 +77,9 @@ theorem IsDominated.scalarExtension_isMeasurable_of_positive_atoms_of_isAlgebrai
 
 /-- The genuine completed dual is measurable after arbitrary algebraic extension,
 using actual functional finite-stage factorization rather than a regularity premise. -/
-theorem IsDominated.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlgebraic
+theorem IsDominated.scalarExtension_dual_isMeasurable_of_pos_singletons_of_isAlgebraic
     [MeasurableSingletonClass S.Ω] (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces] :
     (ξ.scalarExtension (L := L)).dual.IsMeasurable := by
   constructor
   have hfin := AdelicStructure.v_Ωinf_lt_top_of_forall_mem_Ωfin (S := S)
@@ -90,7 +90,7 @@ theorem IsDominated.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlg
       (TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L (Module.Dual K E)
         ((1 : L) ⊗ₜ[F] y)) = ℓ := by
     rw [hy, LinearEquiv.apply_symm_apply]
-  have hm := IsDominated.scalarExtension_dual_isMeasurable_of_positive_atoms (L := F)
+  have hm := IsDominated.scalarExtension_dual_isMeasurable_of_pos_singletons (L := F)
     ξ (Module.finBasis K E) hξ hfin
   have he : (fun x : (S.algebraicExtension L).Ω =>
       (ξ.scalarExtension (L := L)).dual.norm x
@@ -113,7 +113,7 @@ theorem IsDominated.functionField_algebraicScalarExtension_isMeasurable
     [Module (RatFunc k) E] [FiniteDimensional (RatFunc k) E]
     (ξ : NormFamily (AdelicStructure.functionFieldAdelicStructure k) E)
     (hξ : ξ.IsDominated) : (ξ.scalarExtension (L := L)).IsMeasurable := by
-  apply IsDominated.scalarExtension_isMeasurable_of_positive_atoms_of_isAlgebraic
+  apply IsDominated.scalarExtension_isMeasurable_of_pos_singletons_of_isAlgebraic
     ξ hξ
 
 /-- The actual completed dual of the ordinary algebraic extension is measurable
@@ -124,7 +124,7 @@ theorem IsDominated.functionField_algebraicScalarExtension_dual_isMeasurable
     [Module (RatFunc k) E] [FiniteDimensional (RatFunc k) E]
     (ξ : NormFamily (AdelicStructure.functionFieldAdelicStructure k) E)
     (hξ : ξ.IsDominated) : (ξ.scalarExtension (L := L)).dual.IsMeasurable := by
-  apply IsDominated.scalarExtension_dual_isMeasurable_of_positive_atoms_of_isAlgebraic
+  apply IsDominated.scalarExtension_dual_isMeasurable_of_pos_singletons_of_isAlgebraic
     ξ hξ
 
 end ArakelovGeometry.NormFamily

@@ -174,7 +174,7 @@ variable {E : Type*} [AddCommGroup E] [Module K E]
 
 /-- The actual normalization scales every rational logarithmic norm, including at zero. -/
 theorem numberFieldNormalize_logNorm
-    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric] (x : E)
+    (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces] (x : E)
     (ω : {ω : AbsoluteValue.Place K // ω ≠ AbsoluteValue.trivialPlace K}) :
     (ξ.numberFieldNormalize).logNorm x ω =
       numberFieldNormalizationExponent ω * ξ.logNorm x ω.val := by
@@ -204,7 +204,7 @@ theorem numberFieldNormalize_logNorm
 /-- Actual upper domination transports along the produced norm-family normalization. -/
 theorem IsUpperDominated.numberFieldNormalize
     {ξ : NormFamily (numberFieldAdelicStructure K) E}
-    (hupper : ξ.IsUpperDominated) (hξ : ξ.IsUltrametric) :
+    (hupper : ξ.IsUpperDominated) (hξ : ξ.IsUltrametricAtFinitePlaces) :
     (ξ.numberFieldNormalize).IsUpperDominated := by
   constructor
   intro x hx
@@ -221,7 +221,7 @@ theorem IsUpperDominated.numberFieldNormalize
 /-- Actual lower domination transports along the produced norm-family normalization. -/
 theorem IsLowerDominated.numberFieldNormalize
     {ξ : NormFamily (numberFieldAdelicStructure K) E}
-    (hlower : ξ.IsLowerDominated) (hξ : ξ.IsUltrametric) :
+    (hlower : ξ.IsLowerDominated) (hξ : ξ.IsUltrametricAtFinitePlaces) :
     (ξ.numberFieldNormalize).IsLowerDominated := by
   constructor
   intro x hx

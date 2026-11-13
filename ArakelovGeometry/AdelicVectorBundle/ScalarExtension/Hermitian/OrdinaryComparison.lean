@@ -45,14 +45,14 @@ theorem degree_restrict_scalarExtension_le_hermitianScalarExtension_of_isAlgClos
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let P := V.scalarExtension (L := L)
     let H := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
-    (P.restrictOfMeasurableBase U (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) ≤
-      (H.restrictOfMeasurableBase U (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
+    (P.restrictOfNormMeasurability U (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) ≤
+      (H.restrictOfNormMeasurability U (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
   intro hLN hLS P H
   have hn : H.toNormFamily ≤ P.toNormFamily :=
     V.toNormFamily.hermitianScalarExtension_le_scalarExtension (hL := ⟨hLN⟩)
-  exact degree_antitone (H.restrictOfMeasurableBase U (hS := ⟨hLS⟩))
-    (P.restrictOfMeasurableBase U (hS := ⟨hLS⟩)).toNormFamily
-    (hW := (P.restrictOfMeasurableBase U (hS := ⟨hLS⟩)).toIsAdelic)
+  exact degree_antitone (H.restrictOfNormMeasurability U (hS := ⟨hLS⟩))
+    (P.restrictOfNormMeasurability U (hS := ⟨hLS⟩)).toNormFamily
+    (hW := (P.restrictOfNormMeasurability U (hS := ⟨hLS⟩)).toIsAdelic)
     (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) (fun x z ↦ hn x _)
 
 /-- Dividing genuine native restricted degree domination by the common rank
@@ -65,8 +65,8 @@ theorem slope_restrict_scalarExtension_le_hermitianScalarExtension_of_isAlgClose
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let P := V.scalarExtension (L := L)
     let H := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
-    (P.restrictOfMeasurableBase U (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) ≤
-      (H.restrictOfMeasurableBase U (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
+    (P.restrictOfNormMeasurability U (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) ≤
+      (H.restrictOfNormMeasurability U (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
   intro hLN hLS P H
   dsimp only [slope]
   exact div_le_div_of_nonneg_right

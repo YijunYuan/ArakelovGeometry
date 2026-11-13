@@ -144,7 +144,7 @@ private theorem restrict_norm_ofEq (ξ : NormFamily S E)
 /-- The canonical annihilator-factor map preserves the actual completed
 quotient norms at every place, including coincident and zero subspaces. -/
 theorem annihilatorSubquotientEquivDual_norm_eq (ξ : NormFamily S E)
-    [hξ : ξ.IsUltrametric]
+    [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hN : S.IsArchimedeanNormalized]
     (U W : Submodule K E) (hUW : U ≤ W) (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K]
@@ -212,38 +212,38 @@ variable {S : AdelicStructure K} [S.IsProper]
 /-- An actual semistable Hermitian subquotient gives a semistable factor of
 the reversed annihilator flag, with the negative actual mean slope. -/
 theorem annihilatorSubquotient_semistable_slope (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian]
     (U W : Submodule K V) (hUW : U ≤ W)
-    [hsemi : ((V.restrictOfMeasurableBase W).quotientOfMeasurableBase
+    [hsemi : ((V.restrictOfNormMeasurability W).quotientOfNormMeasurability
       (U.comap W.subtype)).IsMeanSlopeSemistable] :
-    (((V.dualOfMeasurableBase).restrictOfMeasurableBase
-      U.dualAnnihilator).quotientOfMeasurableBase
+    (((V.dualOfNormMeasurability).restrictOfNormMeasurability
+      U.dualAnnihilator).quotientOfNormMeasurability
         (W.dualAnnihilator.comap U.dualAnnihilator.subtype)).IsMeanSlopeSemistable ∧
-    (((V.dualOfMeasurableBase).restrictOfMeasurableBase
-      U.dualAnnihilator).quotientOfMeasurableBase
+    (((V.dualOfNormMeasurability).restrictOfNormMeasurability
+      U.dualAnnihilator).quotientOfNormMeasurability
         (W.dualAnnihilator.comap U.dualAnnihilator.subtype)).slope =
-      -((V.restrictOfMeasurableBase W).quotientOfMeasurableBase
+      -((V.restrictOfNormMeasurability W).quotientOfNormMeasurability
         (U.comap W.subtype)).slope := by
-  let Q := (V.restrictOfMeasurableBase W).quotientOfMeasurableBase
+  let Q := (V.restrictOfNormMeasurability W).quotientOfNormMeasurability
     (U.comap W.subtype)
-  let A := ((V.dualOfMeasurableBase).restrictOfMeasurableBase
-    U.dualAnnihilator).quotientOfMeasurableBase
+  let A := ((V.dualOfNormMeasurability).restrictOfNormMeasurability
+    U.dualAnnihilator).quotientOfNormMeasurability
       (W.dualAnnihilator.comap U.dualAnnihilator.subtype)
   let e := Submodule.annihilatorSubquotientEquivDual U W hUW
   have hQ : Q.toNormFamily.IsHermitian := (hV.restrict W).quotient _
   have hQD := (Q.isMeanSlopeSemistable_dual_iff_of_isHermitian (hV := hQ) hsemi.1).mpr hsemi
-  have hn : ∀ ω z, (Q.dualOfMeasurableBase).toNormFamily.norm ω
+  have hn : ∀ ω z, (Q.dualOfNormMeasurability).toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion z) = A.toNormFamily.norm ω z :=
     V.toNormFamily.annihilatorSubquotientEquivDual_norm_eq (hξ := hV.1) U W hUW
-  have hs := A.slope_eq_of_completed_isometry (Q.dualOfMeasurableBase) e hn
-  have hm := A.maximalSlope_eq_of_completed_isometry (Q.dualOfMeasurableBase) e hn
+  have hs := A.slope_eq_of_completed_isometry (Q.dualOfNormMeasurability) e hn
+  have hm := A.maximalSlope_eq_of_completed_isometry (Q.dualOfNormMeasurability) e hn
   have hr : 0 < Module.finrank K
       (U.dualAnnihilator ⧸ W.dualAnnihilator.comap U.dualAnnihilator.subtype) := by
     rw [e.finrank_eq]
     exact hQD.1
-  have hmax := ((Q.dualOfMeasurableBase).isMeanSlopeSemistable_iff_maximalSlope_eq_slope
+  have hmax := ((Q.dualOfNormMeasurability).isMeanSlopeSemistable_iff_maximalSlope_eq_slope
     hQD.1).mp hQD
   change A.IsMeanSlopeSemistable ∧ A.slope = -Q.slope
   refine ⟨(A.isMeanSlopeSemistable_iff_maximalSlope_eq_slope hr).mpr
@@ -254,27 +254,27 @@ theorem annihilatorSubquotient_semistable_slope (V : AdelicVectorBundle S)
 /-- The actual factors of a reversed annihilator flag are semistable with
 the reversed negative primal means. No factor norm identification is assumed. -/
 theorem reverseAnnihilatorFlag_semistable_slope (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian]
     {n : ℕ} (F : Fin (n + 1) → Submodule K V) (hF : Monotone F)
-    [hsemi : ∀ i, (V.flagQuotientOfMeasurableBase F i).IsMeanSlopeSemistable]
+    [hsemi : ∀ i, (V.flagQuotientOfNormMeasurability F i).IsMeanSlopeSemistable]
     (i : Fin n) :
-    ((V.dualOfMeasurableBase).flagQuotientOfMeasurableBase
+    ((V.dualOfNormMeasurability).flagQuotientOfNormMeasurability
       (Submodule.reverseAnnihilatorFlag F) i).IsMeanSlopeSemistable ∧
-    ((V.dualOfMeasurableBase).flagQuotientOfMeasurableBase
+    ((V.dualOfNormMeasurability).flagQuotientOfNormMeasurability
       (Submodule.reverseAnnihilatorFlag F) i).slope =
-      -(V.flagQuotientOfMeasurableBase F i.rev).slope := by
+      -(V.flagQuotientOfNormMeasurability F i.rev).slope := by
   have hUW := hF (Fin.castSucc_le_succ i.rev)
   let P (p : Fin (n + 1) × Fin (n + 1)) : Prop :=
-    (((V.dualOfMeasurableBase).restrictOfMeasurableBase
-      (F p.1).dualAnnihilator).quotientOfMeasurableBase
+    (((V.dualOfNormMeasurability).restrictOfNormMeasurability
+      (F p.1).dualAnnihilator).quotientOfNormMeasurability
         ((F p.2).dualAnnihilator.comap
           (F p.1).dualAnnihilator.subtype)).IsMeanSlopeSemistable ∧
-    (((V.dualOfMeasurableBase).restrictOfMeasurableBase
-      (F p.1).dualAnnihilator).quotientOfMeasurableBase
+    (((V.dualOfNormMeasurability).restrictOfNormMeasurability
+      (F p.1).dualAnnihilator).quotientOfNormMeasurability
         ((F p.2).dualAnnihilator.comap (F p.1).dualAnnihilator.subtype)).slope =
-      -(V.flagQuotientOfMeasurableBase F i.rev).slope
+      -(V.flagQuotientOfNormMeasurability F i.rev).slope
   have hp : (i.succ.rev, i.castSucc.rev) = (i.rev.castSucc, i.rev.succ) := by
     simp only [Fin.rev_succ, Fin.rev_castSucc]
   change P (i.succ.rev, i.castSucc.rev)
@@ -288,45 +288,45 @@ theorem reverseAnnihilatorFlag_semistable_slope (V : AdelicVectorBundle S)
 The proof supplies its factor semistability and strict decrease from the
 completed factor isometry before invoking finite-flag uniqueness. -/
 theorem hermitianHN_dual_flag (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :
     V.hermitianHNLength =
-      (V.dualOfMeasurableBase).hermitianHNLength (hV := hV.dual) ∧
+      (V.dualOfNormMeasurability).hermitianHNLength (hV := hV.dual) ∧
     ∀ j : Fin (V.hermitianHNLength + 1),
       (V.hermitianHNFlag j.rev).dualAnnihilator =
-        (V.dualOfMeasurableBase).hermitianHNTerm (hV := hV.dual) j.val := by
+        (V.dualOfNormMeasurability).hermitianHNTerm (hV := hV.dual) j.val := by
   let F := V.hermitianHNFlag
   have hF := V.hermitianHNFlag_strictMono
   have hsemi : ∀ i,
-      (V.flagQuotientOfMeasurableBase F i).IsMeanSlopeSemistable := by
+      (V.flagQuotientOfNormMeasurability F i).IsMeanSlopeSemistable := by
     intro i
     let U := V.hermitianHNTerm (i.val + 1)
     let W := V.hermitianHNTerm i.val
     have hk : (W.mkQ.comp U.subtype).ker = W.comap U.subtype := by
       rw [LinearMap.ker_comp, Submodule.ker_mkQ]
     have he := congrArg (fun I : Submodule K U =>
-      ((V.restrictOfMeasurableBase U).quotientOfMeasurableBase
+      ((V.restrictOfNormMeasurability U).quotientOfNormMeasurability
         I).IsMeanSlopeSemistable) hk
     exact Eq.mp he (V.hermitianHNSubquotient_semistable_slope i).1
   have hfac := V.reverseAnnihilatorFlag_semistable_slope F hF.monotone (hsemi := hsemi)
-  have hβ : StrictAnti (fun i ↦ (V.flagQuotientOfMeasurableBase F i).slope) := by
+  have hβ : StrictAnti (fun i ↦ (V.flagQuotientOfNormMeasurability F i).slope) := by
     intro i j hij
-    change (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag) j).slope <
-      (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag) i).slope
+    change (V.flagQuotientOfNormMeasurability (V.hermitianHNFlag) j).slope <
+      (V.flagQuotientOfNormMeasurability (V.hermitianHNFlag) i).slope
     rw [V.slope_hermitianHNFlag_quotient_eq_factor i,
       V.slope_hermitianHNFlag_quotient_eq_factor j]
     exact V.hermitianHNFactor_slope_strictAnti hij
-  have hβD : StrictAnti (fun i ↦ ((V.dualOfMeasurableBase).flagQuotientOfMeasurableBase
+  have hβD : StrictAnti (fun i ↦ ((V.dualOfNormMeasurability).flagQuotientOfNormMeasurability
       (Submodule.reverseAnnihilatorFlag F) i).slope) := by
     intro i j hij
-    change ((V.dualOfMeasurableBase).flagQuotientOfMeasurableBase
+    change ((V.dualOfNormMeasurability).flagQuotientOfNormMeasurability
       (Submodule.reverseAnnihilatorFlag F) j).slope <
-        ((V.dualOfMeasurableBase).flagQuotientOfMeasurableBase
+        ((V.dualOfNormMeasurability).flagQuotientOfNormMeasurability
           (Submodule.reverseAnnihilatorFlag F) i).slope
     rw [(hfac i).2, (hfac j).2]
     exact neg_lt_neg (hβ (Fin.rev_lt_rev.mpr hij))
-  exact (V.dualOfMeasurableBase).semistableFlag_eq_hermitianHNTerm (hH := hV.dual)
+  exact (V.dualOfNormMeasurability).semistableFlag_eq_hermitianHNTerm (hH := hV.dual)
     (Submodule.reverseAnnihilatorFlag F)
     (Submodule.strictMono_reverseAnnihilatorFlag F hF)
     (Submodule.reverseAnnihilatorFlag_zero F (V.hermitianHNFlag_last))
@@ -336,38 +336,38 @@ theorem hermitianHN_dual_flag (V : AdelicVectorBundle S)
 /-- Each actual dual HN factor has the reversed negative primal mean.
 The length cast is supplied by actual dual-flag uniqueness. -/
 theorem slope_hermitianHNFactor_dual (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian]
     (i : Fin (V.hermitianHNLength)) :
-    ((V.dualOfMeasurableBase).hermitianHNFactor (hV := hV.dual)
+    ((V.dualOfNormMeasurability).hermitianHNFactor (hV := hV.dual)
       (Fin.cast (V.hermitianHN_dual_flag).1 i)).slope =
         -(V.hermitianHNFactor i.rev).slope := by
   let F := V.hermitianHNFlag
   let G := Submodule.reverseAnnihilatorFlag F
-  let D := V.dualOfMeasurableBase
+  let D := V.dualOfNormMeasurability
   have hflag := V.hermitianHN_dual_flag
   have hpair : (G i.castSucc, G i.succ) =
       (D.hermitianHNTerm (hV := hV.dual) i.val,
         D.hermitianHNTerm (hV := hV.dual) (i.val + 1)) :=
     Prod.ext (hflag.2 i.castSucc) (hflag.2 i.succ)
   let mean (p : Submodule K (Module.Dual K V) × Submodule K (Module.Dual K V)) : ℝ :=
-    ((D.restrictOfMeasurableBase p.2).quotientOfMeasurableBase
+    ((D.restrictOfNormMeasurability p.2).quotientOfNormMeasurability
       (p.1.comap p.2.subtype)).slope
   have hm := congrArg mean hpair
   have hmD := D.slope_hermitianHNFlag_quotient_eq_factor (hH := hV.dual)
     (Fin.cast hflag.1 i)
-  have hfac : (D.flagQuotientOfMeasurableBase G i).slope =
-      -(V.flagQuotientOfMeasurableBase F i.rev).slope := by
+  have hfac : (D.flagQuotientOfNormMeasurability G i).slope =
+      -(V.flagQuotientOfNormMeasurability F i.rev).slope := by
     have hsemi : ∀ j,
-        (V.flagQuotientOfMeasurableBase F j).IsMeanSlopeSemistable := by
+        (V.flagQuotientOfNormMeasurability F j).IsMeanSlopeSemistable := by
       intro j
       let U := V.hermitianHNTerm (j.val + 1)
       let W := V.hermitianHNTerm j.val
       have hk : (W.mkQ.comp U.subtype).ker = W.comap U.subtype := by
         rw [LinearMap.ker_comp, Submodule.ker_mkQ]
       have he := congrArg (fun I : Submodule K U =>
-        ((V.restrictOfMeasurableBase U).quotientOfMeasurableBase
+        ((V.restrictOfNormMeasurability U).quotientOfNormMeasurability
           I).IsMeanSlopeSemistable) hk
       exact Eq.mp he (V.hermitianHNSubquotient_semistable_slope j).1
     exact (V.reverseAnnihilatorFlag_semistable_slope F
@@ -378,26 +378,26 @@ theorem slope_hermitianHNFactor_dual (V : AdelicVectorBundle S)
 /-- The actual canonical dual HN flag factors are isometric on every
 completed vector to the actual duals of the reversed primal flag factors. -/
 theorem exists_hermitianHNFlag_dual_factor_isometry (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian]
     (i : Fin (V.hermitianHNLength)) :
     ∃ e :
-      ((V.dualOfMeasurableBase).hermitianHNTerm (hV := hV.dual) (i.val + 1) ⧸
-        ((V.dualOfMeasurableBase).hermitianHNTerm (hV := hV.dual) i.val).comap
-          ((V.dualOfMeasurableBase).hermitianHNTerm (hV := hV.dual) (i.val + 1)).subtype) ≃ₗ[K]
+      ((V.dualOfNormMeasurability).hermitianHNTerm (hV := hV.dual) (i.val + 1) ⧸
+        ((V.dualOfNormMeasurability).hermitianHNTerm (hV := hV.dual) i.val).comap
+          ((V.dualOfNormMeasurability).hermitianHNTerm (hV := hV.dual) (i.val + 1)).subtype) ≃ₗ[K]
       Module.Dual K
         (V.hermitianHNTerm (i.rev.val + 1) ⧸
           (V.hermitianHNTerm i.rev.val).comap
             (V.hermitianHNTerm (i.rev.val + 1)).subtype),
       ∀ ω z,
-        (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag)
+        (V.flagQuotientOfNormMeasurability (V.hermitianHNFlag)
           i.rev).toNormFamily.dual.norm ω (e.toLinearMap.baseChange (S.ϕ ω).Completion z) =
-        ((V.dualOfMeasurableBase).flagQuotientOfMeasurableBase
-          ((V.dualOfMeasurableBase).hermitianHNFlag (hV := hV.dual))
+        ((V.dualOfNormMeasurability).flagQuotientOfNormMeasurability
+          ((V.dualOfNormMeasurability).hermitianHNFlag (hV := hV.dual))
             (Fin.cast (V.hermitianHN_dual_flag).1 i)).toNormFamily.norm ω z := by
   let F := V.hermitianHNFlag
-  let D := V.dualOfMeasurableBase
+  let D := V.dualOfNormMeasurability
   let U := F i.rev.castSucc
   let W := F i.rev.succ
   have hflag := V.hermitianHN_dual_flag
@@ -426,13 +426,13 @@ theorem exists_hermitianHNFlag_dual_factor_isometry (V : AdelicVectorBundle S)
 /-- Actual Hermitian ordered slopes reverse and negate under duality.
 The rank cast uses the canonical finite-dimensional dual rank equality. -/
 theorem hermitianHNOrderedSlope_dual (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] (j : Fin (Module.finrank K V)) :
-    (V.dualOfMeasurableBase).hermitianHNOrderedSlope (hV := hV.dual)
+    (V.dualOfNormMeasurability).hermitianHNOrderedSlope (hV := hV.dual)
       (Fin.cast Subspace.dual_finrank_eq.symm j) =
         -V.hermitianHNOrderedSlope j.rev := by
-  let D := V.dualOfMeasurableBase
+  let D := V.dualOfNormMeasurability
   let i := V.hermitianHNFactorIndex j.rev
   let k := i.rev
   have hflag := V.hermitianHN_dual_flag
@@ -476,15 +476,15 @@ theorem hermitianHNOrderedSlope_dual (V : AdelicVectorBundle S)
 /-- The last actual ordered Hermitian slope is the extended-real minimum.
 Positive rank excludes the empty source list. -/
 theorem hermitianHNOrderedSlope_last_eq_minimalSlope (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K V) :
     (V.hermitianHNOrderedSlope (⟨0, hr⟩ : Fin (Module.finrank K V)).rev : EReal) =
       V.minimalSlope := by
-  let D := V.dualOfMeasurableBase
+  let D := V.dualOfNormMeasurability
   have hrD : 0 < Module.finrank K (Module.Dual K V) := by
     rwa [Subspace.dual_finrank_eq]
-  have hb : (D.dualOfMeasurableBase).minimalSlope = V.minimalSlope := by
+  have hb : (D.dualOfNormMeasurability).minimalSlope = V.minimalSlope := by
     symm
     apply V.minimalSlope_eq_of_completed_isometry _ (Module.evalEquiv K V)
     intro ω x
@@ -507,7 +507,7 @@ theorem hermitianHNOrderedSlope_last_eq_minimalSlope (V : AdelicVectorBundle S)
 
 /-- The final actual HN factor itself has mean equal to the ambient minimum. -/
 theorem slope_hermitianHNFactor_last_eq_minimalSlope (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] (hr : 0 < Module.finrank K V) :
     ((V.hermitianHNFactor

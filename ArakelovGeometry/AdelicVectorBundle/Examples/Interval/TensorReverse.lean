@@ -34,7 +34,7 @@ open AdelicStructure
 theorem rationalIntervalPlaneBundle_isStronglyAdelic :
     rationalIntervalPlaneBundle.IsStronglyAdelic :=
   (rationalIntervalPlaneFamily.isStronglyDominated_iff_isDominated_of_ultrametric
-    (hξ := (rationalRealModifiedFamily_isUltrametric 2 intervalSeminorm₂
+    (hξ := (rationalRealModifiedFamily_isUltrametricAtFinitePlaces 2 intervalSeminorm₂
       intervalSeminorm₂_eq_zero_iff)) (hS := ⟨rationalAdelicStructure_isRCLike⟩)).mpr
     rationalIntervalPlaneFamily_isDominated
 
@@ -42,7 +42,7 @@ theorem rationalIntervalPlaneBundle_isStronglyAdelic :
 theorem rationalIntervalThreeBundle_isStronglyAdelic :
     rationalIntervalThreeBundle.IsStronglyAdelic :=
   (rationalIntervalThreeFamily.isStronglyDominated_iff_isDominated_of_ultrametric
-    (hξ := (rationalRealModifiedFamily_isUltrametric 3 intervalSeminorm₃
+    (hξ := (rationalRealModifiedFamily_isUltrametricAtFinitePlaces 3 intervalSeminorm₃
       intervalSeminorm₃_eq_zero_iff)) (hS := ⟨rationalAdelicStructure_isRCLike⟩)).mpr
     rationalIntervalThreeFamily_isDominated
 
@@ -505,7 +505,7 @@ theorem rationalIntervalReverseTensorBundle_log_two_le_degree :
   have hf : Integrable
       (rationalIntervalReverseTensorBundle.toNormFamily.determinant.logNorm
         rationalIntervalReverseTensorDeterminantVector) rationalAdelicStructure.v :=
-    (rationalIntervalReverseTensorBundle.determinantOfMeasurableBase (hS := ⟨hS⟩)
+    (rationalIntervalReverseTensorBundle.determinantOfNormMeasurability (hS := ⟨hS⟩)
       (hN := ⟨rationalAdelicStructure_isRCLike⟩)).integrable_logNorm _
   have hD : Integrable D rationalAdelicStructure.v :=
     (integrable_indicator_iff rationalAdelicStructure.measurableSet_Ωinf).mpr

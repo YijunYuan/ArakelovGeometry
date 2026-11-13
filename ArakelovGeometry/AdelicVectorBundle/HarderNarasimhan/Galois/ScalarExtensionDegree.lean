@@ -55,9 +55,9 @@ theorem degree_hermitianScalarExtension_restrict_algEquiv_of_finiteDimensional
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
-    (W.restrictOfMeasurableBase (scalarExtensionSubspaceOrderIso σ B) (hS := ⟨hLS⟩)).degree
+    (W.restrictOfNormMeasurability (scalarExtensionSubspaceOrderIso σ B) (hS := ⟨hLS⟩)).degree
         (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
-      (W.restrictOfMeasurableBase B (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
+      (W.restrictOfNormMeasurability B (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
   intro hLN hLS W
   let := RingHomInvPair.of_ringEquiv σ.toRingEquiv
   let := RingHomInvPair.of_ringEquiv_symm σ.toRingEquiv
@@ -83,9 +83,9 @@ theorem degree_hermitianScalarExtension_restrict_algEquiv_of_isAlgClosed
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
-    (W.restrictOfMeasurableBase (scalarExtensionSubspaceOrderIso σ B) (hS := ⟨hLS⟩)).degree
+    (W.restrictOfNormMeasurability (scalarExtensionSubspaceOrderIso σ B) (hS := ⟨hLS⟩)).degree
         (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
-      (W.restrictOfMeasurableBase B (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
+      (W.restrictOfNormMeasurability B (hS := ⟨hLS⟩)).degree (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
   intro hLN hLS W
   let := RingHomInvPair.of_ringEquiv σ.toRingEquiv
   let := RingHomInvPair.of_ringEquiv_symm σ.toRingEquiv
@@ -111,9 +111,9 @@ theorem slope_hermitianScalarExtension_restrict_algEquiv_of_finiteDimensional
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_finiteDimensional (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
-    (W.restrictOfMeasurableBase (scalarExtensionSubspaceOrderIso σ B) (hS := ⟨hLS⟩)).slope
+    (W.restrictOfNormMeasurability (scalarExtensionSubspaceOrderIso σ B) (hS := ⟨hLS⟩)).slope
         (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
-      (W.restrictOfMeasurableBase B (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
+      (W.restrictOfNormMeasurability B (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
   intro hLN hLS W
   dsimp only [slope]
   rw [V.degree_hermitianScalarExtension_restrict_algEquiv_of_finiteDimensional
@@ -130,9 +130,9 @@ theorem slope_hermitianScalarExtension_restrict_algEquiv_of_isAlgClosed
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
-    (W.restrictOfMeasurableBase (scalarExtensionSubspaceOrderIso σ B) (hS := ⟨hLS⟩)).slope
+    (W.restrictOfNormMeasurability (scalarExtensionSubspaceOrderIso σ B) (hS := ⟨hLS⟩)).slope
         (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) =
-      (W.restrictOfMeasurableBase B (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
+      (W.restrictOfNormMeasurability B (hS := ⟨hLS⟩)).slope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) := by
   intro hLN hLS W
   dsimp only [slope]
   rw [V.degree_hermitianScalarExtension_restrict_algEquiv_of_isAlgClosed

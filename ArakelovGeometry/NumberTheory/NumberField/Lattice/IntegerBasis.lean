@@ -154,14 +154,14 @@ variable {K E : Type*} [Field K] [NumberField K]
 /-- An integral basis of the pure global unit-ball lattice, indexed by its rational rank. -/
 def normalizedGlobalUnitBallIntegerBasis
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
-    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] [hpure : ξ.IsPureAtFinitePlaces] :
     Module.Basis (Fin (Module.finrank ℚ K * Module.finrank K E)) ℤ
       (ξ.globalUnitBallModule) :=
   let hm := hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure
   NumberFieldFullLattice.integralBasis (ξ.globalUnitBallModule) hm.1 hm.2.2
 
 theorem IsDominated.pure_normalizedGlobalUnitBall_integerRank (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (hpure : ξ.IsPureAtFinitePlaces) :
     Module.finrank ℤ (ξ.globalUnitBallModule) =
       Module.finrank ℚ K * Module.finrank K E := by
   have hm := hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure
@@ -170,7 +170,7 @@ theorem IsDominated.pure_normalizedGlobalUnitBall_integerRank (hdom : ξ.IsDomin
 /-- The rational basis induced by an integral basis of the pure global unit-ball lattice. -/
 def normalizedGlobalUnitBallRationalBasis
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
-    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] [hpure : ξ.IsPureAtFinitePlaces] :
     letI : Module ℚ E := Module.compHom E (algebraMap ℚ K)
     Module.Basis (Fin (Module.finrank ℚ K * Module.finrank K E)) ℚ E := by
   letI : Module ℚ E := Module.compHom E (algebraMap ℚ K)
@@ -180,7 +180,7 @@ def normalizedGlobalUnitBallRationalBasis
 @[simp]
 theorem normalizedGlobalUnitBallRationalBasis_coe
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [ξ.IsDominated]
-    [ξ.IsUltrametric] [ξ.IsPureAtFinitePlaces]
+    [ξ.IsUltrametricAtFinitePlaces] [ξ.IsPureAtFinitePlaces]
     (i : Fin (Module.finrank ℚ K * Module.finrank K E)) :
     ξ.normalizedGlobalUnitBallRationalBasis i =
       (ξ.normalizedGlobalUnitBallIntegerBasis i : E) := by

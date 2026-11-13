@@ -42,13 +42,13 @@ variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
 agree for a Hermitian bundle, preserving both positive-rank conditions. -/
 theorem isSemistable_iff_isMeanSlopeSemistable_of_isHermitian
     (V : AdelicVectorBundle.{max u w} S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hH : V.toNormFamily.IsHermitian] :
     V.IsSemistable ↔ V.IsMeanSlopeSemistable := by
   by_cases hr : 0 < Module.finrank K V
-  · rw [V.isSemistable_iff_modifiedSlope_eq_minimalSlope hr,
-      V.modifiedSlope_eq_slope_of_isHermitian,
+  · rw [V.isSemistable_iff_hnMeanSlope_eq_minimalSlope hr,
+      V.hnMeanSlope_eq_slope_of_isHermitian,
       V.isMeanSlopeSemistable_iff_minimalSlope_eq_slope_of_isHermitian hr]
     exact eq_comm
   · constructor

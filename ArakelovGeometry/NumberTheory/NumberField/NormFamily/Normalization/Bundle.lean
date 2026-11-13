@@ -29,7 +29,7 @@ variable {K : Type*} [Field K] [NumberField K]
 variable {E : Type*} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 variable (V : AdelicVectorBundle (numberFieldAdelicStructure K))
-variable [hV : V.toNormFamily.IsUltrametric]
+variable [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
 
 /-- The actual completed normalization, with domination and both measurability
 clauses proved for the new family. -/
@@ -48,9 +48,9 @@ theorem numberFieldNormalize_toNormFamily :
     (V.numberFieldNormalize).toNormFamily = V.toNormFamily.numberFieldNormalize := rfl
 
 /-- The actual finite norm family of the normalized bundle is ultrametric. -/
-theorem numberFieldNormalize_isUltrametric :
-    (V.numberFieldNormalize).toNormFamily.IsUltrametric :=
-  V.toNormFamily.numberFieldNormalize_isUltrametric
+theorem numberFieldNormalize_isUltrametricAtFinitePlaces :
+    (V.numberFieldNormalize).toNormFamily.IsUltrametricAtFinitePlaces :=
+  V.toNormFamily.numberFieldNormalize_isUltrametricAtFinitePlaces
 
 /-- The underlying rational dimension, including rank zero, is retained. -/
 theorem numberFieldNormalize_rank : (V.numberFieldNormalize).rank = V.rank := rfl
@@ -59,8 +59,8 @@ theorem numberFieldNormalize_rank : (V.numberFieldNormalize).rank = V.rank := rf
 without a coherence assumption. -/
 theorem numberFieldNormalize_fg_globalUnitBallModule :
     ((V.numberFieldNormalize).toNormFamily.globalUnitBallModule
-      (hξ := (V.numberFieldNormalize_isUltrametric))).FG :=
+      (hξ := (V.numberFieldNormalize_isUltrametricAtFinitePlaces))).FG :=
   (V.numberFieldNormalize).isDominated.fg_normalizedGlobalUnitBallModule
-    (V.numberFieldNormalize_isUltrametric)
+    (V.numberFieldNormalize_isUltrametricAtFinitePlaces)
 
 end ArakelovGeometry.AdelicVectorBundle

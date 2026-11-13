@@ -65,7 +65,7 @@ theorem normalizedNormFamilyTensorEquiv_dualPairing_norm
 
 namespace NormFamily
 
-variable (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+variable (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
 
 omit [FiniteDimensional K E] in
 /-- The actual finite and infinite completed norm formulas in one positive exponent. -/
@@ -124,18 +124,19 @@ theorem numberFieldNormalize_dual_norm_map
 
 /-- Normalization commutes with the actual completed dual norm family. -/
 theorem numberFieldNormalize_dual :
-    (ξ.numberFieldNormalize).dual = ξ.dual.numberFieldNormalize (hξ := ξ.dual_isUltrametric) := by
+    (ξ.numberFieldNormalize).dual = ξ.dual.numberFieldNormalize (hξ :=
+      ξ.dual_isUltrametricAtFinitePlaces) := by
   ext ω z
   obtain ⟨y, rfl⟩ := (normalizedNormFamilyTensorEquiv ω).surjective z
   erw [numberFieldNormalize_dual_norm_map, numberFieldNormalize_norm_map]
 
 /-- Upper envelopes for the original family and its actual dual transport together. -/
 theorem IsDominated.numberFieldNormalize {ξ : NormFamily (numberFieldAdelicStructure K) E}
-    (h : ξ.IsDominated) (hξ : ξ.IsUltrametric) :
+    (h : ξ.IsDominated) (hξ : ξ.IsUltrametricAtFinitePlaces) :
     (ξ.numberFieldNormalize).IsDominated := by
   refine ⟨h.1.numberFieldNormalize hξ, ?_⟩
   rw [ξ.numberFieldNormalize_dual]
-  exact h.2.numberFieldNormalize ξ.dual_isUltrametric
+  exact h.2.numberFieldNormalize ξ.dual_isUltrametricAtFinitePlaces
 
 end NormFamily
 

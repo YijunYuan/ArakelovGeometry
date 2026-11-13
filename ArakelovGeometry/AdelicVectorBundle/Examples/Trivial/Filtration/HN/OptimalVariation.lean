@@ -63,7 +63,7 @@ namespace ArakelovGeometry.AdelicVectorBundle
 variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
   [FiniteDimensional K E] {S : AdelicStructure K} [S.IsProper]
   (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
 
@@ -89,12 +89,12 @@ structure HNVariationLift (P : ℝ → Submodule K V) where
   direction_left : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → direction s = direction t
   cuts : ∀ i t, ((direction t).comap (flag i.succ).subtype).map
       ((flag i.castSucc).comap (flag i.succ).subtype).mkQ =
-    (V.flagQuotientOfMeasurableBase flag i).hermitianHNFiltration
+    (V.flagQuotientOfNormMeasurability flag i).hermitianHNFiltration
       (hV := ((hV.restrict (flag i.succ)).quotient ((flag i.castSucc).comap (flag
           i.succ).subtype))) t
   mean : Submodule.filtrationExpectation direction = V.slope
   pairing : (finrank K V : ℝ) * Submodule.filtrationPairing P direction =
-    ∑ i, weight i * (V.flagQuotientOfMeasurableBase flag i).degree
+    ∑ i, weight i * (V.flagQuotientOfNormMeasurability flag i).degree
   primary_mean : (finrank K V : ℝ) * Submodule.filtrationExpectation P =
     ∑ i, weight i * (finrank K
       ((flag i.succ) ⧸ (flag i.castSucc).comap (flag i.succ).subtype) : ℝ)
@@ -144,7 +144,7 @@ theorem pairing_nonpos (L : V.HNVariationLift P)
     (hcenter : Submodule.filtrationExpectation P = 0) :
     Submodule.filtrationPairing P L.direction ≤ 0 := by
   let d : Fin (L.length + 1) → ℝ := fun i ↦
-    (V.restrictOfMeasurableBase (L.flag i)).degree -
+    (V.restrictOfNormMeasurability (L.flag i)).degree -
       (finrank K (L.flag i) : ℝ) * V.slope
   have hd (i) : d i ≤ 0 := by
     dsimp only [d]
@@ -165,15 +165,15 @@ theorem pairing_nonpos (L : V.HNVariationLift P)
     simp only [finrank_top, V.degree_restrict_top,
       V.degree_eq_rank_mul_slope, sub_self]
   have hstep (i : Fin L.length) :
-      (V.flagQuotientOfMeasurableBase L.flag i).degree -
+      (V.flagQuotientOfNormMeasurability L.flag i).degree -
         (finrank K ((L.flag i.succ) ⧸
           (L.flag i.castSucc).comap (L.flag i.succ).subtype) : ℝ) * V.slope =
         d i.succ - d i.castSucc := by
     have hle := L.monotone_flag i.castSucc_le_succ
-    have hh : (V.restrictOfMeasurableBase (L.flag i.succ)).toNormFamily.IsHermitian :=
+    have hh : (V.restrictOfNormMeasurability (L.flag i.succ)).toNormFamily.IsHermitian :=
       hV.restrict _
     have he := degree_restrict_add_degree_quotient_eq_of_isHermitian
-      (V.restrictOfMeasurableBase (L.flag i.succ))
+      (V.restrictOfNormMeasurability (L.flag i.succ))
       ((L.flag i.castSucc).comap (L.flag i.succ).subtype) (hV := hh)
     rw [V.degree_restrict_restrict _ _ hle] at he
     have hr := ((L.flag i.castSucc).comap (L.flag i.succ).subtype).finrank_quotient_add_finrank
@@ -181,8 +181,8 @@ theorem pairing_nonpos (L : V.HNVariationLift P)
     have hr' : (finrank K ((L.flag i.succ) ⧸
         (L.flag i.castSucc).comap (L.flag i.succ).subtype) : ℝ) +
         finrank K (L.flag i.castSucc) = finrank K (L.flag i.succ) := by exact_mod_cast hr
-    change (V.restrictOfMeasurableBase (L.flag i.castSucc)).degree +
-      (V.flagQuotientOfMeasurableBase L.flag i).degree = _ at he
+    change (V.restrictOfNormMeasurability (L.flag i.castSucc)).degree +
+      (V.flagQuotientOfNormMeasurability L.flag i).degree = _ at he
     dsimp only [d]
     rw [← hr']
     nlinarith [he]
@@ -440,7 +440,7 @@ variable {K E F Q ι κ : Type*} [Field K]
   [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
   [Finite ι] [Finite κ] {S : AdelicStructure K} [S.IsProper]
   {V : AdelicVectorBundle S} {Z : AdelicVectorBundle S}
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian] [hZ : Z.toNormFamily.IsHermitian]
   {P : ℝ → Submodule K V} {T : ℝ → Submodule K Z}
@@ -541,7 +541,7 @@ variable {K : Type*} [Field K] {Q : Type*}
   [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
   {S : AdelicStructure K} [S.IsProper]
   (V : AdelicVectorBundle S) (Z : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian] [hZ : Z.toNormFamily.IsHermitian]
 

@@ -178,7 +178,8 @@ theorem rawNorm_add_le_max (B : Set ℝ) (t : ℝ) (x y : Plane) :
         max_self] using rawNorm_le_one B t (x + y)
 
 /-- Actual completed fibres inherit the ultrametric inequality. -/
-theorem normFamily_isUltrametric (B : Set ℝ) : (normFamily B).IsUltrametric := by
+theorem normFamily_isUltrametricAtFinitePlaces
+    (B : Set ℝ) : (normFamily B).IsUltrametricAtFinitePlaces := by
   constructor
   intro t _ z y
   change rawNorm B t (trivialCompletedTensorEquiv ℝ Plane (z + y)) ≤
@@ -312,10 +313,10 @@ theorem exists_nonBorel_set : ∃ B : Set ℝ, ¬ MeasurableSet B := by
 /-- An actual measurable ultrametric norm family on the source's Borel real
 adelic curve has an actual nonmeasurable one-dimensional quotient. -/
 theorem exists_measurable_normFamily_nonmeasurable_quotient :
-    ∃ B : Set ℝ, (normFamily B).IsMeasurable ∧ (normFamily B).IsUltrametric ∧
+    ∃ B : Set ℝ, (normFamily B).IsMeasurable ∧ (normFamily B).IsUltrametricAtFinitePlaces ∧
       ¬ (quotientFamily B).IsMeasurable := by
   obtain ⟨B, hB⟩ := exists_nonBorel_set
-  exact ⟨B, normFamily_isMeasurable B, normFamily_isUltrametric B,
+  exact ⟨B, normFamily_isMeasurable B, normFamily_isUltrametricAtFinitePlaces B,
     quotientFamily_not_isMeasurable B hB⟩
 
 end ArakelovGeometry.NonmeasurableQuotientCounterexample

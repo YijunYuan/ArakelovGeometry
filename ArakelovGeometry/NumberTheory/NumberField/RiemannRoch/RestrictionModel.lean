@@ -210,7 +210,7 @@ theorem original_hnZero_arithmetic_model
     let hV := fullLatticeGaugeFamily_isHermitian L hfg hspan η
     let F := V.hermitianHNFiltration
       (hV := hV) 0
-    let W := V.restrictOfMeasurableBase F
+    let W := V.restrictOfNormMeasurability F
     let hW := hV.restrict F
     let hpW := (fullLatticeGaugeFamily_isPureAtFinitePlaces L hfg hspan η).restrict F
     let A := W.toNormFamily.globalUnitBallModule (hξ := hW.1)
@@ -230,7 +230,7 @@ theorem original_hnZero_arithmetic_model
   let hV := fullLatticeGaugeFamily_isHermitian L hfg hspan η
   let F := V.hermitianHNFiltration
     (hV := hV) 0
-  let W := V.restrictOfMeasurableBase F
+  let W := V.restrictOfNormMeasurability F
   let hW := hV.restrict F
   let hpW := (fullLatticeGaugeFamily_isPureAtFinitePlaces L hfg hspan η).restrict F
   let A := W.toNormFamily.globalUnitBallModule (hξ := hW.1)

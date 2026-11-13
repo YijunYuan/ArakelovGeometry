@@ -70,7 +70,7 @@ theorem integral_infiniteLogEnvelope {n : ℕ} (hn : 0 < n) {ε : ℝ} (hε : 0 
 domination proved from the computed infinite envelope and its finite purity retained. -/
 theorem exists_hermitian_approximation
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
-    [hU : V.toNormFamily.IsUltrametric] [hpure : V.toNormFamily.IsPureAtFinitePlaces]
+    [hU : V.toNormFamily.IsUltrametricAtFinitePlaces] [hpure : V.toNormFamily.IsPureAtFinitePlaces]
     (hn : 0 < Module.finrank K V) {ε : ℝ} (hε : 0 < ε) :
     ∃ W : NormFamily (normalizedNumberFieldAdelicStructure K) V,
       W.IsAdelic ∧
@@ -125,7 +125,7 @@ theorem exists_hermitian_approximation
 /-- The actual first-minimum estimate at every positive Hermitian approximation scale. -/
 theorem maximalSlope_sub_approximation_error_le_firstMinimum
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
-    [hU : V.toNormFamily.IsUltrametric] [hpure : V.toNormFamily.IsPureAtFinitePlaces]
+    [hU : V.toNormFamily.IsUltrametricAtFinitePlaces] [hpure : V.toNormFamily.IsPureAtFinitePlaces]
     (hn : 0 < Module.finrank K V) {ε : ℝ} (hε : 0 < ε) :
     V.maximalSlope -
       (((Module.finrank ℚ K : ℝ) / 2 * Real.log ((Module.finrank K V : ℝ) + ε) +
@@ -156,7 +156,7 @@ theorem maximalSlope_sub_approximation_error_le_firstMinimum
 finite norms, obtained by the honest positive-scale limit without finite-value assumptions. -/
 theorem maximalSlope_sub_error_le_firstMinimum
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
-    [hU : V.toNormFamily.IsUltrametric] [hpure : V.toNormFamily.IsPureAtFinitePlaces]
+    [hU : V.toNormFamily.IsUltrametricAtFinitePlaces] [hpure : V.toNormFamily.IsPureAtFinitePlaces]
     (hn : 0 < Module.finrank K V) :
     V.maximalSlope -
       (((Module.finrank ℚ K : ℝ) * Real.log (Module.finrank K V : ℝ) +

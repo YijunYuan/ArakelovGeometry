@@ -148,20 +148,20 @@ theorem logHeight_nonneg (a : ι → K) : 0 ≤ AS.logHeight a := by
   change (∫ ω, Real.log (AS.ϕ ω (a i)) ∂AS.v) = 0 at hp
   rwa [hp] at h
 
-/-- Projective height, well-defined by the product formula (Definition 3.5.1). -/
-noncomputable def projectiveHeight (x : Projectivization K (ι → K)) : ℝ :=
+/-- Projective logarithmic height, well-defined by the product formula (Definition 3.5.1). -/
+noncomputable def projectiveLogHeight (x : Projectivization K (ι → K)) : ℝ :=
   x.lift (fun a ↦ AS.logHeight a.val) fun a b t h ↦ by
     have ht : t ≠ 0 := by
       intro ht
       exact a.property (by simpa [ht] using h)
     rw [h, AS.logHeight_smul_eq b.property ht]
 
-@[simp] theorem projectiveHeight_mk {a : ι → K} (ha : a ≠ 0) :
-    AS.projectiveHeight (Projectivization.mk K a ha) = AS.logHeight a := rfl
+@[simp] theorem projectiveLogHeight_mk {a : ι → K} (ha : a ≠ 0) :
+    AS.projectiveLogHeight (Projectivization.mk K a ha) = AS.logHeight a := rfl
 
-theorem projectiveHeight_nonneg (x : Projectivization K (ι → K)) :
-    0 ≤ AS.projectiveHeight x := by
-  rw [← x.mk_rep, AS.projectiveHeight_mk]
+theorem projectiveLogHeight_nonneg (x : Projectivization K (ι → K)) :
+    0 ≤ AS.projectiveLogHeight x := by
+  rw [← x.mk_rep, AS.projectiveLogHeight_mk]
   exact AS.logHeight_nonneg x.rep
 
 end ArakelovGeometry.AdelicStructure

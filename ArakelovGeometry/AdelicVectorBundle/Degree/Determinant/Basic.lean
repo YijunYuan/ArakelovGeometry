@@ -43,7 +43,7 @@ def degreeOfMeasurableDeterminant [S.IsProper] (V : AdelicVectorBundle S)
 same degree; the canonical determinant adelic line is unchanged. -/
 theorem degreeOfMeasurableDeterminant_eq_degree [S.IsProper]
     (V : AdelicVectorBundle S) [hdet : V.toNormFamily.determinant.IsMeasurable]
-    [S.HasMeasurableBase]
+    [S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     V.degreeOfMeasurableDeterminant = V.degree := rfl
 

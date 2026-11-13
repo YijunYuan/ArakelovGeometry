@@ -177,8 +177,9 @@ theorem rationalRealModifiedFamily_norm_infinite (n : ℕ) (p : Seminorm ℝ (Fi
       p (rationalRealCompletedCoordinates n z) := rfl
 
 /-- Every finite completed fiber is the original ultrametric coordinate norm. -/
-theorem rationalRealModifiedFamily_isUltrametric (n : ℕ) (p : Seminorm ℝ (Fin n → ℝ))
-    (hp : ∀ x, p x = 0 ↔ x = 0) : (rationalRealModifiedFamily n p hp).IsUltrametric := by
+theorem rationalRealModifiedFamily_isUltrametricAtFinitePlaces (n : ℕ) (p : Seminorm ℝ (Fin n → ℝ))
+    (hp : ∀ x, p x = 0 ↔ x = 0) : (rationalRealModifiedFamily n p hp).IsUltrametricAtFinitePlaces :=
+      by
   constructor
   intro ω hω x y
   cases ω with
@@ -189,7 +190,7 @@ theorem rationalRealModifiedFamily_isUltrametric (n : ℕ) (p : Seminorm ℝ (Fi
           (Pi.basisFun ℚ (Fin n))).norm (.inl q) x)
           ((NormFamily.ofBasis rationalAdelicStructure (Fin n → ℚ)
             (Pi.basisFun ℚ (Fin n))).norm (.inl q) y)
-      have h := NormFamily.ofBasisMixed_isUltrametric
+      have h := NormFamily.ofBasisMixed_isUltrametricAtFinitePlaces
         (S := rationalAdelicStructure) (Pi.basisFun ℚ (Fin n)) (.inl q) hω x y
       simpa only [NormFamily.ofBasisMixed_norm_of_finite _ _ hω] using h
   | inr u =>

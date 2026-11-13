@@ -520,17 +520,17 @@ namespace AdelicVectorBundle
 rank-weighted degree sum. All analytic fields are supplied by its constructor. -/
 theorem degree_orthogonalTensorPair [S.IsProper]
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hW : W.IsHermitian] :
     (V ⊗ʰ W).degree =
       (Module.finrank K W : ℝ) * V.degree +
         (Module.finrank K V : ℝ) * W.degree := by
-  let DV := V.determinantOfMeasurableBase
-  let DW := W.determinantOfMeasurableBase
+  let DV := V.determinantOfNormMeasurability
+  let DW := W.determinantOfNormMeasurability
   let T := V.orthogonalTensorPair W
-  let s := DV.lineGenerator (hV := (V.determinantOfMeasurableBase_isLine))
-  let t := DW.lineGenerator (hV := (W.determinantOfMeasurableBase_isLine))
+  let s := DV.lineGenerator (hV := (V.determinantOfNormMeasurability_isLine))
+  let t := DW.lineGenerator (hV := (W.determinantOfNormMeasurability_isLine))
   let q := determinantTensorEquiv K V W
     ((⨂ₜ[K] (_ : Fin (Module.finrank K W)), s.val) ⊗ₜ[K]
       (⨂ₜ[K] (_ : Fin (Module.finrank K V)), t.val))

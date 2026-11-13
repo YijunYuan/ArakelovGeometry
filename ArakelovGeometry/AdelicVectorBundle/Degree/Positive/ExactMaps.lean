@@ -41,7 +41,7 @@ theorem positiveDegree_left_le_of_isExactSequence
     (V : AdelicVectorBundle S) (L : AdelicVectorBundle S) (R : AdelicVectorBundle S)
     (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     L.positiveDegree ≤ V.positiveDegree := by
   rw [V.positiveDegree_exactSequence_left L R i p hx]
@@ -53,7 +53,7 @@ theorem positiveDegree_le_add_majorantDiscrepancy_of_isExactSequence
     (V : AdelicVectorBundle S) (L : AdelicVectorBundle S) (R : AdelicVectorBundle S)
     (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     V.positiveDegree ≤ L.positiveDegree + R.positiveDegree +
       V.majorantDiscrepancy := by
@@ -67,9 +67,9 @@ theorem positiveDegree_le_add_determinantDiscrepancy_of_isExactSequence
     (V : AdelicVectorBundle S) (L : AdelicVectorBundle S) (R : AdelicVectorBundle S)
     (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
-    [hV : V.toNormFamily.IsUltrametric] :
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] :
     V.positiveDegree ≤ L.positiveDegree + R.positiveDegree +
       (V.determinantDiscrepancy : EReal) := by
   rw [V.positiveDegree_exactSequence_left L R i p hx,
@@ -82,7 +82,7 @@ theorem positiveDegree_le_add_of_isExactSequence_isHermitian
     (V : AdelicVectorBundle S) (L : AdelicVectorBundle S) (R : AdelicVectorBundle S)
     (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :
     V.positiveDegree ≤ L.positiveDegree + R.positiveDegree := by

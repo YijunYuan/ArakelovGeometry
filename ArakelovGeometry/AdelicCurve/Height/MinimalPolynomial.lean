@@ -32,21 +32,21 @@ variable {K : Type*} [Field K] (AS : AdelicStructure K)
 variable {L : Type*} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
 
 /-- Extending the base field leaves the height of a polynomial unchanged. -/
-theorem polynomialHeight_map_algebraicExtension (p : K[X]) :
-    (AS.algebraicExtension L).polynomialHeight (p.map (algebraMap K L)) =
-      AS.polynomialHeight p := by
-  rw [(AS.algebraicExtension L).polynomialHeight_eq_logHeight _
+theorem polynomialLogHeight_map_algebraicExtension (p : K[X]) :
+    (AS.algebraicExtension L).polynomialLogHeight (p.map (algebraMap K L)) =
+      AS.polynomialLogHeight p := by
+  rw [(AS.algebraicExtension L).polynomialLogHeight_eq_logHeight _
     (le_of_eq (natDegree_map _))]
   simp only [coeff_map]
   exact AS.logHeight_algebraicExtension L _
 
 /-- A root of an element's minimal polynomial has the same height as that element.
 The two embeddings of the simple extension suffice, without a normal closure. -/
-theorem affineHeight_eq_of_aeval_minpoly_eq_zero
+theorem affineLogHeight_eq_of_aeval_minpoly_eq_zero
     {E : Type*} [Field E] [Algebra K E] [Algebra.IsAlgebraic K E] {a : E} {b : L}
     (hb : Polynomial.aeval b (minpoly K a) = 0) :
-    (AS.algebraicExtension L).affineHeight b =
-      (AS.algebraicExtension E).affineHeight a := by
+    (AS.algebraicExtension L).affineLogHeight b =
+      (AS.algebraicExtension E).affineLogHeight a := by
   have ha : IsIntegral K a := Algebra.IsIntegral.isIntegral a
   let := IntermediateField.adjoin.finiteDimensional ha
   let r : {b : L // b ∈ (minpoly K a).aroots L} :=
@@ -54,24 +54,24 @@ theorem affineHeight_eq_of_aeval_minpoly_eq_zero
   let i := (IntermediateField.algHomAdjoinIntegralEquiv K ha).symm r
   have hi : i (IntermediateField.AdjoinSimple.gen K a) = b :=
     IntermediateField.algHomAdjoinIntegralEquiv_symm_apply_gen K ha r
-  rw [← hi, AS.affineHeight_comp_finiteEmbedding i]
-  exact (AS.affineHeight_comp_finiteEmbedding (IntermediateField.adjoin K {a}).val
+  rw [← hi, AS.affineLogHeight_comp_finiteEmbedding i]
+  exact (AS.affineLogHeight_comp_finiteEmbedding (IntermediateField.adjoin K {a}).val
     (IntermediateField.AdjoinSimple.gen K a)).symm
 
 /-- Roots of a monic irreducible polynomial have equal affine heights, with no
 separability assumption. -/
-theorem affineHeight_eq_of_irreducible {p : K[X]} (hp : Irreducible p)
+theorem affineLogHeight_eq_of_irreducible {p : K[X]} (hp : Irreducible p)
     (hm : p.Monic) {a b : L} (ha : Polynomial.aeval a p = 0)
     (hb : Polynomial.aeval b p = 0) :
-    (AS.algebraicExtension L).affineHeight b =
-      (AS.algebraicExtension L).affineHeight a := by
-  apply AS.affineHeight_eq_of_aeval_minpoly_eq_zero
+    (AS.algebraicExtension L).affineLogHeight b =
+      (AS.algebraicExtension L).affineLogHeight a := by
+  apply AS.affineLogHeight_eq_of_aeval_minpoly_eq_zero
   rwa [← minpoly.eq_of_irreducible_of_monic hp ha hm]
 
 /-- The height bound for the minimal polynomial, counting all roots with multiplicity. -/
-theorem polynomialHeight_minpoly_le (a : L) :
-    AS.polynomialHeight (minpoly K a) ≤
-      (minpoly K a).natDegree * (AS.algebraicExtension L).affineHeight a +
+theorem polynomialLogHeight_minpoly_le (a : L) :
+    AS.polynomialLogHeight (minpoly K a) ≤
+      (minpoly K a).natDegree * (AS.algebraicExtension L).affineLogHeight a +
         ((minpoly K a).natDegree - 1 : ℕ) * Real.log 2 *
           AS.heightArchimedeanConstant := by
   classical
@@ -91,45 +91,46 @@ theorem polynomialHeight_minpoly_le (a : L) :
     exact prod_multiset_X_sub_C_of_monic_of_roots_card_eq hp
       (IsAlgClosed.splits p).natDegree_eq_card_roots.symm
   have heq (b : AlgebraicClosure K) (hb : b ∈ p.roots.toList) :
-      (AS.algebraicExtension (AlgebraicClosure K)).affineHeight b =
-        (AS.algebraicExtension L).affineHeight a := by
-    apply AS.affineHeight_eq_of_aeval_minpoly_eq_zero
+      (AS.algebraicExtension (AlgebraicClosure K)).affineLogHeight b =
+        (AS.algebraicExtension L).affineLogHeight a := by
+    apply AS.affineLogHeight_eq_of_aeval_minpoly_eq_zero
     have hb' : b ∈ (minpoly K a).aroots (AlgebraicClosure K) := by
       simpa only [Multiset.mem_toList] using hb
     exact (mem_aroots.mp hb').2
   have hsum :
-      (p.roots.toList.map (AS.algebraicExtension (AlgebraicClosure K)).affineHeight).sum =
-      (minpoly K a).natDegree * (AS.algebraicExtension L).affineHeight a := by
+      (p.roots.toList.map (AS.algebraicExtension (AlgebraicClosure K)).affineLogHeight).sum =
+      (minpoly K a).natDegree * (AS.algebraicExtension L).affineLogHeight a := by
     calc
       _ = (p.roots.toList.map
-          (Function.const (AlgebraicClosure K) ((AS.algebraicExtension L).affineHeight a))).sum :=
+          (Function.const (AlgebraicClosure K)
+            ((AS.algebraicExtension L).affineLogHeight a))).sum :=
         congrArg List.sum (List.map_congr_left heq)
       _ = _ := by
         rw [List.map_const, List.sum_replicate, nsmul_eq_mul, Multiset.length_toList, hd]
-  have h := AS.polynomialHeight_prod_X_sub_C_le_algebraicExtension
+  have h := AS.polynomialLogHeight_prod_X_sub_C_le_algebraicExtension
     (AlgebraicClosure K) p.roots.toList hl
   rw [hprod, hsum, Multiset.length_toList, hd] at h
-  exact (AS.polynomialHeight_map_algebraicExtension
+  exact (AS.polynomialLogHeight_map_algebraicExtension
     (L := AlgebraicClosure K) (minpoly K a)).ge.trans h
 
 /-- Each minimal-polynomial coefficient has the same uniform bound. -/
-theorem affineHeight_minpoly_coeff_le (a : L) (j : ℕ) :
-    AS.affineHeight ((minpoly K a).coeff j) ≤
-      (minpoly K a).natDegree * (AS.algebraicExtension L).affineHeight a +
+theorem affineLogHeight_minpoly_coeff_le (a : L) (j : ℕ) :
+    AS.affineLogHeight ((minpoly K a).coeff j) ≤
+      (minpoly K a).natDegree * (AS.algebraicExtension L).affineLogHeight a +
         ((minpoly K a).natDegree - 1 : ℕ) * Real.log 2 *
           AS.heightArchimedeanConstant :=
-  (AS.affineHeight_coeff_le_polynomialHeight
+  (AS.affineLogHeight_coeff_le_polynomialLogHeight
     (minpoly.monic (Algebra.IsIntegral.isIntegral a)) j).trans
-      (AS.polynomialHeight_minpoly_le a)
+      (AS.polynomialLogHeight_minpoly_le a)
 
 /-- The minimal-polynomial bound in terms of the degree of the simple field extension. -/
-theorem polynomialHeight_minpoly_le_finrank (a : L) :
-    AS.polynomialHeight (minpoly K a) ≤
+theorem polynomialLogHeight_minpoly_le_finrank (a : L) :
+    AS.polynomialLogHeight (minpoly K a) ≤
       Module.finrank K (IntermediateField.adjoin K {a}) *
-          (AS.algebraicExtension L).affineHeight a +
+          (AS.algebraicExtension L).affineLogHeight a +
         (Module.finrank K (IntermediateField.adjoin K {a}) - 1 : ℕ) * Real.log 2 *
           AS.heightArchimedeanConstant := by
   simpa only [IntermediateField.adjoin.finrank (Algebra.IsIntegral.isIntegral a)] using
-    AS.polynomialHeight_minpoly_le a
+    AS.polynomialLogHeight_minpoly_le a
 
 end ArakelovGeometry.AdelicStructure

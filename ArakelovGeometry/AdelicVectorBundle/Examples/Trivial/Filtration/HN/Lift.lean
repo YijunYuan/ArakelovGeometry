@@ -27,7 +27,7 @@ namespace ArakelovGeometry.AdelicVectorBundle
 variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
   [FiniteDimensional K E] {S : AdelicStructure K} [S.IsProper]
   (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
 
@@ -97,7 +97,7 @@ all quotient bases, their unchanged weights, every induced cut, and both paper i
 theorem exists_hermitianHN_quotient_lift
     {n : ℕ} (U : Fin (n + 1) → Submodule K V) (hU : Monotone U)
     (hzero : U 0 = ⊥) (htop : U (Fin.last n) = ⊤) :
-    let F := fun i : Fin n ↦ (V.flagQuotientOfMeasurableBase U i).hermitianHNFiltration
+    let F := fun i : Fin n ↦ (V.flagQuotientOfNormMeasurability U i).hermitianHNFiltration
       (hV := ((hV.restrict (U i.succ)).quotient ((U i.castSucc).comap (U i.succ).subtype)))
     ∃ (b : ∀ i : Fin n,
       Basis (Fin (finrank K ((U i.succ) ⧸ (U i.castSucc).comap (U i.succ).subtype)))
@@ -121,9 +121,9 @@ theorem exists_hermitianHN_quotient_lift
       ∀ a : Fin n → ℝ, Antitone a →
         (finrank K V : ℝ) * Submodule.filtrationPairing
           (fun t ↦ ⨆ (i : Fin n) (_ : t ≤ a i), U i.succ) R =
-            ∑ i, a i * (V.flagQuotientOfMeasurableBase U i).degree := by
+            ∑ i, a i * (V.flagQuotientOfNormMeasurability U i).degree := by
   classical
-  let Q := V.flagQuotientOfMeasurableBase U
+  let Q := V.flagQuotientOfNormMeasurability U
   let hQ := fun i : Fin n ↦
     (hV.restrict (U i.succ)).quotient ((U i.castSucc).comap (U i.succ).subtype)
   let F := fun i : Fin n ↦ (Q i).hermitianHNFiltration (hV := (hQ i))

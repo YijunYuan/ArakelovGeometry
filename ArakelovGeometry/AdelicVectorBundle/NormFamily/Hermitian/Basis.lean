@@ -114,18 +114,19 @@ theorem ofBasisHermitian_isMeasurable : (ofBasisHermitian S E b).IsMeasurable :=
   · exact (Measurable.of_eval fun i => S.measurable_absValue (b.equivFun x i)).norm
 
 /-- The finite-place branch is ultrametric in every dimension. -/
-theorem ofBasisHermitian_isUltrametric : (ofBasisHermitian S E b).IsUltrametric := by
+theorem ofBasisHermitian_isUltrametricAtFinitePlaces
+    : (ofBasisHermitian S E b).IsUltrametricAtFinitePlaces := by
   constructor
   intro ω hω x y
   simpa only [ofBasisHermitian_norm_of_finite b ω hω,
-    ofBasisMixed_norm_of_finite b ω hω] using ofBasisMixed_isUltrametric b ω hω x y
+    ofBasisMixed_norm_of_finite b ω hω] using ofBasisMixed_isUltrametricAtFinitePlaces b ω hω x y
 
 /-- The actual completed coordinate isometry pulls the canonical Euclidean
 inner product back to the prescribed fibre norm and scalar action. -/
 instance ofBasisHermitian_isHermitian
     [hS : S.IsArchimedeanNormalized] :
     (ofBasisHermitian S E b).IsHermitian := by
-  refine ⟨ofBasisHermitian_isUltrametric b, fun ω hω => ?_⟩
+  refine ⟨ofBasisHermitian_isUltrametricAtFinitePlaces b, fun ω hω => ?_⟩
   let := hS ω hω
   let := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
   let := (ofBasisHermitian S E b).fibreNormedAddCommGroup ω

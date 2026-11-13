@@ -102,13 +102,13 @@ namespace AdelicVectorBundle
 two-step capital-discrepancy degree estimate without subtracting infinities. -/
 theorem degree_add_majorantDiscrepancy_restrict_add_quotient_le [S.IsProper]
     (V : AdelicVectorBundle S) (W : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     (V.degree : EReal) +
-        (V.restrictOfMeasurableBase W).majorantDiscrepancy +
-        (V.quotientOfMeasurableBase W).majorantDiscrepancy ≤
-      ((V.restrictOfMeasurableBase W).degree : EReal) +
-        ((V.quotientOfMeasurableBase W).degree : EReal) +
+        (V.restrictOfNormMeasurability W).majorantDiscrepancy +
+        (V.quotientOfNormMeasurability W).majorantDiscrepancy ≤
+      ((V.restrictOfNormMeasurability W).degree : EReal) +
+        ((V.quotientOfNormMeasurability W).degree : EReal) +
         V.majorantDiscrepancy := by
   let z : {z : ⋀[K]^(Module.finrank K W) W // z ≠ 0} :=
     ⟨determinantGenerator, determinantGenerator_ne_zero⟩
@@ -142,18 +142,18 @@ theorem degree_add_majorantDiscrepancy_restrict_add_quotient_le [S.IsProper]
     (V.toNormFamily.restrict W).determinant.logNorm z.val -
     (V.toNormFamily.quotient W).determinant.logNorm q.val
   have iz : Integrable ((V.toNormFamily.restrict W).determinant.logNorm z.val) S.v := by
-    simpa only [determinantOfMeasurableBase_toNormFamily,
-      restrictOfMeasurableBase_toNormFamily] using
-      ((V.restrictOfMeasurableBase W).determinantOfMeasurableBase).integrable_logNorm
+    simpa only [determinantOfNormMeasurability_toNormFamily,
+      restrictOfNormMeasurability_toNormFamily] using
+      ((V.restrictOfNormMeasurability W).determinantOfNormMeasurability).integrable_logNorm
         z.val
   have iq : Integrable ((V.toNormFamily.quotient W).determinant.logNorm q.val) S.v := by
-    simpa only [determinantOfMeasurableBase_toNormFamily,
-      quotientOfMeasurableBase_toNormFamily] using
-      ((V.quotientOfMeasurableBase W).determinantOfMeasurableBase).integrable_logNorm
+    simpa only [determinantOfNormMeasurability_toNormFamily,
+      quotientOfNormMeasurability_toNormFamily] using
+      ((V.quotientOfNormMeasurability W).determinantOfNormMeasurability).integrable_logNorm
         q.val
   have ie : Integrable (V.toNormFamily.determinant.logNorm e) S.v := by
-    simpa only [determinantOfMeasurableBase_toNormFamily] using
-      (V.determinantOfMeasurableBase).integrable_logNorm e
+    simpa only [determinantOfNormMeasurability_toNormFamily] using
+      (V.determinantOfNormMeasurability).integrable_logNorm e
   have ia : Integrable a S.v := (ie.sub iz).sub iq
   have hfg : f + g ≤ᵐ[S.v] d + a := by
     apply Filter.Eventually.of_forall
@@ -168,8 +168,8 @@ theorem degree_add_majorantDiscrepancy_restrict_add_quotient_le [S.IsProper]
   have hQ := V.degree_quotient_eq_neg_integral W q
   have hE := V.degree_eq_neg_integral ⟨e, he⟩
   have ha : (∫ ω, a ω ∂S.v) =
-      (V.restrictOfMeasurableBase W).degree +
-        (V.quotientOfMeasurableBase W).degree - V.degree := by
+      (V.restrictOfNormMeasurability W).degree +
+        (V.quotientOfNormMeasurability W).degree - V.degree := by
     have hsub := integral_sub (ie.sub iz) iq
     have hsub' := integral_sub ie iz
     change (∫ ω, a ω ∂S.v) =
@@ -184,23 +184,23 @@ theorem degree_add_majorantDiscrepancy_restrict_add_quotient_le [S.IsProper]
     rw [hsub']
     linarith
   rw [ha] at hi
-  change (V.restrictOfMeasurableBase W).majorantDiscrepancy +
-      (V.quotientOfMeasurableBase W).majorantDiscrepancy ≤
+  change (V.restrictOfNormMeasurability W).majorantDiscrepancy +
+      (V.quotientOfNormMeasurability W).majorantDiscrepancy ≤
     V.majorantDiscrepancy +
-      ((V.restrictOfMeasurableBase W).degree +
-        (V.quotientOfMeasurableBase W).degree - V.degree : ℝ) at hi
+      ((V.restrictOfNormMeasurability W).degree +
+        (V.quotientOfNormMeasurability W).degree - V.degree : ℝ) at hi
   have h := add_le_add_right hi (V.degree : EReal)
   calc
-    _ = ((V.restrictOfMeasurableBase W).majorantDiscrepancy +
-        (V.quotientOfMeasurableBase W).majorantDiscrepancy) +
+    _ = ((V.restrictOfNormMeasurability W).majorantDiscrepancy +
+        (V.quotientOfNormMeasurability W).majorantDiscrepancy) +
         (V.degree : EReal) := by ac_rfl
     _ ≤ (V.majorantDiscrepancy +
-        ((V.restrictOfMeasurableBase W).degree +
-          (V.quotientOfMeasurableBase W).degree - V.degree : ℝ)) +
+        ((V.restrictOfNormMeasurability W).degree +
+          (V.quotientOfNormMeasurability W).degree - V.degree : ℝ)) +
         (V.degree : EReal) := by convert h using 1 <;> ac_rfl
     _ = V.majorantDiscrepancy +
-        ((V.restrictOfMeasurableBase W).degree +
-          (V.quotientOfMeasurableBase W).degree : ℝ) := by
+        ((V.restrictOfNormMeasurability W).degree +
+          (V.quotientOfNormMeasurability W).degree : ℝ) := by
       rw [add_assoc, ← EReal.coe_add, sub_add_cancel]
     _ = _ := by rw [EReal.coe_add]; ac_rfl
 
@@ -209,29 +209,29 @@ The infinite middle discrepancy is handled first; otherwise the genuine
 end discrepancies are finite by their already proved global bounds. -/
 theorem degree_sub_majorantDiscrepancy_le_restrict_add_quotient [S.IsProper]
     (V : AdelicVectorBundle S) (W : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     (V.degree : EReal) - V.majorantDiscrepancy ≤
-      (((V.restrictOfMeasurableBase W).degree : EReal) -
-        (V.restrictOfMeasurableBase W).majorantDiscrepancy) +
-      (((V.quotientOfMeasurableBase W).degree : EReal) -
-        (V.quotientOfMeasurableBase W).majorantDiscrepancy) := by
+      (((V.restrictOfNormMeasurability W).degree : EReal) -
+        (V.restrictOfNormMeasurability W).majorantDiscrepancy) +
+      (((V.quotientOfNormMeasurability W).degree : EReal) -
+        (V.quotientOfNormMeasurability W).majorantDiscrepancy) := by
   by_cases hE : V.majorantDiscrepancy = ⊤
   · rw [hE, EReal.sub_top]
     exact bot_le
-  · have hR : (V.restrictOfMeasurableBase W).majorantDiscrepancy ≠ ⊤ :=
+  · have hR : (V.restrictOfNormMeasurability W).majorantDiscrepancy ≠ ⊤ :=
       ne_of_lt ((V.majorantDiscrepancy_restrict_le W).trans_lt
         (lt_top_iff_ne_top.mpr hE))
-    have hQ : (V.quotientOfMeasurableBase W).majorantDiscrepancy ≠ ⊤ :=
+    have hQ : (V.quotientOfNormMeasurability W).majorantDiscrepancy ≠ ⊤ :=
       ne_of_lt ((V.majorantDiscrepancy_quotient_le W).trans_lt
         (lt_top_iff_ne_top.mpr hE))
     have hi := V.degree_add_majorantDiscrepancy_restrict_add_quotient_le W
     lift V.majorantDiscrepancy to ℝ using
       ⟨hE, (V.bot_lt_majorantDiscrepancy).ne'⟩ with d hd
-    lift (V.restrictOfMeasurableBase W).majorantDiscrepancy to ℝ using
-      ⟨hR, ((V.restrictOfMeasurableBase W).bot_lt_majorantDiscrepancy).ne'⟩ with r hr
-    lift (V.quotientOfMeasurableBase W).majorantDiscrepancy to ℝ using
-      ⟨hQ, ((V.quotientOfMeasurableBase W).bot_lt_majorantDiscrepancy).ne'⟩ with q hq
+    lift (V.restrictOfNormMeasurability W).majorantDiscrepancy to ℝ using
+      ⟨hR, ((V.restrictOfNormMeasurability W).bot_lt_majorantDiscrepancy).ne'⟩ with r hr
+    lift (V.quotientOfNormMeasurability W).majorantDiscrepancy to ℝ using
+      ⟨hQ, ((V.quotientOfNormMeasurability W).bot_lt_majorantDiscrepancy).ne'⟩ with q hq
     simp only [← EReal.coe_sub, ← EReal.coe_add, EReal.coe_le_coe_iff] at hi ⊢
     linarith
 

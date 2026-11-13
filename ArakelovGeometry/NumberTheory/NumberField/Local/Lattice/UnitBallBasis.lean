@@ -38,7 +38,7 @@ variable {K : Type u} [Field K] [NumberField K] {S : AdelicStructure K}
 /-- Scalar extension of the produced local generic basis is an actual basis
 of the canonical completed tensor fibre. -/
 def completedLocalUnitBallBasis (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Module.Basis (Fin (Module.finrank (S.rationalLocalRing ω hω)
       (ξ.rationalUnitBallModule ω hω))) (S.ϕ ω).Completion
       ((S.ϕ ω).Completion ⊗[K] E) :=
@@ -46,7 +46,7 @@ def completedLocalUnitBallBasis (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ 
 
 @[simp]
 theorem completedLocalUnitBallBasis_apply (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric]
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (i : Fin (Module.finrank (S.rationalLocalRing ω hω)
       (ξ.rationalUnitBallModule ω hω))) :
     ξ.completedLocalUnitBallBasis ω hω hnt i =
@@ -57,7 +57,7 @@ theorem completedLocalUnitBallBasis_apply (ξ : NormFamily S E) (ω : S.Ω)
 /-- Actual generic-basis coordinates of original local-ball vectors are the
 literal field images of their actual local-basis coefficients. -/
 theorem rationalLocalUnitBallGenericBasis_repr_coe (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric]
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (x : ξ.rationalUnitBallModule ω hω)
     (i : Fin (Module.finrank (S.rationalLocalRing ω hω)
       (ξ.rationalUnitBallModule ω hω))) :
@@ -75,7 +75,7 @@ theorem rationalLocalUnitBallGenericBasis_repr_coe (ξ : NormFamily S E) (ω : S
 /-- Completed coordinates of rational local-ball images are their actual
 completion-embedded literal local coefficients. -/
 theorem completedLocalUnitBallBasis_repr_rational (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric]
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (x : ξ.rationalUnitBallModule ω hω)
     (i : Fin (Module.finrank (S.rationalLocalRing ω hω)
       (ξ.rationalUnitBallModule ω hω))) :
@@ -88,7 +88,7 @@ theorem completedLocalUnitBallBasis_repr_rational (ξ : NormFamily S E) (ω : S.
 /-- Continuity and the actual rational-ball closure force every completed-ball
 coordinate to have completed scalar norm at most one. -/
 theorem completedLocalUnitBallBasis_coordinates_le_one (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric]
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces]
     {z : (S.ϕ ω).Completion ⊗[K] E} (hz : z ∈ ξ.completedUnitBall ω) :
     ∀ i, ‖(ξ.completedLocalUnitBallBasis ω hω hnt).repr z i‖ ≤ 1 := by
   let := ξ.fibreNormedAddCommGroup ω
@@ -111,7 +111,7 @@ theorem completedLocalUnitBallBasis_coordinates_le_one (ξ : NormFamily S E) (ω
 /-- The canonical completed tensor map preserves the produced basis
 coordinates through the literal completed coefficient-ring inclusion. -/
 theorem completedLocalUnitBallBasis_repr_tensorMap (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric]
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (t : (S.completedLocalRing ω hω) ⊗[S.rationalLocalRing ω hω]
       (ξ.rationalUnitBallModule ω hω))
     (i : Fin (Module.finrank (S.rationalLocalRing ω hω)
@@ -144,7 +144,7 @@ theorem completedLocalUnitBallBasis_repr_tensorMap (ξ : NormFamily S E) (ω : S
 /-- Produced integral completed coordinates and the actual basis-coordinate
 formula prove the canonical completed tensor map bijective. -/
 theorem rationalUnitBallCompletedTensorMap_bijective (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Function.Bijective (ξ.rationalUnitBallCompletedTensorMap ω hω) := by
   let b := ξ.completedLocalUnitBallBasis ω hω hnt
   let bt := (ξ.rationalLocalUnitBallBasis ω hω hnt).baseChange
@@ -177,20 +177,20 @@ theorem rationalUnitBallCompletedTensorMap_bijective (ξ : NormFamily S E) (ω :
 /-- Remark 4.4.1(2): actual completed coefficient extension of the literal
 rational local unit ball is the literal completed unit-ball module. -/
 def rationalUnitBallCompletedTensorEquiv (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     (S.completedLocalRing ω hω) ⊗[S.rationalLocalRing ω hω]
       (ξ.rationalUnitBallModule ω hω) ≃ₗ[S.completedLocalRing ω hω]
       ξ.completedUnitBallModule ω hω :=
   LinearEquiv.ofBijective (ξ.rationalUnitBallCompletedTensorMap ω hω)
     (ξ.rationalUnitBallCompletedTensorMap_bijective ω hω hnt)
 
-local instance (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin) [ξ.IsUltrametric] :
+local instance (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin) [ξ.IsUltrametricAtFinitePlaces] :
     SMul (S.completedLocalRing ω hω) (ξ.completedUnitBallModule ω hω) :=
   (ξ.completedUnitBallModule ω hω).module.toSMul
 
 @[simp]
 theorem rationalUnitBallCompletedTensorEquiv_tmul (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric]
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (a : S.completedLocalRing ω hω) (x : ξ.rationalUnitBallModule ω hω) :
     ξ.rationalUnitBallCompletedTensorEquiv ω hω hnt (a ⊗ₜ[S.rationalLocalRing ω hω] x) =
       a • ξ.rationalUnitBallCompletionMap ω hω x :=
@@ -201,7 +201,7 @@ number-field point, with nontriviality produced from the actual parameter. -/
 def normalizedRationalUnitBallCompletedTensorEquiv
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
     (ω : (normalizedNumberFieldAdelicStructure K).Ω)
-    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     ((normalizedNumberFieldAdelicStructure K).completedLocalRing ω hω) ⊗[
       (normalizedNumberFieldAdelicStructure K).rationalLocalRing ω hω]
       (ξ.rationalUnitBallModule ω hω) ≃ₗ[
@@ -215,7 +215,7 @@ def normalizedRationalUnitBallCompletedTensorEquiv
 theorem normalizedRationalUnitBallCompletedTensorEquiv_tmul
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
     (ω : (normalizedNumberFieldAdelicStructure K).Ω)
-    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hξ : ξ.IsUltrametric]
+    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (a : (normalizedNumberFieldAdelicStructure K).completedLocalRing ω hω)
     (x : ξ.rationalUnitBallModule ω hω) :
     ξ.normalizedRationalUnitBallCompletedTensorEquiv ω hω

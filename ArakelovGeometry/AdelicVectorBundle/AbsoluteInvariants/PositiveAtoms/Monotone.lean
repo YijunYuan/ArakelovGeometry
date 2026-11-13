@@ -33,24 +33,24 @@ variable {K L E : Type*} [Field K] [Field L] [Algebra K L]
 
 /-- The actual tensor inclusion contracts completed norms and compares the
 produced actual determinant degrees, with no extension-place regularity. -/
-theorem degree_restrict_le_nativeAlgebraicRestrictionDegreeOfPositiveAtoms
+theorem degree_restrict_le_nativeAlgebraicRestrictionDegreeOfPositiveSingletons
     (V : AdelicVectorBundle S)
-    [hpos : S.HasPositiveAtoms] [hgeo : S.HasOnlyFinitePlaces]
-    [hS : S.HasMeasurableBase]
+    [hpos : S.HasPositiveSingletons] [hgeo : S.HasOnlyFinitePlaces]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (A : Submodule K V) :
-    (V.restrictOfMeasurableBase A).degree ≤
-      V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveAtoms
+    (V.restrictOfNormMeasurability A).degree ≤
+      V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveSingletons
         (A.baseChange L) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-  let B := V.restrictOfMeasurableBase A
-  let W := B.toNormFamily.algebraicScalarBundleOfPositiveAtoms (L := L)
-  let R := V.toNormFamily.nativeAlgebraicRestrictionOfPositiveAtoms
+  let B := V.restrictOfNormMeasurability A
+  let W := B.toNormFamily.algebraicScalarBundleOfPositiveSingletons (L := L)
+  let R := V.toNormFamily.nativeAlgebraicRestrictionOfPositiveSingletons
     (A.baseChange L)
   let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
   let hdetB := B.isMeasurable.determinant_of_discrete_or_countable
   let hdetR :=
-    V.isDominated.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+    V.isDominated.scalarExtension_restrict_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
       V.toNormFamily (A.baseChange L)
   let : W.toNormFamily.determinant.IsMeasurable := hdetB.determinant_scalarExtension
   let : R.toNormFamily.determinant.IsMeasurable := hdetR
@@ -62,18 +62,18 @@ theorem degree_restrict_le_nativeAlgebraicRestrictionDegreeOfPositiveAtoms
       (fun x z => V.toNormFamily.scalarExtension_restrict_norm_le A x z)
   change B.degreeOfMeasurableDeterminant (hdet := hdetB) ≤
     R.degreeOfMeasurableDeterminant (hdet := hdetR) (hN := ⟨hLN⟩)
-  exact (B.degreeOfMeasurableDeterminant_algebraicScalarBundleOfPositiveAtoms
+  exact (B.degreeOfMeasurableDeterminant_algebraicScalarBundleOfPositiveSingletons
     (L := L) (hdet := hdetB)).symm.le.trans he
 
 /-- The actual original and native mean degrees compare through unchanged rank. -/
-theorem slope_restrict_le_nativeMeanOfPositiveAtoms
+theorem slope_restrict_le_nativeMeanOfPositiveSingletons
     (V : AdelicVectorBundle S)
-    [hpos : S.HasPositiveAtoms] [hgeo : S.HasOnlyFinitePlaces]
-    [hS : S.HasMeasurableBase]
+    [hpos : S.HasPositiveSingletons] [hgeo : S.HasOnlyFinitePlaces]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (A : Submodule K V) :
-    (V.restrictOfMeasurableBase A).slope ≤
-      V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveAtoms
+    (V.restrictOfNormMeasurability A).slope ≤
+      V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveSingletons
         (A.baseChange L) /
           (Module.finrank L (A.baseChange L) : ℝ) := by
   have hr : Module.finrank L (A.baseChange L) = Module.finrank K A :=
@@ -81,33 +81,33 @@ theorem slope_restrict_le_nativeMeanOfPositiveAtoms
   change _ / (Module.finrank K A : ℝ) ≤ _ / _
   rw [hr]
   exact div_le_div_of_nonneg_right
-    (V.degree_restrict_le_nativeAlgebraicRestrictionDegreeOfPositiveAtoms A)
+    (V.degree_restrict_le_nativeAlgebraicRestrictionDegreeOfPositiveSingletons A)
     (Nat.cast_nonneg _)
 
 /-- All original restricted degrees feed the actual geometric absolute supremum. -/
-theorem positiveDegree_le_absolutePositiveDegreeOfPositiveAtoms
+theorem positiveDegree_le_absolutePositiveDegreeOfPositiveSingletons
     (V : AdelicVectorBundle S)
-    [hpos : S.HasPositiveAtoms] [hgeo : S.HasOnlyFinitePlaces]
-    [hS : S.HasMeasurableBase]
+    [hpos : S.HasPositiveSingletons] [hgeo : S.HasOnlyFinitePlaces]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     V.positiveDegree ≤
-      V.toNormFamily.absolutePositiveDegreeOfPositiveAtoms := by
+      V.toNormFamily.absolutePositiveDegreeOfPositiveSingletons := by
   apply V.positiveDegree_le
   intro A
   exact (EReal.coe_le_coe_iff.mpr
-    (V.degree_restrict_le_nativeAlgebraicRestrictionDegreeOfPositiveAtoms
+    (V.degree_restrict_le_nativeAlgebraicRestrictionDegreeOfPositiveSingletons
       (L := AlgebraicClosure K) A)).trans
-    (V.toNormFamily.nativeRestrictionDegree_le_absolutePositiveDegreeOfPositiveAtoms
+    (V.toNormFamily.nativeRestrictionDegree_le_absolutePositiveDegreeOfPositiveSingletons
       (A.baseChange (AlgebraicClosure K)))
 
 /-- Positive-rank original subspaces supply actual positive-rank native mean terms. -/
-theorem maximalSlope_le_absoluteMaximalSlopeOfPositiveAtoms
+theorem maximalSlope_le_absoluteMaximalSlopeOfPositiveSingletons
     (V : AdelicVectorBundle S)
-    [hpos : S.HasPositiveAtoms] [hgeo : S.HasOnlyFinitePlaces]
-    [hS : S.HasMeasurableBase]
+    [hpos : S.HasPositiveSingletons] [hgeo : S.HasOnlyFinitePlaces]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     V.maximalSlope ≤
-      V.toNormFamily.absoluteMaximalSlopeOfPositiveAtoms := by
+      V.toNormFamily.absoluteMaximalSlopeOfPositiveSingletons := by
   apply V.maximalSlope_le
   intro A hA
   have hr : Module.finrank (AlgebraicClosure K) (A.baseChange (AlgebraicClosure K)) =
@@ -115,21 +115,21 @@ theorem maximalSlope_le_absoluteMaximalSlopeOfPositiveAtoms
     (Submodule.toBaseChange.toLinearEquiv (AlgebraicClosure K) A).finrank_eq.symm.trans
       Module.finrank_baseChange
   exact (EReal.coe_le_coe_iff.mpr
-    (V.slope_restrict_le_nativeMeanOfPositiveAtoms
+    (V.slope_restrict_le_nativeMeanOfPositiveSingletons
       (L := AlgebraicClosure K) A)).trans
-    (V.toNormFamily.nativeMean_le_absoluteMaximalSlopeOfPositiveAtoms
+    (V.toNormFamily.nativeMean_le_absoluteMaximalSlopeOfPositiveSingletons
       (A.baseChange (AlgebraicClosure K)) (hr.symm ▸ hA))
 
 /-- Every actual original restricted degree is bounded by the geometric absolute degree. -/
-theorem degree_restrict_le_absolutePositiveDegreeOfPositiveAtoms
+theorem degree_restrict_le_absolutePositiveDegreeOfPositiveSingletons
     (V : AdelicVectorBundle S)
-    [hpos : S.HasPositiveAtoms] [hgeo : S.HasOnlyFinitePlaces]
-    [hS : S.HasMeasurableBase]
+    [hpos : S.HasPositiveSingletons] [hgeo : S.HasOnlyFinitePlaces]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (A : Submodule K V) :
-    ((V.restrictOfMeasurableBase A).degree : EReal) ≤
-      V.toNormFamily.absolutePositiveDegreeOfPositiveAtoms :=
+    ((V.restrictOfNormMeasurability A).degree : EReal) ≤
+      V.toNormFamily.absolutePositiveDegreeOfPositiveSingletons :=
   (V.degree_restrict_le_positiveDegree A).trans
-    (V.positiveDegree_le_absolutePositiveDegreeOfPositiveAtoms)
+    (V.positiveDegree_le_absolutePositiveDegreeOfPositiveSingletons)
 
 end ArakelovGeometry.AdelicVectorBundle

@@ -133,8 +133,8 @@ theorem hermitianScalarExtension_norm_of_infinite (x : S.ParameterSpaceExtension
   simp only [dite_eq_left hx]
 
 /-- The Hermitian extension is ultrametric at all finite extending places. -/
-theorem hermitianScalarExtension_isUltrametric :
-    (hermitianScalarExtension (L := L) ξ).IsUltrametric := by
+theorem hermitianScalarExtension_isUltrametricAtFinitePlaces :
+    (hermitianScalarExtension (L := L) ξ).IsUltrametricAtFinitePlaces := by
   constructor
   intro x hx z t
   change S.ParameterSpaceExtension L at x
@@ -143,14 +143,14 @@ theorem hermitianScalarExtension_isUltrametric :
     max ((hermitianScalarExtension ξ).norm x z)
       ((hermitianScalarExtension ξ).norm x t)
   simp only [hermitianScalarExtension_norm_of_finite ξ x hx]
-  exact ξ.injectiveScalarExtension_isUltrametric x hx z t
+  exact ξ.injectiveScalarExtension_isUltrametricAtFinitePlaces x hx z t
 
 /-- The scalar-extended family is Hermitian for its actual completed
 norms and the given usual Archimedean normalizations. -/
 theorem hermitianScalarExtension_isHermitian :
     (hermitianScalarExtension (L := L) ξ).IsHermitian := by
   classical
-  refine ⟨hermitianScalarExtension_isUltrametric ξ, fun x hx => ?_⟩
+  refine ⟨hermitianScalarExtension_isUltrametricAtFinitePlaces ξ, fun x hx => ?_⟩
   change S.ParameterSpaceExtension L at x
   let := hS x.base ((scalarExtension_mem_Ωinf_iff x).mp hx)
   let := IsRCLikeNormedField.rclike (S.ϕ x.base).Completion

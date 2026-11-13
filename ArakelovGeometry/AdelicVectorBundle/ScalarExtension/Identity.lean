@@ -189,7 +189,7 @@ theorem scalarExtension_self
 
 /-- An ultrametric norm family is unchanged by the identity scalar
 extension, with the actual usual Archimedean normalization explicit. -/
-theorem scalarExtension_self_of_isUltrametric [hξ : ξ.IsUltrametric]
+theorem scalarExtension_self_of_isUltrametricAtFinitePlaces [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hS : S.IsArchimedeanNormalized] (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K] (K ⊗[K] E)) :
     (ξ.scalarExtension (L := K)).norm (scalarExtensionIdentityPlace S ω) z =

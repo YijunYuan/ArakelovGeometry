@@ -64,7 +64,7 @@ instance fullLatticeGaugeFamily_isHermitian
     [hη : η.IsHermitian] :
     (fullLatticeGaugeFamily L hfg hspan η).IsHermitian
       := by
-  refine ⟨fullLatticeGaugeFamily_isUltrametric L hfg hspan η, ?_⟩
+  refine ⟨fullLatticeGaugeFamily_isUltrametricAtFinitePlaces L hfg hspan η, ?_⟩
   intro ω hω
   obtain ⟨c, hc⟩ := hη.2 ω hω
   refine ⟨c, fun z => ?_⟩
@@ -122,7 +122,7 @@ theorem fullLatticeGaugeFamily_finite_integral_neg_log_basis
       -(fullLatticeGaugeFamily L hfg hspan η).determinant.logNorm
         (exteriorPower.ιMulti K _ b) ω) (normalizedNumberFieldAdelicStructure K).Ωfin
           (normalizedNumberFieldAdelicStructure K).v :=
-    ((V.determinantOfMeasurableBase
+    ((V.determinantOfNormMeasurability
    ).integrable_logNorm
       (exteriorPower.ιMulti K _ b)).neg.integrableOn
   rw [normalized_finite_integral_eq_tsum _ hint,
@@ -155,7 +155,7 @@ theorem fullLatticeAdelicBundle_degree_eq_index_sub_integral
     exact one_ne_zero h
   rw [V.degree_eq_neg_integral
     ⟨_, hu⟩]
-  have hint := (V.determinantOfMeasurableBase
+  have hint := (V.determinantOfNormMeasurability
    ).integrable_logNorm
       (exteriorPower.ιMulti K _ b)
   have hsplit := integral_add_compl (normalizedNumberFieldAdelicStructure K).measurableSet_Ωinf

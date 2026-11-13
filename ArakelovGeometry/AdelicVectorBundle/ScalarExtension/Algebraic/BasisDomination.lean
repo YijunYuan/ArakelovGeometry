@@ -114,7 +114,7 @@ theorem ofBasis_norm_le_mul_of_transition_coefficients_le
   · constructor
     intro t ht x y
     simpa only [ofBasisMixed_norm_of_finite b t ht] using
-      ofBasisMixed_isUltrametric b t ht x y
+      ofBasisMixed_isUltrametricAtFinitePlaces b t ht x y
   · intro i
     rw [Module.Basis.baseChange_apply, ofBasis_norm_rational]
     apply (pi_norm_le_iff_of_nonneg hC).mpr

@@ -137,7 +137,7 @@ theorem ofBasis_isHermitian_of_all_finite (b : Module.Basis m K E)
     exact (ofBasisMixed_norm_of_finite b ω (hfin ω) z).symm
   refine ⟨?_, fun ω hω ↦ False.elim (hω (hfin ω))⟩
   rw [he]
-  exact ofBasisMixed_isUltrametric b
+  exact ofBasisMixed_isUltrametricAtFinitePlaces b
 
 omit hS in
 /-- The actual completed restriction norms use fixed rational coordinate bases

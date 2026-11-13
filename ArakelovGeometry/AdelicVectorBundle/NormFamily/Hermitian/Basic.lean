@@ -46,7 +46,7 @@ module structure of the completed fibre. -/
 class IsHermitian (ξ : NormFamily S E)
     [hS : S.IsArchimedeanNormalized] : Prop where
   /-- Ultrametricity at finite places. -/
-  isUltrametric : ξ.IsUltrametric
+  isUltrametricAtFinitePlaces : ξ.IsUltrametricAtFinitePlaces
   /-- An inner-product core inducing each infinite-place norm. -/
   exists_innerProduct : ∀ ω (hω : ω ∈ S.Ωinf),
     letI := hS ω hω
@@ -54,7 +54,7 @@ class IsHermitian (ξ : NormFamily S E)
     ∃ c : InnerProductSpace.Core (S.ϕ ω).Completion ((S.ϕ ω).Completion ⊗[K] E),
       ∀ x, (ξ.norm ω x) ^ 2 = RCLike.re (c.inner x x)
 
-attribute [instance] IsHermitian.isUltrametric
+attribute [instance] IsHermitian.isUltrametricAtFinitePlaces
 
 variable {ξ : NormFamily S E}
   [hS : S.IsArchimedeanNormalized]
@@ -77,7 +77,7 @@ theorem IsHermitian.exists_innerProduct_norm_eq_sqrt (hξ : ξ.IsHermitian)
 The reverse implication constructs positive definite inner products by
 polarization, without changing the scalar action. -/
 theorem isHermitian_iff_parallelogram : ξ.IsHermitian ↔
-    ξ.IsUltrametric ∧ ∀ ω ∈ S.Ωinf, ∀ x y,
+    ξ.IsUltrametricAtFinitePlaces ∧ ∀ ω ∈ S.Ωinf, ∀ x y,
       ξ.norm ω (x + y) * ξ.norm ω (x + y) +
         ξ.norm ω (x - y) * ξ.norm ω (x - y) =
       2 * (ξ.norm ω x * ξ.norm ω x + ξ.norm ω y * ξ.norm ω y) := by
@@ -138,7 +138,7 @@ At infinite places, the operator norm is transported from the continuous dual,
 whose parallelogram law follows from the Riesz isometry. -/
 theorem IsHermitian.dual [FiniteDimensional K E] (hξ : ξ.IsHermitian) :
     ξ.dual.IsHermitian := by
-  refine ⟨ξ.dual_isUltrametric, fun ω hω => ?_⟩
+  refine ⟨ξ.dual_isUltrametricAtFinitePlaces, fun ω hω => ?_⟩
   let := hS ω hω
   let := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
   let := ξ.fibreNormedAddCommGroup ω

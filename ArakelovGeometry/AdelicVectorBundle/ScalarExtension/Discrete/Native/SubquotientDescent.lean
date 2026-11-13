@@ -57,8 +57,8 @@ abbrev NativeSubquotientRankDegreeEq
       (hdet := V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase_determinant_isMeasurable
         B T)
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
-      (((V.scalarExtensionOfCountableDiscreteBase (L := F)).restrictOfMeasurableBase
-        Q).quotientOfMeasurableBase
+      (((V.scalarExtensionOfCountableDiscreteBase (L := F)).restrictOfNormMeasurability
+        Q).quotientOfNormMeasurability
         (P.comap Q.subtype)).degree
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩)
 

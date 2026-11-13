@@ -35,16 +35,16 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
 /-- Apply the actual universal strong property to the genuine HN restricted
 bundle and compare its produced rank with the original rank. Finite-place
 ultrametricity is required, as in the predicate, and the zero cut is allowed. -/
-theorem coe_sub_log_rank_le_minimalLogarithmicMinimum_restrict_generalHNFiltration
-    (V : AdelicVectorBundle.{w} S) [hV : V.toNormFamily.IsUltrametric]
-    [hS : S.HasMeasurableBase]
+theorem coe_sub_log_rank_le_minimalLogarithmicMinimum_restrict_hnFiltration
+    (V : AdelicVectorBundle.{w} S) [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} C) (t : ℝ) :
     ((t - C * Real.log (Module.finrank K V) : ℝ) : EReal) ≤
       minimalLogarithmicMinimum
-        (V.restrictOfMeasurableBase (V.generalHNFiltration t)) := by
-  let U := V.generalHNFiltration t
-  let R := V.restrictOfMeasurableBase U
+        (V.restrictOfNormMeasurability (V.hnFiltration t)) := by
+  let U := V.hnFiltration t
+  let R := V.restrictOfNormMeasurability U
   by_cases hU : U = ⊥
   · have hr : Module.finrank K U = 0 := by rw [hU, finrank_bot]
     rw [R.minimalLogarithmicMinimum_eq_top_of_finrank_eq_zero hr]
@@ -56,24 +56,24 @@ theorem coe_sub_log_rank_le_minimalLogarithmicMinimum_restrict_generalHNFiltrati
       (Nat.cast_le.mpr U.finrank_le)
     have hc := mul_le_mul_of_nonneg_left hlog hM.1
     rw [EReal.coe_sub]
-    exact (EReal.sub_le_sub (V.le_minimalSlope_restrict_generalHNFiltration t)
+    exact (EReal.sub_le_sub (V.le_minimalSlope_restrict_hnFiltration t)
       (EReal.coe_le_coe hc)).trans hstrong
 
 /-- Corrected source Proposition4.3.80's actual filtration shift. Its finite
 place admissibility is visible, and the universal property produces the
 restricted last-minimum bound rather than assuming target containment. -/
-theorem generalHNFiltration_le_minimaFiltration_sub_log_rank
-    (V : AdelicVectorBundle.{w} S) [hV : V.toNormFamily.IsUltrametric]
-    [hS : S.HasMeasurableBase]
+theorem hnFiltration_le_minimaFiltration_sub_log_rank
+    (V : AdelicVectorBundle.{w} S) [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} C) (t : ℝ) :
-    V.generalHNFiltration t ≤
+    V.hnFiltration t ≤
       V.minimaFiltration (t - C * Real.log (Module.finrank K V)) := by
-  let U := V.generalHNFiltration t
-  let R := V.restrictOfMeasurableBase U
+  let U := V.hnFiltration t
+  let R := V.restrictOfNormMeasurability U
   let a := t - C * Real.log (Module.finrank K V)
   have htop : R.minimaFiltration a = ⊤ := (R.minimaFiltration_eq_top_iff a).mpr
-    (V.coe_sub_log_rank_le_minimalLogarithmicMinimum_restrict_generalHNFiltration hM t)
+    (V.coe_sub_log_rank_le_minimalLogarithmicMinimum_restrict_hnFiltration hM t)
   have hm := V.minimaFiltration_restrict_map_le U a
   rw [htop, Submodule.map_subtype_top] at hm
   exact hm
@@ -81,17 +81,17 @@ theorem generalHNFiltration_le_minimaFiltration_sub_log_rank
 /-- Corrected source Proposition4.3.80 on each valid source index `j.val+1`.
 Actual HN rank-cut attainment and the produced filtration shift give the
 converse bound, without assuming logarithmic-minimum attainment or finiteness. -/
-theorem generalHNOrderedSlope_le_logarithmicMinimum_add_log_rank
-    (V : AdelicVectorBundle.{w} S) [hV : V.toNormFamily.IsUltrametric]
-    [hS : S.HasMeasurableBase]
+theorem hnSlope_le_logarithmicMinimum_add_log_rank
+    (V : AdelicVectorBundle.{w} S) [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     {C : ℝ} (hM : S.HasStrongMinkowskiPropertyAtLevel.{u, v, w} C)
     (j : Fin (Module.finrank K V)) :
-    (V.generalHNOrderedSlope j : EReal) ≤ V.logarithmicMinimum (j.val + 1) +
+    (V.hnSlope j : EReal) ≤ V.logarithmicMinimum (j.val + 1) +
       (C * Real.log (Module.finrank K V) : ℝ) := by
-  let t := V.generalHNOrderedSlope j
-  have hr := (V.lt_finrank_generalHNFiltration_orderedSlope j).trans_le
-    (Submodule.finrank_mono (V.generalHNFiltration_le_minimaFiltration_sub_log_rank hM t))
+  let t := V.hnSlope j
+  have hr := (V.lt_finrank_hnFiltration_orderedSlope j).trans_le
+    (Submodule.finrank_mono (V.hnFiltration_le_minimaFiltration_sub_log_rank hM t))
   have hm := (V.le_finrank_minimaFiltration_iff (j.val + 1)
     (t - C * Real.log (Module.finrank K V))).mp (Nat.succ_le_of_lt hr)
   rw [EReal.coe_sub] at hm

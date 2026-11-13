@@ -34,7 +34,7 @@ variable {K : Type*} [Field K] [NumberField K]
   {E : Type*} [AddCommGroup E] [Module K E]
 
 variable (ξ η : NormFamily (numberFieldAdelicStructure K) E)
-  [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric]
+  [hξ : ξ.IsUltrametricAtFinitePlaces] [hη : η.IsUltrametricAtFinitePlaces]
 
 /-- Logarithmic norms transport on the whole actual completed fibre, including zero. -/
 theorem numberFieldNormalize_log_norm_map

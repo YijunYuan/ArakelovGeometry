@@ -51,14 +51,14 @@ private theorem scalarBasisFamily_norm_rational (ω : S.Ω) (a : K) :
     simpa only [smul_eq_mul, mul_one] using h
   exact ha.trans ((congrArg (fun r : ℝ => S.ϕ ω a * r) hunit).trans (mul_one _))
 
-private theorem scalarBasisFamily_isUltrametric :
-    (scalarBasisFamily (S := S)).IsUltrametric := by
+private theorem scalarBasisFamily_isUltrametricAtFinitePlaces :
+    (scalarBasisFamily (S := S)).IsUltrametricAtFinitePlaces := by
   constructor
   intro ω hω x y
   change (ofBasis S K (Module.Basis.singleton PUnit.{1} K)).norm ω (x + y) ≤
     max ((ofBasis S K (Module.Basis.singleton PUnit.{1} K)).norm ω x)
       ((ofBasis S K (Module.Basis.singleton PUnit.{1} K)).norm ω y)
-  have h := ofBasisMixed_isUltrametric (S := S)
+  have h := ofBasisMixed_isUltrametricAtFinitePlaces (S := S)
     (Module.Basis.singleton PUnit.{1} K) ω hω x y
   simpa only [ofBasisMixed_norm_of_finite (Module.Basis.singleton PUnit.{1} K) ω hω] using h
 
@@ -92,10 +92,10 @@ theorem dualCoefficientFamily_logNorm
 
 /-- Actual finite coefficient norms are ultrametric, independently of the
 ultrametricity of the original norm family. -/
-instance dualCoefficientFamily_isUltrametric
+instance dualCoefficientFamily_isUltrametricAtFinitePlaces
     (ξ : NormFamily S E) (ℓ : Module.Dual K E) (hℓ : ℓ ≠ 0) :
-    (ξ.dualCoefficientFamily ℓ hℓ).IsUltrametric :=
-  (scale_isUltrametric_iff _ _ _).mpr scalarBasisFamily_isUltrametric
+    (ξ.dualCoefficientFamily ℓ hℓ).IsUltrametricAtFinitePlaces :=
+  (scale_isUltrametricAtFinitePlaces_iff _ _ _).mpr scalarBasisFamily_isUltrametricAtFinitePlaces
 
 /-- Upper domination of the genuine dual produces lower domination of every
 actual nonzero-functional coefficient family. -/
@@ -147,7 +147,8 @@ def normalizedBasisCoefficientModule {ι : Type*}
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
     (b : Module.Basis ι K E) (i : ι) : Submodule (𝓞 K) K :=
   (ξ.dualCoefficientFamily (b.coord i) (basisCoordinate_ne_zero b i)).globalUnitBallModule
-    (hξ := (ξ.dualCoefficientFamily_isUltrametric (b.coord i) (basisCoordinate_ne_zero b i)))
+    (hξ := (ξ.dualCoefficientFamily_isUltrametricAtFinitePlaces (b.coord i)
+      (basisCoordinate_ne_zero b i)))
 
 /-- Actual dual upper domination and the native arithmetic rank-one theorem
 produce finite generation of each basis coefficient module. -/
@@ -162,7 +163,7 @@ theorem IsUpperDominated.fg_normalizedBasisCoefficientModule {ι : Type*}
 /-- The actual global unit-ball module maps linearly into the actual finite
 product of its dual-basis coefficient modules. -/
 def normalizedGlobalCoefficientEmbedding {ι : Type*}
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (b : Module.Basis ι K E) :
     ξ.globalUnitBallModule →ₗ[𝓞 K] (∀ i, ξ.normalizedBasisCoefficientModule b i) where
   toFun x i := ⟨b.coord i x.1,
@@ -183,7 +184,7 @@ def normalizedGlobalCoefficientEmbedding {ι : Type*}
 
 /-- Equality of all actual basis coefficients forces equality of global vectors. -/
 theorem normalizedGlobalCoefficientEmbedding_injective {ι : Type*}
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (b : Module.Basis ι K E) :
     Function.Injective (ξ.normalizedGlobalCoefficientEmbedding b) := by
   intro x y h
@@ -196,7 +197,8 @@ theorem normalizedGlobalCoefficientEmbedding_injective {ι : Type*}
 of produced finite modules, so Noetherianity gives actual global finite generation. -/
 theorem IsUpperDominated.fg_normalizedGlobalUnitBallModule_of_basis {ι : Type*} [Finite ι]
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hdual : ξ.dual.IsUpperDominated) (hξ : ξ.IsUltrametric) (b : Module.Basis ι K E) :
+    (hdual : ξ.dual.IsUpperDominated) (hξ : ξ.IsUltrametricAtFinitePlaces)
+      (b : Module.Basis ι K E) :
     (ξ.globalUnitBallModule).FG := by
   let : ∀ i, Module.Finite (𝓞 K) (ξ.normalizedBasisCoefficientModule b i) :=
     fun i => Module.Finite.iff_fg.mpr (hdual.fg_normalizedBasisCoefficientModule b i)
@@ -210,7 +212,7 @@ the literal global integral unit-ball module of a dominated finite-dimensional
 family is finitely generated, without assuming coherence or spanning. -/
 theorem IsDominated.fg_normalizedGlobalUnitBallModule
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hdom : ξ.IsDominated) (hξ : ξ.IsUltrametric) : (ξ.globalUnitBallModule).FG :=
+    (hdom : ξ.IsDominated) (hξ : ξ.IsUltrametricAtFinitePlaces) : (ξ.globalUnitBallModule).FG :=
   hdom.2.fg_normalizedGlobalUnitBallModule_of_basis hξ (Module.finBasis K E)
 
 end ArakelovGeometry.NormFamily

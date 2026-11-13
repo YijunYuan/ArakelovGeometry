@@ -421,7 +421,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 /-- An actual pure finite norm of a nonzero rational vector is attained
 by the actual normalized absolute value of a rational scalar. -/
 theorem exists_normalized_scalar_norm_eq_of_globalImpurity_eq_zero
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (hσ : ξ.globalImpurity = 0) (p : HeightOneSpectrum (𝓞 K)) {x : E} (hx : x ≠ 0) :
     ∃ a : K, a ≠ 0 ∧ ξ.norm (normalizedPrimeParameter p) (1 ⊗ₜ[K] x) =
       (normalizedNumberFieldAdelicStructure K).ϕ (normalizedPrimeParameter p) a := by
@@ -457,7 +457,7 @@ theorem exists_normalized_scalar_norm_eq_of_globalImpurity_eq_zero
 /-- The actual coordinate fractional ideal of the literal global ball
 under a field-linear coordinate of the actual line. -/
 def normalizedLineCoordinateIdeal
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (hfg : (ξ.globalUnitBallModule).FG) (e : K ≃ₗ[K] E) :
     FractionalIdeal (𝓞 K)⁰ K :=
   ⟨(ξ.globalUnitBallModule).map (e.symm.toLinearMap.restrictScalars (𝓞 K)),
@@ -465,7 +465,7 @@ def normalizedLineCoordinateIdeal
 
 omit [FiniteDimensional K E] in
 theorem mem_normalizedLineCoordinateIdeal
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (hfg : (ξ.globalUnitBallModule).FG) (e : K ≃ₗ[K] E) (a : K) :
     a ∈ ξ.normalizedLineCoordinateIdeal hfg e ↔ e a ∈ ξ.globalUnitBall := by
   change a ∈ (ξ.globalUnitBallModule).map
@@ -479,7 +479,7 @@ theorem mem_normalizedLineCoordinateIdeal
 
 omit [FiniteDimensional K E] in
 theorem normalizedLineCoordinateIdeal_ne_zero
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hfinite : ξ.HasFiniteNormExceptions] (hfg : (ξ.globalUnitBallModule).FG)
     (e : K ≃ₗ[K] E) : ξ.normalizedLineCoordinateIdeal hfg e ≠ 0 := by
   obtain ⟨a, ha, hax⟩ := hfinite.exists_integral_smul_mem_globalUnitBall
@@ -496,7 +496,7 @@ theorem normalizedLineCoordinateIdeal_ne_zero
 /-- Pure finite norms and genuine coherence recover the prime order of
 the actual coordinate ideal of the literal global ball. -/
 theorem normalizedLineCoordinateIdeal_logNorm_one
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hfinite : ξ.HasFiniteNormExceptions] (hfg : (ξ.globalUnitBallModule).FG)
     (hσ : ξ.globalImpurity = 0) (e : K ≃ₗ[K] E) (p : HeightOneSpectrum (𝓞 K)) :
     ξ.logNorm (e 1) (normalizedPrimeParameter p) =
@@ -545,7 +545,7 @@ theorem normalizedLineCoordinateIdeal_logNorm_one
 /-- On a genuine pure coherent line, the finite logarithmic norm of an
 actual nonzero vector reads the actual coordinate-ideal prime order. -/
 theorem normalizedLineCoordinateIdeal_logNorm
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hfinite : ξ.HasFiniteNormExceptions] (hfg : (ξ.globalUnitBallModule).FG)
     (hσ : ξ.globalImpurity = 0) (e : K ≃ₗ[K] E) (p : HeightOneSpectrum (𝓞 K))
     {x : E} (hx : x ≠ 0) :
@@ -564,7 +564,7 @@ theorem normalizedLineCoordinateIdeal_logNorm
 /-- The actual normalized finite-place sum of minus log norms equals
 the logarithm of the literal global-ball cyclic quotient index. -/
 theorem normalizedLineGlobalUnitBall_finite_log_index
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hfinite : ξ.HasFiniteNormExceptions] (hfg : (ξ.globalUnitBallModule).FG)
     (hσ : ξ.globalImpurity = 0) (hrank : Module.finrank K E = 1)
     (x : ξ.globalUnitBallModule) (hx : x ≠ 0) :
@@ -597,7 +597,7 @@ theorem normalizedLineGlobalUnitBall_finite_log_index
 /-- The finite-locus integral of the actual completed logarithmic norms
 is the literal cyclic quotient index; purity is used only at finite places. -/
 theorem normalizedLineGlobalUnitBall_finite_integral_log_index
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hfinite : ξ.HasFiniteNormExceptions] [hdom : ξ.IsDominated] [hm : ξ.IsMeasurable]
     (hσ : ξ.globalImpurity = 0) (hrank : Module.finrank K E = 1)
     (x : ξ.globalUnitBallModule) (hx : x ≠ 0) :
@@ -637,7 +637,7 @@ theorem normalizedLineGlobalUnitBall_finite_integral_log_index
 /-- The genuine vector degree on an actual pure coherent line separates
 into the actual finite cyclic index and the actual infinite-locus integral. -/
 theorem normalizedLineGlobalUnitBall_vectorDegree
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hfinite : ξ.HasFiniteNormExceptions] [hdom : ξ.IsDominated] [hm : ξ.IsMeasurable]
     (hσ : ξ.globalImpurity = 0) (hrank : Module.finrank K E = 1)
     (x : ξ.globalUnitBallModule) (hx : x ≠ 0) :

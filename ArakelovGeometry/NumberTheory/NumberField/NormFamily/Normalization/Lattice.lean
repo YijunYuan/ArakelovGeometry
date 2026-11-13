@@ -95,7 +95,7 @@ theorem normalizedCompletedLocalRingEquiv_coe
 
 namespace NormFamily
 
-variable (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+variable (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
 
 /-- The canonical actual tensor map preserves and reflects the completed unit ball. -/
 theorem numberFieldNormalize_mem_completedUnitBall_map_iff
@@ -129,7 +129,7 @@ def numberFieldNormalizeCompletedUnitBallEquiv
     (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) :
     ξ.completedUnitBallModule ω.val (normalizedPlace_mem_old_fin ω hω) ≃+
       (ξ.numberFieldNormalize).completedUnitBallModule ω hω
-        (hξ := (ξ.numberFieldNormalize_isUltrametric)) := by
+        (hξ := (ξ.numberFieldNormalize_isUltrametricAtFinitePlaces)) := by
   let T := normalizedNormFamilyTensorEquiv (E := E) ω
   refine
     { toFun := fun z => ⟨T z.val,

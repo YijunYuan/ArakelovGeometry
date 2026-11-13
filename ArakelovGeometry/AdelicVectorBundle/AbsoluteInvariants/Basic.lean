@@ -133,7 +133,7 @@ theorem maximalSlope_le_absoluteMaximalSlope (V : AdelicVectorBundle S)
 theorem degree_restrict_le_absolutePositiveDegree (V : AdelicVectorBundle S)
     [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] (A : Submodule K V) :
-    ((V.restrictOfMeasurableBase A).degree : EReal) ≤
+    ((V.restrictOfNormMeasurability A).degree : EReal) ≤
       V.absolutePositiveDegree :=
   (V.degree_restrict_le_positiveDegree A).trans
     (V.positiveDegree_le_absolutePositiveDegree)

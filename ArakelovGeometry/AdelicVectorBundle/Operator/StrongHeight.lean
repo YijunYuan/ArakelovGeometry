@@ -168,7 +168,7 @@ give an integrable local map height. -/
 theorem IsStronglyDominated.integrable_localHeight {ξ : NormFamily S E} {η : NormFamily S F}
     (hξ : ξ.IsStronglyDominated) (hη : η.IsStronglyDominated)
     (hmξ : ξ.IsMeasurable) (hmη : η.IsMeasurable)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     (hfin : S.v S.Ωinf < ⊤) (f : {f : E →ₗ[K] F // f ≠ 0}) :
     Integrable (ξ.localHeight η f) S.v :=
   (hξ.localHeight_bounds hη hfin f).integrable
@@ -190,7 +190,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 adelic bundles. Normalization proves the required finite Archimedean measure. -/
 theorem integrable_localHeight_of_isStronglyAdelic (V : AdelicVectorBundle S)
     (W : AdelicVectorBundle S) [hV : V.IsStronglyAdelic] [hW : W.IsStronglyAdelic]
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (f : {f : V →ₗ[K] W // f ≠ 0}) :
     Integrable (V.toNormFamily.localHeight W.toNormFamily f) S.v :=
@@ -201,7 +201,7 @@ theorem integrable_localHeight_of_isStronglyAdelic (V : AdelicVectorBundle S)
 nonzero map between strongly adelic bundles. -/
 theorem mapHeight_eq_integral_of_isStronglyAdelic (V : AdelicVectorBundle S)
     (W : AdelicVectorBundle S) [hV : V.IsStronglyAdelic] [hW : W.IsStronglyAdelic]
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     {f : V →ₗ[K] W} (hf : f ≠ 0) :
     V.mapHeight W f = ((∫ ω, V.toNormFamily.localHeight W.toNormFamily ⟨f, hf⟩ ω ∂S.v) : ℝ) :=

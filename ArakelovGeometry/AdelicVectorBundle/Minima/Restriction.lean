@@ -34,11 +34,11 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Actual vector degrees agree under the genuine completed restriction norm. -/
-theorem vectorDegree_restrictOfMeasurableBase (V : AdelicVectorBundle S)
+theorem vectorDegree_restrictOfNormMeasurability (V : AdelicVectorBundle S)
     (U : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     (s : {x : U // x ≠ 0}) :
-    (V.restrictOfMeasurableBase U).vectorDegree s =
+    (V.restrictOfNormMeasurability U).vectorDegree s =
       V.vectorDegree ⟨s.val.val, by
         intro h
         exact s.property (Subtype.ext h)⟩ := by
@@ -46,16 +46,16 @@ theorem vectorDegree_restrictOfMeasurableBase (V : AdelicVectorBundle S)
 
 /-- Independent high-degree vectors in a genuine restriction remain such
 vectors in the ambient bundle, hence bound each ordinary minimum. -/
-theorem logarithmicMinimum_restrictOfMeasurableBase_le (V : AdelicVectorBundle S)
+theorem logarithmicMinimum_restrictOfNormMeasurability_le (V : AdelicVectorBundle S)
     (U : Submodule K V)
-    [hS : S.HasMeasurableBase] (i : ℕ) :
-    (V.restrictOfMeasurableBase U).logarithmicMinimum i ≤ V.logarithmicMinimum i := by
+    [hS : S.NormMeasurabilityHypotheses] (i : ℕ) :
+    (V.restrictOfNormMeasurability U).logarithmicMinimum i ≤ V.logarithmicMinimum i := by
   apply iSup_le
   intro t
   apply iSup_le
   intro ht
   obtain ⟨s, hli, hs⟩ :=
-    ((V.restrictOfMeasurableBase U).le_finrank_degreeThresholdSpan_iff i t).mp ht
+    ((V.restrictOfNormMeasurability U).le_finrank_degreeThresholdSpan_iff i t).mp ht
   let g : Fin i → {x : V // x ≠ 0} := fun j => ⟨(s j).val.val, by
     intro h
     exact (s j).property (Subtype.ext h)⟩
@@ -68,10 +68,10 @@ theorem logarithmicMinimum_restrictOfMeasurableBase_le (V : AdelicVectorBundle S
 rank-index subspaces. Natural index zero and above-rank cases are auxiliary. -/
 theorem logarithmicMinimum_eq_iSup_restrict_minimalLogarithmicMinimum
     (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase] (i : ℕ) :
+    [hS : S.NormMeasurabilityHypotheses] (i : ℕ) :
     V.logarithmicMinimum i =
       ⨆ (U : Submodule K V) (_ : Module.finrank K U = i),
-        (V.restrictOfMeasurableBase U).minimalLogarithmicMinimum := by
+        (V.restrictOfNormMeasurability U).minimalLogarithmicMinimum := by
   classical
   apply le_antisymm
   · apply iSup_le
@@ -86,14 +86,14 @@ theorem logarithmicMinimum_eq_iSup_restrict_minimalLogarithmicMinimum
     let f : Fin i → {x : U // x ≠ 0} := fun j => ⟨g j, by
       intro h
       exact (s j).property (congrArg Subtype.val h)⟩
-    have hf : ∀ j, t ≤ (V.restrictOfMeasurableBase U).vectorDegree (f j) := by
+    have hf : ∀ j, t ≤ (V.restrictOfNormMeasurability U).vectorDegree (f j) := by
       intro j
-      rw [V.vectorDegree_restrictOfMeasurableBase U]
+      rw [V.vectorDegree_restrictOfNormMeasurability U]
       exact hs j
-    have hb := (V.restrictOfMeasurableBase U).coe_le_logarithmicMinimum_of_linearIndependent
+    have hb := (V.restrictOfNormMeasurability U).coe_le_logarithmicMinimum_of_linearIndependent
       f hliU hf
-    have hbmin : (t : EReal) ≤ (V.restrictOfMeasurableBase U).minimalLogarithmicMinimum := by
-      change (t : EReal) ≤ (V.restrictOfMeasurableBase U).logarithmicMinimum
+    have hbmin : (t : EReal) ≤ (V.restrictOfNormMeasurability U).minimalLogarithmicMinimum := by
+      change (t : EReal) ≤ (V.restrictOfNormMeasurability U).logarithmicMinimum
         (Module.finrank K U)
       rw [hr]
       exact hb
@@ -102,30 +102,30 @@ theorem logarithmicMinimum_eq_iSup_restrict_minimalLogarithmicMinimum
     intro U
     apply iSup_le
     intro hU
-    change (V.restrictOfMeasurableBase U).logarithmicMinimum (Module.finrank K U) ≤ _
+    change (V.restrictOfNormMeasurability U).logarithmicMinimum (Module.finrank K U) ≤ _
     rw [hU]
-    exact V.logarithmicMinimum_restrictOfMeasurableBase_le U i
+    exact V.logarithmicMinimum_restrictOfNormMeasurability_le U i
 
 /-- The first ordinary minimum is the supremum over genuine restricted lines. -/
 theorem maximalLogarithmicMinimum_eq_iSup_restrict_lines (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase] :
+    [hS : S.NormMeasurabilityHypotheses] :
     V.maximalLogarithmicMinimum =
       ⨆ (U : Submodule K V) (_ : Module.finrank K U = 1),
-        (V.restrictOfMeasurableBase U).minimalLogarithmicMinimum :=
+        (V.restrictOfNormMeasurability U).minimalLogarithmicMinimum :=
   V.logarithmicMinimum_eq_iSup_restrict_minimalLogarithmicMinimum 1
 
 /-- The actual full restriction has the ambient last minimum, including rank zero. -/
 theorem minimalLogarithmicMinimum_restrict_top (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase] :
-    (V.restrictOfMeasurableBase ⊤).minimalLogarithmicMinimum =
+    [hS : S.NormMeasurabilityHypotheses] :
+    (V.restrictOfNormMeasurability ⊤).minimalLogarithmicMinimum =
       V.minimalLogarithmicMinimum := by
   apply le_antisymm
-  · change (V.restrictOfMeasurableBase ⊤).logarithmicMinimum
+  · change (V.restrictOfNormMeasurability ⊤).logarithmicMinimum
       (Module.finrank K (⊤ : Submodule K V)) ≤ V.logarithmicMinimum (Module.finrank K V)
     rw [finrank_top]
-    exact V.logarithmicMinimum_restrictOfMeasurableBase_le ⊤ (Module.finrank K V)
+    exact V.logarithmicMinimum_restrictOfNormMeasurability_le ⊤ (Module.finrank K V)
   · change V.logarithmicMinimum (Module.finrank K V) ≤
-      (V.restrictOfMeasurableBase ⊤).minimalLogarithmicMinimum
+      (V.restrictOfNormMeasurability ⊤).minimalLogarithmicMinimum
     rw [V.logarithmicMinimum_eq_iSup_restrict_minimalLogarithmicMinimum]
     apply iSup_le
     intro U

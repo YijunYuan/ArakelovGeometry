@@ -50,9 +50,9 @@ namespace IsDominated
 
 /-- Finite descent produces the actual restricted determinant measurability,
 without passing to a quotient-space proxy. -/
-theorem scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+theorem scalarExtension_restrict_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
     (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (A : Submodule L (L ⊗[K] E)) :
     ((ξ.scalarExtension (L := L)).restrict A).determinant.IsMeasurable := by
   obtain ⟨F, _, B, _, _, he⟩ := ξ.exists_complexFiniteStage_restriction_isometries
@@ -62,7 +62,7 @@ theorem scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms_of_i
   let η := η₀.scalarExtension (L := L)
   let θ := (ξ.scalarExtension (L := L)).restrict A
   have hm₀ : η₀.determinant.IsMeasurable :=
-    hξ.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms ξ (B 0)
+    hξ.scalarExtension_restrict_determinant_isMeasurable_of_pos_singletons ξ (B 0)
   have hm : η.determinant.IsMeasurable := hm₀.determinant_scalarExtension
   have ht : (θ.towerPullback F.toIntermediateField).determinant.IsMeasurable :=
     η.determinant_isMeasurable_of_completed_isometry
@@ -76,41 +76,43 @@ variable [S.IsProper]
 
 /-- The canonical measurable-determinant degree of the actual native
 restriction bundle on the literal subspace. -/
-def nativeAlgebraicRestrictionDegreeOfPositiveAtoms (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+def nativeAlgebraicRestrictionDegreeOfPositiveSingletons (ξ : NormFamily S E) [hξ : ξ.IsDominated]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (A : Submodule L (L ⊗[K] E)) : ℝ :=
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-  (ξ.nativeAlgebraicRestrictionOfPositiveAtoms A).degreeOfMeasurableDeterminant
-    (hdet := (hξ.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+  (ξ.nativeAlgebraicRestrictionOfPositiveSingletons A).degreeOfMeasurableDeterminant
+    (hdet :=
+      (hξ.scalarExtension_restrict_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
       ξ A))
     (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension
       (L := L) (hS := ⟨(geometricRestrictionDegree_normalization)⟩))⟩)
 
 /-- Every nonzero actual determinant generator computes the native degree. -/
-theorem nativeAlgebraicRestrictionDegreeOfPositiveAtoms_eq_neg_integral
+theorem nativeAlgebraicRestrictionDegreeOfPositiveSingletons_eq_neg_integral
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (A : Submodule L (L ⊗[K] E))
     (t : ⋀[L]^(Module.finrank L A) A) (ht : t ≠ 0) :
-    ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A =
+    ξ.nativeAlgebraicRestrictionDegreeOfPositiveSingletons A =
       -∫ x, ((ξ.scalarExtension (L := L)).restrict A).determinant.logNorm t x
         ∂(S.algebraicExtension L).v := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   exact AdelicVectorBundle.degreeOfMeasurableDeterminant_eq_neg_integral
-    (ξ.nativeAlgebraicRestrictionOfPositiveAtoms A)
-    (hdet := hξ.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+    (ξ.nativeAlgebraicRestrictionOfPositiveSingletons A)
+    (hdet :=
+      hξ.scalarExtension_restrict_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
       ξ A) ⟨t, ht⟩
 
 /-- The actual empty determinant has norm one, giving zero native degree. -/
-theorem nativeAlgebraicRestrictionDegreeOfPositiveAtoms_eq_zero_of_finrank_eq_zero
+theorem nativeAlgebraicRestrictionDegreeOfPositiveSingletons_eq_zero_of_finrank_eq_zero
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     (A : Submodule L (L ⊗[K] E)) (hr : Module.finrank L A = 0) :
-    ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A = 0 := by
+    ξ.nativeAlgebraicRestrictionDegreeOfPositiveSingletons A = 0 := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-  let W := ξ.nativeAlgebraicRestrictionOfPositiveAtoms A
+  let W := ξ.nativeAlgebraicRestrictionOfPositiveSingletons A
   let hdet : W.toNormFamily.determinant.IsMeasurable :=
-    hξ.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed ξ A
+    hξ.scalarExtension_restrict_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed ξ A
   let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension
     (S := S) (L := L) (hS := ⟨(geometricRestrictionDegree_normalization)⟩)
   change (W.determinant (hm := hdet) (hS := ⟨hLN⟩)).lineDegree (hV := (W.determinant_isLine
@@ -123,23 +125,23 @@ theorem nativeAlgebraicRestrictionDegreeOfPositiveAtoms_eq_zero_of_finrank_eq_ze
 
 /-- One produced integral envelope bounds the actual determinant degree of
 every native subspace, with no extension-place regularity premise. -/
-theorem exists_nativeAlgebraicRestrictionDegreeOfPositiveAtoms_le_rank_mul
+theorem exists_nativeAlgebraicRestrictionDegreeOfPositiveSingletons_le_rank_mul
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces] :
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces] :
     ∃ C : ℝ, ∀ A : Submodule L (L ⊗[K] E),
-      ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A ≤
+      ξ.nativeAlgebraicRestrictionDegreeOfPositiveSingletons A ≤
         (Module.finrank L A : ℝ) * C := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-  let V := ξ.algebraicScalarBundleOfPositiveAtoms (L := L)
+  let V := ξ.algebraicScalarBundleOfPositiveSingletons (L := L)
   let b := Module.finBasis L (L ⊗[K] E)
   let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension
     (S := S) (L := L) (hS := ⟨(geometricRestrictionDegree_normalization)⟩)
   obtain ⟨H, hH, _, hb⟩ :=
     IsDominated.exists_restricted_dual_basis_norm_bound V.toNormFamily b V.isDominated
   refine ⟨∫ x, H x ∂(S.algebraicExtension L).v, fun A => ?_⟩
-  let W := ξ.nativeAlgebraicRestrictionOfPositiveAtoms A
+  let W := ξ.nativeAlgebraicRestrictionOfPositiveSingletons A
   let hdet : W.toNormFamily.determinant.IsMeasurable :=
-    hξ.scalarExtension_restrict_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed ξ A
+    hξ.scalarExtension_restrict_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed ξ A
   let t := determinantGenerator (K := L) (E := A)
   have ht : t ≠ 0 := determinantGenerator_ne_zero
   obtain ⟨s, hs⟩ := exists_restrictedCoordinateDualWedge_pairing_ne_zero b A t ht
@@ -155,8 +157,8 @@ theorem exists_nativeAlgebraicRestrictionDegreeOfPositiveAtoms_le_rank_mul
       intro hi
       exact hi ((AdelicStructure.mem_Ωfin_algebraicExtension_iff x).mpr (hS x.base))
     simpa only [Set.indicator_of_notMem hinf, add_zero, α, V, W,
-      nativeAlgebraicRestrictionOfPositiveAtoms_toNormFamily,
-      algebraicScalarBundleOfPositiveAtoms_toNormFamily] using
+      nativeAlgebraicRestrictionOfPositiveSingletons_toNormFamily,
+      algebraicScalarBundleOfPositiveSingletons_toNormFamily] using
       log_absValue_coordinate_le_logNorm_restrict_determinant
         V.toNormFamily b A s t ht hs (hN := ⟨hLN⟩) x (H x) (hx A)
   have hi := integral_mono_ae ((S.algebraicExtension L).integrable_log α hα)
@@ -164,7 +166,7 @@ theorem exists_nativeAlgebraicRestrictionDegreeOfPositiveAtoms_le_rank_mul
   simp only [Pi.add_apply] at hi
   rw [integral_add hf (hH.const_mul (Module.finrank L A : ℝ)), integral_const_mul,
     AdelicStructure.IsProper.product_formula α hα] at hi
-  rw [ξ.nativeAlgebraicRestrictionDegreeOfPositiveAtoms_eq_neg_integral
+  rw [ξ.nativeAlgebraicRestrictionDegreeOfPositiveSingletons_eq_neg_integral
       A t ht]
   change -(∫ x, W.toNormFamily.determinant.logNorm t x ∂(S.algebraicExtension L).v) ≤
     (Module.finrank L A : ℝ) * (∫ x, H x ∂(S.algebraicExtension L).v)
@@ -178,27 +180,27 @@ namespace AdelicVectorBundle
 variable [S.IsProper]
 
 /-- Native geometric and common-density degrees agree on the same actual subspace. -/
-theorem nativeAlgebraicRestrictionDegreeOfPositiveAtoms_eq_common_degree
+theorem nativeAlgebraicRestrictionDegreeOfPositiveSingletons_eq_common_degree
     (V : AdelicVectorBundle S)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     [hcount : S.HasCommonCountableDenseSubfield]
     [S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] V)) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A =
-      ((V.scalarExtension (L := L)).restrictOfMeasurableBase A
+    V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveSingletons A =
+      ((V.scalarExtension (L := L)).restrictOfNormMeasurability A
         (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)).degree
         (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) := rfl
 
 /-- The geometric and countable-discrete canonical degrees have identical actual norms. -/
-theorem nativeAlgebraicRestrictionDegreeOfPositiveAtoms_eq_countable_discrete_degree
+theorem nativeAlgebraicRestrictionDegreeOfPositiveSingletons_eq_countable_discrete_degree
     [Countable S.Ω] [DiscreteMeasurableSpace S.Ω]
     (V : AdelicVectorBundle S)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     [S.IsArchimedeanNormalized]
     (A : Submodule L (L ⊗[K] V)) :
-    V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveAtoms A =
+    V.toNormFamily.nativeAlgebraicRestrictionDegreeOfPositiveSingletons A =
       V.nativeRestrictionDegreeOfCountableDiscreteBase A := rfl
 
 end AdelicVectorBundle

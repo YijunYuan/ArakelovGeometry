@@ -93,12 +93,12 @@ instance {K : Type*} [Field K] {S : AdelicStructure K} :
   ⟨fun h ↦ h.mem_Ωfin⟩
 
 /-- Every singleton place has positive measure. -/
-class HasPositiveAtoms {K : Type*} [Field K] (S : AdelicStructure K) : Prop where
+class HasPositiveSingletons {K : Type*} [Field K] (S : AdelicStructure K) : Prop where
   /-- Positivity of the measure of every singleton. -/
   measure_singleton_pos : ∀ ω : S.Ω, 0 < S.v {ω}
 
 instance {K : Type*} [Field K] {S : AdelicStructure K} :
-    CoeFun S.HasPositiveAtoms (fun _ ↦ ∀ ω : S.Ω, 0 < S.v {ω}) :=
+    CoeFun S.HasPositiveSingletons (fun _ ↦ ∀ ω : S.Ω, 0 < S.v {ω}) :=
   ⟨fun h ↦ h.measure_singleton_pos⟩
 
 instance {K : Type*} [Field K] (S : AdelicStructure K) [S.HasOnlyFinitePlaces] :

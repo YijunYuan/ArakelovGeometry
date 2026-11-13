@@ -101,14 +101,14 @@ theorem norm_rational (ω : (normalizedNumberFieldAdelicStructure K).Ω) (a : K)
     (fun ω => Real.exp (exponent ω)) (fun _ => Real.exp_pos _)).norm ω (1 ⊗ₜ[K] a) = _
   rw [NormFamily.scale_norm, AdelicVectorBundle.scalarLine_norm_rational]
 
-theorem isUltrametric : (bundle K).toNormFamily.IsUltrametric := by
+theorem isUltrametricAtFinitePlaces : (bundle K).toNormFamily.IsUltrametricAtFinitePlaces := by
   change ((AdelicVectorBundle.scalarLine
     (normalizedNumberFieldAdelicStructure K)).toNormFamily.scale
-    (fun ω => Real.exp (exponent ω)) (fun _ => Real.exp_pos _)).IsUltrametric
-  apply NormFamily.IsUltrametric.scale
+    (fun ω => Real.exp (exponent ω)) (fun _ => Real.exp_pos _)).IsUltrametricAtFinitePlaces
+  apply NormFamily.IsUltrametricAtFinitePlaces.scale
   constructor
   intro ω hω x y
-  have h := NormFamily.ofBasisMixed_isUltrametric
+  have h := NormFamily.ofBasisMixed_isUltrametricAtFinitePlaces
     (S := normalizedNumberFieldAdelicStructure K) (Module.Basis.singleton (Fin 1) K) ω hω x y
   simpa only [AdelicVectorBundle.scalarLine_toNormFamily,
     NormFamily.ofBasisMixed_norm_of_finite _ ω hω] using h
@@ -143,7 +143,7 @@ theorem globalUnitBall_eq_singleton_zero :
     simp
 
 theorem globalUnitBallModule_eq_bot :
-    (bundle K).toNormFamily.globalUnitBallModule (hξ := isUltrametric) = ⊥ := by
+    (bundle K).toNormFamily.globalUnitBallModule (hξ := isUltrametricAtFinitePlaces) = ⊥ := by
   ext a
   change a ∈ (bundle K).toNormFamily.globalUnitBall ↔ a = 0
   rw [globalUnitBall_eq_singleton_zero]
@@ -152,7 +152,7 @@ theorem globalUnitBallModule_eq_bot :
 theorem not_coherent : ¬ (bundle K).toNormFamily.HasFiniteNormExceptions := by
   intro hc
   have h := (NormFamily.hasFiniteNormExceptions_iff_span_normalizedGlobalUnitBall_eq_top
-    (bundle K).toNormFamily (hξ := isUltrametric)).mp hc
+    (bundle K).toNormFamily (hξ := isUltrametricAtFinitePlaces)).mp hc
   change Submodule.span K (bundle K).toNormFamily.globalUnitBall = ⊤ at h
   rw [globalUnitBall_eq_singleton_zero, Submodule.span_singleton_eq_bot.mpr rfl] at h
   exact bot_ne_top h

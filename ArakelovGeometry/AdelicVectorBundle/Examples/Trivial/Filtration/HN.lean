@@ -121,7 +121,7 @@ open Classical in
 /-- A vector at an included ball endpoint but outside the literal union
 of strictly higher balls has exactly the endpoint's norm. -/
 theorem trivialSeminorm_eq_exp_neg_of_ball_difference
-    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (b : ℝ) (x : E) (hx : x ∈ ξ.trivialFiltration b)
     (hn : x ∉ ⨆ s : {s : ℝ // b < s}, ξ.trivialFiltration s.val) :
     ξ.trivialSeminorm x = Real.exp (-b) := by
@@ -146,7 +146,7 @@ open Classical in
 constant nonzero rational norm. Its norm is proved from every completed lift. -/
 theorem trivialSeminorm_subquotient_eq_exp_neg_of_ball_endpoints
     [FiniteDimensional K E] (ξ : NormFamily (singleTrivialPlace K) E)
-    [hξ : ξ.IsUltrametric] (A B : Submodule K E) (b : ℝ)
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (A B : Submodule K E) (b : ℝ)
     (hB : ξ.trivialFiltration b = B)
     (hA : (⨆ s : {s : ℝ // b < s}, ξ.trivialFiltration s.val) = A)
     (y : B ⧸ A.comap B.subtype) (hy : y ≠ 0) :
@@ -181,29 +181,29 @@ open AdelicStructure
 
 variable [FiniteDimensional K E]
   (V : AdelicVectorBundle (singleTrivialPlace K))
-  [hS : (singleTrivialPlace K).HasMeasurableBase]
+  [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
 open Classical in
 /-- The actual literal balls produce a full strict flag whose canonical
 factors are constant, semistable, and have their genuine jumps as means. -/
 theorem exists_strictMono_trivialFiltration_semistableFlag
-    [hV : V.toNormFamily.IsUltrametric] :
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] :
     ∃ (n : ℕ) (U : Fin (n + 1) → Submodule K V) (b : Fin n → ℝ),
       StrictMono U ∧ U 0 = ⊥ ∧ U (Fin.last n) = ⊤ ∧ StrictAnti b ∧
       (∀ t, V.toNormFamily.trivialFiltration t =
         ⨆ (i : Fin n) (_ : t ≤ b i), U i.succ) ∧
       (∀ (i : Fin n) x, x ≠ 0 →
-        (V.flagQuotientOfMeasurableBase U i).toNormFamily.trivialSeminorm x =
+        (V.flagQuotientOfNormMeasurability U i).toNormFamily.trivialSeminorm x =
           Real.exp (-b i)) ∧
-      (∀ i : Fin n, (V.flagQuotientOfMeasurableBase U i).IsSemistable) ∧
-      (∀ i : Fin n, (V.flagQuotientOfMeasurableBase U i).minimalSlope =
+      (∀ i : Fin n, (V.flagQuotientOfNormMeasurability U i).IsSemistable) ∧
+      (∀ i : Fin n, (V.flagQuotientOfNormMeasurability U i).minimalSlope =
         (b i : EReal)) ∧
-      (∀ i : Fin n, (V.flagQuotientOfMeasurableBase U i).modifiedSlope = b i) := by
+      (∀ i : Fin n, (V.flagQuotientOfNormMeasurability U i).hnMeanSlope = b i) := by
   obtain ⟨n, U, b, hU, hz, ht, _, hb, _, hlevel, hright, hrec⟩ :=
     V.toNormFamily.exists_strictMono_flag_and_jumps_trivialFiltration
   have hc : ∀ (i : Fin n) x, x ≠ 0 →
-      (V.flagQuotientOfMeasurableBase U i).toNormFamily.trivialSeminorm x =
+      (V.flagQuotientOfNormMeasurability U i).toNormFamily.trivialSeminorm x =
         Real.exp (-b i) := by
     intro i x hx
     exact V.toNormFamily.trivialSeminorm_subquotient_eq_exp_neg_of_ball_endpoints
@@ -214,47 +214,47 @@ theorem exists_strictMono_trivialFiltration_semistableFlag
     rw [Submodule.finrank_quotient,
       (Submodule.comapSubtypeEquivOfLe (hU Fin.castSucc_lt_succ).le).finrank_eq]
     exact Nat.sub_pos_of_lt (Submodule.finrank_lt_finrank_of_lt (hU Fin.castSucc_lt_succ))
-  have hs : ∀ i : Fin n, (V.flagQuotientOfMeasurableBase U i).IsSemistable := by
+  have hs : ∀ i : Fin n, (V.flagQuotientOfNormMeasurability U i).IsSemistable := by
     intro i
-    exact (V.flagQuotientOfMeasurableBase U i).isSemistable_of_trivialSeminorm_eq_const
+    exact (V.flagQuotientOfNormMeasurability U i).isSemistable_of_trivialSeminorm_eq_const
       (Real.exp_pos _) (hc i) (hr i)
-  have hm : ∀ i : Fin n, (V.flagQuotientOfMeasurableBase U i).minimalSlope =
+  have hm : ∀ i : Fin n, (V.flagQuotientOfNormMeasurability U i).minimalSlope =
       (b i : EReal) := by
     intro i
     have he := minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const
-      (V.flagQuotientOfMeasurableBase U i)
+      (V.flagQuotientOfNormMeasurability U i)
         (Real.exp_pos _) (hc i) (hr i)
     simpa only [Real.log_exp, neg_neg] using he
   refine ⟨n, U, b, hU, hz, ht, hb, hrec, hc, hs, hm, ?_⟩
   intro i
-  have he := ((V.flagQuotientOfMeasurableBase U i).isSemistable_iff_modifiedSlope_eq_minimalSlope
+  have he := ((V.flagQuotientOfNormMeasurability U i).isSemistable_iff_hnMeanSlope_eq_minimalSlope
     (hr i)).mp (hs i)
   exact EReal.coe_eq_coe_iff.mp (he.trans (hm i))
 
 open Classical in
 /-- General HN uniqueness identifies the actual ultrametric bundle's
 filtration with its literal closed balls, in every rank. -/
-theorem generalHNFiltration_eq_trivialFiltration [hV : V.toNormFamily.IsUltrametric]
+theorem hnFiltration_eq_trivialFiltration [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
     (t : ℝ) :
-    V.generalHNFiltration t = V.toNormFamily.trivialFiltration t := by
+    V.hnFiltration t = V.toNormFamily.trivialFiltration t := by
   obtain ⟨n, U, b, hU, hz, ht, hb, hrec, _, hs, _, hm⟩ :=
     V.exists_strictMono_trivialFiltration_semistableFlag
   have hanti : StrictAnti (fun i : Fin n ↦
-      (V.flagQuotientOfMeasurableBase U i).modifiedSlope) := by
+      (V.flagQuotientOfNormMeasurability U i).hnMeanSlope) := by
     simpa only [hm] using hb
-  rw [V.generalHNFiltration_eq_of_semistableFlag U hU hz ht (hsemi := hs) hanti t]
+  rw [V.hnFiltration_eq_of_semistableFlag U hU hz ht (hsemi := hs) hanti t]
   simp only [hm]
   exact (hrec t).symm
 
 open Classical in
 /-- The actual adelic bundle constructed from a source real filtration
 has exactly that original general HN filtration. -/
-theorem generalHNFiltration_ofTrivialFiltration (F : ℝ → Submodule K E)
+theorem hnFiltration_ofTrivialFiltration (F : ℝ → Submodule K E)
     (hF : Antitone F) (hbot : ∃ t, F t = ⊥) (htop : ∃ t, F t = ⊤)
     (hleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t) (t : ℝ) :
-    (ofTrivialFiltration F hF hbot htop hleft).generalHNFiltration t = F t := by
-  rw [(ofTrivialFiltration F hF hbot htop hleft).generalHNFiltration_eq_trivialFiltration
-    (hV := (NormFamily.ofTrivialFiltration_isUltrametric F hF hbot htop hleft)) t]
+    (ofTrivialFiltration F hF hbot htop hleft).hnFiltration t = F t := by
+  rw [(ofTrivialFiltration F hF hbot htop hleft).hnFiltration_eq_trivialFiltration
+    (hV := (NormFamily.ofTrivialFiltration_isUltrametricAtFinitePlaces F hF hbot htop hleft)) t]
   exact NormFamily.trivialFiltration_ofTrivialFiltration F hF hbot htop hleft t
 
 end AdelicVectorBundle

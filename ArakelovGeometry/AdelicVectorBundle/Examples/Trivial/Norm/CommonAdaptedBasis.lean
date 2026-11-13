@@ -93,7 +93,7 @@ variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
 /-- A weighted coordinate description of all balls determines the norm on every
 completed vector. The supremum of the empty coordinate support is zero. -/
 theorem norm_eq_sup_of_weighted_coordinates
-    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     {ι : Type*} (b : Basis ι K E) (a : ι → ℝ)
     (hb : ∀ t x, x ∈ ξ.trivialFiltration t ↔
       ∀ i, b.repr x i ≠ 0 → t ≤ a i)
@@ -158,7 +158,7 @@ theorem norm_eq_sup_of_weighted_coordinates
 basis describing both filtrations and both norms on all completed vectors. -/
 theorem exists_common_orthogonal_basis [FiniteDimensional K E]
     (ξ η : NormFamily (singleTrivialPlace K) E)
-    [hξ : ξ.IsUltrametric] [hη : η.IsUltrametric] :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] [hη : η.IsUltrametricAtFinitePlaces] :
     ∃ (b : Basis (Fin (finrank K E)) K E) (a c : Fin (finrank K E) → ℝ),
       (∀ t, ξ.trivialFiltration t = Submodule.span K (b '' {i | t ≤ a i})) ∧
       (∀ t, η.trivialFiltration t = Submodule.span K (b '' {i | t ≤ c i})) ∧
@@ -202,8 +202,8 @@ theorem exists_common_orthogonal_basis_ofTrivialFiltration [FiniteDimensional K 
     exists_common_orthogonal_basis
       (ofTrivialFiltration F hF hFbot hFtop hFleft)
       (ofTrivialFiltration G hG hGbot hGtop hGleft)
-      (hξ := (ofTrivialFiltration_isUltrametric F hF hFbot hFtop hFleft))
-      (hη := (ofTrivialFiltration_isUltrametric G hG hGbot hGtop hGleft))
+      (hξ := (ofTrivialFiltration_isUltrametricAtFinitePlaces F hF hFbot hFtop hFleft))
+      (hη := (ofTrivialFiltration_isUltrametricAtFinitePlaces G hG hGbot hGtop hGleft))
 
 end
 

@@ -107,7 +107,8 @@ theorem family_integral_localDist_ge_of_pure (p : Nat.Primes) (a : ℤ)
   exact family_lintegral_localDist_ge_of_pure p a η
 
 theorem family_localDist_latticeGaugeFamily_prime (p : Nat.Primes) (a : ℤ) :
-    (family p a).localDist ((family p a).latticeGaugeFamily (hξ := (family_isUltrametric p a)))
+    (family p a).localDist ((family p a).latticeGaugeFamily (hξ :=
+      (family_isUltrametricAtFinitePlaces p a)))
       (primePoint p) = Real.log (p.val : ℝ) / 2 := by
   rw [← NormFamily.finiteImpurityProfile_eq_localDist_latticeGaugeFamily,
     finiteImpurityProfile, ite_eq_left (primePoint_mem_fin p),
@@ -115,19 +116,19 @@ theorem family_localDist_latticeGaugeFamily_prime (p : Nat.Primes) (a : ℤ) :
 
 theorem family_lintegral_localDist_latticeGaugeFamily (p : Nat.Primes) (a : ℤ) :
     (∫⁻ ω, ENNReal.ofReal ((family p a).localDist
-      ((family p a).latticeGaugeFamily (hξ := (family_isUltrametric p a))) ω) ∂S.v) =
+      ((family p a).latticeGaugeFamily (hξ := (family_isUltrametricAtFinitePlaces p a))) ω) ∂S.v) =
         ENNReal.ofReal (Real.log (p.val : ℝ) / 2) := by
   rw [← NormFamily.globalImpurity_eq_lintegral_localDist_latticeGaugeFamily, family_globalImpurity]
 
 theorem family_integral_localDist_latticeGaugeFamily (p : Nat.Primes) (a : ℤ) :
     (∫ ω, (family p a).localDist
-      ((family p a).latticeGaugeFamily (hξ := (family_isUltrametric p a))) ω ∂S.v) =
+      ((family p a).latticeGaugeFamily (hξ := (family_isUltrametricAtFinitePlaces p a))) ω ∂S.v) =
         Real.log (p.val : ℝ) / 2 := by
   have hI := ((family p a).globalImpurity_ne_top_iff_integrable_localDist_latticeGaugeFamily
-    (hξ := (family_isUltrametric p a))).mp (by rw [family_globalImpurity]; exact
+    (hξ := (family_isUltrametricAtFinitePlaces p a))).mp (by rw [family_globalImpurity]; exact
         ENNReal.ofReal_ne_top)
   have hn := fun ω => (family p a).localDist_nonneg
-    ((family p a).latticeGaugeFamily (hξ := (family_isUltrametric p a))) ω
+    ((family p a).latticeGaugeFamily (hξ := (family_isUltrametricAtFinitePlaces p a))) ω
   have he := ofReal_integral_eq_lintegral_ofReal hI (Filter.Eventually.of_forall hn)
   rw [family_lintegral_localDist_latticeGaugeFamily] at he
   have h := congrArg ENNReal.toReal he

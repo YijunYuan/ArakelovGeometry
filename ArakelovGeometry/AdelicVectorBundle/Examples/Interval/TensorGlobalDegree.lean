@@ -200,7 +200,7 @@ theorem rationalIntervalTensorBundle_log_two_le_degree :
   let D := rationalAdelicStructure.Ωinf.indicator (fun _ => -Real.log 2)
   have hf : Integrable (rationalIntervalTensorBundle.toNormFamily.determinant.logNorm
       rationalIntervalTensorDeterminantVector) rationalAdelicStructure.v :=
-    (rationalIntervalTensorBundle.determinantOfMeasurableBase (hS := ⟨hS⟩)
+    (rationalIntervalTensorBundle.determinantOfNormMeasurability (hS := ⟨hS⟩)
       (hN := ⟨rationalAdelicStructure_isRCLike⟩)).integrable_logNorm _
   have hD : Integrable D rationalAdelicStructure.v :=
     (integrable_indicator_iff rationalAdelicStructure.measurableSet_Ωinf).mpr

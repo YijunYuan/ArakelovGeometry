@@ -77,8 +77,10 @@ theorem scale_pullback (a : S.Ω → ℝ) (ha : ∀ ω, 0 < a ω)
   rfl
 
 /-- Pullback preserves the ultrametric inequality at every non-Archimedean place. -/
-theorem IsUltrametric.pullback {ξ : NormFamily S E} (hξ : ξ.IsUltrametric)
-    (f : F →ₗ[K] E) (hf : Function.Injective f) : (ξ.pullback f hf).IsUltrametric := by
+theorem IsUltrametricAtFinitePlaces.pullback
+    {ξ : NormFamily S E} (hξ : ξ.IsUltrametricAtFinitePlaces)
+    (f : F →ₗ[K] E)
+      (hf : Function.Injective f) : (ξ.pullback f hf).IsUltrametricAtFinitePlaces := by
   constructor
   intro ω hω x y
   simpa only [pullback_norm, map_add] using
@@ -104,8 +106,9 @@ theorem scale_restrict (a : S.Ω → ℝ) (ha : ∀ ω, 0 < a ω) (F : Submodule
   ξ.scale_pullback a ha F.subtype F.subtype_injective
 
 /-- Restriction preserves ultrametricity, including at trivially valued places. -/
-theorem IsUltrametric.restrict {ξ : NormFamily S E} (hξ : ξ.IsUltrametric)
-    (F : Submodule K E) : (ξ.restrict F).IsUltrametric :=
+theorem IsUltrametricAtFinitePlaces.restrict
+    {ξ : NormFamily S E} (hξ : ξ.IsUltrametricAtFinitePlaces)
+    (F : Submodule K E) : (ξ.restrict F).IsUltrametricAtFinitePlaces :=
   hξ.pullback F.subtype F.subtype_injective
 
 /-- The restriction to the zero subspace is the unique zero-dimensional norm family. -/
@@ -122,11 +125,13 @@ namespace ArakelovGeometry.NormFamily
 variable {K : Type*} [Field K] {S : AdelicStructure K}
   {E F : Type*} [AddCommGroup E] [Module K E] [AddCommGroup F] [Module K F]
 
-instance instIsUltrametricPullback {ξ : NormFamily S E} [hξ : ξ.IsUltrametric]
-    (f : F →ₗ[K] E) (hf : Function.Injective f) : (ξ.pullback f hf).IsUltrametric :=
+instance instIsUltrametricAtFinitePlacesPullback
+    {ξ : NormFamily S E} [hξ : ξ.IsUltrametricAtFinitePlaces]
+    (f : F →ₗ[K] E) (hf : Function.Injective f) : (ξ.pullback f hf).IsUltrametricAtFinitePlaces :=
   hξ.pullback f hf
 
-instance instIsUltrametricRestrict {ξ : NormFamily S E} [hξ : ξ.IsUltrametric]
-    (P : Submodule K E) : (ξ.restrict P).IsUltrametric := hξ.restrict P
+instance instIsUltrametricAtFinitePlacesRestrict
+    {ξ : NormFamily S E} [hξ : ξ.IsUltrametricAtFinitePlaces]
+    (P : Submodule K E) : (ξ.restrict P).IsUltrametricAtFinitePlaces := hξ.restrict P
 
 end ArakelovGeometry.NormFamily

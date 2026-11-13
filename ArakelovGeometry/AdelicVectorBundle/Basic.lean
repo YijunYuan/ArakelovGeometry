@@ -271,9 +271,9 @@ instance isHermitian_of_isLine (V : AdelicVectorBundle S)
     [S.IsArchimedeanNormalized] [hV : V.IsLine] : V.IsHermitian :=
   IsLine.isHermitian hV
 
-instance isUltrametric_of_isLine (V : AdelicVectorBundle S) [hV : V.IsLine] :
-    V.toNormFamily.IsUltrametric :=
-  V.toNormFamily.isUltrametric_of_finrank_le_one hV.rank_eq_one.le
+instance isUltrametricAtFinitePlaces_of_isLine (V : AdelicVectorBundle S) [hV : V.IsLine] :
+    V.toNormFamily.IsUltrametricAtFinitePlaces :=
+  V.toNormFamily.isUltrametricAtFinitePlaces_of_finrank_le_one hV.rank_eq_one.le
 
 /-- Source Proposition 4.1.29: a measurable dominated line family is adelic. -/
 abbrev ofLine (ξ : NormFamily S E) (hr : Module.finrank K E = 1)

@@ -31,7 +31,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
   [FiniteDimensional K E]
 
 variable (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-  [hξ : ξ.IsUltrametric]
+  [hξ : ξ.IsUltrametricAtFinitePlaces]
 
 /-- The actual impurity profile is the canonical completed-fibre distance. -/
 theorem finiteImpurityProfile_eq_localDist_latticeGaugeFamily :

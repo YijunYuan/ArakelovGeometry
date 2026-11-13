@@ -37,7 +37,7 @@ universe u w
 variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
 
@@ -46,7 +46,7 @@ flag term have the same degree under their completed isometry. -/
 theorem degree_hermitianHNFactor_eq_flagQuotient
     (i : Fin (V.hermitianHNLength)) :
     (V.hermitianHNFactor i).degree =
-      (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag) i).degree := by
+      (V.flagQuotientOfNormMeasurability (V.hermitianHNFlag) i).degree := by
   let U := V.hermitianHNTerm i.val
   let W := V.hermitianHNTerm (i.val + 1)
   let g : W →ₗ[K] V ⧸ U := U.mkQ.comp W.subtype
@@ -55,16 +55,16 @@ theorem degree_hermitianHNFactor_eq_flagQuotient
     simp only [g, LinearMap.ker_comp, Submodule.ker_mkQ]
   have hr : g.range = W.map U.mkQ := by
     simp only [g, LinearMap.range_comp, Submodule.range_subtype]
-  have hd : ((V.restrictOfMeasurableBase W).quotientOfMeasurableBase g.ker).degree
-    = ((V.quotientOfMeasurableBase U).restrictOfMeasurableBase
+  have hd : ((V.restrictOfNormMeasurability W).quotientOfNormMeasurability g.ker).degree
+    = ((V.quotientOfNormMeasurability U).restrictOfNormMeasurability
         g.range).degree := by
     apply degree_eq_of_completed_isometry _ _ g.quotKerEquivRange
     intro ω z
     exact (V.toNormFamily.quotient_restrict_range_norm_eq W U hUW ω z).symm
   have hkd := congrArg (fun T : Submodule K W ↦
-    ((V.restrictOfMeasurableBase W).quotientOfMeasurableBase T).degree) hk
+    ((V.restrictOfNormMeasurability W).quotientOfNormMeasurability T).degree) hk
   have hrd := congrArg (fun T : Submodule K (V ⧸ U) ↦
-    ((V.quotientOfMeasurableBase U).restrictOfMeasurableBase T).degree) hr
+    ((V.quotientOfNormMeasurability U).restrictOfNormMeasurability T).degree) hr
   exact (hrd.symm.trans hd.symm).trans hkd
 
 /-- The actual constructed positive-rank factors telescope to the original
@@ -74,7 +74,7 @@ theorem sum_hermitianHNFactor_degree_eq :
       (V.hermitianHNFactor i).degree) = V.degree := by
   calc
     _ = ∑ i : Fin (V.hermitianHNLength),
-        (V.flagQuotientOfMeasurableBase (V.hermitianHNFlag) i).degree := by
+        (V.flagQuotientOfNormMeasurability (V.hermitianHNFlag) i).degree := by
       apply Finset.sum_congr rfl
       intro i _
       exact V.degree_hermitianHNFactor_eq_flagQuotient i

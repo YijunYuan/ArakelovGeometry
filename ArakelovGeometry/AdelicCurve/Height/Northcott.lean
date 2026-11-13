@@ -32,7 +32,7 @@ variable {K L : Type*} [Field K] [Field L] [Algebra K L] (AS : AdelicStructure K
 nonzero polynomials in any extension field. -/
 theorem finite_roots_of_coeff_height_le [hS : AS.HasNorthcott] (B : ℝ) (D : ℕ) :
     Set.Finite {a : L | ∃ f : K[X], f ≠ 0 ∧ f.natDegree ≤ D ∧
-      (∀ j : ℕ, AS.affineHeight (f.coeff j) ≤ B) ∧ Polynomial.aeval a f = 0} := by
+      (∀ j : ℕ, AS.affineLogHeight (f.coeff j) ≤ B) ∧ Polynomial.aeval a f = 0} := by
   classical
   have hT := AS.hasNorthcott_iff.mp hS B
   have hroots := Polynomial.bUnion_roots_finite (algebraMap K L) D hT
@@ -49,9 +49,9 @@ variable [Algebra.IsAlgebraic K L]
 
 /-- Bounded affine height and bounded minimal-polynomial degree give finitely many
 elements of an algebraic extension. No sign restriction on the height bound is needed. -/
-theorem finite_affineHeight_le_minpoly_natDegree_le [hS : AS.HasNorthcott]
+theorem finite_affineLogHeight_le_minpoly_natDegree_le [hS : AS.HasNorthcott]
     (C : ℝ) (D : ℕ) :
-    Set.Finite {a : L | (AS.algebraicExtension L).affineHeight a ≤ C ∧
+    Set.Finite {a : L | (AS.algebraicExtension L).affineLogHeight a ≤ C ∧
       (minpoly K a).natDegree ≤ D} := by
   have hroots := AS.finite_roots_of_coeff_height_le (L := L)
     ((D : ℝ) * C + (D - 1 : ℕ) * Real.log 2 * AS.heightArchimedeanConstant) D
@@ -60,20 +60,20 @@ theorem finite_affineHeight_le_minpoly_natDegree_le [hS : AS.HasNorthcott]
   have hint : IsIntegral K a := Algebra.IsIntegral.isIntegral a
   refine ⟨minpoly K a, minpoly.ne_zero hint, hD, ?_, minpoly.aeval K a⟩
   intro j
-  apply (AS.affineHeight_minpoly_coeff_le a j).trans
+  apply (AS.affineLogHeight_minpoly_coeff_le a j).trans
   apply add_le_add
   · exact mul_le_mul (Nat.cast_le.mpr hD) ha
-      ((AS.algebraicExtension L).affineHeight_nonneg a) (Nat.cast_nonneg D)
+      ((AS.algebraicExtension L).affineLogHeight_nonneg a) (Nat.cast_nonneg D)
   · exact mul_le_mul_of_nonneg_right
       (mul_le_mul_of_nonneg_right (Nat.cast_le.mpr (Nat.sub_le_sub_right hD 1))
         (Real.log_nonneg (by norm_num))) AS.heightArchimedeanConstant_nonneg
 
 /-- Chen–Moriwaki, Claim 3.5.6: bounded height and bounded degree give finitely many
 algebraic elements. This holds in any algebraic extension, with arbitrary real bounds. -/
-theorem finite_affineHeight_le_degree_le [hS : AS.HasNorthcott] (C δ : ℝ) :
-    Set.Finite {a : L | (AS.algebraicExtension L).affineHeight a ≤ C ∧
+theorem finite_affineLogHeight_le_degree_le [hS : AS.HasNorthcott] (C δ : ℝ) :
+    Set.Finite {a : L | (AS.algebraicExtension L).affineLogHeight a ≤ C ∧
       (Module.finrank K (IntermediateField.adjoin K {a}) : ℝ) ≤ δ} := by
-  apply (AS.finite_affineHeight_le_minpoly_natDegree_le (L := L) C ⌊δ⌋₊).subset
+  apply (AS.finite_affineLogHeight_le_minpoly_natDegree_le (L := L) C ⌊δ⌋₊).subset
   rintro a ⟨ha, hd⟩
   refine ⟨ha, Nat.le_floor ?_⟩
   simpa only [IntermediateField.adjoin.finrank (Algebra.IsIntegral.isIntegral a)] using hd

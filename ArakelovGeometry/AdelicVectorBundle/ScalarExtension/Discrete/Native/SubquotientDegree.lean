@@ -109,8 +109,8 @@ private theorem nativeMixed_norm_eq
     let R : AdelicVectorBundle (S.algebraicExtension L) :=
       V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase B (A.comap B.subtype)
     let W₀ : AdelicVectorBundle (S.algebraicExtension F) :=
-      ((V.scalarExtensionOfCountableDiscreteBase (L := F)).restrictOfMeasurableBase
-      Q).quotientOfMeasurableBase C
+      ((V.scalarExtensionOfCountableDiscreteBase (L := F)).restrictOfNormMeasurability
+      Q).quotientOfNormMeasurability C
     ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)
       (z : x.abv.Completion ⊗[L] (L ⊗[F] (Q ⧸ C))),
       R.toNormFamily.norm (scalarExtensionTowerPlace x)
@@ -194,8 +194,8 @@ abbrev NativeSubquotientDegreeEq [S.IsProper]
       (hdet := (scalarExtensionSubspaceQuotientOfCountableDiscreteBase_determinant_isMeasurable
         V B (A.comap B.subtype)))
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
-      (((V.scalarExtensionOfCountableDiscreteBase (L := F)).restrictOfMeasurableBase
-        Q).quotientOfMeasurableBase C).degree
+      (((V.scalarExtensionOfCountableDiscreteBase (L := F)).restrictOfNormMeasurability
+        Q).quotientOfNormMeasurability C).degree
           (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩)
 
 private theorem nativeMixed_generic_canonical_degree [S.IsProper]
@@ -238,8 +238,8 @@ private theorem nativeMixed_generic_canonical_degree [S.IsProper]
   let B := (Q.baseChange L).map c.toLinearMap
   let C := P.comap Q.subtype
   let W₀ : AdelicVectorBundle (S.algebraicExtension F) :=
-      ((V.scalarExtensionOfCountableDiscreteBase (L := F)).restrictOfMeasurableBase
-    Q).quotientOfMeasurableBase C
+      ((V.scalarExtensionOfCountableDiscreteBase (L := F)).restrictOfNormMeasurability
+    Q).quotientOfNormMeasurability C
   let R : AdelicVectorBundle (S.algebraicExtension L) :=
       V.scalarExtensionSubspaceQuotientOfCountableDiscreteBase B (A.comap B.subtype)
   have hdetR : R.toNormFamily.determinant.IsMeasurable :=

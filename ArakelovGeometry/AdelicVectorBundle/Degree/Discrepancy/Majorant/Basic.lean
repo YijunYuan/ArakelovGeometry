@@ -84,8 +84,8 @@ theorem exists_elementaryMajorant (ξ : NormFamily S E)
     let a : S.Ω → ℝ := fun _ ↦ Real.exp (ξ.localDist β ω)
     have ha : ∀ ω', 0 < a ω' := fun _ ↦ Real.exp_pos _
     let η := β.scale a ha
-    have hu : η.IsUltrametric :=
-      (ξ.dual.dual_isUltrametric.pullback _ _).scale a ha
+    have hu : η.IsUltrametricAtFinitePlaces :=
+      (ξ.dual.dual_isUltrametricAtFinitePlaces.pullback _ _).scale a ha
     refine ⟨η, ⟨hu ω, fun hi ↦ False.elim (hi hf)⟩, fun x ↦ ?_⟩
     change ξ.norm ω x ≤ a ω * β.norm ω x
     simpa only [localDist_comm] using β.norm_le_exp_localDist_mul ξ ω x

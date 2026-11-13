@@ -131,13 +131,13 @@ variable [S.IsProper] {E₁ : Type w} {E₂ : Type w'}
 /-- A nonzero induced quotient map bounds the source quotient's minimal
 slope using the height of the original map. -/
 theorem minimalSlope_cokernel_sub_mapHeight_le_quotient_maximalSlope
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (U : Submodule K V₁) (T : Submodule K V₂) (f : V₁ →ₗ[K] V₂)
     (g : (V₁ ⧸ U) →ₗ[K] (V₂ ⧸ T)) (hg : g ≠ 0)
     (hc : g.comp U.mkQ = T.mkQ.comp f) :
-    (V₁.quotientOfMeasurableBase U).minimalSlope - V₁.mapHeight V₂ f ≤
-      (V₂.quotientOfMeasurableBase T).maximalSlope := by
+    (V₁.quotientOfNormMeasurability U).minimalSlope - V₁.mapHeight V₂ f ≤
+      (V₂.quotientOfNormMeasurability T).maximalSlope := by
   have hf : f ≠ 0 := by
     intro hz
     apply hg
@@ -148,7 +148,7 @@ theorem minimalSlope_cokernel_sub_mapHeight_le_quotient_maximalSlope
     simpa only [hz, LinearMap.comp_zero, LinearMap.zero_apply, LinearMap.comp_apply] using hx
   have hh := V₁.mapHeight_quotient_le V₂ f hf U T g hg hc
   have hs := minimalSlope_sub_mapHeight_le_maximalSlope_of_ne_zero
-    (V₁.quotientOfMeasurableBase U) (V₂.quotientOfMeasurableBase T) g hg
+    (V₁.quotientOfNormMeasurability U) (V₂.quotientOfNormMeasurability T) g hg
   exact (EReal.sub_le_sub le_rfl hh).trans hs
 
 end QuotientComparison
@@ -159,15 +159,15 @@ variable [S.IsProper] {n : ℕ} (V : Fin (n + 1) → AdelicVectorBundle S)
 /-- Every nonzero actual quotient of the endpoint is bounded by a term
 coming from a positive-rank actual cokernel in the chain. -/
 theorem exists_cokernel_term_le_quotient_maximalSlope
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (h0 : Module.finrank K (V 0) = 0) (U : Submodule K (V (Fin.last n)))
     (hU : 0 < Module.finrank K ((V (Fin.last n)) ⧸ U)) :
     ∃ i : Fin n, 0 < Module.finrank K ((V i.succ) ⧸ (α i).range) ∧
-      ((V i.succ).quotientOfMeasurableBase (α i).range).minimalSlope -
+      ((V i.succ).quotientOfNormMeasurability (α i).range).minimalSlope -
         (V i.succ).mapHeight (V (Fin.last n))
           (linearChainTailMap (fun i ↦ (V i).carrier) α i.succ) ≤
-      ((V (Fin.last n)).quotientOfMeasurableBase U).maximalSlope := by
+      ((V (Fin.last n)).quotientOfNormMeasurability U).maximalSlope := by
   classical
   let : Subsingleton (V 0) := Module.finrank_zero_iff.mp h0
   let : Nontrivial ((V (Fin.last n)) ⧸ U) := Module.nontrivial_of_finrank_pos hU
@@ -189,11 +189,11 @@ and given maps. In fact injectivity is unnecessary for this inequality.
 Only nonzero actual cokernels contribute; an empty infimum is `⊤`.
 All heights are those of the actual tail composites. -/
 theorem minimalSlope_linearChain_lowerBound
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (h0 : Module.finrank K (V 0) = 0) :
     (⨅ i : {i : Fin n // 0 < Module.finrank K ((V i.succ) ⧸ (α i).range)},
-      ((V i.val.succ).quotientOfMeasurableBase (α i.val).range).minimalSlope -
+      ((V i.val.succ).quotientOfNormMeasurability (α i.val).range).minimalSlope -
         (V i.val.succ).mapHeight (V (Fin.last n))
           (linearChainTailMap (fun i ↦ (V i).carrier) α i.val.succ)) ≤
       (V (Fin.last n)).minimalSlope := by
@@ -203,14 +203,14 @@ theorem minimalSlope_linearChain_lowerBound
     exists_cokernel_term_le_quotient_maximalSlope V α h0 U hU
   have hb :
       (⨅ j : {j : Fin n // 0 < Module.finrank K ((V j.succ) ⧸ (α j).range)},
-        ((V j.val.succ).quotientOfMeasurableBase (α j.val).range).minimalSlope -
+        ((V j.val.succ).quotientOfNormMeasurability (α j.val).range).minimalSlope -
           (V j.val.succ).mapHeight (V (Fin.last n))
           (linearChainTailMap (fun i ↦ (V i).carrier) α j.val.succ)) ≤
-      ((V i.succ).quotientOfMeasurableBase (α i).range).minimalSlope -
+      ((V i.succ).quotientOfNormMeasurability (α i).range).minimalSlope -
         (V i.succ).mapHeight (V (Fin.last n))
           (linearChainTailMap (fun i ↦ (V i).carrier) α i.succ) :=
     iInf_le (fun j : {j : Fin n // 0 < Module.finrank K ((V j.succ) ⧸ (α j).range)} ↦
-      ((V j.val.succ).quotientOfMeasurableBase (α j.val).range).minimalSlope -
+      ((V j.val.succ).quotientOfNormMeasurability (α j.val).range).minimalSlope -
         (V j.val.succ).mapHeight (V (Fin.last n))
           (linearChainTailMap (fun i ↦ (V i).carrier) α j.val.succ)) ⟨i, hi⟩
   exact hb.trans hs

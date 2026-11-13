@@ -101,7 +101,7 @@ theorem normalizedNormFamilyTensorEquiv_one_tmul
 
 namespace NormFamily
 
-variable (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+variable (ξ : NormFamily (numberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
 
 /-- Normalize the actual completed norm family at every nontrivial number-field place. -/
 def numberFieldNormalize : NormFamily (normalizedNumberFieldAdelicStructure K) E where
@@ -163,7 +163,8 @@ theorem numberFieldNormalize_norm_map_inf
   exact AbsoluteValue.sameValueTransportSeminorm_map _ _ _ _ _ _ z
 
 /-- The actual normalized family is ultrametric at every normalized finite place. -/
-theorem numberFieldNormalize_isUltrametric : (ξ.numberFieldNormalize).IsUltrametric := by
+theorem numberFieldNormalize_isUltrametricAtFinitePlaces
+    : (ξ.numberFieldNormalize).IsUltrametricAtFinitePlaces := by
   constructor
   classical
   intro ω hω y z

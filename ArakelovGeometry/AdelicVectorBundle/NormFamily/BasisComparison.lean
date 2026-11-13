@@ -36,7 +36,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 
 /-- For a family ultrametric at finite places, a common bound on the completed
 basis vectors bounds the norm by the source mixed coordinate norm. -/
-theorem norm_le_mul_of_basis_norm_le [hξ : ξ.IsUltrametric] (ω : S.Ω)
+theorem norm_le_mul_of_basis_norm_le [hξ : ξ.IsUltrametricAtFinitePlaces] (ω : S.Ω)
     {C : ℝ} (hC : 0 ≤ C)
     (hb : ∀ i, ξ.norm ω ((b.baseChange (S.ϕ ω).Completion) i) ≤ C)
     (x : (S.ϕ ω).Completion ⊗[K] E) :
@@ -145,7 +145,7 @@ theorem IsUpperDominated.exists_basis_norm_bound {ι' : Type*} [Finite ι']
 bounded distance from every mixed basis norm. The proof uses the actual
 primal and dual basis norms, not measurability of the original family. -/
 theorem IsDominated.localDist_ofBasisMixed_of_ultrametric (hd : ξ.IsDominated)
-    (hu : ξ.IsUltrametric) (hfin : S.v S.Ωinf < ⊤) :
+    (hu : ξ.IsUltrametricAtFinitePlaces) (hfin : S.v S.Ωinf < ⊤) :
     HasIntegrableBounds (ξ.localDist (ofBasisMixed S E b)) S.v := by
   classical
   obtain ⟨A, hA, hA0, hAb⟩ :=
@@ -188,7 +188,8 @@ theorem IsDominated.bidual_localDist_ofBasisMixed (hd : ξ.IsDominated)
         (Module.eval_apply_injective K)).localDist (ofBasisMixed S E b)) S.v := by
   apply IsDominated.localDist_ofBasisMixed_of_ultrametric b _
     (hd.dual.dual.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K))
-    (ξ.dual.dual_isUltrametric.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K))
+    (ξ.dual.dual_isUltrametricAtFinitePlaces.pullback (Module.Dual.eval K E)
+      (Module.eval_apply_injective K))
     hfin
 
 /-- Strong domination controls the distance to every mixed basis family.
@@ -251,7 +252,8 @@ theorem ofBasisMixed_isStronglyDominated_of_measure_lt_top (hfin : S.v S.Ωinf <
 have integrably bounded local distance. -/
 theorem IsDominated.localDist_of_ultrametric {η : NormFamily S E}
     (hξ : ξ.IsDominated) (hη : η.IsDominated)
-    (huξ : ξ.IsUltrametric) (huη : η.IsUltrametric) (hfin : S.v S.Ωinf < ⊤) :
+    (huξ : ξ.IsUltrametricAtFinitePlaces) (huη : η.IsUltrametricAtFinitePlaces)
+      (hfin : S.v S.Ωinf < ⊤) :
     HasIntegrableBounds (ξ.localDist η) S.v := by
   let b := Module.finBasis K E
   have h₁ := IsDominated.localDist_ofBasisMixed_of_ultrametric b ξ hξ huξ hfin

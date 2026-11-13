@@ -69,7 +69,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 /-- Lower domination controls actual small completed rational norms at every
 fixed positive weighted logarithmic threshold. -/
 theorem IsLowerDominated.finite_weighted_small_norm_threshold
-    (hξ : ξ.IsLowerDominated) [hμ : S.HasPositiveAtoms]
+    (hξ : ξ.IsLowerDominated) [hμ : S.HasPositiveSingletons]
     {x : E} (hx : x ≠ 0) {ε : ℝ} (hε : 0 < ε) :
     {ω | ε ≤ S.v.real {ω} * (-ξ.logNorm x ω)}.Finite :=
   (hξ x hx).neg.finite_weighted_threshold hμ hε
@@ -77,7 +77,7 @@ theorem IsLowerDominated.finite_weighted_small_norm_threshold
 /-- Source domination implies the small-norm threshold bound through the
 actual dual evaluation lower envelope. -/
 theorem IsDominated.finite_weighted_small_norm_threshold [FiniteDimensional K E]
-    (hξ : ξ.IsDominated) [hμ : S.HasPositiveAtoms]
+    (hξ : ξ.IsDominated) [hμ : S.HasPositiveSingletons]
     {x : E} (hx : x ≠ 0) {ε : ℝ} (hε : 0 < ε) :
     {ω | ε ≤ S.v.real {ω} * (-ξ.logNorm x ω)}.Finite :=
   hξ.lower.finite_weighted_small_norm_threshold hx hε
@@ -85,7 +85,7 @@ theorem IsDominated.finite_weighted_small_norm_threshold [FiniteDimensional K E]
 /-- The negative support of the source's rounded order requirement is finite
 once the actual measure and local logarithmic scale have a positive gap. -/
 theorem IsLowerDominated.finite_negative_rounded_orders
-    (hξ : ξ.IsLowerDominated) [hμ : S.HasPositiveAtoms]
+    (hξ : ξ.IsLowerDominated) [hμ : S.HasPositiveSingletons]
     {x : E} (hx : x ≠ 0) (T : Set S.Ω) (γ : S.Ω → ℝ)
     (hγ : ∀ ω ∈ T, 0 < γ ω) {ε : ℝ} (hε : 0 < ε)
     (hgap : ∀ ω ∈ T, ε ≤ S.v.real {ω} * γ ω) :

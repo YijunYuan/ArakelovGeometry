@@ -63,10 +63,10 @@ theorem degree_quotient_scalarExtension_finiteStage [S.IsProper]
     let _ := hcount.algebraicExtension_of_finiteDimensional (L := F)
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := L)
     let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L V
-    ((V.scalarExtension (L := L)).quotientOfMeasurableBase
+    ((V.scalarExtension (L := L)).quotientOfNormMeasurability
       ((B.baseChange L).map c.toLinearMap)).degree
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
-    ((V.scalarExtension (L := F)).quotientOfMeasurableBase
+    ((V.scalarExtension (L := F)).quotientOfNormMeasurability
       B).degree
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
@@ -80,9 +80,9 @@ theorem degree_quotient_scalarExtension_finiteStage [S.IsProper]
   let hTN := AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L) (hS := ⟨hFN⟩)
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L V
   let e := finiteStageQuotientEquiv (L := L) F B
-  let Q₀ := (V.scalarExtension (L := F)).quotientOfMeasurableBase B
+  let Q₀ := (V.scalarExtension (L := F)).quotientOfNormMeasurability B
   let W := Q₀.scalarExtension (L := L) (hS := hF) (hN := ⟨hFN⟩)
-  let R := (V.scalarExtension (L := L)).quotientOfMeasurableBase
+  let R := (V.scalarExtension (L := L)).quotientOfNormMeasurability
     ((B.baseChange L).map c.toLinearMap)
   change R.degree (hN := ⟨hLN⟩) = Q₀.degree (hN := ⟨hFN⟩)
   exact (degree_eq_of_tower_completed_isometry F.toIntermediateField W R e
@@ -108,16 +108,16 @@ theorem exists_complexFiniteStage_native_subspace_quotient_degrees [S.IsProper]
         ∀ i,
           let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
           let _ := hcount.algebraicExtension_of_finiteDimensional (L := F)
-          (((V.scalarExtension (L := L)).restrictOfMeasurableBase
+          (((V.scalarExtension (L := L)).restrictOfNormMeasurability
             (A i)).degree
             (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
-          ((V.scalarExtension (L := F)).restrictOfMeasurableBase
+          ((V.scalarExtension (L := F)).restrictOfNormMeasurability
             (B i)).degree
             (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩)) ∧
-          (((V.scalarExtension (L := L)).quotientOfMeasurableBase
+          (((V.scalarExtension (L := L)).quotientOfNormMeasurability
             (A i)).degree
             (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
-          ((V.scalarExtension (L := F)).quotientOfMeasurableBase
+          ((V.scalarExtension (L := F)).quotientOfNormMeasurability
             (B i)).degree
             (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩)) ∧
           Module.finrank L ((L ⊗[K] V) ⧸ A i) =

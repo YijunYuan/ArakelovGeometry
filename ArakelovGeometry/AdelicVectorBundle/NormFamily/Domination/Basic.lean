@@ -252,7 +252,7 @@ theorem IsUpperDominated.quotient {ξ : NormFamily S E} (h : ξ.IsUpperDominated
 /-- Under the source's Archimedean normalization, ultrametric biduality
 reflects domination from the dual. -/
 theorem IsDominated.of_dual {ξ : NormFamily S E} (h : ξ.dual.IsDominated)
-    (hξ : ξ.IsUltrametric)
+    (hξ : ξ.IsUltrametricAtFinitePlaces)
     [hS : S.IsArchimedeanNormalized] :
     ξ.IsDominated := by
   refine ⟨?_, h.1⟩
@@ -260,7 +260,7 @@ theorem IsDominated.of_dual {ξ : NormFamily S E} (h : ξ.dual.IsDominated)
   rwa [ξ.dual_dual_pullback_eq] at hb
 
 /-- Source Remark 4.1.3, with the usual Archimedean normalization explicit. -/
-theorem isDominated_dual_iff {ξ : NormFamily S E} [hξ : ξ.IsUltrametric]
+theorem isDominated_dual_iff {ξ : NormFamily S E} [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hS : S.IsArchimedeanNormalized] :
     ξ.dual.IsDominated ↔ ξ.IsDominated :=
   ⟨fun h ↦ h.of_dual hξ, IsDominated.dual⟩

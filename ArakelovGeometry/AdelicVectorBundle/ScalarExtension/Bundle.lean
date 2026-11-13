@@ -175,11 +175,11 @@ theorem scalarExtension_isStronglyAdelic (V : AdelicVectorBundle S)
     V.toNormFamily V.isDominated (S.v_Ωinf_lt_top_of_isRCLike)
 
 /-- The finite-place norms of the actual extended bundle are ultrametric. -/
-theorem scalarExtension_isUltrametric (V : AdelicVectorBundle S)
+theorem scalarExtension_isUltrametricAtFinitePlaces (V : AdelicVectorBundle S)
     [S.HasCommonCountableDenseSubfield]
     [S.IsArchimedeanNormalized] :
-    (V.scalarExtension (L := L)).toNormFamily.IsUltrametric :=
-  V.toNormFamily.scalarExtension_isUltrametric
+    (V.scalarExtension (L := L)).toNormFamily.IsUltrametricAtFinitePlaces :=
+  V.toNormFamily.scalarExtension_isUltrametricAtFinitePlaces
 
 /-- Extension preserves the actual rational rank, including zero. -/
 theorem scalarExtension_rank (V : AdelicVectorBundle S)
@@ -211,10 +211,10 @@ theorem degree_scalarExtension_of_finiteDimensional [S.IsProper] [FiniteDimensio
   let := hp
   let hLS := hS.algebraicExtension_of_finiteDimensional (L := L)
   let hNL := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
-  have he : (V.scalarExtension (L := L)).determinantOfMeasurableBase
+  have he : (V.scalarExtension (L := L)).determinantOfNormMeasurability
       (hN := ⟨hNL⟩) = V.scalarExtensionDeterminant (L := L) := by
     apply AdelicVectorBundle.ext
-      (hξ := ((V.scalarExtension (L := L)).determinantOfMeasurableBase
+      (hξ := ((V.scalarExtension (L := L)).determinantOfNormMeasurability
         (hN := ⟨hNL⟩)).toIsAdelic)
       (hη := (V.scalarExtensionDeterminant (L := L)).toIsAdelic)
     rfl

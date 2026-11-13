@@ -61,29 +61,29 @@ restricted degree under the actual completed tensor equivalence. -/
 theorem degree_restrict_scalarExtension_of_sqrt_neg_one [S.IsProper]
     (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized]
-    [hV : V.toNormFamily.IsUltrametric] (hi : ∃ a : K, a ^ 2 = -1)
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] (hi : ∃ a : K, a ^ 2 = -1)
     (A : Submodule K V) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
-    ((V.scalarExtension (L := L)).restrictOfMeasurableBase
+    ((V.scalarExtension (L := L)).restrictOfNormMeasurability
       (A.baseChange L) (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed
           (L := L)))⟩)).degree
       (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
       (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
-    (V.restrictOfMeasurableBase A).degree := by
+    (V.restrictOfNormMeasurability A).degree := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
   let hL : DiscreteMeasurableSpace (S.algebraicExtension L).Ω ∨
       (S.algebraicExtension L).HasCommonCountableDenseSubfield :=
     Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
   let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
-  let W := (V.restrictOfMeasurableBase A).scalarExtension (L := L)
-  let R := (V.scalarExtension (L := L)).restrictOfMeasurableBase (A.baseChange L) (hS := ⟨hL⟩)
+  let W := (V.restrictOfNormMeasurability A).scalarExtension (L := L)
+  let R := (V.scalarExtension (L := L)).restrictOfNormMeasurability (A.baseChange L) (hS := ⟨hL⟩)
   have he : W.degree (hS := ⟨hL⟩) (hN := ⟨hLN⟩) = R.degree (hS := ⟨hL⟩) (hN := ⟨hLN⟩) :=
     W.degree_eq_of_completed_isometry R (Submodule.toBaseChange.toLinearEquiv L A)
       (hS := ⟨hL⟩) (hN := ⟨hLN⟩) (fun x z =>
           V.toNormFamily.scalarExtension_restrict_norm_eq_of_sqrt_neg_one
          hi A x z)
   exact he.symm.trans
-    ((V.restrictOfMeasurableBase A).degree_scalarExtension_of_isAlgClosed
+    ((V.restrictOfNormMeasurability A).degree_scalarExtension_of_isAlgClosed
       )
 
 /-- The native base-changed subbundle has precisely the original restricted
@@ -91,10 +91,10 @@ rank, through the same canonical tensor equivalence, including rank zero. -/
 theorem rank_restrict_scalarExtension
     (V : AdelicVectorBundle S) [hcount : S.HasCommonCountableDenseSubfield]
     [hN : S.IsArchimedeanNormalized] (A : Submodule K V) :
-    ((V.scalarExtension (L := L)).restrictOfMeasurableBase
+    ((V.scalarExtension (L := L)).restrictOfNormMeasurability
       (A.baseChange L) (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed
           (L := L)))⟩)).rank =
-    (V.restrictOfMeasurableBase A).rank := by
+    (V.restrictOfNormMeasurability A).rank := by
   change Module.finrank L (A.baseChange L) = Module.finrank K A
   exact (Submodule.toBaseChange.toLinearEquiv L A).finrank_eq.symm.trans
     Module.finrank_baseChange

@@ -49,14 +49,14 @@ variable {K L ι : Type*} [Field K] [Field L] [Algebra K L]
 
 /-- Northcott's theorem for projective points over any algebraic extension:
 both the height and the degree of the intrinsic field of definition are bounded. -/
-theorem finite_projectiveHeight_le_degree_le [hS : AS.HasNorthcott] (C δ : ℝ) :
+theorem finite_projectiveLogHeight_le_degree_le [hS : AS.HasNorthcott] (C δ : ℝ) :
     letI := Algebraic.isProper_algebraicExtension AS L
     Set.Finite {x : Projectivization L (ι → L) |
-      (AS.algebraicExtension L).projectiveHeight x ≤ C ∧
+      (AS.algebraicExtension L).projectiveLogHeight x ≤ C ∧
         (Module.finrank K (x.fieldOfDefinition K) : ℝ) ≤ δ} := by
   let := Algebraic.isProper_algebraicExtension AS L
   apply Projectivization.finite_of_representatives_in_finite_set
-    (AS.finite_affineHeight_le_degree_le (L := L) C δ)
+    (AS.finite_affineLogHeight_le_degree_le (L := L) C δ)
   intro x hx
   obtain ⟨j, hj⟩ : ∃ j, x.rep j ≠ 0 := by
     by_contra! hzero
@@ -64,14 +64,14 @@ theorem finite_projectiveHeight_le_degree_le [hS : AS.HasNorthcott] (C δ : ℝ)
   refine ⟨x.normalizedCoordinates j, x.normalizedCoordinates_ne_zero hj,
     ?_, x.mk_normalizedCoordinates hj⟩
   intro i
-  refine ⟨((AS.algebraicExtension L).affineHeight_normalizedCoordinates_le x hj i).trans
+  refine ⟨((AS.algebraicExtension L).affineLogHeight_normalizedCoordinates_le x hj i).trans
     hx.1, ?_⟩
   exact (Nat.cast_le.mpr (x.finrank_adjoin_div_le K i j)).trans hx.2
 
 /-- Chen–Moriwaki, Theorem 3.5.3, for every projective dimension and all real bounds. -/
-theorem finite_absoluteHeight_le_degree_le [hS : AS.HasNorthcott] (n : ℕ) (C δ : ℝ) :
+theorem finite_absoluteLogHeight_le_degree_le [hS : AS.HasNorthcott] (n : ℕ) (C δ : ℝ) :
     Set.Finite {x : Projectivization (AlgebraicClosure K) (Fin (n + 1) → AlgebraicClosure K) |
-      AS.absoluteHeight x ≤ C ∧ (Module.finrank K (x.fieldOfDefinition K) : ℝ) ≤ δ} :=
-  AS.finite_projectiveHeight_le_degree_le C δ
+      AS.absoluteLogHeight x ≤ C ∧ (Module.finrank K (x.fieldOfDefinition K) : ℝ) ≤ δ} :=
+  AS.finite_projectiveLogHeight_le_degree_le C δ
 
 end ArakelovGeometry.AdelicStructure

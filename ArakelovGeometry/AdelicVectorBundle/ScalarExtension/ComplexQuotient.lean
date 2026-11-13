@@ -91,7 +91,8 @@ theorem scalarExtension_pushforward_dual_norm_eq_of_sqrt_neg_one (ξ : NormFamil
     ((ξ.pushforward π hπ).dual.scalarExtension (L := L)).norm x d
   rw [ξ.pushforward_dual π hπ]
   exact ξ.dual.scalarExtension_pullback_norm_eq_of_sqrt_neg_one
-    (hξ := ξ.dual_isUltrametric) hi π.dualMap (LinearMap.dualMap_injective_of_surjective hπ) x d
+    (hξ := ξ.dual_isUltrametricAtFinitePlaces) hi π.dualMap
+      (LinearMap.dualMap_injective_of_surjective hπ) x d
 
 private theorem dual_norm_congr_at_place
     {k : Type*} [Field k] {T : AdelicStructure k}

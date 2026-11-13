@@ -32,7 +32,7 @@ open Classical in
 /-- The literal ball filtration of the actual quotient norm is the image
 of the original ball filtration, at the same included threshold. -/
 theorem trivialFiltration_pushforward
-    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (q : E →ₗ[K] Q) (hq : Function.Surjective q) (t : ℝ) :
     (ξ.pushforward q hq).trivialFiltration (hξ := (hξ.pushforward q hq)) t =
       (ξ.trivialFiltration t).map q := by
@@ -57,10 +57,11 @@ theorem trivialFiltration_pushforward_ofTrivialFiltration
     (hleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t)
     (q : E →ₗ[K] Q) (hq : Function.Surjective q) (t : ℝ) :
     ((ofTrivialFiltration F hF hbot htop hleft).pushforward q hq).trivialFiltration
-      (hξ := ((ofTrivialFiltration_isUltrametric F hF hbot htop hleft).pushforward q hq)) t =
+      (hξ := ((ofTrivialFiltration_isUltrametricAtFinitePlaces F hF hbot htop hleft).pushforward q
+        hq)) t =
       (F t).map q := by
   rw [trivialFiltration_pushforward _
-    (hξ := (ofTrivialFiltration_isUltrametric F hF hbot htop hleft)),
+    (hξ := (ofTrivialFiltration_isUltrametricAtFinitePlaces F hF hbot htop hleft)),
     trivialFiltration_ofTrivialFiltration]
 
 end

@@ -36,7 +36,7 @@ variable {K : Type u} [Field K] [NumberField K] {S : AdelicStructure K}
 /-- The produced local basis extends and transports to a genuine completed
 coefficient basis of the literal completed unit ball. -/
 def completedUnitBallBasis (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Module.Basis (Fin (Module.finrank (S.rationalLocalRing ω hω)
       (ξ.rationalUnitBallModule ω hω))) (S.completedLocalRing ω hω)
       (ξ.completedUnitBallModule ω hω) :=
@@ -45,7 +45,7 @@ def completedUnitBallBasis (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωf
 
 @[simp]
 theorem completedUnitBallBasis_coe (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric]
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (i : Fin (Module.finrank (S.rationalLocalRing ω hω)
       (ξ.rationalUnitBallModule ω hω))) :
     (ξ.completedUnitBallBasis ω hω hnt i : (S.ϕ ω).Completion ⊗[K] E) =
@@ -56,19 +56,19 @@ theorem completedUnitBallBasis_coe (ξ : NormFamily S E) (ω : S.Ω)
 
 /-- The actual completed unit ball is free over its actual completed coefficient ring. -/
 theorem free_completedUnitBallModule (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Module.Free (S.completedLocalRing ω hω) (ξ.completedUnitBallModule ω hω) :=
   Module.Free.of_basis (ξ.completedUnitBallBasis ω hω hnt)
 
 /-- The actual finite completed coefficient basis gives a finite local module. -/
 theorem finite_completedUnitBallModule (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Module.Finite (S.completedLocalRing ω hω) (ξ.completedUnitBallModule ω hω) :=
   Module.Finite.of_basis (ξ.completedUnitBallBasis ω hω hnt)
 
 /-- The literal completed unit-ball rank equals the original rational dimension. -/
 theorem finrank_completedUnitBallModule (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Module.finrank (S.completedLocalRing ω hω) (ξ.completedUnitBallModule ω hω) =
       Module.finrank K E := by
   rw [Module.finrank_eq_card_basis (ξ.completedUnitBallBasis ω hω hnt),
@@ -76,7 +76,7 @@ theorem finrank_completedUnitBallModule (ξ : NormFamily S E) (ω : S.Ω)
 
 /-- The actual completed-ball inclusion extended to its actual completed field. -/
 def completedUnitBallGenericFibreMap (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     (S.ϕ ω).Completion ⊗[S.completedLocalRing ω hω]
       (ξ.completedUnitBallModule ω hω) →ₗ[(S.ϕ ω).Completion]
       ((S.ϕ ω).Completion ⊗[K] E) :=
@@ -85,7 +85,7 @@ def completedUnitBallGenericFibreMap (ξ : NormFamily S E) (ω : S.Ω)
 omit [NumberField K] [FiniteDimensional K E] in
 @[simp]
 theorem completedUnitBallGenericFibreMap_tmul (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] (a : (S.ϕ ω).Completion)
+    (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces] (a : (S.ϕ ω).Completion)
     (x : ξ.completedUnitBallModule ω hω) :
     ξ.completedUnitBallGenericFibreMap ω hω (a ⊗ₜ[S.completedLocalRing ω hω] x) =
       a • (x : (S.ϕ ω).Completion ⊗[K] E) :=
@@ -94,7 +94,7 @@ theorem completedUnitBallGenericFibreMap_tmul (ξ : NormFamily S E) (ω : S.Ω)
 /-- The actual completed generic fibre isomorphism matches the two produced
 completed-field bases of the actual ball tensor and the original completed fibre. -/
 def completedUnitBallGenericFibreEquiv (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     (S.ϕ ω).Completion ⊗[S.completedLocalRing ω hω]
       (ξ.completedUnitBallModule ω hω) ≃ₗ[(S.ϕ ω).Completion]
       ((S.ϕ ω).Completion ⊗[K] E) :=
@@ -103,7 +103,7 @@ def completedUnitBallGenericFibreEquiv (ξ : NormFamily S E) (ω : S.Ω)
 
 /-- The produced completed generic equivalence is the original canonical map. -/
 theorem completedUnitBallGenericFibreEquiv_coe (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     (ξ.completedUnitBallGenericFibreEquiv ω hω hnt).toLinearMap =
       ξ.completedUnitBallGenericFibreMap ω hω := by
   apply ((ξ.completedUnitBallBasis ω hω hnt).baseChange (S.ϕ ω).Completion).ext
@@ -116,7 +116,7 @@ theorem completedUnitBallGenericFibreEquiv_coe (ξ : NormFamily S E) (ω : S.Ω)
 
 @[simp]
 theorem completedUnitBallGenericFibreEquiv_tmul (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric]
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (a : (S.ϕ ω).Completion) (x : ξ.completedUnitBallModule ω hω) :
     ξ.completedUnitBallGenericFibreEquiv ω hω hnt
         (a ⊗ₜ[S.completedLocalRing ω hω] x) =
@@ -126,14 +126,14 @@ theorem completedUnitBallGenericFibreEquiv_tmul (ξ : NormFamily S E) (ω : S.Ω
 
 /-- The original actual completed generic-fibre tensor map is bijective. -/
 theorem completedUnitBallGenericFibreMap_bijective (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Function.Bijective (ξ.completedUnitBallGenericFibreMap ω hω) := by
   rw [← ξ.completedUnitBallGenericFibreEquiv_coe ω hω hnt]
   exact (ξ.completedUnitBallGenericFibreEquiv ω hω hnt).bijective
 
 /-- The literal completed local ball spans the actual completed vector-space fibre. -/
 theorem span_completedUnitBall_eq_top (ξ : NormFamily S E) (ω : S.Ω)
-    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ S.Ωfin) (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Submodule.span (S.ϕ ω).Completion (ξ.completedUnitBall ω) = ⊤ := by
   apply top_unique
   rw [← (ξ.completedLocalUnitBallBasis ω hω hnt).span_eq]
@@ -147,7 +147,7 @@ theorem span_completedUnitBall_eq_top (ξ : NormFamily S E) (ω : S.Ω)
 theorem free_normalizedCompletedUnitBallModule
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
     (ω : (normalizedNumberFieldAdelicStructure K).Ω)
-    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Module.Free ((normalizedNumberFieldAdelicStructure K).completedLocalRing ω hω)
       (ξ.completedUnitBallModule ω hω) :=
   ξ.free_completedUnitBallModule ω hω
@@ -158,7 +158,7 @@ theorem free_normalizedCompletedUnitBallModule
 theorem finrank_normalizedCompletedUnitBallModule
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
     (ω : (normalizedNumberFieldAdelicStructure K).Ω)
-    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Module.finrank ((normalizedNumberFieldAdelicStructure K).completedLocalRing ω hω)
       (ξ.completedUnitBallModule ω hω) = Module.finrank K E :=
   ξ.finrank_completedUnitBallModule ω hω
@@ -169,7 +169,7 @@ theorem finrank_normalizedCompletedUnitBallModule
 def normalizedCompletedUnitBallGenericFibreEquiv
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
     (ω : (normalizedNumberFieldAdelicStructure K).Ω)
-    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hξ : ξ.IsUltrametric] :
+    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     ((normalizedNumberFieldAdelicStructure K).ϕ ω).Completion ⊗[
       (normalizedNumberFieldAdelicStructure K).completedLocalRing ω hω]
       (ξ.completedUnitBallModule ω hω) ≃ₗ[
@@ -183,7 +183,7 @@ def normalizedCompletedUnitBallGenericFibreEquiv
 theorem normalizedCompletedUnitBallGenericFibreEquiv_tmul
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
     (ω : (normalizedNumberFieldAdelicStructure K).Ω)
-    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hξ : ξ.IsUltrametric]
+    (hω : ω ∈ (normalizedNumberFieldAdelicStructure K).Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (a : ((normalizedNumberFieldAdelicStructure K).ϕ ω).Completion)
     (x : ξ.completedUnitBallModule ω hω) :
     ξ.normalizedCompletedUnitBallGenericFibreEquiv ω hω

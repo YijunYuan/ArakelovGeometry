@@ -168,7 +168,7 @@ theorem pullback_dual_norm_eq_of_isRCLike_or_ultrametric
 
 /-- Under the source local hypotheses, duality turns pullback into
 pushforward along the transpose, as equality of actual norm families. -/
-theorem pullback_dual [hξ : ξ.IsUltrametric]
+theorem pullback_dual [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hS : S.IsArchimedeanNormalized]
     (f : F →ₗ[K] E) (hf : Function.Injective f) :
     (ξ.pullback f hf).dual =
@@ -181,7 +181,7 @@ theorem pullback_dual [hξ : ξ.IsUltrametric]
 
 /-- The actual dual of a subspace restriction has exactly the quotient norm
 along the algebraic restriction of functionals. -/
-theorem restrict_dual [hξ : ξ.IsUltrametric]
+theorem restrict_dual [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hS : S.IsArchimedeanNormalized]
     (V : Submodule K E) :
     (ξ.restrict V).dual = ξ.dual.pushforward V.subtype.dualMap
@@ -270,7 +270,7 @@ theorem completed_dual_annihilator_range (V : Submodule K E) (ω : S.Ω) :
 /-- Duality gives the actual completed short exact sequence its induced
 restriction and quotient norms under the source local hypotheses. No rank
 positivity is required for the ambient space or either end. -/
-theorem dual_normed_exact_sequence [hξ : ξ.IsUltrametric]
+theorem dual_normed_exact_sequence [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hS : S.IsArchimedeanNormalized]
     (V : Submodule K E) :
     (∀ ω : S.Ω,
@@ -333,7 +333,7 @@ theorem dual_quotient_annihilator_norm_eq_of_isRCLike_or_ultrametric
 
 /-- The canonical quotient-by-annihilator norm identity at every adelic
 place under the source ultrametric and usual-Archimedean hypotheses. -/
-theorem dual_quotient_annihilator_norm_eq [hξ : ξ.IsUltrametric]
+theorem dual_quotient_annihilator_norm_eq [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hS : S.IsArchimedeanNormalized]
     (V : Submodule K E) (ω : S.Ω)
     (z : (S.ϕ ω).Completion ⊗[K] (Module.Dual K E ⧸ V.dualAnnihilator)) :
@@ -347,7 +347,7 @@ theorem dual_quotient_annihilator_norm_eq [hξ : ξ.IsUltrametric]
 
 /-- The canonical algebraic quotient-by-annihilator equivalence identifies
 the actual quotient dual family with the actual restricted-space dual family. -/
-theorem dual_quotient_annihilator [hξ : ξ.IsUltrametric]
+theorem dual_quotient_annihilator [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hS : S.IsArchimedeanNormalized]
     (V : Submodule K E) :
     ξ.dual.quotient V.dualAnnihilator =

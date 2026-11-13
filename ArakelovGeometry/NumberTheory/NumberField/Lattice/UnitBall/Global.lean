@@ -79,7 +79,7 @@ theorem HasFiniteNormExceptions.iff (ξ : NormFamily S E) :
 
 /-- Ultrametric finite norms make the literal global ball an actual
 integer-ring submodule, with the original integral scalar action. -/
-def globalUnitBallModule (ξ : NormFamily S E) [hξ : ξ.IsUltrametric] :
+def globalUnitBallModule (ξ : NormFamily S E) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Submodule (𝓞 K) E where
   carrier := ξ.globalUnitBall
   zero_mem' ω _ := ξ.zero_mem_rationalUnitBall ω
@@ -98,7 +98,7 @@ def globalUnitBallModule (ξ : NormFamily S E) [hξ : ξ.IsUltrametric] :
       (mul_one 1)
 
 @[simp]
-theorem mem_globalUnitBallModule (ξ : NormFamily S E) [hξ : ξ.IsUltrametric] (x : E) :
+theorem mem_globalUnitBallModule (ξ : NormFamily S E) [hξ : ξ.IsUltrametricAtFinitePlaces] (x : E) :
     x ∈ ξ.globalUnitBallModule ↔ x ∈ ξ.globalUnitBall := Iff.rfl
 
 variable [NumberField K]

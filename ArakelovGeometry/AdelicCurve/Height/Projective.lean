@@ -179,11 +179,11 @@ variable {L ι : Type*} [Field L] [Fintype ι] [Nonempty ι]
     (AS : AdelicStructure L) [AS.IsProper]
 
 /-- Every coordinate in a nonzero projective chart has height bounded by the point's height. -/
-theorem affineHeight_normalizedCoordinates_le (x : Projectivization L (ι → L))
+theorem affineLogHeight_normalizedCoordinates_le (x : Projectivization L (ι → L))
     {j : ι} (hj : x.rep j ≠ 0) (i : ι) :
-    AS.affineHeight (x.normalizedCoordinates j i) ≤ AS.projectiveHeight x := by
-  have h := AS.affineHeight_div_le_logHeight x.rep hj i
+    AS.affineLogHeight (x.normalizedCoordinates j i) ≤ AS.projectiveLogHeight x := by
+  have h := AS.affineLogHeight_div_le_logHeight x.rep hj i
   simpa only [Projectivization.normalizedCoordinates,
-    ← AS.projectiveHeight_mk x.rep_nonzero, x.mk_rep] using h
+    ← AS.projectiveLogHeight_mk x.rep_nonzero, x.mk_rep] using h
 
 end ArakelovGeometry.AdelicStructure

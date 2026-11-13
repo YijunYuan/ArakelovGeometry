@@ -75,7 +75,7 @@ theorem nativeRestrictionDegreeOfCountableDiscreteBase_eq_degree
     (A : Submodule L (L ⊗[K] V)) :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
     V.nativeRestrictionDegreeOfCountableDiscreteBase A =
-      ((V.scalarExtension).restrictOfMeasurableBase A
+      ((V.scalarExtension).restrictOfNormMeasurability A
         (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)).degree
         (hS := ⟨(Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L)))⟩)
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) := rfl

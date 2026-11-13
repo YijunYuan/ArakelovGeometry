@@ -453,7 +453,8 @@ theorem ofBasisMixed_dual_integrable_logNorm
 
 omit [FiniteDimensional K E] in
 /-- The mixed coordinate family is ultrametric at every finite place. -/
-theorem ofBasisMixed_isUltrametric : (ofBasisMixed S E b).IsUltrametric := by
+theorem ofBasisMixed_isUltrametricAtFinitePlaces
+    : (ofBasisMixed S E b).IsUltrametricAtFinitePlaces := by
   constructor
   intro ω hω x y
   simp only [ofBasisMixed_norm_of_finite b ω hω, ofBasis_norm]
@@ -470,6 +471,6 @@ theorem ofBasisMixed_isStronglyDominated
     [hS : S.IsArchimedeanNormalized] :
     (ofBasisMixed S E b).IsStronglyDominated :=
   ((ofBasisMixed S E b).isStronglyDominated_iff_isDominated_of_ultrametric
-    (hξ := (ofBasisMixed_isUltrametric b))).mpr (ofBasisMixed_isDominated b)
+    (hξ := (ofBasisMixed_isUltrametricAtFinitePlaces b))).mpr (ofBasisMixed_isDominated b)
 
 end ArakelovGeometry.NormFamily

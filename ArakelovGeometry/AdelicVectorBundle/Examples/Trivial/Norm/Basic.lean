@@ -167,10 +167,10 @@ theorem ofTrivialNorm_trivialSeminorm (ξ : NormFamily (singleTrivialPlace K) E)
 open Classical in
 /-- Ultrametricity of the transported actual family is exactly the
 ultrametric inequality on its original rational norm. -/
-theorem ofTrivialNorm_isUltrametric_iff
+theorem ofTrivialNorm_isUltrametricAtFinitePlaces_iff
     (p : Seminorm (WithAbs (AbsoluteValue.trivial : AbsoluteValue K ℝ)) E)
     (hp : ∀ x, p x = 0 ↔ x = 0) :
-    (ofTrivialNorm p hp).IsUltrametric ↔ ∀ x y, p (x + y) ≤ max (p x) (p y) := by
+    (ofTrivialNorm p hp).IsUltrametricAtFinitePlaces ↔ ∀ x y, p (x + y) ≤ max (p x) (p y) := by
   constructor
   · intro h x y
     have hω : (PUnit.unit : (singleTrivialPlace K).Ω) ∈ (singleTrivialPlace K).Ωfin := by
@@ -269,9 +269,9 @@ theorem norm_eq_const_of_trivialSeminorm_eq_const
 open Classical in
 /-- Constant nonzero norms satisfy the ultrametric inequality on the
 whole actual completed fibre. -/
-theorem isUltrametric_of_trivialSeminorm_eq_const
+theorem isUltrametricAtFinitePlaces_of_trivialSeminorm_eq_const
     (ξ : NormFamily (singleTrivialPlace K) E) {c : ℝ}
-    (h : ∀ x, x ≠ 0 → ξ.trivialSeminorm x = c) : ξ.IsUltrametric := by
+    (h : ∀ x, x ≠ 0 → ξ.trivialSeminorm x = c) : ξ.IsUltrametricAtFinitePlaces := by
   constructor
   intro ω _ x y
   by_cases hx : x = 0
@@ -298,7 +298,7 @@ open Classical in
 therefore actual degree zero, including the empty determinant wedge. -/
 theorem degree_eq_zero_of_trivialSeminorm_eq_one
     (V : AdelicVectorBundle (singleTrivialPlace K))
-    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     (h : ∀ x, x ≠ 0 → V.toNormFamily.trivialSeminorm x = 1) :
     V.degree = 0 := by
@@ -309,7 +309,7 @@ theorem degree_eq_zero_of_trivialSeminorm_eq_one
   let qd : Seminorm C (C ⊗[K] (⋀[K]^(Module.finrank K V) V)) :=
     V.toNormFamily.determinant.norm PUnit.unit
   have hH : V.toNormFamily.IsHermitian := by
-    refine ⟨V.toNormFamily.isUltrametric_of_trivialSeminorm_eq_const h, ?_⟩
+    refine ⟨V.toNormFamily.isUltrametricAtFinitePlaces_of_trivialSeminorm_eq_const h, ?_⟩
     intro ω hω
     simp only [singleTrivialPlace_Ωinf, Set.mem_empty_iff_false] at hω
   have hb : ∀ i, V.toNormFamily.norm PUnit.unit (B i) ≤ 1 := by
@@ -362,7 +362,7 @@ open Classical in
 degree, in every rank. -/
 theorem degree_eq_neg_finrank_mul_log_of_trivialSeminorm_eq_const
     (V : AdelicVectorBundle (singleTrivialPlace K))
-    [hS : (singleTrivialPlace K).HasMeasurableBase]
+    [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
     [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
     {c : ℝ} (hc : 0 < c)
     (h : ∀ x, x ≠ 0 → V.toNormFamily.trivialSeminorm x = c) :
@@ -460,7 +460,7 @@ open AdelicStructure
 
 variable [FiniteDimensional K E]
   (V : AdelicVectorBundle (singleTrivialPlace K))
-  [hS : (singleTrivialPlace K).HasMeasurableBase]
+  [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
 open Classical in
@@ -491,11 +491,11 @@ theorem minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const
     apply le_iInf
     intro U
     have hq : ∀ x, x ≠ 0 →
-        (V.quotientOfMeasurableBase U.val).toNormFamily.trivialSeminorm x = c := by
+        (V.quotientOfNormMeasurability U.val).toNormFamily.trivialSeminorm x = c := by
       intro x hx
       exact V.toNormFamily.trivialSeminorm_pushforward_eq_const h
         U.val.mkQ U.val.mkQ_surjective x hx
-    rw [(V.quotientOfMeasurableBase U.val).slope_eq_neg_log_of_trivialSeminorm_eq_const
+    rw [(V.quotientOfNormMeasurability U.val).slope_eq_neg_log_of_trivialSeminorm_eq_const
       hc hq U.property]
 
 open Classical in
@@ -510,11 +510,11 @@ theorem isSemistable_of_trivialSeminorm_eq_const
   have hUr : 0 < Module.finrank K U :=
     Nat.pos_of_ne_zero (fun hz ↦ hU (Submodule.finrank_eq_zero.mp hz))
   have hu : ∀ x, x ≠ 0 →
-      (V.restrictOfMeasurableBase U).toNormFamily.trivialSeminorm x = c := by
+      (V.restrictOfNormMeasurability U).toNormFamily.trivialSeminorm x = c := by
     intro x hx
     exact V.toNormFamily.trivialSeminorm_restrict_eq_const h U x hx
   rw [V.minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const hc h hr,
-    (V.restrictOfMeasurableBase U).minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const
+    (V.restrictOfNormMeasurability U).minimalSlope_eq_neg_log_of_trivialSeminorm_eq_const
       hc hu hUr]
 
 end AdelicVectorBundle

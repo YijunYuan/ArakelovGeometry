@@ -116,7 +116,7 @@ namespace AdelicVectorBundle
 open AdelicStructure
 
 variable (V : AdelicVectorBundle (singleTrivialPlace K))
-  [hS : (singleTrivialPlace K).HasMeasurableBase]
+  [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
 open Classical in
@@ -176,10 +176,10 @@ and therefore the universal source estimate (4.80). -/
 theorem abs_log_bidual_basis_sub_eq_zero_of_isSemistable
     [hV : V.IsSemistable] {ι : Type v} (b : Module.Basis ι K V)
     {α : ℝ} (hα : 0 < α) (hα1 : α < 1) (i j : ι) :
-    |Real.log ((V.bidualOfMeasurableBase).toNormFamily.trivialSeminorm (b i)) -
-      Real.log ((V.bidualOfMeasurableBase).toNormFamily.trivialSeminorm (b j))| = 0 ∧
-    |Real.log ((V.bidualOfMeasurableBase).toNormFamily.trivialSeminorm (b i)) -
-      Real.log ((V.bidualOfMeasurableBase).toNormFamily.trivialSeminorm (b j))| ≤
+    |Real.log ((V.bidualOfNormMeasurability).toNormFamily.trivialSeminorm (b i)) -
+      Real.log ((V.bidualOfNormMeasurability).toNormFamily.trivialSeminorm (b j))| = 0 ∧
+    |Real.log ((V.bidualOfNormMeasurability).toNormFamily.trivialSeminorm (b i)) -
+      Real.log ((V.bidualOfNormMeasurability).toNormFamily.trivialSeminorm (b j))| ≤
         -((Module.finrank K V : ℝ) + 1) * Real.log α := by
   obtain ⟨c, _, h⟩ := (V.isSemistable_iff_exists_trivialSeminorm_bidual_eq_const
     hV.1).mp hV
@@ -195,12 +195,12 @@ source error is exactly zero: logarithm plus the actual ordinary mean. -/
 theorem log_bidual_norm_add_slope_eq_zero_of_isSemistable
     [hV : V.IsSemistable] (ω : (singleTrivialPlace K).Ω)
     (z : ((singleTrivialPlace K).ϕ ω).Completion ⊗[K] V) (hz : z ≠ 0) :
-    Real.log ((V.bidualOfMeasurableBase).toNormFamily.norm ω z) + V.slope = 0 := by
+    Real.log ((V.bidualOfNormMeasurability).toNormFamily.norm ω z) + V.slope = 0 := by
   obtain ⟨c, hc, h⟩ := (V.isSemistable_iff_exists_trivialSeminorm_bidual_eq_const
     hV.1).mp hV
   have hm := (V.slopes_eq_neg_log_of_trivialSeminorm_bidual_eq_const
     hc h hV.1).1
-  rw [(V.bidualOfMeasurableBase).toNormFamily.norm_eq_const_of_trivialSeminorm_eq_const
+  rw [(V.bidualOfNormMeasurability).toNormFamily.norm_eq_const_of_trivialSeminorm_eq_const
     h ω z hz, hm]
   exact add_neg_cancel _
 

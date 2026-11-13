@@ -173,7 +173,7 @@ theorem fullLatticeGaugeFamily_globalUnitBall_eq (L : Submodule (𝓞 K) E) (hfg
 theorem fullLatticeGaugeFamily_globalUnitBallModule_eq
     (L : Submodule (𝓞 K) E) (hfg : L.FG)
     (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (N) E)
-    [hξ : (fullLatticeGaugeFamily L hfg hspan η).IsUltrametric] :
+    [hξ : (fullLatticeGaugeFamily L hfg hspan η).IsUltrametricAtFinitePlaces] :
     (fullLatticeGaugeFamily L hfg hspan η).globalUnitBallModule = L := by
   apply SetLike.coe_injective
   exact fullLatticeGaugeFamily_globalUnitBall_eq L hfg hspan η
@@ -184,13 +184,13 @@ theorem fullLatticeGaugeFamily_model [FiniteDimensional K E]
     (hspan : Submodule.span K (L : Set E) = ⊤) (η : NormFamily (N) E) :
     (∀ ω, ω ∉ (N).Ωfin →
       (fullLatticeGaugeFamily L hfg hspan η).norm ω = η.norm ω) ∧
-    (fullLatticeGaugeFamily L hfg hspan η).IsUltrametric ∧
+    (fullLatticeGaugeFamily L hfg hspan η).IsUltrametricAtFinitePlaces ∧
     (fullLatticeGaugeFamily L hfg hspan η).HasFiniteNormExceptions ∧
     (fullLatticeGaugeFamily L hfg hspan η).IsDominated ∧
     (fullLatticeGaugeFamily L hfg hspan η).globalUnitBall = (L : Set E) := by
   obtain ⟨hc, hd⟩ := fullLatticeGaugeFamily_coherent_and_dominated L hfg hspan η
   exact ⟨fullLatticeGaugeFamily_norm_not_finite L hfg hspan η,
-    fullLatticeGaugeFamily_isUltrametric L hfg hspan η, hc, hd,
+    fullLatticeGaugeFamily_isUltrametricAtFinitePlaces L hfg hspan η, hc, hd,
     fullLatticeGaugeFamily_globalUnitBall_eq L hfg hspan η⟩
 
 end ArakelovGeometry.NumberFieldFullLattice

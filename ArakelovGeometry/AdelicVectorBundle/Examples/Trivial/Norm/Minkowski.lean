@@ -69,7 +69,7 @@ theorem singleTrivialPlace_hasStrongMinkowskiPropertyAtLevel_zero (K : Type u) [
       exact V.toNormFamily.norm_rational_pos PUnit.unit (b.ne_zero i)
     · exact hbound (b i)
   have hm := V.coe_le_logarithmicMinimum_of_linearIndependent s b.linearIndependent hd
-  rw [V.minimalSlope_eq_neg_log_sSup_range_of_isUltrametric
+  rw [V.minimalSlope_eq_neg_log_sSup_range_of_isUltrametricAtFinitePlaces
     (hN := ⟨(singleTrivialPlace_normalized K)⟩) (hV := hV) hr]
   simpa only [zero_mul, EReal.coe_zero, sub_zero,
     AdelicVectorBundle.minimalLogarithmicMinimum] using hm
@@ -91,7 +91,7 @@ variable {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 /-- Equality of the actual last minimum and minimal slope for all ranks. -/
 theorem minimalLogarithmicMinimum_eq_minimalSlope_singleTrivialPlace
     (V : AdelicVectorBundle (AdelicStructure.singleTrivialPlace K))
-    [hV : V.toNormFamily.IsUltrametric] :
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] :
     V.minimalLogarithmicMinimum = V.minimalSlope
       (hN := ⟨(AdelicStructure.singleTrivialPlace_normalized K)⟩) := by
   by_cases hz : Module.finrank K V = 0
@@ -107,7 +107,7 @@ theorem minimalLogarithmicMinimum_eq_minimalSlope_singleTrivialPlace
 /-- Equality of the actual first minimum and maximal slope for all ranks. -/
 theorem maximalLogarithmicMinimum_eq_maximalSlope_singleTrivialPlace
     (V : AdelicVectorBundle (AdelicStructure.singleTrivialPlace K))
-    [hV : V.toNormFamily.IsUltrametric] :
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] :
     V.maximalLogarithmicMinimum = V.maximalSlope
       (hN := ⟨(AdelicStructure.singleTrivialPlace_normalized K)⟩) := by
   by_cases hz : Module.finrank K V = 0

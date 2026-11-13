@@ -87,7 +87,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 line. Original determinant measurability and domination suffice; whole-vector
 extension measurability is not a hypothesis. -/
 abbrev hermitianScalarExtensionDeterminant (V : AdelicVectorBundle S)
-    [hbase : S.HasMeasurableBase]
+    [hbase : S.NormMeasurabilityHypotheses]
     [hS : S.IsArchimedeanNormalized]
     [hL : (S.algebraicExtension L).IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :
@@ -99,12 +99,12 @@ abbrev hermitianScalarExtensionDeterminant (V : AdelicVectorBundle S)
         (V.isMeasurable.determinant_of_discrete_or_countable))
     (hd := by
       exact NormFamily.IsDominated.determinant_hermitianScalarExtension V.toNormFamily
-        (V.determinantOfMeasurableBase).isDominated
+        (V.determinantOfNormMeasurability).isDominated
         (V.isMeasurable.determinant_of_discrete_or_countable))
 
 @[simp]
 theorem hermitianScalarExtensionDeterminant_toNormFamily (V : AdelicVectorBundle S)
-    [hbase : S.HasMeasurableBase]
+    [hbase : S.NormMeasurabilityHypotheses]
     [hS : S.IsArchimedeanNormalized]
     [hL : (S.algebraicExtension L).IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :
@@ -114,7 +114,7 @@ theorem hermitianScalarExtensionDeterminant_toNormFamily (V : AdelicVectorBundle
 /-- The actual Hermitian extended determinant has rank one in every
 original rank, including zero. -/
 instance hermitianScalarExtensionDeterminant_isLine (V : AdelicVectorBundle S)
-    [hbase : S.HasMeasurableBase]
+    [hbase : S.NormMeasurabilityHypotheses]
     [hS : S.IsArchimedeanNormalized]
     [hL : (S.algebraicExtension L).IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :
@@ -125,7 +125,7 @@ instance hermitianScalarExtensionDeterminant_isLine (V : AdelicVectorBundle S)
 are equal through their proved norm-family identity. -/
 theorem hermitianScalarExtensionDeterminant_eq_scalarExtensionDeterminant
     (V : AdelicVectorBundle S)
-    [hbase : S.HasMeasurableBase]
+    [hbase : S.NormMeasurabilityHypotheses]
     [hS : S.IsArchimedeanNormalized]
     [hL : (S.algebraicExtension L).IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :
@@ -140,7 +140,7 @@ theorem hermitianScalarExtensionDeterminant_eq_scalarExtensionDeterminant
 original vector-bundle degree for every algebraic extension. -/
 theorem lineDegree_hermitianScalarExtensionDeterminant [S.IsProper]
     (V : AdelicVectorBundle S)
-    [hbase : S.HasMeasurableBase]
+    [hbase : S.NormMeasurabilityHypotheses]
     [hS : S.IsArchimedeanNormalized]
     [hL : (S.algebraicExtension L).IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :
@@ -237,14 +237,14 @@ theorem degree_hermitianScalarExtension_of_finiteDimensional [S.IsProper]
   let := hp
   let hLS := hcount.algebraicExtension_of_finiteDimensional (L := L)
   let W := V.hermitianScalarExtension (L := L)
-  have hdegree : (W.determinantOfMeasurableBase).lineDegree
-        (hV := (W.determinantOfMeasurableBase_isLine)) =
+  have hdegree : (W.determinantOfNormMeasurability).lineDegree
+        (hV := (W.determinantOfNormMeasurability_isLine)) =
       (V.hermitianScalarExtensionDeterminant (L := L)).lineDegree
         (hV := (V.hermitianScalarExtensionDeterminant_isLine)) := by
     apply lineDegree_eq_of_norm_rational_eq
-      W.determinantOfMeasurableBase
+      W.determinantOfNormMeasurability
       (V.hermitianScalarExtensionDeterminant (L := L)) (LinearEquiv.refl L _)
-      (hV := W.determinantOfMeasurableBase_isLine)
+      (hV := W.determinantOfNormMeasurability_isLine)
       (hW := V.hermitianScalarExtensionDeterminant_isLine)
     intro x s
     rfl

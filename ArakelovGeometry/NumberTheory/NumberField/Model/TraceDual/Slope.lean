@@ -39,19 +39,19 @@ variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
 /-- Exact Hermitian extremal duality, including the zero-space conventions. -/
 theorem maximalSlope_dual_eq_neg_minimalSlope
     (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] :
-    (V.dualOfMeasurableBase).maximalSlope = -V.minimalSlope := by
+    (V.dualOfNormMeasurability).maximalSlope = -V.minimalSlope := by
   by_cases hr : Module.finrank K V = 0
-  · rw [(V.dualOfMeasurableBase).maximalSlope_eq_bot_of_finrank_eq_zero
+  · rw [(V.dualOfNormMeasurability).maximalSlope_eq_bot_of_finrank_eq_zero
       (Subspace.dual_finrank_eq.trans hr), V.minimalSlope_eq_top_of_finrank_eq_zero hr]
     rfl
   have hrpos : 0 < Module.finrank K V := Nat.pos_of_ne_zero hr
-  let D := V.dualOfMeasurableBase
+  let D := V.dualOfNormMeasurability
   have hrD : 0 < Module.finrank K (Module.Dual K V) := by
     rwa [Subspace.dual_finrank_eq]
-  have hbidual : (D.dualOfMeasurableBase).minimalSlope =
+  have hbidual : (D.dualOfNormMeasurability).minimalSlope =
       V.minimalSlope := by
     symm
     apply V.minimalSlope_eq_of_completed_isometry _ (Module.evalEquiv K V)
@@ -73,7 +73,7 @@ theorem maximalSlope_dual_eq_neg_minimalSlope
 /-- Tensoring with an actual scalar line shifts maximal slope by its degree. -/
 theorem maximalSlope_orthogonalTensor_scalarLine
     (V : AdelicVectorBundle S) (ξ : NormFamily S K) [hξ : ξ.IsAdelic]
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hL : ξ.IsHermitian] :
     (V ⊗ʰ ξ.toAdelicVectorBundle).maximalSlope =
@@ -307,7 +307,7 @@ theorem originalPrescribedTraceDualFamily_isDominated
   let V := fullLatticeAdelicBundle L (genericImage_fg M) (genericImage_fullSpan M) η
   let hV := fullLatticeGaugeFamily_isHermitian L (genericImage_fg M)
     (genericImage_fullSpan M) η
-  let D := V.dualOfMeasurableBase
+  let D := V.dualOfNormMeasurability
   let : D.IsHermitian := hV.dual
   let : (dualizingLine K).IsHermitian := dualizingLine_isHermitian K
   have hd := D.isDominated.strong_orthogonalTensorPair (dualizingLine K).isDominated
@@ -379,7 +379,7 @@ theorem originalPrescribedTraceDual_maximalSlope
   let hN := normalizedNumberFieldArchimedeanCompletions (K := K)
   let Q := dualizingLine K
   let hQ := dualizingLine_isHermitian K
-  let D := V.dualOfMeasurableBase (hS := ⟨hS⟩)
+  let D := V.dualOfNormMeasurability (hS := ⟨hS⟩)
   let P := D.orthogonalTensorPair Q (hS := ⟨hS⟩) (hN := ⟨hN⟩) (hV := hV.dual) (hW := hQ)
   have hW : W.toNormFamily = δ :=
     originalPrescribedTraceDualFamily_eq_fullLatticeGaugeFamily M η

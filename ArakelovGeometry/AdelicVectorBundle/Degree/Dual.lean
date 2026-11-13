@@ -32,19 +32,19 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Dualizing a Hermitian adelic bundle negates its Arakelov degree. -/
-theorem degree_dualOfMeasurableBase [S.IsProper] (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+theorem degree_dualOfNormMeasurability [S.IsProper] (V : AdelicVectorBundle S)
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] :
-    (V.dualOfMeasurableBase).degree = -V.degree := by
-  let D := V.determinantOfMeasurableBase
-  have hD : D.IsLine := V.determinantOfMeasurableBase_isLine
+    (V.dualOfNormMeasurability).degree = -V.degree := by
+  let D := V.determinantOfNormMeasurability
+  have hD : D.IsLine := V.determinantOfNormMeasurability_isLine
   calc
-    (V.dualOfMeasurableBase).degree =
+    (V.dualOfNormMeasurability).degree =
         (D.dualLine (hV := hD)).lineDegree (hV := (D.dualLine_isLine (hV := hD))) := by
       apply lineDegree_eq_of_norm_rational_eq
-        V.dualOfMeasurableBase.determinantOfMeasurableBase (D.dualLine (hV := hD))
-        (hV := V.dualOfMeasurableBase.determinantOfMeasurableBase_isLine)
+        V.dualOfNormMeasurability.determinantOfNormMeasurability (D.dualLine (hV := hD))
+        (hV := V.dualOfNormMeasurability.determinantOfNormMeasurability_isLine)
         (hW := D.dualLine_isLine (hV := hD)) (determinantDualEquiv K V)
       intro ω x
       change V.toNormFamily.dual.determinant.norm ω (1 ⊗ₜ[K] x) =

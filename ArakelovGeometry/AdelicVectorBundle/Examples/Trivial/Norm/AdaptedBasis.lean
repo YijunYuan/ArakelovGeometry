@@ -77,7 +77,7 @@ open Classical in
 /-- The actual finite ball flag produces a finite basis whose coefficient
 supports characterize every actual ball, including the empty basis. -/
 theorem exists_basis_adapted_trivialFiltration
-    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric] :
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     ∃ b : Module.Basis (Fin (Module.finrank K E)) K E,
       ∀ t x, x ∈ ξ.trivialFiltration t ↔
         ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration t := by
@@ -125,7 +125,7 @@ open Classical in
 /-- The produced actual adapted basis gives the weighted coordinate
 maximum on every original vector and every genuine completed fibre. -/
 theorem exists_basis_orthogonal_trivialFiltration
-    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric] :
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     ∃ b : Module.Basis (Fin (Module.finrank K E)) K E,
       (∀ t x, x ∈ ξ.trivialFiltration t ↔
         ∀ i, b.repr x i ≠ 0 → b i ∈ ξ.trivialFiltration t) ∧
@@ -199,7 +199,7 @@ open Classical in
 /-- The genuine finite actual norm range has a positive attained maximum
 in positive rank; no maximal-radius bound is supplied as an assumption. -/
 theorem exists_nonzero_trivialSeminorm_eq_sSup_range
-    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (singleTrivialPlace K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (hr : 0 < Module.finrank K E) :
     ∃ x, x ≠ 0 ∧ ξ.trivialSeminorm x = sSup (Set.range ξ.trivialSeminorm) ∧
       0 < sSup (Set.range ξ.trivialSeminorm) ∧
@@ -228,22 +228,22 @@ namespace AdelicVectorBundle
 open AdelicStructure
 
 variable (V : AdelicVectorBundle (singleTrivialPlace K))
-  [hS : (singleTrivialPlace K).HasMeasurableBase]
+  [hS : (singleTrivialPlace K).NormMeasurabilityHypotheses]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 
 open Classical in
 /-- The actual HN ball identification and whole-space cut give the
 minimal slope as negative log of the genuine largest nonzero-vector norm. -/
-theorem minimalSlope_eq_neg_log_sSup_range_of_isUltrametric
-    [hV : V.toNormFamily.IsUltrametric] (hr : 0 < Module.finrank K V) :
+theorem minimalSlope_eq_neg_log_sSup_range_of_isUltrametricAtFinitePlaces
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] (hr : 0 < Module.finrank K V) :
     V.minimalSlope = (-Real.log (sSup (Set.range V.toNormFamily.trivialSeminorm)) : ℝ) := by
   obtain ⟨x, _, hx, hR, hmax⟩ :=
     V.toNormFamily.exists_nonzero_trivialSeminorm_eq_sSup_range hr
   have hcut : ∀ t : ℝ, (t : EReal) ≤ V.minimalSlope ↔
       t ≤ -Real.log (sSup (Set.range V.toNormFamily.trivialSeminorm)) := by
     intro t
-    rw [← V.generalHNFiltration_eq_top_iff t,
-      V.generalHNFiltration_eq_trivialFiltration t]
+    rw [← V.hnFiltration_eq_top_iff t,
+      V.hnFiltration_eq_trivialFiltration t]
     have hb : V.toNormFamily.trivialFiltration t = ⊤ ↔
         ∀ y, V.toNormFamily.trivialSeminorm y ≤ Real.exp (-t) := by
       constructor
@@ -278,15 +278,16 @@ theorem minimalSlope_eq_neg_log_sSup_range_of_isUltrametric
 open Classical in
 /-- The actual largest-radius formula retains the genuine positive
 infinity convention in rank zero, on the extended real line. -/
-theorem minimalSlope_eq_if_neg_log_sSup_range_of_isUltrametric
-    [hV : V.toNormFamily.IsUltrametric] :
+theorem minimalSlope_eq_if_neg_log_sSup_range_of_isUltrametricAtFinitePlaces
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] :
     V.minimalSlope = if Module.finrank K V = 0 then (⊤ : EReal) else
       ((-Real.log (sSup (Set.range V.toNormFamily.trivialSeminorm)) : ℝ) : EReal) := by
   by_cases hr : Module.finrank K V = 0
   · rw [ite_eq_left hr]
     exact V.minimalSlope_eq_top_of_finrank_eq_zero hr
   · rw [ite_eq_right hr]
-    exact V.minimalSlope_eq_neg_log_sSup_range_of_isUltrametric (Nat.pos_of_ne_zero hr)
+    exact V.minimalSlope_eq_neg_log_sSup_range_of_isUltrametricAtFinitePlaces (Nat.pos_of_ne_zero
+      hr)
 
 end AdelicVectorBundle
 

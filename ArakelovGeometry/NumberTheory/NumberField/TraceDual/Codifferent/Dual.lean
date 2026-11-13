@@ -135,7 +135,7 @@ variable {K E : Type*} [Field K] [NumberField K]
 /-- The actual codifferent-valued dual of the original dominated pure global ball. -/
 def normalizedGlobalUnitBallCodifferentEquiv
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
-    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] [hpure : ξ.IsPureAtFinitePlaces] :
     NumberFieldIntegralTraceDual.integralTraceDual (ξ.globalUnitBallModule) ≃ₗ[𝓞 K]
       ((ξ.globalUnitBallModule) →ₗ[𝓞 K] NumberFieldCodifferentDual.codifferentModule K) :=
   NumberFieldCodifferentDual.codifferentEquiv (ξ.globalUnitBallModule)
@@ -144,7 +144,7 @@ def normalizedGlobalUnitBallCodifferentEquiv
 @[simp]
 theorem normalizedGlobalUnitBallCodifferentEquiv_apply
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    [ξ.IsDominated] [ξ.IsUltrametric] [ξ.IsPureAtFinitePlaces]
+    [ξ.IsDominated] [ξ.IsUltrametricAtFinitePlaces] [ξ.IsPureAtFinitePlaces]
     (f : NumberFieldIntegralTraceDual.integralTraceDual (ξ.globalUnitBallModule))
     (m : ξ.globalUnitBallModule) :
     (ξ.normalizedGlobalUnitBallCodifferentEquiv f m : K) = f.1 (m : E) :=

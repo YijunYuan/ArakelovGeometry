@@ -189,7 +189,7 @@ theorem scalarExtension_norm_le_mul_of_basis_norm_le
       C * (ofBasisMixed (S.algebraicExtension L) (L ⊗[K] E) (b.baseChange L)).norm x z := by
   classical
   apply norm_le_mul_of_basis_norm_le (b.baseChange L) (ξ.scalarExtension (L := L))
-    (hξ := ξ.scalarExtension_isUltrametric) x hC _ z
+    (hξ := ξ.scalarExtension_isUltrametricAtFinitePlaces) x hC _ z
   intro i
   rw [Module.Basis.baseChange_apply, Module.Basis.baseChange_apply]
   exact (ξ.scalarExtension_norm_one_tmul_le x (b i)).trans

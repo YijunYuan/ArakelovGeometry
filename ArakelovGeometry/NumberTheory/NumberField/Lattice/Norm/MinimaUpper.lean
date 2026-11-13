@@ -55,7 +55,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 
 variable (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
 
-theorem globalImpurity_restrict_eq_zero [hξ : ξ.IsUltrametric]
+theorem globalImpurity_restrict_eq_zero [hξ : ξ.IsUltrametricAtFinitePlaces]
     (hσ : ξ.globalImpurity = 0) (F : Submodule K E) :
     (ξ.restrict F).globalImpurity = 0 := by
   apply ((ξ.restrict F).globalImpurity_eq_zero_iff_latticeGaugeFamily_eq
@@ -122,7 +122,7 @@ theorem vectorDegree_eq_of_mem_span_singleton
 /-- Actual arithmetic produces an integral representative of each rational
 line and bounds its original infinite-place mean. -/
 theorem exists_integral_line_archimedeanMeanLogNorm_bound
-    [hξ : ξ.IsUltrametric] [hc : ξ.HasFiniteNormExceptions]
+    [hξ : ξ.IsUltrametricAtFinitePlaces] [hc : ξ.HasFiniteNormExceptions]
     [hd : ξ.IsDominated] [hm : ξ.IsMeasurable] (hσ : ξ.globalImpurity = 0)
     (s : {x : E // x ≠ 0}) :
     ∃ l : E, l ≠ 0 ∧ l ∈ ξ.globalUnitBall ∧ l ∈ Submodule.span K {s.val} ∧
@@ -169,7 +169,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 through bounded-index line representatives and Dirichlet units. -/
 theorem mem_integralBasisThresholds_of_vectorDegree_basis
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    [hξ : ξ.IsUltrametric] [hc : ξ.HasFiniteNormExceptions]
+    [hξ : ξ.IsUltrametricAtFinitePlaces] [hc : ξ.HasFiniteNormExceptions]
     [hd : ξ.IsDominated] [hm : ξ.IsMeasurable] (hσ : ξ.globalImpurity = 0)
     (b : Module.Basis (Fin (Module.finrank K E)) K E) {t : ℝ}
     (ht : ∀ i, t ≤ ξ.vectorDegree ⟨b i, b.ne_zero i⟩) :
@@ -208,7 +208,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 attainment hypotheses and including the empty basis convention. -/
 theorem minimalLogarithmicMinimum_le_degree_mul_latticeLambda_add_constant_of_impurity_zero
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
-    [hV : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions]
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] [hc : V.toNormFamily.HasFiniteNormExceptions]
     (hσ : V.toNormFamily.globalImpurity = 0) :
     V.minimalLogarithmicMinimum ≤
       ((Module.finrank ℚ K : ℝ) : EReal) * V.toNormFamily.latticeLambda +
@@ -250,7 +250,7 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 /-- Literal finite unit-ball equality transfers genuine source coherence. -/
 theorem HasFiniteNormExceptions.latticeGaugeFamily
     {ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E}
-    (hc : ξ.HasFiniteNormExceptions) (hξ : ξ.IsUltrametric) :
+    (hc : ξ.HasFiniteNormExceptions) (hξ : ξ.IsUltrametricAtFinitePlaces) :
     (ξ.latticeGaugeFamily).HasFiniteNormExceptions := by
   constructor
   intro x
@@ -280,14 +280,16 @@ impurity term is the literal source impurity, proved finite by domination
 and coherence, and evaluated in the real line. -/
 theorem minimalLogarithmicMinimum_le_degree_mul_latticeLambda_add_impurity_add_constant
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
-    [hV : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions] :
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
+      [hc : V.toNormFamily.HasFiniteNormExceptions] :
     V.minimalLogarithmicMinimum ≤
       ((Module.finrank ℚ K : ℝ) : EReal) * V.toNormFamily.latticeLambda +
         (V.toNormFamily.globalImpurity.toReal : EReal) +
         (NumberFieldLatticeMinimaUpper.comparisonConstant K : EReal) := by
   have hp := minimalLogarithmicMinimum_le_degree_mul_latticeLambda_add_constant_of_impurity_zero
     (V.numberFieldLatticeGauge)
-      (hV := (V.toNormFamily.latticeGaugeFamily_isUltrametric)) (hc := (hc.latticeGaugeFamily hV))
+      (hV := (V.toNormFamily.latticeGaugeFamily_isUltrametricAtFinitePlaces))
+        (hc := (hc.latticeGaugeFamily hV))
       (V.numberFieldLatticeGauge_globalImpurity_eq_zero)
   rw [V.numberFieldLatticeGauge_latticeLambda_eq] at hp
   have h := (V.logarithmicMinimum_le_numberFieldLatticeGauge_add_globalImpurity
@@ -307,7 +309,8 @@ variable {K E : Type*} [Field K] [NumberField K] [AddCommGroup E] [Module K E]
 with a field-only constant and the literal integral invariant and impurity. -/
 theorem numberField_latticeLambda_logarithmicMinimum_comparison
     (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
-    [hV : V.toNormFamily.IsUltrametric] [hc : V.toNormFamily.HasFiniteNormExceptions] :
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
+      [hc : V.toNormFamily.HasFiniteNormExceptions] :
     ((Module.finrank ℚ K : ℝ) : EReal) * V.toNormFamily.latticeLambda ≤
         V.minimalLogarithmicMinimum ∧
       V.minimalLogarithmicMinimum ≤

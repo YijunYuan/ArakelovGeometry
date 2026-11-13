@@ -150,7 +150,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 /-- The literal rational unit ball, with its genuine module structure over the
 actual rational local valuation ring. -/
 def rationalUnitBallModule (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    [hξ : ξ.IsUltrametric] : Submodule (S.rationalLocalRing ω hω) E where
+    [hξ : ξ.IsUltrametricAtFinitePlaces] : Submodule (S.rationalLocalRing ω hω) E where
   carrier := ξ.rationalUnitBall ω
   zero_mem' := ξ.zero_mem_rationalUnitBall ω
   add_mem' {x y} hx hy := by
@@ -167,14 +167,14 @@ def rationalUnitBallModule (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωf
 
 @[simp]
 theorem coe_rationalUnitBallModule (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    [hξ : ξ.IsUltrametric] :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] :
     (ξ.rationalUnitBallModule ω hω : Set E) = ξ.rationalUnitBall ω := rfl
 
 /-- The inclusion of the actual rational unit ball is a genuine localization
 at the nonzero elements of the actual rational local coefficient ring. -/
 theorem isLocalizedModule_rationalUnitBallModule [NumberField K]
     (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     IsLocalizedModule (nonZeroDivisors (S.rationalLocalRing ω hω))
       (ξ.rationalUnitBallModule ω hω).subtype := by
   let R := S.rationalLocalRing ω hω
@@ -201,7 +201,7 @@ theorem isLocalizedModule_rationalUnitBallModule [NumberField K]
 module to the actual number field recovers the original vector space. -/
 noncomputable def rationalUnitBallGenericFibreEquiv [NumberField K]
     (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] :
+    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     K ⊗[S.rationalLocalRing ω hω] (ξ.rationalUnitBallModule ω hω) ≃ₗ[K] E := by
   letI := ξ.isLocalizedModule_rationalUnitBallModule ω hω hnt
   exact (IsLocalizedModule.isBaseChange (nonZeroDivisors (S.rationalLocalRing ω hω))
@@ -210,7 +210,7 @@ noncomputable def rationalUnitBallGenericFibreEquiv [NumberField K]
 @[simp]
 theorem rationalUnitBallGenericFibreEquiv_tmul [NumberField K]
     (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin)
-    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametric] (c : K)
+    (hnt : (S.ϕ ω).IsNontrivial) [hξ : ξ.IsUltrametricAtFinitePlaces] (c : K)
     (x : ξ.rationalUnitBallModule ω hω) :
     ξ.rationalUnitBallGenericFibreEquiv ω hω hnt
       (c ⊗ₜ[S.rationalLocalRing ω hω] x) = c • (x : E) := by

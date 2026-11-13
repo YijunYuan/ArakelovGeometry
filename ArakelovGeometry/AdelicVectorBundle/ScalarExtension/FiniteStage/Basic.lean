@@ -72,7 +72,7 @@ variable {S : AdelicStructure K} (ξ : NormFamily S E)
 /-- Ultrametricity at finite places and usual Archimedean normalization make
 the canonical embedding of every completed base vector isometric. -/
 theorem scalarExtension_norm_completed_one_tmul_eq_of_ultrametric
-    [hξ : ξ.IsUltrametric]
+    [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hS : S.IsArchimedeanNormalized]
     (x : S.ParameterSpaceExtension L) (y : (S.ϕ x.base).Completion ⊗[K] E) :
     let := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
@@ -104,7 +104,7 @@ theorem scalarExtension_norm_finiteStage
   let := AbsoluteValue.normedAlgebraCompletionOfEq
     ((S.algebraicExtension F).ϕ xT.base) xT.abv xT.restrict_eq
   have he := (ξ.scalarExtension (L := F)).scalarExtension_norm_completed_one_tmul_eq_of_ultrametric
-    (hξ := ξ.scalarExtension_isUltrametric) xT
+    (hξ := ξ.scalarExtension_isUltrametricAtFinitePlaces) xT
       ((1 : ((S.algebraicExtension F).ϕ xT.base).Completion) ⊗ₜ[F] z)
   simp only [completedScalarExtensionEquiv_symm_tmul, map_one, mul_one] at he
   have ht := ξ.scalarExtension_trans xT

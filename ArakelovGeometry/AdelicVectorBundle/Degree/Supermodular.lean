@@ -106,7 +106,7 @@ variable [S.IsProper]
 The determinant argument also applies in rank zero. -/
 theorem degree_le_of_completed_contraction
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.norm ω (e.toLinearMap.baseChange (S.ϕ ω).Completion x) ≤ V.norm ω x) :
     V.degree ≤ W.degree := by
@@ -121,11 +121,11 @@ theorem degree_le_of_completed_contraction
           (V.toNormFamily.operatorNorm_le W.toNormFamily ω e.toLinearMap (by norm_num)
             (by intro x; simpa only [one_mul] using he ω x))))))
   change lowerEnvelopeIntegral
-    ((V.determinantOfMeasurableBase).toNormFamily.localHeight
-      (W.determinantOfMeasurableBase).toNormFamily
+    ((V.determinantOfNormMeasurability).toNormFamily.localHeight
+      (W.determinantOfNormMeasurability).toNormFamily
       ⟨determinantMap K e.toLinearMap e.finrank_eq, hd⟩) S.v ≤ _ at hl
-  rw [← (V.determinantOfMeasurableBase).mapHeight_eq_lowerEnvelopeIntegral
-      (W.determinantOfMeasurableBase) hd,
+  rw [← (V.determinantOfNormMeasurability).mapHeight_eq_lowerEnvelopeIntegral
+      (W.determinantOfNormMeasurability) hd,
     V.determinantMap_mapHeight_eq_degree_sub W e,
     lowerEnvelopeIntegral_eq_integral
       (show Integrable (fun _ : S.Ω ↦ (0 : ℝ)) S.v from integrable_zero S.Ω ℝ S.v),
@@ -136,11 +136,11 @@ theorem degree_le_of_completed_contraction
 in the direction induced by its completed contraction. -/
 theorem degree_quotientInf_le_degree_supQuotient (V : AdelicVectorBundle S)
     (U W : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    ((V.restrictOfMeasurableBase U).quotientOfMeasurableBase
+    ((V.restrictOfNormMeasurability U).quotientOfNormMeasurability
       (U.comap U.subtype ⊓ W.comap U.subtype)).degree ≤
-    ((V.restrictOfMeasurableBase (U ⊔ W)).quotientOfMeasurableBase
+    ((V.restrictOfNormMeasurability (U ⊔ W)).quotientOfNormMeasurability
       (W.comap (U ⊔ W).subtype)).degree := by
   apply degree_le_of_completed_contraction _ _
     (LinearMap.quotientInfEquivSupQuotient U W)
@@ -149,18 +149,18 @@ theorem degree_quotientInf_le_degree_supQuotient (V : AdelicVectorBundle S)
 /-- Actual Hermitian degree is supermodular on all rational subspaces. -/
 theorem degree_restrict_inf_add_sup_ge_of_isHermitian (V : AdelicVectorBundle S)
     (U W : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.toNormFamily.IsHermitian] :
-    (V.restrictOfMeasurableBase U).degree +
-      (V.restrictOfMeasurableBase W).degree ≤
-    (V.restrictOfMeasurableBase (U ⊓ W)).degree +
-      (V.restrictOfMeasurableBase (U ⊔ W)).degree := by
+    (V.restrictOfNormMeasurability U).degree +
+      (V.restrictOfNormMeasurability W).degree ≤
+    (V.restrictOfNormMeasurability (U ⊓ W)).degree +
+      (V.restrictOfNormMeasurability (U ⊔ W)).degree := by
   have hc := V.degree_quotientInf_le_degree_supQuotient U W
-  have hU := (V.restrictOfMeasurableBase U).degree_restrict_add_degree_quotient_eq_of_isHermitian
+  have hU := (V.restrictOfNormMeasurability U).degree_restrict_add_degree_quotient_eq_of_isHermitian
       ((U ⊓ W).comap U.subtype) (hV := (hV.restrict U))
   have hUW := degree_restrict_add_degree_quotient_eq_of_isHermitian
-    (V.restrictOfMeasurableBase (U ⊔ W))
+    (V.restrictOfNormMeasurability (U ⊔ W))
     (W.comap (U ⊔ W).subtype) (hV := (hV.restrict (U ⊔ W)))
   rw [V.degree_restrict_restrict (U ⊓ W) U inf_le_left] at hU
   rw [V.degree_restrict_restrict W (U ⊔ W) le_sup_right] at hUW

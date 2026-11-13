@@ -137,7 +137,8 @@ theorem exceptionalSeminorm_add_le_max (p : Nat.Primes) (a : ℤ) (ω : S.Ω)
     exact mul_le_mul_of_nonneg_left (norm_add_le_max_of_finite S ω hω _ _)
       (Real.sqrt_nonneg _)
 
-theorem family_isUltrametric (p : Nat.Primes) (a : ℤ) : (family p a).IsUltrametric := by
+theorem family_isUltrametricAtFinitePlaces
+    (p : Nat.Primes) (a : ℤ) : (family p a).IsUltrametricAtFinitePlaces := by
   constructor
   intro ω hω z w
   by_cases hp : ω = primePoint p
@@ -145,7 +146,7 @@ theorem family_isUltrametric (p : Nat.Primes) (a : ℤ) : (family p a).IsUltrame
     simp only [family_norm_prime]
     exact exceptionalSeminorm_add_le_max p a _ hω z w
   · simp only [family_norm_off_prime p a ω hp]
-    exact ofBasisHermitian_isUltrametric standardBasis ω hω z w
+    exact ofBasisHermitian_isUltrametricAtFinitePlaces standardBasis ω hω z w
 
 /-- The family is a genuine finite modification of completed basis norms. -/
 theorem family_coherent_and_dominated (p : Nat.Primes) (a : ℤ) :
@@ -180,7 +181,7 @@ theorem family_norm_infinite (p : Nat.Primes) (a : ℤ) (ω : S.Ω) (hω : ω �
 
 theorem family_isHermitian (p : Nat.Primes) (a : ℤ) :
     (family p a).IsHermitian (hS := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩) := by
-  refine ⟨family_isUltrametric p a, fun ω hω => ?_⟩
+  refine ⟨family_isUltrametricAtFinitePlaces p a, fun ω hω => ?_⟩
   obtain ⟨c, hc⟩ := (ofBasisHermitian_isHermitian standardBasis
     (hS := ⟨(normalizedNumberFieldArchimedeanCompletions (K := ℚ))⟩)).2 ω hω
   refine ⟨c, fun z => ?_⟩

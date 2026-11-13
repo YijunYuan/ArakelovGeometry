@@ -72,25 +72,25 @@ local instance : IsScalarTower ℤ ℚ (RestrictScalars ℚ K E) :=
 
 /-- The literal global inclusion, with the canonical rational restricted target. -/
 def normalizedGlobalRationalInclusion (ξ : NormFamily (N) E)
-    [hξ : ξ.IsUltrametric] :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] :
     ξ.globalUnitBallModule →ₗ[ℤ] RestrictScalars ℚ K E :=
   (ξ.globalUnitBallModule).subtype.restrictScalars ℤ
 
 @[simp]
 theorem normalizedGlobalRationalInclusion_coe (ξ : NormFamily (N) E)
-    [hξ : ξ.IsUltrametric] (x : ξ.globalUnitBallModule) :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (x : ξ.globalUnitBallModule) :
     RestrictScalars.addEquiv ℚ K E (ξ.normalizedGlobalRationalInclusion x) =
       (x : E) := rfl
 
 /-- The original canonical rational tensor map, without a coherence input. -/
 def normalizedGlobalRationalGenericFibreMap (ξ : NormFamily (N) E)
-    [hξ : ξ.IsUltrametric] :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] :
     ℚ ⊗[ℤ] (ξ.globalUnitBallModule) →ₗ[ℚ] RestrictScalars ℚ K E :=
   (ξ.normalizedGlobalRationalInclusion).liftBaseChange ℚ
 
 @[simp]
 theorem normalizedGlobalRationalGenericFibreMap_tmul (ξ : NormFamily (N) E)
-    [hξ : ξ.IsUltrametric] (q : ℚ) (x : ξ.globalUnitBallModule) :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (q : ℚ) (x : ξ.globalUnitBallModule) :
     RestrictScalars.addEquiv ℚ K E
       (ξ.normalizedGlobalRationalGenericFibreMap (q ⊗ₜ[ℤ] x)) =
       algebraMap ℚ K q • (x : E) := by
@@ -100,7 +100,7 @@ theorem normalizedGlobalRationalGenericFibreMap_tmul (ξ : NormFamily (N) E)
 /-- Genuine coherence identifies the actual rational scalar extension with `E`. -/
 def normalizedGlobalRationalGenericFiberEquiv
     (ξ : NormFamily (N) E) [ξ.HasFiniteNormExceptions]
-    [ξ.IsUltrametric] :
+    [ξ.IsUltrametricAtFinitePlaces] :
     ℚ ⊗[ℤ] (ξ.globalUnitBallModule) ≃ₗ[ℚ] RestrictScalars ℚ K E := by
   letI := integerRing_rationalIsPushout (K := K)
   let e : K ⊗[𝓞 K] (ξ.globalUnitBallModule) ≃ₗ[K] RestrictScalars ℚ K E :=
@@ -111,7 +111,7 @@ def normalizedGlobalRationalGenericFiberEquiv
 @[simp]
 theorem normalizedGlobalRationalGenericFiberEquiv_tmul
     (ξ : NormFamily (N) E) [ξ.HasFiniteNormExceptions]
-    [ξ.IsUltrametric] (q : ℚ) (x : ξ.globalUnitBallModule) :
+    [ξ.IsUltrametricAtFinitePlaces] (q : ℚ) (x : ξ.globalUnitBallModule) :
     RestrictScalars.addEquiv ℚ K E
       (ξ.normalizedGlobalRationalGenericFiberEquiv (q ⊗ₜ[ℤ] x)) =
       algebraMap ℚ K q • (x : E) := by
@@ -125,7 +125,7 @@ theorem normalizedGlobalRationalGenericFiberEquiv_tmul
 /-- The genuine coherent equivalence is the original canonical rational map. -/
 theorem normalizedGlobalRationalGenericFiberEquiv_coe
     (ξ : NormFamily (N) E) [ξ.HasFiniteNormExceptions]
-    [ξ.IsUltrametric] :
+    [ξ.IsUltrametricAtFinitePlaces] :
     (ξ.normalizedGlobalRationalGenericFiberEquiv).toLinearMap =
       ξ.normalizedGlobalRationalGenericFibreMap := by
   apply TensorProduct.AlgebraTensorModule.ext
@@ -137,21 +137,21 @@ theorem normalizedGlobalRationalGenericFiberEquiv_coe
 /-- Under genuine coherence the original rational generic map is bijective. -/
 theorem HasFiniteNormExceptions.normalizedGlobalRationalGenericFibreMap_bijective
     {ξ : NormFamily (N) E} (hfinite : ξ.HasFiniteNormExceptions)
-    (hξ : ξ.IsUltrametric) :
+    (hξ : ξ.IsUltrametricAtFinitePlaces) :
     Function.Bijective (ξ.normalizedGlobalRationalGenericFibreMap) := by
   rw [← ξ.normalizedGlobalRationalGenericFiberEquiv_coe]
   exact (ξ.normalizedGlobalRationalGenericFiberEquiv).bijective
 
 /-- The original canonical map in the source's right-tensor convention. -/
 def normalizedGlobalRightRationalGenericFibreMap (ξ : NormFamily (N) E)
-    [hξ : ξ.IsUltrametric] :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] :
     (ξ.globalUnitBallModule) ⊗[ℤ] ℚ →ₗ[ℤ] RestrictScalars ℚ K E :=
   ((ξ.normalizedGlobalRationalGenericFibreMap).restrictScalars ℤ).comp
     (TensorProduct.comm ℤ (ξ.globalUnitBallModule) ℚ).toLinearMap
 
 @[simp]
 theorem normalizedGlobalRightRationalGenericFibreMap_tmul
-    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (N) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     (x : ξ.globalUnitBallModule) (q : ℚ) :
     RestrictScalars.addEquiv ℚ K E
       (ξ.normalizedGlobalRightRationalGenericFibreMap (x ⊗ₜ[ℤ] q)) =
@@ -161,7 +161,7 @@ theorem normalizedGlobalRightRationalGenericFibreMap_tmul
 /-- The source's right-tensor generic fibre, through canonical commutation. -/
 def normalizedGlobalRightRationalGenericFiberEquiv
     (ξ : NormFamily (N) E) [ξ.HasFiniteNormExceptions]
-    [ξ.IsUltrametric] :
+    [ξ.IsUltrametricAtFinitePlaces] :
     (ξ.globalUnitBallModule) ⊗[ℤ] ℚ ≃ₗ[ℤ] RestrictScalars ℚ K E :=
   (TensorProduct.comm ℤ (ξ.globalUnitBallModule) ℚ).trans
     ((ξ.normalizedGlobalRationalGenericFiberEquiv).restrictScalars ℤ)
@@ -169,7 +169,7 @@ def normalizedGlobalRightRationalGenericFiberEquiv
 @[simp]
 theorem normalizedGlobalRightRationalGenericFiberEquiv_tmul
     (ξ : NormFamily (N) E) [ξ.HasFiniteNormExceptions]
-    [ξ.IsUltrametric] (x : ξ.globalUnitBallModule) (q : ℚ) :
+    [ξ.IsUltrametricAtFinitePlaces] (x : ξ.globalUnitBallModule) (q : ℚ) :
     RestrictScalars.addEquiv ℚ K E
       (ξ.normalizedGlobalRightRationalGenericFiberEquiv (x ⊗ₜ[ℤ] q)) =
       algebraMap ℚ K q • (x : E) :=
@@ -178,7 +178,7 @@ theorem normalizedGlobalRightRationalGenericFiberEquiv_tmul
 /-- The coherent right-tensor equivalence is the original canonical map. -/
 theorem normalizedGlobalRightRationalGenericFiberEquiv_coe
     (ξ : NormFamily (N) E) [ξ.HasFiniteNormExceptions]
-    [ξ.IsUltrametric] :
+    [ξ.IsUltrametricAtFinitePlaces] :
     (ξ.normalizedGlobalRightRationalGenericFiberEquiv).toLinearMap =
       ξ.normalizedGlobalRightRationalGenericFibreMap := by
   apply LinearMap.ext
@@ -190,7 +190,7 @@ theorem normalizedGlobalRightRationalGenericFiberEquiv_coe
 /-- The literal source-order canonical rational tensor map is bijective. -/
 theorem HasFiniteNormExceptions.normalizedGlobalRightRationalGenericFibreMap_bijective
     {ξ : NormFamily (N) E} (hfinite : ξ.HasFiniteNormExceptions)
-    (hξ : ξ.IsUltrametric) :
+    (hξ : ξ.IsUltrametricAtFinitePlaces) :
     Function.Bijective (ξ.normalizedGlobalRightRationalGenericFibreMap) := by
   rw [← ξ.normalizedGlobalRightRationalGenericFiberEquiv_coe]
   exact (ξ.normalizedGlobalRightRationalGenericFiberEquiv).bijective

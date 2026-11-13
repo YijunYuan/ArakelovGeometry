@@ -71,18 +71,18 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 
 /-- The literal completed ball inherits its actual integral coefficient action. -/
 instance completedUnitBall_integralModule (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] :
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     Module (𝓞 K) (ξ.completedUnitBallModule ω hω) :=
   Module.compHom (ξ.completedUnitBallModule ω hω)
     (S.integralCompletedLocalCoefficientMap ω hω)
 
-local instance (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin) [ξ.IsUltrametric] :
+local instance (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin) [ξ.IsUltrametricAtFinitePlaces] :
     SMul (𝓞 K) (ξ.completedUnitBallModule ω hω) :=
   (ξ.completedUnitBall_integralModule ω hω).toSMul
 
 /-- Integral and completed coefficient actions on the literal ball agree. -/
 instance completedUnitBall_integralScalarTower (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] :
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     IsScalarTower (𝓞 K) (S.completedLocalRing ω hω)
       (ξ.completedUnitBallModule ω hω) := by
   constructor
@@ -94,7 +94,7 @@ instance completedUnitBall_integralScalarTower (ξ : NormFamily S E)
 /-- Restriction through the actual rational coefficient map agrees with the
 completed integral action. -/
 instance completedUnitBall_integralRationalScalarTower (ξ : NormFamily S E)
-    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametric] :
+    (ω : S.Ω) (hω : ω ∈ S.Ωfin) [hξ : ξ.IsUltrametricAtFinitePlaces] :
     IsScalarTower (𝓞 K) (S.rationalLocalRing ω hω)
       (ξ.completedUnitBallModule ω hω) := by
   apply IsScalarTower.of_algebraMap_smul
@@ -110,7 +110,7 @@ local notation "N" => normalizedNumberFieldAdelicStructure K
 
 /-- The actual global-to-completed unit-ball map, before any coherence hypothesis. -/
 def normalizedGlobalUnitBallCompletionMap (ξ : NormFamily (N) E)
-    [hξ : ξ.IsUltrametric] (p : HeightOneSpectrum (𝓞 K)) :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (p : HeightOneSpectrum (𝓞 K)) :
     ξ.globalUnitBallModule →ₗ[𝓞 K]
       ξ.completedUnitBallModule (normalizedPrimeParameter p)
         (normalizedPrimeParameter_mem_fin p) :=
@@ -120,7 +120,7 @@ def normalizedGlobalUnitBallCompletionMap (ξ : NormFamily (N) E)
 
 @[simp]
 theorem normalizedGlobalUnitBallCompletionMap_coe (ξ : NormFamily (N) E)
-    [hξ : ξ.IsUltrametric] (p : HeightOneSpectrum (𝓞 K))
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (p : HeightOneSpectrum (𝓞 K))
     (x : ξ.globalUnitBallModule) :
     (ξ.normalizedGlobalUnitBallCompletionMap p x :
       ((N).ϕ (normalizedPrimeParameter p)).Completion ⊗[K] E) =
@@ -128,7 +128,7 @@ theorem normalizedGlobalUnitBallCompletionMap_coe (ξ : NormFamily (N) E)
 
 /-- The canonical completed coefficient extension of the actual global ball. -/
 def normalizedGlobalUnitBallCompletedTensorMap (ξ : NormFamily (N) E)
-    [hξ : ξ.IsUltrametric] (p : HeightOneSpectrum (𝓞 K)) :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (p : HeightOneSpectrum (𝓞 K)) :
     ((N).completedLocalRing (normalizedPrimeParameter p)
       (normalizedPrimeParameter_mem_fin p)) ⊗[𝓞 K] (ξ.globalUnitBallModule) →ₗ[
       (N).completedLocalRing (normalizedPrimeParameter p)
@@ -141,7 +141,7 @@ def normalizedGlobalUnitBallCompletedTensorMap (ξ : NormFamily (N) E)
 
 @[simp]
 theorem normalizedGlobalUnitBallCompletedTensorMap_tmul (ξ : NormFamily (N) E)
-    [hξ : ξ.IsUltrametric] (p : HeightOneSpectrum (𝓞 K))
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (p : HeightOneSpectrum (𝓞 K))
     (a : (N).completedLocalRing (normalizedPrimeParameter p)
       (normalizedPrimeParameter_mem_fin p)) (x : ξ.globalUnitBallModule) :
     ξ.normalizedGlobalUnitBallCompletedTensorMap p (a ⊗ₜ[𝓞 K] x) =
@@ -154,7 +154,7 @@ variable [FiniteDimensional K E]
 equivalence reconstruct the actual completed ball from the literal global module. -/
 def normalizedGlobalCompletedTensorEquiv
     (ξ : NormFamily (N) E) [ξ.HasFiniteNormExceptions]
-    [ξ.IsUltrametric] (p : HeightOneSpectrum (𝓞 K)) :
+    [ξ.IsUltrametricAtFinitePlaces] (p : HeightOneSpectrum (𝓞 K)) :
     ((N).completedLocalRing (normalizedPrimeParameter p)
       (normalizedPrimeParameter_mem_fin p)) ⊗[𝓞 K] (ξ.globalUnitBallModule) ≃ₗ[
       (N).completedLocalRing (normalizedPrimeParameter p)
@@ -174,7 +174,7 @@ def normalizedGlobalCompletedTensorEquiv
 @[simp]
 theorem normalizedGlobalCompletedTensorEquiv_tmul
     (ξ : NormFamily (N) E) [ξ.HasFiniteNormExceptions]
-    [ξ.IsUltrametric] (p : HeightOneSpectrum (𝓞 K))
+    [ξ.IsUltrametricAtFinitePlaces] (p : HeightOneSpectrum (𝓞 K))
     (a : (N).completedLocalRing (normalizedPrimeParameter p)
       (normalizedPrimeParameter_mem_fin p)) (x : ξ.globalUnitBallModule) :
     ξ.normalizedGlobalCompletedTensorEquiv p (a ⊗ₜ[𝓞 K] x) =
@@ -188,7 +188,7 @@ theorem normalizedGlobalCompletedTensorEquiv_tmul
 /-- The produced equivalence is the original canonical completed tensor map. -/
 theorem normalizedGlobalCompletedTensorEquiv_coe
     (ξ : NormFamily (N) E) [ξ.HasFiniteNormExceptions]
-    [ξ.IsUltrametric] (p : HeightOneSpectrum (𝓞 K)) :
+    [ξ.IsUltrametricAtFinitePlaces] (p : HeightOneSpectrum (𝓞 K)) :
     (ξ.normalizedGlobalCompletedTensorEquiv p).toLinearMap =
       ξ.normalizedGlobalUnitBallCompletedTensorMap p := by
   apply TensorProduct.AlgebraTensorModule.ext
@@ -199,7 +199,7 @@ theorem normalizedGlobalCompletedTensorEquiv_coe
 /-- Genuine source coherence makes the literal canonical completed global map bijective. -/
 theorem HasFiniteNormExceptions.normalizedGlobalUnitBallCompletedTensorMap_bijective
     {ξ : NormFamily (N) E} (hfinite : ξ.HasFiniteNormExceptions)
-    (hξ : ξ.IsUltrametric) (p : HeightOneSpectrum (𝓞 K)) :
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (p : HeightOneSpectrum (𝓞 K)) :
     Function.Bijective (ξ.normalizedGlobalUnitBallCompletedTensorMap p) := by
   rw [← ξ.normalizedGlobalCompletedTensorEquiv_coe p]
   exact (ξ.normalizedGlobalCompletedTensorEquiv p).bijective
@@ -208,7 +208,7 @@ theorem HasFiniteNormExceptions.normalizedGlobalUnitBallCompletedTensorMap_bijec
 completed global reconstruction, by genuine exhaustivity of prime indexing. -/
 theorem HasFiniteNormExceptions.exists_normalizedGlobalCompletedTensorEquivAt
     {ξ : NormFamily (N) E} (hfinite : ξ.HasFiniteNormExceptions)
-    (hξ : ξ.IsUltrametric) (ω : (N).Ω) (hω : ω ∈ (N).Ωfin) :
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (ω : (N).Ω) (hω : ω ∈ (N).Ωfin) :
     ∃ e : ((N).completedLocalRing ω hω) ⊗[𝓞 K]
         (ξ.globalUnitBallModule) ≃ₗ[(N).completedLocalRing ω hω]
         ξ.completedUnitBallModule ω hω,
@@ -225,7 +225,7 @@ theorem HasFiniteNormExceptions.exists_normalizedGlobalCompletedTensorEquivAt
 finite normalized parameter, with existence and formula already produced. -/
 def normalizedGlobalCompletedTensorEquivAt
     (ξ : NormFamily (N) E) [hfinite : ξ.HasFiniteNormExceptions]
-    [hξ : ξ.IsUltrametric] (ω : (N).Ω) (hω : ω ∈ (N).Ωfin) :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (ω : (N).Ω) (hω : ω ∈ (N).Ωfin) :
     ((N).completedLocalRing ω hω) ⊗[𝓞 K]
       (ξ.globalUnitBallModule) ≃ₗ[(N).completedLocalRing ω hω]
       ξ.completedUnitBallModule ω hω :=
@@ -234,7 +234,7 @@ def normalizedGlobalCompletedTensorEquivAt
 @[simp]
 theorem normalizedGlobalCompletedTensorEquivAt_tmul
     (ξ : NormFamily (N) E) [hfinite : ξ.HasFiniteNormExceptions]
-    [hξ : ξ.IsUltrametric] (ω : (N).Ω) (hω : ω ∈ (N).Ωfin)
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (ω : (N).Ω) (hω : ω ∈ (N).Ωfin)
     (a : (N).completedLocalRing ω hω) (x : ξ.globalUnitBallModule) :
     (ξ.normalizedGlobalCompletedTensorEquivAt ω hω (a ⊗ₜ[𝓞 K] x) :
       ((N).ϕ ω).Completion ⊗[K] E) =

@@ -218,9 +218,9 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 /-- The sharp upper bound in Proposition4.3.10 follows by integrating the
 actual local determinant discrepancy, in every rank. -/
 theorem degree_add_degree_dual_le [S.IsProper] (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    V.degree + (V.dualOfMeasurableBase).degree ≤
+    V.degree + (V.dualOfNormMeasurability).degree ≤
       (Module.finrank K V : ℝ) / 2 * Real.log (Module.finrank K V) *
         (S.v S.Ωinf).toReal := by
   rw [V.degree_add_degree_dual_eq_integral_log_determinantDiscrepancy]
@@ -242,13 +242,13 @@ theorem degree_add_degree_dual_le [S.IsProper] (V : AdelicVectorBundle S)
 infinity, allowing arbitrary finite-place vector norms. -/
 theorem degree_add_degree_dual_eq_zero_of_archimedeanInnerProducts [S.IsProper]
     (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (hI : ∀ (ω : S.Ω) (hω : ω ∈ S.Ωinf),
       letI := IsRCLikeNormedField.rclike (S.ϕ ω).Completion (h := hN ω hω)
       ∃ c : InnerProductSpace.Core (S.ϕ ω).Completion ((S.ϕ ω).Completion ⊗[K] V),
         ∀ x, (V.toNormFamily.norm ω x) ^ 2 = RCLike.re (c.inner x x)) :
-    V.degree + (V.dualOfMeasurableBase).degree = 0 := by
+    V.degree + (V.dualOfNormMeasurability).degree = 0 := by
   rw [V.degree_add_degree_dual_eq_integral_log_determinantDiscrepancy]
   have he : (fun ω ↦ Real.log (V.toNormFamily.determinantDiscrepancy ω)) =
       (fun _ ↦ (0 : ℝ)) := by

@@ -130,7 +130,8 @@ theorem line_completedGauge_finite_log_index (L : Submodule (𝓞 K) E) (hfg : L
       Real.log (Nat.card (L ⧸ Submodule.span (𝓞 K) {x})) := by
   let η := NormFamily.ofBasis (normalizedNumberFieldAdelicStructure K) E (Module.finBasis K E)
   let ξ := fullLatticeGaugeFamily L hfg hspan η
-  have hU : ξ.IsUltrametric := fullLatticeGaugeFamily_isUltrametric L hfg hspan η
+  have hU : ξ.IsUltrametricAtFinitePlaces :=
+    fullLatticeGaugeFamily_isUltrametricAtFinitePlaces L hfg hspan η
   have hL : ξ.globalUnitBallModule (hξ := hU) = L :=
     fullLatticeGaugeFamily_globalUnitBallModule_eq L hfg hspan η (hξ := hU)
   let e : ξ.globalUnitBallModule (hξ := hU) ≃ₗ[𝓞 K] L := LinearEquiv.ofEq _ _ hL
@@ -162,7 +163,8 @@ theorem line_completedGauge_log_support_finite (L : Submodule (𝓞 K) E) (hfg :
   classical
   let η := NormFamily.ofBasis (normalizedNumberFieldAdelicStructure K) E (Module.finBasis K E)
   let ξ := fullLatticeGaugeFamily L hfg hspan η
-  have hU : ξ.IsUltrametric := fullLatticeGaugeFamily_isUltrametric L hfg hspan η
+  have hU : ξ.IsUltrametricAtFinitePlaces :=
+    fullLatticeGaugeFamily_isUltrametricAtFinitePlaces L hfg hspan η
   have hL : ξ.globalUnitBallModule (hξ := hU) = L :=
     fullLatticeGaugeFamily_globalUnitBallModule_eq L hfg hspan η (hξ := hU)
   have hfgξ : (ξ.globalUnitBallModule (hξ := hU)).FG := hL.symm ▸ hfg

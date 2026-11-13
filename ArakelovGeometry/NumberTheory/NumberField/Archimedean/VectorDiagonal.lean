@@ -370,7 +370,7 @@ variable {K E : Type*} [Field K] [NumberField K]
 /-- The real basis induced by the diagonal embedding of the pure global unit-ball lattice. -/
 def globalUnitBallDiagonalBasis
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hdom : ξ.IsDominated]
-    [hξ : ξ.IsUltrametric] [hpure : ξ.IsPureAtFinitePlaces] :
+    [hξ : ξ.IsUltrametricAtFinitePlaces] [hpure : ξ.IsPureAtFinitePlaces] :
     Module.Basis (Fin (Module.finrank ℤ (ξ.globalUnitBallModule))) ℝ
       (CompletedVectorProduct K E) := by
   have hm := hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure
@@ -378,7 +378,7 @@ def globalUnitBallDiagonalBasis
   exact diagonalLatticeBasis (ξ.globalUnitBallModule) hm.1 hspan
 
 theorem IsDominated.pure_globalBall_diagonal_discrete (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (hpure : ξ.IsPureAtFinitePlaces) :
     letI := completedProductNormedAddCommGroup ξ
     DiscreteTopology (diagonalLattice (ξ.globalUnitBallModule)) := by
   have hm := hdom.pure_normalizedGlobalUnitBall_finite_projective_span hξ hpure
@@ -386,7 +386,7 @@ theorem IsDominated.pure_globalBall_diagonal_discrete (hdom : ξ.IsDominated)
 
 open scoped Classical in
 theorem IsDominated.pure_globalBall_diagonal_isZLattice (hdom : ξ.IsDominated)
-    (hξ : ξ.IsUltrametric) (hpure : ξ.IsPureAtFinitePlaces) :
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (hpure : ξ.IsPureAtFinitePlaces) :
     letI := completedProductNormedAddCommGroup ξ
     letI := completedProductNormedSpace ξ
     letI := hdom.pure_globalBall_diagonal_discrete hξ hpure

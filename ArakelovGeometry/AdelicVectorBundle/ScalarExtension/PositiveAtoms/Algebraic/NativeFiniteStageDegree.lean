@@ -49,7 +49,7 @@ private theorem native_degree_of_tower_isometry [S.IsProper]
     (V₀ : AdelicVectorBundle (S.algebraicExtension F))
     (R : AdelicVectorBundle (S.algebraicExtension L))
     (e : (L ⊗[F] V₀) ≃ₗ[L] R)
-    [hpos : (S.algebraicExtension F).HasPositiveAtoms]
+    [hpos : (S.algebraicExtension F).HasPositiveSingletons]
     [hS : (S.algebraicExtension F).HasOnlyFinitePlaces]
     (hdet₀ : V₀.toNormFamily.determinant.IsMeasurable)
     (hdetR : R.toNormFamily.determinant.IsMeasurable)
@@ -65,12 +65,12 @@ private theorem native_degree_of_tower_isometry [S.IsProper]
       V₀.degreeOfMeasurableDeterminant (hdet := hdet₀) := by
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
   let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
-  let W := V₀.toNormFamily.algebraicScalarBundleOfPositiveAtoms (L := L)
+  let W := V₀.toNormFamily.algebraicScalarBundleOfPositiveSingletons (L := L)
     (hpos := ⟨hpos⟩) (hS := ⟨hS⟩)
   exact (AdelicVectorBundle.degreeOfMeasurableDeterminant_eq_of_tower_isometry
     F W R e (hdetW := hdet₀.determinant_scalarExtension) (hdetR := hdetR)
     (hNT := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) he).trans
-      (V₀.degreeOfMeasurableDeterminant_algebraicScalarBundleOfPositiveAtoms
+      (V₀.degreeOfMeasurableDeterminant_algebraicScalarBundleOfPositiveSingletons
         (hpos := ⟨hpos⟩) (hS := ⟨hS⟩) (hdet := hdet₀))
 
 /-- Equality between the actual positive-atomic native degree and its finite-stage degree.
@@ -79,25 +79,25 @@ This transparent predicate retains the genuine quotient bundles, determinant mea
 and Archimedean normalization occurring in both degrees. -/
 abbrev NativeAlgebraicSubquotientDegreeEq [S.IsProper]
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     [hN : S.IsArchimedeanNormalized]
     (F : Type uF) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
     [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] [FiniteDimensional K F]
     (P₀ Q₀ : Submodule F (F ⊗[K] E)) (P Q : Submodule L (L ⊗[K] E)) : Prop :=
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
-    (ξ.nativeAlgebraicSubquotientOfPositiveAtoms Q
+    (ξ.nativeAlgebraicSubquotientOfPositiveSingletons Q
       (P.comap Q.subtype)).degreeOfMeasurableDeterminant
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
-    (ξ.nativeSubquotientOfPositiveAtoms Q₀
+    (ξ.nativeSubquotientOfPositiveSingletons Q₀
       (P₀.comap Q₀.subtype)).degreeOfMeasurableDeterminant
-        (hdet := (scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms
+        (hdet := (scalarExtension_restrict_quotient_determinant_isMeasurable_of_pos_singletons
           ξ hξ Q₀ (P₀.comap Q₀.subtype)))
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩)
 
 /-- Degree comparison for the canonical scalar images of a finite-stage relative quotient. -/
 abbrev NativeAlgebraicSubquotientImageDegreeEq [S.IsProper]
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     [hN : S.IsArchimedeanNormalized]
     (F : Type uF) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
     [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] [FiniteDimensional K F]
@@ -108,7 +108,7 @@ abbrev NativeAlgebraicSubquotientImageDegreeEq [S.IsProper]
 
 private theorem nativeAlgebraicSubquotient_degree_of_transport [S.IsProper]
     (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     [hN : S.IsArchimedeanNormalized]
     (F : Type uF) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
     [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] [FiniteDimensional K F]
@@ -135,15 +135,15 @@ private theorem nativeAlgebraicSubquotient_degree_of_transport [S.IsProper]
   let c := TensorProduct.AlgebraTensorModule.cancelBaseChange K F L L E
   let A := (P.baseChange L).map c.toLinearMap
   let B := (Q.baseChange L).map c.toLinearMap
-  let V₀ := ξ.nativeSubquotientOfPositiveAtoms (hξ := hξ) (hpos := ⟨hpos⟩)
+  let V₀ := ξ.nativeSubquotientOfPositiveSingletons (hξ := hξ) (hpos := ⟨hpos⟩)
       (hS := ⟨hS⟩) Q (P.comap Q.subtype)
-  let R := ξ.nativeAlgebraicSubquotientOfPositiveAtoms (hξ := hξ) (hpos := ⟨hpos⟩)
+  let R := ξ.nativeAlgebraicSubquotientOfPositiveSingletons (hξ := hξ) (hpos := ⟨hpos⟩)
       (hS := ⟨hS⟩) B (A.comap B.subtype)
   have hdet₀ : V₀.toNormFamily.determinant.IsMeasurable :=
-    scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms
+    scalarExtension_restrict_quotient_determinant_isMeasurable_of_pos_singletons
       ξ hξ (hpos := ⟨hpos⟩) (hS := ⟨hS⟩) Q (P.comap Q.subtype)
   have hdetR : R.toNormFamily.determinant.IsMeasurable :=
-    scalarExtension_restrict_quotient_determinant_isMeasurable_of_positive_atoms_of_isAlgClosed
+    scalarExtension_restrict_quotient_determinant_isMeasurable_of_pos_singletons_of_isAlgClosed
       ξ hξ (hpos := ⟨hpos⟩) (hS := ⟨hS⟩) B (A.comap B.subtype)
   obtain ⟨e, he, _⟩ := ξ.hasScalarExtensionSubquotientIsometry_of_images
     F hi P Q hPQ A B rfl rfl
@@ -153,7 +153,7 @@ private theorem nativeAlgebraicSubquotient_degree_of_transport [S.IsProper]
 relative quotient equals its genuine finite-stage native degree. -/
 theorem nativeAlgebraicSubquotient_degree_finiteStage [S.IsProper]
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     [hN : S.IsArchimedeanNormalized]
     (F : AdelicStructure.FiniteIntermediateField K L) (hi : ∃ a : F, a ^ 2 = -1)
     (P Q : Submodule F (F ⊗[K] E)) (hPQ : P ≤ Q) :
@@ -173,7 +173,7 @@ theorem nativeAlgebraicSubquotient_degree_finiteStage [S.IsProper]
 
 private theorem nativeAlgebraicSubquotient_degree_of_images [S.IsProper]
     (ξ : NormFamily S E) (hξ : ξ.IsDominated)
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     [hN : S.IsArchimedeanNormalized]
     (F : Type uF) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]
     [Algebra.IsAlgebraic K F] [Algebra.IsAlgebraic F L] [FiniteDimensional K F]
@@ -194,7 +194,7 @@ private theorem nativeAlgebraicSubquotient_degree_of_images [S.IsProper]
 and canonical degree comparison are all produced for an arbitrary target pair. -/
 theorem exists_complexFiniteStage_nativeAlgebraicSubquotient_degree [S.IsProper]
     (ξ : NormFamily S E) [hξ : ξ.IsDominated]
-    [hpos : S.HasPositiveAtoms] [hS : S.HasOnlyFinitePlaces]
+    [hpos : S.HasPositiveSingletons] [hS : S.HasOnlyFinitePlaces]
     [hN : S.IsArchimedeanNormalized]
     (P Q : Submodule L (L ⊗[K] E)) (hPQ : P ≤ Q) :
     ∃ F : AdelicStructure.FiniteIntermediateField K L, (∃ a : F, a ^ 2 = -1) ∧

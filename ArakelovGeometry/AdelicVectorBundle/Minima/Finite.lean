@@ -88,9 +88,9 @@ theorem absoluteMaximalLogarithmicMinimum_lt_top (V : AdelicVectorBundle S)
     exact (V.absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlopeOfCountableDiscreteBase
 ).trans_lt (V.absoluteMaximalSlopeOfCountableDiscreteBase_lt_top)
   · let := hm
-    exact (V.absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlopeOfPositiveAtoms
+    exact (V.absoluteMaximalLogarithmicMinimum_le_absoluteMaximalSlopeOfPositiveSingletons
       (hreg := ⟨(Or.inr (Or.inr ⟨hm, hp, hf⟩))⟩) (hpos := ⟨hp⟩) (hS := ⟨hf⟩)).trans_lt
-      (V.toNormFamily.absoluteMaximalSlopeOfPositiveAtoms_lt_top (hpos := ⟨hp⟩) (hS := ⟨hf⟩))
+      (V.toNormFamily.absoluteMaximalSlopeOfPositiveSingletons_lt_top (hpos := ⟨hp⟩) (hS := ⟨hf⟩))
 
 /-- Every positive ordinary index excludes positive infinity, using the
 actual original-to-absolute comparison on all three regularity branches. -/

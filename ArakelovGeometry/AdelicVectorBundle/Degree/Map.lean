@@ -76,26 +76,26 @@ variable [S.IsProper]
 The sign is the one in source(4.31), correcting its final proof line(4.33). -/
 theorem determinantMap_mapHeight_eq_degree_sub
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (e : V ≃ₗ[K] W) :
-    (V.determinantOfMeasurableBase).mapHeight
-        (W.determinantOfMeasurableBase) (determinantMap K e.toLinearMap e.finrank_eq) =
+    (V.determinantOfNormMeasurability).mapHeight
+        (W.determinantOfNormMeasurability) (determinantMap K e.toLinearMap e.finrank_eq) =
       ((V.degree - W.degree : ℝ) : EReal) :=
-  (V.determinantOfMeasurableBase).mapHeight_eq_lineDegree_sub
-    (W.determinantOfMeasurableBase)
-    (hV := (V.determinantOfMeasurableBase_isLine))
-    (hW := (W.determinantOfMeasurableBase_isLine))
+  (V.determinantOfNormMeasurability).mapHeight_eq_lineDegree_sub
+    (W.determinantOfNormMeasurability)
+    (hV := (V.determinantOfNormMeasurability_isLine))
+    (hW := (W.determinantOfNormMeasurability_isLine))
     (determinantMap_ne_zero_of_injective e.toLinearMap e.finrank_eq e.injective)
 
 /-- In rank zero the actual determinant is a unit-line map of height zero. -/
 theorem determinantMap_mapHeight_eq_zero_of_finrank_eq_zero
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (e : V ≃ₗ[K] W) (hz : Module.finrank K V = 0) :
-    (V.determinantOfMeasurableBase).mapHeight
-        (W.determinantOfMeasurableBase)
+    (V.determinantOfNormMeasurability).mapHeight
+        (W.determinantOfNormMeasurability)
         (determinantMap K e.toLinearMap e.finrank_eq) = 0 := by
   rw [V.determinantMap_mapHeight_eq_degree_sub W e,
     V.degree_eq_zero_of_finrank_eq_zero hz,
@@ -106,7 +106,7 @@ theorem determinantMap_mapHeight_eq_zero_of_finrank_eq_zero
 including a possibly infinite height and the rank-zero determinant convention. -/
 theorem degree_le_degree_add_rank_mul_mapHeight
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (e : V ≃ₗ[K] W) :
     (V.degree : EReal) ≤ (W.degree : EReal) +
@@ -125,11 +125,11 @@ theorem degree_le_degree_add_rank_mul_mapHeight
         e.toLinearMap e.finrank_eq hf hd))
     rw [lowerEnvelopeIntegral_const_mul _ (Nat.cast_pos.mpr hp)] at hl
     change lowerEnvelopeIntegral
-      ((V.determinantOfMeasurableBase).toNormFamily.localHeight
-        (W.determinantOfMeasurableBase).toNormFamily
+      ((V.determinantOfNormMeasurability).toNormFamily.localHeight
+        (W.determinantOfNormMeasurability).toNormFamily
           ⟨determinantMap K e.toLinearMap e.finrank_eq, hd⟩) S.v ≤ _ at hl
-    rw [← (V.determinantOfMeasurableBase).mapHeight_eq_lowerEnvelopeIntegral
-        (W.determinantOfMeasurableBase) hd,
+    rw [← (V.determinantOfNormMeasurability).mapHeight_eq_lowerEnvelopeIntegral
+        (W.determinantOfNormMeasurability) hd,
       ← V.mapHeight_eq_lowerEnvelopeIntegral W hf,
       V.determinantMap_mapHeight_eq_degree_sub W e, EReal.coe_sub] at hl
     have ht := (EReal.sub_le_iff_le_add

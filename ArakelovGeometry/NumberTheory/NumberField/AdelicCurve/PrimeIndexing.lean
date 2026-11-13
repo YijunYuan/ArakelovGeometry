@@ -275,7 +275,7 @@ theorem smul_mem_globalUnitBall_iff_mem_valuationModule
 
 /-- The actual integral scalar coefficients of a vector in the literal global ball. -/
 def scalarGlobalUnitBallModule (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    [hξ : ξ.IsUltrametric] (x : E) : Submodule (𝓞 K) K :=
+    [hξ : ξ.IsUltrametricAtFinitePlaces] (x : E) : Submodule (𝓞 K) K :=
   (ξ.globalUnitBallModule).comap
     ({
       toFun := fun a => a • x
@@ -287,7 +287,7 @@ def scalarGlobalUnitBallModule (ξ : NormFamily (normalizedNumberFieldAdelicStru
 
 /-- The actual coefficient comap is exactly the actual rounded valuation module. -/
 theorem scalarGlobalUnitBallModule_eq_valuationModule
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     {x : E} (hx : x ≠ 0) : scalarGlobalUnitBallModule ξ x =
       FiniteValuation.valuationModule (K := K)
         (ξ.roundedPrimeBound x normalizedPrimeParameter normalizedPlaceLogScale) := by
@@ -297,9 +297,9 @@ theorem scalarGlobalUnitBallModule_eq_valuationModule
 /-- The actual scalar coefficient module is finitely generated under the explicit
 positive weighted arithmetic gap, by the produced rounded valuation-module theorem. -/
 theorem fg_scalarGlobalUnitBallModule_of_weighted_gap
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hdom : ξ.IsLowerDominated]
-    [hμ : (normalizedNumberFieldAdelicStructure K).HasPositiveAtoms]
+    [hμ : (normalizedNumberFieldAdelicStructure K).HasPositiveSingletons]
     {x : E} (hx : x ≠ 0) {ε : ℝ} (hε : 0 < ε)
     (hgap : ∀ p : HeightOneSpectrum (𝓞 K), ε ≤
       (normalizedNumberFieldAdelicStructure K).v.real {normalizedPrimeParameter p} *
@@ -313,7 +313,7 @@ theorem fg_scalarGlobalUnitBallModule_of_weighted_gap
 /-- For the actual normalized number-field curve, lower domination produces
 finite generation of every nonzero vector's literal global scalar coefficient module. -/
 theorem fg_scalarGlobalUnitBallModule
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hdom : ξ.IsLowerDominated] {x : E} (hx : x ≠ 0) :
     (scalarGlobalUnitBallModule ξ x).FG :=
   fg_scalarGlobalUnitBallModule_of_weighted_gap ξ (hμ := ⟨normalized_singleton_pos⟩) hx
@@ -322,7 +322,7 @@ theorem fg_scalarGlobalUnitBallModule
 /-- The actual rank-one literal global integral unit ball is finitely generated
 for every lower-dominated ultrametric norm family, including the zero-module case. -/
 theorem fg_globalUnitBallModule_rank_one
-    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) K) [hξ : ξ.IsUltrametric]
+    (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) K) [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hdom : ξ.IsLowerDominated] : (ξ.globalUnitBallModule).FG := by
   have heq : scalarGlobalUnitBallModule ξ (1 : K) = ξ.globalUnitBallModule := by
     ext a

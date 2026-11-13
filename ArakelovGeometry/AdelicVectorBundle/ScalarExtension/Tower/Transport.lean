@@ -292,8 +292,8 @@ theorem lineDegree_towerPullback [S.IsProper]
 theorem degree_towerPullback [S.IsProper]
     (V : AdelicVectorBundle (S.algebraicExtension L))
     (F : IntermediateField K L)
-    [hD : (S.algebraicExtension L).HasMeasurableBase]
-    [hT : ((S.algebraicExtension F).algebraicExtension L).HasMeasurableBase]
+    [hD : (S.algebraicExtension L).NormMeasurabilityHypotheses]
+    [hT : ((S.algebraicExtension F).algebraicExtension L).NormMeasurabilityHypotheses]
     [hND : (S.algebraicExtension L).IsArchimedeanNormalized]
     [hNT : ((S.algebraicExtension F).algebraicExtension L).IsArchimedeanNormalized] :
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S L
@@ -304,8 +304,8 @@ theorem degree_towerPullback [S.IsProper]
   let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
   let := AdelicStructure.Algebraic.isProper_algebraicExtension (S.algebraicExtension F) L
   change (V.towerPullback F).degree = V.degree
-  let s := (V.determinantOfMeasurableBase).lineGenerator
-    (hV := (V.determinantOfMeasurableBase_isLine))
+  let s := (V.determinantOfNormMeasurability).lineGenerator
+    (hV := (V.determinantOfNormMeasurability_isLine))
   rw [degree_eq_neg_integral (V.towerPullback F) s, degree_eq_neg_integral V s]
   change -(∫ x, (V.toNormFamily.towerPullback F).determinant.logNorm s.val x
       ∂((S.algebraicExtension F).algebraicExtension L).v) =
@@ -321,8 +321,8 @@ theorem degree_eq_of_tower_completed_isometry [S.IsProper]
     (F : IntermediateField K L)
     (W : AdelicVectorBundle ((S.algebraicExtension F).algebraicExtension L))
     (R : AdelicVectorBundle (S.algebraicExtension L)) (e : W ≃ₗ[L] R)
-    [hD : (S.algebraicExtension L).HasMeasurableBase]
-    [hT : ((S.algebraicExtension F).algebraicExtension L).HasMeasurableBase]
+    [hD : (S.algebraicExtension L).NormMeasurabilityHypotheses]
+    [hT : ((S.algebraicExtension F).algebraicExtension L).NormMeasurabilityHypotheses]
     [hND : (S.algebraicExtension L).IsArchimedeanNormalized]
     [hNT : ((S.algebraicExtension F).algebraicExtension L).IsArchimedeanNormalized]
     (he : ∀ (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension F) L)

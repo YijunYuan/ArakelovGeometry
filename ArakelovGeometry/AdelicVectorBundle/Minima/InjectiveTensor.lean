@@ -47,7 +47,7 @@ namespace NormFamily
 /-- The actual injective tensor norm is the operator norm from the first
 dual to the second original norm, when the second norm is admissible. -/
 theorem injectiveTensorPair_norm_eq_dual_operatorNorm (ξ : NormFamily S E)
-    (η : NormFamily S F) [hη : η.IsUltrametric]
+    (η : NormFamily S F) [hη : η.IsUltrametricAtFinitePlaces]
     [hN : S.IsArchimedeanNormalized]
     (ω : S.Ω) (z : E ⊗[K] F) :
     (ξ.injectiveTensorPair η).norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] z) =
@@ -61,14 +61,14 @@ namespace AdelicVectorBundle
 integrability is produced from the tensor bundle, not assumed of the map. -/
 theorem mapHeight_dual_eq_neg_injectiveTensorPair_vectorDegree
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hW : W.toNormFamily.IsUltrametric]
-    [hS : S.HasMeasurableBase]
+    [hW : W.toNormFamily.IsUltrametricAtFinitePlaces]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (z : {z : V ⊗[K] W // z ≠ 0}) :
-    (V.dualOfMeasurableBase).mapHeight W (tensorPairToHomEquiv K V W z.val) =
+    (V.dualOfNormMeasurability).mapHeight W (tensorPairToHomEquiv K V W z.val) =
       (-(V.injectiveTensorPair W).vectorDegree z : ℝ) := by
   let T := V.injectiveTensorPair W
-  let D := V.dualOfMeasurableBase
+  let D := V.dualOfNormMeasurability
   let f := tensorPairToHomEquiv K V W z.val
   have hf : f ≠ 0 := fun h => z.property
     ((tensorPairToHomEquiv K V W).map_eq_zero_iff.mp h)
@@ -92,14 +92,15 @@ variable [S.IsProper]
 finite slope endpoints of both factors. -/
 theorem vectorDegree_injectiveTensorPair_le_maximalSlope_add
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hV : V.toNormFamily.IsUltrametric] [hW : W.toNormFamily.IsUltrametric]
-    [hS : S.HasMeasurableBase]
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
+      [hW : W.toNormFamily.IsUltrametricAtFinitePlaces]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (hE : 0 < Module.finrank K V) (hF : 0 < Module.finrank K W)
     (z : {z : V ⊗[K] W // z ≠ 0}) :
     ((V.injectiveTensorPair W).vectorDegree z : EReal) ≤
       V.maximalSlope + W.maximalSlope := by
-  let D := V.dualOfMeasurableBase
+  let D := V.dualOfNormMeasurability
   let f := tensorPairToHomEquiv K V W z.val
   have hf : f ≠ 0 := fun h => z.property
     ((tensorPairToHomEquiv K V W).map_eq_zero_iff.mp h)
@@ -109,8 +110,8 @@ theorem vectorDegree_injectiveTensorPair_le_maximalSlope_add
   obtain ⟨b, hb⟩ := W.exists_maximalSlope_eq_coe hF
   obtain ⟨c, hc⟩ := D.exists_minimalSlope_eq_coe hrD
   have hl := D.neg_maximalSlope_dual_le_minimalSlope_of_lt_top hrD
-    ((D.dualOfMeasurableBase).maximalSlope_lt_top)
-  rw [V.maximalSlope_dual_dual_eq_of_isUltrametric, ha, hc,
+    ((D.dualOfNormMeasurability).maximalSlope_lt_top)
+  rw [V.maximalSlope_dual_dual_eq_of_isUltrametricAtFinitePlaces, ha, hc,
     ← EReal.coe_neg, EReal.coe_le_coe_iff] at hl
   have hu := D.minimalSlope_le_maximalSlope_add_mapHeight_of_ne_zero W f hf
   rw [hc, hb, V.mapHeight_dual_eq_neg_injectiveTensorPair_vectorDegree W z,
@@ -122,7 +123,7 @@ omit [S.IsProper] in
 /-- A zero left factor has the source's empty tensor threshold domain. -/
 theorem maximalLogarithmicMinimum_injectiveTensorPair_eq_bot_of_left_finrank_eq_zero
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (hE : Module.finrank K V = 0) :
     (V.injectiveTensorPair W).maximalLogarithmicMinimum = ⊥ := by
@@ -133,7 +134,7 @@ omit [S.IsProper] in
 /-- A zero right factor gives the same genuine empty tensor convention. -/
 theorem maximalLogarithmicMinimum_injectiveTensorPair_eq_bot_of_right_finrank_eq_zero
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (hF : Module.finrank K W = 0) :
     (V.injectiveTensorPair W).maximalLogarithmicMinimum = ⊥ := by
@@ -144,8 +145,9 @@ theorem maximalLogarithmicMinimum_injectiveTensorPair_eq_bot_of_right_finrank_eq
 without attainment hypotheses and including either zero factor. -/
 theorem maximalLogarithmicMinimum_injectiveTensorPair_le_maximalSlope_add
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hV : V.toNormFamily.IsUltrametric] [hW : W.toNormFamily.IsUltrametric]
-    [hS : S.HasMeasurableBase]
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces]
+      [hW : W.toNormFamily.IsUltrametricAtFinitePlaces]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     (V.injectiveTensorPair W).maximalLogarithmicMinimum ≤
       V.maximalSlope + W.maximalSlope := by

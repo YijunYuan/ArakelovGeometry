@@ -66,14 +66,14 @@ theorem rationalCurve_not_minkowski (C : ℝ) :
   intro h
   obtain ⟨p, a, _, ha, hgap⟩ := exists_prime_gap_gt C
   exact bundle_violates_ordinary_level p a ha C hgap
-    (h.2 (bundle p a) (by rw [finrank_plane]; norm_num) (family_isUltrametric p a))
+    (h.2 (bundle p a) (by rw [finrank_plane]; norm_num) (family_isUltrametricAtFinitePlaces p a))
 
 theorem rationalCurve_not_strongMinkowski (C : ℝ) :
     ¬ S.HasStrongMinkowskiPropertyAtLevel.{0,0,0} C := by
   intro h
   obtain ⟨p, a, _, ha, hgap⟩ := exists_prime_gap_gt C
   exact bundle_violates_strong_level p a ha C hgap
-    (h.2 (bundle p a) (by rw [finrank_plane]; norm_num) (family_isUltrametric p a))
+    (h.2 (bundle p a) (by rw [finrank_plane]; norm_num) (family_isUltrametricAtFinitePlaces p a))
 
 def workedPrime : Nat.Primes := ⟨101, by decide⟩
 

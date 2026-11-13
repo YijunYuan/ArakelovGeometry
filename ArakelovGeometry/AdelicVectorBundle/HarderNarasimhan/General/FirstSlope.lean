@@ -37,38 +37,38 @@ universe u w
 variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (V : AdelicVectorBundle S)
-  [hS : S.HasMeasurableBase]
+  [hS : S.NormMeasurabilityHypotheses]
   [hN : S.IsArchimedeanNormalized]
 
 /-- The true determinant correction and actual restriction slot comparison
 bound every positive-rank restricted mean by the actual ambient first
 ordered slope and the sharp logarithmic rank error. -/
-theorem slope_restrict_le_generalHNOrderedSlope_zero_add_log_rank
-    [hV : V.toNormFamily.IsUltrametric] (hr : 0 < Module.finrank K V)
+theorem slope_restrict_le_hnSlope_zero_add_log_rank
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] (hr : 0 < Module.finrank K V)
     (U : Submodule K V) (hU : 0 < Module.finrank K U) :
-    (V.restrictOfMeasurableBase U).slope ≤
-      V.generalHNOrderedSlope ⟨0, hr⟩ +
+    (V.restrictOfNormMeasurability U).slope ≤
+      V.hnSlope ⟨0, hr⟩ +
         Real.log (Module.finrank K V) / 2 * (S.v S.Ωinf).toReal := by
-  have hVU : (V.restrictOfMeasurableBase U).toNormFamily.IsUltrametric := by
-    simpa only [restrictOfMeasurableBase_toNormFamily] using hV.restrict U
-  have hd := degree_le_sum_generalHNOrderedSlope_add_determinantDiscrepancy
-    (V.restrictOfMeasurableBase U) (hV := hVU)
-  have hs : (∑ j, (V.restrictOfMeasurableBase U).generalHNOrderedSlope j) ≤
-      (Module.finrank K U : ℝ) * V.generalHNOrderedSlope ⟨0, hr⟩ := by
+  have hVU : (V.restrictOfNormMeasurability U).toNormFamily.IsUltrametricAtFinitePlaces := by
+    simpa only [restrictOfNormMeasurability_toNormFamily] using hV.restrict U
+  have hd := degree_le_sum_hnSlope_add_determinantDiscrepancy
+    (V.restrictOfNormMeasurability U) (hV := hVU)
+  have hs : (∑ j, (V.restrictOfNormMeasurability U).hnSlope j) ≤
+      (Module.finrank K U : ℝ) * V.hnSlope ⟨0, hr⟩ := by
     calc
-      _ ≤ ∑ _j : Fin (Module.finrank K U), V.generalHNOrderedSlope ⟨0, hr⟩ := by
+      _ ≤ ∑ _j : Fin (Module.finrank K U), V.hnSlope ⟨0, hr⟩ := by
         apply Finset.sum_le_sum
         intro j _
-        exact (V.generalHNOrderedSlope_restrict_le U j).trans
-          (V.generalHNOrderedSlope_antitone (show
+        exact (V.hnSlope_restrict_le U j).trans
+          (V.hnSlope_antitone (show
             (⟨0, hr⟩ : Fin (Module.finrank K V)) ≤ Fin.castLE U.finrank_le j from Nat.zero_le _))
       _ = _ := by simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-  have hδ := (V.restrictOfMeasurableBase U).degree_add_degree_dual_le
+  have hδ := (V.restrictOfNormMeasurability U).degree_add_degree_dual_le
   rw [← determinantDiscrepancy_eq_degree_add_degree_dual
-    (V.restrictOfMeasurableBase U)] at hδ
+    (V.restrictOfNormMeasurability U)] at hδ
   have hm : 0 < (Module.finrank K U : ℝ) := Nat.cast_pos.mpr hU
   have hl := Real.log_le_log hm (Nat.cast_le.mpr U.finrank_le)
-  have hδ' : (V.restrictOfMeasurableBase U).determinantDiscrepancy ≤
+  have hδ' : (V.restrictOfNormMeasurability U).determinantDiscrepancy ≤
       (Module.finrank K U : ℝ) *
         (Real.log (Module.finrank K V) / 2 * (S.v S.Ωinf).toReal) := by
     calc
@@ -87,15 +87,15 @@ theorem slope_restrict_le_generalHNOrderedSlope_zero_add_log_rank
 /-- Source Remark 4.3.48: the actual maximal-slope supremum is at most
 the actual first general ordered slope plus the sharp logarithmic rank
 error, with a positive-rank guard before the first slot is formed. -/
-theorem maximalSlope_le_generalHNOrderedSlope_zero_add_log_rank
-    [hV : V.toNormFamily.IsUltrametric] (hr : 0 < Module.finrank K V) :
+theorem maximalSlope_le_hnSlope_zero_add_log_rank
+    [hV : V.toNormFamily.IsUltrametricAtFinitePlaces] (hr : 0 < Module.finrank K V) :
     V.maximalSlope ≤
-      ((V.generalHNOrderedSlope ⟨0, hr⟩ +
+      ((V.hnSlope ⟨0, hr⟩ +
         Real.log (Module.finrank K V) / 2 * (S.v S.Ωinf).toReal) : ℝ) := by
   apply V.maximalSlope_le
   intro U hU
   exact EReal.coe_le_coe_iff.mpr
-    (V.slope_restrict_le_generalHNOrderedSlope_zero_add_log_rank hr U hU)
+    (V.slope_restrict_le_hnSlope_zero_add_log_rank hr U hU)
 
 /-- Source errorfree inequality (4.73), with the actual maximal-slope
 supremum and explicit rank-zero convention. Its positive part is formed

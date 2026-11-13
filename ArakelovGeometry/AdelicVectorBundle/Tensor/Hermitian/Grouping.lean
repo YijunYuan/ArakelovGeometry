@@ -188,7 +188,7 @@ theorem orthogonalTensor_norm_tmulEquivDep
           ξr.norm ω ((ULift.moduleEquiv.baseChange K L _ _) (x (.inr ())))
       exact h
     have h := norm_linearMap_le_injective_of_ultrametric_factors f
-      (orthogonalTensor_isUltrametric ξ ω hfin) hp q
+      (orthogonalTensor_isUltrametricAtFinitePlaces ξ ω hfin) hp q
     change σ.norm ω (G (A.symm (P q))) ≤ ArakelovGeometry.injectiveTensorSeminorm q at h
     rw [hq, LinearEquiv.symm_apply_apply] at h
     change σ.norm ω (G z) ≤ (ξl.orthogonalTensorPair ξr).norm ω z

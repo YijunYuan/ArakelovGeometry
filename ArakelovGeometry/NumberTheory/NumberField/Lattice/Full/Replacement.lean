@@ -39,7 +39,7 @@ set_option backward.isDefEq.respectTransparency false in
 /-- The two actual gauge constructions agree on every completed fibre. -/
 theorem HasFiniteNormExceptions.latticeGaugeFamily_eq_fullLatticeGaugeFamily
     (ξ : NormFamily (normalizedNumberFieldAdelicStructure K) E)
-    (hξ : ξ.IsUltrametric) (hc : ξ.HasFiniteNormExceptions)
+    (hξ : ξ.IsUltrametricAtFinitePlaces) (hc : ξ.HasFiniteNormExceptions)
     (hfg : (ξ.globalUnitBallModule).FG) :
     ξ.latticeGaugeFamily =
       fullLatticeGaugeFamily (ξ.globalUnitBallModule) hfg

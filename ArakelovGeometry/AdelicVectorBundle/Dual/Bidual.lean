@@ -60,7 +60,8 @@ theorem dual_dual_norm_eval_eq_of_ultrametric (ξ : NormFamily S E) (ω : S.Ω)
 
 /-- An ultrametric norm family agrees with its bidual at every
 non-Archimedean place, including trivially valued places. -/
-theorem IsUltrametric.dual_dual_norm_eval {ξ : NormFamily S E} (hξ : ξ.IsUltrametric)
+theorem IsUltrametricAtFinitePlaces.dual_dual_norm_eval
+    {ξ : NormFamily S E} (hξ : ξ.IsUltrametricAtFinitePlaces)
     (ω : S.Ω) (hω : ω ∈ S.Ωfin) (x : (S.ϕ ω).Completion ⊗[K] E) :
     ξ.dual.dual.norm ω ((Module.Dual.eval K E).baseChange (S.ϕ ω).Completion x) =
       ξ.norm ω x :=
@@ -95,7 +96,7 @@ theorem dual_dual_norm_eval_eq_of_isRCLike (ξ : NormFamily S E) (ω : S.Ω)
 /-- With the source's usual Archimedean absolute values, an ultrametric norm
 family equals its bidual under canonical evaluation. The normalization of the
 actual completed fields is an explicit hypothesis. -/
-theorem dual_dual_pullback_eq (ξ : NormFamily S E) [hξ : ξ.IsUltrametric]
+theorem dual_dual_pullback_eq (ξ : NormFamily S E) [hξ : ξ.IsUltrametricAtFinitePlaces]
     [hS : S.IsArchimedeanNormalized] :
     ξ.dual.dual.pullback (Module.Dual.eval K E) (Module.eval_apply_injective K) = ξ := by
   ext ω x

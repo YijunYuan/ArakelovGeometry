@@ -40,7 +40,7 @@ height is allowed: the target minimum is strictly above `⊥` by the proved
 finiteness theorem, so its sum with `⊤` is `⊤`. -/
 theorem minimalSlope_le_minimalSlope_add_mapHeight_of_surjective
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) (hs : Function.Surjective f) (hf : f ≠ 0) :
     V.minimalSlope ≤ W.minimalSlope + V.mapHeight W f := by
@@ -58,7 +58,7 @@ target has rank zero and minimal slope `⊤`. No extended-real sum involving
 the height of the zero map is needed for its automatic bound. -/
 theorem minimalSlope_target_eq_top_of_zero_surjective
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) (hs : Function.Surjective f) (hf : f = 0) :
     W.minimalSlope = ⊤ ∧ V.minimalSlope ≤ W.minimalSlope := by

@@ -93,36 +93,36 @@ theorem polynomialLocalHeight_mul_le_algebraicExtension (p q : L[X])
     (AS.algebraicExtension L).polynomialLocalHeight_mul_le p q x
 
 /-- The finite-error bound uses the integrated exponent of the original base curve. -/
-theorem polynomialHeight_mul_le_algebraicExtension {p q : L[X]} (hp : p ≠ 0)
+theorem polynomialLogHeight_mul_le_algebraicExtension {p q : L[X]} (hp : p ≠ 0)
     (hq : q ≠ 0) :
-    (AS.algebraicExtension L).polynomialHeight (p * q) ≤
-      (AS.algebraicExtension L).polynomialHeight p +
-        (AS.algebraicExtension L).polynomialHeight q +
+    (AS.algebraicExtension L).polynomialLogHeight (p * q) ≤
+      (AS.algebraicExtension L).polynomialLogHeight p +
+        (AS.algebraicExtension L).polynomialLogHeight q +
         Real.log (min (p.natDegree + 1) (q.natDegree + 1) : ℕ) *
           AS.heightArchimedeanConstant := by
   simpa only [AS.heightArchimedeanConstant_algebraicExtension L] using
-    (AS.algebraicExtension L).polynomialHeight_mul_le hp hq
+    (AS.algebraicExtension L).polynomialLogHeight_mul_le hp hq
 
 /-- The real form of Lemma 3.5.5, under its finite-mass interpretation. -/
-theorem polynomialHeight_mul_le_measure_Ωinf_algebraicExtension {p q : L[X]}
+theorem polynomialLogHeight_mul_le_measure_Ωinf_algebraicExtension {p q : L[X]}
     (hp : p ≠ 0) (hq : q ≠ 0) (hfin : AS.v AS.Ωinf ≠ ⊤) :
-    (AS.algebraicExtension L).polynomialHeight (p * q) ≤
-      (AS.algebraicExtension L).polynomialHeight p +
-        (AS.algebraicExtension L).polynomialHeight q +
+    (AS.algebraicExtension L).polynomialLogHeight (p * q) ≤
+      (AS.algebraicExtension L).polynomialLogHeight p +
+        (AS.algebraicExtension L).polynomialLogHeight q +
         Real.log (min (p.natDegree + 1) (q.natDegree + 1) : ℕ) *
           (AS.v AS.Ωinf).toReal := by
   have hfin' : (AS.algebraicExtension L).v (AS.algebraicExtension L).Ωinf ≠ ⊤ := by
     simpa only [AS.v_Ωinf_algebraicExtension L] using hfin
   simpa only [AS.v_Ωinf_algebraicExtension L] using
-    (AS.algebraicExtension L).polynomialHeight_mul_le_measure_Ωinf hp hq hfin'
+    (AS.algebraicExtension L).polynomialLogHeight_mul_le_measure_Ωinf hp hq hfin'
 
 /-- A split polynomial has height bounded by its root heights and the base error constant. -/
-theorem polynomialHeight_prod_X_sub_C_le_algebraicExtension (l : List L) (hl : l ≠ []) :
-    (AS.algebraicExtension L).polynomialHeight (l.map (fun a ↦ (X - C a : L[X]))).prod ≤
-      (l.map (AS.algebraicExtension L).affineHeight).sum +
+theorem polynomialLogHeight_prod_X_sub_C_le_algebraicExtension (l : List L) (hl : l ≠ []) :
+    (AS.algebraicExtension L).polynomialLogHeight (l.map (fun a ↦ (X - C a : L[X]))).prod ≤
+      (l.map (AS.algebraicExtension L).affineLogHeight).sum +
         (l.length - 1 : ℕ) * Real.log 2 * AS.heightArchimedeanConstant := by
   simpa only [AS.heightArchimedeanConstant_algebraicExtension L] using
-    (AS.algebraicExtension L).polynomialHeight_prod_X_sub_C_le l hl
+    (AS.algebraicExtension L).polynomialLogHeight_prod_X_sub_C_le l hl
 
 theorem localHeight_algebraicExtension (a : ι → K) (x : ParameterSpaceExtension AS L) :
     (AS.algebraicExtension L).localHeight (fun i ↦ algebraMap K L (a i)) x =
@@ -142,12 +142,12 @@ theorem logHeight_algebraicExtension (a : ι → K) :
   simp_rw [AS.localHeight_algebraicExtension L a]
   exact Algebraic.integral_comp_proj_measure AS L (AS.integrable_log_localHeight a)
 
-theorem affineHeight_algebraicExtension (a : K) :
-    (AS.algebraicExtension L).affineHeight (algebraMap K L a) = AS.affineHeight a := by
+theorem affineLogHeight_algebraicExtension (a : K) :
+    (AS.algebraicExtension L).affineLogHeight (algebraMap K L a) = AS.affineLogHeight a := by
   have he : (fun i : Fin 2 ↦ algebraMap K L (![1, a] i)) = ![1, algebraMap K L a] := by
     funext i
     fin_cases i <;> simp
-  simpa only [affineHeight, he] using AS.logHeight_algebraicExtension L ![1, a]
+  simpa only [affineLogHeight, he] using AS.logHeight_algebraicExtension L ![1, a]
 
 variable {L} {E : Type*} [Field E] [Algebra K E] [FiniteDimensional K E]
 
@@ -179,12 +179,12 @@ theorem logHeight_comp_finiteEmbedding (i : E →ₐ[K] L) (a : ι → E) :
     hm.aestronglyMeasurable, hmap]
   rfl
 
-theorem affineHeight_comp_finiteEmbedding (i : E →ₐ[K] L) (a : E) :
-    (AS.algebraicExtension L).affineHeight (i a) = (AS.finiteExtension E).affineHeight a := by
+theorem affineLogHeight_comp_finiteEmbedding (i : E →ₐ[K] L) (a : E) :
+    (AS.algebraicExtension L).affineLogHeight (i a) = (AS.finiteExtension E).affineLogHeight a := by
   have he : (fun j : Fin 2 ↦ i (![1, a] j)) = ![1, i a] := by
     funext j
     fin_cases j <;> simp
-  simpa only [affineHeight, he] using AS.logHeight_comp_finiteEmbedding i ![1, a]
+  simpa only [affineLogHeight, he] using AS.logHeight_comp_finiteEmbedding i ![1, a]
 
 /-- Chen–Moriwaki, Lemma 3.5.4, in the stronger form for any finite extension:
 conjugate tuples have the same height in an algebraic extension containing them. -/
@@ -195,51 +195,51 @@ theorem logHeight_comp_aut (i : E →ₐ[K] L) (σ : E ≃ₐ[K] E) (a : ι → 
     (AS.logHeight_comp_finiteEmbedding i a).symm
 
 /-- Affine conjugate-height invariance, including finite inseparable normal extensions. -/
-theorem affineHeight_comp_aut (i : E →ₐ[K] L) (σ : E ≃ₐ[K] E) (a : E) :
-    (AS.algebraicExtension L).affineHeight (i (σ a)) =
-      (AS.algebraicExtension L).affineHeight (i a) := by
-  exact (AS.affineHeight_comp_finiteEmbedding (i.comp σ.toAlgHom) a).trans
-    (AS.affineHeight_comp_finiteEmbedding i a).symm
+theorem affineLogHeight_comp_aut (i : E →ₐ[K] L) (σ : E ≃ₐ[K] E) (a : E) :
+    (AS.algebraicExtension L).affineLogHeight (i (σ a)) =
+      (AS.algebraicExtension L).affineLogHeight (i a) := by
+  exact (AS.affineLogHeight_comp_finiteEmbedding (i.comp σ.toAlgHom) a).trans
+    (AS.affineLogHeight_comp_finiteEmbedding i a).symm
 
 variable [AS.IsProper]
 
 /-- Chen–Moriwaki, Lemma 3.5.5, with the original base measure and without a
 finite-mass assumption. Specialize `L` to the algebraic closure for the printed statement. -/
-theorem ofReal_polynomialHeight_mul_le_measure_Ωinf_algebraicExtension {p q : L[X]}
+theorem ofReal_polynomialLogHeight_mul_le_measure_Ωinf_algebraicExtension {p q : L[X]}
     (hp : p ≠ 0) (hq : q ≠ 0) :
-    ENNReal.ofReal ((AS.algebraicExtension L).polynomialHeight (p * q)) ≤
-      ENNReal.ofReal ((AS.algebraicExtension L).polynomialHeight p) +
-        ENNReal.ofReal ((AS.algebraicExtension L).polynomialHeight q) +
+    ENNReal.ofReal ((AS.algebraicExtension L).polynomialLogHeight (p * q)) ≤
+      ENNReal.ofReal ((AS.algebraicExtension L).polynomialLogHeight p) +
+        ENNReal.ofReal ((AS.algebraicExtension L).polynomialLogHeight q) +
         ENNReal.ofReal (Real.log (min (p.natDegree + 1) (q.natDegree + 1) : ℕ)) *
           AS.v AS.Ωinf := by
   let := Algebraic.isProper_algebraicExtension AS L
   simpa only [AS.v_Ωinf_algebraicExtension L] using
-    (AS.algebraicExtension L).ofReal_polynomialHeight_mul_le_measure_Ωinf hp hq
+    (AS.algebraicExtension L).ofReal_polynomialLogHeight_mul_le_measure_Ωinf hp hq
 
-/-- The height over the chosen algebraic closure in Chen–Moriwaki, Definition 3.5.1. -/
-noncomputable def absoluteHeight
+/-- The logarithmic height over the chosen algebraic closure in Definition 3.5.1. -/
+noncomputable def absoluteLogHeight
     (x : Projectivization (AlgebraicClosure K) (ι → AlgebraicClosure K)) : ℝ :=
   letI := Algebraic.isProper_algebraicExtension AS (AlgebraicClosure K)
-  (AS.algebraicExtension (AlgebraicClosure K)).projectiveHeight x
+  (AS.algebraicExtension (AlgebraicClosure K)).projectiveLogHeight x
 
-theorem absoluteHeight_mk {a : ι → AlgebraicClosure K} (ha : a ≠ 0) :
-    AS.absoluteHeight (Projectivization.mk (AlgebraicClosure K) a ha) =
+theorem absoluteLogHeight_mk {a : ι → AlgebraicClosure K} (ha : a ≠ 0) :
+    AS.absoluteLogHeight (Projectivization.mk (AlgebraicClosure K) a ha) =
       (AS.algebraicExtension (AlgebraicClosure K)).logHeight a := rfl
 
-theorem absoluteHeight_nonneg
+theorem absoluteLogHeight_nonneg
     (x : Projectivization (AlgebraicClosure K) (ι → AlgebraicClosure K)) :
-    0 ≤ AS.absoluteHeight x := by
+    0 ≤ AS.absoluteLogHeight x := by
   let := Algebraic.isProper_algebraicExtension AS (AlgebraicClosure K)
-  exact (AS.algebraicExtension (AlgebraicClosure K)).projectiveHeight_nonneg x
+  exact (AS.algebraicExtension (AlgebraicClosure K)).projectiveLogHeight_nonneg x
 
 /-- Base-field affine height agrees with the source height on the algebraic closure. -/
-theorem absoluteHeight_mk_one (a : K) :
-    AS.absoluteHeight (Projectivization.mk (AlgebraicClosure K)
+theorem absoluteLogHeight_mk_one (a : K) :
+    AS.absoluteLogHeight (Projectivization.mk (AlgebraicClosure K)
       ![1, algebraMap K (AlgebraicClosure K) a] (by
         intro h
         have := congrFun h 0
-        simp at this)) = AS.affineHeight a := by
-  rw [AS.absoluteHeight_mk]
-  exact AS.affineHeight_algebraicExtension (AlgebraicClosure K) a
+        simp at this)) = AS.affineLogHeight a := by
+  rw [AS.absoluteLogHeight_mk]
+  exact AS.affineLogHeight_algebraicExtension (AlgebraicClosure K) a
 
 end ArakelovGeometry.AdelicStructure

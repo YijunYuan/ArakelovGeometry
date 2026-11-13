@@ -35,7 +35,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 completed-fibre norm, including in rank zero. -/
 theorem degree_eq_of_completed_isometry [S.IsProper]
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = V.toNormFamily.norm ω x) :

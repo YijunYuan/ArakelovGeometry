@@ -33,7 +33,7 @@ noncomputable def polynomialLocalHeight (p : K[X]) (ω : AS.Ω) : ℝ :=
   AS.localHeight (fun i : Fin (p.natDegree + 1) ↦ p.coeff i) ω
 
 /-- The logarithmic height of the coefficient tuple. -/
-noncomputable def polynomialHeight (p : K[X]) : ℝ :=
+noncomputable def polynomialLogHeight (p : K[X]) : ℝ :=
   AS.logHeight (fun i : Fin (p.natDegree + 1) ↦ p.coeff i)
 
 theorem polynomialLocalHeight_nonneg (p : K[X]) (ω : AS.Ω) :
@@ -60,8 +60,8 @@ theorem polynomialLocalHeight_pos {p : K[X]} (hp : p ≠ 0) (ω : AS.Ω) :
     simpa only [coeff_natDegree] using leadingCoeff_ne_zero.mpr hp
   exact ((AS.ϕ ω).pos hlead).trans_le (AS.coeff_le_polynomialLocalHeight p ω _)
 
-theorem polynomialHeight_eq_integral (p : K[X]) :
-    AS.polynomialHeight p = ∫ ω, Real.log (AS.polynomialLocalHeight p ω) ∂AS.v := rfl
+theorem polynomialLogHeight_eq_integral (p : K[X]) :
+    AS.polynomialLogHeight p = ∫ ω, Real.log (AS.polynomialLocalHeight p ω) ∂AS.v := rfl
 
 theorem integrable_log_polynomialLocalHeight (p : K[X]) :
     Integrable (fun ω ↦ Real.log (AS.polynomialLocalHeight p ω)) AS.v :=
@@ -83,9 +83,9 @@ theorem polynomialLocalHeight_eq_localHeight (p : K[X]) {n : ℕ}
     exact AS.coeff_le_polynomialLocalHeight p ω i
 
 /-- Appending zero coefficients leaves the polynomial height unchanged. -/
-theorem polynomialHeight_eq_logHeight (p : K[X]) {n : ℕ} (hn : p.natDegree ≤ n) :
-    AS.polynomialHeight p = AS.logHeight (fun i : Fin (n + 1) ↦ p.coeff i) := by
-  simp only [polynomialHeight_eq_integral, logHeight,
+theorem polynomialLogHeight_eq_logHeight (p : K[X]) {n : ℕ} (hn : p.natDegree ≤ n) :
+    AS.polynomialLogHeight p = AS.logHeight (fun i : Fin (n + 1) ↦ p.coeff i) := by
+  simp only [polynomialLogHeight_eq_integral, logHeight,
     AS.polynomialLocalHeight_eq_localHeight p hn]
 
 /-- A permutation of a coefficient tuple leaves its local maximum unchanged. -/
@@ -103,11 +103,11 @@ theorem polynomialLocalHeight_eq_localHeight_reindex (p : K[X]) {n : ℕ}
     exact Finset.sup'_le _ _ (fun i _ ↦ AS.coeff_le_polynomialLocalHeight p ω (e i))
 
 /-- Polynomial height is independent of the ordering of the coefficients. -/
-theorem polynomialHeight_eq_logHeight_reindex (p : K[X]) {n : ℕ}
+theorem polynomialLogHeight_eq_logHeight_reindex (p : K[X]) {n : ℕ}
     (hn : p.natDegree ≤ n) {ι : Type*} [Fintype ι] [Nonempty ι]
     (e : ι ≃ Fin (n + 1)) :
-    AS.polynomialHeight p = AS.logHeight (fun i ↦ p.coeff (e i)) := by
-  simp only [polynomialHeight_eq_integral, logHeight,
+    AS.polynomialLogHeight p = AS.logHeight (fun i ↦ p.coeff (e i)) := by
+  simp only [polynomialLogHeight_eq_integral, logHeight,
     AS.polynomialLocalHeight_eq_localHeight_reindex p hn e]
 
 theorem polynomialLocalHeight_C_mul (p : K[X]) (t : K) (ω : AS.Ω) :
@@ -130,15 +130,15 @@ theorem polynomialLocalHeight_X_sub_C (a : K) (ω : AS.Ω) :
   simp [max_comm]
 
 /-- A monic linear factor has the affine height of its root. -/
-theorem polynomialHeight_X_sub_C (a : K) :
-    AS.polynomialHeight (X - C a) = AS.affineHeight a := by
-  simp only [AS.polynomialHeight_eq_integral, AS.polynomialLocalHeight_X_sub_C,
-    AS.affineHeight_eq_integral]
+theorem polynomialLogHeight_X_sub_C (a : K) :
+    AS.polynomialLogHeight (X - C a) = AS.affineLogHeight a := by
+  simp only [AS.polynomialLogHeight_eq_integral, AS.polynomialLocalHeight_X_sub_C,
+    AS.affineLogHeight_eq_integral]
 
 /-- Every coefficient of a monic polynomial has affine height at most its height. -/
-theorem affineHeight_coeff_le_polynomialHeight {p : K[X]} (hp : p.Monic) (i : ℕ) :
-    AS.affineHeight (p.coeff i) ≤ AS.polynomialHeight p := by
-  rw [AS.affineHeight_eq_integral, AS.polynomialHeight_eq_integral]
+theorem affineLogHeight_coeff_le_polynomialLogHeight {p : K[X]} (hp : p.Monic) (i : ℕ) :
+    AS.affineLogHeight (p.coeff i) ≤ AS.polynomialLogHeight p := by
+  rw [AS.affineLogHeight_eq_integral, AS.polynomialLogHeight_eq_integral]
   apply integral_mono (AS.integrable_log_max_one _) (AS.integrable_log_polynomialLocalHeight p)
   intro ω
   apply Real.log_le_log (lt_of_lt_of_le zero_lt_one (le_max_left _ _))
@@ -243,8 +243,8 @@ theorem polynomialLocalHeight_mul_le (p q : K[X]) (ω : AS.Ω) :
     simpa only [mul_comm p q, mul_right_comm] using AS.polynomialLocalHeight_mul_le_left q p ω
 
 /-- Integrating the local estimate gives a finite error even when archimedean mass is infinite. -/
-theorem polynomialHeight_mul_le {p q : K[X]} (hp : p ≠ 0) (hq : q ≠ 0) :
-    AS.polynomialHeight (p * q) ≤ AS.polynomialHeight p + AS.polynomialHeight q +
+theorem polynomialLogHeight_mul_le {p q : K[X]} (hp : p ≠ 0) (hq : q ≠ 0) :
+    AS.polynomialLogHeight (p * q) ≤ AS.polynomialLogHeight p + AS.polynomialLogHeight q +
       Real.log (min (p.natDegree + 1) (q.natDegree + 1) : ℕ) *
         AS.heightArchimedeanConstant := by
   let m := min (p.natDegree + 1) (q.natDegree + 1)
@@ -269,7 +269,7 @@ theorem polynomialHeight_mul_le {p q : K[X]} (hp : p ≠ 0) (hq : q ≠ 0) :
   have hiadd : Integrable (fun ω ↦ Real.log (AS.polynomialLocalHeight p ω) +
       Real.log (AS.polynomialLocalHeight q ω)) AS.v := hip.add hiq
   calc
-    AS.polynomialHeight (p * q) ≤ ∫ ω, Real.log (AS.polynomialLocalHeight p ω) +
+    AS.polynomialLogHeight (p * q) ≤ ∫ ω, Real.log (AS.polynomialLocalHeight p ω) +
       Real.log (AS.polynomialLocalHeight q ω) + Real.log m * AS.κ ω ∂AS.v :=
         integral_mono (AS.integrable_log_polynomialLocalHeight (p * q))
           (hiadd.add hik) hlocal
@@ -278,21 +278,21 @@ theorem polynomialHeight_mul_le {p q : K[X]} (hp : p ≠ 0) (hq : q ≠ 0) :
       rfl
 
 /-- The polynomial-height product estimate with finite archimedean mass. -/
-theorem polynomialHeight_mul_le_measure_Ωinf {p q : K[X]} (hp : p ≠ 0) (hq : q ≠ 0)
+theorem polynomialLogHeight_mul_le_measure_Ωinf {p q : K[X]} (hp : p ≠ 0) (hq : q ≠ 0)
     (hfin : AS.v AS.Ωinf ≠ ⊤) :
-    AS.polynomialHeight (p * q) ≤ AS.polynomialHeight p + AS.polynomialHeight q +
+    AS.polynomialLogHeight (p * q) ≤ AS.polynomialLogHeight p + AS.polynomialLogHeight q +
       Real.log (min (p.natDegree + 1) (q.natDegree + 1) : ℕ) * (AS.v AS.Ωinf).toReal :=
-  (AS.polynomialHeight_mul_le hp hq).trans
+  (AS.polynomialLogHeight_mul_le hp hq).trans
     (add_le_add le_rfl
       (mul_le_mul_of_nonneg_left (AS.heightArchimedeanConstant_le_toReal_measure_Ωinf hfin)
         (Real.log_natCast_nonneg _)))
 
 /-- Multiplication by a linear factor costs at most `log 2` times the integrated exponent. -/
-theorem polynomialHeight_X_sub_C_mul_le (a : K) {p : K[X]} (hp : p ≠ 0) :
-    AS.polynomialHeight ((X - C a) * p) ≤ AS.affineHeight a + AS.polynomialHeight p +
+theorem polynomialLogHeight_X_sub_C_mul_le (a : K) {p : K[X]} (hp : p ≠ 0) :
+    AS.polynomialLogHeight ((X - C a) * p) ≤ AS.affineLogHeight a + AS.polynomialLogHeight p +
       Real.log 2 * AS.heightArchimedeanConstant := by
-  have h := AS.polynomialHeight_mul_le (X_sub_C_ne_zero a) hp
-  rw [AS.polynomialHeight_X_sub_C, natDegree_X_sub_C] at h
+  have h := AS.polynomialLogHeight_mul_le (X_sub_C_ne_zero a) hp
+  rw [AS.polynomialLogHeight_X_sub_C, natDegree_X_sub_C] at h
   apply h.trans
   apply add_le_add le_rfl
   apply mul_le_mul_of_nonneg_right _ AS.heightArchimedeanConstant_nonneg
@@ -309,18 +309,18 @@ private theorem prod_X_sub_C_ne_zero (l : List K) :
 
 /-- A nonempty product of linear factors has the sum of the root heights as main term.
 The error counts exactly one multiplication for each factor after the first. -/
-theorem polynomialHeight_prod_X_sub_C_le (l : List K) (hl : l ≠ []) :
-    AS.polynomialHeight (l.map (fun a ↦ (X - C a : K[X]))).prod ≤
-      (l.map AS.affineHeight).sum + (l.length - 1 : ℕ) * Real.log 2 *
+theorem polynomialLogHeight_prod_X_sub_C_le (l : List K) (hl : l ≠ []) :
+    AS.polynomialLogHeight (l.map (fun a ↦ (X - C a : K[X]))).prod ≤
+      (l.map AS.affineLogHeight).sum + (l.length - 1 : ℕ) * Real.log 2 *
         AS.heightArchimedeanConstant := by
   induction l with
   | nil => exact (hl rfl).elim
   | cons a l ih =>
     cases l with
-    | nil => simp [AS.polynomialHeight_X_sub_C]
+    | nil => simp [AS.polynomialLogHeight_X_sub_C]
     | cons b l =>
       have hi := ih (by simp)
-      have h := AS.polynomialHeight_X_sub_C_mul_le a (prod_X_sub_C_ne_zero (b :: l))
+      have h := AS.polynomialLogHeight_X_sub_C_mul_le a (prod_X_sub_C_ne_zero (b :: l))
       simp only [List.map_cons, List.prod_cons, List.sum_cons, List.length_cons,
         Nat.add_sub_cancel, Nat.cast_add, Nat.cast_one] at hi ⊢
       simp only [List.map_cons, List.prod_cons] at h
@@ -330,32 +330,32 @@ section Proper
 
 variable [AS.IsProper]
 
-theorem polynomialHeight_nonneg (p : K[X]) : 0 ≤ AS.polynomialHeight p :=
+theorem polynomialLogHeight_nonneg (p : K[X]) : 0 ≤ AS.polynomialLogHeight p :=
   AS.logHeight_nonneg _
 
 /-- The extended-real product-height estimate, valid also for infinite archimedean mass.
 The multiplication in `ℝ≥0∞` includes the convention `0 * ∞ = 0`. -/
-theorem ofReal_polynomialHeight_mul_le_measure_Ωinf {p q : K[X]} (hp : p ≠ 0) (hq : q ≠ 0) :
-    ENNReal.ofReal (AS.polynomialHeight (p * q)) ≤
-      ENNReal.ofReal (AS.polynomialHeight p) + ENNReal.ofReal (AS.polynomialHeight q) +
+theorem ofReal_polynomialLogHeight_mul_le_measure_Ωinf {p q : K[X]} (hp : p ≠ 0) (hq : q ≠ 0) :
+    ENNReal.ofReal (AS.polynomialLogHeight (p * q)) ≤
+      ENNReal.ofReal (AS.polynomialLogHeight p) + ENNReal.ofReal (AS.polynomialLogHeight q) +
         ENNReal.ofReal (Real.log (min (p.natDegree + 1) (q.natDegree + 1) : ℕ)) *
           AS.v AS.Ωinf := by
   have hlog : 0 ≤ Real.log (min (p.natDegree + 1) (q.natDegree + 1) : ℕ) :=
     Real.log_natCast_nonneg _
-  have h := ENNReal.ofReal_le_ofReal (AS.polynomialHeight_mul_le hp hq)
-  rw [ENNReal.ofReal_add (add_nonneg (AS.polynomialHeight_nonneg p)
-    (AS.polynomialHeight_nonneg q))
+  have h := ENNReal.ofReal_le_ofReal (AS.polynomialLogHeight_mul_le hp hq)
+  rw [ENNReal.ofReal_add (add_nonneg (AS.polynomialLogHeight_nonneg p)
+    (AS.polynomialLogHeight_nonneg q))
     (mul_nonneg hlog AS.heightArchimedeanConstant_nonneg),
-    ENNReal.ofReal_add (AS.polynomialHeight_nonneg p) (AS.polynomialHeight_nonneg q),
+    ENNReal.ofReal_add (AS.polynomialLogHeight_nonneg p) (AS.polynomialLogHeight_nonneg q),
     ENNReal.ofReal_mul hlog] at h
   apply h.trans
   gcongr
   exact AS.ofReal_heightArchimedeanConstant_le_measure_Ωinf
 
 /-- The product formula makes nonzero scalar multiplication preserve polynomial height. -/
-theorem polynomialHeight_C_mul {p : K[X]} (hp : p ≠ 0) {t : K} (ht : t ≠ 0) :
-    AS.polynomialHeight (C t * p) = AS.polynomialHeight p := by
-  rw [AS.polynomialHeight_eq_logHeight (C t * p) (natDegree_C_mul_le t p)]
+theorem polynomialLogHeight_C_mul {p : K[X]} (hp : p ≠ 0) {t : K} (ht : t ≠ 0) :
+    AS.polynomialLogHeight (C t * p) = AS.polynomialLogHeight p := by
+  rw [AS.polynomialLogHeight_eq_logHeight (C t * p) (natDegree_C_mul_le t p)]
   have he : (fun i : Fin (p.natDegree + 1) ↦ (C t * p).coeff i) =
       t • (fun i : Fin (p.natDegree + 1) ↦ p.coeff i) := by
     ext i

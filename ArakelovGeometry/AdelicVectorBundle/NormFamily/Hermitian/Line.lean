@@ -35,7 +35,7 @@ theorem isHermitian_of_finrank_one (ξ : NormFamily S E) (hr : Module.finrank K 
     [hS : S.IsArchimedeanNormalized] :
     ξ.IsHermitian := by
   apply isHermitian_iff_parallelogram.mpr
-  refine ⟨ξ.isUltrametric_of_finrank_le_one hr.le, fun ω hω x y ↦ ?_⟩
+  refine ⟨ξ.isUltrametricAtFinitePlaces_of_finrank_le_one hr.le, fun ω hω x y ↦ ?_⟩
   let := hS ω hω
   let := IsRCLikeNormedField.rclike (S.ϕ ω).Completion
   have hd : Module.finrank (S.ϕ ω).Completion ((S.ϕ ω).Completion ⊗[K] E) = 1 :=

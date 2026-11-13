@@ -36,13 +36,13 @@ variable {K : Type u} [Field K] {S : AdelicStructure K} {E : Type w}
 
 /-- Actual completed quotient contraction increases the degree of each
 nonzero rational section with nonzero quotient image. -/
-theorem vectorDegree_le_quotientOfMeasurableBase (V : AdelicVectorBundle S)
+theorem vectorDegree_le_quotientOfNormMeasurability (V : AdelicVectorBundle S)
     (U : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     (s : {x : V // x ≠ 0}) (hq : U.mkQ s.val ≠ 0) :
     V.vectorDegree s ≤
-      (V.quotientOfMeasurableBase U).vectorDegree ⟨U.mkQ s.val, hq⟩ := by
-  let Q := V.quotientOfMeasurableBase U
+      (V.quotientOfNormMeasurability U).vectorDegree ⟨U.mkQ s.val, hq⟩ := by
+  let Q := V.quotientOfNormMeasurability U
   simp only [vectorDegree, NormFamily.vectorDegree_eq_neg_integral]
   apply neg_le_neg
   apply integral_mono (Q.integrable_logNorm _) (V.integrable_logNorm _)
@@ -57,23 +57,23 @@ theorem vectorDegree_le_quotientOfMeasurableBase (V : AdelicVectorBundle S)
 threshold span, including those whose quotient image is zero. -/
 theorem degreeThresholdSpan_quotient_map_le (V : AdelicVectorBundle S)
     (U : Submodule K V)
-    [hS : S.HasMeasurableBase] (t : ℝ) :
+    [hS : S.NormMeasurabilityHypotheses] (t : ℝ) :
     (V.degreeThresholdSpan t).map U.mkQ ≤
-      (V.quotientOfMeasurableBase U).degreeThresholdSpan t := by
+      (V.quotientOfNormMeasurability U).degreeThresholdSpan t := by
   apply Submodule.map_le_iff_le_comap.mpr
   apply Submodule.span_le.mpr
   rintro x ⟨hx, ht⟩
-  change U.mkQ x ∈ (V.quotientOfMeasurableBase U).degreeThresholdSpan t
+  change U.mkQ x ∈ (V.quotientOfNormMeasurability U).degreeThresholdSpan t
   by_cases hq : U.mkQ x = 0
   · rw [hq]
     exact Submodule.zero_mem _
-  · exact (V.quotientOfMeasurableBase U).mem_degreeThresholdSpan
-      ⟨U.mkQ x, hq⟩ (ht.trans (V.vectorDegree_le_quotientOfMeasurableBase U ⟨x, hx⟩ hq))
+  · exact (V.quotientOfNormMeasurability U).mem_degreeThresholdSpan
+      ⟨U.mkQ x, hq⟩ (ht.trans (V.vectorDegree_le_quotientOfNormMeasurability U ⟨x, hx⟩ hq))
 
 /-- Integrating actual completed Hadamard bounds the sum of the actual
 basis-vector degrees by the actual determinant degree, also in rank zero. -/
 theorem sum_vectorDegree_basis_le_degree [S.IsProper] (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (b : Module.Basis (Fin (Module.finrank K V)) K V) :
     (∑ j, V.vectorDegree ⟨b j, b.ne_zero j⟩) ≤ V.degree := by
@@ -93,7 +93,7 @@ theorem sum_vectorDegree_basis_le_degree [S.IsProper] (V : AdelicVectorBundle S)
     rw [Real.log_prod (fun j _ => (V.toNormFamily.norm_rational_pos ω (b.ne_zero j)).ne')] at hp
     exact hp
   have hi := integral_mono
-    ((V.determinantOfMeasurableBase).integrable_logNorm w)
+    ((V.determinantOfNormMeasurability).integrable_logNorm w)
     (integrable_finsetSum Finset.univ (fun j _ => V.integrable_logNorm (b j))) hl
   rw [integral_finsetSum Finset.univ (fun j _ => V.integrable_logNorm (b j))] at hi
   rw [V.degree_eq_neg_integral ⟨w, hw⟩]
@@ -104,12 +104,12 @@ theorem sum_vectorDegree_basis_le_degree [S.IsProper] (V : AdelicVectorBundle S)
 with every actual quotient vector degree above the same threshold. -/
 theorem exists_basis_quotient_degree_ge_of_thresholdSpan_eq_top
     (V : AdelicVectorBundle S) (U : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     {t : ℝ} (hspan : V.degreeThresholdSpan t = ⊤) :
     ∃ b : Module.Basis (Fin (Module.finrank K (V ⧸ U))) K (V ⧸ U),
-      ∀ j, t ≤ (V.quotientOfMeasurableBase U).vectorDegree ⟨b j, b.ne_zero j⟩ := by
+      ∀ j, t ≤ (V.quotientOfNormMeasurability U).vectorDegree ⟨b j, b.ne_zero j⟩ := by
   classical
-  let Q := V.quotientOfMeasurableBase U
+  let Q := V.quotientOfNormMeasurability U
   have hmap := V.degreeThresholdSpan_quotient_map_le U t
   rw [hspan, Submodule.map_top, LinearMap.range_eq_top.mpr U.mkQ_surjective] at hmap
   have hQ : Q.degreeThresholdSpan t = ⊤ := top_unique hmap
@@ -125,31 +125,31 @@ theorem exists_basis_quotient_degree_ge_of_thresholdSpan_eq_top
 times an actual full-span threshold of the original bundle. -/
 theorem rank_mul_le_degree_quotient_of_thresholdSpan_eq_top [S.IsProper]
     (V : AdelicVectorBundle S) (U : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     {t : ℝ} (hspan : V.degreeThresholdSpan t = ⊤) :
     (Module.finrank K (V ⧸ U) : ℝ) * t ≤
-      (V.quotientOfMeasurableBase U).degree := by
+      (V.quotientOfNormMeasurability U).degree := by
   classical
   obtain ⟨b, hb⟩ := V.exists_basis_quotient_degree_ge_of_thresholdSpan_eq_top U hspan
   calc
     (Module.finrank K (V ⧸ U) : ℝ) * t = ∑ _j : Fin (Module.finrank K (V ⧸ U)), t := by simp
-    _ ≤ ∑ j, (V.quotientOfMeasurableBase U).vectorDegree ⟨b j, b.ne_zero j⟩ :=
+    _ ≤ ∑ j, (V.quotientOfNormMeasurability U).vectorDegree ⟨b j, b.ne_zero j⟩ :=
       Finset.sum_le_sum (fun j _ => hb j)
-    _ ≤ (V.quotientOfMeasurableBase U).degree :=
-      (V.quotientOfMeasurableBase U).sum_vectorDegree_basis_le_degree b
+    _ ≤ (V.quotientOfNormMeasurability U).degree :=
+      (V.quotientOfNormMeasurability U).sum_vectorDegree_basis_le_degree b
 
 /-- Positive-rank actual quotient mean slopes dominate each actual full-span
 threshold; the degree bound supplies the conclusion rather than a premise. -/
 theorem le_slope_quotient_of_thresholdSpan_eq_top [S.IsProper]
     (V : AdelicVectorBundle S) (U : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (hU : 0 < Module.finrank K (V ⧸ U))
     {t : ℝ} (hspan : V.degreeThresholdSpan t = ⊤) :
-    t ≤ (V.quotientOfMeasurableBase U).slope := by
+    t ≤ (V.quotientOfNormMeasurability U).slope := by
   have hd := V.rank_mul_le_degree_quotient_of_thresholdSpan_eq_top U hspan
-  rw [(V.quotientOfMeasurableBase U).degree_eq_rank_mul_slope] at hd
+  rw [(V.quotientOfNormMeasurability U).degree_eq_rank_mul_slope] at hd
   exact (mul_le_mul_iff_right₀ (Nat.cast_pos.mpr hU : (0 : ℝ) < _)).mp hd
 
 /-- Source Proposition4.3.77 for the genuine quotient-mean infimum.
@@ -157,7 +157,7 @@ The rank-zero natural-index convention also holds, with both sides `⊤`.
 No finite-value or attained-basis premise at the last minimum is used. -/
 theorem minimalLogarithmicMinimum_le_minimalSlope [S.IsProper]
     (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     V.minimalLogarithmicMinimum ≤ V.minimalSlope := by
   rw [minimalLogarithmicMinimum, logarithmicMinimum,

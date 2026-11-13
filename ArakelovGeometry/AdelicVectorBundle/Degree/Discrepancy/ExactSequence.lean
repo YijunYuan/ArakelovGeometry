@@ -35,10 +35,10 @@ variable {K : Type u} [Field K] {S : AdelicStructure K}
 also when one or more of these genuine global discrepancies are infinite. -/
 theorem majorantDiscrepancy_restrict_add_quotient_le (V : AdelicVectorBundle S)
     (W : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    (V.restrictOfMeasurableBase W).majorantDiscrepancy +
-      (V.quotientOfMeasurableBase W).majorantDiscrepancy ≤
+    (V.restrictOfNormMeasurability W).majorantDiscrepancy +
+      (V.quotientOfNormMeasurability W).majorantDiscrepancy ≤
         V.majorantDiscrepancy := by
   let f := fun ω ↦ Real.log ((V.toNormFamily.restrict W).majorantDiscrepancy ω)
   let g := fun ω ↦ Real.log ((V.toNormFamily.quotient W).majorantDiscrepancy ω)
@@ -57,9 +57,9 @@ theorem majorantDiscrepancy_restrict_add_quotient_le (V : AdelicVectorBundle S)
 /-- Restriction cannot increase the actual global majorant discrepancy. -/
 theorem majorantDiscrepancy_restrict_le (V : AdelicVectorBundle S)
     (W : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    (V.restrictOfMeasurableBase W).majorantDiscrepancy ≤
+    (V.restrictOfNormMeasurability W).majorantDiscrepancy ≤
       V.majorantDiscrepancy := by
   apply lowerEnvelopeIntegral_mono
   exact Filter.Eventually.of_forall fun ω ↦
@@ -69,9 +69,9 @@ theorem majorantDiscrepancy_restrict_le (V : AdelicVectorBundle S)
 /-- Quotienting cannot increase the actual global majorant discrepancy. -/
 theorem majorantDiscrepancy_quotient_le (V : AdelicVectorBundle S)
     (W : Submodule K V)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    (V.quotientOfMeasurableBase W).majorantDiscrepancy ≤
+    (V.quotientOfNormMeasurability W).majorantDiscrepancy ≤
       V.majorantDiscrepancy := by
   apply lowerEnvelopeIntegral_mono
   exact Filter.Eventually.of_forall fun ω ↦

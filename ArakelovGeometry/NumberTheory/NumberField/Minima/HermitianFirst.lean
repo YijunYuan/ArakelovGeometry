@@ -67,17 +67,17 @@ theorem restrict_slope_sub_error_le_firstMinimum
     [hV : V.toNormFamily.IsHermitian]
     [hpure : V.toNormFamily.IsPureAtFinitePlaces] (hn : 0 < Module.finrank K V)
     (F : Submodule K V) (hF : 0 < Module.finrank K F) :
-    (((V.restrictOfMeasurableBase F).slope
+    (((V.restrictOfNormMeasurability F).slope
       -
         ((Module.finrank ℚ K : ℝ) / 2 * Real.log (Module.finrank K V : ℝ) +
           Real.log |(NumberField.discr K : ℝ)| / 2) : ℝ) : EReal) ≤
             V.maximalLogarithmicMinimum := by
-  let W := V.restrictOfMeasurableBase F
+  let W := V.restrictOfNormMeasurability F
   obtain ⟨s, _, hs⟩ := exists_integral_nonzero_large_degree W (hV := (hV.restrict F))
     (hpure := (hpure.restrict F)) hF
   let t : {x : V // x ≠ 0} := ⟨s.val.val, fun h => s.property (Subtype.ext h)⟩
   have hdegree : W.vectorDegree s = V.vectorDegree t :=
-    V.vectorDegree_restrictOfMeasurableBase F s
+    V.vectorDegree_restrictOfNormMeasurability F s
   rw [hdegree] at hs
   have hlog : Real.log (Module.finrank K F : ℝ) ≤
       Real.log (Module.finrank K V : ℝ) :=

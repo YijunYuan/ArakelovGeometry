@@ -42,8 +42,8 @@ theorem scalarExtension_nativeSubquotient_regular_of_common_density
     θ.IsMeasurable ∧ θ.dual.IsMeasurable ∧ θ.IsDominated ∧
       θ.determinant.IsMeasurable := by
   let hL := hcount.algebraicExtension_of_isAlgClosed (L := L)
-  let R := ((V.scalarExtension (L := L)).restrictOfMeasurableBase
-    B).quotientOfMeasurableBase T
+  let R := ((V.scalarExtension (L := L)).restrictOfNormMeasurability
+    B).quotientOfNormMeasurability T
   change R.toNormFamily.IsMeasurable ∧ R.toNormFamily.dual.IsMeasurable ∧
     R.toNormFamily.IsDominated ∧ R.toNormFamily.determinant.IsMeasurable
   exact ⟨R.isMeasurable, R.dual_isMeasurable, R.isDominated,
@@ -90,11 +90,11 @@ abbrev CommonSubspaceQuotientDegreeEq [S.IsProper]
     let := AdelicStructure.Algebraic.isProper_algebraicExtension S F
     let _ := hcount.algebraicExtension_of_isAlgClosed (L := L)
     let _ := hcount.algebraicExtension_of_finiteDimensional (L := F)
-    (((V.scalarExtension (L := L)).restrictOfMeasurableBase
-      B).quotientOfMeasurableBase T).degree
+    (((V.scalarExtension (L := L)).restrictOfNormMeasurability
+      B).quotientOfNormMeasurability T).degree
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩) =
-      (((V.scalarExtension (L := F)).restrictOfMeasurableBase
-        Q).quotientOfMeasurableBase (P.comap Q.subtype)).degree
+      (((V.scalarExtension (L := F)).restrictOfNormMeasurability
+        Q).quotientOfNormMeasurability (P.comap Q.subtype)).degree
           (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := F))⟩)
 
 
@@ -143,18 +143,18 @@ private theorem common_nativeSubquotient_canonical_degree [S.IsProper]
   let A := (P.baseChange L).map c.toLinearMap
   let B := (Q.baseChange L).map c.toLinearMap
   let W₀ : AdelicVectorBundle (S.algebraicExtension F) :=
-    ((V.scalarExtension (L := F) (hS := hcount)).restrictOfMeasurableBase
-      Q).quotientOfMeasurableBase (P.comap Q.subtype)
+    ((V.scalarExtension (L := F) (hS := hcount)).restrictOfNormMeasurability
+      Q).quotientOfNormMeasurability (P.comap Q.subtype)
   let R : AdelicVectorBundle (S.algebraicExtension L) :=
-    ((V.scalarExtension (L := L) (hS := hcount)).restrictOfMeasurableBase
-      B).quotientOfMeasurableBase (A.comap B.subtype)
+    ((V.scalarExtension (L := L) (hS := hcount)).restrictOfNormMeasurability
+      B).quotientOfNormMeasurability (A.comap B.subtype)
   change R.degree (hN := ⟨hLN⟩) = W₀.degree (hN := ⟨hFN⟩)
   obtain ⟨e, he, _⟩ := V.toNormFamily.hasScalarExtensionSubquotientIsometry_of_images
     (L := L) F hi P Q hPQ A B rfl rfl
   apply hd W₀ R e
   intro x z
-  simpa only [W₀, R, quotientOfMeasurableBase_toNormFamily,
-    restrictOfMeasurableBase_toNormFamily, scalarExtension_toNormFamily] using he x z
+  simpa only [W₀, R, quotientOfNormMeasurability_toNormFamily,
+    restrictOfNormMeasurability_toNormFamily, scalarExtension_toNormFamily] using he x z
 
 
 /-- Genuine native mixed degrees at a complexifying finite stage. All source,
@@ -194,14 +194,14 @@ theorem commonSubspaceQuotientDegreeEq_of_images [S.IsProper]
   have hT : (T.map B.subtype).comap B.subtype = T := by
     rw [Submodule.comap_map_eq, Submodule.ker_subtype, sup_bot_eq]
   let d (P' Q' : Submodule L (L ⊗[K] V)) : ℝ :=
-    (((V.scalarExtension (L := L)).restrictOfMeasurableBase
-      Q').quotientOfMeasurableBase (P'.comap Q'.subtype)).degree
+    (((V.scalarExtension (L := L)).restrictOfNormMeasurability
+      Q').quotientOfNormMeasurability (P'.comap Q'.subtype)).degree
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩)
   dsimp only [CommonNativeSubquotientDegreeEq, CommonSubspaceQuotientDegreeEq] at hd ⊢
   have he := congrArg₂ d hP hQ
   have ht := congrArg (fun C : Submodule L B =>
-    (((V.scalarExtension (L := L)).restrictOfMeasurableBase
-      B).quotientOfMeasurableBase C).degree
+    (((V.scalarExtension (L := L)).restrictOfNormMeasurability
+      B).quotientOfNormMeasurability C).degree
         (hN := ⟨(AdelicStructure.isRCLikeNormedField_algebraicExtension (L := L))⟩)) hT
   exact ht.symm.trans (he.symm.trans hd)
 

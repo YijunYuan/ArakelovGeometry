@@ -63,8 +63,8 @@ theorem hermitianHNStep_baseChange_hermitianScalarExtension_of_isAlgClosed
       apply hU
       apply (Submodule.baseChange_inj (A := L)).mp
       simpa only [Submodule.baseChange_top] using he
-    let Q := V.quotientOfMeasurableBase U
-    let QL := W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)
+    let Q := V.quotientOfNormMeasurability U
+    let QL := W.quotientOfNormMeasurability (U.baseChange L) (hS := ⟨hLS⟩)
     let hQL : QL.toNormFamily.IsHermitian (hS := ⟨hLN⟩) := hLH.quotient (U.baseChange L)
     let Qext := Q.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩) (hV := (hH.quotient U))
     let hQext := Q.hermitianScalarExtension_isHermitian (hL := ⟨hLN⟩) (hV := (hH.quotient U))
@@ -195,13 +195,13 @@ theorem maximalSlope_quotient_hermitianScalarExtension_of_isAlgClosed
     let hLN := AdelicStructure.isRCLikeNormedField_algebraicExtension (S := S) (L := L)
     let hLS := Or.inr (hcount.algebraicExtension_of_isAlgClosed (L := L))
     let W := V.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩)
-    (W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)).maximalSlope (hS := ⟨hLS⟩)
+    (W.quotientOfNormMeasurability (U.baseChange L) (hS := ⟨hLS⟩)).maximalSlope (hS := ⟨hLS⟩)
         (hN := ⟨hLN⟩) =
-      (V.quotientOfMeasurableBase U).maximalSlope := by
+      (V.quotientOfNormMeasurability U).maximalSlope := by
   intro hLN hLS W
-  let Q := V.quotientOfMeasurableBase U
+  let Q := V.quotientOfNormMeasurability U
   let Qext := Q.hermitianScalarExtension (L := L) (hL := ⟨hLN⟩) (hV := (hH.quotient U))
-  let QL := W.quotientOfMeasurableBase (U.baseChange L) (hS := ⟨hLS⟩)
+  let QL := W.quotientOfNormMeasurability (U.baseChange L) (hS := ⟨hLS⟩)
   have he : Qext.maximalSlope (hS := ⟨hLS⟩) (hN := ⟨hLN⟩) = QL.maximalSlope (hS := ⟨hLS⟩)
       (hN := ⟨hLN⟩) :=
     Qext.maximalSlope_eq_of_completed_isometry QL

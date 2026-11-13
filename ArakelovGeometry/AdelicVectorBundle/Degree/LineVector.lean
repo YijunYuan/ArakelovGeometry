@@ -89,7 +89,7 @@ variable [S.IsProper]
 /-- The actual determinant degree of a line is the vector degree of every
 nonzero rational generator, with no assumed determinant normalization. -/
 theorem degree_eq_vectorDegree_of_finrank_one (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (hr : Module.finrank K V = 1) (s : {x : V // x ≠ 0}) :
     V.degree = V.vectorDegree s := by
@@ -103,7 +103,7 @@ theorem degree_eq_vectorDegree_of_finrank_one (V : AdelicVectorBundle S)
 
 /-- The general determinant degree agrees with the existing line degree. -/
 theorem degree_eq_lineDegree (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsLine] : V.degree = V.lineDegree := by
   rw [V.degree_eq_vectorDegree_of_finrank_one hV.rank_eq_one (V.lineGenerator),
@@ -136,50 +136,50 @@ theorem maximalLogarithmicMinimum_eq_lineDegree (V : AdelicVectorBundle S)
 /-- The actual line degree of the canonical restriction to a nonzero vector's
 span is its ambient vector degree. Rank zero is excluded by the vector domain. -/
 theorem lineDegree_restrict_span_singleton (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     (s : {x : V // x ≠ 0}) :
-    (V.restrictOfMeasurableBase (K ∙ s.val)).lineDegree
+    (V.restrictOfNormMeasurability (K ∙ s.val)).lineDegree
       (hV := ⟨finrank_span_singleton s.property⟩) = V.vectorDegree s := by
   let u : {x : K ∙ s.val // x ≠ 0} :=
     ⟨⟨s.val, Submodule.mem_span_singleton_self s.val⟩, by
       intro h
       exact s.property (congrArg Subtype.val h)⟩
-  rw [(V.restrictOfMeasurableBase (K ∙ s.val)).lineDegree_eq_vectorDegree
+  rw [(V.restrictOfNormMeasurability (K ∙ s.val)).lineDegree_eq_vectorDegree
     (hV := ⟨finrank_span_singleton s.property⟩) u]
-  exact V.vectorDegree_restrictOfMeasurableBase (K ∙ s.val) u
+  exact V.vectorDegree_restrictOfNormMeasurability (K ∙ s.val) u
 
 /-- The actual restricted-line determinant degree has the same vector value. -/
 theorem degree_restrict_span_singleton (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (s : {x : V // x ≠ 0}) :
-    (V.restrictOfMeasurableBase (K ∙ s.val)).degree = V.vectorDegree s := by
-  rw [(V.restrictOfMeasurableBase (K ∙ s.val)).degree_eq_lineDegree
+    (V.restrictOfNormMeasurability (K ∙ s.val)).degree = V.vectorDegree s := by
+  rw [(V.restrictOfNormMeasurability (K ∙ s.val)).degree_eq_lineDegree
     (hV := ⟨finrank_span_singleton s.property⟩), V.lineDegree_restrict_span_singleton s]
 
 /-- The genuine rank-one restricted slope equals ambient rational vector degree. -/
 theorem slope_restrict_span_singleton (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (s : {x : V // x ≠ 0}) :
-    (V.restrictOfMeasurableBase (K ∙ s.val)).slope = V.vectorDegree s := by
+    (V.restrictOfNormMeasurability (K ∙ s.val)).slope = V.vectorDegree s := by
   rw [slope_eq_degree_of_finrank_one _ (finrank_span_singleton s.property),
     V.degree_restrict_span_singleton s]
 
 /-- The ordinary first minimum is exactly the supremum of genuine restricted
 line slopes, with an empty supremum in rank zero. -/
 theorem maximalLogarithmicMinimum_eq_iSup_restrict_line_slopes (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     V.maximalLogarithmicMinimum =
       ⨆ (U : Submodule K V) (_ : Module.finrank K U = 1),
-        ((V.restrictOfMeasurableBase U).slope : EReal) := by
+        ((V.restrictOfNormMeasurability U).slope : EReal) := by
   rw [V.maximalLogarithmicMinimum_eq_iSup_restrict_lines]
   apply iSup_congr
   intro U
   apply iSup_congr
   intro hU
-  let R := V.restrictOfMeasurableBase U
+  let R := V.restrictOfNormMeasurability U
   change R.logarithmicMinimum (Module.finrank K U) = (R.slope : EReal)
   rw [hU, R.slope_eq_degree_of_finrank_one hU, R.degree_eq_lineDegree (hV := ⟨hU⟩)]
   exact R.maximalLogarithmicMinimum_eq_lineDegree (hV := ⟨hU⟩)
@@ -187,7 +187,7 @@ theorem maximalLogarithmicMinimum_eq_iSup_restrict_line_slopes (V : AdelicVector
 /-- Every actual rational vector is bounded by the maximal slope through its
 produced genuine restricted line. -/
 theorem vectorDegree_le_maximalSlope (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (s : {x : V // x ≠ 0}) : (V.vectorDegree s : EReal) ≤ V.maximalSlope := by
   rw [← V.slope_restrict_span_singleton s]
@@ -198,7 +198,7 @@ theorem vectorDegree_le_maximalSlope (V : AdelicVectorBundle S)
 /-- The ordinary inequality of source Proposition 4.3.72, using actual line
 slopes and the true maximal-slope supremum. Both zero values are bottom. -/
 theorem maximalLogarithmicMinimum_le_maximalSlope (V : AdelicVectorBundle S)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     V.maximalLogarithmicMinimum ≤ V.maximalSlope := by
   rw [V.maximalLogarithmicMinimum_eq_iSup_restrict_line_slopes]

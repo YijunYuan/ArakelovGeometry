@@ -37,15 +37,15 @@ variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
 target positive degree. The zero subspace is included. -/
 theorem positiveDegree_le_of_completed_isometry
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = V.toNormFamily.norm ω x) :
     V.positiveDegree ≤ W.positiveDegree := by
   apply V.positiveDegree_le
   intro U
-  have hu : (V.restrictOfMeasurableBase U).degree =
-      (W.restrictOfMeasurableBase (U.map e.toLinearMap)).degree := by
+  have hu : (V.restrictOfNormMeasurability U).degree =
+      (W.restrictOfNormMeasurability (U.map e.toLinearMap)).degree := by
     apply degree_eq_of_completed_isometry _ _ (e.submoduleMap U)
     intro ω z
     exact V.toNormFamily.restrict_map_equiv_norm_eq W.toNormFamily e U ω (he ω) z
@@ -56,7 +56,7 @@ theorem positiveDegree_le_of_completed_isometry
 including rank zero, without requiring a maximizing subspace. -/
 theorem positiveDegree_eq_of_completed_isometry
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
       (e.toLinearMap.baseChange (S.ϕ ω).Completion x) = V.toNormFamily.norm ω x) :
@@ -75,10 +75,10 @@ actual kernel quotient under the canonical first-isomorphism map. -/
 theorem positiveDegree_pushforward_eq_quotient_ker
     (V : AdelicVectorBundle S) (π : V →ₗ[K] F) (hπ : Function.Surjective π)
     [hm : (V.toNormFamily.pushforward π hπ).IsMeasurable]
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
     (V.pushforward π hπ).positiveDegree =
-      (V.quotientOfMeasurableBase π.ker).positiveDegree := by
+      (V.quotientOfNormMeasurability π.ker).positiveDegree := by
   symm
   apply positiveDegree_eq_of_completed_isometry _ _ (π.quotKerEquivOfSurjective hπ)
   intro ω z
@@ -90,9 +90,9 @@ theorem positiveDegree_exactSequence_left
     (V : AdelicVectorBundle S) (L : AdelicVectorBundle S) (R : AdelicVectorBundle S)
     (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    L.positiveDegree = (V.restrictOfMeasurableBase p.ker).positiveDegree := by
+    L.positiveDegree = (V.restrictOfNormMeasurability p.ker).positiveDegree := by
   rw [hx.exact.linearMap_ker_eq]
   let e := LinearEquiv.ofInjective i hx.i_injective
   apply positiveDegree_eq_of_completed_isometry _ _ e
@@ -115,9 +115,9 @@ theorem positiveDegree_exactSequence_right
     (V : AdelicVectorBundle S) (L : AdelicVectorBundle S) (R : AdelicVectorBundle S)
     (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
-    [hS : S.HasMeasurableBase]
+    [hS : S.NormMeasurabilityHypotheses]
     [hN : S.IsArchimedeanNormalized] :
-    R.positiveDegree = (V.quotientOfMeasurableBase p.ker).positiveDegree := by
+    R.positiveDegree = (V.quotientOfNormMeasurability p.ker).positiveDegree := by
   symm
   apply positiveDegree_eq_of_completed_isometry _ _
     (p.quotKerEquivOfSurjective hx.p_surjective)
