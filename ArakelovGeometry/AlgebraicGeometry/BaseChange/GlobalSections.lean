@@ -35,7 +35,7 @@ variable {R S : Type u} [CommRing R] [CommRing S]
 The vertex is the tensor extension of sections over the union, and all
 arrows are tensor extensions of the original restriction maps. -/
 def flatTensorSectionsIsLimit (φ : R →+* S) (hφ : φ.Flat)
-    {T : TopCat.{u}} (F : T.Sheaf (ModuleCat.{u} R))
+    {T : TopCat} (F : T.Sheaf (ModuleCat R))
     {ι : Type u} [Finite ι] (U : ι → Opens T) :
     IsLimit ((F.obj ⋙ ModuleCat.extendScalars φ).mapCone (Pairwise.cocone U).op) := by
   classical
@@ -49,7 +49,7 @@ on a finite union if it is an isomorphism on the cover and its overlaps.
 No global comparison equivalence is assumed. -/
 theorem isIso_tensorSections_of_finite_cover (φ : R →+* S) (hφ : φ.Flat)
     {T : TopCat.{u}} (F : T.Sheaf (ModuleCat.{u} R))
-    (G : T.Sheaf (ModuleCat.{u} S))
+    (G : T.Sheaf (ModuleCat S))
     (α : F.obj ⋙ ModuleCat.extendScalars φ ⟶ G.obj)
     {ι : Type u} [Finite ι] (U : ι → Opens T)
     (hU : ∀ i, IsIso (α.app (op (U i))))
@@ -76,13 +76,13 @@ theorem isIso_tensorSections_of_finite_cover (φ : R →+* S) (hφ : φ.Flat)
 
 section SchemeSections
 
-variable {A B : CommRingCat.{u}} {X Y : Scheme.{u}}
+variable {A B : CommRingCat.{u}} {X Y : Scheme}
 
 /-- The actual module sheaf, regarded as a sheaf of modules over the
 base ring through the given structural morphism. -/
 def modulesToBaseSheaf (b : X ⟶ Spec A) :
-    X.Modules ⥤ TopCat.Sheaf (ModuleCat.{u} A) X := by
-  let E := ModuleCat.restrictScalars.{u} ((Scheme.ΓSpecIso A).inv ≫ b.appTop).hom
+    X.Modules ⥤ TopCat.Sheaf (ModuleCat A) X := by
+  let E := ModuleCat.restrictScalars ((Scheme.ΓSpecIso A).inv ≫ b.appTop).hom
   letI hE : (Opens.grothendieckTopology X).HasSheafCompose E :=
     hasSheafCompose_of_preservesLimitsOfSize _
   exact
@@ -124,8 +124,8 @@ theorem baseSections_scalar_square (φ : A ⟶ B) (b : X ⟶ Spec A)
 /-- The actual pullback module sheaf, pushed forward topologically while
 retaining its module structure over the new base ring. -/
 def pullbackToBaseSheaf (c : Y ⟶ Spec B) (f : Y ⟶ X) (M : X.Modules) :
-    TopCat.Sheaf (ModuleCat.{u} B) X :=
-  (TopCat.Sheaf.pushforward (ModuleCat.{u} B) f.base).obj
+    TopCat.Sheaf (ModuleCat B) X :=
+  (TopCat.Sheaf.pushforward (ModuleCat B) f.base).obj
     ((modulesToBaseSheaf c).obj ((Scheme.Modules.pullback f).obj M))
 
 /-- On every open, the actual sheaf-pullback unit is linear over the old
@@ -218,9 +218,9 @@ theorem tensorSectionComparison_tmul (φ : A ⟶ B) (b : X ⟶ Spec A)
 /-- Pullback followed by topological pushforward, with scalars retained
 over the new base ring, is functorial in the original module sheaf. -/
 def pullbackModulesToBaseSheaf (c : Y ⟶ Spec B) (f : Y ⟶ X) :
-    X.Modules ⥤ TopCat.Sheaf (ModuleCat.{u} B) X :=
+    X.Modules ⥤ TopCat.Sheaf (ModuleCat B) X :=
   Scheme.Modules.pullback f ⋙ modulesToBaseSheaf c ⋙
-    TopCat.Sheaf.pushforward (ModuleCat.{u} B) f.base
+    TopCat.Sheaf.pushforward (ModuleCat B) f.base
 
 /-- Naturality of the actual tensor-section comparison in a morphism of
 module sheaves, on every open. -/
@@ -261,7 +261,7 @@ variable (K L : Type u) [CommRing K] [CommRing L] [Algebra K L]
 
 /-- Bundled extension along an algebra map agrees with the usual algebra
 tensor product. Its scalar-action bridge is explicit. -/
-def extendScalarsAlgebraMapIso (N : ModuleCat.{u} K) :
+def extendScalarsAlgebraMapIso (N : ModuleCat K) :
     (ModuleCat.extendScalars (algebraMap K L)).obj N ≅ ModuleCat.of L (L ⊗[K] N) := by
   let Q := (ModuleCat.restrictScalars (algebraMap K L)).obj (ModuleCat.of L L)
   letI : Module L Q := inferInstanceAs (Module L L)
@@ -270,11 +270,11 @@ def extendScalarsAlgebraMapIso (N : ModuleCat.{u} K) :
   exact (TensorProduct.AlgebraTensorModule.congr e (LinearEquiv.refl K N)).toModuleIso
 
 @[simp]
-theorem extendScalarsAlgebraMapIso_tmul (N : ModuleCat.{u} K) (a : L) (s : N) :
+theorem extendScalarsAlgebraMapIso_tmul (N : ModuleCat K) (a : L) (s : N) :
     (extendScalarsAlgebraMapIso K L N).hom (a ⊗ₜ[K,algebraMap K L] s) = a ⊗ₜ[K] s := rfl
 
 @[simp]
-theorem extendScalarsAlgebraMapIso_inv_tmul (N : ModuleCat.{u} K) (a : L) (s : N) :
+theorem extendScalarsAlgebraMapIso_inv_tmul (N : ModuleCat K) (a : L) (s : N) :
     (extendScalarsAlgebraMapIso K L N).inv (a ⊗ₜ[K] s) = a ⊗ₜ[K,algebraMap K L] s := rfl
 
 end AlgebraTensorBridge
@@ -287,7 +287,7 @@ variable (K L C D : Type u) [CommRing K] [CommRing L] [CommRing C] [CommRing D]
 
 /-- Restriction of the tensor module action along an algebra map agrees
 with its usual action through the left tensor factor. -/
-def restrictTensorScalarsIso (N : ModuleCat.{u} C) :
+def restrictTensorScalarsIso (N : ModuleCat C) :
     (ModuleCat.restrictScalars (algebraMap L D)).obj (ModuleCat.of D (D ⊗[C] N)) ≅
       ModuleCat.of L (D ⊗[C] N) := by
   let P := (ModuleCat.restrictScalars (algebraMap L D)).obj (ModuleCat.of D (D ⊗[C] N))
@@ -299,12 +299,12 @@ def restrictTensorScalarsIso (N : ModuleCat.{u} C) :
   exact IsScalarTower.algebraMap_smul (M := D ⊗[C] N) D a s
 
 @[simp]
-theorem restrictTensorScalarsIso_inv_apply (N : ModuleCat.{u} C) (s : D ⊗[C] N) :
+theorem restrictTensorScalarsIso_inv_apply (N : ModuleCat C) (s : D ⊗[C] N) :
     (restrictTensorScalarsIso L C D N).inv s = s := rfl
 
 /-- Tensor cancellation for the affine relative base-change diagram,
 with the actual bundled extension and restriction of scalar actions. -/
-def affineTensorBaseChangeIso (N : ModuleCat.{u} C) :
+def affineTensorBaseChangeIso (N : ModuleCat C) :
     (ModuleCat.extendScalars (algebraMap K L)).obj
         ((ModuleCat.restrictScalars (algebraMap K C)).obj N) ≅
       (ModuleCat.restrictScalars (algebraMap L D)).obj
@@ -317,7 +317,7 @@ def affineTensorBaseChangeIso (N : ModuleCat.{u} C) :
     (ModuleCat.restrictScalars (algebraMap L D)).mapIso (extendScalarsAlgebraMapIso C D N).symm
 
 @[simp]
-theorem affineTensorBaseChangeIso_tmul (N : ModuleCat.{u} C) (a : L) (s : N) :
+theorem affineTensorBaseChangeIso_tmul (N : ModuleCat C) (a : L) (s : N) :
     letI : Module K N := Module.compHom N (algebraMap K C)
     (affineTensorBaseChangeIso K L C D N).hom (a ⊗ₜ[K,algebraMap K L] s) =
       (algebraMap L D a) ⊗ₜ[C,algebraMap C D] s := by
@@ -351,7 +351,7 @@ def affineRelativePullbackSectionsIso (M : (Spec (.of C)).Modules) [M.IsQuasicoh
           (op ⊤)) ≅
       (pullbackToBaseSheaf (Spec.map (CommRingCat.ofHom (algebraMap L D)))
         (Spec.map (CommRingCat.ofHom (algebraMap C D))) M).obj.obj (op ⊤) := by
-  let N : ModuleCat.{u} C := (moduleSpecΓFunctor (R := CommRingCat.of C)).obj M
+  let N : ModuleCat C := (moduleSpecΓFunctor (R := CommRingCat.of C)).obj M
   let e₁ := (ModuleCat.extendScalars (algebraMap K L)).mapIso
     (affineBaseSectionsIso (CommRingCat.ofHom (algebraMap K C)) M ⊤)
   let e₂ := affineTensorBaseChangeIso K L C D N
@@ -368,7 +368,7 @@ theorem affineRelativePullbackSectionsIso_hom_apply
     (z : (ModuleCat.extendScalars (algebraMap K L)).obj
       (((modulesToBaseSheaf (Spec.map (CommRingCat.ofHom (algebraMap K C)))).obj M).obj.obj
         (op ⊤))) :
-    let N : ModuleCat.{u} C := (moduleSpecΓFunctor (R := CommRingCat.of C)).obj M
+    let N : ModuleCat C := (moduleSpecΓFunctor (R := CommRingCat.of C)).obj M
     let e₁ := (ModuleCat.extendScalars (algebraMap K L)).mapIso
       (affineBaseSectionsIso (CommRingCat.ofHom (algebraMap K C)) M ⊤)
     let e₂ := affineTensorBaseChangeIso K L C D N
@@ -388,7 +388,7 @@ theorem affineRelativePullbackSectionsIso_one_tmul
         ((1 : L) ⊗ₜ[K,algebraMap K L] s) =
       ((Scheme.Modules.pullbackPushforwardAdjunction
         (Spec.map (CommRingCat.ofHom (algebraMap C D)))).unit.app M).app ⊤ s := by
-  let N : ModuleCat.{u} C := (moduleSpecΓFunctor (R := CommRingCat.of C)).obj M
+  let N : ModuleCat C := (moduleSpecΓFunctor (R := CommRingCat.of C)).obj M
   let e₁ := (ModuleCat.extendScalars (algebraMap K L)).mapIso
     (affineBaseSectionsIso (CommRingCat.ofHom (algebraMap K C)) M ⊤)
   let e₂ := affineTensorBaseChangeIso K L C D N
@@ -441,7 +441,7 @@ end AffineRelativeSections
 
 section SchemeIsoSections
 
-variable {X Y Z : Scheme.{u}}
+variable {X Y Z : Scheme}
 
 /-- Composition of genuine section pullback units on every open, under
 the canonical composition isomorphism of pullback sheaves. -/
@@ -486,7 +486,7 @@ theorem isIso_pullbackUnit_app_of_isIso (i : X ⟶ Y) [IsIso i]
 
 /-- The base-linear section-pullback map is an isomorphism whenever the
 underlying scheme morphism is an isomorphism. -/
-theorem isIso_baseSectionPullback_of_isIso {A B : CommRingCat.{u}} (φ : A ⟶ B)
+theorem isIso_baseSectionPullback_of_isIso {A B : CommRingCat} (φ : A ⟶ B)
     (b : Y ⟶ Spec A) (c : X ⟶ Spec B) (i : X ⟶ Y) [IsIso i]
     (h : i ≫ b = c ≫ Spec.map φ) (M : Y.Modules) (U : Y.Opens) :
     IsIso (baseSectionPullback φ b c i h M U) := by

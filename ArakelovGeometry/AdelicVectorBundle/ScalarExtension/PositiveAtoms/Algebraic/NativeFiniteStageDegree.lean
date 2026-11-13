@@ -29,10 +29,10 @@ open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry.NormFamily
 
-universe uK uL uE uΩ uF
+universe uK uL uE uF
 variable {K : Type uK} {L : Type uL} {E : Type uE}
   [Field K] [Field L] [Algebra K L]
-  [Algebra.IsAlgebraic K L] [IsAlgClosed L] {S : AdelicStructure.{uK, uΩ} K}
+  [Algebra.IsAlgebraic K L] [IsAlgClosed L] {S : AdelicStructure K}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [MeasurableSingletonClass S.Ω]
 

@@ -27,7 +27,7 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w w'
+universe u w w'
 
 /-- Binary finite tensor identification commutes with factor equivalences. -/
 theorem binaryTensorEquiv_congr {L : Type*} [Field L]
@@ -164,7 +164,7 @@ end Algebra
 
 namespace NormFamily
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 

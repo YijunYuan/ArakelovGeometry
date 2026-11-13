@@ -28,9 +28,9 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -167,7 +167,7 @@ namespace AdelicVectorBundle
 
 /-- The actual binary Hermitian tensor bundle, with its analytic properties
 produced from the factors and the source measurability alternatives. -/
-abbrev orthogonalTensorPair (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+abbrev orthogonalTensorPair (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hW : W.IsHermitian] :
@@ -178,8 +178,8 @@ abbrev orthogonalTensorPair (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBund
 scoped[TensorProduct] infixl:100 " ⊗ʰ " => ArakelovGeometry.AdelicVectorBundle.orthogonalTensorPair
 
 @[simp]
-theorem orthogonalTensorPair_toNormFamily (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S)
+theorem orthogonalTensorPair_toNormFamily (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hW : W.IsHermitian] :
@@ -187,8 +187,8 @@ theorem orthogonalTensorPair_toNormFamily (V : AdelicVectorBundle.{w} S)
       V.toNormFamily.orthogonalTensorPair W.toNormFamily := rfl
 
 /-- The canonical tensor bundle is strongly adelic in its actual norms. -/
-theorem orthogonalTensorPair_isStronglyAdelic (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S)
+theorem orthogonalTensorPair_isStronglyAdelic (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S)
     [S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hW : W.IsHermitian] :
@@ -196,8 +196,8 @@ theorem orthogonalTensorPair_isStronglyAdelic (V : AdelicVectorBundle.{w} S)
   V.isDominated.strong_orthogonalTensorPair W.isDominated
 
 /-- The actual binary tensor bundle has the orthogonal product inner norm. -/
-theorem orthogonalTensorPair_isHermitian (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S)
+theorem orthogonalTensorPair_isHermitian (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S)
     [S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hW : W.IsHermitian] :

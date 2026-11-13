@@ -20,7 +20,7 @@ of algebraic scalar extensions (Chen–Moriwaki, §3.4.2).
 
 namespace ArakelovGeometry.AdelicStructure
 
-universe u v w
+universe u w
 
 variable {K : Type u} [Field K] (L : Type w) [Field L] [Algebra K L]
 

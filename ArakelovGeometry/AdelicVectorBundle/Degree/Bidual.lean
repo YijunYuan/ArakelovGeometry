@@ -26,9 +26,9 @@ open MeasureTheory
 
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- The actual bidual family on the original rational space, with its

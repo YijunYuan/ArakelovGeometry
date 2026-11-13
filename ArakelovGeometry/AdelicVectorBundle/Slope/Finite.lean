@@ -38,9 +38,9 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 namespace NormFamily
@@ -295,7 +295,7 @@ variable [S.IsProper]
 /-- Integrating the actual determinant coordinate bound removes its
 nonzero rational coefficient by properness. The only error is the accepted
 sharp Archimedean determinant discrepancy, in every subspace rank. -/
-theorem degree_restrict_le_of_dual_basis_norm_bound (V : AdelicVectorBundle.{w} S)
+theorem degree_restrict_le_of_dual_basis_norm_bound (V : AdelicVectorBundle S)
     (b : Module.Basis (Fin (Module.finrank K V)) K V) (A : S.Ω → ℝ)
     (hA : Integrable A S.v)
     (hb : ∀ᵐ ω ∂S.v, ∀ (U : Submodule K V) (i : Fin (Module.finrank K V)),

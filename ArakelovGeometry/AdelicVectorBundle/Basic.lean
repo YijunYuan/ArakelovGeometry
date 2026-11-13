@@ -40,9 +40,9 @@ open MeasureTheory
 
 namespace ArakelovGeometry
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -156,7 +156,7 @@ attribute [instance] AdelicVectorBundle.instAddCommGroup AdelicVectorBundle.inst
 
 namespace AdelicVectorBundle
 
-instance : CoeSort (AdelicVectorBundle.{w} S) (Type w) := ⟨carrier⟩
+instance : CoeSort (AdelicVectorBundle S) (Type w) := ⟨carrier⟩
 
 /-- An explicit norm-family view of a bundled vector space. -/
 instance (V : AdelicVectorBundle S) :
@@ -201,30 +201,30 @@ theorem NormFamily.toAdelicVectorBundle_toNormFamily (ξ : NormFamily S E) [ξ.I
     ξ.toAdelicVectorBundle.toNormFamily = ξ := rfl
 
 @[simp]
-theorem AdelicVectorBundle.toNormFamily_toAdelicVectorBundle (V : AdelicVectorBundle.{w} S) :
+theorem AdelicVectorBundle.toNormFamily_toAdelicVectorBundle (V : AdelicVectorBundle S) :
     V.toNormFamily.toAdelicVectorBundle = V := rfl
 
 namespace AdelicVectorBundle
 
 /-- The rational dimension, including rank zero. -/
-noncomputable def rank (V : AdelicVectorBundle.{w} S) : ℕ := Module.finrank K V
+noncomputable def rank (V : AdelicVectorBundle S) : ℕ := Module.finrank K V
 
 /-- Strong adelicity imposes the source strong-domination condition. -/
-abbrev IsStronglyAdelic (V : AdelicVectorBundle.{w} S) : Prop :=
+abbrev IsStronglyAdelic (V : AdelicVectorBundle S) : Prop :=
   V.toNormFamily.IsStronglyDominated
 
 /-- Hermitian adelicity uses the same completed norm family and scalar action. -/
-abbrev IsHermitian (V : AdelicVectorBundle.{w} S)
+abbrev IsHermitian (V : AdelicVectorBundle S)
     [hS : S.IsArchimedeanNormalized] : Prop :=
   V.toNormFamily.IsHermitian
 
 /-- An adelic line bundle is an adelic bundle of rational rank one. -/
-class IsLine (V : AdelicVectorBundle.{w} S) : Prop where
+class IsLine (V : AdelicVectorBundle S) : Prop where
   /-- The rational rank is one. -/
   rank_eq_one : V.rank = 1
 
 /-- The rank characterization of an adelic line bundle. -/
-theorem isLine_iff (V : AdelicVectorBundle.{w} S) : V.IsLine ↔ V.rank = 1 :=
+theorem isLine_iff (V : AdelicVectorBundle S) : V.IsLine ↔ V.rank = 1 :=
   ⟨fun h ↦ h.rank_eq_one, fun h ↦ ⟨h⟩⟩
 
 /-- Equal norm families on the same vector space give equal bundled objects. -/
@@ -239,39 +239,39 @@ theorem carrier_toAdelicVectorBundle (ξ : NormFamily S E) [ξ.IsAdelic] :
     ξ.toAdelicVectorBundle.carrier = E := rfl
 
 /-- Every rational logarithmic norm in an adelic bundle is integrable. -/
-theorem integrable_logNorm (V : AdelicVectorBundle.{w} S) (x : V) :
+theorem integrable_logNorm (V : AdelicVectorBundle S) (x : V) :
     Integrable (V.toNormFamily.logNorm x) S.v :=
   V.isDominated.integrable_logNorm V.isMeasurable x
 
 /-- Every Hermitian adelic bundle is strongly adelic. -/
-theorem IsHermitian.isStronglyAdelic {V : AdelicVectorBundle.{w} S}
+theorem IsHermitian.isStronglyAdelic {V : AdelicVectorBundle S}
     [hS : S.IsArchimedeanNormalized]
     (hV : V.IsHermitian) : V.IsStronglyAdelic :=
   (V.toNormFamily.isStronglyDominated_iff_isDominated_of_ultrametric (hξ := hV.1)).2 V.isDominated
 
 /-- Every adelic line bundle is strongly adelic, without an Archimedean hypothesis. -/
-theorem IsLine.isStronglyAdelic {V : AdelicVectorBundle.{w} S} (hV : V.IsLine) :
+theorem IsLine.isStronglyAdelic {V : AdelicVectorBundle S} (hV : V.IsLine) :
     V.IsStronglyAdelic :=
   (V.toNormFamily.isStronglyDominated_iff_isDominated_of_finrank_le_one hV.rank_eq_one.le).2
       V.isDominated
 
 /-- Every adelic line bundle is Hermitian under the source normalization. -/
-theorem IsLine.isHermitian {V : AdelicVectorBundle.{w} S} (hV : V.IsLine)
+theorem IsLine.isHermitian {V : AdelicVectorBundle S} (hV : V.IsLine)
     [hS : S.IsArchimedeanNormalized] : V.IsHermitian :=
   V.toNormFamily.isHermitian_of_finrank_one hV.rank_eq_one
 
-instance isStronglyAdelic_of_isHermitian (V : AdelicVectorBundle.{w} S)
+instance isStronglyAdelic_of_isHermitian (V : AdelicVectorBundle S)
     [S.IsArchimedeanNormalized] [hV : V.IsHermitian] : V.IsStronglyAdelic :=
   IsHermitian.isStronglyAdelic hV
 
-instance isStronglyAdelic_of_isLine (V : AdelicVectorBundle.{w} S) [hV : V.IsLine] :
+instance isStronglyAdelic_of_isLine (V : AdelicVectorBundle S) [hV : V.IsLine] :
     V.IsStronglyAdelic := IsLine.isStronglyAdelic hV
 
-instance isHermitian_of_isLine (V : AdelicVectorBundle.{w} S)
+instance isHermitian_of_isLine (V : AdelicVectorBundle S)
     [S.IsArchimedeanNormalized] [hV : V.IsLine] : V.IsHermitian :=
   IsLine.isHermitian hV
 
-instance isUltrametric_of_isLine (V : AdelicVectorBundle.{w} S) [hV : V.IsLine] :
+instance isUltrametric_of_isLine (V : AdelicVectorBundle S) [hV : V.IsLine] :
     V.toNormFamily.IsUltrametric :=
   V.toNormFamily.isUltrametric_of_finrank_le_one hV.rank_eq_one.le
 
@@ -289,77 +289,77 @@ theorem ofLine_isLine (ξ : NormFamily S E) (hr : Module.finrank K E = 1)
     [hm : ξ.IsMeasurable] [hd : ξ.IsDominated] : (ofLine ξ hr).IsLine := ⟨hr⟩
 
 /-- Source Proposition 4.1.30: the actual dual of an adelic line is an adelic line. -/
-noncomputable abbrev dualLine (V : AdelicVectorBundle.{w} S) [hV : V.IsLine] :
+noncomputable abbrev dualLine (V : AdelicVectorBundle S) [hV : V.IsLine] :
     AdelicVectorBundle S :=
   ofLine V.toNormFamily.dual (Subspace.dual_finrank_eq.trans hV.rank_eq_one)
     (hd := V.isDominated.dual)
 
 @[simp]
-theorem dualLine_toNormFamily (V : AdelicVectorBundle.{w} S) [hV : V.IsLine] :
+theorem dualLine_toNormFamily (V : AdelicVectorBundle S) [hV : V.IsLine] :
     (V.dualLine).toNormFamily = V.toNormFamily.dual := rfl
 
-theorem dualLine_isLine (V : AdelicVectorBundle.{w} S) [hV : V.IsLine] :
+theorem dualLine_isLine (V : AdelicVectorBundle S) [hV : V.IsLine] :
     (V.dualLine).IsLine := ⟨Subspace.dual_finrank_eq.trans hV.rank_eq_one⟩
 
 /-- Source Proposition 4.1.31(1): an arbitrary rational subline is adelic. -/
-noncomputable abbrev restrictLine (V : AdelicVectorBundle.{w} S) (F : Submodule K V)
+noncomputable abbrev restrictLine (V : AdelicVectorBundle S) (F : Submodule K V)
     (hr : Module.finrank K F = 1) : AdelicVectorBundle S :=
   ofLine (V.toNormFamily.restrict F) hr (hm := (V.isMeasurable.restrict F))
       (hd := (V.isDominated.restrict F))
 
 @[simp]
-theorem restrictLine_toNormFamily (V : AdelicVectorBundle.{w} S) (F : Submodule K V)
+theorem restrictLine_toNormFamily (V : AdelicVectorBundle S) (F : Submodule K V)
     (hr : Module.finrank K F = 1) :
     (V.restrictLine F hr).toNormFamily = V.toNormFamily.restrict F := rfl
 
-theorem restrictLine_isLine (V : AdelicVectorBundle.{w} S) (F : Submodule K V)
+theorem restrictLine_isLine (V : AdelicVectorBundle S) (F : Submodule K V)
     (hr : Module.finrank K F = 1) : (V.restrictLine F hr).IsLine := ⟨hr⟩
 
 /-- Source Proposition 4.1.31(2): every quotient line is adelic.
 Quotient measurability is proved from ambient dual measurability and rank-one biduality. -/
-noncomputable abbrev quotientLine (V : AdelicVectorBundle.{w} S) (π : V →ₗ[K] F)
+noncomputable abbrev quotientLine (V : AdelicVectorBundle S) (π : V →ₗ[K] F)
     (hπ : Function.Surjective π) (hr : Module.finrank K F = 1) : AdelicVectorBundle S :=
   ofLine (V.toNormFamily.pushforward π hπ) hr
     (hm := (V.dual_isMeasurable.pushforward_of_dual_of_finrank_one π hπ hr))
     (hd := (V.isDominated.pushforward π hπ))
 
 @[simp]
-theorem quotientLine_toNormFamily (V : AdelicVectorBundle.{w} S) (π : V →ₗ[K] F)
+theorem quotientLine_toNormFamily (V : AdelicVectorBundle S) (π : V →ₗ[K] F)
     (hπ : Function.Surjective π) (hr : Module.finrank K F = 1) :
     (V.quotientLine π hπ hr).toNormFamily = V.toNormFamily.pushforward π hπ := rfl
 
-theorem quotientLine_isLine (V : AdelicVectorBundle.{w} S) (π : V →ₗ[K] F)
+theorem quotientLine_isLine (V : AdelicVectorBundle S) (π : V →ₗ[K] F)
     (hπ : Function.Surjective π) (hr : Module.finrank K F = 1) :
     (V.quotientLine π hπ hr).IsLine := ⟨hr⟩
 
 /-- An injective pullback is adelic when its dual norm family is measurable. -/
-noncomputable abbrev pullback (V : AdelicVectorBundle.{w} S) (f : F →ₗ[K] V)
+noncomputable abbrev pullback (V : AdelicVectorBundle S) (f : F →ₗ[K] V)
     (hf : Function.Injective f) [hm : (V.toNormFamily.pullback f hf).dual.IsMeasurable] :
     AdelicVectorBundle S := by
   letI := V.toIsAdelic.pullback f hf hm
   exact (V.toNormFamily.pullback f hf).toAdelicVectorBundle
 
 /-- Source Proposition 4.1.32(1), ordinary adelicity with its stated measurability condition. -/
-noncomputable abbrev restrict (V : AdelicVectorBundle.{w} S) (F : Submodule K V)
+noncomputable abbrev restrict (V : AdelicVectorBundle S) (F : Submodule K V)
     [hm : (V.toNormFamily.restrict F).dual.IsMeasurable] : AdelicVectorBundle S := by
   letI := V.toIsAdelic.restrict F hm
   exact (V.toNormFamily.restrict F).toAdelicVectorBundle
 
 /-- Source Proposition 4.1.32(2), ordinary adelicity with its stated measurability condition. -/
-noncomputable abbrev pushforward (V : AdelicVectorBundle.{w} S) (π : V →ₗ[K] F)
+noncomputable abbrev pushforward (V : AdelicVectorBundle S) (π : V →ₗ[K] F)
     (hπ : Function.Surjective π) [hm : (V.toNormFamily.pushforward π hπ).IsMeasurable] :
     AdelicVectorBundle S := by
   letI := V.toIsAdelic.pushforward π hπ hm
   exact (V.toNormFamily.pushforward π hπ).toAdelicVectorBundle
 
 /-- Source Proposition 4.1.32(3): duality retains the required bidual measurability hypothesis. -/
-noncomputable abbrev dual (V : AdelicVectorBundle.{w} S)
+noncomputable abbrev dual (V : AdelicVectorBundle S)
     [hm : V.toNormFamily.dual.dual.IsMeasurable] : AdelicVectorBundle S := by
   letI := V.toIsAdelic.dual hm
   exact V.toNormFamily.dual.toAdelicVectorBundle
 
 /-- The dual bundle from the source's measurability assumption is strongly adelic. -/
-theorem dual_isStronglyAdelic (V : AdelicVectorBundle.{w} S)
+theorem dual_isStronglyAdelic (V : AdelicVectorBundle S)
     [V.toNormFamily.dual.dual.IsMeasurable] : (V.dual).IsStronglyAdelic :=
   V.isDominated.strong_dual
 

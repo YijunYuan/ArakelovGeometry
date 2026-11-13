@@ -27,9 +27,9 @@ namespace ArakelovGeometry.AdelicStructure
 
 open MeasureTheory
 
-universe u v
+universe u
 
-variable {K : Type u} [Field K] (AS : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] (AS : AdelicStructure K)
 
 /-- Logarithmic evaluations, extended by zero at the field element zero, are measurable. -/
 theorem measurable_log_eval (a : K) :

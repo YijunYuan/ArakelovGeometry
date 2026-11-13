@@ -24,9 +24,7 @@ noncomputable section
 
 namespace ArakelovGeometry.ValuedPoint
 
-universe u
-
-variable {W X Y Z : Scheme.{u}}
+variable {W X Y Z : Scheme}
 
 /-- Section pullback respects an actual commuting square of scheme maps. -/
 theorem pullbackSection_square (a : W ⟶ X) (b : X ⟶ Z) (c : W ⟶ Y) (d : Y ⟶ Z)

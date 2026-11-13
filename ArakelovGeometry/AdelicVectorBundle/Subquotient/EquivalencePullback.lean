@@ -27,8 +27,8 @@ open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w w'
-variable {M : Type u} [Field M] {T : AdelicStructure.{u, v} M}
+universe u w w'
+variable {M : Type u} [Field M] {T : AdelicStructure M}
   {X : Type w} [AddCommGroup X] [Module M X] [FiniteDimensional M X]
   {Y : Type w'} [AddCommGroup Y] [Module M Y] [FiniteDimensional M Y]
 

@@ -33,7 +33,7 @@ noncomputable section
 
 namespace ArakelovGeometry
 
-universe u v w wE
+universe u w wE
 
 variable {K : Type u} [Field K] {L : Type w} [Field L] [Algebra K L]
   [Algebra.IsAlgebraic K L] {E : Type wE} [AddCommGroup E] [Module K E]
@@ -67,7 +67,7 @@ theorem exists_finiteStage_tensor_lift (z : L ⊗[K] E) :
 
 namespace NormFamily
 
-variable {S : AdelicStructure.{u, v} K} (ξ : NormFamily S E)
+variable {S : AdelicStructure K} (ξ : NormFamily S E)
 
 /-- Ultrametricity at finite places and usual Archimedean normalization make
 the canonical embedding of every completed base vector isometric. -/

@@ -34,9 +34,9 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -207,8 +207,8 @@ theorem degree_eq_rank_mul_slope (V : AdelicVectorBundle S)
   · rw [slope, mul_div_cancel₀ _ (Nat.cast_ne_zero.mpr hr)]
 
 /-- Actual completed isometries preserve the real mean slope. -/
-theorem slope_eq_of_completed_isometry (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
+theorem slope_eq_of_completed_isometry (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
@@ -281,8 +281,8 @@ theorem le_minimalSlope (V : AdelicVectorBundle S)
 
 /-- The slope supremum is functorial under an actual completed isometry:
 each source subspace transports to its actual image subspace. -/
-theorem maximalSlope_le_of_completed_isometry (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
+theorem maximalSlope_le_of_completed_isometry (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
@@ -301,8 +301,8 @@ theorem maximalSlope_le_of_completed_isometry (V : AdelicVectorBundle.{w} S)
 
 /-- Actual completed isometries preserve maximal slopes, including both
 infinite values and the zero-bundle convention. -/
-theorem maximalSlope_eq_of_completed_isometry (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
+theorem maximalSlope_eq_of_completed_isometry (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
@@ -353,7 +353,7 @@ theorem slope_eq_degree_of_finrank_one (V : AdelicVectorBundle S)
 
 /-- Every actual surjective quotient has the mean slope of the canonical
 quotient by its kernel. -/
-theorem slope_pushforward_eq_quotient_ker (V : AdelicVectorBundle.{w} S)
+theorem slope_pushforward_eq_quotient_ker (V : AdelicVectorBundle S)
     (π : V →ₗ[K] F) (hπ : Function.Surjective π)
     [hm : (V.toNormFamily.pushforward π hπ).IsMeasurable]
     [hS : S.HasMeasurableBase]
@@ -368,7 +368,7 @@ theorem slope_pushforward_eq_quotient_ker (V : AdelicVectorBundle.{w} S)
 
 /-- Every actual surjective quotient has the maximal slope of the canonical
 quotient by its kernel, independently of the chosen target vector space. -/
-theorem maximalSlope_pushforward_eq_quotient_ker (V : AdelicVectorBundle.{w} S)
+theorem maximalSlope_pushforward_eq_quotient_ker (V : AdelicVectorBundle S)
     (π : V →ₗ[K] F) (hπ : Function.Surjective π)
     [hm : (V.toNormFamily.pushforward π hπ).IsMeasurable]
     [hS : S.HasMeasurableBase]
@@ -383,7 +383,7 @@ theorem maximalSlope_pushforward_eq_quotient_ker (V : AdelicVectorBundle.{w} S)
 
 /-- Canonical kernel indexing in (4.45) includes every nonzero source quotient
 with its actual quotient norm, including targets in another universe. -/
-theorem minimalSlope_le_maximalSlope_pushforward (V : AdelicVectorBundle.{w} S)
+theorem minimalSlope_le_maximalSlope_pushforward (V : AdelicVectorBundle S)
     (π : V →ₗ[K] F) (hπ : Function.Surjective π)
     [hm : (V.toNormFamily.pushforward π hπ).IsMeasurable]
     [hS : S.HasMeasurableBase]
@@ -396,8 +396,8 @@ theorem minimalSlope_le_maximalSlope_pushforward (V : AdelicVectorBundle.{w} S)
 
 /-- Transporting every nonzero kernel quotient along an actual isometry
 bounds the target minimal slope by the source minimal slope. -/
-theorem minimalSlope_ge_of_completed_isometry (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
+theorem minimalSlope_ge_of_completed_isometry (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
@@ -417,8 +417,8 @@ theorem minimalSlope_ge_of_completed_isometry (V : AdelicVectorBundle.{w} S)
 
 /-- Actual completed isometries preserve the source minimal slope, retaining
 all extended-real values and the plus-infinity zero-bundle convention. -/
-theorem minimalSlope_eq_of_completed_isometry (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
+theorem minimalSlope_eq_of_completed_isometry (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω

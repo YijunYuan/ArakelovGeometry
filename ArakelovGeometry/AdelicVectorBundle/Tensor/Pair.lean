@@ -28,7 +28,7 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry
 
-universe u v w w'
+universe u w w'
 
 /-- The two actual factors of a binary finite tensor product. -/
 abbrev BinaryTensorFactors (E F : Type w) : Unit ⊕ Unit → Type w
@@ -83,7 +83,7 @@ theorem tensorPairEquiv_tprod (x : ∀ i, LiftedTensorFactors E F i) :
 
 end Algebra
 
-variable {S : AdelicStructure.{u, v} K}
+variable {S : AdelicStructure K}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -150,8 +150,8 @@ namespace AdelicVectorBundle
 
 /-- The actual binary injective tensor bundle, with norm and dual measurability
 proved under the source alternatives. -/
-noncomputable abbrev injectiveTensorPair (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S)
+noncomputable abbrev injectiveTensorPair (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     AdelicVectorBundle S :=
@@ -160,8 +160,8 @@ noncomputable abbrev injectiveTensorPair (V : AdelicVectorBundle.{w} S)
     (hd := (V.isDominated.injectiveTensorPair W.isDominated (by exact S.v_Ωinf_lt_top_of_isRCLike)))
 
 @[simp]
-theorem injectiveTensorPair_toNormFamily (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S)
+theorem injectiveTensorPair_toNormFamily (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.injectiveTensorPair W).toNormFamily =

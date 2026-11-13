@@ -26,12 +26,12 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w
+attribute [local instance 50] UniformSpace.Completion.instModule
 
 noncomputable section
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
-variable {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
+variable {K : Type*} [Field K] {S : AdelicStructure K}
+variable {E : Type*} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 variable (ξ : NormFamily S E)
 
 /-- The exterior-power norm family is the quotient of the mixed tensor power. -/
@@ -59,21 +59,16 @@ theorem exteriorPower_norm_eq_sInf_local (n : ℕ) (ω : S.Ω)
         (tensorBaseChangeEquiv K (S.ϕ ω).Completion (fun _ : Fin n ↦ E)).symm) ''
           {x | tensorToExterior (S.ϕ ω).Completion ((S.ϕ ω).Completion ⊗[K] E) n x =
             exteriorBaseChangeEquiv K (S.ϕ ω).Completion E n z}) := by
-  rw [exteriorPower_norm_eq_sInf]
-  congr 1
-  ext r
-  constructor
-  · rintro ⟨x, hx, hr⟩
-    refine ⟨tensorBaseChangeEquiv K (S.ϕ ω).Completion (fun _ : Fin n ↦ E) x, ?_, ?_⟩
-    · change tensorToExterior _ _ _ _ = _
-      rw [← exteriorBaseChangeEquiv_tensorToExterior, hx]
-    · simpa only [Function.comp_apply, LinearEquiv.symm_apply_apply] using hr
-  · rintro ⟨x, hx, hr⟩
-    refine ⟨(tensorBaseChangeEquiv K (S.ϕ ω).Completion (fun _ : Fin n ↦ E)).symm x,
-      ?_, hr⟩
-    apply (exteriorBaseChangeEquiv K (S.ϕ ω).Completion E n).injective
-    rw [exteriorBaseChangeEquiv_tensorToExterior, LinearEquiv.apply_symm_apply]
-    exact hx
+  rw [exteriorPower_norm_eq_sInf, Set.image_comp]
+  congr 2
+  change _ = (tensorBaseChangeEquiv K (S.ϕ ω).Completion (fun _ : Fin n ↦ E)).toEquiv.symm '' _
+  rw [(tensorBaseChangeEquiv K (S.ϕ ω).Completion
+    (fun _ : Fin n ↦ E)).toEquiv.image_symm_eq_preimage]
+  ext x
+  change (tensorToExterior K E n).baseChange (S.ϕ ω).Completion x = z ↔ _
+  rw [Set.mem_preimage, Set.mem_ofPred_eq, LinearEquiv.coe_toEquiv,
+    ← exteriorBaseChangeEquiv_tensorToExterior]
+  exact (exteriorBaseChangeEquiv K (S.ϕ ω).Completion E n).injective.eq_iff.symm
 
 /-- Exterior-power quotient maps contract the actual completed tensor norm. -/
 theorem exteriorPower_norm_le (n : ℕ) (ω : S.Ω)

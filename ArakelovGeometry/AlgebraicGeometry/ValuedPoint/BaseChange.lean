@@ -34,7 +34,7 @@ universe u
 
 namespace ValuedPoint
 
-variable {k : Type u} [Field k] {X Y : Scheme.{u}}
+variable {k : Type u} [Field k] {X Y : Scheme}
 
 /-- The canonical map from the base field to the residue field of a point. -/
 def baseHom (f : X ⟶ Spec (CommRingCat.of k)) (x : X) :

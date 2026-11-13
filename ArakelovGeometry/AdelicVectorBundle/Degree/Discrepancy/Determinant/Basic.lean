@@ -30,9 +30,9 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- A fixed nonzero rational generator of the determinant line. -/
@@ -199,7 +199,7 @@ theorem measurable_determinantDiscrepancy (V : AdelicVectorBundle S)
 
 /-- Both genuine determinant lines are adelic, so their logarithmic
 norms supply integrability of the logarithmic discrepancy. -/
-theorem integrable_log_determinantDiscrepancy (V : AdelicVectorBundle.{w} S)
+theorem integrable_log_determinantDiscrepancy (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     Integrable (fun ω ↦ Real.log (V.toNormFamily.determinantDiscrepancy ω)) S.v := by
@@ -215,7 +215,7 @@ theorem integrable_log_determinantDiscrepancy (V : AdelicVectorBundle.{w} S)
 /-- The degree-duality defect is the integral of the intrinsic local
 determinant discrepancy, in every rank. -/
 theorem degree_add_degree_dual_eq_integral_log_determinantDiscrepancy [S.IsProper]
-    (V : AdelicVectorBundle.{w} S)
+    (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     V.degree + (V.dualOfMeasurableBase).degree =

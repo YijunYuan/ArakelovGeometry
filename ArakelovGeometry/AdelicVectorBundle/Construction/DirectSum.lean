@@ -26,12 +26,12 @@ actual dual measurability are proved; no measurability certificate is assumed.
 
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w w'
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u w w'
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
-variable (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+variable (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
   (ψ : S.Ω → NormShape) (hψ : NormShape.IsMeasurableFamily ψ)
   (U : Set S.Ω) (hU : MeasurableSet U) (hfinU : S.v U < ⊤)
   (hmax : ∀ ω ∉ U,

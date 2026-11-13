@@ -27,9 +27,9 @@ open scoped NumberField
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] [NumberField K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] [NumberField K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E]
   [MeasurableSingletonClass S.Ω] {ξ : NormFamily S E}
 

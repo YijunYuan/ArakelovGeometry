@@ -27,7 +27,7 @@ open scoped TensorProduct
 noncomputable section
 
 namespace ArakelovGeometry
-universe u w v wE
+universe u w wE
 variable (K : Type u) [Field K] (L : Type w) [Field L]
   [Algebra K L] [Algebra.IsAlgebraic K L]
 
@@ -109,7 +109,7 @@ theorem commonAlgebraicClosureRangeEquiv_val (a : L) :
 namespace AdelicStructure
 
 /-- The actual common-closure K-place map preserves the extension measures. -/
-theorem measurePreserving_commonAlgebraicClosure (S : AdelicStructure.{u, v} K) :
+theorem measurePreserving_commonAlgebraicClosure (S : AdelicStructure K) :
     MeasurePreserving (ParameterSpaceExtension.algEquivMeasurableEquiv S
       (commonAlgebraicClosureEquiv K L))
       (S.algebraicExtension (AlgebraicClosure L)).v
@@ -119,7 +119,7 @@ theorem measurePreserving_commonAlgebraicClosure (S : AdelicStructure.{u, v} K) 
 /-- The same true transport over the actual extended curve uses the produced
 L-algebra and algebraicity, without regularity on that place space. -/
 theorem measurePreserving_commonAlgebraicClosureOverExtension
-    (S : AdelicStructure.{u, v} K) :
+    (S : AdelicStructure K) :
     letI := commonAlgebraicClosureAlgebra K L
     letI := commonAlgebraicClosure_isAlgebraic K L
     MeasurePreserving (ParameterSpaceExtension.algEquivMeasurableEquiv
@@ -134,7 +134,7 @@ theorem measurePreserving_commonAlgebraicClosureOverExtension
 end AdelicStructure
 namespace NormFamily
 open AdelicStructure.ParameterSpaceExtension
-variable {S : AdelicStructure.{u, v} K}
+variable {S : AdelicStructure K}
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Actual direct rational scalar norm profiles pass through the produced

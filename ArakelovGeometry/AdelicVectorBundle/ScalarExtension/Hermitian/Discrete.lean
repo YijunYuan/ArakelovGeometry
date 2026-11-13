@@ -28,10 +28,10 @@ noncomputable section
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w wE
+universe u w wE
 
 variable {K : Type u} [Field K] {L : Type w} [Field L] [Algebra K L]
-  {S : AdelicStructure.{u, v} K}
+  {S : AdelicStructure K}
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [Algebra.IsAlgebraic K L] (ξ : NormFamily S E)
   [hS : S.IsArchimedeanNormalized]

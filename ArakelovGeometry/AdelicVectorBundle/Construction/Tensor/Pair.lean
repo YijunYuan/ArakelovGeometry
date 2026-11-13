@@ -28,9 +28,9 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -56,7 +56,7 @@ end NormFamily
 namespace AdelicVectorBundle
 
 /-- The actual binary mixed tensor bundle, with its analytic properties produced. -/
-abbrev mixedTensorPair (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+abbrev mixedTensorPair (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     AdelicVectorBundle S :=
@@ -65,16 +65,16 @@ abbrev mixedTensorPair (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w
     (hd := (V.isDominated.strong_mixedTensorPair W.isDominated).isDominated)
 
 @[simp]
-theorem mixedTensorPair_toNormFamily (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S)
+theorem mixedTensorPair_toNormFamily (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.mixedTensorPair W).toNormFamily =
       V.toNormFamily.mixedTensorPair W.toNormFamily := rfl
 
 /-- The binary tensor constructor retains the actual strong adelic predicate. -/
-theorem mixedTensorPair_isStronglyAdelic (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S)
+theorem mixedTensorPair_isStronglyAdelic (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S)
     [S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (V.mixedTensorPair W).IsStronglyAdelic :=

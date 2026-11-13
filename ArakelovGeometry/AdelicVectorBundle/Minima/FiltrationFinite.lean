@@ -25,8 +25,8 @@ all jumps, with original properness, normalization and regularity hypotheses.
 
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
-universe u v w
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} {E : Type w}
+universe u w
+variable {K : Type u} [Field K] {S : AdelicStructure K} {E : Type w}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Every actual completed cut has an actual subtype basis with high ambient

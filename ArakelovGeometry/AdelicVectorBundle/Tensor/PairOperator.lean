@@ -24,7 +24,7 @@ open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry
 
-universe u v w w'
+universe u w w'
 
 variable {K : Type u} [Field K]
   {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
@@ -62,7 +62,7 @@ theorem tensorPairToHomEquiv_dual_comp_eval (z : Module.Dual K E ⊗[K] F) :
 
 namespace NormFamily
 
-variable {S : AdelicStructure.{u, v} K}
+variable {S : AdelicStructure K}
 
 /-- The binary injective norm is the operator norm from the first dual to the
 second bidual, for independently sized original factors. -/

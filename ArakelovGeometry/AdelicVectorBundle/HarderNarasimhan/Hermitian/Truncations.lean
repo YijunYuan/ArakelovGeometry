@@ -35,14 +35,14 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 namespace AdelicVectorBundle
 
-variable [S.IsProper] (V : AdelicVectorBundle.{w} S)
+variable [S.IsProper] (V : AdelicVectorBundle S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
@@ -419,7 +419,7 @@ theorem le_minimalSlope_restrict_last_of_semistableFlag
     [hsemi : ∀ i, (V.flagQuotientOfMeasurableBase F i).IsMeanSlopeSemistable]
     (t : ℝ) (hμ : ∀ i, t ≤ (V.flagQuotientOfMeasurableBase F i).slope) :
     (t : EReal) ≤ (V.restrictOfMeasurableBase (F (Fin.last n))).minimalSlope := by
-  let A : Fin (n + 1) → Type w := fun i ↦ F i
+  let A : Fin (n + 1) → Type _ := fun i ↦ F i
   let W : ∀ i, AdelicVectorBundle S := fun i ↦ V.restrictOfMeasurableBase (F i)
   let α : ∀ i : Fin n, A i.castSucc →ₗ[K] A i.succ :=
     fun i ↦ Submodule.inclusion (hF (Fin.castSucc_le_succ i))

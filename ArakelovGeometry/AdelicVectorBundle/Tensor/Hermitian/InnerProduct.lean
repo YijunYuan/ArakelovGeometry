@@ -36,9 +36,9 @@ noncomputable section
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w wι
+universe u w wι
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
 
 /-- A Hermitian family gives an inner-product structure with precisely its
 existing completed norm and scalar action. -/

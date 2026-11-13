@@ -35,12 +35,12 @@ namespace ArakelovGeometry.AdelicVectorBundle
 
 noncomputable section
 
-universe u v w wF
+universe u w wF
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} {F : Type wF} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
-  (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
+  (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 

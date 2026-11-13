@@ -30,9 +30,9 @@ namespace ArakelovGeometry.NormFamily
 
 open AdelicStructure
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] [NumberField K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] [NumberField K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Scalar extension of the produced local generic basis is an actual basis
@@ -183,6 +183,10 @@ def rationalUnitBallCompletedTensorEquiv (ξ : NormFamily S E) (ω : S.Ω)
       ξ.completedUnitBallModule ω hω :=
   LinearEquiv.ofBijective (ξ.rationalUnitBallCompletedTensorMap ω hω)
     (ξ.rationalUnitBallCompletedTensorMap_bijective ω hω hnt)
+
+local instance (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin) [ξ.IsUltrametric] :
+    SMul (S.completedLocalRing ω hω) (ξ.completedUnitBallModule ω hω) :=
+  (ξ.completedUnitBallModule ω hω).module.toSMul
 
 @[simp]
 theorem rationalUnitBallCompletedTensorEquiv_tmul (ξ : NormFamily S E) (ω : S.Ω)

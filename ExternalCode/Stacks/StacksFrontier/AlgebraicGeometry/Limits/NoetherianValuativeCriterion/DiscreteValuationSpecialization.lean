@@ -82,7 +82,7 @@ namespace AlgebraicGeometry
 /-- The specialization map on stalks along a specialization of points is essentially of finite
 type: both stalks are localizations of the sections over one affine open containing both
 points. -/
-private theorem stalkSpecializes_essFiniteType {X : Scheme.{u}} {x y : X} (h : x ⤳ y) :
+private theorem stalkSpecializes_essFiniteType {X : Scheme} {x y : X} (h : x ⤳ y) :
     (X.presheaf.stalkSpecializes h).hom.EssFiniteType := by
   obtain ⟨U, hU, hyU, _⟩ := exists_isAffineOpen_mem_and_subset (U := ⊤) (x := y) (by simp)
   have hxU : x ∈ U := h.mem_open U.isOpen hyU
@@ -113,7 +113,7 @@ private theorem stalkSpecializes_essFiniteType {X : Scheme.{u}} {x y : X} (h : x
 
 /-- For a morphism locally of finite type, the composite of the specialization map on stalks of
 the target, the stalk map and the residue map of the source is essentially of finite type. -/
-private theorem stalkSpecializes_residueField_essFiniteType {X Y : Scheme.{u}}
+private theorem stalkSpecializes_residueField_essFiniteType {X Y : Scheme}
     (f : X ⟶ Y) [LocallyOfFiniteType f] {x : X} {y : Y} (h : f x ⤳ y) :
     (Y.presheaf.stalkSpecializes h ≫ f.stalkMap x ≫ X.residue x).hom.EssFiniteType := by
   change ((X.residue x).hom.comp
@@ -124,7 +124,7 @@ private theorem stalkSpecializes_residueField_essFiniteType {X Y : Scheme.{u}}
     (RingHom.FiniteType.of_surjective _ (X.residue_surjective x)).essFiniteType
 
 /-- The closed point of a local ring with a local map from the stalk at `y` maps to `y`. -/
-private theorem base_comp_fromSpecStalk_closedPoint {Y : Scheme.{u}} {y : Y} {A : Type u}
+private theorem base_comp_fromSpecStalk_closedPoint {Y : Scheme} {y : Y} {A : Type u}
     [CommRing A] [IsLocalRing A] (ψ : ↑(Y.presheaf.stalk y) →+* A) [IsLocalHom ψ] :
     (Spec.map (CommRingCat.ofHom ψ) ≫ Y.fromSpecStalk y).base
       (⟨IsLocalRing.maximalIdeal A, inferInstance⟩ : PrimeSpectrum A) = y := by
@@ -135,7 +135,7 @@ private theorem base_comp_fromSpecStalk_closedPoint {Y : Scheme.{u}} {y : Y} {A 
 
 /-- A valuation-ring diagram reaching `y`, whose field-valued point maps to the generic point of
 an irreducible component of `X`. -/
-structure DiscreteValuationSpecialization {X Y : Scheme.{u}} (f : X ⟶ Y) (y : Y) where
+structure DiscreteValuationSpecialization {X Y : Scheme} (f : X ⟶ Y) (y : Y) where
   /-- The discrete valuation ring in the diagram. -/
   valuationRing : Type u
   /-- The fraction field in the diagram. -/
@@ -183,7 +183,7 @@ end DiscreteValuationSpecialization
 /-- For a morphism locally of finite type into a locally Noetherian scheme, a specialization
 `f x ⤳ y` is reached by a discrete valuation ring whose generic point is the generic point of an
 irreducible component of the source through `x`. -/
-theorem exists_discreteValuationSpecialization_genericPoint_specializes {X Y : Scheme.{u}}
+theorem exists_discreteValuationSpecialization_genericPoint_specializes {X Y : Scheme}
     (f : X ⟶ Y) [LocallyOfFiniteType f] [IsLocallyNoetherian Y] {x : X} {y : Y}
     (hfx : f x ⤳ y) :
     ∃ d : DiscreteValuationSpecialization f y, d.genericPoint ⤳ x := by
@@ -383,7 +383,7 @@ residue-field descent are still unmet. The local A2 matrix/coordinate-weight
 consumer is proved in `ArakelovGeometry.InvariantTheory.DVR.Weights`.
 There is no completeness, power-series, or finite DVR residue-field assertion. -/
 @[stacks 0CM2]
-theorem nonempty_discreteValuationSpecialization {X Y : Scheme.{u}} (f : X ⟶ Y)
+theorem nonempty_discreteValuationSpecialization {X Y : Scheme} (f : X ⟶ Y)
     [LocallyOfFiniteType f] [QuasiCompact f] [IsLocallyNoetherian Y] (y : Y)
     (y_mem_closure : y ∈ closure (Set.range f.base)) :
     Nonempty (DiscreteValuationSpecialization f y) := by

@@ -26,8 +26,8 @@ then transport to the literal prescribed target flag factors.
 open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
-universe u v wL wE
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+universe u wL wE
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 

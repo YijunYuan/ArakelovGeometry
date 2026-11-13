@@ -20,9 +20,9 @@ subspace. Properness is used only to descend the continuous degree form.
 
 namespace ArakelovGeometry.AdelicDivisor
 
-universe u v
+universe u
 
-variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] (S : AdelicStructure K)
 
 /-- Closedness supplies the separated canonical quotient norm. -/
 instance instIsClosedPrincipalSubspace :

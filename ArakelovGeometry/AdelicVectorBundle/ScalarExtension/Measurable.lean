@@ -360,9 +360,9 @@ end ArakelovGeometry
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w wE wι
+universe u w wE wι
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {L : Type w} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (ξ : NormFamily S E)
@@ -576,6 +576,11 @@ def completedScalarExtensionDualRestriction (x : S.ParameterSpaceExtension L)
     ((S.ϕ x.base).Completion ⊗[K] E) →ₗ[(S.ϕ x.base).Completion]
       x.abv.Completion := by
   let := AbsoluteValue.normedAlgebraCompletionOfEq (S.ϕ x.base) x.abv x.restrict_eq
+  have : IsScalarTower (S.ϕ x.base).Completion x.abv.Completion x.abv.Completion :=
+    IsScalarTower.right
+  have : IsScalarTower (S.ϕ x.base).Completion x.abv.Completion
+      (x.abv.Completion ⊗[(S.ϕ x.base).Completion] ((S.ϕ x.base).Completion ⊗[K] E)) :=
+    TensorProduct.isScalarTower_left
   let f := dualBaseChangeEquiv (S.ϕ x.base).Completion x.abv.Completion
     ((S.ϕ x.base).Completion ⊗[K] E)
     ((dualBaseChangeEquiv K (S.ϕ x.base).Completion E).toLinearMap.baseChange

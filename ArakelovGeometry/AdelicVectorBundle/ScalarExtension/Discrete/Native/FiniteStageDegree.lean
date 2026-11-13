@@ -31,8 +31,8 @@ open MeasureTheory
 open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
-universe u v wL wE
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u wL wE
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
 
 variable {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
@@ -107,6 +107,8 @@ theorem degree_nativeRestrictionOfCountableDiscreteBase_finiteStage [S.IsProper]
         (B₀.degreeOfMeasurableDeterminant_scalarExtensionOfCountableDiscreteBase
           (L := L) (hN := ⟨hFN⟩))
 
+attribute [local irreducible] NormFamily.scalarExtension NormFamily.quotient
+  NormFamily.determinant in
 /-- Actual native quotient determinant degree has the genuine finite-stage
 degree, with both determinant measurabilities produced and no target regularity. -/
 theorem degree_nativeQuotientOfCountableDiscreteBase_finiteStage [S.IsProper]

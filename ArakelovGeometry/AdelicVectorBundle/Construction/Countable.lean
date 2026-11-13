@@ -25,9 +25,9 @@ parameter space of an algebraic scalar extension is used.
 
 namespace ArakelovGeometry
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F]
 
@@ -117,32 +117,32 @@ theorem dualOfMeasurableBase_isStronglyAdelic (V : AdelicVectorBundle S)
     (V.dualOfMeasurableBase).IsStronglyAdelic := V.isDominated.strong_dual
 
 /-- Automatic rational subbundle with the actual completed restriction norm. -/
-noncomputable abbrev restrictOfMeasurableBase (V : AdelicVectorBundle.{w} S) (F : Submodule K V)
+noncomputable abbrev restrictOfMeasurableBase (V : AdelicVectorBundle S) (F : Submodule K V)
     [hS : S.HasMeasurableBase] :
     AdelicVectorBundle S :=
   V.restrict F (hm := ((V.isMeasurable.restrict F).dual_of_discrete_or_countable))
 
 @[simp]
-theorem restrictOfMeasurableBase_toNormFamily (V : AdelicVectorBundle.{w} S)
+theorem restrictOfMeasurableBase_toNormFamily (V : AdelicVectorBundle S)
     (F : Submodule K V)
     [hS : S.HasMeasurableBase] :
     (V.restrictOfMeasurableBase F).toNormFamily = V.toNormFamily.restrict F := rfl
 
 /-- Automatic rational quotient bundle with the actual completed quotient norm. -/
-noncomputable abbrev quotientOfMeasurableBase (V : AdelicVectorBundle.{w} S) (F : Submodule K V)
+noncomputable abbrev quotientOfMeasurableBase (V : AdelicVectorBundle S) (F : Submodule K V)
     [hS : S.HasMeasurableBase] :
     AdelicVectorBundle S :=
   V.quotient F (hm := (V.isMeasurable.pushforward_of_discrete_or_countable
     F.mkQ F.mkQ_surjective))
 
 @[simp]
-theorem quotientOfMeasurableBase_toNormFamily (V : AdelicVectorBundle.{w} S)
+theorem quotientOfMeasurableBase_toNormFamily (V : AdelicVectorBundle S)
     (F : Submodule K V)
     [hS : S.HasMeasurableBase] :
     (V.quotientOfMeasurableBase F).toNormFamily = V.toNormFamily.quotient F := rfl
 
 /-- Strong adelicity descends to the automatic rational subbundle. -/
-theorem IsStronglyAdelic.restrictOfMeasurableBase {V : AdelicVectorBundle.{w} S}
+theorem IsStronglyAdelic.restrictOfMeasurableBase {V : AdelicVectorBundle S}
     (hV : V.IsStronglyAdelic) (F : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
@@ -150,7 +150,7 @@ theorem IsStronglyAdelic.restrictOfMeasurableBase {V : AdelicVectorBundle.{w} S}
   hV.restrict F _
 
 /-- Strong adelicity descends to the automatic rational quotient. -/
-theorem IsStronglyAdelic.quotientOfMeasurableBase {V : AdelicVectorBundle.{w} S}
+theorem IsStronglyAdelic.quotientOfMeasurableBase {V : AdelicVectorBundle S}
     (hV : V.IsStronglyAdelic) (F : Submodule K V)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :

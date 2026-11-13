@@ -28,9 +28,9 @@ noncomputable section
 
 namespace ArakelovGeometry
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] (S : AdelicStructure K)
 
 /-- The unique extending place above a base place for the identity extension. -/
 def scalarExtensionIdentityPlace (ω : S.Ω) : S.ParameterSpaceExtension K where

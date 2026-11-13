@@ -31,7 +31,7 @@ noncomputable section
 
 namespace ArakelovGeometry
 
-universe u v w wE
+universe u w wE
 
 section Tower
 
@@ -66,7 +66,7 @@ end Tower
 
 namespace NormFamily
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {L : Type w} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (ξ : NormFamily S E)

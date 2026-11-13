@@ -25,11 +25,11 @@ Remark 3.4.3.
 open MeasureTheory AbsoluteValue
 open scoped ENNReal
 
-universe u v w
+universe u w
 
 namespace ArakelovGeometry.AdelicStructure
 
-variable {K : Type u} [Field K] (AS : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] (AS : AdelicStructure K)
 variable (L : Type w) [Field L] [Algebra K L]
 
 /-- The parameter space used for the finite extension `S ⊗_K L` in Definition 3.4.1.

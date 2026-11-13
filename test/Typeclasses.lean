@@ -25,7 +25,7 @@ universe w w'
 variable {K : Type*} [Field K] {S : AdelicStructure K}
   {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
-  (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+  (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
 
 example [DiscreteMeasurableSpace S.Ω] : S.HasMeasurableBase := inferInstance
 example [S.HasCommonCountableDenseSubfield] : S.HasMeasurableBase := inferInstance
@@ -107,7 +107,7 @@ section IndexedTensor
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι] {G : ι → Type w}
   [∀ i, AddCommGroup (G i)] [∀ i, Module K (G i)] [∀ i, FiniteDimensional K (G i)]
-  (U : ι → AdelicVectorBundle.{w} S) [S.IsArchimedeanNormalized]
+  (U : ι → AdelicVectorBundle S) [S.IsArchimedeanNormalized]
 
 example [S.HasMeasurableBase] [∀ i, (U i).IsHermitian] :
     (AdelicVectorBundle.orthogonalTensorOfMeasurableBase U).IsHermitian := inferInstance

@@ -30,9 +30,9 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -61,7 +61,7 @@ variable [S.IsProper]
 /-- The subtraction form of the actual nonzero-map slope comparison.
 The target maximal slope is a finite real; the map height may be `⊤`. -/
 theorem minimalSlope_sub_mapHeight_le_maximalSlope_of_ne_zero
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) (hf : f ≠ 0) :
@@ -103,7 +103,7 @@ theorem minimalSlope_quotient_le_maximalSlope_quotient_of_le
 /-- Source (4.51), proved for every actual linear map and thus for every
 injective extension. The cokernel has the actual quotient norm family. -/
 theorem minimalSlope_extension_lowerBound
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) :
@@ -134,7 +134,7 @@ theorem minimalSlope_extension_lowerBound
 /-- Source Proposition 4.3.32's equality criterion, with the actual
 cokernel minimum and without excluding a zero cokernel by assumption. -/
 theorem minimalSlope_eq_cokernel_of_minimalSlope_sub_mapHeight_ge
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W)

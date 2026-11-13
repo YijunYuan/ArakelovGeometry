@@ -38,18 +38,18 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry
 
-universe u v w
+universe u w
 
 variable {K : Type u} [Field K]
 
 /-- A family of actual seminorms on the completed fibres; no separation is imposed. -/
-abbrev SeminormFamily (S : AdelicStructure.{u, v} K) (E : Type w)
+abbrev SeminormFamily (S : AdelicStructure K) (E : Type w)
     [AddCommGroup E] [Module K E] :=
   ∀ ω : S.Ω, Seminorm (S.ϕ ω).Completion ((S.ϕ ω).Completion ⊗[K] E)
 
 namespace SeminormFamily
 
-variable {S : AdelicStructure.{u, v} K} {E : Type w} [AddCommGroup E] [Module K E]
+variable {S : AdelicStructure K} {E : Type w} [AddCommGroup E] [Module K E]
 
 /-- The extended logarithmic rational evaluation, with value `⊥` at zero. -/
 noncomputable def logNorm (p : SeminormFamily S E) (x : E) (ω : S.Ω) : EReal :=
@@ -181,7 +181,7 @@ end SeminormFamily
 
 namespace NormFamily
 
-variable {S : AdelicStructure.{u, v} K} {E : Type w}
+variable {S : AdelicStructure K} {E : Type w}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 omit [FiniteDimensional K E] in

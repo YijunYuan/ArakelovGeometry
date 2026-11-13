@@ -28,10 +28,10 @@ noncomputable section
 
 namespace ArakelovGeometry
 
-universe u v w wE
+universe u w wE
 
 variable {K : Type u} [Field K] {L : Type w} [Field L] [Algebra K L]
-  {S : AdelicStructure.{u, v} K}
+  {S : AdelicStructure K}
 
 namespace AdelicStructure.ParameterSpaceExtension
 

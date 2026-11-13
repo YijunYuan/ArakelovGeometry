@@ -32,9 +32,9 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E]
   {F : Type w'} [AddCommGroup F] [Module K F]
 
@@ -83,7 +83,7 @@ variable [FiniteDimensional K E] [FiniteDimensional K F]
 /-- A completed contraction has nonpositive actual lower-integral height,
 including the zero map, whose height is `⊥`. -/
 theorem mapHeight_le_zero_of_completed_contraction
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (f : V →ₗ[K] W)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (f : V →ₗ[K] W)
     (hf : ∀ ω x, W.norm ω (f.baseChange (S.ϕ ω).Completion x) ≤ V.norm ω x) :
     V.mapHeight W f ≤ 0 := by
   by_cases hz : f = 0
@@ -105,7 +105,7 @@ variable [S.IsProper]
 /-- An equal-rank completed contraction compares actual real degrees.
 The determinant argument also applies in rank zero. -/
 theorem degree_le_of_completed_contraction
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.norm ω (e.toLinearMap.baseChange (S.ϕ ω).Completion x) ≤ V.norm ω x) :

@@ -22,9 +22,9 @@ namespace ArakelovGeometry.AdelicStructure.Algebraic
 open MeasureTheory AbsoluteValue
 open scoped ENNReal
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] (AS : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] (AS : AdelicStructure K)
 variable (L : Type w) [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
 
 /-- Chen--Moriwaki, Proposition 3.4.9: a projectively measurable function is `ν_L`-integrable

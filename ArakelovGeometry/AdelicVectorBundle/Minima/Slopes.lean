@@ -30,8 +30,8 @@ open MeasureTheory
 open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
-universe u v w
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} {E : Type w}
+universe u w
+variable {K : Type u} [Field K] {S : AdelicStructure K} {E : Type w}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Actual completed quotient contraction increases the degree of each
@@ -72,7 +72,7 @@ theorem degreeThresholdSpan_quotient_map_le (V : AdelicVectorBundle S)
 
 /-- Integrating actual completed Hadamard bounds the sum of the actual
 basis-vector degrees by the actual determinant degree, also in rank zero. -/
-theorem sum_vectorDegree_basis_le_degree [S.IsProper] (V : AdelicVectorBundle.{w} S)
+theorem sum_vectorDegree_basis_le_degree [S.IsProper] (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (b : Module.Basis (Fin (Module.finrank K V)) K V) :

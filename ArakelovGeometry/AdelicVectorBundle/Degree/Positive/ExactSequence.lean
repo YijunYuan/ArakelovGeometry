@@ -36,9 +36,9 @@ namespace ArakelovGeometry.AdelicVectorBundle
 
 noncomputable section
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- The actual quotient of a restriction contracts into its ambient quotient

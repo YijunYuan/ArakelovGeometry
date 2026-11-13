@@ -27,9 +27,9 @@ namespace ArakelovGeometry.NormFamily
 
 noncomputable section
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
 
 /-- Completed bidual evaluation is the actual operator norm on the local dual. -/
 theorem dual_dual_norm_eval_eq_operator {V : Type w} [AddCommGroup V] [Module K V]

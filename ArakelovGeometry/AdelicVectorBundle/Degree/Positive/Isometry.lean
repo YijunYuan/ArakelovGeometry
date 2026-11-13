@@ -26,9 +26,9 @@ namespace ArakelovGeometry.AdelicVectorBundle
 
 noncomputable section
 
-universe u v w w' w''
+universe u w w' w''
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
   {G : Type w''} [AddCommGroup G] [Module K G] [FiniteDimensional K G]
@@ -36,7 +36,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 /-- Actual completed isometries transport every subspace degree into the
 target positive degree. The zero subspace is included. -/
 theorem positiveDegree_le_of_completed_isometry
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
@@ -55,7 +55,7 @@ theorem positiveDegree_le_of_completed_isometry
 /-- Actual completed isometries preserve the positive-degree supremum,
 including rank zero, without requiring a maximizing subspace. -/
 theorem positiveDegree_eq_of_completed_isometry
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω x, W.toNormFamily.norm ω
@@ -73,7 +73,7 @@ theorem positiveDegree_eq_of_completed_isometry
 /-- Pushforward along a genuine surjection has the positive degree of the
 actual kernel quotient under the canonical first-isomorphism map. -/
 theorem positiveDegree_pushforward_eq_quotient_ker
-    (V : AdelicVectorBundle.{w} S) (π : V →ₗ[K] F) (hπ : Function.Surjective π)
+    (V : AdelicVectorBundle S) (π : V →ₗ[K] F) (hπ : Function.Surjective π)
     [hm : (V.toNormFamily.pushforward π hπ).IsMeasurable]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
@@ -87,7 +87,7 @@ theorem positiveDegree_pushforward_eq_quotient_ker
 /-- The actual left end of any source norm-exact sequence has the positive
 degree of the restriction to the middle kernel. -/
 theorem positiveDegree_exactSequence_left
-    (V : AdelicVectorBundle.{w} S) (L : AdelicVectorBundle.{w'} S) (R : AdelicVectorBundle.{w''} S)
+    (V : AdelicVectorBundle S) (L : AdelicVectorBundle S) (R : AdelicVectorBundle S)
     (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
     [hS : S.HasMeasurableBase]
@@ -112,7 +112,7 @@ theorem positiveDegree_exactSequence_left
 /-- The actual right end of a source norm-exact sequence has the positive
 degree of the middle kernel quotient, on its original target vector space. -/
 theorem positiveDegree_exactSequence_right
-    (V : AdelicVectorBundle.{w} S) (L : AdelicVectorBundle.{w'} S) (R : AdelicVectorBundle.{w''} S)
+    (V : AdelicVectorBundle S) (L : AdelicVectorBundle S) (R : AdelicVectorBundle S)
     (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
     [hS : S.HasMeasurableBase]

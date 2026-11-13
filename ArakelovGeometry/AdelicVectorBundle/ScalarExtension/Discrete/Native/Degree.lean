@@ -29,8 +29,8 @@ open MeasureTheory
 open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry
-universe u v wL wE
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u wL wE
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
 
 namespace NormFamily
@@ -62,6 +62,7 @@ theorem scalarExtension_restrict_determinant_isMeasurable_of_countable_discrete
   exact determinant_isMeasurable_of_tower_completed_isometry F.toIntermediateField η θ e he
       (hm := hm)
 
+attribute [local irreducible] scalarExtension quotient determinant in
 /-- The canonical actual quotient isometry produces determinant measurability
 for every native target quotient, without any extended place-space regularity. -/
 theorem scalarExtension_quotient_determinant_isMeasurable_of_countable_discrete

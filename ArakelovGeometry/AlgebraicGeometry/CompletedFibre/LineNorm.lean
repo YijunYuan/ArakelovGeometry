@@ -31,7 +31,7 @@ namespace ArakelovGeometry.ValuedPoint
 
 universe u
 
-variable {X Y : Scheme.{u}}
+variable {X Y : Scheme}
 
 /-- A local structure-module frame produces finite dimension of the actual fibre. -/
 theorem finiteDimensional_completedFibre_of_frame (M : X.Modules) (x : ValuedPoint X)
@@ -82,7 +82,7 @@ theorem pullbackFibreNorm_eq_zero_iff (f : X ⟶ Y) (M : Y.Modules) (x : ValuedP
 
 /-- Norm compatibility for an affine field square, before its geometric specialization. -/
 theorem affineSectionNorm_square {k L : Type u} [NormedField k] [CompleteSpace k]
-    [NormedField L] (φ : k →+* L) (hφ : Isometry φ) {Z : Scheme.{u}}
+    [NormedField L] (φ : k →+* L) (hφ : Isometry φ) {Z : Scheme}
     (b : Spec (CommRingCat.of k) ⟶ Z) (c : Spec (CommRingCat.of L) ⟶ Y)
     (d : Y ⟶ Z) (h : Spec.map (CommRingCat.ofHom φ) ≫ b = c ≫ d) (M : Z.Modules)
     [((Scheme.Modules.pullback b).obj M).IsQuasicoherent]

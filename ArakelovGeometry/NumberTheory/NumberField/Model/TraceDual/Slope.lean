@@ -31,14 +31,14 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry.NumberFieldClassicalTraceDualSlope
 
-universe u v
+universe u
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type u} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Exact Hermitian extremal duality, including the zero-space conventions. -/
 theorem maximalSlope_dual_eq_neg_minimalSlope
-    (V : AdelicVectorBundle.{u} S)
+    (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] :
@@ -72,7 +72,7 @@ theorem maximalSlope_dual_eq_neg_minimalSlope
 
 /-- Tensoring with an actual scalar line shifts maximal slope by its degree. -/
 theorem maximalSlope_orthogonalTensor_scalarLine
-    (V : AdelicVectorBundle.{u} S) (ξ : NormFamily S K) [hξ : ξ.IsAdelic]
+    (V : AdelicVectorBundle S) (ξ : NormFamily S K) [hξ : ξ.IsAdelic]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hL : ξ.IsHermitian] :

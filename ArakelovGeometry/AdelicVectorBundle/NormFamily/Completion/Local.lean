@@ -26,9 +26,9 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- A local-distance Cauchy sequence has an actual separating seminorm limit

@@ -28,9 +28,9 @@ noncomputable section
 
 namespace ArakelovGeometry.AdelicStructure
 
-universe u v
+universe u
 
-variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] (S : AdelicStructure K)
 
 /-- The actual integral coefficient map into the actual completed valuation ring. -/
 def integralCompletedLocalCoefficientMap (ω : S.Ω) (hω : ω ∈ S.Ωfin) :
@@ -64,9 +64,9 @@ namespace ArakelovGeometry.NormFamily
 
 open AdelicStructure ActualPrimeIndexing
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E]
 
 /-- The literal completed ball inherits its actual integral coefficient action. -/
@@ -75,6 +75,10 @@ instance completedUnitBall_integralModule (ξ : NormFamily S E)
     Module (𝓞 K) (ξ.completedUnitBallModule ω hω) :=
   Module.compHom (ξ.completedUnitBallModule ω hω)
     (S.integralCompletedLocalCoefficientMap ω hω)
+
+local instance (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin) [ξ.IsUltrametric] :
+    SMul (𝓞 K) (ξ.completedUnitBallModule ω hω) :=
+  (ξ.completedUnitBall_integralModule ω hω).toSMul
 
 /-- Integral and completed coefficient actions on the literal ball agree. -/
 instance completedUnitBall_integralScalarTower (ξ : NormFamily S E)

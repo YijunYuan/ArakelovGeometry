@@ -193,11 +193,11 @@ theorem binaryTensorEquiv_map (f : E →ₗ[K] G) (g : F →ₗ[K] H) :
 
 end BinaryTensorMap
 
-universe u v w w' wG wH wι
+universe u w w' wG wH wι
 
 namespace NormFamily
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {ι : Type wι} [Fintype ι] {X : ι → Type w} {Y : ι → Type w'}
   [∀ i, AddCommGroup (X i)] [∀ i, Module K (X i)] [∀ i, FiniteDimensional K (X i)]
   [∀ i, AddCommGroup (Y i)] [∀ i, Module K (Y i)] [∀ i, FiniteDimensional K (Y i)]
@@ -252,7 +252,7 @@ end NormFamily
 
 namespace NormFamily
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {ι : Type wι} [Fintype ι] {X : ι → Type w} {Y : ι → Type w'}
   [∀ i, AddCommGroup (X i)] [∀ i, Module K (X i)] [∀ i, FiniteDimensional K (X i)]
   [∀ i, AddCommGroup (Y i)] [∀ i, Module K (Y i)] [∀ i, FiniteDimensional K (Y i)]
@@ -298,7 +298,7 @@ end NormFamily
 
 namespace NormFamily
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} {F : Type w'} {G : Type wG} {H : Type wH}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]

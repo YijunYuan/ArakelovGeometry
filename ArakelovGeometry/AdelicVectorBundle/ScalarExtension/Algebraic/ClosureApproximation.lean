@@ -137,8 +137,7 @@ theorem denseRange_algebraicClosure_subfield
   have hdc := (UniformSpace.Completion.denseRange_coe (α := WithAbs w)).comp hd
     (UniformSpace.Completion.continuous_coe (WithAbs w))
   exact hdc
-universe w
-variable {S : AdelicStructure.{u, w} K}
+variable {S : AdelicStructure K}
 /-- One canonical countable relative algebraic closure works simultaneously
 at every actual place of the algebraic-closure extension. -/
 theorem AdelicStructure.HasCommonCountableDenseSubfield.algebraicExtension_of_isAlgClosed

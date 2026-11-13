@@ -27,9 +27,9 @@ conventions for the first and last minima without discarding the empty space.
 namespace ArakelovGeometry.AdelicVectorBundle
 
 noncomputable section
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- The canonical actual vector degree, using the bundle's proved analytic fields. -/

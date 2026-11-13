@@ -119,7 +119,7 @@ private theorem exists_valuationRing_diagram_of_comap_le
 reached by a valuation ring, in the sense that it is the image of the closed point of a morphism
 `Spec A ⟶ Y` which, over the fraction field of `A`, factors through `X`. -/
 public theorem exists_valuationRing_diagram_of_mem_support_ker
-    {X Y : Scheme.{u}} (f : X ⟶ Y) [QuasiCompact f] (y : Y)
+    {X Y : Scheme} (f : X ⟶ Y) [QuasiCompact f] (y : Y)
     (hy : y ∈ f.ker.support) :
     ∃ (A : Type u) (_ : CommRing A) (_ : IsDomain A) (_ : ValuationRing A)
       (K : Type u) (_ : Field K) (_ : Algebra A K) (_ : IsFractionRing A K)
@@ -190,7 +190,7 @@ public theorem exists_valuationRing_diagram_of_mem_support_ker
 by a map from a valuation ring whose generic point factors through the source. -/
 @[stacks 02JQ "valuative diagram"]
 public theorem exists_valuationRing_of_image_point
-    {X Y : Scheme.{u}} (f : X ⟶ Y) [QuasiCompact f] (z : f.image) :
+    {X Y : Scheme} (f : X ⟶ Y) [QuasiCompact f] (z : f.image) :
     ∃ (A : Type u) (_ : CommRing A) (_ : IsDomain A) (_ : ValuationRing A)
       (K : Type u) (_ : Field K) (_ : Algebra A K) (_ : IsFractionRing A K)
       (g : Spec (.of K) ⟶ X) (h : Spec (.of A) ⟶ f.image),
@@ -210,7 +210,7 @@ public theorem exists_valuationRing_of_image_point
 from the source. -/
 @[stacks 02JQ "specialization consequence"]
 public theorem exists_specializes_of_image_point
-    {X Y : Scheme.{u}} (f : X ⟶ Y) [QuasiCompact f] (z : f.image) :
+    {X Y : Scheme} (f : X ⟶ Y) [QuasiCompact f] (z : f.image) :
     ∃ x : X, f x ⤳ f.imageι z := by
   obtain ⟨A, hA, hAd, hAv, K, hK, hAK, hAF, g, h, hcomm, hclosed⟩ :=
     exists_valuationRing_of_image_point f z

@@ -24,9 +24,9 @@ open scoped NumberField TensorProduct
 
 namespace ArakelovGeometry.AdelicStructure
 
-universe u v
+universe u
 
-variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] (S : AdelicStructure K)
 
 /-- The actual integer-ring inclusion, with codomain restricted to the actual
 rational local coefficient ring by the nonarchimedean integral bound. -/
@@ -132,9 +132,9 @@ end ArakelovGeometry.AdelicStructure
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E]
 
 /-- Integral scalars act through the proved canonical coefficient map on the

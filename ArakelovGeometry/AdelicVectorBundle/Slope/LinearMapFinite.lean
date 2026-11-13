@@ -25,9 +25,9 @@ its target minimum is `⊤`, without adding the height of the zero map.
 
 namespace ArakelovGeometry
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -39,7 +39,7 @@ variable [S.IsProper]
 height is allowed: the target minimum is strictly above `⊥` by the proved
 finiteness theorem, so its sum with `⊤` is `⊤`. -/
 theorem minimalSlope_le_minimalSlope_add_mapHeight_of_surjective
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) (hs : Function.Surjective f) (hf : f ≠ 0) :
@@ -57,7 +57,7 @@ theorem minimalSlope_le_minimalSlope_add_mapHeight_of_surjective
 target has rank zero and minimal slope `⊤`. No extended-real sum involving
 the height of the zero map is needed for its automatic bound. -/
 theorem minimalSlope_target_eq_top_of_zero_surjective
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) (hs : Function.Surjective f) (hf : f = 0) :

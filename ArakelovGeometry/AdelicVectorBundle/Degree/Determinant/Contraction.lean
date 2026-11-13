@@ -26,15 +26,15 @@ common-density condition on the place space is needed.
 open MeasureTheory Filter
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
-universe u v w w'
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u w w'
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 /-- Every completed contraction compares the degrees of the actual measurable
 determinants, without regularity of the place space, including rank zero. -/
 theorem degreeOfMeasurableDeterminant_le_of_completed_contraction [S.IsProper]
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
     [hdetV : V.toNormFamily.determinant.IsMeasurable]
     [hdetW : W.toNormFamily.determinant.IsMeasurable]
     [hN : S.IsArchimedeanNormalized]

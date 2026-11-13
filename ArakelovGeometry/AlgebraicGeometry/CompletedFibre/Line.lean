@@ -26,9 +26,7 @@ noncomputable section
 
 namespace ArakelovGeometry.ValuedPoint
 
-universe u
-
-variable {X Y : Scheme.{u}}
+variable {X Y : Scheme}
 
 @[simp]
 theorem completedPoint_apply (x : ValuedPoint X)
@@ -61,7 +59,7 @@ def pullbackUnitIso (f : X ⟶ Y) :
     exact Limits.IsTerminal.ofUniqueHom
       (fun W ↦ StructuredArrow.homMk (homOfLE le_top))
       (fun _ _ ↦ StructuredArrow.hom_ext _ _ (Subsingleton.elim _ _))⟩
-  exact @asIso _ _ _ _ (SheafOfModules.pullbackObjUnitToUnit.{u} f.toRingCatSheafHom)
+  exact @asIso _ _ _ _ (SheafOfModules.pullbackObjUnitToUnit f.toRingCatSheafHom)
     (SheafOfModules.instIsIsoPullbackObjUnitToUnitOfFinal f.toRingCatSheafHom)
 
 /-- A local frame trivializes the actual completed-field pullback sheaf. -/

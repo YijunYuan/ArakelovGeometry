@@ -29,9 +29,9 @@ noncomputable section
 
 namespace ArakelovGeometry.AdelicStructure
 
-universe u v
+universe u
 
-variable {K : Type u} [Field K] [NumberField K] (S : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] [NumberField K] (S : AdelicStructure K)
 
 /-- The actual rational coefficient ring is the actual principal integer ring
 of its produced finite prime's integer-valued valuation. -/
@@ -47,9 +47,9 @@ namespace ArakelovGeometry.NormFamily
 
 open AdelicStructure
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] [NumberField K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] [NumberField K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- The actual scaled-coordinate image is a submodule of a finite free module

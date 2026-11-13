@@ -24,8 +24,8 @@ open MeasureTheory
 open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry
-universe u v wL wM wX
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u wL wM wX
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
   {M : Type wM} [Field M] [Algebra K M] [Algebra L M] [IsScalarTower K L M]
   [Algebra.IsAlgebraic L M] [Algebra.IsAlgebraic K M]

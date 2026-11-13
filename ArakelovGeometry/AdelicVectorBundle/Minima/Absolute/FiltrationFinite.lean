@@ -26,11 +26,11 @@ additional regularity hypothesis on the algebraic-closure curve.
 open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
-universe u v w
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} {E : Type w}
+universe u w
+variable {K : Type u} [Field K] {S : AdelicStructure K} {E : Type w}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
-variable (V : AdelicVectorBundle.{w} S)
+variable (V : AdelicVectorBundle S)
   [hreg : S.HasRegularBase]
   [hN : S.IsArchimedeanNormalized]
 

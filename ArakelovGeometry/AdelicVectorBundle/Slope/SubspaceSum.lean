@@ -28,7 +28,7 @@ open scoped TensorProduct
 
 noncomputable section
 
-universe u v w w' w''
+universe u w w' w''
 
 variable {K : Type u} [Field K] {E : Type w} [AddCommGroup E] [Module K E]
   {F : Type w'} [AddCommGroup F] [Module K F]
@@ -49,7 +49,7 @@ end Submodule
 
 namespace ArakelovGeometry
 
-variable {S : AdelicStructure.{u, v} K}
+variable {S : AdelicStructure K}
 
 namespace NormFamily
 
@@ -81,7 +81,7 @@ variable [S.IsProper] [FiniteDimensional K E]
 
 /-- Arbitrary sums of actual restricted subspaces preserve a common lower
 bound on their actual minimal slopes. Zero summands and an empty family are allowed. -/
-theorem minimalSlope_restrict_iSup_ge (V : AdelicVectorBundle.{w} S)
+theorem minimalSlope_restrict_iSup_ge (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     {ι : Type w''} (U : ι → Submodule K V) (a : ℝ)

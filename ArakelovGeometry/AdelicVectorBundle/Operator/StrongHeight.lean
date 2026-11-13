@@ -180,9 +180,9 @@ end ArakelovGeometry.NormFamily
 
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E F : Type (max u w)} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 

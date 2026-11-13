@@ -27,7 +27,7 @@ open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry
 
-universe u v w wE wF
+universe u w wE wF
 
 variable {K : Type u} [Field K] {L : Type w} [Field L] [Algebra K L]
 
@@ -45,7 +45,7 @@ theorem exists_finiteStage_sqrt_neg_one [Algebra.IsAlgebraic K L] [IsAlgClosed L
   apply Subtype.ext
   exact ha
 
-variable {S : AdelicStructure.{u, v} K}
+variable {S : AdelicStructure K}
 
 /-- If the original field contains a square root of minus one, every actual
 Archimedean completed scalar embedding is bijective. -/

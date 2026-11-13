@@ -28,9 +28,9 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w w' w''
+universe u w w' w''
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
   {G : Type w''} [AddCommGroup G] [Module K G] [FiniteDimensional K G]
@@ -158,7 +158,7 @@ theorem quotient_rank_and_slope_lt_of_lt_restrict (V : AdelicVectorBundle S)
   nlinarith
 
 private theorem exists_quotient_maximalSlope_le_of_slope_le_aux (r : ℕ) :
-    ∀ (V : AdelicVectorBundle.{w} S)
+    ∀ (V : AdelicVectorBundle S)
         [S.HasMeasurableBase] [S.IsArchimedeanNormalized],
         Module.finrank K V = r →
         0 < Module.finrank K V → ∀ c : ℝ, V.slope ≤ c →
@@ -246,7 +246,7 @@ theorem minimalSlope_eq_iInf_slope_quotient (V : AdelicVectorBundle S)
 
 /-- The quotient mean bound also applies to arbitrary actual surjective
 rational quotient presentations through their completed kernel normal form. -/
-theorem minimalSlope_le_slope_pushforward (V : AdelicVectorBundle.{w} S)
+theorem minimalSlope_le_slope_pushforward (V : AdelicVectorBundle S)
     (π : V →ₗ[K] F) (hπ : Function.Surjective π)
     [hm : (V.toNormFamily.pushforward π hπ).IsMeasurable]
     (hr : 0 < Module.finrank K F)

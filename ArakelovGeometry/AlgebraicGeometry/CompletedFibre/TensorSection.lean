@@ -29,7 +29,7 @@ namespace ArakelovGeometry.ValuedPoint
 
 universe u
 
-variable {W X Y Z : Scheme.{u}}
+variable {W X Y Z : Scheme}
 
 theorem pullbackSection_square_inv (a : W ⟶ X) (b : X ⟶ Z) (c : W ⟶ Y) (d : Y ⟶ Z)
     (h : a ≫ b = c ≫ d) (M : Z.Modules) (s : Γ(M, ⊤)) :
@@ -80,7 +80,7 @@ theorem affineSection_square_unit {R S : CommRingCat.{u}} (φ : R ⟶ S)
 
 /-- The canonical completed line-fibre isomorphism sends the actual pulled-back
 section value to the literal scalar-extension tensor of its original value. -/
-theorem completedFibreBaseChangeOfFrameIso_section (f : X ⟶ Y) (M : Y.Modules)
+theorem completedFibreBaseChangeOfFrameIso_section {X Y : Scheme.{u}} (f : X ⟶ Y) (M : Y.Modules)
     (x : ValuedPoint X) (U : Y.Opens) (hx : f x.point ∈ U)
     (frame : (Scheme.Modules.restrictFunctor U.ι).obj M ≅
       SheafOfModules.unit U.toScheme.ringCatSheaf) (s : Γ(M, ⊤)) :

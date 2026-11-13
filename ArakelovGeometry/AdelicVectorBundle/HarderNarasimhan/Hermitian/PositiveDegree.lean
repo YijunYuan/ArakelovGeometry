@@ -31,9 +31,9 @@ namespace ArakelovGeometry.AdelicVectorBundle
 
 noncomputable section
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Every actual subspace degree is bounded by the positive parts of the
@@ -59,7 +59,7 @@ theorem positiveDegree_le_sum_rank_mul_max_slope_of_semistableFlag
     (mul_le_mul_of_nonneg_right
       (Nat.cast_le.mpr (intersection_rank_increment_le F hF U i)) (le_max_right _ _))
 
-variable (V : AdelicVectorBundle.{w} S)
+variable (V : AdelicVectorBundle S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]

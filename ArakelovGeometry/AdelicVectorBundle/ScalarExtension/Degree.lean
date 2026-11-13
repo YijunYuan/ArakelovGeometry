@@ -501,9 +501,9 @@ end CompletedDeterminantScalarWedge
 
 namespace NormFamily
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (ξ : NormFamily S E)
 
@@ -947,9 +947,9 @@ end NormFamily
 
 namespace AdelicVectorBundle
 
-universe u v w wL
+universe u w wL
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
 

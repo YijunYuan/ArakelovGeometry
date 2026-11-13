@@ -23,14 +23,14 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w wE
-
-variable {K : Type u} [Field K] {L : Type w} [Field L] [Algebra K L]
-  {E : Type wE} [AddCommGroup E] [Module K E]
+variable {K : Type*} [Field K] {L : Type*} [Field L] [Algebra K L]
+  {E : Type*} [AddCommGroup E] [Module K E]
 
 namespace NormFamily
 
-variable {S : AdelicStructure.{u, v} K} [FiniteDimensional K E]
+attribute [local instance 50] UniformSpace.Completion.instModule
+
+variable {S : AdelicStructure K} [FiniteDimensional K E]
   (ξ : NormFamily S E) [Algebra.IsAlgebraic K L]
 
 /-- Pointwise evaluation of the actual projective scalar-extension family in
@@ -57,6 +57,9 @@ theorem injectiveScalarExtension_norm_apply
       scalarExtensionInjectiveSeminorm
         (completedScalarExtensionEquiv E (S.ϕ x.base) x.abv x.restrict_eq z) := rfl
 
+attribute [local irreducible] scalarExtensionProjectiveSeminorm
+  scalarExtensionInjectiveSeminorm completedScalarExtensionEquiv
+
 section Tower
 
 variable {M : Type*} [Field M] [Algebra K M] [Algebra L M] [IsScalarTower K L M]
@@ -75,6 +78,7 @@ theorem projectiveScalarExtension_completed_trans
     let := AbsoluteValue.normedAlgebraCompletionOfEq w₀ u₀ hwu
     let := AbsoluteValue.normedAlgebraCompletionOfEq v₀ u₀ hvu
     let := AbsoluteValue.isScalarTower_completionOfEq_tower v₀ w₀ u₀ hvw hwu hvu
+    letI : FiniteDimensional v₀.Completion (v₀.Completion ⊗[K] E) := inferInstance
     let : NormedAddCommGroup (v₀.Completion ⊗[K] E) := ξ.fibreNormedAddCommGroup x.base.base
     let : NormedSpace v₀.Completion (v₀.Completion ⊗[K] E) := ξ.fibreNormedSpace x.base.base
     let η := ξ.projectiveScalarExtension (L := L)
@@ -118,6 +122,7 @@ theorem projectiveScalarExtension_completed_trans_apply
     let := AbsoluteValue.normedAlgebraCompletionOfEq w₀ u₀ hwu
     let := AbsoluteValue.normedAlgebraCompletionOfEq v₀ u₀ hvu
     let := AbsoluteValue.isScalarTower_completionOfEq_tower v₀ w₀ u₀ hvw hwu hvu
+    letI : FiniteDimensional v₀.Completion (v₀.Completion ⊗[K] E) := inferInstance
     let : NormedAddCommGroup (v₀.Completion ⊗[K] E) := ξ.fibreNormedAddCommGroup x.base.base
     let : NormedSpace v₀.Completion (v₀.Completion ⊗[K] E) := ξ.fibreNormedSpace x.base.base
     let η := ξ.projectiveScalarExtension (L := L)
@@ -163,6 +168,7 @@ theorem injectiveScalarExtension_completed_trans_of_norm_eq
     let := AbsoluteValue.normedAlgebraCompletionOfEq w₀ u₀ hwu
     let := AbsoluteValue.normedAlgebraCompletionOfEq v₀ u₀ hvu
     let := AbsoluteValue.isScalarTower_completionOfEq_tower v₀ w₀ u₀ hvw hwu hvu
+    letI : FiniteDimensional v₀.Completion (v₀.Completion ⊗[K] E) := inferInstance
     let : NormedAddCommGroup (v₀.Completion ⊗[K] E) := ξ.fibreNormedAddCommGroup x.base.base
     let : NormedSpace v₀.Completion (v₀.Completion ⊗[K] E) := ξ.fibreNormedSpace x.base.base
     let finW : FiniteDimensional w₀.Completion (w₀.Completion ⊗[L] (L ⊗[K] E)) := inferInstance
@@ -216,6 +222,7 @@ theorem injectiveScalarExtension_completed_trans_apply_of_norm_eq
     let := AbsoluteValue.normedAlgebraCompletionOfEq w₀ u₀ hwu
     let := AbsoluteValue.normedAlgebraCompletionOfEq v₀ u₀ hvu
     let := AbsoluteValue.isScalarTower_completionOfEq_tower v₀ w₀ u₀ hvw hwu hvu
+    letI : FiniteDimensional v₀.Completion (v₀.Completion ⊗[K] E) := inferInstance
     let : NormedAddCommGroup (v₀.Completion ⊗[K] E) := ξ.fibreNormedAddCommGroup x.base.base
     let : NormedSpace v₀.Completion (v₀.Completion ⊗[K] E) := ξ.fibreNormedSpace x.base.base
     let finW : FiniteDimensional w₀.Completion (w₀.Completion ⊗[L] (L ⊗[K] E)) := inferInstance
@@ -272,6 +279,7 @@ theorem projectiveScalarExtension_completed_trans_apply_of_norm_eq
     let := AbsoluteValue.normedAlgebraCompletionOfEq w₀ u₀ hwu
     let := AbsoluteValue.normedAlgebraCompletionOfEq v₀ u₀ hvu
     let := AbsoluteValue.isScalarTower_completionOfEq_tower v₀ w₀ u₀ hvw hwu hvu
+    letI : FiniteDimensional v₀.Completion (v₀.Completion ⊗[K] E) := inferInstance
     let : NormedAddCommGroup (v₀.Completion ⊗[K] E) := ξ.fibreNormedAddCommGroup x.base.base
     let : NormedSpace v₀.Completion (v₀.Completion ⊗[K] E) := ξ.fibreNormedSpace x.base.base
     let : NormedAddCommGroup (w₀.Completion ⊗[L] (L ⊗[K] E)) :=

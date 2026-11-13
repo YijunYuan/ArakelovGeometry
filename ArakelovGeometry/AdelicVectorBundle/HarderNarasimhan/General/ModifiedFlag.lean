@@ -33,7 +33,7 @@ namespace ArakelovGeometry.AdelicVectorBundle
 
 noncomputable section
 
-universe u v w
+universe u w
 
 private theorem modifiedFlag_coe_sum {n : ℕ} (f : Fin n → ℝ) :
     ((∑ i, f i : ℝ) : EReal) = ∑ i, (f i : EReal) := by
@@ -42,9 +42,9 @@ private theorem modifiedFlag_coe_sum {n : ℕ} (f : Fin n → ℝ) :
   | succ n ih =>
     rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc, EReal.coe_add, ih]
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle.{w} S)
+  (V : AdelicVectorBundle S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   {n : ℕ} (F : Fin (n + 1) → Submodule K V)

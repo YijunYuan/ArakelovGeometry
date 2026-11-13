@@ -32,15 +32,15 @@ namespace ArakelovGeometry.AdelicVectorBundle
 
 noncomputable section
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 /-- An injective contraction cannot decrease maximal slope. -/
 theorem maximalSlope_le_of_completed_contraction
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) (hf : Function.Injective f)
@@ -50,7 +50,7 @@ theorem maximalSlope_le_of_completed_contraction
   exact (V.maximalSlope_le_maximalSlope_add_mapHeight_of_injective W f hf).trans
     (by simpa only [add_zero] using add_le_add le_rfl hheight)
 
-variable (V : AdelicVectorBundle.{w} S)
+variable (V : AdelicVectorBundle S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 

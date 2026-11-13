@@ -31,9 +31,9 @@ noncomputable section
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w wι
+universe u w wι
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
 
 /-- Rational factor pairings are measurable in the compatible completed embeddings. -/
 theorem IsMeasurable.archimedeanInner_rational {V : Type w} [AddCommGroup V]

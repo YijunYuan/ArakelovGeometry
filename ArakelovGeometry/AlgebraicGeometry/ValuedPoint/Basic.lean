@@ -30,13 +30,13 @@ universe u
 
 /-- A point of a scheme equipped with a real-valued absolute value on its
 actual residue field. -/
-structure ValuedPoint (X : Scheme.{u}) where
+structure ValuedPoint (X : Scheme) where
   point : X
   value : AbsoluteValue (X.residueField point) ℝ
 
 namespace ValuedPoint
 
-variable {X Y Z : Scheme.{u}}
+variable {X Y Z : Scheme}
 
 /-- Restriction along the canonical map of residue fields. -/
 def map (f : X ⟶ Y) (x : ValuedPoint X) : ValuedPoint Y where

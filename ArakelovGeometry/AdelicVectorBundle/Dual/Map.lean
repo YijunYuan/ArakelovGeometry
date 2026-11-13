@@ -25,7 +25,7 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry
 
-universe u v w w'
+universe u w w'
 
 variable {K : Type u} [Field K] {E : Type w} [AddCommGroup E] [Module K E]
   [FiniteDimensional K E] {F : Type w'} [AddCommGroup F] [Module K F]
@@ -45,7 +45,7 @@ theorem dualBaseChangeEquiv_dualMap (L : Type*) [Field L] [Algebra K L]
 
 namespace NormFamily
 
-variable {S : AdelicStructure.{u, v} K}
+variable {S : AdelicStructure K}
 
 /-- Restricting a functional to a subspace cannot increase its dual norm. -/
 theorem pullback_dual_norm_le (ξ : NormFamily S E) (f : F →ₗ[K] E)

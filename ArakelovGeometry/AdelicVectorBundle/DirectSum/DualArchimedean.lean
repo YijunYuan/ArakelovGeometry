@@ -29,8 +29,8 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w w'
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u w w'
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -124,8 +124,8 @@ end ArakelovGeometry.NormShape
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w w'
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u w w'
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 variable (ξ : NormFamily S E) (η : NormFamily S F)

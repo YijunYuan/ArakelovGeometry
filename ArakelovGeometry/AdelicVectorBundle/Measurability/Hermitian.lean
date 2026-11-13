@@ -31,9 +31,9 @@ noncomputable section
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w wι
+universe u w wι
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E]
   {ι : Type wι} [Finite ι]
 

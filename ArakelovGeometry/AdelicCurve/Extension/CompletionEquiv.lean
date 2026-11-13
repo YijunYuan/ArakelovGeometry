@@ -79,8 +79,8 @@ end AbsoluteValue
 
 namespace ArakelovGeometry
 namespace AdelicStructure.ParameterSpaceExtension
-universe u v wL wM
-variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
+universe u wL wM
+variable {K : Type u} [Field K] (S : AdelicStructure K)
   {L : Type wL} [Field L] [Algebra K L]
   {M : Type wM} [Field M] [Algebra K M]
 

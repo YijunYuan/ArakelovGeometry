@@ -26,14 +26,14 @@ namespace ArakelovGeometry
 open MeasureTheory AbsoluteValue
 open scoped ENNReal
 
-universe u v w
+universe u
 
 /-- An equivalence between two adelic structures on the same field: a measurable equivalence
 of the parameter spaces matching the families of absolute values and transporting one measure
 to the other. This packages the meaning of the equalities of adelic curves in Chen–Moriwaki,
 Proposition 3.4.4 and Theorem 3.4.12. -/
-structure AdelicStructure.Equiv {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
-    (T : AdelicStructure.{u, w} K) where
+structure AdelicStructure.Equiv {K : Type u} [Field K] (S : AdelicStructure K)
+    (T : AdelicStructure K) where
   /-- The underlying measurable equivalence of parameter spaces. -/
   toMeasurableEquiv : S.Ω ≃ᵐ T.Ω
   /-- The equivalence matches the families of absolute values. -/

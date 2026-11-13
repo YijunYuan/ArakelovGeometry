@@ -30,8 +30,8 @@ open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry
 
-universe u v w
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u w
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 omit [FiniteDimensional K E] in

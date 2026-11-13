@@ -26,8 +26,8 @@ then compare the original and absolute positive degrees and maximal slopes.
 open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
-universe u v w wL
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+universe u w wL
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [Countable S.Ω] [DiscreteMeasurableSpace S.Ω]
 

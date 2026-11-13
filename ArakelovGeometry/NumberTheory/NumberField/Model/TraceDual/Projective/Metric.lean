@@ -33,7 +33,7 @@ variable {K : Type u} [Field K] [NumberField K]
 omit [NumberField K] in
 /-- Canonical completed tensor-unit insertion is the actual completed pure tensor
 with scalar generator one after the canonical distribution equivalence. -/
-theorem tensorUnitBaseChange_symm
+theorem tensorUnitBaseChange_symm {E : Type*} [AddCommGroup E] [Module K E]
     (L : Type*) [Field L] [Algebra K L] (z : L ⊗[K] E) :
     (LinearEquiv.baseChange K L _ _ (TensorProduct.rid K E).symm) z =
       (TensorProduct.AlgebraTensorModule.distribBaseChange K L E K).symm

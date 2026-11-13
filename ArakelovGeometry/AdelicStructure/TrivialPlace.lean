@@ -35,8 +35,8 @@ universe u w
 
 /-- One actual trivial absolute value with mass one, reusing the existing
 proper trivial adelic structure. -/
-abbrev singleTrivialPlace (K : Type u) [Field K] : AdelicStructure.{u, 0} K :=
-  trivialAdelicStructure K PUnit (Measure.dirac PUnit.unit)
+abbrev singleTrivialPlace (K : Type u) [Field K] : AdelicStructure K :=
+  trivialAdelicStructure K PUnit.{1} (Measure.dirac PUnit.unit)
 
 variable (K : Type u) [Field K]
 

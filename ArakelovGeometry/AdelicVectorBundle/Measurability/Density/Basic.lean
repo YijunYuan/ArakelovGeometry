@@ -29,73 +29,73 @@ noncomputable section
 
 namespace ArakelovGeometry
 
-universe u v w wι
+universe u w wι
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
 
 /-- A rational subfield is dense at a place when its actual image in the
 completed ground field is dense. -/
-def AdelicStructure.IsDenseSubfieldAt (S : AdelicStructure.{u, v} K)
+def AdelicStructure.IsDenseSubfieldAt (S : AdelicStructure K)
     (K₀ : Subfield K) (ω : S.Ω) : Prop :=
   DenseRange (fun a : K₀ => algebraMap K (S.ϕ ω).Completion (a : K))
 
 /-- The common countability hypothesis of Section 4.1.3 uses one subfield
 simultaneously at all places. -/
-class AdelicStructure.HasCommonCountableDenseSubfield (S : AdelicStructure.{u, v} K) : Prop where
+class AdelicStructure.HasCommonCountableDenseSubfield (S : AdelicStructure K) : Prop where
   /-- The defining property. -/
   exists_subfield :
     ∃ K₀ : Subfield K, Countable K₀ ∧ ∀ ω, S.IsDenseSubfieldAt K₀ ω
 
 /-- The defining proposition of `HasCommonCountableDenseSubfield`. -/
-theorem AdelicStructure.HasCommonCountableDenseSubfield.iff (S : AdelicStructure.{u, v} K) :
+theorem AdelicStructure.HasCommonCountableDenseSubfield.iff (S : AdelicStructure K) :
     S.HasCommonCountableDenseSubfield ↔
     ∃ K₀ : Subfield K, Countable K₀ ∧ ∀ ω, S.IsDenseSubfieldAt K₀ ω :=
   ⟨fun h ↦ h.exists_subfield, fun h ↦ ⟨h⟩⟩
 
 /-- The two base hypotheses that preserve measurability under norm constructions. -/
-class AdelicStructure.HasMeasurableBase (S : AdelicStructure.{u, v} K) : Prop where
+class AdelicStructure.HasMeasurableBase (S : AdelicStructure K) : Prop where
   /-- Either the index space is discrete measurable or a common countable dense
   subfield exists at all places. -/
   discrete_or_countable : DiscreteMeasurableSpace S.Ω ∨ S.HasCommonCountableDenseSubfield
 
-instance AdelicStructure.hasMeasurableBase_of_discrete (S : AdelicStructure.{u, v} K)
+instance AdelicStructure.hasMeasurableBase_of_discrete (S : AdelicStructure K)
     [DiscreteMeasurableSpace S.Ω] : S.HasMeasurableBase := ⟨Or.inl inferInstance⟩
 
 instance (priority := 100) AdelicStructure.hasMeasurableBase_of_commonCountable
-    (S : AdelicStructure.{u, v} K) [S.HasCommonCountableDenseSubfield] :
+    (S : AdelicStructure K) [S.HasCommonCountableDenseSubfield] :
     S.HasMeasurableBase := ⟨Or.inr inferInstance⟩
 
 /-- Base regularity ensuring measurability of ordinary algebraic scalar extension. -/
-class AdelicStructure.HasOrdinaryBase (S : AdelicStructure.{u, v} K) : Prop where
+class AdelicStructure.HasOrdinaryBase (S : AdelicStructure K) : Prop where
   /-- Common countable density, or a countable discrete measurable place space. -/
   condition : S.HasCommonCountableDenseSubfield ∨
     (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω)
 
 instance AdelicStructure.hasOrdinaryBase_of_commonCountable
-    (S : AdelicStructure.{u, v} K) [S.HasCommonCountableDenseSubfield] :
+    (S : AdelicStructure K) [S.HasCommonCountableDenseSubfield] :
     S.HasOrdinaryBase := ⟨Or.inl inferInstance⟩
 
 instance AdelicStructure.hasOrdinaryBase_of_countable_discrete
-    (S : AdelicStructure.{u, v} K) [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] :
+    (S : AdelicStructure K) [Countable S.Ω] [DiscreteMeasurableSpace S.Ω] :
     S.HasOrdinaryBase := ⟨Or.inr ⟨inferInstance, inferInstance⟩⟩
 
 instance (priority := 100) AdelicStructure.hasMeasurableBase_of_ordinary
-    (S : AdelicStructure.{u, v} K) [hS : S.HasOrdinaryBase] : S.HasMeasurableBase :=
+    (S : AdelicStructure K) [hS : S.HasOrdinaryBase] : S.HasMeasurableBase :=
   ⟨hS.condition.elim Or.inr (fun h ↦ Or.inl h.2)⟩
 
 /-- Base regularity for native subquotients and absolute invariants. -/
-class AdelicStructure.HasRegularBase (S : AdelicStructure.{u, v} K) : Prop where
+class AdelicStructure.HasRegularBase (S : AdelicStructure K) : Prop where
   /-- The three alternatives used by the native scalar-extension constructions. -/
   condition : S.HasCommonCountableDenseSubfield ∨
     (Countable S.Ω ∧ DiscreteMeasurableSpace S.Ω) ∨
     (MeasurableSingletonClass S.Ω ∧ (∀ ω, 0 < S.v {ω}) ∧ ∀ ω, ω ∈ S.Ωfin)
 
 instance AdelicStructure.hasRegularBase_of_ordinary
-    (S : AdelicStructure.{u, v} K) [hS : S.HasOrdinaryBase] : S.HasRegularBase :=
+    (S : AdelicStructure K) [hS : S.HasOrdinaryBase] : S.HasRegularBase :=
   ⟨hS.condition.elim Or.inl (fun h ↦ Or.inr (Or.inl h))⟩
 
 instance AdelicStructure.hasRegularBase_of_positive_finite_places
-    (S : AdelicStructure.{u, v} K) [MeasurableSingletonClass S.Ω]
+    (S : AdelicStructure K) [MeasurableSingletonClass S.Ω]
     [hp : S.HasPositiveAtoms] [hf : S.HasOnlyFinitePlaces] : S.HasRegularBase :=
   ⟨Or.inr (Or.inr ⟨inferInstance, hp.measure_singleton_pos, hf.mem_Ωfin⟩)⟩
 

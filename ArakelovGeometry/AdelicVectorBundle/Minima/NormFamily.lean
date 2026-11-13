@@ -25,9 +25,9 @@ namespace ArakelovGeometry.NormFamily
 
 
 noncomputable section
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- The span of actual nonzero rational vectors of degree at least the threshold. -/
@@ -487,8 +487,8 @@ end ArakelovGeometry.NormFamily
 
 namespace ArakelovGeometry.AdelicVectorBundle
 noncomputable section
-universe u v w
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u w
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- The intrinsic actual threshold span is definitionally the bundle threshold span. -/

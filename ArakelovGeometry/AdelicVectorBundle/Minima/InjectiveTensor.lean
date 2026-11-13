@@ -36,9 +36,9 @@ open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -60,7 +60,7 @@ namespace AdelicVectorBundle
 /-- Actual dual map height is minus the actual injective tensor vector degree;
 integrability is produced from the tensor bundle, not assumed of the map. -/
 theorem mapHeight_dual_eq_neg_injectiveTensorPair_vectorDegree
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hW : W.toNormFamily.IsUltrametric]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
@@ -91,7 +91,7 @@ variable [S.IsProper]
 /-- Every nonzero tensor is bounded using its actual dual map and the actual
 finite slope endpoints of both factors. -/
 theorem vectorDegree_injectiveTensorPair_le_maximalSlope_add
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hV : V.toNormFamily.IsUltrametric] [hW : W.toNormFamily.IsUltrametric]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
@@ -121,7 +121,7 @@ theorem vectorDegree_injectiveTensorPair_le_maximalSlope_add
 omit [S.IsProper] in
 /-- A zero left factor has the source's empty tensor threshold domain. -/
 theorem maximalLogarithmicMinimum_injectiveTensorPair_eq_bot_of_left_finrank_eq_zero
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (hE : Module.finrank K V = 0) :
@@ -132,7 +132,7 @@ theorem maximalLogarithmicMinimum_injectiveTensorPair_eq_bot_of_left_finrank_eq_
 omit [S.IsProper] in
 /-- A zero right factor gives the same genuine empty tensor convention. -/
 theorem maximalLogarithmicMinimum_injectiveTensorPair_eq_bot_of_right_finrank_eq_zero
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (hF : Module.finrank K W = 0) :
@@ -143,7 +143,7 @@ theorem maximalLogarithmicMinimum_injectiveTensorPair_eq_bot_of_right_finrank_eq
 /-- Source Proposition 4.3.75 on the actual injective binary tensor bundle,
 without attainment hypotheses and including either zero factor. -/
 theorem maximalLogarithmicMinimum_injectiveTensorPair_le_maximalSlope_add
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hV : V.toNormFamily.IsUltrametric] [hW : W.toNormFamily.IsUltrametric]
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :

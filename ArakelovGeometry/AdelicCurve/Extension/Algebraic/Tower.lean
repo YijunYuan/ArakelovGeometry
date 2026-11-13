@@ -158,8 +158,8 @@ end ArakelovGeometry.AdelicStructure.Algebraic
 namespace ArakelovGeometry
 open AdelicStructure MeasureTheory
 open scoped ENNReal AdelicStructure
-universe u v w
-variable {K : Type u} [Field K] (AS : AdelicStructure.{u, v} K)
+universe u w
+variable {K : Type u} [Field K] (AS : AdelicStructure K)
 variable (M : Type w) [Field M] [Algebra K M]
 /-- Chen--Moriwaki, Theorem 3.4.12: algebraic extension of adelic structures is transitive:
 for a tower `K ⊆ L₁ ⊆ L₂` of algebraic extensions, `(S ⊗_K L₁) ⊗_{L₁} L₂` and `S ⊗_K L₂` are

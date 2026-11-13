@@ -27,7 +27,7 @@ an extended finite-stage subquotient, on every completed normed fibre.
 open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry
-universe u v w wE
+universe u w wE
 
 section SubmoduleBaseChange
 variable {K : Type*} [Field K] {L : Type*} [Field L] [Algebra K L]
@@ -153,7 +153,7 @@ private theorem nativeStage_quotientEquiv_norm_eq_of_map_eq
 
 end QuotientIsometry
 
-variable {S : AdelicStructure.{u, v} K} [Algebra.IsAlgebraic K L]
+variable {S : AdelicStructure K} [Algebra.IsAlgebraic K L]
 
 private theorem nativeStage_quotient_tower_norm_eq
     (F : Type*) [Field F] [Algebra K F] [Algebra F L] [IsScalarTower K F L]

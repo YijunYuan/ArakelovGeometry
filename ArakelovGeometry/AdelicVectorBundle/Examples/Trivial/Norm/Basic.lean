@@ -459,7 +459,7 @@ namespace AdelicVectorBundle
 open AdelicStructure
 
 variable [FiniteDimensional K E]
-  (V : AdelicVectorBundle.{w} (singleTrivialPlace K))
+  (V : AdelicVectorBundle (singleTrivialPlace K))
   [hS : (singleTrivialPlace K).HasMeasurableBase]
   [hN : (singleTrivialPlace K).IsArchimedeanNormalized]
 

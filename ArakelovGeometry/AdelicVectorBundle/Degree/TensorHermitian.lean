@@ -162,9 +162,9 @@ theorem completedTensorDualTuple_pairing_smul
 
 end Algebra
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -276,6 +276,12 @@ theorem orthogonalTensorPair_dual_determinant_norm_tuple_le
       simp only [Fintype.prod_prod_type, Finset.prod_mul_distrib,
         Finset.prod_const, Finset.card_univ, Fintype.card_fin, ← Finset.prod_pow]
 
+-- Match the field and algebra instances used by completed determinant maps.
+attribute [local instance 50] UniformSpace.Completion.commRing
+  UniformSpace.Completion.ring UniformSpace.Completion.instModule
+  UniformSpace.Completion.instAddCommGroup
+attribute [local irreducible] determinantTensorEquivCompleted exteriorBaseChangeEquiv
+
 /-- Actual completed orthogonal determinant upper bound in every rank. -/
 theorem orthogonalTensorPair_determinant_norm_le
     (ξ : NormFamily S E) (η : NormFamily S F)
@@ -286,7 +292,7 @@ theorem orthogonalTensorPair_determinant_norm_le
     (ξ ⊗ʰ η).determinant.norm ω
       ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion (E ⊗[K] F)
         (Module.finrank K (E ⊗[K] F))).symm
-        (determinantTensorEquivCompleted K (S.ϕ ω).Completion E F
+        ((determinantTensorEquivCompleted K (S.ϕ ω).Completion E F).toFun
           ((⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K F)), z) ⊗ₜ[(S.ϕ ω).Completion]
             (⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K E)), t)))) ≤
       ξ.determinant.norm ω
@@ -318,7 +324,7 @@ theorem orthogonalTensorPair_determinant_pairing_bound
       ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion F _).symm t)‖ ^ Module.finrank K E ≤
     (ξ ⊗ʰ η).determinant.norm ω
       ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion (E ⊗[K] F) _).symm
-        (determinantTensorEquivCompleted K (S.ϕ ω).Completion E F
+        ((determinantTensorEquivCompleted K (S.ϕ ω).Completion E F).toFun
           ((⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K F)), z) ⊗ₜ[(S.ϕ ω).Completion]
            (⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K E)), t)))) *
       (ξ.dual.determinant.norm ω α ^ Module.finrank K F *
@@ -326,7 +332,7 @@ theorem orthogonalTensorPair_determinant_pairing_bound
   let L := (S.ϕ ω).Completion
   let σ := ξ.orthogonalTensorPair η
   let w := (exteriorBaseChangeEquiv K L (E ⊗[K] F) _).symm
-    (determinantTensorEquivCompleted K L E F
+    ((determinantTensorEquivCompleted K L E F).toFun
       ((⨂ₜ[L] (_ : Fin (Module.finrank K F)), z) ⊗ₜ[L]
        (⨂ₜ[L] (_ : Fin (Module.finrank K E)), t)))
   let C := ξ.dual.determinant.norm ω α
@@ -418,7 +424,7 @@ theorem orthogonalTensorPair_determinant_norm_eq
     (ξ ⊗ʰ η).determinant.norm ω
       ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion (E ⊗[K] F)
         (Module.finrank K (E ⊗[K] F))).symm
-        (determinantTensorEquivCompleted K (S.ϕ ω).Completion E F
+        ((determinantTensorEquivCompleted K (S.ϕ ω).Completion E F).toFun
           ((⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K F)), z) ⊗ₜ[(S.ϕ ω).Completion]
             (⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K E)), t)))) =
       ξ.determinant.norm ω
@@ -445,7 +451,7 @@ theorem orthogonalTensorPair_determinant_norm_eq
   have h := ξ.orthogonalTensorPair_determinant_pairing_bound η ω α β z t
   let R := (ξ ⊗ʰ η).determinant.norm ω
     ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion (E ⊗[K] F) _).symm
-      (determinantTensorEquivCompleted K (S.ϕ ω).Completion E F
+      ((determinantTensorEquivCompleted K (S.ϕ ω).Completion E F).toFun
         ((⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K F)), z) ⊗ₜ[(S.ϕ ω).Completion]
          (⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K E)), t))))
   have hpair := congrArg₂ (fun q r : ℝ ↦ q ^ Module.finrank K F * r ^ Module.finrank K E)
@@ -482,7 +488,7 @@ theorem orthogonalTensorPair_determinant_norm_rational_eq
       ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] s))
     (exteriorBaseChangeEquiv K (S.ϕ ω).Completion F (Module.finrank K F)
       ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] t))
-  simpa only [determinantTensorEquivCompleted_tprod_one_tmul,
+  simpa only [LinearEquiv.toFun_eq_coe, determinantTensorEquivCompleted_tprod_one_tmul,
     LinearEquiv.symm_apply_apply] using h
 
 /-- The actual tensor determinant log norm is the rank-weighted sum of
@@ -513,7 +519,7 @@ namespace AdelicVectorBundle
 /-- Source equation (4.35): the actual orthogonal tensor bundle has the
 rank-weighted degree sum. All analytic fields are supplied by its constructor. -/
 theorem degree_orthogonalTensorPair [S.IsProper]
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     [hV : V.IsHermitian] [hW : W.IsHermitian] :

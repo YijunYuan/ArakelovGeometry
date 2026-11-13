@@ -36,11 +36,11 @@ namespace ArakelovGeometry.AdelicVectorBundle
 
 noncomputable section
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle.{w} S)
+  (V : AdelicVectorBundle S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
 
@@ -97,7 +97,7 @@ theorem sum_generalHNOrderedSlope_restrict_add_quotient_rank_mul_le
 
 private theorem degree_sub_majorantDiscrepancy_le_sum_generalHNOrderedSlope_aux (r : ℕ) :
     ∀
-      (W : AdelicVectorBundle.{w} S), Module.finrank K W = r →
+      (W : AdelicVectorBundle S), Module.finrank K W = r →
       (W.degree : EReal) - W.majorantDiscrepancy ≤
         ((∑ j, W.generalHNOrderedSlope j) : ℝ) := by
   induction r using Nat.strong_induction_on with
@@ -198,7 +198,7 @@ theorem degree_le_sum_generalHNOrderedSlope_add_majorantDiscrepancy :
 
 private theorem degree_sub_determinantDiscrepancy_le_sum_generalHNOrderedSlope_aux (r : ℕ) :
     ∀
-      (W : AdelicVectorBundle.{w} S), Module.finrank K W = r → W.toNormFamily.IsUltrametric →
+      (W : AdelicVectorBundle S), Module.finrank K W = r → W.toNormFamily.IsUltrametric →
       W.degree - W.determinantDiscrepancy ≤ ∑ j, W.generalHNOrderedSlope j := by
   induction r using Nat.strong_induction_on with
   | h r ih =>

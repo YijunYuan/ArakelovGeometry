@@ -23,7 +23,7 @@ quotient norm theorem, without additional norm or measurability hypotheses.
 open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry
-universe u v w wE
+universe u w wE
 
 section TensorQuotient
 variable {K : Type*} [Field K] {L : Type*} [Field L] [Algebra K L]
@@ -82,7 +82,7 @@ theorem finiteStageQuotientEquiv_comp_mkQ
   rfl
 
 namespace NormFamily
-variable {S : AdelicStructure.{u, v} K} [Algebra.IsAlgebraic K L]
+variable {S : AdelicStructure K} [Algebra.IsAlgebraic K L]
   [FiniteDimensional K E]
 
 /-- The canonical quotient equivalence is an isometry on every completed vector

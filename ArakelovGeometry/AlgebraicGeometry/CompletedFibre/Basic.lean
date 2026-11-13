@@ -30,9 +30,7 @@ noncomputable section
 
 namespace ArakelovGeometry.ValuedPoint
 
-universe u
-
-variable {X Y : Scheme.{u}}
+variable {X Y : Scheme}
 
 /-- The completion of the actual valued residue field. -/
 abbrev CompletedResidueField (x : ValuedPoint X) := x.value.Completion
@@ -119,6 +117,8 @@ def completedFibreSheafPullbackIso (f : X ⟶ Y) (M : Y.Modules) (x : ValuedPoin
     (x.map f).completedPoint).app M ≪≫
   (Scheme.Modules.pullbackCongr (completedPoint_naturality f x)).app M ≪≫
   ((Scheme.Modules.pullbackComp x.completedPoint f).app M).symm
+
+universe u
 
 variable {R : CommRingCat.{u}}
 

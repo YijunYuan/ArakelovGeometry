@@ -33,7 +33,7 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w
+universe u w
 
 /-- The seminorm of an actual positive-definite inner-product core, with
 its given scalar action. -/
@@ -55,7 +55,7 @@ theorem innerProductCoreSeminorm_eq_zero_iff {L V : Type*} [RCLike L]
 
 namespace NormFamily
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E]
 
 /-- Replace one actual fibre norm by another separated seminorm. -/
@@ -212,7 +212,7 @@ end NormFamily
 
 namespace AdelicVectorBundle
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- The sharp upper bound in Proposition4.3.10 follows by integrating the

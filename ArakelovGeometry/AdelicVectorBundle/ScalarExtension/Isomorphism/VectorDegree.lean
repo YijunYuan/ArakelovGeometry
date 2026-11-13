@@ -30,8 +30,8 @@ open scoped TensorProduct
 noncomputable section
 
 namespace ArakelovGeometry
-universe u v wL wM wE
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u wL wM wE
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {L : Type wL} [Field L] {M : Type wM} [Field M] [Algebra K L] [Algebra K M]
   [Algebra.IsAlgebraic K L] [Algebra.IsAlgebraic K M]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
@@ -112,7 +112,7 @@ theorem scalarExtension_linearIndependent_algEquiv (σ : L ≃ₐ[K] M)
   independent_semilinear_iff σ.toRingEquiv (scalarExtensionSemilinearEquiv (E := E) σ) s
 
 namespace AdelicVectorBundle
-variable (V : AdelicVectorBundle.{wE} S)
+variable (V : AdelicVectorBundle S)
   [hreg : S.HasRegularBase]
   [hN : S.IsArchimedeanNormalized]
   (σ : L ≃ₐ[K] M)

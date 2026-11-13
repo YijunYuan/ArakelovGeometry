@@ -30,9 +30,9 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w w' wι
+universe u w w' wι
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -61,7 +61,7 @@ theorem lineDegree_eq_neg_integral [S.IsProper] (V : AdelicVectorBundle S)
 
 /-- A rational linear isomorphism preserving completed norms preserves line degree. -/
 theorem lineDegree_eq_of_norm_rational_eq [S.IsProper]
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hV : V.IsLine] [hW : W.IsLine] (e : V ≃ₗ[K] W)
     (he : ∀ ω x, V.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] x) =
       W.norm ω ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] e x)) :

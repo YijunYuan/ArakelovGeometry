@@ -26,7 +26,10 @@ namespace ArakelovGeometry
 
 universe u
 
-variable {R S : CommRingCat.{u}}
+variable {R S : CommRingCat}
+
+-- Keep section comparisons from unfolding the construction of the structure sheaf.
+attribute [local irreducible] Spec.structureSheaf
 
 /-- Global sections of the actual affine pushforward are the original
 global sections with scalars restricted along the affine ring map. -/
@@ -44,11 +47,12 @@ def affinePullbackTildeIso (φ : R ⟶ S) :
   (((tilde.adjunction (R := R)).comp
     (Scheme.Modules.pullbackPushforwardAdjunction (Spec.map φ))).ofNatIsoRight
       (affinePushforwardSectionsIso φ)).leftAdjointUniq
-        ((ModuleCat.extendRestrictScalarsAdj φ.hom).comp (tilde.adjunction (R := S)))
+        ((ModuleCat.extendRestrictScalarsAdj.{0} φ.hom).comp (tilde.adjunction (R := S)))
 
 /-- Global sections of the actual pullback of a quasi-coherent sheaf on an
 affine scheme are the scalar extension of its original global sections. -/
-def affinePullbackSectionsIso (φ : R ⟶ S) (M : (Spec R).Modules) [M.IsQuasicoherent] :
+def affinePullbackSectionsIso {R S : CommRingCat.{u}}
+    (φ : R ⟶ S) (M : (Spec R).Modules) [M.IsQuasicoherent] :
     moduleSpecΓFunctor.obj ((Scheme.Modules.pullback (Spec.map φ)).obj M) ≅
       (ModuleCat.extendScalars φ.hom).obj (moduleSpecΓFunctor.obj M) :=
   moduleSpecΓFunctor.mapIso
@@ -58,12 +62,13 @@ def affinePullbackSectionsIso (φ : R ⟶ S) (M : (Spec R).Modules) [M.IsQuasico
 
 /-- The actual module fibre is the global-section module of the sheaf
 pulled back along the canonical residue-field point. -/
-def residueFibre {X : Scheme.{u}} (M : X.Modules) (x : X) : ModuleCat (X.residueField x) :=
+def residueFibre {X : Scheme} (M : X.Modules) (x : X) : ModuleCat (X.residueField x) :=
   moduleSpecΓFunctor.obj ((Scheme.Modules.pullback (X.fromSpecResidueField x)).obj M)
 
 /-- The fibre of an affine quasi-coherent sheaf is its original section module
 tensored with the actual residue field through the canonical point map. -/
-def affineResidueFibreIso (M : (Spec R).Modules) [M.IsQuasicoherent] (x : Spec R) :
+def affineResidueFibreIso {R : CommRingCat.{u}}
+    (M : (Spec R).Modules) [M.IsQuasicoherent] (x : Spec R) :
     residueFibre M x ≅
       (ModuleCat.extendScalars
         (Spec.preimage ((Spec R).fromSpecResidueField x)).hom).obj (moduleSpecΓFunctor.obj M) :=
@@ -73,7 +78,7 @@ def affineResidueFibreIso (M : (Spec R).Modules) [M.IsQuasicoherent] (x : Spec R
 
 /-- Formation of the actual sheaf fibre commutes with pullback, through the
 canonical embedding of residue fields. This does not require quasi-coherence. -/
-def residueFibreSheafPullbackIso {X Y : Scheme.{u}} (f : X ⟶ Y) (M : Y.Modules) (x : X) :
+def residueFibreSheafPullbackIso {X Y : Scheme} (f : X ⟶ Y) (M : Y.Modules) (x : X) :
     (Scheme.Modules.pullback (Spec.map (f.residueFieldMap x))).obj
         ((Scheme.Modules.pullback (Y.fromSpecResidueField (f x))).obj M) ≅
       (Scheme.Modules.pullback (X.fromSpecResidueField x)).obj

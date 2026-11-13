@@ -30,9 +30,9 @@ open MeasureTheory Filter
 
 namespace ArakelovGeometry
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -75,7 +75,7 @@ variable [S.IsProper]
 /-- Determinant-map height is exactly source degree minus target degree.
 The sign is the one in source(4.31), correcting its final proof line(4.33). -/
 theorem determinantMap_mapHeight_eq_degree_sub
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (e : V ≃ₗ[K] W) :
@@ -90,7 +90,7 @@ theorem determinantMap_mapHeight_eq_degree_sub
 
 /-- In rank zero the actual determinant is a unit-line map of height zero. -/
 theorem determinantMap_mapHeight_eq_zero_of_finrank_eq_zero
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (e : V ≃ₗ[K] W) (hz : Module.finrank K V = 0) :
@@ -105,7 +105,7 @@ theorem determinantMap_mapHeight_eq_zero_of_finrank_eq_zero
 /-- The full degree-map inequality uses the actual lower-integral height,
 including a possibly infinite height and the rank-zero determinant convention. -/
 theorem degree_le_degree_add_rank_mul_mapHeight
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (e : V ≃ₗ[K] W) :

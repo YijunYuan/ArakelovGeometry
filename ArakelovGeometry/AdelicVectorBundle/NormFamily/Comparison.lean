@@ -26,9 +26,9 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
 variable {E : Type w} [AddCommGroup E] [Module K E]
 
 /-- Pointwise comparison at all places and all completed-fibre vectors. -/

@@ -28,9 +28,9 @@ taking the actual suprema compares positive degree and maximal slope.
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w wL
+universe u w wL
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L]
 

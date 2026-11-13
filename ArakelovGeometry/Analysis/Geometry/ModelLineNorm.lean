@@ -90,14 +90,14 @@ abbrev geometricIsometricNormedAlgebra (φ : k →+* L) (hφ : Isometry φ) : No
 
 /-- The explicit norm on the categorical scalar extension used by sheaf fibres. -/
 def geometricModuleScalarExtensionSeminorm (φ : k →+* L) (hφ : Isometry φ)
-    (E : ModuleCat.{u} k) [FiniteDimensional k E]
+    (E : ModuleCat k) [FiniteDimensional k E]
     (p : Seminorm k E) (hp : ∀ x, p x = 0 ↔ x = 0) :
     Seminorm L ((ModuleCat.extendScalars φ).obj E) := by
   letI := geometricIsometricNormedAlgebra φ hφ
   exact geometricScalarExtensionSeminorm p hp
 
 theorem geometricModuleScalarExtensionSeminorm_eq_zero_iff
-    (φ : k →+* L) (hφ : Isometry φ) (E : ModuleCat.{u} k) [FiniteDimensional k E]
+    (φ : k →+* L) (hφ : Isometry φ) (E : ModuleCat k) [FiniteDimensional k E]
     (p : Seminorm k E) (hp : ∀ x, p x = 0 ↔ x = 0)
     (z : (ModuleCat.extendScalars φ).obj E) :
     geometricModuleScalarExtensionSeminorm φ hφ E p hp z = 0 ↔ z = 0 := by
@@ -106,7 +106,7 @@ theorem geometricModuleScalarExtensionSeminorm_eq_zero_iff
 
 /-- The actual categorical unit is isometric for every separated norm on a line. -/
 theorem geometricModuleScalarExtensionSeminorm_unit
-    (φ : k →+* L) (hφ : Isometry φ) (E : ModuleCat.{u} k) [FiniteDimensional k E]
+    (φ : k →+* L) (hφ : Isometry φ) (E : ModuleCat k) [FiniteDimensional k E]
     (p : Seminorm k E) (hp : ∀ x, p x = 0 ↔ x = 0)
     (hr : Module.finrank k E = 1) (x : E) :
     geometricModuleScalarExtensionSeminorm φ hφ E p hp

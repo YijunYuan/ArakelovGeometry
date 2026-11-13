@@ -20,8 +20,8 @@ sigma algebras. The same-field restriction agrees with the existing action.
 
 open MeasureTheory
 namespace ArakelovGeometry.AdelicStructure.ParameterSpaceExtension
-universe u v wL wM wN
-variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
+universe u wL wM wN
+variable {K : Type u} [Field K] (S : AdelicStructure K)
   {L : Type wL} [Field L] [Algebra K L]
   {M : Type wM} [Field M] [Algebra K M]
 

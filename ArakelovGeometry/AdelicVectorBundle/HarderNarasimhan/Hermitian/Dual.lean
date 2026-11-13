@@ -32,7 +32,7 @@ open scoped TensorProduct
 
 noncomputable section
 
-universe u v w
+universe u w
 
 variable {K : Type u} [Field K] {E : Type w} [AddCommGroup E] [Module K E]
   [FiniteDimensional K E]
@@ -114,7 +114,7 @@ end Submodule
 
 namespace ArakelovGeometry.NormFamily
 
-variable {S : AdelicStructure.{u, v} K}
+variable {S : AdelicStructure K}
 
 private theorem quotient_norm_quotEquivOfEq (ξ : NormFamily S E)
     (U W : Submodule K E) (h : U = W) (ω : S.Ω)
@@ -207,7 +207,7 @@ end ArakelovGeometry.NormFamily
 
 namespace ArakelovGeometry.AdelicVectorBundle
 
-variable {S : AdelicStructure.{u, v} K} [S.IsProper]
+variable {S : AdelicStructure K} [S.IsProper]
 
 /-- An actual semistable Hermitian subquotient gives a semistable factor of
 the reversed annihilator flag, with the negative actual mean slope. -/

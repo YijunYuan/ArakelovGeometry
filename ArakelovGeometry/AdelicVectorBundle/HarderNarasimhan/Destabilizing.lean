@@ -29,9 +29,9 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 namespace AdelicVectorBundle
@@ -113,7 +113,7 @@ theorem le_destabilizingSubspace_of_slope_eq_maximalSlope (V : AdelicVectorBundl
 /-- Semistability uses actual restrictions and includes the source's nonzero
 qualification. Hermitian attainment identifies it with the whole-space
 destabilizing subspace below. -/
-class IsMeanSlopeSemistable (V : AdelicVectorBundle.{w} S)
+class IsMeanSlopeSemistable (V : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] : Prop where
   /-- Semistability excludes the zero bundle. -/

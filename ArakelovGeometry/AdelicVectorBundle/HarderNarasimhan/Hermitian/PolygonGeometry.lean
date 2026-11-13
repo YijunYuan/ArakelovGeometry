@@ -23,10 +23,10 @@ The convex hull of actual subspace degree points lies in the polygon hypograph.
 open scoped BigOperators
 namespace ArakelovGeometry.AdelicVectorBundle
 noncomputable section
-universe u v w
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+universe u w
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-variable (V : AdelicVectorBundle.{w} S)
+variable (V : AdelicVectorBundle S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]

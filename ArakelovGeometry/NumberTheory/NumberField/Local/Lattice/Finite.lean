@@ -30,9 +30,9 @@ noncomputable section
 
 namespace ArakelovGeometry.AdelicStructure
 
-universe u v
+universe u
 
-variable {K : Type u} [Field K] [NumberField K] (S : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] [NumberField K] (S : AdelicStructure K)
 
 /-- Actual finite-prime classification and the proved prime localization make
 the intrinsic rational local coefficient ring Noetherian. -/
@@ -49,9 +49,9 @@ namespace ArakelovGeometry.NormFamily
 
 open AdelicStructure
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] [NumberField K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] [NumberField K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- One produced nonzero actual integer uniformly bounds the actual completed

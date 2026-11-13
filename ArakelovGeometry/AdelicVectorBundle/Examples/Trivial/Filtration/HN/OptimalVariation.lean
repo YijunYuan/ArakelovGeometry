@@ -62,7 +62,7 @@ namespace ArakelovGeometry.AdelicVectorBundle
 
 variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
   [FiniteDimensional K E] {S : AdelicStructure K} [S.IsProper]
-  (V : AdelicVectorBundle.{u} S)
+  (V : AdelicVectorBundle S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
@@ -439,7 +439,7 @@ variable {K E F Q ι κ : Type*} [Field K]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
   [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
   [Finite ι] [Finite κ] {S : AdelicStructure K} [S.IsProper]
-  {V : AdelicVectorBundle.{u} S} {Z : AdelicVectorBundle S}
+  {V : AdelicVectorBundle S} {Z : AdelicVectorBundle S}
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian] [hZ : Z.toNormFamily.IsHermitian]
@@ -537,12 +537,10 @@ open Submodule
 
 section BinaryAssembly
 
-universe u
-
 variable {K : Type*} [Field K] {Q : Type*}
   [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
   {S : AdelicStructure K} [S.IsProper]
-  (V : AdelicVectorBundle.{u} S) (Z : AdelicVectorBundle S)
+  (V : AdelicVectorBundle S) (Z : AdelicVectorBundle S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian] [hZ : Z.toNormFamily.IsHermitian]

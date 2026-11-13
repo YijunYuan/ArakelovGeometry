@@ -25,11 +25,18 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry.NormFamily
 
+-- Prefer the field and algebra structures when forming completed tensor products.
+attribute [local instance 50] UniformSpace.Completion.commRing
+  UniformSpace.Completion.ring UniformSpace.Completion.instModule
+  UniformSpace.Completion.instAddCommGroup
+attribute [local irreducible] determinantTensorEquivCompleted exteriorBaseChangeEquiv
+  projectiveTensorPair mixedTensorPair determinant
+
 noncomputable section
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -43,7 +50,7 @@ theorem projectiveTensorPair_determinant_norm_smul_wedge_le
     (ξ.projectiveTensorPair η).determinant.norm ω
       ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion (E ⊗[K] F)
         (Module.finrank K (E ⊗[K] F))).symm
-        (determinantTensorEquivCompleted K (S.ϕ ω).Completion E F
+        ((determinantTensorEquivCompleted K (S.ϕ ω).Completion E F).toFun
           ((⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K F)),
             a • exteriorPower.ιMulti (S.ϕ ω).Completion (Module.finrank K E) x)
             ⊗ₜ[(S.ϕ ω).Completion]
@@ -51,8 +58,8 @@ theorem projectiveTensorPair_determinant_norm_smul_wedge_le
               b • exteriorPower.ιMulti (S.ϕ ω).Completion (Module.finrank K F) y)))) ≤
       (‖a‖ * ∏ i, ξ.norm ω (x i)) ^ Module.finrank K F *
         (‖b‖ * ∏ j, η.norm ω (y j)) ^ Module.finrank K E := by
-  simp only [MultilinearMap.map_smul_univ, Finset.prod_const, Finset.card_univ,
-    Fintype.card_fin, TensorProduct.smul_tmul_smul, LinearEquiv.map_smul,
+  simp only [LinearEquiv.toFun_eq_coe, MultilinearMap.map_smul_univ, Finset.prod_const,
+    Finset.card_univ, Fintype.card_fin, TensorProduct.smul_tmul_smul, LinearEquiv.map_smul,
     norm_smul, norm_mul, norm_pow]
   calc
     _ ≤ (‖a‖ ^ Module.finrank K F * ‖b‖ ^ Module.finrank K E) *
@@ -72,7 +79,7 @@ theorem projectiveTensorPair_determinant_norm_le
     (ξ.projectiveTensorPair η).determinant.norm ω
       ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion (E ⊗[K] F)
         (Module.finrank K (E ⊗[K] F))).symm
-        (determinantTensorEquivCompleted K (S.ϕ ω).Completion E F
+        ((determinantTensorEquivCompleted K (S.ϕ ω).Completion E F).toFun
           ((⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K F)), z) ⊗ₜ[(S.ϕ ω).Completion]
             (⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K E)), t)))) ≤
       ξ.determinant.norm ω
@@ -92,7 +99,7 @@ theorem projectiveTensorPair_determinant_norm_le
     (ξ.projectiveTensorPair η).determinant.norm ω
       ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion (E ⊗[K] F)
         (Module.finrank K (E ⊗[K] F))).symm
-        (determinantTensorEquivCompleted K (S.ϕ ω).Completion E F
+        ((determinantTensorEquivCompleted K (S.ϕ ω).Completion E F).toFun
           ((⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K F)), z) ⊗ₜ[(S.ϕ ω).Completion]
             (⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K E)), t))))
   change q z t ≤ C ^ Module.finrank K F * D ^ Module.finrank K E
@@ -140,7 +147,7 @@ theorem mixedTensorPair_determinant_norm_le
     (ξ.mixedTensorPair η).determinant.norm ω
       ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion (E ⊗[K] F)
         (Module.finrank K (E ⊗[K] F))).symm
-        (determinantTensorEquivCompleted K (S.ϕ ω).Completion E F
+        ((determinantTensorEquivCompleted K (S.ϕ ω).Completion E F).toFun
           ((⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K F)), z) ⊗ₜ[(S.ϕ ω).Completion]
             (⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K E)), t)))) ≤
       ξ.determinant.norm ω

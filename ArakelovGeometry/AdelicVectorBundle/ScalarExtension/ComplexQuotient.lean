@@ -33,9 +33,9 @@ open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry.NormFamily
 
-universe u v w wE wF
+universe u w wE wF
 variable {K : Type u} [Field K] {L : Type w} [Field L] [Algebra K L]
-  [Algebra.IsAlgebraic K L] {S : AdelicStructure.{u, v} K}
+  [Algebra.IsAlgebraic K L] {S : AdelicStructure K}
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type wF} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -102,6 +102,7 @@ private theorem dual_norm_congr_at_place
   rw [η.dual_norm_eq_sSup, θ.dual_norm_eq_sSup]
   simp only [hn]
 
+attribute [local irreducible] scalarExtension pushforward dual in
 /-- Ordinary extension commutes with every actual quotient on the whole
 completed fibre at every place over a complexified normalized base. -/
 theorem scalarExtension_pushforward_norm_eq_of_sqrt_neg_one (ξ : NormFamily S E)

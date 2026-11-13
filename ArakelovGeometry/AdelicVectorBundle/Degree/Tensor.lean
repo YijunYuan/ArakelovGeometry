@@ -95,9 +95,9 @@ theorem determinantTensorEquiv_tprod_ne_zero
 
 end Algebra
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -119,7 +119,7 @@ theorem mixedTensorPair_determinant_norm_rational_le
       ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] s))
     (exteriorBaseChangeEquiv K (S.ϕ ω).Completion F (Module.finrank K F)
       ((1 : (S.ϕ ω).Completion) ⊗ₜ[K] t))
-  simpa only [determinantTensorEquivCompleted_tprod_one_tmul,
+  simpa only [LinearEquiv.toFun_eq_coe, determinantTensorEquivCompleted_tprod_one_tmul,
     LinearEquiv.symm_apply_apply] using h
 
 /-- The actual tensor determinant log norm satisfies the rank-weighted
@@ -150,7 +150,7 @@ namespace AdelicVectorBundle
 /-- The corrected source tensor degree bound on the actual binary mixed tensor.
 All ranks are allowed; the source's asserted general equality is false. -/
 theorem rank_mul_degree_add_rank_mul_degree_le_degree_mixedTensorPair [S.IsProper]
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     (Module.finrank K W : ℝ) * V.degree +

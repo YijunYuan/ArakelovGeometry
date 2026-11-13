@@ -29,9 +29,9 @@ open scoped BigOperators
 
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Degree minus the actual global capital discrepancy is bounded by the

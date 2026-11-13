@@ -25,9 +25,9 @@ namespace ArakelovGeometry.AdelicStructure
 open MeasureTheory AbsoluteValue
 open scoped ENNReal
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] (AS : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] (AS : AdelicStructure K)
 variable (L : Type w) [Field L] [Algebra K L]
 
 /-- The parameter space for an extension of an adelic structure from `K` to an extension field
@@ -54,17 +54,17 @@ theorem ext {x y : ParameterSpaceExtension AS L} (hbase : x.base = y.base) (habv
   simp_all
 
 /-- The projection `Ω_L → Ω_K`. -/
-def proj {AS : AdelicStructure.{u, v} K} {L : Type w} [Field L] [Algebra K L]
+def proj {AS : AdelicStructure K} {L : Type w} [Field L] [Algebra K L]
     (x : ParameterSpaceExtension AS L) : AS.Ω :=
   x.base
 
 /-- The parameter map `Ω_L → M_L`. -/
-def ϕ {AS : AdelicStructure.{u, v} K} {L : Type w} [Field L] [Algebra K L]
+def ϕ {AS : AdelicStructure K} {L : Type w} [Field L] [Algebra K L]
     (x : ParameterSpaceExtension AS L) : AbsoluteValue L ℝ :=
   x.abv
 
 /-- The fibre of the projection above a base point `ω`. -/
-def fiber {AS : AdelicStructure.{u, v} K} (L : Type w) [Field L] [Algebra K L]
+def fiber {AS : AdelicStructure K} (L : Type w) [Field L] [Algebra K L]
     (ω : AS.Ω) : Set (ParameterSpaceExtension AS L) :=
   {x | proj x = ω}
 

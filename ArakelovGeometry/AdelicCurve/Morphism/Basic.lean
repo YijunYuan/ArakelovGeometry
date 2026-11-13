@@ -28,7 +28,7 @@ namespace ArakelovGeometry.AdelicStructure
 
 open MeasureTheory
 
-universe u₁ v₁ u₂ v₂ u₃ v₃ u₄ v₄
+universe u₁ u₂ u₃ u₄
 
 variable {K : Type u₁} {L : Type u₂} {M : Type u₃} {N : Type u₄}
   [Field K] [Field L] [Field M] [Field N]
@@ -36,7 +36,7 @@ variable {K : Type u₁} {L : Type u₂} {M : Type u₃} {N : Type u₄}
 /-- A morphism of adelic structures, with all three data and all compatibilities of
 Chen–Moriwaki, Definition 3.7.1. The direction of the field map is opposite to
 the direction of the map on parameter spaces. -/
-structure Hom (C : AdelicStructure.{u₁, v₁} K) (D : AdelicStructure.{u₂, v₂} L) where
+structure Hom (C : AdelicStructure K) (D : AdelicStructure L) where
   /-- The homomorphism of underlying fields. -/
   fieldMap : L →+* K
   /-- The map of parameter spaces. -/
@@ -59,8 +59,8 @@ scoped infixr:10 " ⟶ " => Hom
 
 namespace Hom
 
-variable {C : AdelicStructure.{u₁, v₁} K} {D : AdelicStructure.{u₂, v₂} L}
-  {E : AdelicStructure.{u₃, v₃} M} {F : AdelicStructure.{u₄, v₄} N}
+variable {C : AdelicStructure K} {D : AdelicStructure L}
+  {E : AdelicStructure M} {F : AdelicStructure N}
 
 /-- Equality of all three data determines a morphism. -/
 @[ext]
@@ -111,7 +111,7 @@ theorem integral_comp (f : C ⟶ D) {g : D.Ω → ℝ} (hg : Integrable g D.v) :
     (integral_map f.measurable_baseMap.aemeasurable hm).symm
 
 /-- The identity morphism. -/
-noncomputable def id (C : AdelicStructure.{u₁, v₁} K) : C ⟶ C where
+noncomputable def id (C : AdelicStructure K) : C ⟶ C where
   fieldMap := RingHom.id K
   baseMap := _root_.id
   measurePreserving := MeasurePreserving.id C.v
@@ -165,16 +165,16 @@ namespace ArakelovGeometry.AdelicCurve
 
 open MeasureTheory
 
-universe u₁ v₁ u₂ v₂ u₃ v₃ u₄ v₄
+universe u₁ u₂ u₃ u₄
 
 /-- Morphisms of bundled adelic curves are morphisms of their adelic structures. -/
-abbrev Hom (C : AdelicCurve.{u₁, v₁}) (D : AdelicCurve.{u₂, v₂}) :=
+abbrev Hom (C : AdelicCurve) (D : AdelicCurve) :=
   AdelicStructure.Hom C.AS D.AS
 
 namespace Hom
 
-variable {C : AdelicCurve.{u₁, v₁}} {D : AdelicCurve.{u₂, v₂}}
-  {E : AdelicCurve.{u₃, v₃}} {F : AdelicCurve.{u₄, v₄}}
+variable {C : AdelicCurve} {D : AdelicCurve}
+  {E : AdelicCurve} {F : AdelicCurve}
 
 /-- Equality of all three data determines a bundled morphism. -/
 theorem ext {f g : Hom C D} (hfield : f.fieldMap = g.fieldMap)
@@ -210,7 +210,7 @@ theorem integral_comp (f : Hom C D) {g : D.Ω → ℝ} (hg : Integrable g D.v) :
   AdelicStructure.Hom.integral_comp f hg
 
 /-- The identity morphism of a bundled curve. -/
-noncomputable def id (C : AdelicCurve.{u₁, v₁}) : Hom C C :=
+noncomputable def id (C : AdelicCurve) : Hom C C :=
   AdelicStructure.Hom.id C.AS
 
 /-- Composition of bundled morphisms. -/
@@ -234,7 +234,7 @@ theorem pullback_comp (g : Hom D E) (f : Hom C D) (h : Lp ℝ 1 E.v) :
 end Hom
 
 /-- Adelic curves and the morphisms of Definition 3.7.1 form a category. -/
-noncomputable instance category : CategoryTheory.Category AdelicCurve.{u₁, v₁} where
+noncomputable instance category : CategoryTheory.Category AdelicCurve where
   Hom := Hom
   id := Hom.id
   comp f g := g.comp f

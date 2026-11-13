@@ -32,13 +32,17 @@ line then proves the actual Hermitian determinant isometry in every rank.
 
 open scoped TensorProduct
 
+attribute [local instance 50] UniformSpace.Completion.instModule
+attribute [local irreducible] ArakelovGeometry.completedScalarExtensionEquiv
+  ArakelovGeometry.exteriorBaseChangeEquiv ArakelovGeometry.determinantScalarExtensionEquiv
+
 namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w wE
+universe u w wE
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {L : Type w} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
@@ -84,11 +88,13 @@ end ArakelovGeometry
 
 namespace ArakelovGeometry.NormFamily
 
+attribute [local irreducible] hermitianScalarExtension scalarExtension determinant
+
 noncomputable section
 
-universe u v w wE
+universe u w wE
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {L : Type w} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (ξ : NormFamily S E)
@@ -255,7 +261,7 @@ theorem hermitianScalarExtension_determinant_norm_completedBasis
   have hv := hη.determinant_norm_completedBasis_eq_one η x c hbound.1 hbound.2
   have hvq := (hq _).trans hv
   change q _ = 1
-  convert hvq using 1
+  exact hvq
 
 /-- The actual Hermitian determinant norm of a transported original
 orthonormal determinant generator is one. Canonical completed exterior
@@ -352,7 +358,7 @@ theorem hermitianScalarExtension_determinant_norm_eq_scalarExtension
     let w := A ((1 : x.abv.Completion) ⊗ₜ[(S.ϕ x.base).Completion] U (fun i => b i))
     have hH : qH w = 1 := by
       have h := hermitianScalarExtension_determinant_norm_orthonormalBasis ξ x hx b
-      convert h using 1
+      exact h
     have hbU : ξ.determinant.norm x.base (U (fun i => b i)) = 1 := by
       convert hb using 1
     have hO_le : qO w ≤ 1 :=

@@ -32,7 +32,7 @@ open NumberFieldInvertibleGeneric (genericInclusion genericImage genericImage_fu
 universe u
 variable {K E : Type u} [Field K] [NumberField K]
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle.{u} (normalizedNumberFieldAdelicStructure K))
+  (V : AdelicVectorBundle (normalizedNumberFieldAdelicStructure K))
   [hV : V.toNormFamily.IsHermitian]
   [hpure : V.toNormFamily.IsPureAtFinitePlaces]
 

@@ -30,8 +30,8 @@ namespace ArakelovGeometry
 
 attribute [local instance] Classical.propDecidable
 
-universe u v w
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u w
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E]
 
 namespace NormFamily

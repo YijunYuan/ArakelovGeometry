@@ -29,9 +29,9 @@ namespace ArakelovGeometry.AdelicStructure.ParameterSpaceExtension
 open MeasureTheory AbsoluteValue
 open scoped ENNReal
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] (AS : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] (AS : AdelicStructure K)
 variable (L : Type w) [Field L] [Algebra K L]
 
 variable [FiniteDimensional K L] [_s : Algebra.IsSeparable K L]

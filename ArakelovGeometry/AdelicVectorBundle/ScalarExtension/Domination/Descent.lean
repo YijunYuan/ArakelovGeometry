@@ -32,9 +32,9 @@ noncomputable section
 
 namespace ArakelovGeometry
 
-universe u v w wE
+universe u w wE
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {L : Type w} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
 
 /-- Algebraic fibre integration descends an integrable upper envelope,

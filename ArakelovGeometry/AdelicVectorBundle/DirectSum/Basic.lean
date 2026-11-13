@@ -33,9 +33,9 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
 variable {E : Type w} [AddCommGroup E] [Module K E]
 variable {F : Type w'} [AddCommGroup F] [Module K F]
 

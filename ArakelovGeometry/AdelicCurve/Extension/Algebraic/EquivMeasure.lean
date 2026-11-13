@@ -21,8 +21,8 @@ fibre probability. Disintegration then transports the actual total measure.
 namespace ArakelovGeometry.AdelicStructure.Algebraic
 open MeasureTheory
 open scoped ENNReal
-universe u v wL wM
-variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
+universe u wL wM
+variable {K : Type u} [Field K] (S : AdelicStructure K)
   {L : Type wL} [Field L] [Algebra K L]
   {M : Type wM} [Field M] [Algebra K M]
 

@@ -23,10 +23,10 @@ open MeasureTheory Filter
 
 namespace ArakelovGeometry.AdelicDivisor
 
-universe u v u' v'
+universe u u'
 
 variable {K : Type u} [Field K] {L : Type u'} [Field L]
-  {C : AdelicStructure.{u, v} K} {D : AdelicStructure.{u', v'} L}
+  {C : AdelicStructure K} {D : AdelicStructure L}
   (α : AdelicStructure.Hom C D)
 
 /-- Pullback of divisors is the canonical `L¹` linear isometry. -/

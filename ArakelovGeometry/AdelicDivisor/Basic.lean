@@ -22,16 +22,16 @@ open MeasureTheory Filter
 
 namespace ArakelovGeometry
 
-universe u v
+universe u
 
 variable {K : Type u} [Field K]
 
 /-- The actual real `L¹` space of adelic divisors, modulo equality almost everywhere. -/
-abbrev AdelicDivisor (S : AdelicStructure.{u, v} K) := Lp ℝ 1 S.v
+abbrev AdelicDivisor (S : AdelicStructure K) := Lp ℝ 1 S.v
 
 namespace AdelicDivisor
 
-variable (S : AdelicStructure.{u, v} K)
+variable (S : AdelicStructure K)
 
 /-- Completeness uses the canonical `L¹` structure and requires no finiteness
 or sigma-finiteness assumption on the adelic measure. -/

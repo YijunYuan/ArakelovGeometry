@@ -30,9 +30,9 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry
 
-universe u v w wι wκ
+universe u w wι wκ
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
 
 /-- Enlarging the rational subfield retains its actual density in a completion. -/
 theorem AdelicStructure.IsDenseSubfieldAt.mono {K₀ K₁ : Subfield K} {ω : S.Ω}

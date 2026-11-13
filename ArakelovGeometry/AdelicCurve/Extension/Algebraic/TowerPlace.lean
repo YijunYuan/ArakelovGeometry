@@ -20,13 +20,13 @@ the scalar-tower identity. This construction is independent of vector bundles.
 
 namespace ArakelovGeometry
 
-universe u v w
+universe u w
 
 variable {K : Type u} [Field K] {L : Type w} [Field L] [Algebra K L]
 
 /-- The direct extension place attached to a place in a successive field
 extension. Its absolute value is unchanged. -/
-def scalarExtensionTowerPlace {S : AdelicStructure.{u, v} K}
+def scalarExtensionTowerPlace {S : AdelicStructure K}
     [Algebra.IsAlgebraic K L] {M : Type*} [Field M]
     [Algebra K M] [Algebra L M] [IsScalarTower K L M]
     (x : AdelicStructure.ParameterSpaceExtension (S.algebraicExtension L) M) :

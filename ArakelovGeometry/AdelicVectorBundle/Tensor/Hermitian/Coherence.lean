@@ -75,9 +75,9 @@ namespace NormFamily
 
 section BinaryCoherence
 
-universe u₁ v₁ w₁ wF wG
+universe u₁ w₁ wF wG
 
-variable {K : Type u₁} [Field K] {S : AdelicStructure.{u₁, v₁} K}
+variable {K : Type u₁} [Field K] {S : AdelicStructure K}
   {E : Type w₁} {F : Type wF} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 

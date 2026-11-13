@@ -27,11 +27,11 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w wι
+universe u w wι
 
 noncomputable section
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
 
 /-- Norm families on a line agree if they agree on one rational generator. -/
 theorem eq_of_finrank_one_norm_rational_eq

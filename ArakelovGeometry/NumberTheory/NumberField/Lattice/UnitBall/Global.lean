@@ -26,7 +26,7 @@ open scoped NumberField TensorProduct BigOperators
 
 namespace ArakelovGeometry
 
-universe u v w
+universe u w
 
 variable {K : Type u} [Field K] {E : Type w} [AddCommGroup E] [Module K E]
 
@@ -46,7 +46,7 @@ theorem integralVector_smul (a : 𝓞 K) (x : E) :
 
 namespace NormFamily
 
-variable {S : AdelicStructure.{u, v} K}
+variable {S : AdelicStructure K}
 
 /-- The literal intersection of actual completed rational unit balls over
 every nonarchimedean place. -/

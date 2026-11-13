@@ -26,8 +26,8 @@ identify genuine quotient degrees at a produced complexifying finite stage.
 open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
-universe u v wL wE
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u wL wE
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
@@ -49,6 +49,8 @@ theorem rank_quotient_scalarExtension_finiteStage
   dsimp only
   exact finrank_eq_of_baseChange_equiv (finiteStageQuotientEquiv (L := L) F B)
 
+attribute [local irreducible] NormFamily.scalarExtension NormFamily.quotient
+  NormFamily.determinant in
 /-- The genuine native closure quotient has its actual complexifying
 finite-stage degree through the canonical completed quotient isometry. -/
 theorem degree_quotient_scalarExtension_finiteStage [S.IsProper]

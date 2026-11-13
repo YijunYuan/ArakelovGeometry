@@ -29,9 +29,9 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v
+universe u
 
-variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] (S : AdelicStructure K)
 
 /-- The scalar line with the prescribed absolute values. -/
 noncomputable abbrev scalarLine : AdelicVectorBundle S := by

@@ -31,9 +31,9 @@ open MeasureTheory Filter
 
 namespace ArakelovGeometry
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 namespace NormFamily
@@ -109,7 +109,7 @@ theorem upperIntegralDist_congr {ξ ξ' η η' : NormFamily S E}
 end NormFamily
 
 /-- The actual strongly dominated norm families on a finite-dimensional vector space. -/
-abbrev StronglyDominatedNormFamily (S : AdelicStructure.{u, v} K) (E : Type w)
+abbrev StronglyDominatedNormFamily (S : AdelicStructure K) (E : Type w)
     [AddCommGroup E] [Module K E] [FiniteDimensional K E] :=
   {ξ : NormFamily S E // ξ.IsStronglyDominated}
 
@@ -148,7 +148,7 @@ theorem dist_eq_zero_iff (ξ η : StronglyDominatedNormFamily S E) :
   exact EReal.coe_eq_zero.symm
 
 /-- The canonical metric quotient by almost-everywhere equality of actual fibres. -/
-abbrev AEQuotient (S : AdelicStructure.{u, v} K) (E : Type w)
+abbrev AEQuotient (S : AdelicStructure K) (E : Type w)
     [AddCommGroup E] [Module K E] [FiniteDimensional K E]
     [Fact (S.v S.Ωinf < ⊤)] :=
   SeparationQuotient (StronglyDominatedNormFamily S E)

@@ -29,11 +29,11 @@ namespace ArakelovGeometry.AdelicVectorBundle
 
 noncomputable section
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
-  (V : AdelicVectorBundle.{w} S) (φ : S.Ω → ℝ) (hm : Measurable φ) (hi : Integrable φ S.v)
+  (V : AdelicVectorBundle S) (φ : S.Ω → ℝ) (hm : Measurable φ) (hi : Integrable φ S.v)
   [hS : S.HasMeasurableBase]
 
 /-- The actual quotient bundle commutes with exponential rescaling, using

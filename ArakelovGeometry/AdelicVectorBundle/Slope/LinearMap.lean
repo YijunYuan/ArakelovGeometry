@@ -29,9 +29,9 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -130,8 +130,8 @@ variable [S.IsProper]
 
 /-- Dividing the determinant degree-map estimate by the common positive rank
 gives the mean-slope estimate, including infinite map height. -/
-theorem slope_le_slope_add_mapHeight (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S)
+theorem slope_le_slope_add_mapHeight (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (e : V ≃ₗ[K] W) (hr : 0 < Module.finrank K V) :
@@ -155,7 +155,7 @@ omit [S.IsProper] in
 /-- Pointwise comparison of the actual completed operator norms gives the
 comparison of the stipulated lower-integral heights. -/
 theorem mapHeight_le_of_operatorNorm_le
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     (P : AdelicVectorBundle S) (Q : AdelicVectorBundle S)
     (f : V →ₗ[K] W) (g : P →ₗ[K] Q) (hf : f ≠ 0) (hg : g ≠ 0)
     (hn : ∀ ω, P.toNormFamily.operatorNorm Q.toNormFamily ω g ≤
@@ -170,8 +170,8 @@ theorem mapHeight_le_of_operatorNorm_le
 omit [S.IsProper] in
 /-- The height of an actual restricted nonzero map is bounded by the height
 of its ambient map. -/
-theorem mapHeight_restriction_le (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S)
+theorem mapHeight_restriction_le (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     (f : V →ₗ[K] W) (hf : f ≠ 0) (U : Submodule K V) (T : Submodule K W)
     (g : U →ₗ[K] T) (hg : g ≠ 0) (hc : T.subtype.comp g = f.comp U.subtype) :
@@ -185,8 +185,8 @@ theorem mapHeight_restriction_le (V : AdelicVectorBundle.{w} S)
 omit [S.IsProper] in
 /-- The height of an actual compatible quotient map is bounded by its
 ambient map height. -/
-theorem mapHeight_quotient_le (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S)
+theorem mapHeight_quotient_le (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     (f : V →ₗ[K] W) (hf : f ≠ 0) (U : Submodule K V) (T : Submodule K W)
     (g : (V ⧸ U) →ₗ[K] (W ⧸ T)) (hg : g ≠ 0)
@@ -201,7 +201,7 @@ theorem mapHeight_quotient_le (V : AdelicVectorBundle.{w} S)
 /-- Source Proposition4.3.31(1), including zero injective maps and infinite
 height. Each source subspace is compared with its actual range restriction. -/
 theorem maximalSlope_le_maximalSlope_add_mapHeight_of_injective
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) (hf : Function.Injective f) :
@@ -227,7 +227,7 @@ theorem maximalSlope_le_maximalSlope_add_mapHeight_of_injective
 /-- A nonzero surjection compares the source minimal slope with the actual
 target mean slope. Its canonical source quotient norm is constructed here. -/
 theorem minimalSlope_le_slope_add_mapHeight_of_surjective
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) (hs : Function.Surjective f) (hr : 0 < Module.finrank K W) :
@@ -252,7 +252,7 @@ theorem minimalSlope_le_slope_add_mapHeight_of_surjective
 /-- Source Proposition4.3.31(3), using the nonzero actual range and the
 canonical source quotient. Infinite map heights are retained. -/
 theorem minimalSlope_le_maximalSlope_add_mapHeight_of_ne_zero
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) (hf : f ≠ 0) :
@@ -277,7 +277,7 @@ theorem minimalSlope_le_maximalSlope_add_mapHeight_of_ne_zero
 finite-height premise is used to translate the actual quotient-mean infimum;
 the infinite-height case additionally requires the slope-finiteness producer. -/
 theorem minimalSlope_le_minimalSlope_add_mapHeight_of_surjective_of_ne_top
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (f : V →ₗ[K] W) (hs : Function.Surjective f) (hf : f ≠ 0)

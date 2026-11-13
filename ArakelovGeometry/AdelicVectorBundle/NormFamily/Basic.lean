@@ -35,13 +35,13 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry
 
-universe u v w
+universe u w
 
 variable {K : Type u} [Field K]
 
 /-- A family of norms on the completed scalar extensions of a vector space.
 This is the norm-family datum of §4.1.1, without measurability or domination. -/
-structure NormFamily (S : AdelicStructure.{u, v} K) (E : Type w)
+structure NormFamily (S : AdelicStructure K) (E : Type w)
     [AddCommGroup E] [Module K E] where
   /-- The norm on each completed fibre, using Mathlib's scalar-compatible seminorm. -/
   norm : (ω : S.Ω) → Seminorm (S.ϕ ω).Completion ((S.ϕ ω).Completion ⊗[K] E)
@@ -50,7 +50,7 @@ structure NormFamily (S : AdelicStructure.{u, v} K) (E : Type w)
 
 namespace NormFamily
 
-variable {S : AdelicStructure.{u, v} K} {E : Type w} [AddCommGroup E] [Module K E]
+variable {S : AdelicStructure K} {E : Type w} [AddCommGroup E] [Module K E]
 
 /-- Interchanging tensor factors respects multiplication on the completed-field factor.
 The right-factor action is expressed by `TensorProduct.map`, so no competing scalar

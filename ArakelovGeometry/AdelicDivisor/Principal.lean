@@ -24,9 +24,9 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry.AdelicDivisor
 
-universe u v
+universe u
 
-variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] (S : AdelicStructure K)
 
 /-- The divisor associated with a field unit is the class of its negative
 logarithmic absolute value. Integrability is supplied by the adelic structure. -/

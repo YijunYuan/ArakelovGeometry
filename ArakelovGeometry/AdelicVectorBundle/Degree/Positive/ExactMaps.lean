@@ -28,9 +28,9 @@ of the exactness predicate; zero ends and infinite capital discrepancy remain.
 
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w w' w''
+universe u w w' w''
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
   {G : Type w''} [AddCommGroup G] [Module K G] [FiniteDimensional K G]
@@ -38,7 +38,7 @@ variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
 /-- Source (4.36)'s lower bound for the original end space of any actual
 norm-exact sequence, including the zero end. -/
 theorem positiveDegree_left_le_of_isExactSequence
-    (V : AdelicVectorBundle.{w} S) (L : AdelicVectorBundle.{w'} S) (R : AdelicVectorBundle.{w''} S)
+    (V : AdelicVectorBundle S) (L : AdelicVectorBundle S) (R : AdelicVectorBundle S)
     (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
     [hS : S.HasMeasurableBase]
@@ -50,7 +50,7 @@ theorem positiveDegree_left_le_of_isExactSequence
 /-- Source (4.36)'s capital-discrepancy upper bound for arbitrary original
 exact maps. The genuine capital discrepancy is allowed to be infinite. -/
 theorem positiveDegree_le_add_majorantDiscrepancy_of_isExactSequence
-    (V : AdelicVectorBundle.{w} S) (L : AdelicVectorBundle.{w'} S) (R : AdelicVectorBundle.{w''} S)
+    (V : AdelicVectorBundle S) (L : AdelicVectorBundle S) (R : AdelicVectorBundle S)
     (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
     [hS : S.HasMeasurableBase]
@@ -64,7 +64,7 @@ theorem positiveDegree_le_add_majorantDiscrepancy_of_isExactSequence
 /-- Source (4.37) for arbitrary exact maps, with the actual determinant
 discrepancy and the original outside-infinity ultrametric hypothesis. -/
 theorem positiveDegree_le_add_determinantDiscrepancy_of_isExactSequence
-    (V : AdelicVectorBundle.{w} S) (L : AdelicVectorBundle.{w'} S) (R : AdelicVectorBundle.{w''} S)
+    (V : AdelicVectorBundle S) (L : AdelicVectorBundle S) (R : AdelicVectorBundle S)
     (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
     [hS : S.HasMeasurableBase]
@@ -79,7 +79,7 @@ theorem positiveDegree_le_add_determinantDiscrepancy_of_isExactSequence
 /-- Actual Hermitian norm-exact sequences have the same upper bound with
 zero discrepancy, on the original end spaces. -/
 theorem positiveDegree_le_add_of_isExactSequence_isHermitian
-    (V : AdelicVectorBundle.{w} S) (L : AdelicVectorBundle.{w'} S) (R : AdelicVectorBundle.{w''} S)
+    (V : AdelicVectorBundle S) (L : AdelicVectorBundle S) (R : AdelicVectorBundle S)
     (i : L →ₗ[K] V) (p : V →ₗ[K] R)
     (hx : NormFamily.IsExactSequence L.toNormFamily V.toNormFamily R.toNormFamily i p)
     [hS : S.HasMeasurableBase]

@@ -29,9 +29,9 @@ noncomputable section
 
 namespace ArakelovGeometry.AdelicStructure
 
-universe u v
+universe u
 
-variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] (S : AdelicStructure K)
 
 /-- The whole rational field is genuinely dense in every actual scalar completion. -/
 theorem isDenseSubfieldAt_top (ω : S.Ω) : S.IsDenseSubfieldAt (⊤ : Subfield K) ω := by
@@ -98,9 +98,9 @@ end ArakelovGeometry.AdelicStructure
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E]
 
 /-- The literal completed local unit ball of the actual fibre norm. -/
@@ -199,6 +199,10 @@ def rationalUnitBallCompletedTensorMap (ξ : NormFamily S E) (ω : S.Ω)
       ξ.completedUnitBallModule ω hω := by
   letI := ξ.completedUnitBall_rationalScalarTower ω hω
   exact (ξ.rationalUnitBallCompletionMap ω hω).liftBaseChange (S.completedLocalRing ω hω)
+
+local instance (ξ : NormFamily S E) (ω : S.Ω) (hω : ω ∈ S.Ωfin) [ξ.IsUltrametric] :
+    SMul (S.completedLocalRing ω hω) (ξ.completedUnitBallModule ω hω) :=
+  (ξ.completedUnitBallModule ω hω).module.toSMul
 
 @[simp]
 theorem rationalUnitBallCompletedTensorMap_tmul (ξ : NormFamily S E) (ω : S.Ω)

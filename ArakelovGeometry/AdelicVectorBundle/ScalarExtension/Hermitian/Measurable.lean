@@ -33,9 +33,9 @@ noncomputable section
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w wE
+universe u w wE
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {L : Type w} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   (ξ : NormFamily S E)
@@ -117,6 +117,9 @@ theorem hermitianScalarExtensionArchInner_rational_tmul
     complexEmbedding_map_conj τ hτ]
   rfl
 
+attribute [local irreducible] hermitianScalarExtension completedScalarExtensionEquiv
+  ArakelovGeometry.hermitianScalarExtensionSeminorm
+  ArakelovGeometry.hermitianScalarExtensionCore in
 /-- The real diagonal of the embedded defining pairing is exactly the
 square of the existing Hermitian scalar-extension norm. -/
 theorem hermitianScalarExtension_norm_sq_eq_re_archInner
@@ -136,7 +139,10 @@ theorem hermitianScalarExtension_norm_sq_eq_re_archInner
   let := ξ.fiberInnerProductSpace x.val.base ((scalarExtension_mem_Ωinf_iff x.val).mp x.property)
   rw [hermitianScalarExtension_norm_of_infinite ξ x.val x.property,
     complexEmbedding_re τ hτ]
-  exact ArakelovGeometry.hermitianScalarExtensionSeminorm_sq _ _
+  exact ArakelovGeometry.hermitianScalarExtensionSeminorm_sq
+    (stdOrthonormalBasis (S.ϕ x.val.base).Completion
+      ((S.ϕ x.val.base).Completion ⊗[K] E))
+    (completedScalarExtensionEquiv E (S.ϕ x.val.base) x.val.abv x.val.restrict_eq z)
 
 /-- Expanding the actual completed pairing gives measurable rational
 evaluations whenever the extending complex embeddings are measurable. -/

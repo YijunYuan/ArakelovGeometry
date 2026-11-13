@@ -30,8 +30,8 @@ No finite-value minimum or attainment of a supremum is assumed.
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u w
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Actual restricted threshold spans map into the ambient actual threshold span. -/

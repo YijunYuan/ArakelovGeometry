@@ -52,9 +52,9 @@ theorem linearMapOperatorSeminorm_comp_linearIsometryEquiv
 
 namespace NormFamily
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
   (ξ : NormFamily S E)
@@ -69,6 +69,8 @@ def completedPullbackRangeIsometry (f : F →ₗ[K] E) (hf : Function.Injective 
     let := (ξ.pullback f hf).fibreNormedSpace ω
     (S.ϕ ω).Completion ⊗[K] F ≃ₗᵢ[(S.ϕ ω).Completion]
       LinearMap.range (f.baseChange (S.ϕ ω).Completion) := by
+  have : Module.Free K (S.ϕ ω).Completion := Module.Free.of_divisionRing K _
+  have : Module.Flat K (S.ϕ ω).Completion := Module.Flat.of_free
   intro aE nE aF nF
   let := aE
   let := nE

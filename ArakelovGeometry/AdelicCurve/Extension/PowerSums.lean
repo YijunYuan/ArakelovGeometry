@@ -28,8 +28,6 @@ namespace ArakelovGeometry
 open MeasureTheory AbsoluteValue
 open scoped ENNReal
 
-universe u v w
-
 /-- Every power of a member of a finite distinct family is a fixed linear combination
 of consecutive power sums of that family. The coefficients come from the inverse Vandermonde
 matrix. -/

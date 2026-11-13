@@ -33,8 +33,8 @@ open MeasureTheory Filter
 open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
-universe u v w wL
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+universe u w wL
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [Countable S.Ω] [DiscreteMeasurableSpace S.Ω]
 
@@ -167,7 +167,7 @@ theorem absoluteMaximalSlopeOfCountableDiscreteBase_eq_bot_of_finrank_eq_zero
 
 private theorem nativeDiscrete_degree_le_of_dual_basis_norm_bound
     {L : Type wL} [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [IsAlgClosed L]
-    (V : AdelicVectorBundle.{w} S)
+    (V : AdelicVectorBundle S)
     [hN : S.IsArchimedeanNormalized]
     (b : Module.Basis (Fin (Module.finrank L (L ⊗[K] V))) L (L ⊗[K] V))
     (H : (S.algebraicExtension L).Ω → ℝ)

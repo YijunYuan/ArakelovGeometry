@@ -24,8 +24,8 @@ open MeasureTheory
 open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry
-universe u v w w'
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u w w'
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
@@ -68,7 +68,7 @@ namespace AdelicVectorBundle
 /-- Degree of the actual measurable determinant is preserved by an actual
 completed isometry. Target determinant measurability is produced, not assumed. -/
 theorem degreeOfMeasurableDeterminant_eq_of_completed_isometry [S.IsProper]
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S) (e : V ≃ₗ[K] W)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S) (e : V ≃ₗ[K] W)
     [hdet : V.toNormFamily.determinant.IsMeasurable]
     [hN : S.IsArchimedeanNormalized]
     (he : ∀ ω z, W.toNormFamily.norm ω

@@ -63,7 +63,7 @@ theorem exists_valued_scheme_baseChange_lift.{u}
     (v : AbsoluteValue k ℝ) [CompleteSpace (WithAbs v)]
     (vL : AbsoluteValue L ℝ) (vH : AbsoluteValue H ℝ)
     (hL : vL.under k = v) (hH : vH.under k = v)
-    (X : Scheme.{u}) (f : X ⟶ Spec (CommRingCat.of k))
+    (X : Scheme) (f : X ⟶ Spec (CommRingCat.of k))
     (x : Spec (CommRingCat.of H) ⟶ X)
     (hx : x ≫ f = Spec.map (CommRingCat.ofHom (algebraMap k H))) :
     ∃ (i : L →ₐ[k] AlgebraicClosure H) (u : AbsoluteValue (AlgebraicClosure H) ℝ),

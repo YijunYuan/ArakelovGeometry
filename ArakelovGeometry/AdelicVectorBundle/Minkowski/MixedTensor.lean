@@ -68,7 +68,7 @@ theorem minimalSlope_add_maximalSlope_dual_le_half_log_rank (V : AdelicVectorBun
 /-- Actual completed mixed-tensor duality transports the true maximal slope
 through the canonical algebraic dual distribution equivalence. -/
 theorem maximalSlope_dual_mixedTensorPair_eq_injective_dual
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :
     ((V.mixedTensorPair W).dualOfMeasurableBase).maximalSlope =
@@ -134,7 +134,7 @@ theorem minimalSlope_mixedTensorPair_ge_of_minkowski
 /-- A zero left factor has zero tensor rank, so its actual minimum is top.
 This uses no global Minkowski property or positive-rank logarithm. -/
 theorem minimalSlope_mixedTensorPair_eq_top_of_left_finrank_eq_zero
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (hE : Module.finrank K V = 0) :
@@ -144,7 +144,7 @@ theorem minimalSlope_mixedTensorPair_eq_top_of_left_finrank_eq_zero
 
 /-- The opposite zero-factor orientation has the same actual top minimum. -/
 theorem minimalSlope_mixedTensorPair_eq_top_of_right_finrank_eq_zero
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{wF} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized]
     (hF : Module.finrank K W = 0) :

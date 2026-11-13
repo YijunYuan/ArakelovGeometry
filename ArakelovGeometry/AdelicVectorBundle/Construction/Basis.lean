@@ -26,9 +26,9 @@ noncomputable section
 
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] (S : AdelicStructure K)
   (E : Type w) [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {ι : Type*} [Fintype ι] (b : Module.Basis ι K E)
 

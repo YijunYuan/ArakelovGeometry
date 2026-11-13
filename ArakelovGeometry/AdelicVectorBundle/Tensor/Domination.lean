@@ -31,11 +31,11 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w wι wκ
+universe u w wι wκ
 
 noncomputable section
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {ι : Type wι} [Fintype ι] {E : ι → Type w}
   [∀ i, AddCommGroup (E i)] [∀ i, Module K (E i)]
   [∀ i, FiniteDimensional K (E i)]

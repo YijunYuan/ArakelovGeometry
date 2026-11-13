@@ -31,9 +31,9 @@ namespace ArakelovGeometry.AdelicVectorBundle
 
 noncomputable section
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Every actual subspace degree lies below every affine line supplied by
@@ -78,7 +78,7 @@ theorem degree_restrict_le_supportLine_of_semistableFlag
       exact (mul_le_mul_of_nonneg_left (le_max_left _ _) hk0).trans
         (mul_le_mul_of_nonneg_right hkd (le_max_right _ _))
 
-variable (V : AdelicVectorBundle.{w} S)
+variable (V : AdelicVectorBundle S)
   [hS : S.HasMeasurableBase]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]

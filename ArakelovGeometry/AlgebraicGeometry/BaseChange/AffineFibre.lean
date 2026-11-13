@@ -48,7 +48,7 @@ theorem residuePullback_isQuasicoherent (M : (Spec R).Modules) [M.IsQuasicoheren
 
 /-- The actual residue fibre of the pulled-back affine quasi-coherent sheaf
 is the extension of its original fibre along the canonical residue-field map. -/
-def affineResidueFibreBaseChangeIso {X : Scheme.{u}} (f : X ⟶ Spec R)
+def affineResidueFibreBaseChangeIso {X : Scheme} (f : X ⟶ Spec R)
     (M : (Spec R).Modules) [M.IsQuasicoherent] (x : X) :
     residueFibre ((Scheme.Modules.pullback f).obj M) x ≅
       (ModuleCat.extendScalars (f.residueFieldMap x).hom).obj (residueFibre M (f x)) := by

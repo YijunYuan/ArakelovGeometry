@@ -29,8 +29,8 @@ not assert the whole source 4.3.70 intersection-of-sums formula.
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u w
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Actual vector degrees agree under the genuine completed restriction norm. -/

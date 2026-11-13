@@ -32,7 +32,7 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w wE
+universe u w wE
 
 variable {K : Type u} [Field K] {L : Type w} [Field L] [Algebra K L]
   (E : Type wE) [AddCommGroup E] [Module K E]
@@ -119,7 +119,7 @@ theorem completedScalarExtensionEquiv_tower {M : Type*} [Field M]
 namespace NormFamily
 
 variable {E}
-variable {S : AdelicStructure.{u, v} K} [FiniteDimensional K E]
+variable {S : AdelicStructure K} [FiniteDimensional K E]
   (ξ : NormFamily S E)
 
 /-- Projective extension of a fibre norm, transported to the actual fibre

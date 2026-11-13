@@ -25,9 +25,9 @@ noncomputable section
 
 namespace ArakelovGeometry.AdelicStructure
 
-universe u v
+universe u
 
-variable {K : Type u} [Field K] (S : AdelicStructure.{u, v} K)
+variable {K : Type u} [Field K] (S : AdelicStructure K)
 
 /-- The canonical isometric complex embedding of a normalized infinite completion. -/
 def archimedeanComplexEmbedding

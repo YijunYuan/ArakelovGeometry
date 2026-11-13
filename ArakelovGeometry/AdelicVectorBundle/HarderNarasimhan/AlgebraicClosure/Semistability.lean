@@ -30,11 +30,11 @@ noncomputable section
 
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w wL
+universe u w wL
 
 section SourceMeanBridge
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type (max u w)}
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
@@ -99,7 +99,7 @@ end ClosedMean
 
 section ClosedSource
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K} [S.IsProper]
+variable {K : Type u} [Field K] {S : AdelicStructure K} [S.IsProper]
   {E : Type (max u w)} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {L : Type wL} [Field L] [Algebra K L] [PerfectField K]
   [Algebra.IsAlgebraic K L] [IsAlgClosed L]

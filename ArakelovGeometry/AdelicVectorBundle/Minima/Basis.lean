@@ -23,8 +23,8 @@ Attainment at a threshold is distinguished from the supremum defining a minimum.
 noncomputable section
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u w
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- Source Definition 4.3.69's attained-threshold characterization. The source

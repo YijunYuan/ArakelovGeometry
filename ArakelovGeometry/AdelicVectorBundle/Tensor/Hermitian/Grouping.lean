@@ -26,12 +26,12 @@ namespace NormFamily
 
 section Grouping
 
-universe u v w wι
+universe u w wι
 
 attribute [-instance] PiTensorProduct.instSeminormedAddCommGroup
   PiTensorProduct.instNormedSpace
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {I J : Type wι} [Fintype I] [Fintype J] {V : I ⊕ J → Type w}
   [∀ i, AddCommGroup (V i)] [∀ i, Module K (V i)]
   [∀ i, FiniteDimensional K (V i)]

@@ -22,7 +22,7 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry
 
-universe u v w w'
+universe u v w
 
 variable (K : Type u) [Field K] (L : Type v) [Field L] [Algebra K L]
   (E : Type w) [AddCommGroup E] [Module K E] [FiniteDimensional K E]

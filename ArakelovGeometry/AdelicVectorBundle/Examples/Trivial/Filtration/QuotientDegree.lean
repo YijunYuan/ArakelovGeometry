@@ -275,8 +275,6 @@ namespace ArakelovGeometry.NormFamily
 open AdelicStructure Submodule
 open scoped TensorProduct
 
-universe u
-
 variable {K Q ι κ E V : Type*} [Field K]
   [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup V] [Module K V] [FiniteDimensional K V]

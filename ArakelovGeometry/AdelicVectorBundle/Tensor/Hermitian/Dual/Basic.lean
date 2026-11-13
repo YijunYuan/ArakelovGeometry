@@ -169,9 +169,9 @@ end BinaryCoherenceBaseChange
 
 namespace NormFamily
 
-universe u v w w' wι
+universe u w w' wι
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {ι : Type wι} [Fintype ι] {E : ι → Type w}
   [∀ i, AddCommGroup (E i)] [∀ i, Module K (E i)]
   [∀ i, FiniteDimensional K (E i)]
@@ -317,9 +317,9 @@ end NormFamily
 
 namespace NormFamily
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 

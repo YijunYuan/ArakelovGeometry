@@ -28,7 +28,7 @@ noncomputable section
 
 namespace ArakelovGeometry
 
-universe u v w wι
+universe u w wι
 
 variable {K : Type u} [Field K] {L : Type w} [Field L] [Algebra K L]
   {ι : Type wι}
@@ -111,7 +111,7 @@ theorem denseRange_finiteExtensionDenseSubfield (b : Module.Basis ι K L)
   exact ⟨⟨basisSubfieldMap b K₀ c,
     basisSubfieldMap_mem_finiteExtensionDenseSubfield b K₀ c⟩, rfl⟩
 
-variable {S : AdelicStructure.{u, v} K}
+variable {S : AdelicStructure K}
 
 /-- Actual extending places inherit the density of the base subfield in
 the same fixed extension subfield. -/

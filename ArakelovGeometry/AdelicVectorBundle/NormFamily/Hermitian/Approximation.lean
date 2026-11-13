@@ -39,9 +39,9 @@ noncomputable section
 
 namespace ArakelovGeometry.NormFamily
 
-universe u v w wι
+universe u w wι
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E]
   {ι : Type wι} [Fintype ι] [DecidableEq ι]
 
@@ -286,24 +286,25 @@ variable (ξ : NormFamily S E) (b : Module.Basis ι K E)
   (hQ : ∀ (ω : S.Ωinf) (x : (S.ϕ ω.val).Completion ⊗[K] E),
     ξ.norm ω.val x ≤ complexEllipsoidSeminorm b ω.val (σ ω) (hσ ω) (Q ω) x)
 
+attribute [local irreducible] complexEllipsoidSeminorm in
+open Classical in
 /-- Paste separated ellipsoid candidates at infinity with the original finite
 norms. The lower bound proves separation on the actual completed fibres. -/
-def complexEllipsoidFamily : NormFamily S E := by
-  classical
-  refine {
-    norm := fun ω => if hω : ω ∈ S.Ωinf then
+def complexEllipsoidFamily : NormFamily S E where
+  norm ω := if hω : ω ∈ S.Ωinf then
       complexEllipsoidSeminorm b ω (σ ⟨ω, hω⟩) (hσ ⟨ω, hω⟩) (Q ⟨ω, hω⟩)
       else ξ.norm ω
-    norm_eq_zero_iff := fun ω x => ?_ }
-  by_cases hω : ω ∈ S.Ωinf
-  · simp only [dite_eq_left hω]
-    constructor
-    · intro hx
-      apply (ξ.norm_eq_zero_iff ω x).mp
-      exact le_antisymm (by simpa only [hx] using hQ ⟨ω, hω⟩ x) (ξ.norm_nonneg ω x)
-    · rintro rfl
-      exact map_zero _
-  · simpa only [dite_eq_right hω] using ξ.norm_eq_zero_iff ω x
+  norm_eq_zero_iff ω x := by
+    split
+    · rename_i hω
+      constructor
+      · intro hx
+        apply (ξ.norm_eq_zero_iff ω x).mp
+        exact le_antisymm ((hQ ⟨ω, hω⟩ x).trans_eq hx) (ξ.norm_nonneg ω x)
+      · rintro rfl
+        exact (complexEllipsoidSeminorm b ω (σ ⟨ω, hω⟩) (hσ ⟨ω, hω⟩)
+          (Q ⟨ω, hω⟩)).toAddGroupSeminorm.map_zero'
+    · exact ξ.norm_eq_zero_iff ω x
 
 theorem complexEllipsoidFamily_norm_of_mem (ω : S.Ω) (hω : ω ∈ S.Ωinf)
     (x : (S.ϕ ω).Completion ⊗[K] E) :

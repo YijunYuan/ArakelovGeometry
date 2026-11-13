@@ -30,9 +30,9 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 namespace NormFamily
@@ -104,7 +104,7 @@ theorem scaleExp_toNormFamily (V : AdelicVectorBundle S) (φ : S.Ω → ℝ)
       V.toNormFamily.scale (fun ω ↦ Real.exp (φ ω)) (fun _ ↦ Real.exp_pos _) := rfl
 
 /-- Integrating the exact actual determinant rescaling gives its degree shift. -/
-theorem degree_scaleExp [S.IsProper] (V : AdelicVectorBundle.{w} S) (φ : S.Ω → ℝ)
+theorem degree_scaleExp [S.IsProper] (V : AdelicVectorBundle S) (φ : S.Ω → ℝ)
     (hm : Measurable φ) (hi : Integrable φ S.v)
     [hS : S.HasMeasurableBase]
     [hN : S.IsArchimedeanNormalized] :

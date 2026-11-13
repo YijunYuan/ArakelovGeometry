@@ -28,7 +28,7 @@ open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry
 
-universe u v w wE wF
+universe u w wE wF
 
 variable {K : Type u} [Field K] {L : Type w} [Field L] [Algebra K L]
   {E : Type wE} [AddCommGroup E] [Module K E]
@@ -55,7 +55,7 @@ theorem completedScalarExtensionEquiv_baseChange (f : F →ₗ[K] E)
 
 namespace NormFamily
 
-variable {S : AdelicStructure.{u, v} K} (ξ : NormFamily S E)
+variable {S : AdelicStructure K} (ξ : NormFamily S E)
 
 /-- Projective extension is contractive on the entire actual completed
 fibre of a pullback. -/

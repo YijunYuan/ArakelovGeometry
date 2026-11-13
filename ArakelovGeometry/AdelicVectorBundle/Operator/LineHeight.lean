@@ -27,9 +27,9 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {F : Type w'} [AddCommGroup F] [Module K F]
 
@@ -76,8 +76,8 @@ namespace AdelicVectorBundle
 variable [FiniteDimensional K F]
 
 /-- A nonzero map from an adelic line has integrable local height. -/
-theorem integrable_localHeight_of_isLine (V : AdelicVectorBundle.{w} S)
-    (W : AdelicVectorBundle.{w'} S) [hV : V.IsLine]
+theorem integrable_localHeight_of_isLine (V : AdelicVectorBundle S)
+    (W : AdelicVectorBundle S) [hV : V.IsLine]
     (f : {f : V →ₗ[K] W // f ≠ 0}) :
     Integrable (V.toNormFamily.localHeight W.toNormFamily f) S.v := by
   obtain ⟨x, hx⟩ : ∃ x, f.val x ≠ 0 := by
@@ -94,7 +94,7 @@ theorem integrable_localHeight_of_isLine (V : AdelicVectorBundle.{w} S)
 
 /-- The height of a nonzero line map is the source degree minus target degree. -/
 theorem mapHeight_eq_lineDegree_sub [S.IsProper]
-    (V : AdelicVectorBundle.{w} S) (W : AdelicVectorBundle.{w'} S)
+    (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hV : V.IsLine] [hW : W.IsLine] {f : V →ₗ[K] W} (hf : f ≠ 0) :
     V.mapHeight W f = ((V.lineDegree - W.lineDegree : ℝ) : EReal) := by
   obtain ⟨x, hx⟩ : ∃ x, f x ≠ 0 := by

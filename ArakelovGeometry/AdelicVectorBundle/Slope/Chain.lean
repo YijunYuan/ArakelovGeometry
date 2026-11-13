@@ -27,9 +27,9 @@ the extended-real infimum, which is `⊤` for an empty index type.
 
 namespace ArakelovGeometry
 
-universe u v w w'
+universe u w w'
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
 
 section LinearChain
 
@@ -126,7 +126,7 @@ section QuotientComparison
 variable [S.IsProper] {E₁ : Type w} {E₂ : Type w'}
   [AddCommGroup E₁] [Module K E₁] [FiniteDimensional K E₁]
   [AddCommGroup E₂] [Module K E₂] [FiniteDimensional K E₂]
-  (V₁ : AdelicVectorBundle.{w} S) (V₂ : AdelicVectorBundle.{w'} S)
+  (V₁ : AdelicVectorBundle S) (V₂ : AdelicVectorBundle S)
 
 /-- A nonzero induced quotient map bounds the source quotient's minimal
 slope using the height of the original map. -/
@@ -153,7 +153,7 @@ theorem minimalSlope_cokernel_sub_mapHeight_le_quotient_maximalSlope
 
 end QuotientComparison
 
-variable [S.IsProper] {n : ℕ} (V : Fin (n + 1) → AdelicVectorBundle.{w} S)
+variable [S.IsProper] {n : ℕ} (V : Fin (n + 1) → AdelicVectorBundle S)
   (α : ∀ i : Fin n, (V i.castSucc) →ₗ[K] (V i.succ))
 
 /-- Every nonzero actual quotient of the endpoint is bounded by a term

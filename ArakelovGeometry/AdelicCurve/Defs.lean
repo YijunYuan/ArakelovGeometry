@@ -61,7 +61,7 @@ instance instMeasurableSpaceΩ {K : Type*} [Field K] (AS : AdelicStructure K) :
 
 /-- An adelic structure is *proper* if the product formula holds for all nonzero
 elements of its field (Chen–Moriwaki, §3.1). -/
-class IsProper {K : Type u} [Field K] (AS : AdelicStructure.{u, v} K) : Prop where
+class IsProper {K : Type u} [Field K] (AS : AdelicStructure K) : Prop where
   /-- The product formula. -/
   product_formula : ∀ x : K, x ≠ 0 → ∫ ω, Real.log (AS.ϕ ω x) ∂AS.v = 0
 

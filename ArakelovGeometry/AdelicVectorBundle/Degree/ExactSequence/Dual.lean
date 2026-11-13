@@ -25,9 +25,9 @@ then gives the determinant-discrepancy bound and Hermitian degree additivity.
 
 namespace ArakelovGeometry.AdelicVectorBundle
 
-universe u v w
+universe u w
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
 
 /-- The actual quotient dual and the actual annihilator restriction have

@@ -26,7 +26,7 @@ namespace ArakelovGeometry
 
 noncomputable section
 
-universe u v w w'
+universe u w w'
 
 section Algebra
 
@@ -96,11 +96,13 @@ theorem tensorBaseChangeEquiv_binary_symm_tmul
 
 end Algebra
 
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} {F : Type w'} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F]
 
 namespace NormFamily
+
+attribute [local instance 50] UniformSpace.Completion.instModule
 
 /-- The actual projective norm on the ordinary binary tensor product. -/
 def projectiveTensorPair (ξ : NormFamily S E) (η : NormFamily S F) :
@@ -192,6 +194,7 @@ theorem mixedTensorPair_norm_tmul_completed_le
   (mixedTensorPair_norm_le_projectiveTensorPair_norm ξ η ω _).trans
     (projectiveTensorPair_norm_tmul_completed_le ξ η ω x y)
 
+attribute [local irreducible] determinantTensorEquivCompleted exteriorBaseChangeEquiv in
 /-- Hadamard's bound through the canonical completed tensor determinant map.
 All tuples, including singular and empty ones, are retained. -/
 theorem projectiveTensorPair_determinant_norm_wedge_le
@@ -201,7 +204,7 @@ theorem projectiveTensorPair_determinant_norm_wedge_le
     (ξ.projectiveTensorPair η).determinant.norm ω
       ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion (E ⊗[K] F)
         (Module.finrank K (E ⊗[K] F))).symm
-        (determinantTensorEquivCompleted K (S.ϕ ω).Completion E F
+        ((determinantTensorEquivCompleted K (S.ϕ ω).Completion E F).toFun
           ((⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K F)),
             exteriorPower.ιMulti (S.ϕ ω).Completion (Module.finrank K E) x) ⊗ₜ[(S.ϕ ω).Completion]
             (⨂ₜ[(S.ϕ ω).Completion] (_ : Fin (Module.finrank K E)),
@@ -211,7 +214,10 @@ theorem projectiveTensorPair_determinant_norm_wedge_le
   let e : (Fin (Module.finrank K E) × Fin (Module.finrank K F)) ≃
       Fin (Module.finrank K (E ⊗[K] F)) :=
     finProdFinEquiv.trans (finCongr (finrank_mul_eq_tensor K E F))
-  rw [determinantTensorEquivCompleted_ιMulti]
+  refine (congrArg (fun z ↦ (ξ.projectiveTensorPair η).determinant.norm ω
+    ((exteriorBaseChangeEquiv K (S.ϕ ω).Completion (E ⊗[K] F)
+      (Module.finrank K (E ⊗[K] F))).symm z))
+    (determinantTensorEquivCompleted_ιMulti K (S.ϕ ω).Completion E F x y)).trans_le ?_
   have hdet := (ξ.projectiveTensorPair η).determinant_norm_ιMulti_le ω
     (fun i ↦ (TensorProduct.AlgebraTensorModule.distribBaseChange K (S.ϕ ω).Completion E F).symm
       (x (e.symm i).1 ⊗ₜ[(S.ϕ ω).Completion] y (e.symm i).2))

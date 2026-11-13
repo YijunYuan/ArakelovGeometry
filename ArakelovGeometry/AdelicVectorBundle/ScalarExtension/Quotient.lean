@@ -30,7 +30,7 @@ open scoped TensorProduct
 noncomputable section
 namespace ArakelovGeometry
 
-universe u v w wE wF wC
+universe u w wE wF wC
 
 variable {K : Type u} [Field K] {L : Type w} [Field L] [Algebra K L]
   {E : Type wE} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
@@ -55,7 +55,7 @@ theorem dualBaseChangeEquiv_dualMap_baseChange
 
 namespace NormFamily
 
-variable {S : AdelicStructure.{u, v} K}
+variable {S : AdelicStructure K}
 
 private theorem dual_norm_eq_of_pointwise_eq (η θ : NormFamily S E) (ω : S.Ω)
     (hn : ∀ z, η.norm ω z = θ.norm ω z)
@@ -91,6 +91,7 @@ theorem injectiveScalarExtension_pushforward_dual_norm_eq
   rw [ξ.pushforward_dual π hπ]
   exact he
 
+attribute [local irreducible] injectiveScalarExtension pushforward dual in
 /-- Injective extension commutes with actual quotient norms on every
 completed vector at a non-Archimedean place; original ultrametricity is
 unnecessary because both extended quotient norms are ultrametric. -/

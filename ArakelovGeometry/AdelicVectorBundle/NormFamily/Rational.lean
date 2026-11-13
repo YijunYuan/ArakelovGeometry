@@ -17,13 +17,13 @@ open scoped TensorProduct
 
 namespace ArakelovGeometry
 
-universe u v w
+universe u w
 
 variable {K : Type u} [Field K]
 
 namespace AdelicStructure
 
-variable (S : AdelicStructure.{u, v} K)
+variable (S : AdelicStructure K)
 
 /-- The canonical rational scalar embedding has its prescribed absolute value. -/
 theorem norm_algebraMap_eq_absValue (ω : S.Ω) (a : K) :
@@ -48,7 +48,7 @@ end AdelicStructure
 
 namespace NormFamily
 
-variable {S : AdelicStructure.{u, v} K} {E : Type w} [AddCommGroup E] [Module K E]
+variable {S : AdelicStructure K} {E : Type w} [AddCommGroup E] [Module K E]
 
 /-- Rational scalar multiplication satisfies the original absolute-value law. -/
 theorem norm_rational_smul (ξ : NormFamily S E) (ω : S.Ω) (a : K) (x : E) :

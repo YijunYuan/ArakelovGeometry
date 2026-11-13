@@ -104,8 +104,8 @@ end AdelicStructure
 
 namespace NormFamily
 
-universe u v w
-variable {K : Type u} [Field K] {S : AdelicStructure.{u, v} K}
+universe u w
+variable {K : Type u} [Field K] {S : AdelicStructure K}
   {E : Type w} [AddCommGroup E] [Module K E] [FiniteDimensional K E]
   {ι : Type*} [Fintype ι] (b : Module.Basis ι K E) (ξ : NormFamily S E)
 
