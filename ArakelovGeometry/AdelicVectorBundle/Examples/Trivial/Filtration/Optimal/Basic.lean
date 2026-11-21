@@ -14,21 +14,16 @@ public import Mathlib.Topology.Order.Compact
 public import Mathlib.Topology.Order.Lattice
 
 /-!
-# Conditional minimization for actual tensor quotient filtrations
+# Conditional minimization for tensor quotient filtrations
 
-The coordinate energy retains the reciprocal dimension of each factor.
-Every coordinate expression below is connected to the intrinsic filtration
-pairing or to the proved actual quotient finite maximum.
+A centered negative candidate yields a normalized global minimum over all
+admissible finite real filtrations. The coordinate energy retains the reciprocal
+dimension of each factor and agrees with the intrinsic filtration pairing.
 
-This is the conditional part of Chen–Moriwaki §5.2 used on pages 31–32 of
-`bost.pdf`: a supplied actual centered negative candidate yields a normalized
-global minimum over all actual filtrations, not merely one fixed basis.
-The finite-family existence and uniqueness results are retained, and a direct
-binary quotient consumer is supplied. Uniqueness can be used in the separate
-descent argument for the instability input. The general CM variational
-inequality (5.13) is not claimed here: Bost needs only the subsequent HN-lift
-right variation. Geometric instability producing the initial negative candidate
-and that variation assembly remain separate obligations.
+This file proves finite-family existence and uniqueness and a binary quotient
+specialization of the optimization results in [ChenMoriwaki2020], Section 5.4.
+The candidate is assumed, and the general variational inequality (5.13) is not
+proved here.
 -/
 
 @[expose] public section

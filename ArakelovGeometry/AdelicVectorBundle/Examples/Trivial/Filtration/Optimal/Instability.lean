@@ -10,16 +10,16 @@ public import ArakelovGeometry.InvariantTheory.Binary.TensorTransport
 public import ArakelovGeometry.LinearAlgebra.Filtration.Equiv
 
 /-!
-# Actual original-field negative filtrations from binary geometric instability
+# Negative filtrations from binary geometric instability
 
-For the unstable case on Bost page 31, geometric nonsemistability of the same
-scalar-extended quotient yields centered finite left-continuous real filtrations
-over the original characteristic-zero field, with negative actual quotient
-expectation and total energy one. The algebraic closure may have infinite
-degree. Galois stability is obtained from uniqueness of the optimizer by the
-existing rationality theorem; neither stability nor a negative candidate is an
-input. This one-way binary implication supplies A9's optimizer input. The
-subsequent adelic degree inequality and Bost rank induction are separate.
+Geometric nonsemistability of a tensor quotient yields centered finite
+left-continuous real filtrations over the original characteristic-zero field,
+with negative quotient expectation and total energy one.
+
+This is a one-way binary specialization of the instability results in
+[ChenMoriwaki2020]. The algebraic closure may have infinite degree.
+Galois stability is derived from uniqueness of the optimizer in the descent
+theorem; neither Galois stability nor a negative candidate is assumed.
 -/
 
 @[expose] public section
@@ -38,14 +38,12 @@ variable {K : Type u} {E : Type wE} {V : Type wV} {Q : Type*} [Field K] [CharZer
   [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Nontrivial V]
   [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q] [Nontrivial Q]
 
-/-- The Bost page 31 binary instability implication over the original characteristic-zero
-field. The hypothesis is the actual A2 geometric predicate on the Bool tensor presentation
-of this same ordinary binary quotient. The conclusion consists of actual centered finite
-left-continuous real filtrations, normalized to total energy one, with negative actual
-quotient expectation. The algebraic closure need not be finite over `K`; Galois stability
-is derived from uniqueness of the optimizer inside the existing rationality theorem.
-This supplies the A9 negative-pair input, not the subsequent adelic degree inequality or
-Bost rank induction. -/
+/-- Geometric nonsemistability of a binary tensor quotient yields centered
+finite left-continuous real filtrations over the original characteristic-zero
+field, with total energy one and negative quotient expectation. The geometric
+predicate uses the Bool-indexed presentation of the same quotient. The algebraic
+closure need not be finite, and Galois stability is derived from optimizer
+uniqueness. Only the binary instability implication is asserted. -/
 theorem exists_centered_negative_tensor_filtrations_of_not_geometricallySemistable
     (q : E ⊗[K] V →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)
     (hns : ¬ IsGeometricallySemistableTensorQuotient (LiftedBoolTensorFactors E V)

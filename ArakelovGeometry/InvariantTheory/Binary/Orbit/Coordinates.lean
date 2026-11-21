@@ -13,13 +13,12 @@ public import Mathlib.RingTheory.Ideal.Quotient.Operations
 public import Mathlib.RingTheory.Spectrum.Prime.Topology
 
 /-!
-# Actual binary special-linear orbit coordinates
+# Binary special-linear orbit coordinates
 
-For Bost p31 the required implication is polynomial orbit closure to a DVR
-specialization of the actual binary group action. We construct the coordinate
-algebra of two determinant-one matrices. The polynomial parameterization uses
-`h ↦ rhoDual (h⁻¹) f`; inversion is a bijection, so its image is exactly the
-usual actual orbit. No reducedness or closed-point density is needed.
+The coordinate algebra of two determinant-one matrices gives an affine orbit
+morphism. Polynomial orbit closure implies closure of its image.
+The parameterization uses `h ↦ rhoDual (h⁻¹) f`; inversion is bijective, so its
+image is the full orbit. Reducedness and closed-point density are not assumed.
 -/
 
 @[expose] public section
@@ -47,8 +46,8 @@ def binarySLUniversalMatrix (j : Bool) :
 def binarySLRelations : Ideal (MvPolynomial (BinarySLVariables ι) k) :=
   Ideal.span (Set.range fun j ↦ (binarySLUniversalMatrix k ι j).det - 1)
 
-/-- The coordinate algebra of the actual binary SL group. It is only the finite
-matrix presentation needed for Bost p31, without general group scheme machinery. -/
+/-- The coordinate algebra of the binary special linear group, presented
+by the determinant-one relations on the two matrices. -/
 abbrev BinarySLCoordinateAlgebra : Type _ :=
   MvPolynomial (BinarySLVariables ι) k ⧸ binarySLRelations k ι
 
@@ -132,7 +131,7 @@ variable (k : Type*) [Field k] (ι : Bool → Type*)
 /-- Standard basis indices of the actual binary tensor power. -/
 abbrev BinaryTensorIndex : Type _ := Fin r → ∀ j, ι j
 
-/-- The standard basis of the actual A2 binary tensor power. -/
+/-- The standard basis of the binary tensor power. -/
 def binaryTensorBasis : Module.Basis (BinaryTensorIndex ι r) k
     (⨂[k]^r (⨂[k] j, (ι j → k))) :=
   Basis.piTensorProduct (fun _ : Fin r ↦
@@ -152,8 +151,8 @@ theorem binaryTensorBasis_repr_tprod (x : Fin r → ∀ j, ι j → k)
   simp [binaryTensorBasis]
 
 omit [∀ j, DecidableEq (ι j)] in
-/-- Full pure-tensor evaluation, used to pass basis integrality to the entire
-integral lattice in the Bost DVR argument. -/
+/-- Pure-tensor evaluation expressed in the standard basis, allowing
+basis integrality to extend to all integral pure tensors. -/
 theorem binaryCovector_eval_tprod
     (f : Module.Dual k (⨂[k]^r (⨂[k] j, (ι j → k))))
     (x : Fin r → ∀ j, ι j → k) :
@@ -167,8 +166,8 @@ theorem binaryCovector_eval_tprod
 
 variable {k ι r} (L : Type*) [Field L] [Algebra k L]
 
-/-- Coefficient scalar extension in the explicit standard tensor basis. This is
-an actual covector on the A2 tensor power over `L`, with the original coefficients. -/
+/-- Coefficient scalar extension in the standard tensor basis, defining
+a covector on the tensor power over `L`. -/
 def binaryCovectorBaseChange (f : Module.Dual k (⨂[k]^r (⨂[k] j, (ι j → k)))) :
     Module.Dual L (⨂[L]^r (⨂[L] j, (ι j → L))) :=
   (binaryTensorBasis L ι r).constr L
@@ -202,8 +201,8 @@ def binaryCovectorOrbitPullback
   aeval fun p ↦ ∑ s, algebraMap k _ (f (binaryTensorBasis k ι r s)) *
     (∏ l, ∏ j, binarySLCoordinate k ι j (s l j) (p l j))
 
-/-- Evaluation of the actual A2 contragredient action at an inverse matrix point.
-The formula is valid over every extension field, with no density hypothesis. -/
+/-- Contragredient evaluation at an inverse matrix point, over every
+extension field. -/
 theorem binaryCovector_dual_inverse_eval
     (f : Module.Dual L (⨂[L]^r (⨂[L] j, (ι j → L))))
     (h : ∀ j, Matrix.SpecialLinearGroup (ι j) L) (p : BinaryTensorIndex ι r) :
@@ -256,8 +255,8 @@ theorem evalBinarySL_comp_orbitPullback
   ext p
   simpa only [AlgHom.comp_apply, aeval_X] using binaryCovectorOrbitPullback_eval f h p
 
-/-- Inverse matrix parameterization has exactly the actual A2 orbit image.
-This identifies the full groups, including arbitrary original module automorphisms. -/
+/-- The inverse matrix parameterization has the full orbit as its image,
+including all module automorphisms in the special linear group. -/
 theorem binaryCovector_inverse_orbit_image
     (f : Module.Dual L (⨂[L]^r (⨂[L] j, (ι j → L)))) :
     Set.range (fun h : ∀ j, Matrix.SpecialLinearGroup (ι j) L ↦
@@ -296,10 +295,9 @@ theorem binaryCovectorOrbitPullback_finiteType
 def binaryOrbitOrigin : PrimeSpectrum (MvPolynomial (BinaryTensorIndex ι r) k) :=
   ⟨RingHom.ker (aeval (0 : BinaryTensorIndex ι r → k)).toRingHom, RingHom.ker_isPrime _⟩
 
-/-- The actual polynomial orbit-closure input implies closure of the image of
-the affine orbit morphism. This uses only kernel containment, not closed-point
-density or reducedness of the binary SL coordinate algebra. It is the geometric
-input required for Bost p31, conditional on the separate invariant separation. -/
+/-- Polynomial orbit closure implies closure of the image of the affine
+orbit morphism. The argument uses kernel containment without assuming
+closed-point density or reducedness of the coordinate algebra. -/
 theorem origin_mem_closure_specOrbit_of_actual_orbit_closure
     (f : Module.Dual k (⨂[k]^r (⨂[k] j, (ι j → k))))
     (hclosure : ∀ P : MvPolynomial (BinaryTensorIndex ι r) k,

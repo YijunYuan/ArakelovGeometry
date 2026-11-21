@@ -17,10 +17,10 @@ import Mathlib.RingTheory.Artinian.Module
 /-!
 # The maximal-slope game of an adelic vector bundle
 
-The payoff uses actual restriction and quotient norms. Its maximum transform is
-unchanged, and its first-player value equals the minimal slope on every interval.
-This realizes the general, possibly non-Hermitian setting of Chen–Jeannin's
-Harder–Narasimhan Games, Remark 2.5 and Theorem 3.10.
+The payoff uses the induced restriction and quotient norms. Its maximum transform
+is unchanged, and its first-player value equals the minimal slope on every interval.
+This connects the HarderNarasimhan library to the adelic slope theory, including
+bundles that are not Hermitian.
 -/
 
 @[expose] public section

@@ -785,25 +785,40 @@ public import ArakelovGeometry.Order.HarderNarasimhan.Slope
 /-!
 # Arakelov geometry over adelic curves
 
-Library root. Aggregates the verified development for the full `lake build`.
-Follows Chen–Moriwaki, *Arakelov Geometry over Adelic Curves* (Springer LNM 2258):
-Chapter 3 and the implemented Chapter 4 norm families, adelic divisors,
-degrees, slopes, Harder–Narasimhan filtrations, minima and number-field models.
-The Harder–Narasimhan game library proves existence and uniqueness of general finite flags
-and supplies the largest slope maximizers used in the Hermitian theory.
-The adelic bridge retains actual subquotient norms and the original real filtration.
-Selected local analytic and geometric prerequisites are also included.
-Chapter 4 remains incomplete; the README records the precise scope and TODOs.
+This module exports a partial formalization of [ChenMoriwaki2020]. It includes
+adelic curves, norm families, adelic divisors, degrees, slopes,
+Harder–Narasimhan filtrations, minima, and number-field models, together with
+selected local, geometric, and tensor-filtration results.
+
+The HarderNarasimhan library supplies finite semistable flags and the largest
+slope maximizers used in the Hermitian theory. The adelic constructions retain
+the induced subquotient norms and real-indexed filtrations.
+
+The formalization does not cover the entire book. Some results have stronger
+hypotheses or weaker conclusions; their docstrings state the restrictions.
+
+## Notation
 
 After `open ArakelovGeometry`, use `open scoped AdelicStructure` to enable:
+
 * `S ⊗[K] L` for the algebraic extension `S.algebraicExtension L`;
 * `S ⟶ T` for `AdelicStructure.Hom S T`, allowing different base fields;
 * `S ≃ T` for `AdelicStructure.Equiv S T`, over the same base field;
 * `S ⨿ T` for amalgamation.
 
-These coexist with the usual tensor products, equivalences of types and arrows
-in the bundled category. The finite and finite separable extension constructions
-retain their explicit names; `≅` retains its categorical meaning.
+These coexist with tensor products, equivalences of types, and arrows in the
+bundled category. Finite and finite separable extensions retain their explicit
+names, and `≅` retains its categorical meaning.
+
+## References
+
+* [Huayi Chen and Atsushi Moriwaki,
+  *Arakelov Geometry over Adelic Curves*][ChenMoriwaki2020]
+* [HarderNarasimhan Lean library](https://github.com/YijunYuan/HarderNarasimhan)
+
+## Tags
+
+Arakelov geometry, adelic curves, adelic vector bundles, slopes, Harder–Narasimhan
 -/
 
 @[expose] public section

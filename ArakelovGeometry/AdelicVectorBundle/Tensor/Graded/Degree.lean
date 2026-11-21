@@ -10,19 +10,18 @@ public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.HN
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Tensor
 
 /-!
-# Binary graded tensor images in Bost's degree argument
+# Degree bounds for binary graded tensor images
 
-The source bundles are actual binary tensors of actual grades. Their maps
-to the original quotient grade are the canonical A5 maps. The finite-image
-HN inequality consumes the proved completed contractions directly.
+Binary tensors of grades map to the original quotient grade by the canonical
+graded maps. Their completed contractions and spanning images give degree bounds
+through the finite-image Harder–Narasimhan inequality.
 
-This is the binary component route for Bost pp.29–32. CM Remark 5.5.6
-provides the relevant subquotient comparison; its wider refinement setting
-and contraction of the paper's whole orthogonal direct sum are not asserted.
-The final consumer proves the sufficient eventual affine upper bound, with
-the original quotient norm and the same chosen HN lifts as A9. The strictly
-smaller-rank tensor-HN compatibility remains an explicit induction boundary;
-neither full CM (5.13) nor the assembled tensor semistability theorem is claimed.
+The subquotient comparisons are restricted to binary real grades, within the
+setting of [ChenMoriwaki2020], Remark 5.5.6. The variation result is an eventual
+affine upper bound for the original quotient norm and chosen lifted
+Harder–Narasimhan filtrations. Tensor compatibility of Harder–Narasimhan
+filtrations in strictly smaller rank remains an explicit hypothesis.
+The general variational inequality (5.13) is not proved here.
 -/
 
 @[expose] public section
@@ -38,8 +37,8 @@ variable {K E V Q : Type*} [Field K]
   [AddCommGroup Q] [Module K Q]
   {P : ℝ → Submodule K E} {R : ℝ → Submodule K V}
 
-/-- The exact canonical A5 pair followed by its canonical quotient-grade map.
-This abbreviation does not change the carrier or choose an image norm. -/
+/-- The canonical graded pair map followed by the quotient-grade map.
+The carrier and induced quotient norm are unchanged. -/
 noncomputable abbrev tensorFiltrationGradedQuotientPair
     (q : E ⊗[K] V →ₗ[K] Q) (hP : Antitone P) (hR : Antitone R)
     {t u γ : ℝ} (h : t + u = γ) :
@@ -492,11 +491,10 @@ instance tensorFiltrationQuotientGraded_isHermitian
 
 variable [S.IsProper]
 
-/-- The actual canonical binary pair family satisfies the finite-image HN
-degree bound in each actual quotient grade. Neither spanning nor contraction
-is assumed: the A5 quotient-surjectivity theorem and the completed pair
-contraction producer discharge both. This is the numerical grade bound of
-the adapted Bost Lemma 7.2 route before identifying secondary HN weights. -/
+/-- The canonical binary pair family satisfies the finite-image
+Harder–Narasimhan degree bound in each quotient grade. Spanning and contraction
+follow from surjectivity of the graded quotient map and the completed pair
+contraction. -/
 theorem tensorFiltrationQuotientGraded_hnImage_degree_ge
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.NormMeasurabilityHypotheses]
@@ -528,10 +526,9 @@ theorem tensorFiltrationQuotientGraded_hnImage_degree_ge
   exact NormFamily.tensorFiltrationGradedPair_pushforward_norm_le V.toNormFamily W.toNormFamily
     q hq hP hR p.property ω x
 
-/-- Under the explicitly smaller-rank tensor-HN compatibility induction
-boundary, the actual canonical pair images of the tensor-HN secondary
-filtrations satisfy Bost's local weighted degree bound. This theorem does
-not yet identify those images with a chosen ambient HN lifting's cuts. -/
+/-- Under tensor compatibility of Harder–Narasimhan filtrations in
+strictly smaller rank, the canonical pair images of the secondary tensor
+filtrations satisfy the weighted degree bound on each quotient grade. -/
 theorem tensorFiltrationQuotientGraded_secondary_degree_ge
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.NormMeasurabilityHypotheses]
@@ -603,10 +600,9 @@ noncomputable def tensorFiltrationSecondaryImage
       ((W.filtrationGraded R (z p.val.2)).hermitianHNFiltration
         (hV := (hW.filtrationGraded R (z p.val.2)))))
 
-/-- Bost's global secondary weighted degree bound for the actual binary
-quotient. The smaller-rank tensor-HN compatibility is explicit; canonical
-pair contractions, finite spanning, the actual secondary images, and both
-flag degree sums are proved. The eventual variation bound is separate. -/
+/-- The sum of the secondary grade weights, divided by the quotient rank,
+is at most the slope of the binary quotient. Tensor compatibility of Harder–Narasimhan
+filtrations in strictly smaller rank is an explicit hypothesis. -/
 theorem tensorFiltrationSecondaryImage_weighted_le_slope
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.NormMeasurabilityHypotheses]
@@ -665,12 +661,12 @@ theorem tensorFiltrationSecondaryImage_weighted_le_slope
     (finsum_le_degree_of_filtration_grade_bounds B (hW := hB) PQ hPQ hbot htop hleft d hz hd)
     (Nat.cast_nonneg _)
 
-/-- The concrete binary Bost numerical consumer for the SAME chosen HN
-lifts and common bases as the optimizer. The actual secondary image weight
-is bounded by the original quotient slope and gives an eventual affine
-upper bound. Only strictly smaller-rank tensor-HN compatibility is assumed.
-This one-sided form of Bost pp.30–32 suffices for the A9 lower bound; the
-paper's exact affine identity and full CM (5.13) are not asserted. -/
+/-- The normalized secondary image weight is at most the original quotient slope
+and is the linear coefficient of an eventual affine upper bound on the quotient expectation.
+The comparison uses the chosen lifted Harder–Narasimhan filtrations and common
+bases. Tensor compatibility in strictly smaller rank is assumed. This is a
+one-sided binary estimate, without the general inequality (5.13) of
+[ChenMoriwaki2020]. -/
 theorem tensorFiltrationQuotient_eventual_hn_upper
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.NormMeasurabilityHypotheses]

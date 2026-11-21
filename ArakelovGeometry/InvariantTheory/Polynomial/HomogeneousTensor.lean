@@ -11,13 +11,12 @@ public import Mathlib.Algebra.Group.Pointwise.Set.BigOperators
 public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 /-!
-# Homogeneous polynomials as actual tensor quotients
+# Homogeneous polynomials as tensor quotients
 
-Multiplication of the linear functions `w ↦ w(t)` is a surjective equivariant
-map from the positive tensor power to homogeneous polynomials on the dual.
-This concrete quotient is the bridge from fixed tensor-power semisimplicity
-to the bounded polynomial modules in Bost p31. Arbitrary finite bases of the
-dual are allowed, so the result retains the actual A2 polynomial coordinates.
+Multiplication of the linear functions `w ↦ w(t)` defines a surjective
+equivariant map from a tensor power to homogeneous polynomials on the dual.
+This connects fixed-degree tensor semisimplicity with bounded polynomial
+representations. The coordinate basis of the dual may be any finite basis.
 -/
 
 @[expose] public section

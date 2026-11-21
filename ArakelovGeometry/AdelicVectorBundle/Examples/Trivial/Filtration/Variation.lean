@@ -190,7 +190,7 @@ theorem filtrationPairing_weightedBasisVariation_self (ε : ℝ) :
   simp only [hexpand, Finset.sum_add_distrib, ← Finset.mul_sum, add_div, mul_div_assoc]
 
 omit [Finite ι] in
-/-- Positivity for every genuine finite real filtration, using the A3 basis producer. -/
+/-- The self-pairing of every finite real filtration is nonnegative. -/
 theorem filtrationPairing_self_nonneg (F : ℝ → Submodule K E)
     (hanti : Antitone F) (hbot : ∃ t, F t = ⊥) (htop : ∃ t, F t = ⊤)
     (hleft : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → F s = F t) :

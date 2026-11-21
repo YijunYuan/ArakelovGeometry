@@ -14,14 +14,11 @@ public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.Data.Fintype.Perm
 
 /-!
-# Selected tensor-power Schur--Weyl input
+# Tensor matrix units and polarization
 
-Selected from mathlib-initiative/EtingofRepresentationTheory, commit
-752fe269b3233f08f0795aa4bcdc5b4c84be7a50; see provenance.json.
-The tensor matrix-unit spanning and inclusion-exclusion polarization proofs are retained.
-The application is the fixed-degree tensor-power input for Bost p31's binary
-instability route. General reductivity, polynomial quotients, and orbit
-separation are outside this module.
+Tensor matrix units span the tensor endomorphism space. Inclusion-exclusion
+polarization relates them to diagonal tensor maps. These are algebraic
+ingredients for the fixed-degree representations used in [ChenMoriwaki2020].
 -/
 
 @[expose] public section

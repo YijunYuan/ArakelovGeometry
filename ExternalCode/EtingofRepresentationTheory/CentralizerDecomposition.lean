@@ -9,14 +9,11 @@ module
 public import Mathlib.RingTheory.SimpleModule.WedderburnArtin
 
 /-!
-# Selected semisimple centralizer theorem
+# Semisimple centralizers
 
-Selected from mathlib-initiative/EtingofRepresentationTheory, commit
-752fe269b3233f08f0795aa4bcdc5b4c84be7a50. See provenance.json for exact origins.
-Only the centralizer theorem is retained; the donor's detailed decomposition
-theorems are omitted. It will supply the image algebra for each fixed tensor
-degree in Bost p31's binary instability route. It does not assert general
-linear reductivity or complete the orbit-separation argument.
+The centralizer of a semisimple endomorphism subalgebra on a finite-dimensional
+space is semisimple. This supplies the image algebra for fixed-degree tensor
+representations used in the tensor instability results of [ChenMoriwaki2020].
 -/
 
 @[expose] public section
@@ -26,10 +23,8 @@ namespace RepresentationTheory.CentralizerDecomposition
 variable (k : Type*) [Field k]
   (E : Type*) [AddCommGroup E] [Module k E] [Module.Finite k E]
 
-/-- The centralizer of a semisimple endomorphism subalgebra on a finite-dimensional
-space is semisimple. This selected donor theorem supplies the image algebra in
-the fixed-degree tensor-power input for Bost p31; no decomposition data or
-general linear reductivity is asserted. -/
+/-- The centralizer of a semisimple endomorphism subalgebra on a
+finite-dimensional space is semisimple. -/
 theorem isSemisimpleRing_centralizer
     (A : Subalgebra k (Module.End k E))
     [IsSemisimpleRing A] :

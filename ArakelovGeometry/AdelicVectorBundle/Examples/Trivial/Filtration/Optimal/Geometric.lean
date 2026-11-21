@@ -9,18 +9,16 @@ public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Op
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Optimal.Instability
 
 /-!
-# Actual original-field global optimizers from geometric instability
+# Global optimizers from binary geometric instability
 
-This is the binary implication of Chen–Moriwaki Theorem 5.4.3 used on Bost page 31.
-The hypothesis is the existing A2 geometric semistability predicate for the same
-surjective positive-rank quotient. The checked instability theorem produces an
-actual centered negative pair over the original characteristic-zero field, and
-the conditional optimizer theorem then constructs a unit negative global optimizer
-over that field. Expectations and self-pairings retain reciprocal-rank normalization.
+Geometric nonsemistability of a surjective positive-rank tensor quotient produces
+a unit negative global optimizer over the original characteristic-zero field.
+The comparison ranges over all admissible centered finite real filtration pairs.
+Expectations and self-pairings retain reciprocal-rank normalization.
 
-This proves neither the full CM (5.13) nor the arithmetic HN induction or Bost
-Theorem 1.1. Only the binary geometric-to-optimizer implication is asserted;
-no rationality of real weights or finite degree of the algebraic closure is required.
+This is the binary existence implication of [ChenMoriwaki2020], Theorem 5.4.3.
+It is weaker than the full finite-family statement and does not include the
+general variational inequality (5.13).
 -/
 
 @[expose] public section
@@ -37,11 +35,11 @@ variable {K : Type u} {E F Q : Type*} [Field K] [CharZero K]
   [AddCommGroup F] [Module K F] [FiniteDimensional K F] [Nontrivial F]
   [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q] [Nontrivial Q]
 
-/-- Bost page 31's actual unit negative GLOBAL optimizer from the A2 geometric
-nonsemistability hypothesis on this same quotient. This is the binary existence
-implication of CM Theorem 5.4.3, not its full variational inequality (5.13).
-The comparison ranges over all actual centered finite real filtrations over the
-original characteristic-zero field, not only over one coordinate presentation. -/
+/-- Geometric nonsemistability of the tensor quotient yields a unit negative
+global optimizer. This is the binary existence implication of
+[ChenMoriwaki2020], Theorem 5.4.3, without the full variational inequality (5.13).
+The comparison ranges over all admissible centered finite real filtration pairs
+over the original characteristic-zero field. -/
 theorem exists_normalized_tensor_quotient_optimizer_of_not_geometricallySemistable
     (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)
     (hns : ¬ IsGeometricallySemistableTensorQuotient (LiftedBoolTensorFactors E F)

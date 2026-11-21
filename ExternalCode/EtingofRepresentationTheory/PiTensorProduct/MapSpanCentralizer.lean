@@ -11,14 +11,11 @@ public import Mathlib.LinearAlgebra.Lagrange
 public import Mathlib.LinearAlgebra.Charpoly.Basic
 
 /-!
-# Selected tensor-power Schur--Weyl input
+# The span of general-linear tensor maps
 
-Selected from mathlib-initiative/EtingofRepresentationTheory, commit
-752fe269b3233f08f0795aa4bcdc5b4c84be7a50; see provenance.json.
-Only the actual GL tensor-map span theorem and its interpolation proof are retained.
-The application is the fixed-degree tensor-power input for Bost p31's binary
-instability route. General reductivity, polynomial quotients, and orbit
-separation are outside this module.
+Over an infinite field, the general-linear tensor maps span the diagonal
+tensor image algebra. The proof uses polynomial interpolation. This is a
+fixed-degree ingredient for the tensor instability results in [ChenMoriwaki2020].
 -/
 
 @[expose] public section
@@ -226,10 +223,8 @@ private lemma endomorphism_map_mem_linearEquiv_span (f : Module.End k V) :
 
 end Auxiliary
 
-/-- Over an infinite field, the span of the range of the pointwise tensor-product maps induced
-by linear equivalences is the underlying submodule of the actual diagonal image algebra.
-This retained donor statement supplies the fixed-degree GL producer for Bost p31;
-no polynomial or orbit-separation claim is made here. -/
+/-- Over an infinite field, the pointwise tensor-product maps induced
+by linear equivalences span the underlying submodule of the diagonal image algebra. -/
 theorem span_range_piTensorProduct_map_eq_auxiliary
     {k : Type*} [Field k] [Infinite k]
     {V : Type*} [AddCommGroup V] [Module k V] [Module.Finite k V]

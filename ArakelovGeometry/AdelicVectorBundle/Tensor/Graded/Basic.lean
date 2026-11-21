@@ -12,19 +12,16 @@ import ArakelovGeometry.Analysis.Tensor.Bilinear
 import Mathlib.Analysis.InnerProductSpace.ProdL2
 
 /-!
-# Actual norms and contractions on filtration grades
+# Norms and contractions on filtration grades
 
 Every grade carries the restriction followed by the quotient of the original
-norm family. The canonical graded map descends a completed contraction by
-comparing every completed lift, including at trivially valued places.
+norm family. A contraction preserving filtration thresholds induces a contraction
+on the completed grades, including at trivially valued places.
 
-The binary pair and quotient-composite statements supply the componentwise
-route to Bost, Section 7, Lemmas 7.1--7.2 (pages 29--30). Chen--Moriwaki's
-October 2019 Remark 5.5.6 treats individual refinement subquotients; here only
-the canonical binary real grades needed by this consumer are constructed.
-No contraction of a whole orthogonal direct sum is asserted. The image-flag
-degree argument is in `Degree.Flag.ImageHN`; the chosen HN-lift variation
-assembly is a separate consumer.
+The tensor results treat canonical binary real grades, a restricted setting of
+the subquotient comparisons in [ChenMoriwaki2020], Remark 5.5.6.
+The general refinement statement and a contraction of the whole orthogonal direct
+sum are not asserted.
 -/
 
 @[expose] public section
@@ -85,8 +82,8 @@ theorem quotientMap_norm_le (ξ : NormFamily S E) (η : NormFamily S V)
   rw [← hx, he]
   exact (η.quotient_norm_mk_le T ω _).trans (hf x)
 
-/-- A threshold-preserving contraction induces A5's canonical graded map as a
-contraction on every completed vector for the actual subquotient norms. -/
+/-- A threshold-preserving contraction induces a contraction on every
+completed grade with its induced subquotient norm. -/
 theorem filtrationGradedMap_norm_le (ξ : NormFamily S E) (η : NormFamily S V)
     {F : ℝ → Submodule K E} {G : ℝ → Submodule K V}
     (f : E →ₗ[K] V) (hf : ∀ t, F t ≤ (G t).comap f) (t : ℝ) (ω : S.Ω)
@@ -486,10 +483,11 @@ theorem orthogonalTensorPair_descend_norm_le
   · exact orthogonalTensorPair_descend_norm_le_infinite ξ η θ U T f ω hω hf z
   · exact orthogonalTensorPair_descend_norm_le_finite ξ η θ U T f ω (not_not.mp hω) hf z
 
-/-- A5's canonical graded pair map contracts the actual tensor of the two
-grade norms into the actual tensor grade norm, on all completed fibre vectors.
-This is the binary component bound used in Bost Lemmas 7.1--7.2, rather than
-the paper's whole-sum bound or a general refinement theorem. -/
+/-- The canonical binary graded pair map contracts the tensor of the
+two grade norms into the tensor grade norm, on all completed fibre vectors.
+This componentwise statement does not assert a contraction of the whole
+orthogonal direct sum or the general refinement comparison of
+[ChenMoriwaki2020], Remark 5.5.6. -/
 theorem tensorFiltrationGradedPair_norm_le
     (ξ : NormFamily S E) (η : NormFamily S F)
     [hN : S.IsArchimedeanNormalized]

@@ -12,18 +12,16 @@ public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Destabilizing
 public import ArakelovGeometry.AdelicVectorBundle.Subquotient.Restriction.Functor
 
 /-!
-# The actual HN-lift variation needed on Bost page 32
+# Variation along lifted Harder–Narasimhan filtrations
 
-Chen–Moriwaki (5.13) treats general variational directions and finite families.
-This module proves only the binary grade-HN direction needed for Bost page 32,
-equation (48) and its following optimality argument. All expectations and
-pairings retain reciprocal-rank normalization and real weights. A finite
-quadratic estimate replaces the derivative argument; full CM (5.13) is omitted.
+This file proves a binary specialization of the variational estimates in
+[ChenMoriwaki2020], using lifts of the Harder–Narasimhan filtrations on the grades.
+Expectations and pairings retain reciprocal-rank normalization and real weights.
+The estimates are weaker than the general finite-family inequality (5.13).
 
-The A6 local affine upper bound (or stronger local affine identity) for the same
-actual quotient and chosen bases remains an explicit arithmetic input. A8 must
-separately produce a negative candidate from geometric instability. Neither
-boundary, nor Bost's main theorem, is proved by this module.
+A centered negative candidate is an explicit hypothesis of the optimizer
+construction. The slope comparison also assumes an eventual affine upper bound
+for the same quotient and chosen bases.
 -/
 
 @[expose] public section
@@ -67,10 +65,11 @@ variable {K E : Type*} [Field K] [AddCommGroup E] [Module K E]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian]
 
-/-- Chosen actual grade-HN lift data. The cuts retain the actual HN filtration
-on each quotient; the mean and pairing identities are supplied by A7, not
-optimality assumptions. `exists_hnVariationLift` constructs this data for every
-finite real filtration. No nonpositivity or arithmetic upper bound is a field. -/
+/-- Chosen lifts of the Harder–Narasimhan filtrations on the grades.
+The cuts retain each quotient's Harder–Narasimhan filtration, together with the
+mean and pairing identities. `exists_hnVariationLift` constructs these data for
+every finite real filtration. Nonpositive pairing and arithmetic upper bounds
+are not part of this structure. -/
 structure HNVariationLift (P : ℝ → Submodule K V) where
   length : ℕ
   flag : Fin (length + 1) → Submodule K V
@@ -99,8 +98,9 @@ structure HNVariationLift (P : ℝ → Submodule K V) where
     ∑ i, weight i * (finrank K
       ((flag i.succ) ⧸ (flag i.castSucc).comap (flag i.succ).subtype) : ℝ)
 
-/-- A3/A7 construct the actual lift data used in Bost p32. This is a chosen
-grade-HN lift, not an assertion that the lift is the ambient HN filtration. -/
+/-- Every finite real filtration admits a chosen lift of the
+Harder–Narasimhan filtrations on its grades. The lift need not be the ambient
+Harder–Narasimhan filtration. -/
 theorem exists_hnVariationLift (P : ℝ → Submodule K V)
     (hP : Antitone P) (hb : ∃ t, P t = ⊥) (ht : ∃ t, P t = ⊤)
     (hl : ∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → P s = P t) :
@@ -136,9 +136,8 @@ namespace HNVariationLift
 
 variable {V hS hN hV} {P : ℝ → Submodule K V}
 
-/-- Bost p32 (48), for the actual chosen grade-HN lift: semistability and
-centering force nonpositive pairing. This is the special HN direction of the
-CM variation argument; no full (5.13), A6 upper bound or A8 existence is used. -/
+/-- Semistability and centering force nonpositive pairing with the chosen
+lift of the Harder–Narasimhan filtrations on the grades. -/
 theorem pairing_nonpos (L : V.HNVariationLift P)
     [hsemi : V.IsMeanSlopeSemistable]
     (hcenter : Submodule.filtrationExpectation P = 0) :
@@ -240,8 +239,8 @@ theorem filtrationPairing_center_right (b : Basis ι K E) (a r : ι → ℝ)
 
 omit [FiniteDimensional K E] [FiniteDimensional K F] [FiniteDimensional K Q]
   [Finite ι] [Finite κ] in
-/-- Equality of actual tensor/image cuts after centering the direction weights.
-This is the translation in Bost p32, before taking any quotient expectation. -/
+/-- Centering the direction weights translates the tensor-image
+filtration cuts by the sum of the corresponding mean weights. -/
 theorem tensor_image_variation_center_cuts (b : Basis ι K E) (d : Basis κ K F)
     (a r : ι → ℝ) (v s : κ → ℝ) (q : E ⊗[K] F →ₗ[K] Q)
     (μ ν ε t : ℝ) :
@@ -259,9 +258,9 @@ theorem tensor_image_variation_center_cuts (b : Basis ι K E) (d : Basis κ K F)
   constructor <;> intro h <;> nlinarith
 
 omit [FiniteDimensional K E] [FiniteDimensional K F] in
-/-- The expectation translation for the actual tensor quotient used by Bost
-p32. The quotient is the image under the given surjection, with positive rank;
-there is no replacement by an unrelated finite maximum model. -/
+/-- Centering the direction weights translates the expectation of the
+tensor quotient filtration. The quotient is the image under the given surjection
+and has positive rank. -/
 theorem filtrationExpectation_tensor_variation_center (b : Basis ι K E)
     (d : Basis κ K F) (a r : ι → ℝ) (v s : κ → ℝ)
     (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q)
@@ -303,8 +302,8 @@ variable (b : Basis ι K E) (d : Basis κ K F) (a r : ι → ℝ) (v s : κ → 
 
 include hP hR hT hW
 
-/-- The actual centered varied pair has the quadratic energy used on Bost
-p32. This fixed-basis identity preserves the reciprocal rank in each factor. -/
+/-- The energy of the centered varied pair is a quadratic polynomial.
+This fixed-basis identity retains the reciprocal-rank normalization in each factor. -/
 theorem centered_tensor_variation_energy
     (hPc : filtrationExpectation P = 0) (hTc : filtrationExpectation T = 0)
     (hunit : filtrationPairing P P + filtrationPairing T T = 1) (ε : ℝ) :
@@ -323,10 +322,10 @@ theorem centered_tensor_variation_energy
     filtrationPairing_center_right d v s hT hW, hPc, hTc]
   nlinarith [hunit]
 
-/-- The actual A9 global comparison gives the finite-epsilon Bost bound.
-The directions here may be any common-basis directions with nonpositive
-total pairing; `HNVariationLift` supplies that property without assuming it.
-This is the sufficient binary specialization, not full CM (5.13). -/
+/-- Global optimality gives a finite-parameter lower bound on the varied
+tensor quotient expectation. The common-basis directions have nonpositive total
+pairing. This is a binary specialization of the variational estimates in
+[ChenMoriwaki2020], weaker than the full inequality (5.13). -/
 theorem tensor_quotient_variation_lower_bound
     (q : E ⊗[K] F →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)
     (hPc : filtrationExpectation P = 0) (hTc : filtrationExpectation T = 0)
@@ -486,10 +485,9 @@ variable (hc : filtrationExpectation (fun t ↦ (tensorFiltration P T t).map q) 
 
 include hP hR hT hW hq hQ hsemiV hsemiZ hPc hTc hunit hc hmin
 
-/-- Bost p32's finite-epsilon comparison on actual chosen grade-HN lifts.
-This specializes the general CM variational setting to the binary HN direction:
-the full (5.13) is omitted. A9 supplies the actual global comparison; the A6
-affine upper bound and the A8 negative-candidate producer remain separate. -/
+/-- A finite-parameter lower bound for variation along the chosen lifts of
+the Harder–Narasimhan filtrations on the grades. This binary specialization is
+weaker than [ChenMoriwaki2020], inequality (5.13). -/
 theorem quotient_variation_lower_bound :
     let β := filtrationPairing P L.direction + filtrationPairing T M.direction
     ∃ η > 0, ∀ ε, 0 < ε → ε < η →
@@ -503,11 +501,10 @@ theorem quotient_variation_lower_bound :
     tensor_quotient_variation_lower_bound b d a r v s hP hR hT hW q hq hQ
       hPc hTc hunit c hc hmin hbeta
 
-/-- The precise Bost p32 lower bound on the arithmetic variation coefficient.
-An eventual affine upper bound for the SAME actual quotient and chosen bases
-is the remaining A6 input; equality is unnecessary. Actual HN lifts prove the
-pairing sign here. This does not assert full CM (5.13), A8 existence, the A6
-upper bound itself, or Bost's main theorem. -/
+/-- The sum of the factor slopes is at most the coefficient of an eventual
+affine upper bound for the quotient expectation. The bound is assumed for the
+same quotient and the chosen bases; the lifted Harder–Narasimhan filtrations
+supply the nonpositive pairing. -/
 theorem slope_sum_le_of_eventual_upper_bound (δ : ℝ)
     (hupper : ∃ η > 0, ∀ ε, 0 < ε → ε < η → N ε ≤ c + ε * δ) :
     V.slope + Z.slope ≤ δ := by
@@ -516,9 +513,8 @@ theorem slope_sum_le_of_eventual_upper_bound (δ : ℝ)
   exact le_of_quadratic_lower_affine_upper N c _ δ D
     ⟨η, hη, fun ε hε he ↦ (hlow ε hε he).2.2⟩ hupper
 
-/-- Bost Lemma 7.2's eventual affine identity implies the p32 lower bound.
-This corollary leaves that exact A6 identity explicit and uses only its upper
-inequality. Full CM (5.13), A8 existence and the Bost theorem are not asserted. -/
+/-- An eventual affine identity for the quotient expectation implies
+that its linear coefficient is at least the sum of the factor slopes. -/
 theorem slope_sum_le_of_eventual_affine (δ : ℝ)
     (haffine : ∃ η > 0, ∀ ε, 0 < ε → ε < η → N ε = c + ε * δ) :
     V.slope + Z.slope ≤ δ := by
@@ -554,13 +550,12 @@ local notation "CenteredF" => (fun A : ℝ → Submodule K Z ↦
   Antitone A ∧ (∃ t, A t = ⊥) ∧ (∃ t, A t = ⊤) ∧
   (∀ t, ∃ ε > 0, ∀ s, t - ε < s → s ≤ t → A s = A t) ∧ filtrationExpectation A = 0)
 
-/-- The assembled A9/A7/A3 producer for Bost p32: a negative actual candidate
-produces an actual unit optimizer, actual grade-HN lifts and common bases, with
-the needed slope lower bound for every A6 eventual affine upper bound on those
-same data. This replaces only the binary HN use of CM (5.13), not that full
-inequality. The negative candidate remains the A8 boundary; proving the A6
-upper bound and its comparison with the quotient's arithmetic slope remains
-downstream. This theorem does not prove Bost's main theorem. -/
+/-- For semistable Hermitian factors, a centered negative candidate yields a unit
+global optimizer, lifts of the Harder–Narasimhan filtrations on its grades,
+and common adapted bases.
+For these data, the sum of the factor slopes bounds below the coefficient of
+every eventual affine upper bound on the quotient expectation. This is a binary
+specialization, weaker than [ChenMoriwaki2020], inequality (5.13). -/
 theorem exists_bost_hn_variation_bound
     [hsemiV : V.IsMeanSlopeSemistable] [hsemiZ : Z.IsMeanSlopeSemistable]
     (q : V ⊗[K] Z →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)

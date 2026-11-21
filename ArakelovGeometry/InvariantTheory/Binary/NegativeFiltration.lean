@@ -12,13 +12,13 @@ public import ArakelovGeometry.InvariantTheory.Polynomial.SolutionDescent
 public import Mathlib.LinearAlgebra.TensorProduct.Basis
 
 /-!
-# Residue matrix descent and actual negative binary filtrations
+# Residue matrix descent and negative binary filtrations
 
-This is the binary finite-matrix implication required on Bost p31. The quotient
-and its coefficient array are fixed over the original algebraically closed field.
-Only matrix entries descend; the residue extension need not be algebraic.
-Original weights are used: coordinates of weight at least zero vanish.
-Optimizer rationality and further-extension semistability are separate results.
+The quotient and its coefficient array are defined over the original
+algebraically closed field. Matrix solutions descend from an arbitrary residue
+extension, which need not be algebraic. Coordinates of nonnegative original
+weight vanish, giving centered real filtrations with negative quotient expectation.
+This file treats the binary finite-dimensional setting.
 -/
 
 @[expose] public section
@@ -219,9 +219,9 @@ theorem binaryQuotientCoefficients_baseChange
   simp [binaryQuotientCoefficients, tensorBaseChangeEquiv_symm_tprod_tmul,
     Algebra.smul_def]
 
-/-- Over every extension field the original-k polynomial is exactly the
-actual base-changed quotient determinant after the same matrix basis changes.
-This is the canonical tensor/base-change identity required by Bost p31. -/
+/-- Over every extension field, the polynomial with ground-field
+coefficients evaluates to the scalar-extended quotient determinant after the
+same matrix basis changes. -/
 theorem binaryDeterminantPolynomial_eq_baseChange_det
     (L : Type*) [Field L] [Algebra k L]
     (b : ∀ j, Basis (ι j) k (E j)) (d : Basis (Fin r) k Q)
@@ -290,10 +290,9 @@ theorem binary_quotient_weight_negative
 
 variable [FiniteDimensional k Q]
 
-/-- This binary Bost p31 producer returns genuine centered real filtrations on
-the original factors, with integer weighted bases and strictly negative actual
-quotient expectation. It consumes extension-field matrix equations, not an
-assumed negative candidate. Surjectivity supplies nonempty determinant support. -/
+/-- Extension-field matrix equations yield centered real filtrations on
+the original factors, with integer-weighted bases and strictly negative quotient
+expectation. Surjectivity supplies nonempty determinant support. -/
 theorem exists_binary_negative_filtrations_of_extension [IsAlgClosed k]
     {κ : Type*} [Field κ] [Algebra k κ]
     (b : ∀ j, Basis (ι j) k (E j))
@@ -354,8 +353,8 @@ variable {k : Type u} [Field k] {ι : Bool → Type u}
   [∀ j, Fintype (ι j)] [∀ j, DecidableEq (ι j)]
   {Q : Type*} [AddCommGroup Q] [Module k Q] {r : ℕ}
 
-/-- The generic coefficient polynomial is exactly A8-ORBIT's original quotient
-polynomial in standard factor coordinates. This is the shared interface. -/
+/-- The coefficient polynomial agrees with the quotient orbit polynomial
+in standard factor coordinates. -/
 theorem binaryDeterminantPolynomial_eq_orbit_polynomial
     (q : (⨂[k] j, (ι j → k)) →ₗ[k] Q) (b : Basis (Fin r) k Q)
     (p : BinaryTensorIndex ι r) :
@@ -366,10 +365,9 @@ theorem binaryDeterminantPolynomial_eq_orbit_polynomial
     binaryQuotientDeterminantPolynomial, Pi.basisFun_apply, Basis.coord_apply]
   rfl
 
-/-- Concrete A8-ORBIT/DVR interface: its actual coordinate quotient determinant,
-with inverse Cartan factors, reduces to the original-k polynomial value. The
-original model is proved by binaryQuotientDeterminantPolynomial_actual_eval;
-it is not inferred from the generic DVR theorem. -/
+/-- The coordinate quotient determinant with inverse Cartan factors
+reduces to the polynomial value over the ground field. This uses the evaluation
+identity `binaryQuotientDeterminantPolynomial_actual_eval`. -/
 theorem binaryQuotientDeterminantPolynomial_residue
     {R L : Type u} [CommRing R] [IsDomain R] [IsLocalRing R]
     [Field L] [Algebra k R] [Algebra R L] [Algebra k L]
@@ -394,10 +392,9 @@ theorem binaryQuotientDeterminantPolynomial_residue
 
 variable [IsAlgClosed k] [FiniteDimensional k Q]
 
-/-- The actual integral determinant support furnished by A8-DVR gives actual
-centered negative filtrations after descending the inverse residue matrices.
-The support equations refer to the checked coordinate extension of the original
-quotient. This fixed-ring interface is also the consumer of A8-ORBIT's output. -/
+/-- Integral determinant support over a discrete valuation ring yields
+centered negative filtrations after descent of the inverse residue matrices.
+The support equations use the coordinate extension of the original quotient. -/
 theorem exists_binary_negative_filtrations_of_dvr_support
     {R L : Type u} [CommRing R] [IsDomain R] [IsLocalRing R]
     [Field L] [Algebra k R] [Algebra R L] [Algebra k L]
@@ -479,11 +476,10 @@ private theorem exists_binary_negative_filtrations_of_degeneration_support
     (R := R) (L := L) q b hq hr H a c ha he hn
 
 omit [∀ j, DecidableEq (ι j)] in
-/-- Polynomial closure of the actual binary quotient orbit produces genuine
+/-- Polynomial closure of the binary quotient orbit at zero yields
 centered negative filtrations over the original algebraically closed field.
-This is the Bost p31 negative-candidate implication in standard factor coordinates;
-the coordinate quotient maps above handle arbitrary chosen factor bases. It does
-not assert optimizer descent or semistability under further field extensions. -/
+This statement uses standard factor coordinates and does not assert optimizer
+descent or semistability under further field extensions. -/
 theorem exists_binary_negative_filtrations_of_orbit_closure
     (q : (⨂[k] j, (ι j → k)) →ₗ[k] Q) (b : Basis (Fin (finrank k Q)) k Q)
     (hq : Function.Surjective q) (hr : 0 < finrank k Q)

@@ -10,19 +10,16 @@ public import ExternalCode.EtingofRepresentationTheory.PiTensorProduct.MapSpanCe
 public import Mathlib.RepresentationTheory.Semisimple
 
 /-!
-# Semisimplicity of actual special-linear tensor powers
+# Semisimplicity of special-linear tensor powers
 
-Over an algebraically closed characteristic-zero field, the actual representation
-of SpecialLinearGroup k E on each fixed tensor power of a nonzero finite-dimensional
-space is semisimple. Degree zero is included. The selected Schur--Weyl producers
-identify the GL tensor-map span with a semisimple image algebra; the existing
-exists_smul_specialLinear identifies its span with the SL span in that degree.
+Over an algebraically closed characteristic-zero field, the representation of
+`SpecialLinearGroup k E` on each fixed tensor power of a nonzero finite-dimensional
+space is semisimple, including degree zero. The diagonal general-linear action
+spans a semisimple image algebra. The result `exists_smul_specialLinear` identifies
+this span with the special-linear span at each fixed degree.
 
-This is the specific representation-theory input for the binary instability
-branch of Bost, p31 (proof of Theorem 1.1). It specializes the general reductivity
-input to tensor powers and their subquotients. The bounded-polynomial quotient,
-two-factor regrouping, and actual orbit-ideal separation remain separate bridges.
-No semisimplicity of the infinite group's group algebra is asserted.
+The statements concern tensor powers and their subquotients. They do not assert
+general linear reductivity or semisimplicity of the infinite group's group algebra.
 -/
 
 @[expose] public section
@@ -37,8 +34,8 @@ namespace ArakelovGeometry.InvariantTheory
 
 variable (k E : Type*) [Field k] [AddCommGroup E] [Module k E]
 
-/-- The actual diagonal SL action on one tensor degree, including degree zero.
-This is the fixed-degree representation used in the Bost p31 instability route. -/
+/-- The diagonal special-linear action on a fixed tensor power,
+including degree zero. -/
 def tensorPowerSLRepresentation (n : ℕ) :
     Representation k (SpecialLinearGroup k E) (⨂[k]^n E) where
   toFun g := PiTensorProduct.map fun _ ↦ g.val.toLinearMap
@@ -74,10 +71,9 @@ private theorem representation_isSemisimpleModule_of_image {G V : Type*} [Group 
 
 variable [FiniteDimensional k E] [IsAlgClosed k] [Nontrivial E]
 
-/-- At each fixed degree the actual SL and GL tensor-map spans agree.
-The determinant normalization contributes the scalar c^n; this theorem
-does not assert equality on a sum of distinct degrees. This is the precise
-GL-to-SL bridge needed by the Bost p31 tensor-power input. -/
+/-- The special-linear and general-linear tensor-map spans agree at
+each fixed degree. Determinant normalization contributes the scalar `c ^ n`;
+the statement does not assert equality on a sum of distinct degrees. -/
 theorem tensorPowerSL_span_eq_gl_span (n : ℕ) :
     Submodule.span k (Set.range (tensorPowerSLRepresentation k E n)) =
       Submodule.span k (Set.range fun g : E ≃ₗ[k] E ↦
@@ -105,9 +101,8 @@ theorem tensorPowerSL_span_eq_gl_span (n : ℕ) :
     rw [hmap]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨h, rfl⟩)
 
-/-- The actual group-algebra image of the SL tensor action is the selected
-Schur--Weyl image algebra, for one fixed degree. This is the image-algebra
-bridge for Bost p31; it includes degree zero and makes no general reductivity claim. -/
+/-- At each fixed degree, the group-algebra image of the special-linear
+tensor action equals the diagonal tensor image algebra, including degree zero. -/
 theorem tensorPowerSL_image_eq [CharZero k] (n : ℕ) :
     (tensorPowerSLRepresentation k E n).asAlgebraHom.range =
       auxiliaryEndomorphismAlgebra k E n := by
@@ -115,10 +110,9 @@ theorem tensorPowerSL_image_eq [CharZero k] (n : ℕ) :
   rw [representation_range_eq_span, tensorPowerSL_span_eq_gl_span,
     span_range_piTensorProduct_map_eq_auxiliary]
 
-/-- Each actual SL tensor power is semisimple as a group-algebra module.
-This fixed-degree characteristic-zero result, including degree zero, is the
-tensor-power producer for Bost p31. Polynomial and orbit-separation bridges
-are separate; the group algebra itself is not asserted to be semisimple. -/
+/-- Each special-linear tensor power is semisimple as a group-algebra
+module in characteristic zero, including degree zero. This does not assert
+semisimplicity of the group algebra itself. -/
 theorem tensorPowerSL_isSemisimpleModule [CharZero k] (n : ℕ) :
     IsSemisimpleModule (MonoidAlgebra k (SpecialLinearGroup k E))
       (tensorPowerSLRepresentation k E n).asModule := by
@@ -127,17 +121,15 @@ theorem tensorPowerSL_isSemisimpleModule [CharZero k] (n : ℕ) :
     exact (associatedSubalgebras_semisimple k E n).2
   exact representation_isSemisimpleModule_of_image k (tensorPowerSLRepresentation k E n)
 
-/-- Every invariant subspace of a fixed actual SL tensor power admits an
-invariant complement, including degree zero. This is the representation form
-of the Bost p31 tensor-power input, with the same remaining polynomial bridges. -/
+/-- Every invariant subspace of a fixed special-linear tensor power
+admits an invariant complement, including degree zero. -/
 theorem tensorPowerSL_isSemisimpleRepresentation [CharZero k] (n : ℕ) :
     Representation.IsSemisimpleRepresentation (tensorPowerSLRepresentation k E n) :=
   (Representation.isSemisimpleRepresentation_iff_isSemisimpleModule_asModule _).mpr
     (tensorPowerSL_isSemisimpleModule k E n)
 
-/-- An actual equivariant surjection from an invariant subspace of a fixed
-SL tensor power has an equivariant linear section. This is the bounded
-splitting input for Bost p31, without a general reductivity assertion. -/
+/-- An equivariant surjection from an invariant subspace of a fixed
+special-linear tensor power has an equivariant linear section. -/
 theorem tensorPowerSL_submodule_surjection_splits [CharZero k] (n : ℕ)
     (U : Submodule (MonoidAlgebra k (SpecialLinearGroup k E))
       (tensorPowerSLRepresentation k E n).asModule)
@@ -149,10 +141,9 @@ theorem tensorPowerSL_submodule_surjection_splits [CharZero k] (n : ℕ)
   have := tensorPowerSL_isSemisimpleModule k E n
   exact IsSemisimpleModule.lifting_property q hq LinearMap.id
 
-/-- Every invariant of an equivariant quotient of an invariant subspace of an
-actual SL tensor power has an invariant lift. Invariance is written using
-the group basis elements of the actual group algebra. This is the individual
-factor lift input for Bost p31; polynomial and two-factor bridges remain separate. -/
+/-- Every invariant in an equivariant quotient of an invariant subspace
+of a special-linear tensor power has an invariant lift. Invariance is expressed
+using the group basis elements of the group algebra. -/
 theorem tensorPowerSL_exists_invariant_lift [CharZero k] (n : ℕ)
     (U : Submodule (MonoidAlgebra k (SpecialLinearGroup k E))
       (tensorPowerSLRepresentation k E n).asModule)

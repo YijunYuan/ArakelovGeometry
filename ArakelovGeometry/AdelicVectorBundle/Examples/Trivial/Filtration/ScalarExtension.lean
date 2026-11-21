@@ -10,15 +10,13 @@ public import ArakelovGeometry.AdelicVectorBundle.Tensor.BaseChange
 public import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Descent.InfiniteGalois
 
 /-!
-# Scalar extension of actual finite real filtrations
+# Scalar extension of finite real filtrations
 
-Actual subspace layers and their quotient images commute with scalar extension.
+Subspace layers and their quotient images commute with scalar extension.
 The intrinsic expectation and pairing retain the real weights and reciprocal-rank
-normalizations. These are the scalar-extension inputs for the binary conditional
-rationality statement used on page 31 of `bost.pdf`; they do not assert that
-geometric instability supplies a negative candidate. No finite degree of the
-extension field is required. Existing trivial-norm APIs identify these actual
-filtrations with the corresponding completed trivial-place norms.
+normalizations. No finite-degree assumption on the extension is required.
+The trivial-norm constructions identify these filtrations with the corresponding
+norms on completed fibres.
 -/
 
 @[expose] public section

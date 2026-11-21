@@ -22,7 +22,7 @@ map to the generic point of an irreducible component of the source.
 * `AlgebraicGeometry.DiscreteValuationSpecialization` packages the valuation-ring diagram
   together with the choices of its generic and closed points.
 
-## Main results
+## Main statements
 
 * `AlgebraicGeometry.nonempty_discreteValuationSpecialization` constructs such a diagram for a
   point in the closure of the image of a finite-type morphism into a locally Noetherian scheme.
@@ -45,30 +45,16 @@ not, the local subring is dominated by a discrete valuation ring inside the resi
 finite type of the composite map from the local ring at `y` to the residue field at `η`; that is
 `stalkSpecializes_residueField_essFiniteType`.
 
-## Local adoption boundary (Bost, page 31)
+The full finite-type specialization statement is retained. Its assumptions
+are `LocallyOfFiniteType f`, `QuasiCompact f`, `IsLocallyNoetherian Y`, and
+membership in `closure (Set.range f.base)`. No completeness, power-series
+presentation, or finite residue-field extension is asserted. The conditional
+`residueFieldEquiv` concerns the fraction field and the selected generic point
+of the source.
 
-The full upstream finite-type specialization statement is retained, not a general
-Hilbert–Mumford theorem. Its assumptions are `LocallyOfFiniteType f`, `QuasiCompact f`,
-`IsLocallyNoetherian Y`, and membership in `closure (Set.range f.base)`. The output
-contains an actual DVR, its fraction field, a field-valued lift to the source,
-and a compatible DVR-valued point of the target with the prescribed closed point.
-No completeness, power-series identification, or finite residue-field extension
-is asserted. The conditional `residueFieldEquiv` concerns the fraction field and
-the selected source generic point, not the DVR residue field.
-
-For the binary instability input used by Bost p31 (Theorem 1.1 via CM Theorem 5.4.3),
-the source must be the actual group parameter space and `f` its orbit map: then
-`toSource` supplies the actual action element over the fraction field. An orbit
-closure as source does not supply this lift. Construction of that orbit morphism
-and its hypotheses, invariant separation, the compatible ground-field structures
-and primitive-vector input, and descent from the arbitrary DVR residue field
-remain downstream bridges. The local A2 matrix/coordinate-weight consumer is
-proved separately in `ArakelovGeometry.InvariantTheory.DVR.Weights`.
-This selected `StacksFrontier` code is not human-reviewed upstream.
-
-## References
-
-* [Stacks Project, Tag 0CM2](https://stacks.math.columbia.edu/tag/0CM2)
+For the binary instability construction in [ChenMoriwaki2020], the morphism
+is the group orbit parameter map. The field-valued source point then supplies
+a group element over the fraction field.
 -/
 
 @[expose] public section
@@ -370,18 +356,11 @@ theorem exists_discreteValuationSpecialization_genericPoint_specializes {X Y : S
         rw [hid, Spec.map_id, Category.id_comp]
     }, hηx⟩
 
-/-- A point in the closure of the image of a finite-type morphism into a locally Noetherian
-scheme is reached by a discrete valuation ring, with generic point on a generic component of the
-source.
-
-Local adoption: the original finite-type scheme statement is retained in full.
-For Bost p31 it supplies the DVR diagram only when `f` is the actual group orbit
-parameter map, so `toSource` is a genuine fraction-field action element. This is
-sufficient for the specialization input to the binary matrix route; the orbit-map
-hypotheses, compatible ground-field structures, primitive-vector input and
-residue-field descent are still unmet. The local A2 matrix/coordinate-weight
-consumer is proved in `ArakelovGeometry.InvariantTheory.DVR.Weights`.
-There is no completeness, power-series, or finite DVR residue-field assertion. -/
+/-- A point in the closure of the image of a finite-type morphism into
+a locally Noetherian scheme is reached by a discrete valuation ring, with its
+generic point mapping to the generic point of an irreducible component of the
+source. No completeness, power-series presentation, or finite residue-field
+extension is asserted. -/
 @[stacks 0CM2]
 theorem nonempty_discreteValuationSpecialization {X Y : Scheme} (f : X ⟶ Y)
     [LocallyOfFiniteType f] [QuasiCompact f] [IsLocallyNoetherian Y] (y : Y)

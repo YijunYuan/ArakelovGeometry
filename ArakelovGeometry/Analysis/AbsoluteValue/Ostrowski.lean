@@ -16,27 +16,22 @@ import Mathlib.LinearAlgebra.Countable
 import Mathlib.NumberTheory.Ostrowski
 
 /-!
-# Ostrowski-type classification of absolute values
+# Classification of absolute values
 
-This file proves the Gelfand–Tornheim/Ostrowski classification of complete archimedean
-fields and derives Ostrowski's theorem for number fields, together with countability and
-finite-support consequences for the set of places of a number field.
+This file proves the Gelfand–Tornheim classification of complete archimedean
+fields and Ostrowski's theorem for number fields, with countability and
+finite-support consequences for their places. These results underlie the
+number-field adelic curve.
 
-## Neukirch, ANT, Chapter II, Theorem 4.2 (Gelfand–Tornheim/Ostrowski)
+## Implementation notes
 
-A field complete with respect to an archimedean absolute value is `ℝ` or `ℂ`, with the
-absolute value a power of the standard one. We follow the strategy of Neukirch's proof:
-
-1. Normalization: `abs` restricted to `ℚ` is `|·| ^ s` for some `s ∈ (0,1]`
-   (Ostrowski over `ℚ`; the `p`-adic case is excluded since `abs` is archimedean).
-2. `abs ^ (1/s)` is again an absolute value (binomial expansion and `n`-th roots), so `K` is
-   a normed field in which `ℚ` embeds isometrically; by completeness the embedding extends
-   to an isometric `σ₀ : ℝ →+* K`, making `K` a normed `ℝ`-algebra.
-3. Every element of `K` is quadratic over `ℝ`, so `K ≃ ℝ` or `K ≃ ℂ`: this is the
-   Gelfand–Mazur theorem, `NormedAlgebra.Real.nonempty_algEquiv_or` in Mathlib (whose proof
-   uses the same minimum-of-`‖ξ² - (z + conj z) * ξ + z * conj z‖` argument as Neukirch).
-4. In the complex case the norm identity `‖σ a‖ = ‖a‖` follows since a continuous
-   multiplicative function on `ℂ` fixing `|·|` on `ℝ` is trivial on the unit circle. -/
+For a complete archimedean field, first normalize the restriction of the
+absolute value to `ℚ` to a power of the usual absolute value. Taking the reciprocal
+power makes the field a normed `ℝ`-algebra. The Gelfand–Mazur theorem,
+`NormedAlgebra.Real.nonempty_algEquiv_or`, then identifies it with `ℝ` or `ℂ`.
+In the complex case, the norm identity follows from triviality on the unit circle
+of a continuous multiplicative function that fixes the usual absolute value on `ℝ`.
+-/
 
 @[expose] public section
 
@@ -338,9 +333,9 @@ private theorem neukirch_final {K : Type*} [NormedField K]
           show (algebraMap ℝ K) r = σ₀ r from rfl, hσ₀norm, Real.norm_eq_abs]) }
   exact neukirch_final_aux abs hs habs' (fun r ↦ hσ₀norm r) hσ₀cont
 
-/-- **Gelfand–Tornheim / Ostrowski** (J. Neukirch, *Algebraic Number Theory*, Chapter II,
-Theorem 4.2): a field complete with respect to an archimedean absolute value is `ℝ` or `ℂ`,
-with the absolute value a power of the standard one. -/
+/-- The **Gelfand–Tornheim theorem**: a field complete with respect to an
+archimedean absolute value is isomorphic to `ℝ` or `ℂ`, with the absolute value
+a power of the standard one. -/
 theorem AbsoluteValue.exists_ringEquiv_real_or_complex_of_complete {K : Type*} [Field K]
     (abs : AbsoluteValue K ℝ) (habs : ¬IsNonarchimedean abs) (hK : CauSeq.IsComplete K abs) :
     (∃ σ : K ≃+* ℝ, ∃ s : ℝ, s ∈ Set.Ioc 0 1 ∧ ∀ a : K, abs a = ‖σ a‖ ^ s) ∨
@@ -471,22 +466,21 @@ theorem CauSeq.isComplete_completion {K : Type*} [Field K] (abs : AbsoluteValue 
 namespace NumberField
 open AbsoluteValue
 
-/-! ### Ostrowski's theorem for number fields
+/-!
+### Ostrowski's theorem for number fields
 
-We follow K. Conrad, *Ostrowski for number fields*, Theorem 3.
+In the nonarchimedean case, the absolute value is bounded by `1` on `𝓞 K`.
+Its elements of absolute value less than `1` form a nonzero prime ideal.
+The denominator-clearing result `exists_primeCompl_mul_eq_of_integer` and
+`isEquiv_of_lt_one_imp` identify the corresponding finite place.
 
-* Nonarchimedean case (Conrad, Theorem 2): `abs ≤ 1` on `𝓞 K` (integrality argument), so
-  `𝔭 = {α ∈ 𝓞 K | abs α < 1}` is a nonzero prime ideal. Writing `y ∈ K` with `y·d = n` where
-  `d ∉ 𝔭` (Conrad, Lemma 1, provided by `exists_primeCompl_mul_eq_of_integer`), any `y` with
-  `𝔭`-adic absolute value `< 1` also has `abs y < 1`, which by `isEquiv_of_lt_one_imp` makes
-  `abs` equivalent to the finite place attached to `𝔭`.
-* Archimedean case (Conrad defers to the references; we use
-  `exists_ringEquiv_real_or_complex_of_complete`): the completion of `K` is a complete
-  archimedean field, hence a subfield-with-power-`s` of `ℝ` or `ℂ`; composing with `K → K̂`
-  yields a complex embedding of `K` whose infinite place is equivalent to `abs`. -/
+In the archimedean case, `exists_ringEquiv_real_or_complex_of_complete`
+identifies the completion with `ℝ` or `ℂ`. Composing with the completion map
+gives an embedding whose infinite place is equivalent to the original absolute value.
+-/
 
-/-- A nonarchimedean absolute value is bounded by `1` on elements that are integral over `ℤ`
-(Conrad, proof of Theorem 2: nonnegativity of `-log abs` on algebraic integers). -/
+/-- A nonarchimedean absolute value is bounded by `1` on elements integral
+over `ℤ`. -/
 theorem abs_le_one_of_isIntegral {K : Type*} [Field K] {abs : AbsoluteValue K ℝ}
     (hna : IsNonarchimedean abs) {x : K} (hx : IsIntegral ℤ x) : abs x ≤ 1 := by
   by_contra hgt
@@ -533,15 +527,15 @@ theorem abs_le_one_of_isIntegral {K : Type*} [Field K] {abs : AbsoluteValue K �
       _ = abs x ^ j := one_mul _
   exact absurd key (not_le.mpr (pow_lt_pow_right₀ hgt hj_lt))
 
-/-- The nonarchimedean half of Ostrowski: a nontrivial nonarchimedean absolute value on a
-number field is equivalent to a finite place (Conrad, Theorems 2 and 3). -/
+/-- The nonarchimedean case of **Ostrowski's theorem**: a nontrivial
+nonarchimedean absolute value on a number field is equivalent to a finite place. -/
 theorem exists_finitePlace_of_isNonarchimedean {K : Type*} [Field K] [NumberField K]
     {abs : AbsoluteValue K ℝ} (habs : abs.IsNontrivial) (hna : IsNonarchimedean abs) :
     ∃ v : FinitePlace K, abs ≈ v.val := by
   -- all algebraic integers have absolute value at most 1
   have hle : ∀ α : 𝓞 K, abs (algebraMap (𝓞 K) K α) ≤ 1 := fun α =>
     abs_le_one_of_isIntegral hna (RingOfIntegers.isIntegral_coe α)
-  -- the prime ideal `𝔭 = {α | abs α < 1}` of Conrad's Theorem 2
+  -- the prime ideal `𝔭 = {α | abs α < 1}`
   let 𝔭 : Ideal (𝓞 K) :=
     { carrier := {α : 𝓞 K | abs (algebraMap (𝓞 K) K α) < 1}
       add_mem' := fun {a b} ha hb ↦ by
@@ -598,7 +592,7 @@ theorem exists_finitePlace_of_isNonarchimedean {K : Type*} [Field K] [NumberFiel
   have h𝔭_ne_bot : 𝔭 ≠ ⊥ := Submodule.ne_bot_iff 𝔭 |>.mpr ⟨a, ha_mem, ha_ne⟩
   -- the corresponding height-one prime and finite place
   let P : IsDedekindDomain.HeightOneSpectrum (𝓞 K) := ⟨𝔭, h𝔭_prime, h𝔭_ne_bot⟩
-  -- the key implication: `𝔭`-adically small elements are `abs`-small (via Conrad's Lemma 1)
+  -- `𝔭`-adically small elements are `abs`-small
   have hkey : ∀ y : K, (FinitePlace.mk P).val y < 1 → abs y < 1 := by
     intro y hy
     have h1 : ‖FinitePlace.embedding P y‖ < 1 := hy
@@ -606,7 +600,7 @@ theorem exists_finitePlace_of_isNonarchimedean {K : Type*} [Field K] [NumberFiel
     have hval : P.valuation K y < 1 :=
       (WithZeroMulInt.toNNReal_lt_one_iff (HeightOneSpectrum.one_lt_absNorm_nnreal P)).mp
         (by exact_mod_cast h1)
-    -- Conrad's Lemma 1: `y = n / d` with `d ∉ 𝔭`
+    -- clear denominators: `y = n / d` with `d ∉ 𝔭`
     obtain ⟨m, d, hnd⟩ :=
       IsDedekindDomain.HeightOneSpectrum.exists_primeCompl_mul_eq_of_integer
         (v := P) (x := y) hval.le
@@ -636,9 +630,9 @@ theorem exists_finitePlace_of_isNonarchimedean {K : Type*} [Field K] [NumberFiel
       exact ne_of_lt hlt
   exact ⟨FinitePlace.mk P, (isEquiv_of_lt_one_imp hnt hkey).symm⟩
 
-/-- The archimedean half of Ostrowski: an archimedean absolute value on a number field is
-equivalent to an infinite place. Conrad defers this to the references; we obtain it from the
-theorem `exists_ringEquiv_real_or_complex_of_complete` applied to the completion of `K`. -/
+/-- The archimedean case of **Ostrowski's theorem**: an archimedean absolute
+value on a number field is equivalent to an infinite place. Apply
+`exists_ringEquiv_real_or_complex_of_complete` to the completion of the field. -/
 theorem exists_infinitePlace_of_not_isNonarchimedean {K : Type*} [Field K]
     [NumberField K] {abs : AbsoluteValue K ℝ} (hna : ¬IsNonarchimedean abs) :
     ∃ v : InfinitePlace K, abs ≈ v.val := by
@@ -676,9 +670,8 @@ theorem exists_infinitePlace_of_not_isNonarchimedean {K : Type*} [Field K]
     rw [← h1]
     rfl
 
-/-- **Ostrowski's theorem for number fields** (K. Conrad, *Ostrowski for number fields*,
-Theorem 3): every nontrivial absolute value on a number field is equivalent to an infinite
-or a finite place. -/
+/-- **Ostrowski's theorem for number fields**: every nontrivial absolute
+value on a number field is equivalent to an infinite or a finite place. -/
 theorem ostrowski {K : Type*} [Field K] [NumberField K] (abs : AbsoluteValue K ℝ)
     (habs : abs.IsNontrivial) :
     (∃ v : InfinitePlace K, abs ≈ v.val) ∨ ∃ v : FinitePlace K, abs ≈ v.val := by

@@ -12,13 +12,15 @@ public import Mathlib.AlgebraicGeometry.GammaSpecAdjunction
 public import Mathlib.RingTheory.MvPolynomial.Basic
 
 /-!
-# Actual binary SL degeneration over a geometric DVR
+# Binary special-linear degeneration over a discrete valuation ring
 
-For Bost p31 this module consumes polynomial closure of the actual A2 orbit.
-The explicit coordinate morphism and the selected Stacks specialization produce
-an actual fraction-field group element and all integral pure-tensor evaluations
-needed by `DVRWeights`. The DVR is not assumed complete; neither a power-series
-presentation nor algebraicity of its residue field over the ground field is used.
+Polynomial closure of the binary orbit at zero yields a discrete valuation ring,
+a special-linear group element over its fraction field, and integral
+pure-tensor evaluations. Applied to a quotient determinant, this gives integral
+basis changes with nonempty negative residue support.
+
+Completeness of the valuation ring, a power-series presentation, and algebraicity
+of its residue field over the ground field are not assumed.
 -/
 
 @[expose] public section
@@ -34,8 +36,9 @@ universe u
 variable {k : Type u} [Field k] {ι : Bool → Type u}
   [∀ j, Fintype (ι j)] [∀ j, DecidableEq (ι j)] {r : ℕ}
 
-/-- The actual affine orbit morphism, parameterized by inverses. Over every extension field its
-point image is exactly the actual dual A2 orbit; see `binaryCovector_inverse_orbit_image`. -/
+/-- The affine orbit morphism parameterized by inverse matrices. Over every
+extension field its point image is the dual orbit; see
+`binaryCovector_inverse_orbit_image`. -/
 def binaryOrbitMorphism (f : Module.Dual k (⨂[k]^r (⨂[k] j, (ι j → k)))) :
     Spec (CommRingCat.of (BinarySLCoordinateAlgebra k ι)) ⟶
       Spec (CommRingCat.of (MvPolynomial (BinaryTensorIndex ι r) k)) :=
@@ -91,8 +94,8 @@ attribute [instance] commRing isDomain isDVR field groundAlgebra algebra
 end BinaryCovectorDegeneration
 
 omit [∀ j, DecidableEq (ι j)] in
-/-- Basis evaluations in an ideal imply the full integral-pure-tensor condition.
-The expansion uses the actual standard basis of the binary A2 tensor power. -/
+/-- Basis evaluations in an ideal imply the integral-pure-tensor condition,
+by expansion in the standard basis of the binary tensor power. -/
 theorem binaryCovector_integral_of_basis
     {R L : Type*} [CommRing R] [Field L] [Algebra R L]
     (I : Ideal R) (v : Module.Dual L (⨂[L]^r (⨂[L] j, (ι j → L))))
@@ -107,11 +110,10 @@ theorem binaryCovector_integral_of_basis
   · rw [binaryCovector_eval_tprod]
     simp only [hv, map_sum, map_mul, map_prod]
 
-/-- Polynomial closure of the actual binary orbit produces the actual DVR and
-fraction-field SL element. This is the geometric implication needed by Bost p31,
-not the full CM numerical equivalence. The Stacks diagram is constructed internally;
-its commutativity supplies the ground-field structures. No completeness or
-residue-field algebraicity is assumed or concluded. -/
+/-- Polynomial closure of the binary orbit at zero yields a discrete
+valuation ring and a fraction-field special-linear group element. No completeness
+or residue-field algebraicity is assumed or concluded. This degeneration result
+does not assert the full numerical equivalence in [ChenMoriwaki2020]. -/
 theorem nonempty_binaryCovectorDegeneration
     (f : Module.Dual k (⨂[k]^r (⨂[k] j, (ι j → k))))
     (hclosure : ∀ P : MvPolynomial (BinaryTensorIndex ι r) k,
@@ -194,9 +196,8 @@ theorem nonempty_binaryCovectorDegeneration
 
 namespace BinaryCovectorDegeneration
 
-/-- An integral SL change of a nonzero ground-field covector has a nonzero
-residue coordinate. This proves the primitivity needed for Bost, rather than
-assuming nonempty residue support from integrality alone. -/
+/-- An integral special-linear change of a nonzero ground-field covector
+has a nonzero residue coordinate. -/
 theorem exists_nonzero_residue_coordinate
     {f : Module.Dual k (⨂[k]^r (⨂[k] j, (ι j → k)))}
     (d : BinaryCovectorDegeneration f) (hf : f ≠ 0)
@@ -340,9 +341,9 @@ theorem binaryQuotientCoordinateBaseChange_tprod (L : Type u) [Field L] [Algebra
   simpa [β, Module.Basis.equivFun_apply, map_sum, map_smul, map_mul, map_prod,
     Finset.sum_apply, Pi.smul_apply, smul_eq_mul] using he
 
-/-- The actual determinant covector commutes with the explicit quotient basis
-transport. Thus the covector used by the orbit producer is the actual A2 quotient
-determinant over the fraction field, with no normalization or factorial. -/
+/-- The determinant covector commutes with quotient basis transport.
+The transported covector is the quotient determinant over the fraction field,
+with no additional normalization or factorial factor. -/
 theorem binaryQuotientCoordinateBaseChange_covector
     (L : Type u) [Field L] [Algebra k L]
     (q : (⨂[k] j, (ι j → k)) →ₗ[k] V) (b : Module.Basis (Fin r) k V) :
@@ -382,12 +383,10 @@ theorem binaryQuotientCovector_ne_zero
   rw [hmat, Matrix.det_one] at he
   exact one_ne_zero he
 
-/-- The actual Bost quotient-determinant consumer. Polynomial closure produces
-its own DVR and fraction-field group element, then Cartan gives actual integral
-SL changes with nonempty negative residue support. The quotient over the fraction
-field is the explicitly checked basis transport of the original quotient.
-The residue field is arbitrary; this statement supplies the exact determinant
-coordinates for subsequent polynomial solution descent. -/
+/-- Polynomial closure of the quotient determinant orbit at zero yields
+a discrete valuation ring and integral special-linear basis changes with
+nonempty negative residue support. The fraction-field quotient is the basis
+transport of the original quotient. The residue field is unrestricted. -/
 theorem exists_binary_quotient_negative_support_of_orbit_closure
     (q : (⨂[k] j, (ι j → k)) →ₗ[k] V) (b : Module.Basis (Fin r) k V)
     (hq : Function.Surjective q)
@@ -469,9 +468,9 @@ theorem binaryQuotientDeterminantPolynomial_eval
   exact (ev.map_det M).trans (congrArg (Matrix.det (n := Fin r)) hM)
 
 set_option backward.isDefEq.respectTransparency false in
-/-- Over every extension field the polynomial evaluates to the actual transformed
-quotient determinant. This identifies the original-k polynomial equations with
-exactly the same A2 coordinates used by the geometric DVR and Cartan producer. -/
+/-- Over every extension field, the polynomial evaluates to the
+transformed quotient determinant, in the same coordinates as the degeneration
+and Cartan decomposition. -/
 theorem binaryQuotientDeterminantPolynomial_actual_eval
     (L : Type u) [Field L] [Algebra k L]
     (q : (⨂[k] j, (ι j → k)) →ₗ[k] V) (b : Module.Basis (Fin r) k V)

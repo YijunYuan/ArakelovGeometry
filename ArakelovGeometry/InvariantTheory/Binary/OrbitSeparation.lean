@@ -10,18 +10,17 @@ public import ArakelovGeometry.InvariantTheory.Binary.PolynomialSemisimple
 public import ArakelovGeometry.InvariantTheory.Plucker
 
 /-!
-# Actual binary tensor invariant separation
+# Binary tensor invariant separation
 
-For the actual A2 dual tensor-power representation of two special-linear groups,
-nonsemistability implies that every polynomial vanishing on its actual orbit
-vanishes at zero. The proof uses only the concrete bounded polynomial modules,
-fixed-degree tensor semisimplicity and successive lifting for commuting factors.
-This is the one-way closure input for Bost p31, proof of Theorem 1.1; actual DVR
-specialization, negative weights and descent are separate consumers.
+For the dual tensor-power representation of two special linear groups,
+nonsemistability implies that every polynomial vanishing on the orbit vanishes
+at zero. The proof uses bounded polynomial modules, fixed-degree tensor
+semisimplicity, and successive invariant lifting for commuting factors.
 
-The public statement accepts every finite coordinate basis. The standard tensor
-basis corollary is exactly the input of `BinaryOrbitCoordinates`, and the quotient
-corollary uses the actual A2 exterior determinant covector.
+The statement accepts every finite coordinate basis. Corollaries give the
+standard tensor basis and quotient determinant cases. This is one direction
+of the binary instability criterion, rather than the full numerical equivalence
+in [ChenMoriwaki2020].
 -/
 
 @[expose] public section
@@ -86,10 +85,9 @@ private theorem binaryFactorHom_decompose (g : ∀ j, SpecialLinearGroup k (E j)
   funext j
   cases j <;> simp [binaryFactorHom]
 
-/-- Actual one-way null-cone input for Bost p31. Absence of a positive-degree
-homogeneous A2 invariant nonzero at `f` implies vanishing at zero of EVERY
-polynomial vanishing on the actual binary SL orbit. Coordinates are arbitrary;
-no orbit certificate, reductivity assumption or numerical instability is an input. -/
+/-- If no positive-degree homogeneous invariant is nonzero at `f`, then
+every polynomial vanishing on its binary special-linear orbit vanishes at zero.
+The coordinate basis is arbitrary. -/
 theorem binary_orbit_zero_of_not_isPolynomialSemistable (r : ℕ)
     (b : Module.Basis ι k (Module.Dual k (⨂[k]^r (⨂[k] j, E j))))
     (f : Module.Dual k (⨂[k]^r (⨂[k] j, E j)))
@@ -160,9 +158,9 @@ theorem binary_orbit_zero_of_not_isPolynomialSemistable (r : ℕ)
       simpa only [map_one, Module.End.one_apply] using hu 1
     simp [hf]
 
-/-- The actual nonzero quotient determinant covector satisfies orbit closure
-when the A2 quotient Plücker predicate fails. Positive factor and quotient ranks
-are retained for Bost p31; DVR specialization and negative weights remain separate. -/
+/-- The nonzero quotient determinant covector has zero in its polynomial
+orbit closure when the quotient Plücker semistability predicate fails.
+The factors and quotient have positive rank. -/
 theorem binary_quotient_determinant_orbit_closure
     {Q : Type*} [AddCommGroup Q] [Module k Q] [FiniteDimensional k Q] [Nontrivial Q]
     (q : (⨂[k] j, E j) →ₗ[k] Q) (hq : Function.Surjective q)
@@ -239,7 +237,7 @@ def finTwoCovectorEquiv (r : ℕ) :
       Module.Dual k (⨂[k]^r (⨂[k] j : Bool, E (finTwoEquiv.symm j))) :=
   (finTwoTensorPowerEquiv (k := k) E r).symm.dualMap
 
-/-- The explicit covector equivalence intertwines the actual A2 dual actions. -/
+/-- The covector equivalence intertwines the dual actions. -/
 theorem finTwoCovectorEquiv_equivariant (r : ℕ)
     (g : ∀ i, SpecialLinearGroup k (E i))
     (f : Module.Dual k (⨂[k]^r (⨂[k] i, E i))) :
@@ -303,9 +301,9 @@ variable {k : Type*} [Field k] [IsAlgClosed k] [CharZero k]
   [∀ j, Nonempty (κ j)] {r : ℕ}
 
 omit [∀ j, DecidableEq (κ j)] in
-/-- The public orbit-coordinate input in the actual standard tensor basis.
-The hypothesis uses A2 chooseBasis coordinates; all test polynomials in the
-conclusion use the standard coordinates `f(e_p)`, not chooseBasis coordinates. -/
+/-- Polynomial orbit closure in the standard tensor basis follows from
+nonsemistability expressed in `chooseBasis` coordinates. The test polynomials in
+the conclusion use the standard coordinates `f(e_p)`. -/
 theorem binary_standard_orbit_zero_of_not_isPolynomialSemistable
     (f : Module.Dual k (⨂[k]^r (⨂[k] j, (κ j → k))))
     (hns : ¬ IsPolynomialSemistable (Module.Free.chooseBasis k _)

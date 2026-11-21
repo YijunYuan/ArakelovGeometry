@@ -6,10 +6,10 @@ Authors: Yijun Yuan
 module
 
 /-!
-# Selected external results for the Bost foundation
+# Supporting algebraic results
 
-Consumers import individual verified modules from `ExternalCode`.
-This entry point does not import donor projects wholesale. Source provenance,
-mathematical specializations and their Bost consumers are recorded in the
-subdirectory README and in the transplanted declarations' docstrings.
+Selected algebraic results support the partial formalization of
+[ChenMoriwaki2020], including discrete valuation ring specialization and
+semisimplicity of tensor-power representations. Modules import the individual
+results they use.
 -/

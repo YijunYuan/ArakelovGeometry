@@ -10,20 +10,20 @@ public import ArakelovGeometry.Analysis.AbsoluteValue.Ostrowski
 import Mathlib.NumberTheory.NumberField.ProductFormula
 
 /-!
-# The number-field adelic curve (`thm:numberfield_integrable`)
+# The number-field adelic curve
 
-Each place `ω : Place K` is represented by its *normalized* absolute value `placeRep ω`:
+Each place `ω : Place K` is represented by its normalized absolute value `placeRep ω`:
 the mathlib `FinitePlace` value for nonarchimedean places, the `InfinitePlace` value for
 archimedean places, and the trivial absolute value for the trivial place. The measure gives
 a nonarchimedean place mass `1`, an archimedean place mass `mult` (`1` or `2`), and the
-trivial place mass `0`. With this normalization the properness of the resulting adelic
-curve is exactly the product formula `NumberField.prod_abs_eq_one`
-(K. Conrad, *Ostrowski for number fields*, Theorem 4).
+trivial place mass `0`. With this normalization, properness of the resulting adelic
+curve is exactly the product formula `NumberField.prod_abs_eq_one`.
 
 The integrability obligation `integrable_log` reduces, via the Dirac-sum criterion
 `MeasureTheory.integrable_sum_dirac_iff`, to summability of
 `ω ↦ (placeWeight ω).toReal * ‖log (placeRep ω x)‖`, which has finite support by
-`finite_out_ne_one` (transported along `ω.out ≈ placeRep ω`). -/
+`finite_out_ne_one` (transported along `ω.out ≈ placeRep ω`).
+-/
 
 @[expose] public section
 
@@ -247,9 +247,8 @@ noncomputable def numberFieldAdelicStructure (K : Type*) [Field K] [NumberField 
       ((placeRep_equiv ω : ω.out.IsEquiv (placeRep ω)).eq_one_iff).mp hc
     rw [h1, Real.log_one, norm_zero, mul_zero]
 
-/-- The product formula `NumberField.prod_abs_eq_one` (K. Conrad, *Ostrowski for number
-fields*, Theorem 4) in logarithmic form, integrated against the place measure of the
-number-field adelic structure. -/
+/-- The **product formula** `NumberField.prod_abs_eq_one` in logarithmic form,
+integrated against the place measure of the number-field adelic structure. -/
 theorem numberField_product_formula {K : Type*} [Field K] [NumberField K] {x : K}
     (hx : x ≠ 0) :
     letI : MeasurableSpace (AbsoluteValue.Place K) := ⊤
@@ -362,9 +361,8 @@ theorem numberField_product_formula {K : Type*} [Field K] [NumberField K] {x : K
       prod_abs_eq_one hx, Real.log_one]
   exact hint.trans key
 
-/-- The number-field adelic structure is proper: this is the product formula
-`NumberField.prod_abs_eq_one` (K. Conrad, *Ostrowski for number fields*, Theorem 4),
-in logarithmic form. -/
+/-- The number-field adelic structure is proper by the logarithmic form of the
+**product formula** `NumberField.prod_abs_eq_one`. -/
 instance instIsProperNumberFieldAdelicStructure (K : Type*) [Field K] [NumberField K] :
     IsProper (numberFieldAdelicStructure K) := by
   constructor

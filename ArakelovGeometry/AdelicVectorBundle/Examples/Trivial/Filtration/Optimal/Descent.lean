@@ -9,20 +9,17 @@ public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.Op
 public import ArakelovGeometry.AdelicVectorBundle.Examples.Trivial.Filtration.ScalarExtension
 
 /-!
-# Rationality of an actual centered negative binary pair
+# Descent of centered negative binary filtrations
 
-For the binary Bost application on page 31 of `bost.pdf`, an actual negative
-centered pair over an algebraic algebraically closed extension descends to such
-a pair over the original characteristic-zero field. Real weights and total
-energy one are retained. The input pair need not be Galois invariant: the
-conditional unique optimizer over the extension field produces stable layers.
+A centered negative pair for a tensor quotient over an algebraic algebraically
+closed extension descends to such a pair over the original characteristic-zero
+field. The descended pair has real weights and total energy one. The extension
+may have infinite degree.
 
-The internal finite-family optimization is reused only to prove this binary
-rationality input. Global optimality of the descended pair is not needed, and
-geometric instability producing a negative input remains a separate theorem.
-The extension need not have finite degree; no number-field assumption is used.
-Actual subspace/image filtrations have the completed trivial-place meanings
-proved by the existing norm/filtration bridges.
+This is a binary descent statement in the setting of [ChenMoriwaki2020], Section 5.4.
+The input pair need not be Galois invariant: uniqueness of the normalized optimizer
+over the extension produces stable layers. The conclusion asserts negativity and
+normalization, without asserting global optimality of the descended pair.
 -/
 
 @[expose] public section
@@ -57,10 +54,9 @@ local notation "Value" => (fun F : Families ↦
 
 include hq
 
-/-- An arbitrary actual centered negative input over the extension field produces
-Galois-stable actual layers. Stability is proved from uniqueness of the global
-unit optimizer, by pulling every comparison family back by the inverse automorphism.
-This finite-family producer is used internally by the binary Bost descent. -/
+/-- A centered negative family over the extension field yields Galois-stable
+layers. Stability follows from uniqueness of the normalized global optimizer,
+by pulling comparison families back along inverse automorphisms. -/
 theorem exists_galois_stable_normalized_negative_family
     (ha : ∀ j, 0 < finrank K (E j)) (F₀ : Families)
     (hF₀ : Admissible F₀) (hneg₀ : Value F₀ < 0) :
@@ -224,16 +220,12 @@ variable {K L : Type*} [Field K] [Field L] [Algebra K L]
   [AddCommGroup V] [Module K V] [FiniteDimensional K V]
   [AddCommGroup Q] [Module K Q] [FiniteDimensional K Q]
 
-/-- Binary rationality needed on page 31 of `bost.pdf`: any actual centered negative
-pair for the scalar extension of a surjective positive-rank quotient produces an
-actual centered negative pair over the original characteristic-zero field, with
-unit total self-pairing. The extension is algebraic and algebraically closed,
-possibly of infinite degree; weights remain real. Galois invariance is derived
-from the unique global optimizer over `L`, and is not an input. This locally
-proves the rationality auxiliary step for the binary Bost application using the
-conditional CM optimization argument. Geometric instability producing negativity
-and the variational inequality are
-not assumed or proved here, and descended global optimality is not asserted. -/
+/-- A centered negative pair for the scalar extension of a surjective
+positive-rank tensor quotient yields a centered negative pair over the original
+characteristic-zero field, with total self-pairing one. The extension is algebraic
+and algebraically closed, possibly of infinite degree, and the weights remain real.
+Galois invariance of the optimizer is derived rather than assumed. The conclusion
+does not assert global optimality of the descended pair. -/
 theorem exists_centered_negative_tensor_filtrations_of_baseChange
     (q : E ⊗[K] V →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)
     (F₀ : ℝ → Submodule L (L ⊗[K] E)) (G₀ : ℝ → Submodule L (L ⊗[K] V))

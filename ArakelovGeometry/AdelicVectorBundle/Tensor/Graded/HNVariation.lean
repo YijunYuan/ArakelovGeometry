@@ -10,23 +10,23 @@ public import ArakelovGeometry.AdelicVectorBundle.Tensor.Graded.Degree
 public import ArakelovGeometry.LinearAlgebra.Filtration.RankDrop
 
 /-!
-# Bost's actual HN variation assembly
+# Slope comparison from binary Harder–Narasimhan variation
 
-This is the binary unstable-case slope step on Bost pages 31–32, equation (47).
-An actual original-field centered negative candidate produces the optimizer,
-actual grade-HN lifts, common adapted bases and strict rank-sum drop. The A6
-eventual upper bound and A9 lower bound are applied to those same chosen data.
-The quotient retains the pushforward of the original orthogonal tensor norm.
+A centered negative pair produces a global optimizer, lifted Harder–Narasimhan
+filtrations on its grades, common adapted bases, and strict decrease of the sum
+of grade ranks. Upper and lower variation bounds for these same data compare
+the quotient slope with the sum of the factor slopes. The quotient retains the
+pushforward of the original orthogonal tensor norm.
 
-Smaller-rank tensor-HN compatibility is a quantified induction hypothesis on
-all actual grades of the fixed factors, including those chosen after optimization.
-Rank drop makes this hypothesis applicable; it does not prove it. The one-sided
-variation bound suffices, so neither the full CM (5.13), the exact affine identity,
-the entire Bost Theorem 1.1 nor its separate Section 6 branch is asserted.
-The proper adelic, discrete-or-countable and Hermitian norm context is retained.
-The final theorem obtains the candidate from the actual A2 geometric instability
-hypothesis over the original characteristic-zero field, leaving only the genuine
-smaller-rank tensor-HN induction boundary.
+The results assume semistable Hermitian factors over a proper adelic curve, with
+the stated discrete or countable-density conditions. Tensor compatibility of Harder–Narasimhan
+filtrations on all strictly smaller-rank grades is an explicit induction hypothesis.
+The final theorem obtains the negative pair from geometric nonsemistability over
+the original characteristic-zero field.
+
+This is a conditional binary slope comparison in the setting of
+[ChenMoriwaki2020], Chapter 5. It does not establish the general variational
+inequality (5.13), and the smaller-rank hypothesis remains explicit.
 -/
 
 @[expose] public section
@@ -48,12 +48,11 @@ variable {K : Type*} [Field K] {Q : Type*}
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
 
-/-- The Bost pp.31–32 quotient slope bound from an ACTUAL negative pair. The optimizer,
-HN lifts and common bases are constructed, and the strict rank-sum drop is derived.
-The only arithmetic induction boundary is tensor-HN compatibility on all smaller-rank
-actual grades of the fixed factors, quantified before choosing the optimizer. A6's
-one-sided upper bound on the same data suffices; full CM (5.13) is not asserted.
-The original quotient norm is retained. Geometric production of the candidate is separate. -/
+/-- For semistable Hermitian factors, a centered negative pair gives a lower bound
+on the tensor quotient slope by the sum of the factor slopes. The optimizer,
+lifted Harder–Narasimhan filtrations, common bases, and strict decrease of the
+sum of grade ranks are constructed. Tensor compatibility on all strictly smaller-rank grades of the
+fixed factors is assumed. The original quotient norm is retained. -/
 theorem slope_sum_le_tensor_quotient_of_negative_candidate
     [hsemiV : V.IsMeanSlopeSemistable] [hsemiW : W.IsMeanSlopeSemistable]
     (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)
@@ -107,14 +106,13 @@ variable {K E F Q : Type u} [Field K] [CharZero K]
   [hN : S.IsArchimedeanNormalized]
   [hV : V.toNormFamily.IsHermitian] [hW : W.toNormFamily.IsHermitian]
 
-/-- The actual geometric unstable case of Bost pp.31–32, equation (47), with the
-genuine smaller-rank tensor-HN induction hypothesis still explicit. A2 geometric
-nonsemistability produces an original-field unit negative global optimizer; its
-actual candidate enters the proved optimizer/HN-lift arithmetic assembly. There
-is no assumed numerical inequality or rank-drop certificate. The original tensor
-pushforward quotient norm, proper adelic and discrete-or-countable setting are
-retained, including trivial valuations. Only the binary HN variation is needed;
-full CM (5.13), the full HN induction, Section 6 and Bost Theorem 1.1 are not asserted. -/
+/-- For semistable Hermitian factors, geometric nonsemistability of the quotient
+bounds its slope below by the sum of the factor slopes, assuming tensor compatibility of
+Harder–Narasimhan filtrations on all strictly smaller-rank grades.
+The original tensor pushforward quotient norm, proper adelic curve, and stated
+discrete or countable-density conditions are retained, including trivial valuations.
+This is a conditional binary comparison; the full inequality (5.13) of
+[ChenMoriwaki2020] is not asserted. -/
 theorem slope_sum_le_tensor_quotient_of_not_geometricallySemistable
     [hsemiV : V.IsMeanSlopeSemistable] [hsemiW : W.IsMeanSlopeSemistable]
     (q : V ⊗[K] W →ₗ[K] Q) (hq : Function.Surjective q) (hQ : 0 < finrank K Q)

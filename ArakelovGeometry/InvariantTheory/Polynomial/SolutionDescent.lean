@@ -10,11 +10,11 @@ public import Mathlib.RingTheory.Nullstellensatz
 /-!
 # Descent of simultaneous polynomial solutions
 
-The residue field in Bost p31 may be any extension of the algebraically closed
-base field. Finite-variable polynomial equations with a solution over that
-extension already have a solution over the base. No algebraicity assumption or
-constructible-set descent is needed. This supplies the matrix-equation step,
-separate from descent of the real optimizer to a nonclosed field.
+Polynomial equations in finitely many variables that have a simultaneous
+solution over an extension of an algebraically closed field already have a
+solution over the base field. No algebraicity assumption on the extension is
+required. In the binary instability construction, this descends matrix equations
+from a residue field.
 -/
 
 @[expose] public section
@@ -23,9 +23,8 @@ namespace ArakelovGeometry.InvariantTheory
 
 open MvPolynomial
 
-/-- Simultaneous roots of any set of polynomials in finitely many variables descend
-from any extension field to an algebraically closed base. This is the small
-residue-field step used for Bost p31, not optimizer or constructible-set descent. -/
+/-- Simultaneous roots of any set of polynomials in finitely many
+variables descend from an arbitrary extension to an algebraically closed base field. -/
 theorem exists_polynomial_solution_of_extension
     {k κ σ : Type*} [Field k] [IsAlgClosed k] [Field κ] [Algebra k κ] [Finite σ]
     (S : Set (MvPolynomial σ k))

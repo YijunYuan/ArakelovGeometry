@@ -10,8 +10,8 @@ public import ArakelovGeometry.AdelicVectorBundle.Tensor.Hermitian.Dual.Basic
 /-!
 # Grouping orthogonal tensor norms
 
-Canonical grouping and finite reindexing preserve the actual completed orthogonal
-tensor norms at every place, including the tensor-power regrouping used in Bost Section 6.
+Canonical grouping and finite reindexing preserve the completed orthogonal
+tensor norms at every place, including regrouping of arbitrary tensor powers.
 -/
 
 @[expose] public section

@@ -10,14 +10,16 @@ public import ArakelovGeometry.InvariantTheory.Binary.OrbitSeparation
 public import ArakelovGeometry.InvariantTheory.Binary.TensorTransport
 
 /-!
-# Actual binary geometric instability over an algebraically closed field
+# Binary geometric instability over an algebraically closed field
 
-This is the binary, one-way implication required on Bost page 31. Quotient
-Plücker nonsemistability produces actual centered negative real filtrations.
-Factor coordinates are transported with the matrix/module SL group isomorphism,
-and the actual quotient determinant is retained through orbit separation, DVR
-degeneration and residue polynomial descent. Original-field optimizer descent
-is the separate consumer in `Trivial.Filtration.Instability`.
+Over an algebraically closed characteristic-zero field, quotient Plücker
+nonsemistability produces centered negative real filtrations.
+Factor coordinates are transported through the matrix and module descriptions
+of the special linear group. The quotient determinant is preserved through
+orbit separation, discrete valuation ring degeneration, and residue polynomial descent.
+
+This is a one-way binary specialization of the instability results in
+[ChenMoriwaki2020]. It does not assert a general-group Hilbert–Mumford equivalence.
 -/
 
 @[expose] public section
@@ -181,9 +183,9 @@ variable {k : Type*} [Field k] [CharZero k] {ι : Bool → Type*}
   [∀ j, FiniteDimensional k (E j)]
   {Q : Type*} [AddCommGroup Q] [Module k Q] [FiniteDimensional k Q]
 
-/-- Actual A2 quotient nonsemistability implies nonsemistability of the specific
-determinant covector in factor coordinates. No extra nonzero certificate is
-required: the target basis supplies its nonzero determinant generator. -/
+/-- Quotient nonsemistability implies nonsemistability of its determinant
+covector in factor coordinates. The target basis supplies a nonzero determinant
+generator. -/
 theorem not_isPolynomialSemistable_binaryQuotientInCoordinates
     (b : ∀ j, Basis (ι j) k (E j)) (d : Basis (Fin (finrank k Q)) k Q)
     (q : (⨂[k] j, E j) →ₗ[k] Q)
@@ -223,15 +225,10 @@ variable {k : Type u} [Field k] [CharZero k] [IsAlgClosed k]
   [∀ j, FiniteDimensional k (E j)] [∀ j, Nontrivial (E j)]
   {Q : Type*} [AddCommGroup Q] [Module k Q] [FiniteDimensional k Q]
 
-/-- The binary geometric implication needed on Bost p31: actual A2 quotient
-nonsemistability over an algebraically closed characteristic-zero field produces
-actual centered finite left-continuous real filtrations with negative quotient
-expectation. The proof composes invariant separation, the genuine DVR orbit
-degeneration, original-coefficient residue polynomial descent and checked factor
-coordinate transport. No group lift, negative candidate or extra nonzero
-coordinate certificate is assumed. This is the one-way binary implication,
-not a general-group Hilbert--Mumford converse; original-field normalization is
-the subsequent Rationality consumer. -/
+/-- Quotient nonsemistability over an algebraically closed characteristic-zero
+field yields centered finite left-continuous real filtrations with negative
+quotient expectation. This is the binary instability implication; a general-group
+Hilbert–Mumford equivalence is not asserted. -/
 theorem exists_binary_negative_filtrations_of_not_isQuotientSemistable
     (q : (⨂[k] j, E j) →ₗ[k] Q) (hq : Function.Surjective q)
     (hQ : 0 < finrank k Q)

@@ -8,12 +8,12 @@ module
 public import ArakelovGeometry.LinearAlgebra.Filtration.Pairing
 
 /-!
-# Rank-sum drop for centered real filtrations
+# Decrease of the sum of ranks for centered real filtrations
 
-This is the algebraic rank-induction step on Bost page 32. A pair of centered
-finite real filtrations with nonzero total intrinsic self-pairing has strictly
-smaller rank sum on every pair of actual grades. The result includes zero grades
-and zero-dimensional factors and does not assume tensor-HN compatibility.
+A pair of centered finite real filtrations with nonzero total self-pairing has
+strictly smaller sum of ranks on every pair of grades. The result includes zero
+grades and zero-dimensional factors and assumes no tensor compatibility of
+Harder–Narasimhan filtrations.
 -/
 
 @[expose] public section
@@ -60,9 +60,9 @@ theorem filtrationPairing_self_eq_mul_expectation_of_full_grade [Finite ι]
       exact Finset.sum_congr rfl fun i _ ↦ congrArg (· * a i) (ha i)
     _ = t * ((∑ i, a i) / (finrank K E : ℝ)) := by rw [← Finset.mul_sum, mul_div_assoc]
 
-/-- Bost page 32's strict drop in the SUM of ranks, for every pair of actual grades.
-Centering and nonzero total intrinsic self-pairing suffice, including zero-rank edges.
-This makes the smaller-rank induction applicable; it does not prove that hypothesis. -/
+/-- For centered filtrations with nonzero total self-pairing, the sum
+of the ranks of every pair of grades is strictly smaller than the sum of the
+factor ranks. Zero-rank grades are included. -/
 theorem finrank_filtrationGraded_add_lt_of_centered [Finite ι] [Finite κ]
     (b : Basis ι K E) (c : Basis κ K F) (a : ι → ℝ) (d : κ → ℝ)
     {P : ℝ → Submodule K E} {R : ℝ → Submodule K F}

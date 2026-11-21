@@ -9,15 +9,16 @@ public import ArakelovGeometry.LinearAlgebra.LaurentSeries.CartanDecomposition
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 
 /-!
-# Cartan decomposition over an arbitrary DVR fraction field
+# Cartan decomposition over a discrete valuation ring
 
-The existing PID matrix diagonalization is retained and specialized to a DVR;
-no completeness or coefficient-field hypothesis enters. This supplies the two
-matrix factorizations needed by the binary instability direction used on Bost
-p31, rather than the full finite-family Hilbert–Mumford equivalence of CM 5.2.10.
-The actual A2 coordinate-weight consumer is proved in `InvariantTheory.DVR.Weights`.
-The orbit parameter map, its geometric and ground-field hypotheses, primitivity
-of the initial determinant vector, and residue-field descent remain downstream.
+Matrix diagonalization over a principal ideal domain gives a Cartan decomposition
+over the fraction field of any discrete valuation ring. A determinant-one matrix
+admits integral special-linear outer factors and zero-sum integer exponents.
+Completeness and a coefficient field are not assumed.
+
+These matrix factorizations are algebraic ingredients for the instability
+criterion in [ChenMoriwaki2020], Section 5.2. They do not assert the full
+Hilbert–Mumford equivalence.
 -/
 
 @[expose] public section
@@ -34,9 +35,8 @@ variable {π : R} (hπ : Irreducible π)
 include hπ
 
 omit [Fintype ι] [DecidableEq ι] in
-/-- Specializing finite denominator clearing to a DVR gives an integral multiple
-by a uniformizer power. Bost p31 uses this before each binary Cartan factorization;
-it needs no completion. The orbit, primitive-vector and residue-descent bridges remain. -/
+/-- Multiplying a fraction-field matrix by a sufficiently large power
+of a uniformizer gives an integral matrix. -/
 theorem exists_integral_matrix [Finite ι] (g : Matrix ι ι L) :
     ∃ (m : ℕ) (A : Matrix ι ι R),
       A.map (algebraMap R L) = (algebraMap R L π) ^ m • g := by
@@ -53,9 +53,8 @@ theorem exists_integral_matrix [Finite ι] (g : Matrix ι ι L) :
   rw [← mul_assoc, ← mul_assoc, ← map_mul]
   simp
 
-/-- Specialization of PID diagonalization to an integral multiple of a fraction-field
-matrix, retaining actual integral invertible factors. This is the intermediate
-Bost p31 matrix input; orbit, primitive-vector and residue descent remain downstream. -/
+/-- An integral multiple of an invertible fraction-field matrix admits
+a diagonalization with integral invertible outer factors. -/
 theorem exists_integral_diagonal (g : GL ι L) :
     ∃ (m : ℕ) (P Q : GL ι R) (d : ι → R),
       (∀ i, d i ≠ 0) ∧
@@ -79,10 +78,8 @@ theorem exists_integral_diagonal (g : GL ι L) :
   simpa only [Matrix.map_mul, ← diagonal_map (map_zero (algebraMap R L))] using
     hA.symm.trans (congrArg (fun B : Matrix ι ι R ↦ B.map (algebraMap R L)) h)
 
-/-- Cartan factorization for a general DVR fraction field, extending the local
-Laurent-series result with no completion assumption. Bost p31 needs this only
-for its two SL factors; `InvariantTheory.DVR.Weights` supplies the actual action
-consumer. The orbit, primitive-vector and residue-descent bridges remain. -/
+/-- A **Cartan decomposition** over the fraction field of an arbitrary
+discrete valuation ring. No completeness assumption is required. -/
 theorem exists_cartan (g : GL ι L) :
     ∃ (P Q : GL ι R) (a : ι → ℤ),
       (g : Matrix ι ι L) =
@@ -120,10 +117,7 @@ theorem exists_cartan (g : GL ι L) :
   simp [x]
 
 omit [IsDomain R] [IsDiscreteValuationRing R] in
-/-- A pure uniformizer power which is an integral unit has exponent zero.
-This extends the Laurent coefficient argument to any DVR, exactly as needed
-for determinant-one weights in Bost p31. The orbit, primitive-vector and
-residue-descent bridges remain. -/
+/-- A power of a uniformizer that equals an integral unit has exponent zero. -/
 theorem exponent_eq_zero_of_eq_unit (a : ℤ) (u : Rˣ)
     (h : (algebraMap R L π) ^ a = algebraMap R L (u : R)) : a = 0 := by
   let φ := algebraMap R L
@@ -149,10 +143,8 @@ theorem exponent_eq_zero_of_eq_unit (a : ℤ) (u : Rˣ)
     omega
 
 omit [IsDomain R] [IsDiscreteValuationRing R] in
-/-- Every DVR Cartan factorization of a determinant-one matrix has zero total exponent.
-This retains the Laurent producer over an arbitrary DVR and supplies the normalized
-binary weights for Bost p31. The A2 coordinate consumer is in
-`InvariantTheory.DVR.Weights`; orbit, primitive-vector and residue descent remain. -/
+/-- Every Cartan decomposition of a determinant-one matrix over a
+discrete valuation ring has zero total exponent. -/
 theorem sum_exponents_eq_zero (P Q : GL ι R) (a : ι → ℤ)
     (h : ((P : Matrix ι ι R).map (algebraMap R L) *
       diagonal (fun i ↦ (algebraMap R L π) ^ a i) *
@@ -178,11 +170,9 @@ theorem sum_exponents_eq_zero (P Q : GL ι R) (a : ι → ℤ)
   rw [hprod, ← map_mul]
   simp
 
-/-- Determinant-one matrices over a DVR fraction field admit integral special-linear
-outer factors and zero-sum integer exponents, including dimension zero. This extends
-the Laurent statement without completion and suffices for the two matrix factors
-in Bost p31. `InvariantTheory.DVR.Weights` proves the actual A2 coordinate-weight
-consumer; the orbit-map, primitive-vector and residue-descent bridges remain. -/
+/-- A determinant-one matrix over a discrete valuation ring's fraction
+field admits integral special-linear outer factors and zero-sum integer
+exponents. Dimension zero is included, and completeness is not assumed. -/
 theorem exists_specialLinear_cartan (g : GL ι L)
     (hg : (g : Matrix ι ι L).det = 1) :
     ∃ (P Q : SpecialLinearGroup ι R) (a : ι → ℤ),

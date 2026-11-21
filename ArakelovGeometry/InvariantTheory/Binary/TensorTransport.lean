@@ -11,11 +11,10 @@ public import ArakelovGeometry.AdelicVectorBundle.Tensor.HermitianDual
 /-!
 # Bool-indexed tensors and the ordinary binary quotient
 
-The binary instability argument for Bost page 31 uses Bool-indexed factors,
-whereas the real-filtration descent and A9 consumer use ordinary binary tensors.
-This module transports the existing tensor product, convolution filtration and
-quotient base change through their canonical equivalences. No new filtration
-or notion of geometric instability is introduced.
+The binary instability construction uses Bool-indexed factors, while filtration
+descent and optimization use ordinary binary tensors. Canonical equivalences
+transport tensor products, convolution filtrations, and quotient scalar extensions
+between these presentations.
 -/
 
 @[expose] public section
@@ -44,8 +43,8 @@ instance boolTensorFactorsNontrivial {E F : Type u} [Nontrivial E] [Nontrivial F
 variable (K : Type*) [Field K] (E : Bool → Type*)
   [∀ j, AddCommGroup (E j)] [∀ j, Module K (E j)]
 
-/-- Canonical Bool-to-binary tensor transport for the binary Bost application.
-It is reindexing followed by the existing singleton-grouping equivalence. -/
+/-- The canonical equivalence from a Bool-indexed tensor product to a
+binary tensor product, defined by reindexing and singleton grouping. -/
 def boolTensorEquiv : (⨂[K] j, E j) ≃ₗ[K] E false ⊗[K] E true :=
   (PiTensorProduct.reindex K E boolEquivUnitSumUnit).trans
     (binaryTensorEquiv K (fun j ↦ E (boolEquivUnitSumUnit.symm j)))
@@ -58,8 +57,8 @@ theorem boolTensorEquiv_tprod (x : ∀ j, E j) :
   rw [PiTensorProduct.reindex_tprod, binaryTensorEquiv_tprod]
   rfl
 
-/-- Bool tensor transport commutes with actual tensor scalar extension on all
-vectors, for the binary Bost quotient. -/
+/-- Bool-indexed tensor transport commutes with scalar extension on
+all vectors. -/
 theorem tensorBaseChangeEquiv_bool (L : Type*) [Field L] [Algebra K L] :
     (boolTensorEquiv L (fun j ↦ L ⊗[K] E j)).toLinearMap ∘ₗ
       (tensorBaseChangeEquiv K L E).toLinearMap =
@@ -107,8 +106,8 @@ open ArakelovGeometry
 variable {K : Type*} [Field K] {E : Bool → Type*}
   [∀ j, AddCommGroup (E j)] [∀ j, Module K (E j)]
 
-/-- The Bool convolution has exactly the ordinary binary convolution layers,
-under the canonical equivalence used in the Bost p31 assembly. -/
+/-- The Bool-indexed and ordinary binary convolutions have the same
+filtration layers under the canonical tensor equivalence. -/
 theorem piTensorFiltration_map_boolTensorEquiv
     (F : ∀ j, ℝ → Submodule K (E j)) (γ : ℝ) :
     (piTensorFiltration F γ).map (boolTensorEquiv K E).toLinearMap =
@@ -192,9 +191,8 @@ variable {k : Type*} [Field k] {ι : Bool → Type*}
   [∀ j, AddCommGroup (V j)] [∀ j, Module k (V j)]
   {Q : Type*} [AddCommGroup Q] [Module k Q]
 
-/-- Transporting weighted bases along factor equivalences preserves the actual
-quotient convolution layers. This returns coordinate negative filtrations to
-the original factors in Bost's binary instability argument. -/
+/-- Transport of weighted bases along factor equivalences preserves
+the quotient convolution layers. -/
 theorem piTensorFiltration_image_map_basis
     (e : ∀ j, E j ≃ₗ[k] V j) (b : ∀ j, Basis (ι j) k (E j))
     (w : ∀ j, ι j → ℝ) (q : (⨂[k] j, V j) →ₗ[k] Q) (t : ℝ) :

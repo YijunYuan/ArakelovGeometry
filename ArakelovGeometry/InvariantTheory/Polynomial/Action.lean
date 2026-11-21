@@ -11,13 +11,12 @@ public import Mathlib.RepresentationTheory.Subrepresentation
 public import Mathlib.RingTheory.MvPolynomial.Basic
 
 /-!
-# Actual polynomial actions in finite coordinates
+# Polynomial actions in finite coordinates
 
-Pullback by the inverse group element is the left action on the actual A2
-coordinate polynomials. It preserves homogeneous components and bounded total
-degree. These are the polynomial modules used for binary tensor invariant
-separation in Bost p31, proof of Theorem 1.1. This file supplies no general
-reductivity theorem, valuation-ring specialization or negative-weight criterion.
+Pullback by the inverse group element defines a left action on coordinate
+polynomials. It preserves homogeneous components and bounded total degree.
+These finite-dimensional polynomial modules support the binary tensor
+invariant separation argument.
 -/
 
 @[expose] public section
@@ -117,8 +116,7 @@ theorem polynomialRepresentation_totalDegree_le (b : Module.Basis ι k M)
         (homogeneousComponent_isHomogeneous d p)).totalDegree_le.trans
           (Nat.le_of_lt_succ (Finset.mem_range.mp hd))
 
-/-- The actual action on bounded-degree polynomials, the finite module used
-in the Bost p31 separation argument. -/
+/-- The representation on polynomials of bounded total degree. -/
 def boundedPolynomialRepresentation (b : Module.Basis ι k M)
     (ρ : Representation k G M) (D : ℕ) :
     Representation k G (restrictTotalDegree ι k D) where
@@ -137,7 +135,7 @@ def boundedPolynomialRepresentation (b : Module.Basis ι k M)
     apply Subtype.ext
     exact DFunLike.congr_fun ((polynomialRepresentation b ρ).map_mul g h) p.val
 
-/-- Fixed polynomials are exactly the pointwise A2 invariant polynomials. -/
+/-- Fixed polynomials are exactly the pointwise invariant polynomials. -/
 theorem polynomialRepresentation_fixed_iff (b : Module.Basis ι k M)
     (ρ : Representation k G M) (p : MvPolynomial ι k) :
     (∀ g, polynomialRepresentation b ρ g p = p) ↔

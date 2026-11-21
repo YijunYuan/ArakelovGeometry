@@ -14,12 +14,12 @@ import ArakelovGeometry.AdelicVectorBundle.Degree.Supermodular
 import ArakelovGeometry.AdelicVectorBundle.HarderNarasimhan.Hermitian.Semistability
 
 /-!
-# Finite images of actual Harder--Narasimhan filtrations
+# Finite images of Harder–Narasimhan filtrations
 
 The image at a threshold is the sum of the images of the source thresholds.
-The strict right limit commutes with this sum. All induced graded maps use
-actual subquotient norms, as required in the componentwise proof of Bost's
-Lemmas 7.1 and 7.2.
+The strict right limit commutes with this sum. The induced graded maps use
+the original subquotient norms. Spanning families of contractions yield
+degree and quotient-slope bounds from the source Harder–Narasimhan filtrations.
 -/
 
 @[expose] public section
@@ -232,9 +232,8 @@ instance instIsHermitianFiltrationGraded (V : AdelicVectorBundle S)
 
 variable [S.IsProper]
 
-/-- A semistable source of slope `a` maps contractively onto an actual target
-of degree at least `a` times its rank. Rank-zero targets are included. This
-is the one-step degree argument in the adapted Bost Lemma 7.1 proof. -/
+/-- A semistable source of slope `a` maps contractively onto a target
+of degree at least `a` times its rank. Rank-zero targets are included. -/
 theorem degree_ge_of_semistable_surjective_contraction
     (V : AdelicVectorBundle S) (W : AdelicVectorBundle S)
     [hS : S.NormMeasurabilityHypotheses]
@@ -286,10 +285,9 @@ theorem imageFlagQuotientMap_norm_le
     ((Submodule.imageFlag f i.castSucc).comap (Submodule.imageFlag f i.succ).subtype) ω _).trans
   simpa only [NormFamily.restrict_norm, he] using hf i ω z
 
-/-- The componentwise form of Bost Lemma 7.1: finitely many zero or semistable
-sources of slope `a`, mapping contractively with spanning images into an actual
-Hermitian target, force degree at least `a` times rank. The proof uses the
-actual accumulated-image flag, not a norm on their direct sum. -/
+/-- Finitely many zero or semistable sources of slope `a`, mapping contractively
+with spanning images into a Hermitian target, force degree at least `a` times rank.
+The degree bound uses the induced norms on the accumulated-image flag. -/
 theorem degree_ge_of_same_slope_spanning_contractions
     (V : Fin n → AdelicVectorBundle S) (W : AdelicVectorBundle S)
     (f : ∀ i, V i →ₗ[K] W)
@@ -366,9 +364,8 @@ theorem degree_ge_of_finite_same_slope_spanning_contractions [Finite ι]
     (fun i ↦ hf (e i))
   exact (Equiv.iSup_comp (g := fun i ↦ (f i).range) e).trans hspan
 
-/-- The same source family bounds the slope of every nonzero actual quotient
-of the target. This is the quotient half of the componentwise Bost Lemma 7.1
-argument, retaining the target's quotient norm. -/
+/-- A finite family of zero or semistable sources of the same slope bounds
+the slope of every nonzero quotient of the target, with its induced quotient norm. -/
 theorem slope_quotient_ge_of_finite_same_slope_spanning_contractions [Finite ι]
     (V : ι → AdelicVectorBundle S) (W : AdelicVectorBundle S)
     (f : ∀ i, (V i).carrier →ₗ[K] W)
@@ -518,10 +515,9 @@ theorem finsum_weight_rank_le_degree_of_grade_bounds
         (p.2.comap p.1.subtype)).degree) hp
   exact Eq.mp he (hgrade (a i))
 
-/-- The finite-image HN degree inequality needed in Bost Lemma 7.2. Its
-hypotheses concern actual completed contractions and spanning images only;
-the HN filtration, semistable source grades, image flags, and their lower
-degree bounds are all produced by the proof. -/
+/-- For Hermitian bundles, the weighted degree of the image filtration of a finite
+family of Harder–Narasimhan filtrations is at most the target degree. The hypotheses
+require contractions on completed fibres whose images span the target. -/
 theorem finsum_hermitianHN_imageFiltration_le_degree [Finite ι]
     (V : ι → AdelicVectorBundle S) (W : AdelicVectorBundle S)
     (f : ∀ i, (V i).carrier →ₗ[K] W)

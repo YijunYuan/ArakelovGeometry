@@ -13,15 +13,13 @@ public import Mathlib.Algebra.Algebra.Subalgebra.Centralizer
 public import Mathlib.Data.Finite.Perm
 
 /-!
-# Selected tensor-power Schur--Weyl input
+# Tensor permutation centralizers and semisimplicity
 
-Selected from mathlib-initiative/EtingofRepresentationTheory, commit
-752fe269b3233f08f0795aa4bcdc5b4c84be7a50; see provenance.json.
-Only permutation centralizers and semisimplicity are retained;
-detailed decompositions and Lie actions are omitted.
-The application is the fixed-degree tensor-power input for Bost p31's binary
-instability route. General reductivity, polynomial quotients, and orbit
-separation are outside this module.
+The permutation action and diagonal tensor action give mutual centralizers.
+Their image algebras are semisimple in characteristic zero. These are
+fixed-degree representation-theoretic ingredients for the tensor instability
+results in [ChenMoriwaki2020]; detailed representation decompositions and
+general linear reductivity are not asserted.
 -/
 
 @[expose] public section
@@ -210,9 +208,7 @@ theorem centralizer_permutationActionAlgebra
   · exact auxiliaryEndomorphismAlgebra_le_centralizer_permutationActionAlgebra
       k V n
 
-/-- Both actual tensor endomorphism subalgebras are semisimple in characteristic zero.
-This retained donor producer supplies the fixed-degree image algebra for Bost p31;
-the detailed Schur--Weyl decomposition and general reductivity are not asserted. -/
+/-- Both tensor endomorphism subalgebras are semisimple in characteristic zero. -/
 theorem associatedSubalgebras_semisimple
     [CharZero k] :
     IsSemisimpleRing (permutationActionAlgebra k V n)
